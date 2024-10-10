@@ -1,0 +1,152 @@
+// src/themes/theme.scss
+
+:root {
+  --font-family-body: 'sans-serif', serif;
+  --bodycolor: #fff;
+  --bodybackground: #1d2a35;
+  --linkcolor: #f39c12;
+  --linkhovercolor: #e67e22;
+  --bgcolor: #333;
+  --bghovercolor:#25343f;
+  --color: #0a0a0a;
+  --bgunhovercolor:'transparent';
+  --TitleColor: #495057;
+  --iconcolor: #fff;
+  --sidebartextcolor:#fff;
+  }
+  [data-theme="default"] {
+    --font-family-bod: 'sans-serif', serif;
+    --bodycolor: #fff;
+    --bodybackground:  #003032;
+    --linkcolor: '#3498db';
+    --linkhovercolor: '#2980b9';
+    --bgcolor: '#003032';
+    --bghovercolor: #024f52;
+    --color: #0a0a0a;
+    --bgunhovercolor:'transparent';
+    --TitleColor: #003032;
+    --iconcolor: #fff;
+    --cardcolor:#F4F7F7;
+    --cardtextcolor:#1C1C1C;
+    --cardvaluecolor:#1C1C1C;
+    --buttonbgcolor:var(--bodybackground);
+    --dashboardcolor:#E6EDEE;
+    --cardbodycolor:#FFFFFF;
+    --chartcolordefault:#357275;
+    --chattitlecolor:#1C1C1C;
+    --chatsubtitlecolor:#E6EAEB;
+    --chatlisthovercolor:#FFF5EE;
+    --sidebartextcolor:#FFFFFF; 
+    --sidebarselectedcolor:#024F52;
+    --sidebarselectcolor:#FFFFFF;
+    --sidebarhovertextcolor:#FFFFFF;
+    --chatviewbodycolor:#FFFFFF;
+    --chatbodyinnercolor:#F4F7F7;
+    --chatlisthovercolor:#FFFFFF;
+    --chattextcolor:#FFFFFF;
+    --chathistorytextcolor:#495057;
+    --inputlablecolor:#1C1C1C;
+    --inputbackcolor:#FFFFFF;
+    --profilebody:#F4F7F7;
+    --profiletext:#003032;
+    --profileinnertext:#B9B9B9;
+    --chatcolor:var(--bodybackground);
+   
+  }
+  
+  [data-theme="light"] {
+    --font-family-bod: 'sans-serif', serif;
+    --bodycolor: #E6EDEE;
+    --bodybackground:  #FFFFFF;
+    --linkcolor: #003032;
+    --linkhovercolor: #2980b9;
+    --bgcolor:#003032;
+    --bghovercolor: #F4F7F7;
+    --color: #0a0a0a;
+    --bgunhovercolor:'transparent';
+    --TitleColor: #003032;
+    --iconcolor: #003032;
+    --cardcolor :#F4F7F7;
+    --cardtextcolor:#1C1C1C;
+    --cardvaluecolor:#1C1C1C;
+    --cardbodycolor:#FFFFFF;
+    --buttonbgcolor: #024F52;
+    --sidebartextcolor:#003032; 
+    --sidebarselectedcolor:#003032;
+    --sidebarselectcolor:#FFFFFF;
+    --chatviewbodycolor:#FFFFFF;
+    --chatbodyinnercolor:#F4F7F7;
+    --chattitlecolor:#1C1C1C;
+    --chatsubtitlecolor: #E6EAEB;
+    --chatlisthovercolor:#FFFFFF;
+    --chattextcolor:#FFFFFF;
+    --sidebarhovertextcolor:#003032;
+    --chathistorytextcolor:#495057;
+    --inputlablecolor:#1C1C1C;
+    --inputbackcolor:#FFFFFF;
+    --profilebody:#F4F7F7;
+    --profiletext:#1C1C1C;
+    --profileinnertext:#B9B9B9;
+    --chatcolor:#2f2f2f;
+  }
+  [data-theme="dark"] {
+    --font-family-body: 'sans-serif', serif;
+    // --bodycolor: #fff;
+    --bodycolor: #4A555D;
+    --bodybackground: #1D2A35;
+    --linkcolor: #f39c12;
+    --linkhovercolor: #e67e22;
+    --bgcolor: #333;
+    --bghovercolor:#4A555D;
+    --color: #0a0a0a;
+    --bgunhovercolor:'transparent';
+    --TitleColor:#FFFFFF;
+    --iconcolor: #fff;
+    --cardcolor :#151E26;
+    --cardtextcolor:#FFFFFF;
+    --cardvaluecolor:#FFFFFF;
+    --cardbodycolor:#1D2A35;
+    --buttonbgcolor:#00D1D9;
+    --chatviewbodycolor:#1D2A35;
+    --chatbodyinnercolor:#151E26;
+    --chattitlecolor:#FFFFFF;
+    --chatsubtitlecolor:#4A555D;
+    --chatlisthovercolor:#1D2A35;
+    --sidebartextcolor:#FFFFFF;
+    --sidebarselectedcolor:#151E26;
+    --sidebarselectcolor:#FFFFFF;
+    --sidebarhovertextcolor:#FFFFFF;
+    --chathistorytextcolor:#FFFFFF;
+    --tableheadercolor:#1D2A35;
+    --tabletoolscolor:#151E26;
+    --tabletextcolor:#FFFFFF;
+    --tablebodycolor:#151E26;
+    --inputlablecolor:#FFFFFF; 
+    --inputbackcolor:#151E26;
+    --profilebody:#151E26;
+    --profiletext:#FFFFFF;
+    --profileinnertext:#FFFFFF;
+    --chatcolor:#2f2f2f;
+    --chattextcolor:#FFFFFF;
+  }
+
+  [data-theme="custom"] {
+    --font-family-bod: 'sans-serif', serif;
+    --bodycolor: #fff;
+    --bodybackground:  #003032;
+    --linkcolor: '#3498db';
+    --linkhovercolor: '#2980b9';
+    --bgcolor: '#003032';
+    --bghovercolor: #024f52;
+    --color: #0a0a0a;
+    --bgunhovercolor:'transparent';
+    --TitleColor: #495057;
+    --iconcolor: #fff;
+    --sidebartextcolor:#fff;
+    --cardcolor :#f8f9fa;
+    --cardtextcolor:#7f8c8d;
+    --cardvaluecolor:#2c3e50;
+    --buttonbgcolor:var(--bodybackground);
+  }
+  
+  

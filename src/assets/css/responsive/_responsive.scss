@@ -1,0 +1,184 @@
+// @import '../variable/breakpoints';
+
+@media screen and (min-width:$medium_iphone_up) {
+    .MuiModal-root .modal_block{
+        width: 550px;
+    }
+}
+@media screen and (min-width:$tablet_up) {
+    .MuiModal-root .modal_block{
+        width: 700px;
+    } 
+}
+@media screen and (min-width:$desktop_pro_up) {
+    .container{
+        padding: 0;
+    }
+
+    // .left_panel {
+    //     width: 45%;
+    // }
+    // .right_panel {
+    //     width: 55%;
+    // }
+}
+@media screen and (min-width:$desktop_up) {
+
+}
+@media screen and (min-width:$desktop_medium_up) {
+    .container{
+        max-width: 1240px;
+    }
+}
+@media screen and (min-width:$desktop_large_up) {
+    .container{
+        max-width: 1320px;
+    }
+}
+
+@media screen and (max-width:1920px) {
+    .table_inner{
+        width: 100%;
+        display: inline-block;
+        vertical-align: top;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        &::-webkit-scrollbar{
+            height: 3px; 
+        }
+        &::-webkit-scrollbar-thumb{
+            background-color: #B5C8D8; 
+            border-radius: 20px;
+        }
+    }
+}
+
+@media screen and (max-width:$desktop_large) {
+
+}
+@media screen and (max-width:$desktop) {
+
+}
+@media screen and (max-width:$tablet) {
+    .container{
+        max-width: none;
+        width: auto;
+        margin-left: 15px;
+        margin-right: 15px;
+        padding: 0;
+    }
+    .sidebar_main  .offcanvas.offcanvas-start{
+        left: 0;
+        z-index: 9999;
+    }
+    .main_title{
+        font-size: 22px;
+        line-height: 26px;
+    }
+    .tabs .MuiTabs-root button{
+        font-size: 16px;
+        min-width: 200px;
+    }
+}
+@media screen and (max-width:$large_phone) {
+    h2.main_page_title{
+        font-size: 20px;
+        line-height: 24px;
+    }
+    .chat_section .left_panel {
+        margin: 0 0 30px;
+    }
+
+
+
+
+}
+@media screen and (max-width:$medium_iphone) {
+    .MuiModal-root .modal_block{
+        width: 95%;
+    }
+    .search_bar.common_content .input-group .form-control{
+        width: 100%;
+    }
+    .chat .chat_inner .chat_item .chat_item_inner .left_part{
+        margin: 0 0 5px;
+    }
+}
+@media screen and (max-width:$medium_phone) {
+    .login .login_inner .form_wrapper .login_form{
+        width: 100%;
+    }
+    .login .login_inner .form_wrapper .login_form_inner form{
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .login .login_inner .form_wrapper form .form_field_wrapper{
+        margin: 0 0 20px;
+    }
+    .login .login_inner .form_wrapper form .form_field_wrapper.password {
+        margin: 0 0 7px;
+    }
+    .login .login_inner .form_wrapper form .form_field_wrapper.signuplink_block .signupa{
+        flex-direction: column;
+    }
+    .login .login_inner .form_wrapper form .form_field_wrapper.signuplink_block .signupa .signup_txt{
+        margin-top: 10px;
+    }
+
+
+
+
+
+    
+    .MuiModal-root .modal_block .modal_content .primary_btn .btn{
+        width: 100%;
+        margin: 10px 0 0;
+    }
+    .main_content .main_block .top_bar .right_part .right_part_inner{
+        flex-direction: column;
+    }
+    .main_content .main_block .top_bar .right_part .right_part_inner .add_kit {
+        margin: 15px 0 0;
+    }
+    .primary_btn .btn{
+        width: 100%;
+        margin-top: 10px;
+    }
+    .primary_btn .btn:last-child{
+        margin-left: 0;
+    }
+    
+
+}
+@media screen and (max-width:$small_phone) {
+    .login .login_inner .left_part.part .leftpart_inner .leftpart_text {
+        font-size: 30px;
+        line-height: 36px;
+    }
+    .login .login_inner .right_part .rightpart_inner .login_form_inner form {
+        margin-top: -175px;
+    }
+    .login .login_inner .right_part .rightpart_inner .login_form_inner form .login_title {
+        font-size: 22px;
+        line-height: 24px;
+    }
+    .login .login_inner .right_part.part .rightpart_inner form .login_img img {
+        width: 55px;
+        height: 62px;
+    }
+
+
+
+    .tabs .MuiTabs-root .MuiButtonBase-root{
+        min-width: 150px;
+    }
+    .back_link {
+        margin-top: 20px;
+    }
+    .main_content .main_block{
+        margin: 20px 0;
+    }
+}

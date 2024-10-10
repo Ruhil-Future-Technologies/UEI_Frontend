@@ -1,0 +1,27 @@
+{
+    "class": "1",
+    "subjects": [
+      {
+        "name": "Mathematics",
+        "chapters": [
+          {
+            "name": "Numbers",
+            "topics": [
+              "Introduction to Numbers",
+              "Counting Numbers",
+              "Writing Numbers"
+            ]
+          },
+          {
+            "name": "Shapes",
+            "topics": [
+              "Introduction to Shapes",
+              "2D Shapes",
+              "3D Shapes"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  

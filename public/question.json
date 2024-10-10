@@ -1,0 +1,100 @@
+{
+    "questions": [
+      {
+        "id": 1,
+        "question": "How would you rate the overall design of our learning platform?",
+        "options": [
+           "Bad",
+           "Average",
+          "Good",
+           "Excellent"
+        ]
+      },
+      {
+        "id": 2,
+        "question": "Is the interface of our platform easy to navigate?",
+        "options": [ "Very Difficult",
+           "Difficult",
+           "Easy",
+           "Very Easy"
+      ]
+      },
+      {
+        "id": 3,
+        "question": "Do you find the color scheme and layout visually appealing?",
+        "options": [
+           "Not at All",
+           "Somewhat",
+           "Moderately",
+           "Very Much"
+      ]
+      },
+      {
+        "id": 4,
+        "question": "Are the fonts and text sizes easy to read?",
+        "options": [ "Not at All",
+           "Somewhat",
+           "Moderately",
+           "Very Much"
+      ]
+      },
+      {
+        "id": 5,
+        "question": "How intuitive is the process of finding and starting a learning session?",
+        "options": [
+          "Not Intuitive",
+           "Somewhat Intuitive",
+           "Intuitive",
+           "Very Intuitive"
+          ]
+      },
+      {
+        "id": 6,
+        "question": "Did you experience any issues with the website's responsiveness on different devices?",
+        "options": [ "Many Issues",
+           "Some Issues",
+           "Few Issues",
+           "No Issues"
+      ]
+      },
+      {
+        "id": 7,
+        "question": "How satisfied are you with the loading speed of the platform?",
+        "options": [
+         "Very Dissatisfied",
+           "Dissatisfied",
+           "Satisfied",
+          "Very Satisfied"
+        ]
+      },
+      {
+        "id": 8,
+        "question": "Is the information and content layout well-organized?",
+        "options": [ "Not at All",
+           "Somewhat",
+           "Moderately",
+           "Very Well"
+           ]
+      },
+      {
+        "id": 9,
+        "question": "What improvements would you suggest for the design of our platform?",
+        "options": [
+           "More Color Options",
+           "Better Font Choices",
+           "Improved Layout",
+           "Other (Please specify)"
+        ]
+      },
+      {
+        "id": 10,
+        "question": "Would you recommend our platform to others based on your user experience?",
+        "options": [ "Definitely Not",
+           "Probably Not",
+           "Probably",
+             "Definitely"
+      ]
+      }
+    ]
+  }
+  
