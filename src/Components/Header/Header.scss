@@ -1,11 +1,11 @@
-@import '../../assets/css/variable/variable';
+// @import '../../assets/css/variable/variable';;
 
 
 
 
 .header {
     padding: 8px 20px;
-    background-color: var(--bodybackground);
+    // background-color: var(--bodybackground);
     // box-shadow: 0 2px 3px rgba(56, 72, 97, .06);
     left: 0px;
     position: fixed;
@@ -370,8 +370,8 @@
   }
   .MuiCircularProgress-root{
     left: -28% !important;
-    width: 47px !important;
-    height: 41px !important;
+    // width: 47px !important;
+    // height: 41px !important;
   }
   .profile_img_wrapper .MuiCircularProgress-root {
     position: relative;

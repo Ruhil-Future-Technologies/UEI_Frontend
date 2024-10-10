@@ -31,8 +31,10 @@ import {
   inputfieldhover,
   inputfieldtext,
   tabletools,
+  deepEqual,
 } from "../../utils/helpers";
 import { Country, State, City } from "country-state-city";
+import { ChildComponentProps } from "../StudentProfile";
 
 interface Box {
   id: number;
@@ -44,6 +46,7 @@ interface Box {
   learning_style: string;
   class_id: string;
   year: any;
+  stream: string;
 }
 interface Boxset {
   id: number;
@@ -75,15 +78,17 @@ interface Option {
   label: string;
 }
 
-const AcademicHistory = () => {
+const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
+  const [checkBoxes, setCheckBoxes] = useState<Box[]>([]);
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
+  const [particularClass, setParticularClass] = useState("");
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [idInstitute, setIdInstitute] = useState();
   const [insituteFlag, setInsituteFlag] = useState<boolean>(false);
@@ -94,13 +99,13 @@ const AcademicHistory = () => {
 
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
-    // console.log("contry ==s",states)
     const stateOptions = states.map((state) => ({
       value: state.isoCode,
       label: state.name,
     }));
     setStateOptions(stateOptions);
   }, [State]);
+
   const addRow = () => {
     const newBox: Box = {
       id: 0,
@@ -112,6 +117,7 @@ const AcademicHistory = () => {
       course_id: "",
       learning_style: "",
       year: "",
+      stream: "",
       //   starting_date: null,
       //   ending_date: null,
     };
@@ -126,6 +132,7 @@ const AcademicHistory = () => {
             toast.success("Academic history deleted successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         })
@@ -133,11 +140,13 @@ const AcademicHistory = () => {
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         });
     }
     setBoxes(boxes.filter((box, index) => index !== indx));
   };
+
   const listData = async () => {
     return new Promise((resolve) => {
       getData("/institution/list")
@@ -146,7 +155,6 @@ const AcademicHistory = () => {
             const filteredData = await response?.data?.filter(
               (item: any) => item?.is_active === 1
             );
-            console.log("filteredData", filteredData);
             setInstitutes(filteredData || []);
             // setInstitutes(response.data);
             // return filteredData || []
@@ -159,12 +167,14 @@ const AcademicHistory = () => {
           toast.error(error?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
 
           resolve(false);
         });
     });
   };
+
   useEffect(() => {
     listData();
 
@@ -182,6 +192,7 @@ const AcademicHistory = () => {
         toast.error(error?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
     getData("/class/list")
@@ -209,6 +220,7 @@ const AcademicHistory = () => {
         toast.error(error?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
 
@@ -259,8 +271,13 @@ const AcademicHistory = () => {
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
-          console.log("dtat", data,boxes);
-
+          getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
+            (response: any) => {
+              if (response.status === 200) {
+                setParticularClass(response.data.class_name);
+              } else setParticularClass("");
+            }
+          );
           data?.data?.forEach((item: any) => {
             const newBox = {
               id: item?.id,
@@ -272,9 +289,11 @@ const AcademicHistory = () => {
               learning_style: item?.learning_style,
               class_id: item?.class_id,
               year: item?.year ? dayjs(item?.year) : null,
+              stream: item?.stream,
             };
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
+              setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
           });
         } else if (data?.status === 404) {
@@ -289,6 +308,7 @@ const AcademicHistory = () => {
               learning_style: "",
               class_id: "",
               year: null,
+              stream: "",
             },
           ]);
           setEditFlag(true);
@@ -300,14 +320,14 @@ const AcademicHistory = () => {
         toast.error(error?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
   }, []);
 
-  const saveAcademicHistory = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
+  const saveAcademicHistory = async (instituteId: number = 0) => {
+    // event: React.FormEvent<HTMLFormElement>
+    // event.preventDefault();
     // const validatePayload = (
     //   payload: { [s: string]: unknown } | ArrayLike<unknown>
     // ) => {
@@ -356,12 +376,19 @@ const AcademicHistory = () => {
           institution_type: box.institute_type,
           board: box.board,
           state_for_stateboard: box.state_for_stateboard,
-          institute_id: String(!box.institute_id ? 95 : box.institute_id),
+          institute_id: String(
+            instituteId || (!box.institute_id ? 95 : box.institute_id)
+          ),
           course_id: String(!box.course_id ? 18 : box.course_id),
           learning_style: box.learning_style,
           class_id: String(!box.class_id ? 1 : box.class_id),
           year: String(box?.year?.$y), // Assuming 'year' is a string
+          stream:
+            particularClass === "class_11" || particularClass === "class_12"
+              ? box?.stream
+              : "",
         };
+
         //validatePayload(payload)
         if (validatePayload(payload.institution_type, payload.year)) {
           if (editFlag || box.id === 0) {
@@ -373,7 +400,11 @@ const AcademicHistory = () => {
             );
           }
         } else {
-          toast.error(" PLease Enter Year ");
+          toast.error(" PLease Enter Year ", {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center",
+          });
           return Promise.resolve(null); // If payload is invalid, return a resolved promise
         }
       })
@@ -387,14 +418,29 @@ const AcademicHistory = () => {
         );
 
         if (allSuccessful) {
-          toast.success("Academic history saved successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-          });
+          if (editFlag) {
+            toast.success("Academic history saved successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center",
+            });
+            setActiveForm((prev) => prev + 1);
+          } else {
+            const isEqual = deepEqual(checkBoxes[0], boxes[0]);
+            if (!isEqual) {
+              toast.success("Academic history updated successfully", {
+                hideProgressBar: true,
+                theme: "colored",
+                position: "top-center",
+              });
+            }
+            setActiveForm((prev) => prev + 1);
+          }
         } else {
           toast.error("An error occurred while saving", {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         }
       })
@@ -408,73 +454,75 @@ const AcademicHistory = () => {
       });
   };
 
-  useEffect(() => {}, [boxes]);
-
   const setDataInsitute = async (value: any) => {
     setInsituteFlag(true);
   };
 
-  const saveAcademi = async (index: number) => {
-    try {
-      const validatePayload = (
-        payload: { [s: string]: unknown } | ArrayLike<unknown>
-      ) => {
-        return Object.values(payload).every((value) => value !== "");
-      };
+  const saveAcademy = async (index: number) => {
+    if (boxes1[0].Institute_Name_Add) {
+      try {
+        const validatePayload = (
+          payload: { [s: string]: unknown } | ArrayLike<unknown>
+        ) => {
+          return Object.values(payload).every((value) => value !== "");
+        };
 
-      const promises = boxes1
-        .map((box) => {
-          const payload = {
-            institution_name: box.Institute_Name_Add,
-          };
+        const promises = boxes1
+          .map((box) => {
+            const payload = {
+              institution_name: box.Institute_Name_Add,
+            };
 
-          if (validatePayload(payload)) {
-            if (editFlag || box.id === 0) {
-              return postData("/institution/add", payload);
+            if (validatePayload(payload)) {
+              if (editFlag || box.id === 0) {
+                return postData("/institution/add", payload);
+              } else {
+                return postData("/institution/add", payload);
+              }
             } else {
-              return postData("/institution/add", payload);
+              return Promise.resolve(null);
             }
-          } else {
-            return Promise.resolve(null);
-          }
-        })
-        .filter((promise) => promise !== null);
+          })
+          .filter((promise) => promise !== null);
 
-      const responses = await Promise.all(promises);
+        const responses = await Promise.all(promises);
 
-      const allSuccessful = responses.every(
-        (response) => response?.status === 200
-      );
+        const allSuccessful = responses.every(
+          (response) => response?.status === 200
+        );
 
-      if (allSuccessful) {
-        setIdInstitute(responses[0].institution.id);
-        // setBoxes([...boxes, { institute_id: responses[0]?.institution?.id }]);
-        const newBoxes: any = [...boxes];
-        newBoxes[index]["institute_id"] = responses[0].institution.id;
-        setBoxes(newBoxes);
-        setBoxes1([
-          {
-            id: 0,
-            Institute_Name_Add: "",
-          },
-        ]);
-        // setBoxes((prevBoxes) => [...prevBoxes, { institute_id: responses[0]?.institution?.id }]);
+        if (allSuccessful) {
+          setIdInstitute(responses[0].institution.id);
+          // setBoxes([...boxes, { institute_id: responses[0]?.institution?.id }]);
+          const newBoxes: any = [...boxes];
+          newBoxes[index]["institute_id"] = responses[0].institution.id;
+          saveAcademicHistory(responses[0].institution.id);
+          setBoxes(newBoxes);
+          setBoxes1([
+            {
+              id: 0,
+              Institute_Name_Add: "",
+            },
+          ]);
+          // setBoxes((prevBoxes) => [...prevBoxes, { institute_id: responses[0]?.institution?.id }]);
 
-        console.log("response", responses[0].institution.id);
-        await listData();
-        toast.success("Institution name saved successfully", {
+          await listData();
+          toast.success("Institution name saved successfully", {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center",
+          });
+          setDataInsitute(boxes1[0]?.Institute_Name_Add);
+        }
+      } catch (error) {
+        console.error("Error while saving academy", error);
+        toast.error("Error while saving institution name", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
-        setDataInsitute(boxes1[0]?.Institute_Name_Add);
       }
-    } catch (error) {
-      console.error("Error while saving academia:", error);
-      toast.error("Error while saving institution name", {
-        hideProgressBar: true,
-        theme: "colored",
-      });
-    }
+    } else saveAcademicHistory();
   };
 
   const handleInputChange = (
@@ -502,6 +550,13 @@ const AcademicHistory = () => {
 
     setBoxes(newBoxes);
     setEnddateInvalidList(newEnddateInvalidList);
+    if (field === "class_id") {
+      getData(`/class/get/${value}`).then((response: any) => {
+        if (response.status === 200) {
+          setParticularClass(response.data.class_name);
+        } else setParticularClass("");
+      });
+    }
   };
   const handleInputChange1 = (
     index: number,
@@ -514,10 +569,9 @@ const AcademicHistory = () => {
     setBoxes1(newBoxes);
   };
 
-  console.log("NEW VALUE===>", boxes);
   return (
     <div className="mt-5">
-      <form onSubmit={saveAcademicHistory}>
+      <form>
         {boxes?.map((box, index) => (
           <div
             className="row align-items-center"
@@ -532,6 +586,9 @@ const AcademicHistory = () => {
                 <InputLabel>Institute Type</InputLabel>
                 <Select
                   value={box.institute_type}
+                  sx={{
+                    backgroundColor: "#f5f5f5",
+                  }}
                   onChange={(e) =>
                     handleInputChange(index, "institute_type", e.target.value)
                   }
@@ -585,6 +642,9 @@ const AcademicHistory = () => {
                   <InputLabel>Board</InputLabel>
                   <Select
                     value={box.board}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
                     onChange={(e) =>
                       handleInputChange(index, "board", e.target.value)
                     }
@@ -640,6 +700,9 @@ const AcademicHistory = () => {
                   <Select
                     name="state_for_stateboard"
                     value={box.state_for_stateboard}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
                     onChange={(e) =>
                       handleInputChange(
                         index,
@@ -687,80 +750,17 @@ const AcademicHistory = () => {
                   required
                   sx={{ m: 1, minWidth: 220, width: "100%" }}
                 >
-                  <InputLabel>Course</InputLabel>
-                  <Select
-                    value={box.course_id}
-                    onChange={(e) =>
-                      handleInputChange(index, "course_id", e.target.value)
-                    }
-                    label="Course"
-                  >
-                    {courses.map((course) => (
-                      <MenuItem
-                        key={course.id}
-                        value={course.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
-                      >
-                        {course.course_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            )}
-            {box.institute_type == "school" && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{ m: 1, minWidth: 220, width: "100%" }}
-                >
-                  <InputLabel>Class</InputLabel>
-                  <Select
-                    value={box.class_id}
-                    onChange={(e) =>
-                      handleInputChange(index, "class_id", e.target.value)
-                    }
-                    label="Class"
-                  >
-                    {classes.map((classes) => (
-                      <MenuItem
-                        key={classes.id}
-                        value={classes.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
-                      >
-                        {classes.class_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            )}
-            {box.institute_type == "college" && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{ m: 1, minWidth: 220, width: "100%" }}
-                >
                   <InputLabel>University Name</InputLabel>
                   <Select
                     name="institute_id"
                     value={box.institute_id}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
                     onChange={(e) =>
                       handleInputChange(index, "institute_id", e.target.value)
                     }
-                    label="Institute Name"
+                    label="University Name"
                   >
                     {institutes.map((institute) => (
                       <MenuItem
@@ -795,60 +795,101 @@ const AcademicHistory = () => {
                         <p style={{ marginLeft: "10px", color: 'red' }}>Please select a Department name.</p>
                     )}</div> */}
                 </FormControl>
-                {box.institute_id == "1" && (
-                  <>
-                    <FormControl sx={{ m: 1, minWidth: 180, width: "100%" }}>
-                      {boxes1.map((box, index) => (
-                        <TextField
-                          key={box.id}
-                          name="Institute_Name_Add"
-                          value={box.Institute_Name_Add}
-                          onChange={(e) =>
-                            handleInputChange1(
-                              index,
-                              "Institute_Name_Add",
-                              e.target.value
-                            )
-                          }
-                          label="Institute Name Add"
-                        />
-                      ))}
-                    </FormControl>
-                    <div>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => saveAcademi(index)}
-                        style={{ marginTop: "25px" }}
-                      >
-                        Save Institute Name
-                      </Button>
-                    </div>
-                  </>
-                )}
               </div>
             )}
-            {box.institute_type !== "competition_exams" &&
-              box.institute_type !== "school" && (
-                <div className="col form_field_wrapper">
+            {box.institute_type == "college" && (
+              <div className="col form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 220, width: "100%" }}
+                >
+                  <InputLabel>Course</InputLabel>
+                  <Select
+                    value={box.course_id}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, "course_id", e.target.value)
+                    }
+                    label="Course"
+                  >
+                    {courses.map((course) => (
+                      <MenuItem
+                        key={course.id}
+                        value={course.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          },
+                        }}
+                      >
+                        {course.course_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+            {box.institute_type == "school" && (
+              <div className="col form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 220, width: "100%" }}
+                >
+                  <InputLabel>Class</InputLabel>
+                  <Select
+                    value={box.class_id}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, "class_id", e.target.value)
+                    }
+                    label="Class"
+                  >
+                    {classes.map((classes) => (
+                      <MenuItem
+                        key={classes.id}
+                        value={classes.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          },
+                        }}
+                      >
+                        {classes.class_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+            {box.institute_type == "school" &&
+              (particularClass === "class_11" ||
+                particularClass === "class_12") && (
+                <div className="col-lg-3 form_field_wrapper">
                   <FormControl
                     required
                     sx={{ m: 1, minWidth: 70, width: "100%", maxWidth: 200 }}
                   >
-                    <InputLabel>Learning Style</InputLabel>
+                    <InputLabel>Stream</InputLabel>
                     <Select
-                      value={box.learning_style}
+                      value={box.stream}
+                      sx={{
+                        backgroundColor: "#f5f5f5",
+                      }}
                       onChange={(e) =>
-                        handleInputChange(
-                          index,
-                          "learning_style",
-                          e.target.value
-                        )
+                        handleInputChange(index, "stream", e.target.value)
                       }
-                      label="Learning Style"
+                      label="Stream"
                     >
                       <MenuItem
-                        value="online"
+                        value="science"
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
@@ -857,10 +898,10 @@ const AcademicHistory = () => {
                           },
                         }}
                       >
-                        Online
+                        Science
                       </MenuItem>
                       <MenuItem
-                        value="offline"
+                        value="commerce"
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
@@ -869,48 +910,149 @@ const AcademicHistory = () => {
                           },
                         }}
                       >
-                        Offline
+                        Commerce
                       </MenuItem>
                       <MenuItem
-                        value="any"
+                        value="arts"
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
                           "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), 
+                            backgroundColor: inputfieldhover(namecolor),
                           },
                         }}
                       >
-                        Any
+                        Arts
                       </MenuItem>
                     </Select>
                   </FormControl>
                 </div>
               )}
-            {box.institute_type !== "competition_exams" &&
-              box.institute_type !== "school" && (
-                <div className="col form_field_wrapper">
-                  <FormControl
-                    required
-                    sx={{ m: 1, minWidth: 180, width: "100%" }}
+            {box.institute_id == "1" && (
+              <div className="col form_field_wrapper">
+                <FormControl sx={{ m: 1, minWidth: 180, width: "100%" }}>
+                  {boxes1.map((box, index) => (
+                    <TextField
+                      key={box.id}
+                      name="Institute_Name_Add"
+                      sx={{
+                        backgroundColor: "#f5f5f5",
+                      }}
+                      value={box.Institute_Name_Add}
+                      onChange={(e) =>
+                        handleInputChange1(
+                          index,
+                          "Institute_Name_Add",
+                          e.target.value
+                        )
+                      }
+                      label="Institute Name"
+                    />
+                  ))}
+                </FormControl>
+                {/* <div>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => saveAcademi(index)}
+                    style={{ marginTop: "25px" }}
                   >
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        views={["year"]}
-                        format="YYYY"
-                        label="Year *"
-                        value={dayjs(box.year)}
-                        onChange={(date) =>
-                          handleInputChange(index, "year", date)
-                        }
-                      />
-                    </LocalizationProvider>
-                  </FormControl>
-                </div>
-              )}
+                    Save Institute Name
+                  </Button>
+                </div> */}
+              </div>
+            )}
+            {box.institute_type === "college" && (
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 70, width: "100%", maxWidth: 200 }}
+                >
+                  <InputLabel>Learning Style</InputLabel>
+                  <Select
+                    value={box.learning_style}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, "learning_style", e.target.value)
+                    }
+                    label="Learning Style"
+                  >
+                    <MenuItem
+                      value="online"
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        "&:hover": {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                      }}
+                    >
+                      Online
+                    </MenuItem>
+                    <MenuItem
+                      value="offline"
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        "&:hover": {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                      }}
+                    >
+                      Offline
+                    </MenuItem>
+                    <MenuItem
+                      value="any"
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        "&:hover": {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                      }}
+                    >
+                      Any
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+            {box.institute_type === "college" && (
+              <div
+                className={`${
+                  box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
+                } form_field_wrapper`}
+              >
+                <FormControl
+                  required
+                  sx={{
+                    m: 1,
+                    minWidth: 180,
+                    // width: "100%",
+                  }}
+                >
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      views={["year"]}
+                      format="YYYY"
+                      label="Year *"
+                      sx={{
+                        backgroundColor: "#f5f5f5",
+                      }}
+                      value={dayjs(box.year)}
+                      onChange={(date) =>
+                        handleInputChange(index, "year", date)
+                      }
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </div>
+            )}
           </div>
         ))}
-        <div className="row justify-content-center">
+        {/* <div className="row justify-content-center">
           <div className="col-3">
             <Button
               className="mainbutton"
@@ -923,6 +1065,22 @@ const AcademicHistory = () => {
               Save Academic History
             </Button>
           </div>
+        </div> */}
+        <div className="mt-3 d-flex align-items-center justify-content-between">
+          <button
+            type="button"
+            className="btn btn-outline-dark prev-btn px-lg-4 rounded-pill"
+            onClick={() => setActiveForm((prev) => prev - 1)}
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            className="btn btn-dark px-lg-5 ms-auto d-block rounded-pill next-btn"
+            onClick={() => saveAcademy(0)}
+          >
+            Next
+          </button>
         </div>
       </form>
     </div>

@@ -1,22 +1,36 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import { MdContactMail } from "react-icons/md";
+import { toast } from "react-toastify";
+import CloseIcon from "@mui/icons-material/Close";
 import phoneicon from "../../assets/img/phone.svg";
 import emailicon from "../../assets/img/email.svg";
 import passwordicon from "../../assets/img/password.svg";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
-import { useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  BackArrowCircle,
+  FacebookIcon,
+  GoogleIcon,
+  VisibilityOn,
+  VisibilityOff,
+} from "../../assets";
+import gLogo from "../../assets/img/logo-white.svg";
+import gyansetuLogo from "../../assets/img/gyansetu-logo.svg";
 import useApi from "../../hooks/useAPI";
-import CloseIcon from "@mui/icons-material/Close";
-import { FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
-import { toast } from "react-toastify";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 import "react-toastify/dist/ReactToastify.css";
 import { QUERY_KEYS } from "../../utils/const";
-import { MdContactMail } from "react-icons/md";
 import FullScreenLoader from "../Loader/FullScreenLoader";
+import registerHero from "../../assets/img/register-hero.png";
+// import "../../assets/css/main.min.css";
 
 interface State extends SnackbarOrigin {
   open: boolean;
@@ -24,7 +38,7 @@ interface State extends SnackbarOrigin {
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
-  const { postData,loading } = useApi();
+  const { postData, loading } = useApi();
   const [password, setPassword] = useState("");
   // const [name, setName] = useState("")
   //   const [email, setEmail] = useState("");
@@ -40,7 +54,6 @@ const Signup = () => {
 
   const [issuccess, setIssuccess] = useState(false);
   const [msg, setMsg] = useState("");
-
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue((event.target as HTMLInputElement).value);
@@ -59,7 +72,6 @@ const Signup = () => {
   ) => {
     if (reason === "clickaway") {
       return;
-
     }
 
     setIssuccess(false);
@@ -71,7 +83,7 @@ const Signup = () => {
   }, [emailphone, password]);
 
   const register = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true)
+    setIsLoading(true);
     e.preventDefault();
     // Validate email/phone and password
     if (validateInput(emailphone) && validatePassword(password)) {
@@ -109,19 +121,19 @@ const Signup = () => {
               hideProgressBar: true,
               theme: "colored",
             });
-            setIsLoading(false)
+            setIsLoading(false);
             navigate("/");
           } else if (
-            data?.status === 201 &&
+            data?.status === 400 &&
             data?.message === "Userid already exists"
           ) {
             // setLoading(false);
-            toast.info(data?.message, {
+            toast.error(data?.message, {
               hideProgressBar: true,
               theme: "colored",
             });
             // setLoading(false);
-            setIsLoading(false)
+            setIsLoading(false);
           } else {
             setIssuccess(true);
             setMsg(data?.message);
@@ -174,13 +186,13 @@ const Signup = () => {
       return false;
     }
   };
-  
+
   const handleChangeData = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
     if (!emailphone) {
-      setEmailError('Please fill out this field test');
+      setEmailError("Please fill out this field test");
       // You can set your custom error message logic here if needed
-    } 
+    }
     setEmailphone(value);
     validateInput(value);
   };
@@ -221,7 +233,7 @@ const Signup = () => {
   return (
     <>
       {loading && <FullScreenLoader />}
-      <div className="login">
+      {/* <div className="login">
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           open={issuccess}
@@ -243,9 +255,9 @@ const Signup = () => {
                   <div className="title_wrapper">
                     <h1 className="login_title">Register Account</h1>
                     <div className="desc">Sign up to continue as Student.</div>
-                  </div>
+                  </div> */}
 
-                  {/* <div className="form_field_wrapper">
+      {/* <div className="form_field_wrapper">
                   <Typography
                     sx={{
                       marginLeft: "15px",
@@ -268,7 +280,7 @@ const Signup = () => {
                     />
                   </RadioGroup>
                 </div> */}
-                  {/* {userId === "Email" && (
+      {/* {userId === "Email" && (
                   <div className="form_field_wrapper">
                     <TextField
                       id="email"
@@ -312,7 +324,7 @@ const Signup = () => {
                     )}
                   </div>
                 )} */}
-                  <div className="form_field_wrapper-login">
+      {/* <div className="form_field_wrapper-login">
                     <TextField
                       id="emailphone"
                       value={emailphone}
@@ -347,13 +359,13 @@ const Signup = () => {
                           WebkitTextFillColor: 'black !important',
                         },
                       }}
-                    />
-                    {/* {uservalue === "userid" && (
+                    /> */}
+      {/* {uservalue === "userid" && (
                     <small className="text-danger">
                       Please Enter Mobile No
                     </small>
                   )} */}
-                  </div>
+      {/* </div>
                   <div className="form_field_wrapper-login">
                     <TextField
                       type={showPassword ? "text" : "password"}
@@ -412,9 +424,9 @@ const Signup = () => {
                         Please Enter Password
                       </small>
                     )}
-                  </div>
+                  </div> */}
 
-                  {/* <RadioGroup row value={value} onChange={handleChange}>
+      {/* <RadioGroup row value={value} onChange={handleChange}>
                     <FormControlLabel
                       value="student"
                       control={<Radio />}
@@ -426,7 +438,7 @@ const Signup = () => {
                       label="Admin"
                     />
                   </RadioGroup> */}
-                  <button type="submit" className="btn btn-primary" disabled={isLoading}>
+      {/* <button type="submit" className="btn btn-primary" disabled={isLoading}>
                     Register Now
                   </button>
                   <div className="form_field_wrapper signuplink_block">
@@ -440,6 +452,240 @@ const Signup = () => {
             </div>
           </div>
         </div>
+      </div> */}
+
+      <div className="without-login">
+        <header className="container-fluid mb-5 py-3 d-none d-lg-block">
+          <div className="row align-items-center">
+            <div className="col-6">
+              <div className="logoui">
+                <img src={gLogo} alt="" onClick={() => navigate("/")} />
+                <span>Gyansetu</span>
+              </div>
+             
+            </div>
+          </div>
+        </header>
+        <section className="container pb-5">
+          <div className="row">
+            <div className="col-lg-6 d-none d-lg-block">
+              <Swiper
+                loop
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  el: ".swiper-pagination",
+                }}
+                modules={[Autoplay, Pagination]}
+                className="mySwiper login-textslider"
+              >
+                <SwiperSlide>
+                  <div className="login-slider-card">
+                    <h2 className="fs-5 fw-semibold">
+                      Learn With Gyansetu A.I.
+                    </h2>
+                    <p className="fs-14">
+                      Welcome to the future of learning! Our AI-based Learning
+                      Management System (LMS) revolutionizes the way you learn,
+                      providing personalized and adaptive educational
+                      experiences tailored to your individual needs. Harness the
+                      power of artificial intelligence to make learning more
+                      efficient, engaging, and effective.
+                    </p>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="login-slider-card">
+                    <h2 className="fs-5 fw-semibold">
+                      Learn With Gyansetu A.I.
+                    </h2>
+                    <p className="fs-14">
+                      Welcome to the future of learning! Our AI-based Learning
+                      Management System (LMS) revolutionizes the way you learn,
+                      providing personalized and adaptive educational
+                      experiences tailored to your individual needs. Harness the
+                      power of artificial intelligence to make learning more
+                      efficient, engaging, and effective.
+                    </p>
+                  </div>
+                </SwiperSlide>
+                <div className="swiper-pagination"></div>
+              </Swiper>
+              <img src={registerHero} alt="" />
+            </div>
+            <div className="col-lg-6">
+              <div className="access-card">
+                <div className="row gy-3">
+                  <div className="col-lg-12">
+                    <BackArrowCircle
+                      className="d-none d-lg-block mt-3"
+                      onClick={() => navigate("/")}
+                    />
+                    <ArrowLeft
+                      className="d-lg-none mt-3"
+                      onClick={() => navigate("/")}
+                    />
+                  </div>
+                  <div className="col-lg-12 d-lg-none d-block">
+                      <img
+                      src={gyansetuLogo}
+                      className=" mx-auto my-0 d-block"
+                      alt="" width="120"
+                    />
+                      </div>
+                  <div className="col-lg-12">
+                    <h1 className=" mt-2 mt-lg-0 mb-0 inter-600">Sign Up</h1>
+                    <p className="fs-14 d-lg-none">
+                      Input your gyansetu account!
+                    </p>
+                  </div>
+                  <div className="col-lg-12">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        register(e as any);
+                      }}
+                      method=""
+                      className="mb-3"
+                    >
+                      <div className="mb-3">
+                        <label htmlFor="" className="form-label">
+                          Email/Phone
+                        </label>
+                        {/* <input type="text" className="form-control   h-52"  placeholder="Enter Your Email"/> */}
+                        <TextField
+                          id="emailphone"
+                          value={emailphone}
+                          onChange={handleChangeData}
+                          placeholder="Email or Mobile Number"
+                          error={!!errorEmail}
+                          helperText={errorEmail}
+                          required={true}
+                          fullWidth
+                          sx={{
+                            "& input:-webkit-autofill": {
+                              WebkitBoxShadow:
+                                "0 0 0 1000px white inset !important", // Set the background color you want
+                              WebkitTextFillColor: "black !important", // Set the text color you want
+                            },
+                            "& input:-webkit-autofill:hover": {
+                              WebkitBoxShadow:
+                                "0 0 0 1000px white inset !important",
+                              WebkitTextFillColor: "black !important",
+                            },
+                            "& input:-webkit-autofill:focus": {
+                              WebkitBoxShadow:
+                                "0 0 0 1000px white inset !important",
+                              WebkitTextFillColor: "black !important",
+                            },
+                            "& input:-webkit-autofill:active": {
+                              WebkitBoxShadow:
+                                "0 0 0 1000px white inset !important",
+                              WebkitTextFillColor: "black !important",
+                            },
+                          }}
+                        />
+                      </div>
+                      {/* <div className="mb-3">
+                    <label htmlFor="" className="form-label">Phone</label>
+                    <input type="text" className="form-control   h-52"  placeholder="Enter Your Phone"/>
+                  </div> */}
+                      <div className="mb-3">
+                        <label htmlFor="passwordInput" className="form-label">
+                          Password
+                        </label>
+                        <div className="position-relative">
+                          {/* <input type="password" className="form-control   h-52" id="passwordInput" placeholder="Enter your password"/>
+                    <img src="assets/images/icons/eye-off.svg" id="togglePassword" className="phone-btn" alt=""/> */}
+                          <TextField
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            value={password}
+                            onChange={handleChangePassword}
+                            error={!!errorPassword}
+                            helperText={errorPassword}
+                            onBlur={handleBlurPassword}
+                            required={true}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    edge="end"
+                                  >
+                                    {showPassword ? (
+                                      <VisibilityOn />
+                                    ) : (
+                                      <VisibilityOff />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                            sx={{
+                              "& input:-webkit-autofill": {
+                                WebkitBoxShadow:
+                                  "0 0 0 1000px white inset !important", // Set the background color you want
+                                WebkitTextFillColor: "black !important", // Set the text color you want
+                              },
+                              "& input:-webkit-autofill:hover": {
+                                WebkitBoxShadow:
+                                  "0 0 0 1000px white inset !important",
+                                WebkitTextFillColor: "black !important",
+                              },
+                              "& input:-webkit-autofill:focus": {
+                                WebkitBoxShadow:
+                                  "0 0 0 1000px white inset !important",
+                                WebkitTextFillColor: "black !important",
+                              },
+                              "& input:-webkit-autofill:active": {
+                                WebkitBoxShadow:
+                                  "0 0 0 1000px white inset !important",
+                                WebkitTextFillColor: "black !important",
+                              },
+                            }}
+                            fullWidth
+                          />
+                          {uservalue === "password" && (
+                            <small className="text-danger">
+                              Please Enter Password
+                            </small>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="form-check mb-3 fs-14">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value=""
+                          id="flexCheckDefault"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="flexCheckDefault"
+                        >
+                          By Creating your account you have to agree with our{" "}
+                          <a href=""> Terms and Condition</a>
+                        </label>
+                      </div>
+                      <button className="btn btn-secondary w-100 mh-56 rounded-pill">
+                        Sign Up Now
+                      </button>
+                      <p className="my-4 text-center">
+                        Already have an account?{" "}
+                        <Link to="/" style={{color:"#9943EC"}}> Sign in here </Link>
+                      </p>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );

@@ -177,7 +177,7 @@ useEffect(()=>{
                   )
                   if(response?.data?.pic_path !== ""){
 
-                      getData(`${"upload_file/get_image/" + response?.data.pic_path}`)
+                      getData(`${"upload_file/get_image/" + response?.data?.pic_path}`)
                           .then((imgdata: any) => {
                               setFilePreview(imgdata.data)
                           }).catch((e) => {

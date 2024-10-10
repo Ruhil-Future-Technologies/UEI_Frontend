@@ -27,7 +27,7 @@ const CommonModal = ({ message, isOpen, setIsOpen }: any) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-description" sx={{ fontSize: "18px" }}>
+          <Typography className="text-center" id="modal-modal-description" sx={{ fontSize: "18px" }}>
             {message}
           </Typography>
         </Box>

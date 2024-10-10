@@ -21,16 +21,27 @@ const FullScreenLoader = (props) => {
     //     strokeWidth={2}
     //   />
     // </div>
-    <Box className="fullscreen-loader" sx={{ display: 'flex' }}>
-    <CircularProgress  size={50}
-        thickness={3.5} />
-        <Typography 
-        variant="h6" 
-        sx={{ marginTop: 2 }} // Adds some space between the spinner and the text
-      >
-        {props.msg}
-      </Typography>
-  </Box>
+  //   <Box className="fullscreen-loader" sx={{ display: 'flex' }}>
+  //   <CircularProgress  size={50}
+  //       thickness={3.5} />
+  //       <Typography 
+  //       variant="h6" 
+  //       sx={{ marginTop: 2 }} // Adds some space between the spinner and the text
+  //     >
+  //       {props.msg}
+  //     </Typography>
+  // </Box>
+  <div className="loader-box">
+  <div className="spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div className="searchtext">{props.msg}</div>
+</div>
   );
 };
 

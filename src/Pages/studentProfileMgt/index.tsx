@@ -194,11 +194,11 @@ export default function StudentProfileManagement() {
           </Box>
           <Typography sx={{ mt: 2, mb: 1 }}>
             Step {activeStep + 1}
-            {activeStep === 0 && <StudentBasicInfo />}
+            {/* {activeStep === 0 && <StudentBasicInfo />}
             {activeStep === 1 && <StudentAddress />}
             {activeStep === 2 && <StudentLanguage />}
             {activeStep === 3 && <StudentAcadmicHistory />}
-            {activeStep === 4 && <StudentcontactDetails />}
+            {activeStep === 4 && <StudentcontactDetails />} */}
             {/* {
                             activeStep === 5 &&
                             <StudentHobbies />

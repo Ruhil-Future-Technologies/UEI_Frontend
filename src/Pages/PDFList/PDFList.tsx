@@ -37,6 +37,7 @@ interface Classes {
 }
 
 interface FileList {
+  pdf_id: string;
   pdf_file_name: string;
   pdf_path: string;
   upload_by: number;
@@ -150,7 +151,10 @@ const PDFList = () => {
   };
 
   const handleDelete = () => {
+    console.log("Delete File", selectedFile);
+
     const payload = {
+      file_id:selectedFile?.pdf_id,
       file_path: selectedFile?.pdf_path,
       file_name: selectedFile?.pdf_file_name,
       class_name: selectedClass,
@@ -158,9 +162,9 @@ const PDFList = () => {
     deleteFileData(`https://uatllm.gyansetu.ai/delete-files`, payload)
       .then((data: any) => {
         console.log("DELETED FILES", data);
-        if (data.status === 200) {
+        if (data.status === 201) {
           setDataDelete(false);
-          toast.success("File deleted successfully", {
+          toast.success(data?.message, {
             hideProgressBar: true,
             theme: "colored",
           });
@@ -363,7 +367,7 @@ const PDFList = () => {
                       >
                         <Tooltip arrow placement="bottom" title="View">
                           <a
-                            href={`https://uatllm.gyansetu.ai/files${row?.row?.original?.pdf_path}`}
+                            href={`https://uatllm.gyansetu.ai/files/${row?.row?.original?.pdf_path}`}
                             target="_blank"
                           >
                             <IconButton

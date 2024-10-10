@@ -1,4 +1,4 @@
-@import '../../assets/css/variable/variable';
+// @import '../../assets/css/variable/variable';;
 
 .main_block {
     display: flex;
@@ -7,8 +7,7 @@
     padding: 0;
 
     .main_section {
-        margin-left: 0px;
-        margin-left: 240px;
+        margin-left: 260px;
         width: 100%;
         overflow: hidden;
         transition: margin-left 0.2s linear;

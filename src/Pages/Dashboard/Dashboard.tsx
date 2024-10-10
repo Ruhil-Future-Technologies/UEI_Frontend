@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react'
 import MainContent from '../../Components/MainContent/MainContent'
+// import "../../assets/css/newstyle.min.css";
+// import "../../assets/css/main.min.css";
 
 function Dashboard() {
     return (
-        <div className='dashboard'>
+        <>
+            <MainContent /> 
+        {/* <div className='dashboard'> */}
 
-            <div className='card'>
-                <div className='card-body'>
-                    <h1 className='main_title_dashboard'>Dashboard</h1>
-                   <MainContent /> 
-                </div>
-            </div>
-        </div>
+            {/* <div className='card'>
+                <div className='card-body'> */}
+                    {/* <h1 className='main_title_dashboard'>Dashboard</h1> */}
+                {/* </div>
+            </div> */}
+        {/* </div> */}
+        </>
     )
 }
 

@@ -1,10 +1,11 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 
 interface IChatBot {
-    answer: any
+    answer: any;
+    index: number;
 }
 
-const Chatbot: React.FC<IChatBot> = ({ answer }) => {
+const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     // const elements =  [
     //     "",
     //     "To",
@@ -312,7 +313,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
     //     "."
     //   ];
     // console.log("test result",answer)
-    
+
     // let elements :any = []
     // try{
     //     if(typeof answer ==='string')
@@ -335,7 +336,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
     //     const stringArray = cleanString.split(',').map((item:any) => item.trim());
     //     elements = stringArray.map((item:any) => item.replace(/"/g, ''));
     // }
-   
+
     // const [currentIndex, setCurrentIndex] = useState(0);
     // const [displayText, setDisplayText] = useState<JSX.Element[]>([]);
 
@@ -366,17 +367,17 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
     } else if (typeof answer === 'string') {
         const parsedAnswer = parseAndCleanAnswer(answer);
         combinedString = parsedAnswer?.join(' ').trim();
-    }else{
+    } else {
         //empty
     }
-    
-    
+
+
     // else if (typeof answer === 'string') {
     //     combinedString = answer;
     // }
 
     // let combinedString = answer?.join(' ').trim();
-    
+
     // Split the combined string into an array of words
     const elements = combinedString?.split(' ');
 
@@ -384,19 +385,18 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
     const [displayText, setDisplayText] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
-        
+
         if (currentIndex < elements?.length) {
             const timer = setTimeout(() => {
                 // const newElement = <span key={currentIndex}>{elements[currentIndex]} </span>;
                 const newElement = parseElement(elements[currentIndex]);
-                setDisplayText((prev:any) => [...prev, newElement]);
+                setDisplayText((prev: any) => [...prev, newElement]);
                 setCurrentIndex(currentIndex + 1);
             }, 100); // Adjust the timeout as needed
 
             return () => clearTimeout(timer); // Cleanup the timer on component unmount
         }
     }, [currentIndex, elements]);
-    // console.log('displaytext',displayText)
 
     const lastElementRef = useRef<HTMLSpanElement>(null);
 
@@ -415,17 +415,17 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
     //   }, [displayText]);
 
 
-      useEffect(() => {
-        //3️⃣ bring the last item into view        
-        lastElementRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
-    }, [displayText]);
+    // useEffect(() => {
+    //     //3️⃣ bring the last item into view        
+    //     lastElementRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
+    // }, [displayText]);
 
     const style: CSSProperties = {
         wordBreak: 'break-word',
         overflowWrap: 'break-word',
-        fontSize:"15px",
-         overflowY: 'auto'
-        
+        fontSize: "15px",
+        overflowY: 'auto'
+
     };
     const parseElement = (element: string): JSX.Element[] => {
         const parts = element.split(/\n\n|\n/); // Split by \n\n or \n
@@ -445,13 +445,14 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
     };
 
     const renderText = (text: string): JSX.Element => {
-        const cleanedText = text.replace(/`{1,3}/g, '').replace(/\*{2}$/g, '');
+        // const cleanedText = text.replace(/`{1,3}/g, '').replace(/\*{2}$/g, '');
+        const cleanedText = text.replace(/`{1,3}/g, '').replace(/\*/g, '');
 
         // Check for bold formatting and render accordingly
-        if (cleanedText.startsWith("**") && cleanedText.endsWith("**")){
+        if (cleanedText.startsWith("**") && cleanedText.endsWith("**")) {
             const content = cleanedText.slice(2, -2);
             return <strong key={currentIndex}>{content} </strong>;
-        }  else {
+        } else {
             return <span key={currentIndex}>{cleanedText} </span>;
         }
     };
@@ -466,16 +467,16 @@ const Chatbot: React.FC<IChatBot> = ({ answer }) => {
         //         <React.Fragment key={index}>{element}</React.Fragment>
         //     ))}
         // </div>
-        <div style={style}>
+        <div id={`answer-${index}`} style={style}>
             {displayText.map((element, index) => (
                 // <React.Fragment key={index}>{element}</React.Fragment>
                 <span key={index} ref={index === displayText.length - 1 ? lastElementRef : null}>
-                {element} 
-            </span>
+                    {element}
+                </span>
             ))}
         </div>
-       
-        
+
+
     );
 };
 

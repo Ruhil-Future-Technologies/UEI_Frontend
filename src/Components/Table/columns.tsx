@@ -218,6 +218,7 @@ export interface IFeedbackResponse {
   question: string;
 }
 export interface IPDFList {
+  pdf_id: string;
   pdf_file_name: string;
   pdf_path: string;
   upload_date_time: string;

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Chat/Chat.scss";
+// import "../Chat/Chat.scss";
 import data from "./data.json";
 import axios from "axios";
 import useApi from "../../hooks/useAPI";
@@ -15,7 +15,31 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
 import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
 import StarIcon from "@mui/icons-material/Star";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
+import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
+import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
+import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
+import VolumeOffOutlinedIcon from "@mui/icons-material/VolumeOffOutlined";
+import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined";
+import SyncAltOutlinedIcon from "@mui/icons-material/SyncAltOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import FlagIcon from "@mui/icons-material/Flag";
 import NameContext from "../Context/NameContext";
+import searchWhite from "../../assets/icons/search-white.svg";
+import primaryLogo from "../../assets/icons/logo-primary.png";
+import chatLogo from "../../assets/img/chat-logo.svg";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import "../../assets/css/newstyle.scss";
+import "../../assets/css/main.scss";
+import "react-perfect-scrollbar/dist/css/styles.css";
 // import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 
 const Chat = () => {
@@ -24,8 +48,11 @@ const Chat = () => {
   const userid = localStorage.getItem("_id") || "";
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [regenerateSearch, setRegenerateSearch] = useState("");
   const [studentDetail, setStudentData] = useState<any>();
+  const [studentCourse, setStudentCourse] = useState<any>();
   const [searcherr, setSearchErr] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   // const [starFlagged, setStarFlagged] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<any>([]);
   const { Id } = useParams();
@@ -46,7 +73,8 @@ const Chat = () => {
       "?",
     ],
   };
-  const [selectedchat, setSelectedChat] = useState<any>([intials]);
+  // const [selectedchat, setSelectedChat] = useState<any>([intials]);
+  const [selectedchat, setSelectedChat] = useState<any>([]);
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
@@ -68,7 +96,8 @@ const Chat = () => {
   const [statredchat, setstatredchat] = useState<any>([]);
   const [chathistory, setchathistory] = useState<any>([]);
   const [chathistoryrecent, setchathistoryrecent] = useState<any>();
-  const [chatsaved, setChatSaved] = useState<boolean>();
+  const [chatsaved, setChatSaved] = useState<boolean>(false);
+  const [displayedChat, setDisplayedChat] = useState<any>([]);
   const { postData, getData, deleteData } = useApi();
   const navigate = useNavigate();
   const [profileCompletion, setProfileCompletion] = useState(
@@ -78,7 +107,9 @@ const Chat = () => {
   const [searchQuerystarred, setSearchQuerystarred] = useState("");
   const [isStarredChatOpen, setIsStarredChatOpen] = useState(false);
   const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false);
+  const [showInitialPage, setShowInitialPage] = useState(true);
   const [loaderMsg, setLoaderMsg] = useState("");
+  const [isTextCopied, setIsTextCopied] = useState<any>({});
   let synth: SpeechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   let selectedvoice: SpeechSynthesisVoice | null = null;
@@ -99,10 +130,13 @@ const Chat = () => {
     setSelectedChat([]);
     setTimeout(() => {
       if (Id !== undefined) {
-        setSelectedChat([intials]);
+        setShowInitialPage(true);
+        // setSelectedChat([intials]);
+        setSelectedChat([]);
         setSearchQuery("");
         setSearchQuerystarred("");
       } else {
+        setShowInitialPage(false);
         setSelectedChat([]);
         setSearchQuery("");
         setSearchQuerystarred("");
@@ -114,6 +148,18 @@ const Chat = () => {
     getData(`${StudentGETURL}${userdata ? `/${userdata?.id}` : ""}`)
       .then((data: any) => {
         setStudentData(data?.data);
+        if (
+          data?.data?.academic_history &&
+          Object.keys(data?.data?.academic_history).length > 0
+        ) {
+          if (data?.data?.academic_history?.institution_type === "college") {
+            getData(
+              `course/edit/${data?.data?.academic_history?.course_id}`
+            ).then((response) => {
+              setStudentCourse(response.data.course_name);
+            });
+          }
+        }
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -138,7 +184,6 @@ const Chat = () => {
 
   const getVoices = () => {
     setVoices(synth.getVoices());
-    console.log("voices", voices);
     // filterVoicesByGender("Google UK English Female");
     // filterVoicesByGender("Microsoft Zira - English (United States)");
     // filterVoicesByGender('Microsoft Mark - English (United States)');
@@ -205,9 +250,11 @@ const Chat = () => {
     if (Id === "recentChat") {
       filterdataCall();
     } else {
+      setShowInitialPage(false);
       setchathistory(chathistoryrecent);
     }
   }, [Id, chatlist]);
+
   const speak = (text: string, index: number) => {
     const textArray = Array.isArray(text) ? text : [text];
 
@@ -251,6 +298,7 @@ const Chat = () => {
     updatedChat[index] = { ...updatedChat[index], speak: true };
     setSelectedChat(updatedChat);
   };
+
   const stop = (index: number) => {
     // setSelectedChat({ ...selectedchat, speak: false });
     const updatedChat = [...selectedchat];
@@ -265,7 +313,7 @@ const Chat = () => {
       // let address  = studentDetail.address.address1 +","+studentDetail.address.address2 +","+studentDetail.address.district +","+studentDetail.address.city +","+studentDetail.address.state +","+studentDetail.address.country +","+studentDetail.address.pincode
       // let prompt = "Hi I am"+studentDetail.first_name+" "+ studentDetail.last_name + ".Currenly I am studying at "+ studentDetail.institution +" at "+address+ " in "+studentDetail.course+ " and persuing "+studentDetail.subject+" can you please provide "+search+" based on given course and subject"
       setLoading(true);
-      setLoaderMsg("Fetching data from Database.");
+      setLoaderMsg("Searching result from knowledge base.");
       setSearchErr(false);
       // newchat();
 
@@ -274,6 +322,7 @@ const Chat = () => {
       let payload = {};
       if (selectedchat?.question !== "") {
         payload = {
+          student_id: userid,
           question: search,
           prompt: prompt,
           course: studentDetail?.course === null ? "" : studentDetail?.course,
@@ -288,6 +337,7 @@ const Chat = () => {
         };
       } else {
         payload = {
+          student_id: userid,
           question: search,
           prompt: prompt,
           course: studentDetail?.course === null ? "" : studentDetail?.course,
@@ -326,15 +376,60 @@ const Chat = () => {
     }
   };
 
-  const searchData = () => {
+  const handleResponse = (data: { data: any }) => {
+    const newData = data?.data ? data?.data : data;
+    newData.speak = false;
+    setFilteredProducts(newData);
+    setSelectedChat((prevState: any) => [...prevState, newData]);
+    setChatSaved(false);
+    setchatData((prevState: any) => [...prevState, newData]);
+    setLoading(false);
     setSearch("");
+    getData(`${chatlisturl}/${userdata?.id}`)
+      .then((data: any) => {
+        setchatlistData(data?.data);
+        setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
+        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+        });
+      });
+  };
+
+  const handleError = (e: {
+    message:
+      | string
+      | number
+      | boolean
+      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+      | Iterable<React.ReactNode>
+      | React.ReactPortal
+      | ((props: ToastContentProps<unknown>) => React.ReactNode)
+      | null
+      | undefined;
+  }) => {
+    setLoading(false);
+    toast.error(e?.message, {
+      hideProgressBar: true,
+      theme: "colored",
+    });
+  };
+
+  const searchData = () => {
+    setRegenerateSearch(search);
+    setSearch("");
+    setShowInitialPage(false);
     if (search === "") {
       setSearchErr(true);
       return;
     }
 
     setLoading(true);
-    setLoaderMsg("Fetching data from Database.");
+    setLoaderMsg("Searching result from knowledge base");
     setSearchErr(false);
 
     let prompt = studentDetail?.prompt?.replace("**question**", "answer");
@@ -342,10 +437,15 @@ const Chat = () => {
     let rag_payload = {};
     if (selectedchat?.question !== "") {
       payload = {
+        student_id: userid,
         question: search,
         prompt: prompt,
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
-        course: "class_10",
+        // course: "class_10",
+        course:
+          studentDetail?.academic_history?.institution_type === "school"
+            ? studentDetail?.class?.name
+            : studentCourse,
         stream: studentDetail?.subject,
         chat_hostory: [
           { role: "user", content: selectedchat?.question },
@@ -361,9 +461,13 @@ const Chat = () => {
       };
     } else {
       payload = {
+        student_id: userid,
         question: search,
         prompt: prompt,
-        course: studentDetail?.course === null ? "" : studentDetail?.course,
+        course:
+          studentDetail?.academic_history?.institution_type === "school"
+            ? studentDetail?.class?.name
+            : studentCourse,
         stream: studentDetail?.subject,
       };
       rag_payload = {
@@ -371,33 +475,6 @@ const Chat = () => {
         student_id: userid,
       };
     }
-    const handleResponse = (data: { data: any }) => {
-      const newData = data?.data ? data?.data : data;
-      console.log("newData", newData);
-
-      newData.speak = false;
-      setFilteredProducts(newData);
-      setSelectedChat((prevState: any) => [...prevState, newData]);
-      setChatSaved(false);
-      setchatData((prevState: any) => [...prevState, newData]);
-      setLoading(false);
-      setSearch("");
-      getData(`${chatlisturl}/${userdata?.id}`)
-        .then((data: any) => {
-          setchatlistData(data?.data);
-          setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-          setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-          setchathistoryrecent(
-            data?.data?.filter((chat: any) => !chat?.flagged)
-          );
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        });
-    };
 
     const handleResponsereg = (data: { data: any }) => {
       const newData = data;
@@ -425,24 +502,6 @@ const Chat = () => {
         });
     };
 
-    const handleError = (e: {
-      message:
-        | string
-        | number
-        | boolean
-        | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-        | Iterable<React.ReactNode>
-        | React.ReactPortal
-        | ((props: ToastContentProps<unknown>) => React.ReactNode)
-        | null
-        | undefined;
-    }) => {
-      setLoading(false);
-      toast.error(e?.message, {
-        hideProgressBar: true,
-        theme: "colored",
-      });
-    };
     postData(`${ChatURL}`, payload)
       .then((data) => {
         if (data.status === 200) {
@@ -450,7 +509,7 @@ const Chat = () => {
         } else if (data.status === 404) {
           // return postData(`${ChatURLAI}`, payload);
           // return postData(`${ChatURLRAG}`, rag_payload);
-          setLoaderMsg("Fetching data from PDF.");
+          setLoaderMsg("Searching result from knowledge base");
           // return getData(
           //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
           // );
@@ -459,14 +518,36 @@ const Chat = () => {
               `https://uatllm.gyansetu.ai/rag-model-class?user_query=${search}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
             )
               .then((response) => {
-                if (response?.status === 200) {
-                  handleResponse(response);   
+                if (response?.status === 200 || response?.status === 402) {
+                  handleResponse(response);
+                  let ChatStorepayload = {
+                    student_id: userid,
+                    chat_question: search,
+                    response: response?.answer,
+                  };
+                  response?.status !== 402 &&
+                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                      handleError
+                    );
                 } else {
+                  setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                     `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
                   )
-                    .then((response) => handleResponse(response))
+                    .then((response) => {
+                      if (response?.status === 200) {
+                        handleResponse(response);
+                        let ChatStorepayload = {
+                          student_id: userid,
+                          chat_question: search,
+                          response: response?.answer,
+                        };
+                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                          handleError
+                        );
+                      }
+                    })
                     .catch(() => {
                       postData(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
@@ -479,7 +560,19 @@ const Chat = () => {
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                   `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
-                  .then((response) => handleResponse(response))
+                  .then((response) => {
+                    if (response?.status === 200) {
+                      handleResponse(response);
+                      let ChatStorepayload = {
+                        student_id: userid,
+                        chat_question: search,
+                        response: response?.answer,
+                      };
+                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                        handleError
+                      );
+                    }
+                  })
                   .catch(() => {
                     postData(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
@@ -489,18 +582,70 @@ const Chat = () => {
           } else {
             return getData(
               `https://uatllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
-            ).catch(() =>
-              getData(
-                // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
-              )
-                .then((response) => handleResponse(response))
-                .catch(() => {
-                  postData(`${ChatURLAI}`, payload)
-                    .then((response) => handleResponse(response))
-                    .catch((error) => handleError(error));
-                })
-            );
+            )
+              .then((response) => {
+                if (response?.status === 200 || response?.status === 402) {
+                  handleResponse(response);
+                  let ChatStorepayload = {
+                    student_id: userid,
+                    chat_question: search,
+                    response: response?.answer,
+                  };
+                  response?.status !== 402 &&
+                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                      handleError
+                    );
+                } else {
+                  setLoaderMsg("Fetching Data from Ollama model.");
+                  getData(
+                    // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                    `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                  )
+                    .then((response) => {
+                      if (response?.status === 200) {
+                        handleResponse(response);
+                        let ChatStorepayload = {
+                          student_id: userid,
+                          chat_question: search,
+                          response: response?.answer,
+                        };
+                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                          handleError
+                        );
+                      }
+                    })
+                    .catch(() => {
+                      postData(`${ChatURLAI}`, payload)
+                        .then((response) => handleResponse(response))
+                        .catch((error) => handleError(error));
+                    });
+                }
+              })
+              .catch(() => {
+                setLoaderMsg("Fetching Data from Ollama model.");
+                getData(
+                  // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                  `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                )
+                  .then((response) => {
+                    if (response?.status === 200) {
+                      handleResponse(response);
+                      let ChatStorepayload = {
+                        student_id: userid,
+                        chat_question: search,
+                        response: response?.answer,
+                      };
+                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                        handleError
+                      );
+                    }
+                  })
+                  .catch(() => {
+                    postData(`${ChatURLAI}`, payload)
+                      .then((response) => handleResponse(response))
+                      .catch((error) => handleError(error));
+                  });
+              });
           }
         } else {
           handleError(data);
@@ -576,15 +721,21 @@ const Chat = () => {
 
   useEffect(() => {
     if (dataflagged) {
-      setSelectedChat([intials]);
+      // setSelectedChat([intials]);
+      setSelectedChat([]);
     }
   }, [dataflagged]);
+
   useEffect(() => {
-    if (chat.length > 0) {
-      localStorage.setItem("chatData", JSON.stringify(chat));
+    if (chat?.length > 0 || displayedChat?.length > 0) {
+      localStorage.setItem(
+        "chatData",
+        JSON.stringify(chat?.length ? chat : displayedChat)
+      );
       localStorage.setItem("chatsaved", JSON.stringify(chatsaved));
+      chatsaved && saveChatlocal();
     }
-  }, [chat, chatsaved]);
+  }, [chat, displayedChat, chatsaved]);
 
   let chatData: any;
   useEffect(() => {
@@ -603,7 +754,7 @@ const Chat = () => {
 
   const saveChatlocal = async () => {
     const chatDataString = localStorage?.getItem("chatData");
-    const chatflagged = localStorage?.getItem("`chatsaved`");
+    const chatflagged = localStorage?.getItem("chatsaved");
     // console.log("chatData testing save",chatDataString);
     const isChatFlagged = chatflagged === "true";
     let chatData: any;
@@ -618,7 +769,7 @@ const Chat = () => {
     if (chatlist !== undefined) {
       datatest = chatlist?.filter(
         (chatitem: { chat_title: any }) =>
-          chatitem?.chat_title === chatData[0]?.question
+          chatitem?.chat_title === chatData?.[0]?.question
       );
     }
 
@@ -631,14 +782,14 @@ const Chat = () => {
       // chatData?.shift();
       chat_payload = {
         student_id: userdata.id,
-        chat_title: chatData[0]?.question,
+        chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
         student_id: userdata.id,
-        chat_title: chatData[0]?.question,
+        chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
@@ -646,7 +797,7 @@ const Chat = () => {
     // postData(`${chataddurl}`, chat_payload)
     await postData(`${chataddconversationurl}`, chat_payload)
       .then((chatdata: any) => {
-        setChatSaved(false);
+        // setChatSaved(false);
         // toast.success(chatdata?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
@@ -675,7 +826,7 @@ const Chat = () => {
 
     let chat_payload;
     if (datatest?.length !== 0 && Array.isArray(chat) && chat.length >= 2) {
-      chat?.shift();
+      // chat?.shift();
       chat_payload = {
         student_id: userdata.id,
         chat_title: chat[0]?.question,
@@ -710,13 +861,6 @@ const Chat = () => {
       });
   };
 
-  // useEffect(() => {
-  //   saveChat()
-  // }, [])
-
-  const checkifchatsaved = (ques: any) => {
-    let chat = chatlist.filter();
-  };
   useEffect(() => {
     setFilteredProducts([]);
   }, []);
@@ -728,6 +872,7 @@ const Chat = () => {
   };
 
   const newchat = async () => {
+    setShowInitialPage(true);
     if (chat.length > 0) {
       await saveChat();
     }
@@ -765,6 +910,7 @@ const Chat = () => {
     }
   };
   const displayChat = async (chats: any) => {
+    setShowInitialPage(false);
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
         chatitem.chat_title === chat[0]?.question
@@ -779,6 +925,7 @@ const Chat = () => {
     }
     setchatData([]);
     const chatt = JSON.parse(chats?.chat_conversation);
+    setDisplayedChat(chatt);
     setSelectedChat([]);
     let chatdataset: any[] = [];
     chatt.map((itemchat: any) => {
@@ -840,7 +987,6 @@ const Chat = () => {
 
   const saveChatstar = () => {
     setChatSaved(!chatsaved);
-    // saveChatlocal();
   };
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");
@@ -870,6 +1016,64 @@ const Chat = () => {
   const toggleStarredChat = () => setIsStarredChatOpen(!isStarredChatOpen);
   const toggleChatHistory = () => setIsChatHistoryOpen(!isChatHistoryOpen);
 
+  const regenerateChat = () => {
+    setLoading(true);
+    setLoaderMsg("Fetching Data from Ollama model.");
+    setSearchErr(false);
+
+    let prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    let payload = {};
+
+    if (selectedchat?.question !== "") {
+      payload = {
+        question: regenerateSearch,
+        prompt: prompt,
+        // course: studentDetail?.course === null ? "" : studentDetail?.course,
+        // course: "class_10",
+        course:
+          studentDetail?.academic_history?.institution_type === "school"
+            ? studentDetail?.class?.name
+            : studentCourse,
+        stream: studentDetail?.subject,
+        chat_hostory: [
+          { role: "user", content: selectedchat?.question },
+          {
+            role: "assistant",
+            content: selectedchat?.answer,
+          },
+        ],
+      };
+    } else {
+      payload = {
+        question: regenerateSearch,
+        prompt: prompt,
+        course: studentDetail?.course === null ? "" : studentDetail?.course,
+        stream: studentDetail?.subject,
+      };
+    }
+
+    getData(
+      // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+      `https://uatllm.gyansetu.ai/ollama-chat?user_query=${regenerateSearch}`
+    )
+      .then((response) => {
+        if (response?.status === 200) {
+          handleResponse(response);
+          let ChatStorepayload = {
+            student_id: userid,
+            chat_question: regenerateSearch,
+            response: response?.answer,
+          };
+          postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+        }
+      })
+      .catch(() => {
+        postData(`${ChatURLAI}`, payload)
+          .then((response) => handleResponse(response))
+          .catch((error) => handleError(error));
+      });
+  };
+
   const iconcolor: any = {
     light: "#003032",
     dark: "#FFFFFF",
@@ -885,11 +1089,18 @@ const Chat = () => {
   };
 
   // Filter chats based on search query, or show all if query is blank
+  // const filteredChatsstarred = searchQuery
+  //   ? statredchat?.filter((chat: { chat_title: string }) =>
+  //     chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
+  //   )
+  //   : statredchat;
   const filteredChatsstarred = searchQuery
-    ? statredchat?.filter((chat: { chat_title: string }) =>
-        chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
-      )
-    : statredchat;
+    ? chatlist
+        ?.filter((chat: { chat_title: string }) =>
+          chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
+        )
+        .sort((a: any, b: any) => b.flagged - a.flagged)
+    : chatlist?.sort((a: any, b: any) => b.flagged - a.flagged);
   const filteredChats = searchQuerystarred
     ? chathistory?.filter((chat: { chat_title: string }) =>
         chat?.chat_title
@@ -898,15 +1109,40 @@ const Chat = () => {
       )
     : chathistory;
 
-  console.log(
-    "test details",
-    studentDetail,
-    studentDetail?.academic_history?.class_name
-  );
+  const extractTime = (chatDate: string) => {
+    const date = chatDate ? new Date(chatDate) : new Date();
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const formattedTime = `${hours}:${minutes}`;
+    return formattedTime;
+  };
+
+  const copyText = (index: number) => {
+    // Get the text content of the div with the specific inline styles
+    const textToCopy = (
+      document.getElementById(`answer-${index}`) as HTMLDivElement
+    )?.innerText;
+
+    // Use the Clipboard API to copy the text
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(() => {
+        const updatedState = {
+          ...isTextCopied,
+          [`answer-${index}`]: true,
+        };
+        setIsTextCopied(updatedState);
+      })
+      .catch((err) => {
+        console.error("Error copying text: ", err);
+      });
+  };
+
   return (
     <>
       {loading && <FullScreenLoader msg={loaderMsg} />}
-      <div className="chat_view">
+      {/* <div className="chat_view">
         <div className="chat_section">
           <div className="row">
             <div className="left_panel col-md-3">
@@ -941,7 +1177,6 @@ const Chat = () => {
                     ""
                   )}
                   <div className="chat_inner">
-                    {/* <div className="chathedding title">Starred Chat</div> */}
                     <div
                       className="chathedding title"
                       onClick={toggleStarredChat}
@@ -952,11 +1187,6 @@ const Chat = () => {
                         {isStarredChatOpen ? "▲" : "▼"}
                       </span>
                     </div>
-                    {/* { isStarredChatOpen && 
-                      statredchat?.length > 0 &&
-                      statredchat
-                        .map((chat: { chat_title: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; flagged: any; id: number | undefined; },index: React.Key | null | undefined) => {
-                           */}
                     {isStarredChatOpen &&
                       filteredChatsstarred?.length > 0 &&
                       filteredChatsstarred?.map(
@@ -990,9 +1220,6 @@ const Chat = () => {
                                     >
                                       {chat?.chat_title}
                                     </div>
-                                    {/* <div className="chat_response">
-                                      {chat?.response}
-                                    </div> */}
                                   </div>
                                 </div>
                                 <div className="right_part col-sm-4 col-md-5 col-lg-4 col-xl-5">
@@ -1034,9 +1261,7 @@ const Chat = () => {
                           );
                         }
                       )}
-                    <hr className="hr_chat"></hr>
-                    {/* <div className="hr"></div> */}
-                    {/* <div className="chathedding title">Chat History</div> */}
+                    <hr className="hr_chat"/>
                     <div
                       className="chathedding title"
                       onClick={toggleChatHistory}
@@ -1046,10 +1271,7 @@ const Chat = () => {
                       <span style={{ marginLeft: "10px" }}>
                         {isChatHistoryOpen ? "▲" : "▼"}
                       </span>
-                    </div>
-                    {/* { isChatHistoryOpen &&
-                      chathistory?.length > 0 &&
-                      chathistory */}
+                    </div>                 
                     {isChatHistoryOpen &&
                       filteredChats?.length > 0 &&
                       filteredChats.map(
@@ -1082,10 +1304,7 @@ const Chat = () => {
                                       onClick={() => displayChat(chat)}
                                     >
                                       {chat?.chat_title}
-                                    </div>
-                                    {/* <div className="chat_response">
-                                      {chat?.response}
-                                    </div> */}
+                                    </div>                                 
                                   </div>
                                 </div>
                                 <div className="right_part col-sm-4 col-md-5 col-lg-4 col-xl-5">
@@ -1139,17 +1358,14 @@ const Chat = () => {
                       <div className="left_part">
                         <div className="chat_detail">
                           <div className="chat_title">
-                            {/* {selectedchat.question} */}
                             <div className="title" style={{ fontSize: "27px" }}>
-                              {/* Chat{" "} */} {Id !== undefined ? "Chat" : ""}
+                              {Id !== undefined ? "Chat" : ""}
                             </div>
                           </div>
-                          {/* <div className="aboutus_msg">lorem ipsum text</div> */}
                         </div>
                       </div>
                       {Id !== undefined ? (
                         <div className="right_part">
-                          {/* {selectedchat && selectedchat?.question && ( */}
                           {selectedchat && selectedchat?.length > 0 && (
                             <div className="dropdown_content">
                               {chatsaved ? (
@@ -1184,7 +1400,6 @@ const Chat = () => {
                               )}
                             </div>
                           )}
-                          {/* New Chat button start */}
                           <div>
                             <button
                               className="btn btn-primary chatbutton"
@@ -1193,14 +1408,11 @@ const Chat = () => {
                               New Chat
                             </button>
                           </div>
-                          {/* New Chat button End */}
                         </div>
                       ) : (
                         ""
                       )}
                     </div>
-
-                    {/* {selectedchat?.map((chat: any, index: any) => ( */}
 
                     <div className="profile_bottom">
                       <div className="chat">
@@ -1214,7 +1426,6 @@ const Chat = () => {
                                 >
                                   {chat?.question}
                                 </div>
-                                {/* <div className="date_time">Today, 2:01pm</div> */}
                               </div>
                             )}
 
@@ -1303,7 +1514,6 @@ const Chat = () => {
                         ))}
                       </div>
                     </div>
-                    {/* // ))} */}
                   </div>
                 </div>
               </div>
@@ -1327,31 +1537,7 @@ const Chat = () => {
                         type="button"
                         onClick={() => searchData()}
                         style={{ top: "15%" }}
-                      >
-                        {/* <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 21 21"
-                        fill="none"
-                      >
-                        <circle
-                          cx="9.98856"
-                          cy="9.98856"
-                          r="8.98856"
-                          stroke="#495057"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M16.2402 16.7071L19.7643 20.222"
-                          stroke="#495057"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg> */}
+                      >                      
                         <SendIcon className="mainsearch" />
                       </button>
                     </div>
@@ -1370,7 +1556,381 @@ const Chat = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+      <main className="main-wrapper">
+        <div className="main-content">
+          <div
+            className={`chat-panel ${!(filteredChats?.length > 0) ? "" : ""}`}
+          >
+            {Id ? (
+              <div
+                className={`left-side-history ${
+                  showHistory ? "showhistory" : ""
+                }`}
+              >
+                <div className="d-lg-none mb-4 ms-auto d-flex">
+                  <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
+                    <CloseOutlinedIcon onClick={() => setShowHistory(false)} />
+                  </button>
+                </div>
+                <div className="search-filter">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search..."
+                    name="query" //question add
+                    title="Enter search keyword"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                  <button className="btn btn-primary">
+                    <img src={searchWhite} alt="" />
+                  </button>
+                </div>
+                <div className="history-label">Today's Search</div>
+                <ul className="history-list">
+                  <>
+                    {filteredChats?.length > 0 &&
+                      filteredChats?.map(
+                        (
+                          chat: {
+                            chat_title:
+                              | string
+                              | number
+                              | boolean
+                              | React.ReactElement<
+                                  any,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                              | Iterable<React.ReactNode>
+                              | React.ReactPortal
+                              | null
+                              | undefined;
+                            flagged: any;
+                            id: number | undefined;
+                            created_at: string;
+                          },
+                          index: React.Key | null | undefined
+                        ) => (
+                          <li
+                            onClick={() => displayChat(chat)}
+                            key={`recent_chat_${index}`}
+                          >
+                            <div className="d-flex flex-column " role="button">
+                              <div className="date">
+                                {extractTime(chat?.created_at)}
+                              </div>
+                              <div className="question">{chat?.chat_title}</div>
+                            </div>
+                            <ul className="action-button">
+                              <li
+                                role="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteFiles(chat?.id);
+                                }}
+                              >
+                                <DeleteOutlineOutlinedIcon
+                                  sx={{ fontSize: "18px" }}
+                                />
+                              </li>
+                            </ul>
+                          </li>
+                        )
+                      )}
+                  </>
+                </ul>
+              </div>
+            ) : (
+              <div
+                className={`left-side-history ${
+                  showHistory ? "showhistory" : ""
+                }`}
+              >
+                <div className="d-lg-none mb-4 ms-auto d-flex">
+                  <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
+                    <CloseOutlinedIcon onClick={() => setShowHistory(false)} />
+                  </button>
+                </div>
+                <div className="search-filter">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search..."
+                    name="query" //question add
+                    title="Enter search keyword"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
+                  <button className="btn btn-primary">
+                    <img src={searchWhite} alt="" />
+                  </button>
+                </div>
+
+                <div className="history-label">Chat History</div>
+                <PerfectScrollbar className="history-list">
+                  <>
+                    {filteredChatsstarred?.length > 0 &&
+                      filteredChatsstarred?.map(
+                        (
+                          chat: {
+                            chat_title:
+                              | string
+                              | number
+                              | boolean
+                              | React.ReactElement<
+                                  any,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                              | Iterable<React.ReactNode>
+                              | React.ReactPortal
+                              | null
+                              | undefined;
+                            flagged: any;
+                            id: number | undefined;
+                            created_at: string;
+                          },
+                          index: React.Key | null | undefined
+                        ) => (
+                          <li
+                            onClick={() => displayChat(chat)}
+                            key={`chat_${index}`}
+                          >
+                            <div className="d-flex flex-column " role="button">
+                              <div className="date">
+                                {extractTime(chat?.created_at)}
+                              </div>
+                              <div className="question">{chat?.chat_title}</div>
+                            </div>
+                            <ul className="action-button">
+                              <li role="button">
+                                <DeleteOutlineOutlinedIcon
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteFiles(chat?.id);
+                                  }}
+                                  sx={{ fontSize: "18px" }}
+                                />
+                              </li>
+                              {chat?.flagged && (
+                                <li
+                                  className={`${chat?.flagged ? "active" : ""}`}
+                                  role="button"
+                                >
+                                  <BookmarkIcon
+                                    sx={{ fontSize: "18px", color: "#9943ec" }}
+                                  />
+                                </li>
+                              )}
+                            </ul>
+                          </li>
+                        )
+                      )}
+                  </>
+                </PerfectScrollbar>
+              </div>
+            )}
+            <div className="main-chat-panel">
+              <div className="mobile-chat-header d-lg-none">
+                <ul>
+                  <li>
+                    <SyncAltOutlinedIcon
+                      onClick={() => setShowHistory(!showHistory)}
+                    />
+                  </li>
+                </ul>
+              </div>
+              <div className="inner-panel">
+                {Id !== undefined ? (
+                  <div className="chat-header2">
+                    {!showInitialPage && (
+                      <button
+                        className="btn btn-primary btn-sm d-flex align-items-center gap-1 rounded-pill"
+                        onClick={newchat}
+                      >
+                        <AddOutlinedIcon /> New Chat
+                      </button>
+                    )}
+                    {!showInitialPage ? (
+                      chatsaved ? (
+                        <FlagIcon style={{ color: "#9943ec" }} />
+                      ) : (
+                        <FlagOutlinedIcon
+                          style={{ cursor: "pointer" }}
+                          onClick={saveChatstar}
+                        />
+                      )
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                ) : (
+                  <></>
+                )}
+                {/* <div className="chat-result"> */}
+                <div className="chat-result">
+                  {selectedchat?.length && selectedchat?.length > 0 ? (
+                    <ul>
+                      {selectedchat?.map((chat: any, index: any) => (
+                        <>
+                          {chat?.question && (
+                            <li
+                              key={`question_${index}`}
+                              className="right-chat"
+                            >
+                              <div className="chat-card">
+                                <div className="chat-card-header">
+                                  <span className="anstext">
+                                    <SearchOutlinedIcon
+                                      sx={{ fontSize: "14px" }}
+                                    />{" "}
+                                    Question
+                                  </span>
+                                </div>
+                                <div className="chat-card-body">
+                                  <p>{chat?.question}</p>
+                                </div>
+                              </div>
+                              <div className="profile-icon">
+                                <img src={primaryLogo} alt="" />
+                              </div>
+                            </li>
+                          )}
+                          {chat?.answer && (
+                            <li key={`answer_${index}`} className="left-chat">
+                              <div className="profile-icon">
+                                <img src={primaryLogo} alt="" />
+                              </div>
+                              <div className="chat-card">
+                                <div className="chat-card-header">
+                                  <span className="anstext">
+                                    <DescriptionOutlinedIcon
+                                      sx={{ fontSize: "14px" }}
+                                    />{" "}
+                                    Answer
+                                  </span>
+                                </div>
+                                <div className="chat-card-body">
+                                  <p>
+                                    <Chatbot
+                                      answer={chat?.answer}
+                                      index={index}
+                                    />
+                                  </p>
+                                </div>
+                                <ul className="ansfooter">
+                                  <li>
+                                    <ThumbUpAltOutlinedIcon
+                                      sx={{ fontSize: "14px" }}
+                                    />
+                                  </li>
+                                  <li>
+                                    <ThumbDownOutlinedIcon
+                                      sx={{ fontSize: "14px" }}
+                                    />
+                                  </li>
+                                  <li onClick={() => copyText(index)}>
+                                    <ContentCopyOutlinedIcon
+                                      sx={{ fontSize: "14px" }}
+                                    />
+                                    <span>
+                                      {isTextCopied[`answer-${index}`]
+                                        ? "Copied"
+                                        : "Copy"}
+                                    </span>
+                                  </li>
+                                  {!chat?.speak ? (
+                                    <li
+                                      onClick={() =>
+                                        speak(chat && chat?.answer, index)
+                                      }
+                                    >
+                                      <VolumeUpOutlinedIcon
+                                        sx={{ fontSize: "14px" }}
+                                      />{" "}
+                                      <span>Read</span>
+                                    </li>
+                                  ) : (
+                                    <li onClick={() => stop(index)}>
+                                      <VolumeOffOutlinedIcon
+                                        sx={{ fontSize: "14px" }}
+                                      />{" "}
+                                      <span>Stop</span>
+                                    </li>
+                                  )}
+                                  <li onClick={regenerateChat}>
+                                    <CachedOutlinedIcon
+                                      sx={{ fontSize: "14px" }}
+                                    />{" "}
+                                    <span>Regenerate</span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </li>
+                          )}
+                        </>
+                      ))}
+                    </ul>
+                  ) : (
+                    showInitialPage && (
+                      <div className="welcome-box">
+                        <img src={chatLogo} alt="" />
+                        <h3>Hi, How can I help you today?</h3>
+                      </div>
+                    )
+                  )}
+                </div>
+                {/* </div> */}
+                {/* <div className="chat-suggestion">
+                  <h4>Suggestions</h4>
+                  <ul className="slider">
+                    <li><i className="material-icons-outlined">chat</i> Start my history exam</li>
+                    <li><i className="material-icons-outlined">chat</i> What's the news today</li>
+                    <li><i className="material-icons-outlined">chat</i> Test myself</li>
+                  </ul>
+                  <div className="dots"></div>
+                </div> */}
+                {Id !== undefined ? (
+                  <>
+                    <div className="chat-input">
+                      {/* <input type="text" className="form-control" placeholder="Type your question" /> */}
+                      <input
+                        type="text"
+                        ref={chatRef}
+                        className="form-control"
+                        placeholder="Type your question"
+                        aria-label="Search"
+                        value={search}
+                        onChange={(e) => setSearch(e?.target?.value)}
+                        onKeyDown={handleKeyDown}
+                      />
+                      <button
+                        type="button"
+                        onClick={searchData}
+                        className="btn btn-primary p-0"
+                      >
+                        <ArrowUpwardOutlinedIcon />
+                      </button>
+                    </div>
+                    {searcherr === true && (
+                      <small className="text-danger">
+                        Please Enter your query!!
+                      </small>
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
+                {/* <div className="change-instructor">
+                  <select name="" className="form-select" id="">
+                    <option value="">Change Instructor</option>
+                  </select>
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
       <DeleteDialog
         isOpen={dataDelete}
         onCancel={handlecancel}

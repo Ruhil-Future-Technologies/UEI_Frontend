@@ -68,13 +68,23 @@ import AddStudentFeedback from './Pages/StudentFeedback/AddStudentFeedback';
 import Class from './Pages/Class/Class';
 import AddEditClass from './Pages/Class/AddEditClass';
 import PDFList from './Pages/PDFList/PDFList';
+import FAQ from './Components/FAQ/FAQ';
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import "./assets/css/main.scss";
+// import "./assets/css/newstyle.scss";
 
+
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
 // import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 function App() {
 
   // const loginUrl = `https://13.235.239.244/auth/login`;
-   const loginUrl = "https://uatapi.gyansetu.ai/";
+   const loginUrl = "https://qaapi.gyansetu.ai/";
 
   // const loginUrl = `http://127.0.0.1:5000/login`;
   const { postData } = useApi();
@@ -175,8 +185,9 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgotpassword" element={<Forgotpassword />} />
         <Route path="/changepassword" element={<ChangePassword />} />
-        <Route path="/chatbot" element={<Chatbot answer={[]} />} />
+        <Route path="/chatbot" element={<Chatbot answer={[]} index={0} />} />
         <Route path="/main" element={<Main />}>
+          <Route path="/main/faq" element={<Protected Component={FAQ} menuName="faq" />} />
           <Route path="/main/chat" element={<Protected Component={Chat} menuName="Chat" />} />
           <Route path="/main/chat" element={<Protected Component={Chat} menuName="Chat" />} />
           <Route path="/main/chat/:Id" element={<Protected Component={Chat} menuName="Chat" />} />
@@ -335,14 +346,14 @@ function App() {
             <Route path="add-student-feedback" element={<Protected Component={AddStudentFeedback} menuName="student-feedback" />} />
           </Route>
           <Route path="/main/Studentfeedback">
-            <Route path="" element={<Protected Component={StudentFeedback} menuName="student-feedback" />} />
-            <Route path="add-student-feedback" element={<Protected Component={AddStudentFeedback} menuName="student-feedback" />} />
+            <Route path="" element={<Protected Component={StudentFeedback} menuName="Studentfeedback" />} />
+            <Route path="add-student-feedback" element={<Protected Component={AddStudentFeedback} menuName="Studentfeedback" />} />
           </Route>
         </Route>
         <Route path="profile" element={<Profile />} />
         <Route path="adddepartment" element={<AddDepartment />} />
         <Route path="searchdepartment" element={<StudentProfileManagement />} />
-        <Route path="chatbot" element={<Chatbot answer={[]} />} />
+        <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
         {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}
         <Route path="*" element={<NotFound/>}  />
         

@@ -1,4 +1,15 @@
 @import 'variable/variable';
+$primary: #9943EC;
+$secondary: #1E1E1E;
+$warning: #FFD700;
+$success: #489D48;
+$enable-shadows: true;
+$prefix: "-";
+$stroke-100: #D0D5DC;
+$gray2: #80818C;
+$gray3: #707070;
+
+$body-bg: #FAF5FE;
 // @import '../css/themes/themes.css';
 
 // @font-face {
@@ -1190,6 +1201,18 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+html,body { 
+    // height: 100%;
+}
+
+#root {
+    // height: 100%;
+}
+
+.App {
+    position: relative;
+    // height: 100%;
+}
 
 .alert {
     margin-top: 15px;
@@ -1209,11 +1232,12 @@
 //     font-size: $font_body;
 // }
 body {
-    font-family: var(--font-family);
+    // font-family: var(--font-family);
     font-weight: var(--font-weight);
     line-height: var(--line-height);
     color: var(--color);
     background-color: var(--bodycolor);
+    // height: 100%;
 }
 img{
     max-width: 100%;
@@ -1281,34 +1305,132 @@ a:focus {
     color: $bodycolor;
     margin: 0 0 15px;
 }
-.card{
-    border: none;
-    box-shadow: 0 2px 3px #e6e8eb;
-    // margin-bottom: 20px;
-    .profilebody{
-        background-color: var(--profilebody) !important;
-        color: var(--profiletext) !important;
-    }
-    .card-body {
-        min-height: calc(100vh - 200px);
-        background-color: var(--cardbodycolor);
-        form {
-            padding-bottom: 40px;
-        }
-        &.student-card-body {
-            .MuiBox-root{
-                position: absolute;
-                bottom: 10px;
-                width: 98%;
-                justify-content: space-between;
-            }
-        }
+// .card{
+//     border: none;
+//     box-shadow: 0 2px 3px #e6e8eb;
+//     // margin-bottom: 20px;
+//     .profilebody{
+//         background-color: var(--profilebody) !important;
+//         color: var(--profiletext) !important;
+//     }
+//     .card-body {
+//         min-height: calc(100vh - 200px);
+//         background-color: var(--cardbodycolor);
+//         form {
+//             padding-bottom: 40px;
+//         }
+//         &.student-card-body {
+//             .MuiBox-root{
+//                 position: absolute;
+//                 bottom: 10px;
+//                 width: 98%;
+//                 justify-content: space-between;
+//             }
+//         }
       
-    }
-}
+//     }
+// }
 // .container{
 //     outline: 1px solid red;
 // }
+
+//New Scss of Login 
+.without-login {
+    // background-color: $body-bg;
+    font-family: "Inter", sans-serif;
+    height: 100%;
+    position: relative;
+}
+
+.fs-14{
+    font-size: 14px;
+}
+
+.seprator {
+    position: relative;
+    width: 100%;
+    text-align: center;
+  
+    span {
+      display: inline-block;
+      position: relative;
+      z-index: 1;
+      background-color: white;
+      padding: 0 1rem;
+      color: $gray2;
+      font-weight: 500;
+    }
+  
+    &::after {
+      content: "";
+      width: 50%;
+      height: 1px;
+      background-color: $stroke-100;
+      position: absolute;
+      right: 0;
+      top: 50%;
+    }
+    &::before {
+      content: "";
+      width: 50%;
+      height: 1px;
+      background-color: $stroke-100;
+      position: absolute;
+      left: 0;
+      top: 50%;
+    }
+  }
+
+.outsecbtn{
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    justify-content: center;
+    border-radius: 50px;
+    font-weight: 600;
+    width: 100%;
+  
+    &:hover{
+      background-color: rgba($gray2, 0.2);
+      color: $secondary;
+    }
+  }
+
+.access-card{
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    height: 100%;
+    max-width: 550px;
+    margin: 0 auto ;
+    box-shadow:  0 .5rem 1rem rgba(#000 , .15);
+}
+
+.login-textslider {
+    background-color: rgba(0, 0, 0, 3%);  
+    border-radius: 1rem;  
+    .login-slider-card {
+      padding: 1.5rem;
+      .fs-14 {
+        line-height: 1.5;
+      }
+      p{
+        margin-bottom: 2rem;
+      }
+    }
+   
+  }
+
+.swiper-pagination{
+    text-align: start!important;
+    padding-left: 1.2rem!important;
+    bottom: 20px!important;
+    .swiper-pagination-bullet-active{
+      width: 30px!important;
+      border-radius: 20px!important;
+      background-color: $primary;
+    }
+}
 
 // Login page css start
 .login{
@@ -1621,7 +1743,7 @@ a:focus {
     label{
         color: var(--inputlablecolor) !important;
         font-weight: 500;
-        font-size: $font_medium;
+        font-size: 14px;
         line-height: 19px;
         margin: 0 0 5px;
         display: block;
@@ -1683,10 +1805,10 @@ a:focus {
         }
     .MuiFormControl-root{
         display: flex;
-        background-color: var(--inputbackcolor) !important;
+        // background-color: var(--inputbackcolor) !important;
         color: var(--inputlablecolor) !important;
         .MuiInputBase-root{
-            background-color: var(--inputbackcolor) !important;
+            // background-color: var(--inputbackcolor) !important;
             color: var(--inputlablecolor) !important;
             .MuiInputBase-input{
                 // height: 50px;

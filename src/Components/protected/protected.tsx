@@ -38,6 +38,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === "admin" ? mName.toLowerCase() === "add-feedback" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "student-feedback" : "") ||
       (usertype === "student" ? mName.toLowerCase() === "add-student-feedback" : "") ||
+      (usertype === "student" ? mName.toLowerCase() === "faq" : "") ||
       (usertype === "admin"
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
         : "");

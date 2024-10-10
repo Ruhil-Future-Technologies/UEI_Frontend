@@ -128,6 +128,20 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
             setlanguagePercentage(percentage);
           }
           if (academic_history && Object.keys(academic_history).length > 0) {
+            if (academic_history?.institution_type === "school") {
+              delete academic_history?.course_id;
+              delete academic_history?.institute_id;
+              delete academic_history?.institution_name;
+              delete academic_history?.learning_style;
+              delete academic_history?.university_name;
+              delete academic_history?.year;
+              academic_history?.board !== "state_board" &&
+                delete academic_history?.state_for_stateboard;
+            } else {
+              delete academic_history?.board;
+              delete academic_history?.class_id;
+              delete academic_history?.state_for_stateboard;
+            }
             let totalcount = Object.keys(academic_history).length;
             let filledCount = countKeysWithValue(academic_history);
             let percentage = (filledCount / totalcount) * 100;
