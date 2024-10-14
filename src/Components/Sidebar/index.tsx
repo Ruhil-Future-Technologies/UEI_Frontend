@@ -9,7 +9,7 @@ import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -210,12 +210,12 @@ const Sidebar = () => {
   const handleMouseLeave = () => {
     document.body.classList.remove("sidebar-hovered");
   };
-  function removeMobileToggle(){
+  function removeMobileToggle() {
     if (window.innerWidth <= 1024) {
       document.querySelector("body")?.classList.remove("toggled");
-  } else {
+    } else {
       document.querySelector("body")?.classList.remove("toggled");
-  }
+    }
   }
   // console.log("test hhh",selectedIndex1)
   // const SidebarContainer = styled.aside`
@@ -487,14 +487,11 @@ const Sidebar = () => {
               <h5 className="mb-0">Gyansetu</h5>
             </div>
             <div className="sidebar-close">
-              <CloseOutlinedIcon
-                onClick={removeMobileToggle}
-              />
+              <CloseOutlinedIcon onClick={removeMobileToggle} />
             </div>
           </div>
           <div className="sidebar-nav">
             <MetisMenu>
-              {/* <ul id="sidenav"> */}
               <li>
                 <Link to="/main/DashBoard" onClick={removeMobileToggle}>
                   <div className="parent-icon">
@@ -503,10 +500,12 @@ const Sidebar = () => {
                   <div className="menu-title">Dashboard</div>
                 </Link>
               </li>
-              {profileCompletion === "100" ?
+              {profileCompletion === "100" ? (
                 <>
                   <li>
-                    <Link to="/main/Chat/recentChat" onClick={removeMobileToggle}
+                    <Link
+                      to="/main/Chat/recentChat"
+                      onClick={removeMobileToggle}
                     >
                       <div className="parent-icon">
                         <ChatOutlinedIcon />
@@ -523,14 +522,20 @@ const Sidebar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/main/student-feedback/add-student-feedback" onClick={removeMobileToggle}>
+                    <Link
+                      to="/main/student-feedback/add-student-feedback"
+                      onClick={removeMobileToggle}
+                    >
                       <div className="parent-icon">
                         <InfoOutlinedIcon />
                       </div>
                       <div className="menu-title">Feedback</div>
                     </Link>
                   </li>
-                </> : ''}
+                </>
+              ) : (
+                ""
+              )}
               <li>
                 <Link to="/main/faq" onClick={removeMobileToggle}>
                   <div className="parent-icon">
@@ -539,7 +544,6 @@ const Sidebar = () => {
                   <div className="menu-title">FAQs</div>
                 </Link>
               </li>
-              {/* </ul> */}
             </MetisMenu>
           </div>
         </SimpleBar>

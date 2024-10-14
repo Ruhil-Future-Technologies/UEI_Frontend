@@ -1141,7 +1141,6 @@ const Chat = () => {
 
   return (
     <>
-      {loading && <FullScreenLoader msg={loaderMsg} />}
       {/* <div className="chat_view">
         <div className="chat_section">
           <div className="row">
@@ -1769,6 +1768,9 @@ const Chat = () => {
                 )}
                 {/* <div className="chat-result"> */}
                 <div className="chat-result">
+                  {loading && (
+                    <FullScreenLoader msg={loaderMsg} flag={"chat"} />
+                  )}
                   {selectedchat?.length && selectedchat?.length > 0 ? (
                     <ul>
                       {selectedchat?.map((chat: any, index: any) => (
@@ -1871,13 +1873,17 @@ const Chat = () => {
                         </>
                       ))}
                     </ul>
+                  ) : loading ? (
+                    <FullScreenLoader msg={loaderMsg} flag={"chat"} />
                   ) : (
-                    showInitialPage && (
-                      <div className="welcome-box">
-                        <img src={chatLogo} alt="" />
-                        <h3>Hi, How can I help you today?</h3>
-                      </div>
-                    )
+                    <div className="welcome-box">
+                      <img src={chatLogo} alt="" />
+                      <h3>{`${
+                        Id
+                          ? "Hi, How can I help you today?"
+                          : "Please select conversation"
+                      }`}</h3>
+                    </div>
                   )}
                 </div>
                 {/* </div> */}

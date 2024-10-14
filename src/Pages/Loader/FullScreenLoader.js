@@ -31,7 +31,7 @@ const FullScreenLoader = (props) => {
   //       {props.msg}
   //     </Typography>
   // </Box>
-  <div className="loader-box">
+  <div className={`${ props.flag === 'chat' ? "chat-loader-box" : "loader-box"}`}>
   <div className="spinner">
       <div></div>
       <div></div>

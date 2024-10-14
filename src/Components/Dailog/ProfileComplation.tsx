@@ -204,7 +204,7 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const context = useContext(NameContext);
-  const { namecolor, setNamecolor }: any = context;
+  const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
   let StudentId = localStorage.getItem("_id");
   let usertype = localStorage.getItem("user_type");
   const { getData, postData, postFileData } = useApi();
@@ -742,6 +742,7 @@ export const ProfileDialog: FunctionComponent<{
     postData(`${"student/add"}`, payload)
       .then((data: any) => {
         if (data.status === 200) {
+          setNamepro(data?.first_name)
           const formData = new FormData();
           const nfile: any = uploadedFile;
           formData.append("file", nfile);
@@ -750,6 +751,7 @@ export const ProfileDialog: FunctionComponent<{
             postFileData(`${"upload_file/upload"}`, formData)
               .then((data: any) => {
                 if (data?.status === 200) {
+                  setProImage(data?.image_url)
                   // toast.success(data?.message, {
                   //   hideProgressBar: true,
                   //   theme: "colored",

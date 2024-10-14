@@ -606,9 +606,7 @@ const Header = () => {
             <li className="nav-item">
               <div className="toggle-mode nav-link" role="button">
                 <DarkModeOutlinedIcon
-                  onClick={() =>
-                    setTheme((prev) => (prev === "dark" ? "light" : "dark"))
-                  }
+                  onClick={toggleTheme}
                 />
               </div>
             </li>
@@ -682,12 +680,12 @@ const Header = () => {
                     <span className="ms-2">Georgian</span>
                   </a>
                 </li> */}
-                <li onClick={() => setLanguage("HN")}>
+                {/* <li onClick={() => setLanguage("HN")}>
                   <div className="dropdown-item d-flex align-items-center py-2">
                     <img src={Country8} width="20" height="20" alt="" />
                     <span className="ms-2">Hindi</span>
                   </div>
-                </li>
+                </li> */}
               </ul>
             </li>
 
@@ -949,8 +947,8 @@ const Header = () => {
                   <div className="text-center">
                     <img
                       src={
-                        profileImage
-                          ? profileImage
+                        proImage
+                          ? proImage
                           : gender?.toLowerCase() === "female"
                           ? femaleImage
                           : maleImage
@@ -961,7 +959,7 @@ const Header = () => {
                       alt=""
                     />
                     <h5 className="user-name mb-0 fw-bold">{`Hello, ${
-                      profileName || "User"
+                      namepro?.first_name || "User"
                     }`}</h5>
                   </div>
                 </a>
