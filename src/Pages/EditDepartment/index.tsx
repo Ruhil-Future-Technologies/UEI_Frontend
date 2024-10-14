@@ -64,7 +64,7 @@ function EditDepartment(){
                 <select
                   className="form-control"
                   name="status"
-                  value={perdata.is_active==1?'Active':'Inactive' || ''}
+                  value={perdata.is_active==1?'Active':'Inactive'}
                   onChange={handelChanges}
                 >
                   <option value={2}>All</option>
