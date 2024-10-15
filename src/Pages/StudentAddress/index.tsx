@@ -456,10 +456,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           addressPayload: any
         ) => {
           try {
-            const data = await putData(
-              "/student_address/edit/" + StudentId,
-              addressPayload
-            );
+            const data = await putData("/student_address/edit/" + StudentId, {
+              ...addressPayload,
+              pincode: addressPayload?.pincode || 0,
+            });
             // console.log(data);
             if (data?.status === 200) {
               toast.success(`${addressType} address updated successfully`, {
@@ -824,7 +824,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {studentAddress.pincode == "" && (
+            {!studentAddress.pincode && (
               <p style={{ color: "red" }}>Please enter Pincode.</p>
             )}
           </div>
