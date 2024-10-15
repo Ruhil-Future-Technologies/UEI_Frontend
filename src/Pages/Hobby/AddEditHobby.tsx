@@ -229,11 +229,12 @@ const AddEditHobby = () => {
 
     return (
         <>
-            <div className='profile_section'>
-                <div className='card'>
+            <div className='main-wrapper'>
+                <div className="main-content">
+                <div className='card p-lg-3'>
                     <div className='card-body'>
                         <Typography variant="h6">
-                            <div className='main_title'>{id ? "Edit" : "Add"} Hobbies</div>
+                            <div className='main_title mb-3'>{id ? "Edit" : "Add"} Hobbies</div>
                         </Typography>
                         <Formik
                             // onSubmit={(formData) => handleSubmit(formData)} 
@@ -249,7 +250,7 @@ const AddEditHobby = () => {
                                 <Form>
                                     <div className='row'>
                                         <div className='col-md-4'>
-                                            <div className="form_field_wrapper">
+                                            <div className="form_field_wrapper mb-4">
                                                 <Field
                                                     component={TextField}
                                                     type="text"
@@ -270,6 +271,8 @@ const AddEditHobby = () => {
                         </Formik>
                     </div>
                 </div>
+                </div>
+               
             </div>
         </>
     )

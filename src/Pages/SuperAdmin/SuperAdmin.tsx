@@ -206,10 +206,11 @@ const SuperAdmin = () => {
 
     return (
         <>
-            <div className='profile_section'>
-                <div className='card'>
+            <div className='main-wrapper'>
+                <div className="main-content">
+                <div className='card p-lg-3'>
                     <div className='card-body'>
-                        <Typography variant="h6">
+                        <Typography variant="h6" className='mb-3'>
                              <div className='main_title'>Add User</div>
                         </Typography>
                         <Formik
@@ -230,7 +231,7 @@ const SuperAdmin = () => {
 
                                     <div className='row'>
                                         <div className='col-md-4'>
-                                            <div className="form_field_wrapper">
+                                            <div className="form_field_wrapper mb-4">
                                                 {/* <TextField
                                             label="Menu Name"
                                             name="menu_name"
@@ -314,6 +315,8 @@ const SuperAdmin = () => {
                         </Formik>
                     </div>
                 </div>
+                </div>
+               
             </div>
         </>
     )

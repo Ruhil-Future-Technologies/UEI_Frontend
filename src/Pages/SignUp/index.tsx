@@ -1,10 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import { FormControlLabel, Radio, RadioGroup, Typography, Switch } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { MdContactMail } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import phoneicon from "../../assets/img/phone.svg";
 import emailicon from "../../assets/img/email.svg";
 import passwordicon from "../../assets/img/password.svg";
+import NameContext from "../../Pages/Context/NameContext";
 import {
   ArrowLeft,
   BackArrowCircle,
@@ -31,6 +32,12 @@ import { QUERY_KEYS } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import registerHero from "../../assets/img/register-hero.png";
 // import "../../assets/css/main.min.css";
+import { styled } from "@mui/material/styles";
+
+
+
+
+
 
 interface State extends SnackbarOrigin {
   open: boolean;
@@ -43,12 +50,16 @@ const Signup = () => {
   // const [name, setName] = useState("")
   //   const [email, setEmail] = useState("");
   //   const [phone, setPhone] = useState("");
+  const context = useContext(NameContext);
+  const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
+
   const [emailphone, setEmailphone] = useState("");
   const [value, setValue] = React.useState("student");
   const [userId, setuserId] = React.useState("Email");
   const [uservalue, setuserValue] = React.useState<any>("");
   const [errorEmail, setEmailError] = useState("");
   const [errorPassword, setPasswordError] = useState("");
+  const [checked, setchecked] = useState(false);
   // const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,6 +77,26 @@ const Signup = () => {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    const theme = localStorage?.getItem("theme") || "";
+    if (theme === "light") {
+      document?.documentElement?.setAttribute("data-bs-theme", theme);      
+    } else if (theme === "dark") {
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+   
+    } else if (theme === "blue-theme")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else if (theme === "semi-dark")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else if (theme === "bordered-theme")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else
+    document?.documentElement?.setAttribute("data-bs-theme", theme);
+    // document.documentElement.setAttribute('data-theme', theme);
+ }, []);
+
+
   const handleCloseicon = (
     event: React.SyntheticEvent | Event,
     reason?: string
@@ -461,9 +492,8 @@ const Signup = () => {
               <div className="logoui">
                 <img src={gLogo} alt="" onClick={() => navigate("/")} />
                 <span>Gyansetu</span>
-              </div>
-             
-            </div>
+              </div>             
+            </div>         
           </div>
         </header>
         <section className="container pb-5">

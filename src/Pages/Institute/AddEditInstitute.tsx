@@ -435,8 +435,9 @@ useEffect(() => {
 }, []);
 
     return (
-        <div className='profile_section'>
-            <div className='card'>
+        <div className='main-wrapper'>
+            <div className="main-content">
+            <div className='card p-lg-3'>
                 <div className='card-body'>
                     <Typography variant="h6">
                         <div className='main_title'>{id ? "Edit" : "Add"} Institute</div>
@@ -463,7 +464,7 @@ useEffect(() => {
                     >
                         {({ errors, values, touched ,isValid,dirty}) => (
                             <Form>
-                                <div className='row'>
+                                <div className='row gy-4 mt-0'>
                                 <div className='col-md-4'>
                                         <div className="form_field_wrapper">
                                             <FormControl fullWidth>
@@ -690,12 +691,14 @@ useEffect(() => {
                                     </div>
                                     
                                 </div>
-                                <button className='btn btn-primary mainbutton'  >{id ? "Update" : "Save"}</button>
+                                <button className='btn btn-primary mainbutton mt-4'  >{id ? "Update" : "Save"}</button>
                             </Form>
                         )}
                     </Formik>
                 </div>
             </div>
+            </div>
+           
         </div>
     )
 }

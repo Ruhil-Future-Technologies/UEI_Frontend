@@ -124,11 +124,31 @@ const Login = () => {
     setValue((event.target as HTMLInputElement).value);
   };
 
+
+  useEffect(() => {
+    const theme = localStorage?.getItem("theme") || "";
+    if (theme === "light") {
+      document?.documentElement?.setAttribute("data-bs-theme", theme);      
+    } else if (theme === "dark") {
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+   
+    } else if (theme === "blue-theme")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else if (theme === "semi-dark")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else if (theme === "bordered-theme")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else
+    document?.documentElement?.setAttribute("data-bs-theme", theme);
+    // document.documentElement.setAttribute('data-theme', theme);
+ }, []);
+
   useEffect(() => {
     if (emailphone && password) {
       setuserValue("");
     }
   }, [emailphone, password]);
+
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

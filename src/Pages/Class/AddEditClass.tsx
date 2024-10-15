@@ -162,10 +162,11 @@ const AddEditClass = () => {
 const classes = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
 console.log("test",classes,selectedSubject)
     return (
-        <div className='profile_section'>
-            <div className='card'>
+        <div className='main-wrapper'>
+            <div className="main-content">
+            <div className='card p-lg-3'>
                 <div className='card-body'>
-                    <Typography variant="h6">
+                    <Typography variant="h6" className='mb-3'>
                         <div className='main_title'>{id ? "Edit" : "Add"} Class</div>
                     </Typography>
                     <Formik
@@ -181,9 +182,9 @@ console.log("test",classes,selectedSubject)
                     >
                         {({ errors, values, touched ,isValid,dirty }) => (
                             <Form>
-                                <div className='row'>
+                                <div className='row '>
                                     <div className='col-md-4'>
-                                        <div className="form_field_wrapper">
+                                        <div className="form_field_wrapper mb-4">
                                             {/* <Field
                                                 component={TextField}
                                                 type="text"
@@ -246,6 +247,8 @@ console.log("test",classes,selectedSubject)
                     </Formik>
                 </div>
             </div>
+            </div>
+            
         </div>
     )
 }

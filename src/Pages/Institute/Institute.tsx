@@ -127,7 +127,8 @@ const Institute = () => {
     return (
         <>
          {loading && <FullScreenLoader />}
-            <div className='dashboard'>
+            <div className='main-wrapper'>
+                <div className="main-content">
                 <div className='card'>
                     <div className='card-body'>
                         <div className='table_wrapper'>
@@ -206,6 +207,8 @@ const Institute = () => {
                         </div>
                     </div>
                 </div>
+                </div>
+               
             </div>
             <DeleteDialog
                 isOpen={dataDelete}

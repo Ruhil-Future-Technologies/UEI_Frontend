@@ -1,6 +1,6 @@
 [data-bs-theme="dark"] body {
   color: var(--bs-body-color);
-  background-color: var(--bs-body-bg-2);
+  background-color: var(--bs-body-bg-2)!important;
   $primary: #9943ec;
   $headingColor: #d5d5d5;
   $headerbg: #212529;
@@ -12,6 +12,31 @@
    
     background: rgb(75 75 75 / 48%)!important;
     
+}
+.seprator span{
+  background-color: $headerbg;
+}
+.seprator::before{
+  background-color: rgba($headingColor, .3);
+}
+.seprator::after{
+  background-color: rgba($headingColor, .3);
+}
+.css-9g6qmn-MuiFormControl-root-MuiTextField-root input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #2f3336 inset !important;
+  -webkit-text-fill-color: $headingColor !important;
+}
+.without-login{
+  background-color: transparent!important;
+}
+.access-card{
+  background-color: $headerbg!important;
+
+  svg{
+    path{
+      fill: #939aa0
+    }
+  }
 }
 .freechatbox{
   .profilechatinner{

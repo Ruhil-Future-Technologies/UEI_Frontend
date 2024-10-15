@@ -198,10 +198,11 @@ const AddEditCourse = () => {
 
     return (
         <>
-            <div className='profile_section'>
-                <div className='card'>
+            <div className='main-wrapper'>
+                <div className="main-content">
+                <div className='card p-lg-3'>
                     <div className='card-body'>
-                        <Typography variant="h6">
+                        <Typography variant="h6" className='mb-3'>
                             <div className='main_title'>{id ? "Edit" : "Add"} Course</div>
                         </Typography>
                         <Formik
@@ -300,6 +301,8 @@ const AddEditCourse = () => {
                         </Formik>
                     </div>
                 </div>
+                </div>
+                
             </div>
         </>
     )

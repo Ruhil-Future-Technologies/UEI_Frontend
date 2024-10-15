@@ -386,7 +386,7 @@ const AddStudentFeedback = () => {
                     </div>
                   )}
                 </div>
-                <button className="btn btn-primary mt-4 mx-auto d-block rounded-pill px-4" onClick={handleSubmit}>Submit</button>
+                <button className="btn btn-primary mt-4 mx-auto d-block rounded-pill px-4 mb-4" onClick={handleSubmit}>Submit</button>
               </div>
             </div>
           </div>

@@ -129,11 +129,12 @@ const AddEditAdminFeedback = () => {
   });
 
   return (
-    <div className="profile_section">
-      <div className="card">
+    <div className="main-wrapper">
+      <div className="main-content">
+      <div className="card p-lg-3">
         <div className="card-body">
           {/* <Typography variant="h6"> */}
-          <div className="main_title">
+          <div className="card-title">
             {id ? "Edit" : "Add"} Feedback Questions
           </div>
           <Formik
@@ -147,7 +148,7 @@ const AddEditAdminFeedback = () => {
           >
             {({ errors, values, touched, isValid, dirty }) => (
               <Form>
-                <div className="row">
+                <div className="row gy-4">
                   <div className="col-md-4">
                     <div className="form_field_wrapper">
                       <TextField
@@ -222,6 +223,8 @@ const AddEditAdminFeedback = () => {
           </Formik>
         </div>
       </div>
+      </div>
+     
     </div>
   );
 };

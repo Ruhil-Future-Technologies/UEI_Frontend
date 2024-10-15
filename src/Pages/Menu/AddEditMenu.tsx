@@ -194,8 +194,9 @@ const AddEditMenu = () => {
 
     return (
         <>
-            <div className='profile_section'>
-                <div className='card'>
+            <div className='main-wrapper'>
+                <div className="main-content">
+                <div className='card p-lg-3'>
                     <div className='card-body'>
                         <Typography variant="h6">
                             {id ? <div className='main_title'>Edit Menu</div> : <div className='main_title'>Add Menu</div>}
@@ -216,7 +217,7 @@ const AddEditMenu = () => {
                             {({ errors, values, touched }) => (
                                 <Form>
 
-                                    <div className='row'>
+                                    <div className='row gy-4 mt-0'>
                                         <div className='col-md-4'>
                                             <div className="form_field_wrapper">
                                                 {/* <TextField
@@ -337,6 +338,8 @@ const AddEditMenu = () => {
                         </Formik>
                     </div>
                 </div>
+                </div>
+                
             </div>
         </>
     )
