@@ -277,8 +277,9 @@ const AddEditForm = () => {
     }
     return (
         <>
-            <div className='profile_section'>
-                <div className='card'>
+            <div className='main-wrapper'>
+                <div className="main-content">
+                <div className='card p-lg-3'>
                     <div className='card-body'>
                         <Typography variant="h6">
                             {id ? <div className='main_title'>Edit Form</div> : <div className='main_title'>Add Form</div>}
@@ -302,7 +303,7 @@ const AddEditForm = () => {
                             {({ errors, values, touched,isValid,dirty }:any) => (
                                 <Form>
 
-                                    <div className='row'>
+                                    <div className='row gy-4 mt-0'>
                                     <div className='col-md-4'>
                                             <div className="form_field_wrapper">
                                                 <FormControl fullWidth>
@@ -458,18 +459,21 @@ const AddEditForm = () => {
                                                 </RadioGroup>
                                             </div>
                                         </div>
+                                        <div className="col-lg-12">
+                                        <button className='btn btn-primary mainbutton' >{id ? "Update" : "Save"}</button>
+                                    {/* <button className='btn btn-primary btn-xs' type="button" style={{marginLeft:"10px", marginTop:"10px"}}  onClick={privewurl} > Preivew</button> */}
+                                    <button
+                                    
+                                    //  size='large'
+                                     
+                                         onClick={privewurl}
+                                        className="btn btn-outline-primary ms-3">
+                                        Preivew
+                                    </button>
+                                        </div>
                                     </div>
                                    
-                                    <button className='btn btn-primary mainbutton'  style={{marginTop:"10px"  }} >{id ? "Update" : "Save"}</button>
-                                    {/* <button className='btn btn-primary btn-xs' type="button" style={{marginLeft:"10px", marginTop:"10px"}}  onClick={privewurl} > Preivew</button> */}
-                                    <Button
-                                     variant="contained"
-                                    //  size='large'
-                                     sx={{ml:2,mt:2 , backgroundColor:"#3980c0", }}
-                                         onClick={privewurl}
-                                        className="float-right mainbutton">
-                                        Preivew
-                                    </Button>
+                                  
                                 </Form>
                                 
                             )}
@@ -477,6 +481,8 @@ const AddEditForm = () => {
                         </Formik> 
                     </div>
                 </div>
+                </div>
+               
             </div>
         </>
     )

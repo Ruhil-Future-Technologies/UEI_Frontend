@@ -4,6 +4,11 @@ import List from "@mui/material/List";
 import { toast } from "react-toastify";
 import SimpleBar from "simplebar-react";
 import styled from "styled-components";
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
+import ThreePOutlinedIcon from "@mui/icons-material/ThreePOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
@@ -12,6 +17,8 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -20,11 +27,13 @@ import { Dashboard, Language, MenuOpen } from "@mui/icons-material";
 import ChatIcon from "@mui/icons-material/Chat";
 import MenuIcon from "@mui/icons-material/Menu";
 import MetisMenu from "@metismenu/react";
-// import 'metismenujs/dist/metismenujs.css';
 import useApi from "../../hooks/useAPI";
 import gyansetuLogo from "../../assets/img/logo-white.svg";
 import { QUERY_KEYS_MENU } from "../../utils/const";
 import sidebarlog from "../../assets/img/logo.svg";
+import PerfectScrollbar from "react-perfect-scrollbar";
+
+import "react-perfect-scrollbar/dist/css/styles.css";
 // import "../Sidebar/Sidebar.scss";
 // import "../../assets/css/newstyle.min.css";
 // import "../../assets/css/main.min.css";
@@ -43,6 +52,7 @@ const Sidebar = () => {
   const [setting, setSetting] = useState(false);
   const defaultSelectedIndex = 0;
   const [open, setOpen] = useState(true);
+  const [masterCollapsible, setMasterCollapsible] = useState(false);
   const user_type = localStorage.getItem("user_type");
   const [profileCompletion, setProfileCompletion] = useState(
     localStorage.getItem("Profile_completion") || "0"
@@ -87,6 +97,44 @@ const Sidebar = () => {
     callAPI();
   }, []);
 
+  // add by amit
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    const menuItems = document.querySelectorAll(".metismenu li a");
+
+    menuItems.forEach((item) => {
+      const anchor = item as HTMLAnchorElement;
+
+      // Highlight the active menu item based on the current URL
+      if (anchor.href === currentUrl) {
+        let parentLi = anchor.parentElement;
+        parentLi?.classList.add("mm-active");
+
+        while (parentLi && parentLi.tagName === "LI") {
+          parentLi.classList.add("mm-active");
+          const parentUl = parentLi.parentElement;
+          if (parentUl && parentUl.tagName === "UL") {
+            parentUl.classList.add("mm-show");
+          }
+          parentLi = parentUl ? parentUl.closest("li") : null;
+        }
+      }
+
+      // Add click event listener for toggling submenu
+      anchor.addEventListener("click", (e) => {
+        const submenu = item.nextElementSibling; // Assumes the submenu is the next sibling
+        if (submenu && submenu.tagName === "UL") {
+          e.preventDefault(); // Prevent the default action if it has a submenu
+          submenu.classList.toggle("mm-show"); // Toggle the mm-show class
+        }
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("Menu List 1", menuList1);
+  }, [menuList1]);
+
   const callAPI = async () => {
     getData(`${MenuListURL}/${user_type}`)
       .then((data: any) => {
@@ -112,6 +160,8 @@ const Sidebar = () => {
     if (basicinfo?.basic_info !== null) {
       getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
         .then((data: any) => {
+          console.log("Call API 1", data.data);
+
           if (data.data) {
             setMenuList1(data.data);
             localStorage.setItem("menulist1", JSON.stringify(data?.data));
@@ -217,6 +267,10 @@ const Sidebar = () => {
       document.querySelector("body")?.classList.remove("toggled");
     }
   }
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const toggleMenu = (id: number) => {
+    setOpenMenu(prevOpenMenu => (prevOpenMenu === id ? null : id));
+  };
   // console.log("test hhh",selectedIndex1)
   // const SidebarContainer = styled.aside`
   //   width: 250px;
@@ -478,7 +532,7 @@ const Sidebar = () => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <SimpleBar>
+        <PerfectScrollbar>
           <div className="sidebar-header">
             <div className="logo-icon">
               <img src={gyansetuLogo} className="logo-img" alt="" />
@@ -500,53 +554,286 @@ const Sidebar = () => {
                   <div className="menu-title">Dashboard</div>
                 </Link>
               </li>
-              {profileCompletion === "100" ? (
+              {user_type === "student" ? (
                 <>
-                  <li>
-                    <Link
-                      to="/main/Chat/recentChat"
-                      onClick={removeMobileToggle}
-                    >
+                  {profileCompletion === "100" ? (
+                    <>
+                      <li>
+                        <Link
+                          to="/main/Chat/recentChat"
+                          onClick={removeMobileToggle}
+                        >
+                          <div className="parent-icon">
+                            <ChatOutlinedIcon />
+                          </div>
+                          <div className="menu-title">Chat</div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/main/Chat" onClick={removeMobileToggle}>
+                          <div className="parent-icon">
+                            <LocalLibraryOutlinedIcon />
+                          </div>
+                          <div className="menu-title">Chat History</div>
+                        </Link>
+                      </li>
+                      {/* <li>
+                        <Link
+                          to="/main/student-feedback/add-student-feedback"
+                          onClick={removeMobileToggle}
+                        >
+                          <div className="parent-icon">
+                            <InfoOutlinedIcon />
+                          </div>
+                          <div className="menu-title">Feedback</div>
+                        </Link>
+                      </li> */}
+                    </>
+                  ) : (
+                    ""
+                  )}
+                  {/* <li>
+                    <Link to="/main/faq" onClick={removeMobileToggle}>
                       <div className="parent-icon">
-                        <ChatOutlinedIcon />
+                        <LiveHelpOutlinedIcon />
                       </div>
-                      <div className="menu-title">Chat</div>
+                      <div className="menu-title">FAQs</div>
                     </Link>
-                  </li>
-                  <li>
-                    <Link to="/main/Chat" onClick={removeMobileToggle}>
-                      <div className="parent-icon">
-                        <LocalLibraryOutlinedIcon />
-                      </div>
-                      <div className="menu-title">Chat History</div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/main/student-feedback/add-student-feedback"
-                      onClick={removeMobileToggle}
-                    >
-                      <div className="parent-icon">
-                        <InfoOutlinedIcon />
-                      </div>
-                      <div className="menu-title">Feedback</div>
-                    </Link>
-                  </li>
+                  </li> */}
                 </>
               ) : (
-                ""
+                <>
+                  {menuList1 && user_type !== "student" ? (
+                    menuList1.map((menu: any) => {
+                      return (
+                        <li key={menu.id} >
+                          {menu.submenus && menu.submenus.length > 0 ? (
+                            <>
+                              <a
+                                key={menu.id}
+                                className="has-arrow"                                
+                                onClick={() => toggleMenu(menu.id)}
+                                aria-expanded={openMenu === menu.id}
+                              >
+                                {" "}
+                                <div className="parent-icon">
+                                  <AdminPanelSettingsOutlinedIcon />
+                                </div>
+                                <div className="menu-title">
+                                  {menu.menu_name}{" "}
+                                </div>{" "}
+                              </a>
+                              <ul
+                                id={menu.id}
+                                className={`mm-collapse ${openMenu === menu.id ? 'mm-show' : ''}`}
+                              >
+                                {menu?.submenus?.map((submenu: any) => {
+                                  let menulist =
+                                    submenu.menu_name === "Sub Menu"
+                                      ? "SubMenu"
+                                      : submenu.menu_name === "Role Vs Form"
+                                      ? "RoleVsForm"
+                                      : submenu.menu_name === "Role Vs User" ||
+                                        submenu.menu_name === "RoleVsUser"
+                                      ? "RoleVsUser "
+                                      : submenu.menu_name === "Hobbies"
+                                      ? "Hobby"
+                                      : submenu.menu_name;
+                                  return (
+                                    <li key={submenu.id}>
+                                      <Link
+                                        // component={Link}
+                                        to={menulist}
+                                        //  <Link component={Link} to={submenu.url}
+                                        // className={
+                                        //   selectedIndex1?.toLowerCase() ===
+                                        //   menulist.toLowerCase()
+                                        //     ? "selecteditem"
+                                        //     : "unselecteditem"
+                                        // }
+                                        // selected={
+                                        //   selectedIndex1?.toLowerCase() ===
+                                        //   menulist.toLowerCase()
+                                        // }
+                                        // style={{ backgroundColor: selectedIndex1?.toLowerCase() === menulist.toLowerCase() ? '#024f52' : 'transparent',color: selectedIndex1?.toLowerCase() === menulist.toLowerCase() ? "#fff":"#fff" }}
+                                        onClick={() =>
+                                          handleListItemClick1(menulist)
+                                        }
+                                      >
+                                        <ArrowRightIcon />
+
+                                        <div>{submenu.menu_name}</div>
+
+                                        {/* <ListItemText primary={menulist} /> */}
+                                      </Link>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </>
+                          ) : (
+                            <>
+                              <li>
+                                <Link
+                                  //component={Link}
+                                  to={menu?.form_data?.form_url}
+                                  // selected={selectedIndex === 0}
+                                  // className={
+                                  //   selectedIndex1?.toLowerCase() ===
+                                  //   menu?.form_data?.form_url?.toLowerCase()
+                                  //     ? "selecteditem"
+                                  //     : "unselecteditem"
+                                  // }
+                                  // selected={
+                                  //   selectedIndex1?.toLowerCase() ===
+                                  //   menu?.form_data?.form_url.toLowerCase()
+                                  // }
+                                  // style={{ backgroundColor: selectedIndex1?.toLowerCase() === menu?.form_data?.form_url?.toLowerCase() ? '#024f52' : 'transparent',color: selectedIndex1.toLowerCase() === menu?.form_data?.form_url.toLowerCase() ? "#fff":"#fff" }}
+                                  onClick={() =>
+                                    handleListItemClick1(
+                                      menu?.form_data?.form_url
+                                    )
+                                  }
+                                >
+                                  {/* <ListItemIcon>
+                                    <div className="sidebar_icon">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="21"
+                                        height="21"
+                                        viewBox="0 0 21 21"
+                                        fill="#a8b0c5"
+                                      >
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M0 10.5158C0 4.98448 4.4205 0 10.521 0C16.485 0 21 4.88983 21 10.4842C21 16.9725 15.708 21 10.5 21C8.778 21 6.867 20.5373 5.334 19.6329C4.7985 19.307 4.347 19.0651 3.7695 19.2544L1.6485 19.8853C1.113 20.0536 0.63 19.6329 0.7875 19.0651L1.491 16.7096C1.6065 16.3836 1.5855 16.0366 1.4175 15.7631C0.5145 14.1017 0 12.2824 0 10.5158ZM9.13574 10.5158C9.13574 11.2624 9.73424 11.8618 10.4797 11.8723C11.2252 11.8723 11.8237 11.2624 11.8237 10.5263C11.8237 9.77966 11.2252 9.18026 10.4797 9.18026C9.74474 9.16975 9.13574 9.77966 9.13574 10.5158ZM13.9775 10.5263C13.9775 11.2624 14.576 11.8723 15.3215 11.8723C16.067 11.8723 16.6655 11.2624 16.6655 10.5263C16.6655 9.77965 16.067 9.18025 15.3215 9.18025C14.576 9.18025 13.9775 9.77965 13.9775 10.5263ZM5.63892 11.8723C4.90392 11.8723 4.29492 11.2624 4.29492 10.5263C4.29492 9.77964 4.89342 9.18024 5.63892 9.18024C6.38442 9.18024 6.98292 9.77964 6.98292 10.5263C6.98292 11.2624 6.38442 11.8618 5.63892 11.8723Z"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </ListItemIcon> */}
+                                  {/* <ListItemText primary={menu.menu_name} /> */}
+                                  <div>{menu.menu_name}</div>
+                                </Link>
+                              </li>
+                            </>
+                          )}
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                  {user_type === "admin" && (
+                    <>
+                      <li>
+                        <Link
+                          //component={Link}
+                          to="/main/uploadpdf"
+                          // selected={selectedIndex1?.toLowerCase() === "uploadpdf"}
+                          // className={
+                          //   selectedIndex1?.toLowerCase() === "uploadpdf"
+                          //     ? "selecteditem"
+                          //     : "unselecteditem"
+                          // }
+                          // style={{ backgroundColor: selectedIndex1?.toLowerCase() === "uploadpdf" ? '#024f52' : 'transparent', color: selectedIndex1?.toLowerCase() === "uploadpdf" ? "#fff" : "#fff" }}
+                          onClick={() => handleListItemClick1("uploadpdf")}
+                        >
+                          <UploadFileIcon />
+                          <div className="menu-title">Upload PDF</div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          // component={Link}
+                          to="/main/pdflist"
+                          // selected={selectedIndex1?.toLowerCase() === "pdflist"}
+                          // className={
+                          //   selectedIndex1?.toLowerCase() === "pdflist"
+                          //     ? "selecteditem"
+                          //     : "unselecteditem"
+                          // }
+                          // style={{ backgroundColor: selectedIndex1?.toLowerCase() === "uploadpdf" ? '#024f52' : 'transparent', color: selectedIndex1?.toLowerCase() === "uploadpdf" ? "#fff" : "#fff" }}
+                          onClick={() => handleListItemClick1("pdflist")}
+                        >
+                          <PictureAsPdfOutlinedIcon />
+
+                          <div className="menu-title">PDF List</div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          //component={Link}
+                          to="/main/feedback"
+                          // selected={selectedIndex1?.toLowerCase() === "feedback"}
+                          // className={
+                          //   selectedIndex1?.toLowerCase() === "feedback"
+                          //     ? "selecteditem"
+                          //     : "unselecteditem"
+                          // }
+                          // style={{ backgroundColor: selectedIndex1?.toLowerCase() === "uploadpdf" ? '#024f52' : 'transparent', color: selectedIndex1?.toLowerCase() === "uploadpdf" ? "#fff" : "#fff" }}
+                          onClick={() => handleListItemClick1("feedback")}
+                        >
+                          <FeedbackOutlinedIcon />
+
+                          <div className="menu-title">Feedback</div>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          //component={Link}
+                          to="/main/student-feedback"
+                          // selected={
+                          //   selectedIndex1?.toLowerCase() === "student-feedback"
+                          // }
+                          // className={
+                          //   selectedIndex1?.toLowerCase() === "student-feedback"
+                          //     ? "selecteditem"
+                          //     : "unselecteditem"
+                          // }
+                          // style={{ backgroundColor: selectedIndex1?.toLowerCase() === "uploadpdf" ? '#024f52' : 'transparent', color: selectedIndex1?.toLowerCase() === "uploadpdf" ? "#fff" : "#fff" }}
+                          onClick={() =>
+                            handleListItemClick1("student-feedback")
+                          }
+                        >
+                          <ThreePOutlinedIcon />
+                          <div className="menu-title">Student Feedback</div>
+                        </Link>
+                      </li>
+                    </>
+                  )}
+                </>
               )}
-              <li>
-                <Link to="/main/faq" onClick={removeMobileToggle}>
-                  <div className="parent-icon">
-                    <LiveHelpOutlinedIcon />
-                  </div>
-                  <div className="menu-title">FAQs</div>
-                </Link>
-              </li>
+              {/* </ul> */}
             </MetisMenu>
           </div>
-        </SimpleBar>
+          { user_type === "student" && 
+          <div className="sidebar-footer">
+            <div className="sidebar-nav">
+              <ul className="metismenu">
+                { profileCompletion === "100" && <li>
+                  <Link
+                    to="/main/student-feedback/add-student-feedback"
+                    onClick={removeMobileToggle}
+                  >
+                    <div className="parent-icon">
+                      <InfoOutlinedIcon />
+                    </div>
+                    <div className="menu-title">Feedback</div>
+                  </Link>
+                </li>}
+                <li>
+                  <Link to="/main/faq" onClick={removeMobileToggle}>
+                    <div className="parent-icon">
+                      <LiveHelpOutlinedIcon />
+                    </div>
+                    <div className="menu-title">FAQs</div>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>}
+        </PerfectScrollbar>
       </aside>
     </>
     // </SidebarContainer>

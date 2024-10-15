@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
@@ -28,6 +28,24 @@ const Forgotpassword = () => {
   const [msg, setMsg] = useState("");
   const [value, setValue] = React.useState("student");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const theme = localStorage?.getItem("theme") || "";
+    if (theme === "light") {
+      document?.documentElement?.setAttribute("data-bs-theme", theme);      
+    } else if (theme === "dark") {
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+   
+    } else if (theme === "blue-theme")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else if (theme === "semi-dark")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else if (theme === "bordered-theme")
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else
+    document?.documentElement?.setAttribute("data-bs-theme", theme);
+    // document.documentElement.setAttribute('data-theme', theme);
+ }, []);
 
   const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

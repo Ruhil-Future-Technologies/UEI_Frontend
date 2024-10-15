@@ -101,8 +101,8 @@ const Submenu = () => {
     return (
         <>
          {loading && <FullScreenLoader />}
-            <div className='dashboard'>
-
+            <div className='main-wrapper'>
+                <div className="main-content">
                 <div className='card'>
                     <div className='card-body'>
                         <div className='table_wrapper'>
@@ -190,6 +190,8 @@ const Submenu = () => {
 
                     </div>
                 </div>
+                </div>
+                
 
             </div>
             <DeleteDialog

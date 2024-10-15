@@ -15,7 +15,6 @@ import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { ChildComponentProps } from "../StudentProfile";
 
 interface StudentAddress {
-  id?: number;
   student_id?: string;
   address1?: string;
   address2?: string;
@@ -25,8 +24,6 @@ interface StudentAddress {
   district?: string;
   pincode?: string;
   address_type?: string;
-  created_at?: string;
-  updated_at?: string;
 }
 
 const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
@@ -59,14 +56,12 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [city_col1, setcity_col1] = useState<boolean>(false);
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
-  const [isSameAddress, setIsSameAddress] = useState<boolean>(false);
+
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    console.log("Initial Values", studentAddress);
-
     const handleFocus = () => setIsFocused(true);
     const handleFocusstate = () => setIsFocusedstate(true);
     const handleBlur = (e: FocusEvent) => {
@@ -147,18 +142,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           });
         } else if (response?.status === 404) {
           setEditFlag(true);
-          setStudentAddress({
-            address_type: "current",
-          });
-          setStudentAddress1({
-            address_type: "current",
-          });
-          setPermanentAddress({
-            address_type: "permanent",
-          });
-          setPermanentAddress1({
-            address_type: "permanent",
-          });
           // toast.error(response?.message, {
           //   hideProgressBar: true,
           //   theme: "colored",
@@ -183,28 +166,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     listData();
   }, []);
 
-  useEffect(() => {
-    let firstAddress = { ...studentAddress };
-    let secondAddress = { ...permanentAddress };
-    delete firstAddress.id;
-    delete secondAddress.id;
-    delete firstAddress.address_type;
-    delete secondAddress.address_type;
-    delete firstAddress?.created_at;
-    delete secondAddress?.created_at;
-    delete firstAddress?.updated_at;
-    delete secondAddress?.updated_at;
-
-    if (deepEqual(firstAddress, secondAddress)) setIsSameAddress(true);
-    else setIsSameAddress(false);
-  }, [studentAddress, permanentAddress]);
-
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     addressType: string
   ) => {
-    console.log("Student Info", studentAddress);
-
     const { name, value } = event.target;
 
     if (addressType === "current") {
@@ -250,10 +215,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       //         currentpin: !validatePincode(value) ? 'Please enter a valid Pincode Only numbers allowed.' : '',
       //       });
       // }
-      setStudentAddress((prevState) => {
-        console.log("Previos state", prevState);
-        return { ...prevState, [name]: value };
-      });
+      setStudentAddress((prevState) => ({ ...prevState, [name]: value }));
     } else {
       if (name === "country") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -448,8 +410,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       if (editFlag) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
-            console.log("API Called");
-
             const data = await postData("/student_address/add", addressPayload);
             console.log(data);
             if (data?.status === 200) {
@@ -484,12 +444,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         // Add current address
         if (studentAddress?.address_type === "current") {
-          console.log("Add current address");
           await addAddress("Current", currentAddressPayload);
         }
         // Add permanent address
         if (permanentAddress?.address_type === "permanent") {
-          console.log("Add permanent address");
           await addAddress("Permanent", permanentAddressPayload);
         }
       } else {
@@ -498,10 +456,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           addressPayload: any
         ) => {
           try {
-            const data = await putData(
-              "/student_address/edit/" + StudentId,
-              addressPayload
-            );
+            const data = await putData("/student_address/edit/" + StudentId, {
+              ...addressPayload,
+              pincode: addressPayload?.pincode || 0,
+            });
             // console.log(data);
             if (data?.status === 200) {
               toast.success(`${addressType} address updated successfully`, {
@@ -866,7 +824,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {studentAddress.pincode == "" && (
+            {!studentAddress.pincode && (
               <p style={{ color: "red" }}>Please enter Pincode.</p>
             )}
           </div>
@@ -887,7 +845,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={isSameAddress}
                   onChange={handlePermanentAddressCheckbox}
                   name="sameAsCurrent"
                 />

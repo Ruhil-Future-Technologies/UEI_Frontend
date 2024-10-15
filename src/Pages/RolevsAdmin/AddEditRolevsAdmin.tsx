@@ -209,8 +209,9 @@ const AddEditRoleVsAdmin = () => {
     })
     return (
         <>
-            <div className='profile_section'>
-                <div className='card'>
+            <div className='main-wrapper'>
+                <div className="main-content">
+                <div className='card p-lg-3'>
                     <div className='card-body'>
                         <Typography variant="h6">
                             {id ? <div className='main_title'>Edit Role vs User</div> : <div className='main_title'>Add Role vs User</div>}
@@ -230,7 +231,7 @@ const AddEditRoleVsAdmin = () => {
                                 // <form onSubmit={(e) => handleSubmit(rolevsadmin)}>
                                 <Form>
 
-                                    <div className='row'>
+                                    <div className='row gy-4 mt-0'>
                                         <div className='col-md-4'>
                                             <div className="form_field_wrapper">
                                                 <FormControl fullWidth>
@@ -319,13 +320,18 @@ const AddEditRoleVsAdmin = () => {
                                                 <p style={{ color: 'red' }}>{errors.admin_id}</p>:<></>
                                             }
                                         </div>
+                                        <div className="col-lg-12">
+                                        <button className='btn btn-primary mainbutton'  >{id ? "Update" : "Save"}</button>
+                                        </div>
                                     </div>
-                                    <button className='btn btn-primary mainbutton'  >{id ? "Update" : "Save"}</button>
+                                    
                                     </Form>
                             )}
                             </Formik>
                     </div>
                 </div>
+                </div>
+                
             </div>
         </>
     )

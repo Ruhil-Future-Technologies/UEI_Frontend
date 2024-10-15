@@ -13,18 +13,25 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NameProvider } from './Pages/Context/NameContext';
+
+import { ThemeProvider } from '@mui/material/styles';
+//import CssBaseline from '@mui/material/CssBaseline'; // Optional: Normalize styles
+import theme from './theme'; // Path to your theme.ts
+
 // import 'bootstrap/dist/css/bootstrap.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
+  <ThemeProvider theme={theme}>
   <NameProvider> 
      <BrowserRouter>
    <ToastContainer closeOnClick={false} closeButton={false} autoClose={3000} style={{width:"auto"}}/>
     <App />
   </BrowserRouter>
   </NameProvider>
+  </ThemeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

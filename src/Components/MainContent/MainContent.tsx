@@ -1,9 +1,22 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "./MainContent.css";
+//import "./MainContent.css";
 import { Bar, Line } from "react-chartjs-2";
 import Chart from "react-apexcharts";
 import "chart.js/auto";
 import { PieChart } from "@mui/x-charts/PieChart";
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Legend,
+  Tooltip,
+  Filler,
+  ChartOptions,
+  ChartData,
+} from 'chart.js';
+
 
 // import { Dataset } from '@mui/icons-material';
 // import Box from '@mui/material/Box';
@@ -17,14 +30,23 @@ import {
   QUERY_KEYS_STUDENT,
 } from "../../utils/const";
 import CreateIcon from "@mui/icons-material/Create";
+
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import OpenInFullOutlinedIcon from "@mui/icons-material/OpenInFullOutlined";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import VolumeOffOutlinedIcon from "@mui/icons-material/VolumeOffOutlined";
 import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
@@ -333,6 +355,9 @@ function MainContent() {
     },
   };
 
+  
+  
+
   useEffect(() => {
     if (usertype === "admin") {
       setUserName("admin");
@@ -385,7 +410,38 @@ function MainContent() {
     chatCount: 0,
   });
 
-  const barData = {
+  // const barData = {
+  //   labels: [
+  //     "Entities",
+  //     "Institute",
+  //     "Student",
+  //     "Course",
+  //     "Subject",
+  //     "Department",
+  //   ],
+  //   datasets: [
+  //     {
+  //       label: "Dataset 1",
+  //       backgroundColor: "#3498DB",
+  //       borderColor: "#3498DB",
+  //       borderWidth: 1,
+  //       data: [
+  //         stats.entityCount,
+  //         stats.institutionCount,
+  //         stats.studentCount,
+  //         stats.courseCount,
+  //         stats.subjectCount,
+  //         stats.departmentCount,
+  //       ],
+  //     },
+  //   ],
+  // };
+ 
+  // bar chart
+  const barChartRef = useRef<ChartJS<'bar', number[], string> | null>(null);
+
+  // Define the bar chart data
+  const barChartData: ChartData<'bar', number[], string> = {
     labels: [
       "Entities",
       "Institute",
@@ -396,10 +452,7 @@ function MainContent() {
     ],
     datasets: [
       {
-        label: "Dataset 1",
-        backgroundColor: "#3498DB",
-        borderColor: "#3498DB",
-        borderWidth: 1,
+        label: 'This Week',
         data: [
           stats.entityCount,
           stats.institutionCount,
@@ -408,34 +461,169 @@ function MainContent() {
           stats.subjectCount,
           stats.departmentCount,
         ],
+        backgroundColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            // This case happens on initial chart load
+            return 'rgba(0, 0, 0, 0)';
+          }
+
+          const gradientFill1 = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradientFill1.addColorStop(0, '#005bea');
+          gradientFill1.addColorStop(1, '#00c6fb');
+          return gradientFill1;
+        },
+        borderColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            return '#000000';
+          }
+
+          const gradientBorder1 = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradientBorder1.addColorStop(0, '#005bea');
+          gradientBorder1.addColorStop(1, '#00c6fb');
+          return gradientBorder1;
+        },
+        borderWidth: 0,
+        borderRadius: 30, // Rounded corners
+        categoryPercentage: 0.3, // Width of the bars
       },
+     
     ],
   };
-  const lineData = {
-    labels: [
-      "Entities",
-      "Institute",
-      "Student",
-      "Course",
-      "Subject",
-      "Department",
-    ],
-    datasets: [
-      {
-        label: "Dataset 2",
-        backgroundColor: "#3498DB",
-        borderColor: "#3498DB",
-        data: [
-          stats.entityCount,
-          stats.institutionCount,
-          stats.studentCount,
-          stats.courseCount,
-          stats.subjectCount,
-          stats.departmentCount,
-        ],
+
+  // Define the bar chart options
+  const barChartOptionsadmin: ChartOptions<'bar'> = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
       },
-    ],
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+      x: {},
+    },
   };
+
+ 
+ 
+  // const lineData = {
+  //   labels: [
+  //     "Entities",
+  //     "Institute",
+  //     "Student",
+  //     "Course",
+  //     "Subject",
+  //     "Department",
+  //   ],
+  //   datasets: [
+  //     {
+  //       label: "Dataset 2",
+  //       backgroundColor: "#3498DB",
+  //       borderColor: "#3498DB",
+  //       data: [
+  //         stats.entityCount,
+  //         stats.institutionCount,
+  //         stats.studentCount,
+  //         stats.courseCount,
+  //         stats.subjectCount,
+  //         stats.departmentCount,
+  //       ],
+  //     },
+  //   ],
+  // };
+
+    //line chart
+    const chartRef = useRef<ChartJS<'line', number[], string> | null>(null);
+    const data: ChartData<'line', number[], string> = {
+      labels: [
+        "Entities",
+        "Institute",
+        "Student",
+        "Course",
+        "Subject",
+        "Department",
+      ],
+      datasets: [
+        {
+          label: 'This Week',
+          data: [
+            stats.entityCount,
+            stats.institutionCount,
+            stats.studentCount,
+            stats.courseCount,
+            stats.subjectCount,
+            stats.departmentCount,
+          ],
+          fill: {
+            target: 'origin',
+            above: 'rgba(13, 110, 253, 0.15)', // Area above the origin
+          },
+          backgroundColor: function (context) {
+            const chart = context.chart;
+            const { ctx, chartArea } = chart;
+  
+            if (!chartArea) {
+              // This case happens on initial chart load
+              return 'rgba(0, 0, 0, 0)';
+            }
+            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            gradient.addColorStop(0, '#005bea');
+            gradient.addColorStop(1, '#00c6fb');
+            return gradient;
+          },
+          borderColor: function (context) {
+            const chart = context.chart;
+            const { ctx, chartArea } = chart;
+  
+            if (!chartArea) {
+              return '#000000';
+            }
+            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+            gradient.addColorStop(0, '#005bea');
+            gradient.addColorStop(1, '#00c6fb');
+            return gradient;
+          },
+          borderWidth: 4,
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+        },
+       
+      ],
+    };
+    const options: ChartOptions<'line'> = {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          display: true,
+        },
+        tooltip: {
+          enabled: true,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            // Optional: Customize Y-axis ticks
+          },
+        },
+        x: {
+          // Optional: Customize X-axis
+        },
+      },
+    };
+  
 
   useEffect(() => {
     setLoader(loading);
@@ -1514,124 +1702,369 @@ function MainContent() {
       {/* {basicinfo!==null && basicinfo?.basic_info && userName === 'admin' ?  */}
       {userName === "admin" ? (
         <>
-          <main className="main-content">
-            <section className="row">
-              {menuList == null || menuList?.length === 0 ? (
-                <>
-                  <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                    <div className="stat-item">
-                      <p>Entities</p>
-                      <h2>{stats.entityCount}</h2>
+          <div className="main-wrapper">
+            <main className="main-content">
+              <section className="row">
+                {menuList == null || menuList?.length === 0 ? (
+                  <>
+                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
+                      <div className="card">
+                       <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PermContactCalendarIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.entityCount}</h4>
+                            <p className="mb-0">Total Entities</p>
+                          </div>
+                        </div>                       
+                      </div>
+                    </div>
+                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
+                      <div className="card">
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PermContactCalendarIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.institutionCount}</h4>
+                            <p className="mb-0">Total Institutions</p>
+                          </div>
+                        </div> 
+                      </div>
+                    </div>
+                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
+                      <div className="card">
+                      <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PermContactCalendarIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.studentCount}</h4>
+                            <p className="mb-0">Total Students</p>
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
+                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
+                      <div className="card">
+                       <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PermContactCalendarIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.courseCount}</h4>
+                            <p className="mb-0">Total Courses</p>
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
+                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
+                      <div className="card">
+                      <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PermContactCalendarIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.subjectCount}</h4>
+                            <p className="mb-0">Total Subjects</p>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
+                      <div className="card">
+                       <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <CollectionsBookmarkIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.departmentCount}</h4>
+                            <p className="mb-0">Total Departments</p>
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="col-6 col-lg-4 d-flex">
+                      <Link
+                        to={InstitutionsExists ? "/main/Institute" : "#"}
+                        className="card"
+                      >
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PermContactCalendarIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.institutionCount}</h4>
+                            <p className="mb-0">Total Institutions</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="col-6 col-lg-2 d-flex">
+                      <Link
+                        to={InstitutionsExists ? "/main/Student" : "#"}
+                        className="card"
+                      >
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PersonAddIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.studentCount}</h4>
+                            <p className="mb-0">Students</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="col-6 col-lg-2 d-flex">
+                      <Link
+                        to={InstitutionsExists ? "/main/Course" : "#"}
+                        className="card "
+                      >
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <LibraryBooksIcon />
+                            </div>
+                            <div>
+                              <span className="text-danger d-flex align-items-center">
+                                +24% <ExpandLessIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.courseCount}</h4>
+                            <p className="mb-0">Courses</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="col-6 col-lg-2 d-flex">
+                      <Link
+                        to={InstitutionsExists ? "/main/Subject" : "#"}
+                        className="card "
+                      >
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <AutoStoriesIcon />
+                            </div>
+                            <div>
+                              <span className="text-danger d-flex align-items-center">
+                                +24% <ExpandLessIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.subjectCount}</h4>
+                            <p className="mb-0">Subjects</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="col-6 col-lg-2 d-flex">
+                      <Link
+                        to={InstitutionsExists ? "/main/Department" : "#"}
+                        className="card "
+                      >
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <CollectionsBookmarkIcon />
+                            </div>
+                            <div>
+                              <span className="text-danger d-flex align-items-center">
+                                +24% <ExpandLessIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.departmentCount}</h4>
+                            <p className="mb-0">Department</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </section>
+              <section className="row">
+                <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-header py-3">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <h5 className="mb-0">School Performance</h5>
+                        <div className="dropdown">
+                          <a
+                            href="javascript:;"
+                            className="dropdown-toggle-nocaret options dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                          >
+                            <MoreVertIcon />
+                            
+                          </a>
+                          <ul className="dropdown-menu">
+                            <li>
+                              <a className="dropdown-item" href="javascript:;">
+                                Action
+                              </a>
+                            </li>
+                            <li>
+                              <a className="dropdown-item" href="javascript:;">
+                                Another action
+                              </a>
+                            </li>
+                            <li>
+                              <a className="dropdown-item" href="javascript:;">
+                                Something else here
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      {/* <Bar data={barData} /> */}
+                      <div className="chart-container1">
+      <Bar ref={barChartRef} data={barChartData} options={barChartOptionsadmin} />
+    </div>
                     </div>
                   </div>
-                  <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                    <div className="stat-item">
-                      <p>Institutions</p>
-                      <h2>{stats.institutionCount}</h2>
+                </div>
+                <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-header py-3">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <h5 className="mb-0">School Performance</h5>
+                        <div className="dropdown">
+                          <a
+                            href="javascript:;"
+                            className="dropdown-toggle-nocaret options dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                          >
+                             <MoreVertIcon />
+                          </a>
+                          <ul className="dropdown-menu">
+                            <li>
+                              <a className="dropdown-item" href="javascript:;">
+                                Action
+                              </a>
+                            </li>
+                            <li>
+                              <a className="dropdown-item" href="javascript:;">
+                                Another action
+                              </a>
+                            </li>
+                            <li>
+                              <a className="dropdown-item" href="javascript:;">
+                                Something else here
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      {/* <Line data={lineData} /> */}
+                      <div className="chart-container1">
+      <Line ref={chartRef} data={data} options={options} />
+    </div>
                     </div>
                   </div>
-                  <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                    <div className="stat-item">
-                      <p>Students</p>
-                      <h2>{stats.studentCount}</h2>
-                    </div>
-                  </div>
-                  <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                    <div className="stat-item">
-                      <p>Courses</p>
-                      <h2>{stats.courseCount}</h2>
-                    </div>
-                  </div>
-                  <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                    <div className="stat-item">
-                      <p>Subjects</p>
-                      <h2>{stats.subjectCount}</h2>
-                    </div>
-                  </div>
-                  <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                    <div className="stat-item">
-                      <p>Departments</p>
-                      <h2>{stats.departmentCount}</h2>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to={InstitutionsExists ? "/main/Institute" : "#"}
-                    className="col-xl-2 col-md-4 col-sm-6 mb-2 mx-3 stat-item"
-                  >
-                    <div>
-                      <p>Institutions</p>
-                      <h2>{stats.institutionCount}</h2>
-                    </div>
-                  </Link>
-                  <Link
-                    to={StudentsExists ? "/main/Student" : "#"}
-                    className="col-xl-2 col-md-4 col-sm-6 mb-2 mx-3 stat-item"
-                  >
-                    <div>
-                      <p>Students</p>
-                      <h2>{stats.studentCount}</h2>
-                    </div>
-                  </Link>
-                  <Link
-                    to={CoursesExists ? "/main/Course" : "#"}
-                    className="col-xl-2 col-md-4 col-sm-6 mb-2 mx-3 stat-item"
-                  >
-                    <div>
-                      <p>Courses</p>
-                      <h2>{stats.courseCount}</h2>
-                    </div>
-                  </Link>
-                  <Link
-                    to={SubjectsExists ? "/main/Subject" : "#"}
-                    className="col-xl-2 col-md-4 col-sm-6 mb-2 mx-3 stat-item"
-                  >
-                    <div>
-                      <p>Subjects</p>
-                      <h2>{stats.subjectCount}</h2>
-                    </div>
-                  </Link>
-                  <Link
-                    to={DepartmentExists ? "/main/Department" : "#"}
-                    className="col-xl-2 col-md-4 col-sm-6 mb-2 mx-3 stat-item"
-                  >
-                    <div>
-                      <p>Departments</p>
-                      <h2>{stats.departmentCount}</h2>
-                    </div>
-                  </Link>
-                </>
-              )}
-            </section>
-            <section className="charts">
-              <div className="chart">
-                <Bar data={barData} />
-              </div>
-              <div className="chart">
-                <Line data={lineData} />
-              </div>
-              <div className="chart">
-                <PieChart
-                  className="pie"
-                  series={[
-                    {
-                      data: pieData,
-                      highlightScope: { faded: "global", highlighted: "item" },
-                      faded: {
-                        innerRadius: 30,
-                        additionalRadius: -30,
-                        color: "gray",
+                </div>
+                <div className="col-lg-6">
+                  <div className="card">
+                  <div className="card-body">
+                  <PieChart
+                    className="pie"
+                    series={[
+                      {
+                        data: pieData,
+                        highlightScope: {
+                          faded: "global",
+                          highlighted: "item",
+                        },
+                        faded: {
+                          innerRadius: 30,
+                          additionalRadius: -30,
+                          color: "gray",
+                        },
                       },
-                    },
-                  ]}
-                  width={450}
-                  height={200}
-                />
-              </div>
-            </section>
-          </main>
+                    ]}
+                    width={450}
+                    height={200}
+                  />
+                </div>
+                  </div>
+                </div>
+                
+              </section>
+            </main>
+          </div>
         </>
       ) : userName === "student" ? (
         <>
@@ -2151,7 +2584,7 @@ function MainContent() {
                   </div>
                 </div>
 
-                <div className="col-xl-6 ">
+                <div className="col-xl-6 d-flex align-items-stretch">
                   <div className="row  g-4">
                     <div className="col-lg-12 ">
                       <div className="card w-100 rounded-4 desk-card addcomingsoon">

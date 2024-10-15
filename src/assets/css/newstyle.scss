@@ -2836,3 +2836,28 @@ a{
     }
   }
 }
+
+.card {
+  margin-bottom: 1.5rem;
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+  border: 0!important;
+  border-radius: 2.5rem !important;
+  width: 100%;
+  overflow: hidden;
+  .card-header {
+    padding: 20px !important;
+    background-color: rgba(0,0,0,0);
+  }
+  .card-body {
+    padding: 20px !important
+  }
+}
+
+
+.scrollbar-container{
+  display: flex;
+  flex-direction: column;
+  .sidebar-nav{
+    height: 100%;
+  }
+}
