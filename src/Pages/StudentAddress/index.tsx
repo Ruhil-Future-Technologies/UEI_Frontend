@@ -129,7 +129,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const listData = async () => {
     getData(`${"student_address/edit/" + StudentId}`)
       .then((response: any) => {
-        console.log(response);
         if (response?.status === 200) {
           response?.data.forEach((address: any) => {
             if (address?.address_type === "permanent") {
@@ -824,7 +823,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {!studentAddress.pincode && (
+            {studentAddress.pincode === "" && (
               <p style={{ color: "red" }}>Please enter Pincode.</p>
             )}
           </div>
@@ -835,7 +834,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         <div className="col-12 ">
           <h5 className="font-weight-bold profiletext">
             {" "}
-            <b> Permanent Address</b>
+            <b>Permanent Address</b>
           </h5>
         </div>
       </div>

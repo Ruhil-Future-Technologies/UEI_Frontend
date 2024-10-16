@@ -1960,7 +1960,7 @@ function MainContent() {
                         <h5 className="mb-0">School Performance</h5>
                         <div className="dropdown">
                           <a
-                            href="javascript:;"
+                            href=""
                             className="dropdown-toggle-nocaret options dropdown-toggle"
                             data-bs-toggle="dropdown"
                           >
@@ -1969,17 +1969,17 @@ function MainContent() {
                           </a>
                           <ul className="dropdown-menu">
                             <li>
-                              <a className="dropdown-item" href="javascript:;">
+                              <a className="dropdown-item" href="">
                                 Action
                               </a>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="javascript:;">
+                              <a className="dropdown-item" href="">
                                 Another action
                               </a>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="javascript:;">
+                              <a className="dropdown-item" href="">
                                 Something else here
                               </a>
                             </li>
@@ -2002,7 +2002,7 @@ function MainContent() {
                         <h5 className="mb-0">School Performance</h5>
                         <div className="dropdown">
                           <a
-                            href="javascript:;"
+                            href=""
                             className="dropdown-toggle-nocaret options dropdown-toggle"
                             data-bs-toggle="dropdown"
                           >
@@ -2010,17 +2010,17 @@ function MainContent() {
                           </a>
                           <ul className="dropdown-menu">
                             <li>
-                              <a className="dropdown-item" href="javascript:;">
+                              <a className="dropdown-item" href="">
                                 Action
                               </a>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="javascript:;">
+                              <a className="dropdown-item" href="">
                                 Another action
                               </a>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="javascript:;">
+                              <a className="dropdown-item" href="">
                                 Something else here
                               </a>
                             </li>

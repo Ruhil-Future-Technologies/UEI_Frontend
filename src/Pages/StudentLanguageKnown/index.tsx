@@ -294,7 +294,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   id={`language-select-${box.id}`}
                   name={`language_${box.id}`}
                   value={box.language_id}
-                  label="language *"
+                  label="Language *"
                   sx={{
                     backgroundColor: "#f5f5f5",
                   }}
@@ -332,7 +332,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   sx={{
                     backgroundColor: "#f5f5f5",
                   }}
-                  label="proficiency *"
+                  label="Proficiency *"
                   onChange={(e) => handleChange1(e, index)}
                   MenuProps={MenuProps}
                 >

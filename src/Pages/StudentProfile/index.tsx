@@ -525,10 +525,6 @@ const StudentProfile = () => {
               </div>
               <div className="col-lg-12 d-none d-xxl-block px-0">
                 <div className="wizard-content p-0 mt-4">
-                  {/* <p className="mb-0">
-                    <span className="crntstep">{activeForm + 1}</span> of 6
-                    Completed{" "}
-                  </p> */}
                   <div className="progress-bar">
                     <div ref={progressRef} className="progress"></div>
                   </div>
@@ -604,7 +600,7 @@ const StudentProfile = () => {
                                   <CheckOutlinedIcon />
                                 </div>
                                 <div className="step-label">
-                                  Hobbies / Language known
+                                  Hobbies / Language Known
                                 </div>
                               </div>
                               <div

@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -21,6 +20,8 @@ import {
   useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import AddIcon from "@mui/icons-material/Add";
@@ -28,8 +29,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { inputfield, inputfieldhover, inputfieldtext, tabletools } from "../../utils/helpers";
+import {
+  inputfield,
+  inputfieldhover,
+  inputfieldtext,
+  tabletools,
+} from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
+import { ChildComponentProps } from "../StudentProfile";
 
 interface Language {
   id: string;
@@ -63,9 +70,9 @@ function getStyles(
   };
 }
 
-function AdminLenguage() {
+const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   let AdminId = localStorage.getItem("_id");
-  console.log(AdminId);
+  // console.log(AdminId);
   // const storeLanguage: Language[] = [];
   interface Box {
     id: number;
@@ -73,9 +80,8 @@ function AdminLenguage() {
     proficiency: any;
   }
   const context = useContext(NameContext);
-    const {namecolor }:any = context;
-  const { getData, postData, putData ,deleteData} = useApi();
-
+  const { namecolor }: any = context;
+  const { getData, postData, putData, deleteData } = useApi();
 
   const theme = useTheme();
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
@@ -100,40 +106,40 @@ function AdminLenguage() {
   };
 
   const deleterow = (id: any, indx: number) => {
-    if(id !== 0)
-      {
-        deleteData(`/admin_language_known/delete/${id}`).then((data: any) => {
-          if(data.status === 200){
+    if (id !== 0) {
+      deleteData(`/admin_language_known/delete/${id}`)
+        .then((data: any) => {
+          if (data.status === 200) {
             toast.success("Language deleted successfully", {
               hideProgressBar: true,
               theme: "colored",
-          });
+            });
           }
-      }).catch(e => {
+        })
+        .catch((e) => {
           toast.error(e?.message, {
-              hideProgressBar: true,
-              theme: "colored",
+            hideProgressBar: true,
+            theme: "colored",
           });
-      });
-  
+        });
     }
     // setBoxes(boxes.filter((box) => box.id !== id));
     setBoxes(boxes.filter((box, index) => index !== indx));
-  //   toast.success("Admin Language known Deleted Successfully", {
-  //     hideProgressBar: true,
-  //     theme: "colored",
-  // });
+    //   toast.success("Admin Language known Deleted Successfully", {
+    //     hideProgressBar: true,
+    //     theme: "colored",
+    // });
   };
-
 
   useEffect(() => {
     getData(`${"language/list"}`)
       .then((data: any) => {
         if (data?.status === 200) {
-          const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
-          setAllLanguage(filteredData ||[]);
+          const filteredData = data?.data?.filter(
+            (item: any) => item?.is_active === 1
+          );
+          setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
-
         }
       })
       .catch((e) => {
@@ -144,7 +150,6 @@ function AdminLenguage() {
       });
     getData(`${"admin_language_known/edit/" + AdminId}`)
       .then((data: any) => {
-        console.log(data);
         if (data?.status === 200) {
           //    setAllLanguage(data?.data);
           const lenduageIds = data.data.language_id;
@@ -178,12 +183,11 @@ function AdminLenguage() {
       });
   }, []);
 
-
-
   const saveLanguage = (
     event: React.FormEvent<HTMLFormElement | typeof setSelectedLeng>
   ) => {
     event.preventDefault();
+    setActiveForm((prev) => prev + 1);
     boxes.forEach((box) => {
       const payload = {
         admin_id: AdminId,
@@ -193,20 +197,17 @@ function AdminLenguage() {
       if (editFalg) {
         postData("admin_language_known/add", payload)
           .then((data: any) => {
-
-            if(data.status === 200) {
-
+            if (data.status === 200) {
               toast.success("Language saved successfully", {
                 hideProgressBar: true,
                 theme: "colored",
-            });
-            }else{
+              });
+            } else {
               toast.error(data?.message, {
                 hideProgressBar: true,
                 theme: "colored",
               });
             }
-
           })
           .catch((e) => {
             toast.error(e?.message, {
@@ -218,21 +219,17 @@ function AdminLenguage() {
         if (box.id === 0) {
           postData("admin_language_known/add", payload)
             .then((data: any) => {
-
-              if(data.status === 200) {
+              if (data.status === 200) {
                 toast.success("Language saved successfully", {
                   hideProgressBar: true,
                   theme: "colored",
-              });
-              }else{
+                });
+              } else {
                 toast.error(data?.message, {
                   hideProgressBar: true,
                   theme: "colored",
                 });
-
               }
-               
-
             })
             .catch((e) => {
               toast.error(e?.message, {
@@ -241,24 +238,20 @@ function AdminLenguage() {
               });
             });
         } else {
-
-            // console.log("this is kjnfdfsj",payload)
+          // console.log("this is kjnfdfsj",payload)
           putData("admin_language_known/edit/" + AdminId, payload)
             .then((data: any) => {
-              if(data.status === 200){
-
+              if (data.status === 200) {
                 toast.success("Language updated successfully", {
                   hideProgressBar: true,
                   theme: "colored",
-              });
-              }else{
+                });
+              } else {
                 toast.error(data?.message, {
                   hideProgressBar: true,
                   theme: "colored",
                 });
-
               }
-
             })
             .catch((e) => {
               toast.error(e?.message, {
@@ -297,114 +290,167 @@ function AdminLenguage() {
     );
   };
 
-
   // console.log("boxes sasa", boxes);
 
   return (
-    <form onSubmit={saveLanguage}>
+    <form>
+      <p className="font-weight-bold profiletext mt-4">
+        <b> Language Known</b>
+      </p>
       {boxes.map((box, index) => (
-        <div className="row d-flex justify-content-start align-items-center mt-4 ">
-          <div className="col-md-4 form_field_wrapper ">
-            <FormControl required sx={{ m: 1, minWidth: 320, width: "100%" }}>
-              <InputLabel id="demo-simple-select-required-label">
-                Language
-              </InputLabel>
+        <div
+          className="row d-flex justify-content-start align-items-center mt-4"
+          key={index}
+        >
+          <div className="col form_field_wrapper ">
+            <FormControl required sx={{ m: 1 }} fullWidth>
+              <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
               <Select
                 labelId={`language-label-${box.id}`}
                 id={`language-select-${box.id}`}
                 name={`language_${box.id}`}
                 value={box.language_id}
-                label="language *"
+                label="Language *"
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                }}
                 onChange={(e) => {
                   handleChange(e, index);
                 }}
               >
                 {alllanguage.map((lang) => (
-                  <MenuItem value={lang.id}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    '&:hover': {
-                        backgroundColor: inputfieldhover(namecolor), 
-                    },
-                }}
-                  
-                  >{lang.language_name}</MenuItem>
+                  <MenuItem
+                    key={lang.id}
+                    value={lang.id}
+                    sx={{
+                      backgroundColor: inputfield(namecolor),
+                      color: inputfieldtext(namecolor),
+                      "&:hover": {
+                        backgroundColor: inputfieldhover(namecolor),
+                      },
+                    }}
+                  >
+                    {lang.language_name}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </div>
-          <div className="col-md-4 col-sm-3 form_field_wrapper">
-            <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
-              <InputLabel id="demo-simple-select-required-label">
+          <div className="col form_field_wrapper">
+            <FormControl required sx={{ m: 1 }} fullWidth>
+              <InputLabel id={`proficiency-label-${box.id}`}>
                 Proficiency
               </InputLabel>
               <Select
-                labelId={`language-label-${box.id}`}
-                id={`language-select-${box.id}`}
-                name={`language_${box.id}`}
+                labelId={`proficiency-label-${box.id}`}
+                id={`proficiency-select-${box.id}`}
+                name={`proficiency_${box.id}`}
                 value={box.proficiency}
-                label="proficiency *"
+                label="Proficiency *"
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                }}
                 onChange={(e) => {
                   handleChange1(e, index);
                 }}
               >
-                <MenuItem value={"read"} 
-                 sx={{
-                  backgroundColor: inputfield(namecolor),
-                  color: inputfieldtext(namecolor),
-                  '&:hover': {
+                <MenuItem
+                  value={"read"}
+                  sx={{
+                    backgroundColor: inputfield(namecolor),
+                    color: inputfieldtext(namecolor),
+                    "&:hover": {
                       backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                  },
-              }}
-                >Read</MenuItem>
-                <MenuItem value={"write"}
-                 sx={{
-                  backgroundColor: inputfield(namecolor),
-                  color: inputfieldtext(namecolor),
-                  '&:hover': {
+                    },
+                  }}
+                >
+                  Read
+                </MenuItem>
+                <MenuItem
+                  value={"write"}
+                  sx={{
+                    backgroundColor: inputfield(namecolor),
+                    color: inputfieldtext(namecolor),
+                    "&:hover": {
                       backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                  },
-              }}
-                >Write</MenuItem>
-                <MenuItem value={"both"}
-                 sx={{
-                  backgroundColor: inputfield(namecolor),
-                  color: inputfieldtext(namecolor),
-                  '&:hover': {
+                    },
+                  }}
+                >
+                  Write
+                </MenuItem>
+                <MenuItem
+                  value={"both"}
+                  sx={{
+                    backgroundColor: inputfield(namecolor),
+                    color: inputfieldtext(namecolor),
+                    "&:hover": {
                       backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                  },
-              }}
-                >Both</MenuItem>
+                    },
+                  }}
+                >
+                  Both
+                </MenuItem>
               </Select>
             </FormControl>
           </div>
-          <div className="col-md-4 col-sm-3">
-            <IconButton onClick={addRow} sx={{ width: "35px", height: "35px",color: tabletools(namecolor)  }}>
-              <AddIcon />
+          <div className="col form_field_wrapper d-flex">
+            <IconButton
+              onClick={addRow}
+              sx={{
+                width: "35px",
+                height: "35px",
+                color: tabletools(namecolor),
+              }}
+            >
+              <AddCircleOutlinedIcon />
             </IconButton>
             {boxes.length !== 1 && (
               <IconButton
-                onClick={() => deleterow(box.id,index)}
-                sx={{ width: "35px", height: "35px", color: tabletools(namecolor) }}
-
+                onClick={() => deleterow(box.id, index)}
+                sx={{
+                  width: "35px",
+                  height: "35px",
+                  color: tabletools(namecolor),
+                }}
               >
-                <DeleteIcon />
+                <DeleteOutlineOutlinedIcon />
               </IconButton>
             )}
           </div>
         </div>
       ))}
       <div className="row justify-content-center">
-        <div className="col-md-12">
-          <button className="btn btn-primary mainbutton" style={{ marginTop: "25px" }}>
+        {/* <div className="col-md-12">
+          <button
+            className="btn btn-primary mainbutton"
+            style={{ marginTop: "25px" }}
+          >
             Save your language
           </button>
+        </div> */}
+        <div className="col-lg-12">
+          <div className="mt-3 d-flex align-items-center justify-content-between">
+            <button
+              type="button"
+              className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
+              onClick={() => {
+                setActiveForm((prev) => prev - 1);
+              }}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              className="btn btn-dark px-lg-5 px-4  ms-auto d-block rounded-pill next-btn"
+              onClick={(e: any) => saveLanguage(e)}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </form>
   );
-}
+};
 
-export default AdminLenguage;
-
+export default AdminLanguage;
