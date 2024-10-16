@@ -620,7 +620,7 @@ const Header = () => {
               <ul className="dropdown-menu dropdown-menu-end">
                 <li onClick={() => setLanguage("EN")}>
                   <div className="dropdown-item d-flex align-items-center py-2">
-                    <img src={Country1} width="20" height="20" alt="" />
+                    {/* <img src={Country1} width="20" height="20" alt="" /> */}
                     <span className="ms-2">English</span>
                   </div>
                 </li>
