@@ -468,7 +468,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               });
               listData();
               setActiveForm((prev) => prev + 1);
-            } else {
+            } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
+            else {
               // toast.error(`Failed to update ${addressType} address`, {
               //   hideProgressBar: true,
               //   theme: "colored",
@@ -807,7 +808,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             name="pincode"
             className="form-control"
-            value={studentAddress.pincode}
+            value={studentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "current")}
             required
             // error={!!errors.currentpin}
@@ -1065,7 +1066,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             name="pincode"
             className="form-control"
-            value={permanentAddress.pincode}
+            value={permanentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "permanent")}
             // required
             // error={!!errors.permanentpin}

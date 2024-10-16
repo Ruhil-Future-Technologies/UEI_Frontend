@@ -15,8 +15,7 @@ import {
   Filler,
   ChartOptions,
   ChartData,
-} from 'chart.js';
-
+} from "chart.js";
 
 // import { Dataset } from '@mui/icons-material';
 // import Box from '@mui/material/Box';
@@ -31,9 +30,9 @@ import {
 } from "../../utils/const";
 import CreateIcon from "@mui/icons-material/Create";
 
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import OpenInFullOutlinedIcon from "@mui/icons-material/OpenInFullOutlined";
@@ -355,9 +354,6 @@ function MainContent() {
     },
   };
 
-  
-  
-
   useEffect(() => {
     if (usertype === "admin") {
       setUserName("admin");
@@ -374,14 +370,18 @@ function MainContent() {
 
   useEffect(() => {
     const lastRoute = localStorage.getItem("lastRoute");
-    if (lastRoute && ProPercentage) {
-      if (ProPercentage === 100) {
-        navigate("/main/Chat/recentChat");
-        localStorage.removeItem("lastRoute");
-      } else {
-        navigate("/main/Dashboard");
-        localStorage.removeItem("lastRoute");
+    if (usertype === "student") {
+      if (lastRoute && ProPercentage) {
+        if (ProPercentage === 100) {
+          navigate("/main/Chat/recentChat");
+          localStorage.removeItem("lastRoute");
+        } else {
+          navigate("/main/Dashboard");
+          localStorage.removeItem("lastRoute");
+        }
       }
+    } else {
+      localStorage.removeItem("lastRoute");
     }
   }, [ProPercentage]);
 
@@ -436,12 +436,12 @@ function MainContent() {
   //     },
   //   ],
   // };
- 
+
   // bar chart
-  const barChartRef = useRef<ChartJS<'bar', number[], string> | null>(null);
+  const barChartRef = useRef<ChartJS<"bar", number[], string> | null>(null);
 
   // Define the bar chart data
-  const barChartData: ChartData<'bar', number[], string> = {
+  const barChartData: ChartData<"bar", number[], string> = {
     labels: [
       "Entities",
       "Institute",
@@ -452,7 +452,7 @@ function MainContent() {
     ],
     datasets: [
       {
-        label: 'This Week',
+        label: "This Week",
         data: [
           stats.entityCount,
           stats.institutionCount,
@@ -467,12 +467,17 @@ function MainContent() {
 
           if (!chartArea) {
             // This case happens on initial chart load
-            return 'rgba(0, 0, 0, 0)';
+            return "rgba(0, 0, 0, 0)";
           }
 
-          const gradientFill1 = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradientFill1.addColorStop(0, '#005bea');
-          gradientFill1.addColorStop(1, '#00c6fb');
+          const gradientFill1 = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradientFill1.addColorStop(0, "#005bea");
+          gradientFill1.addColorStop(1, "#00c6fb");
           return gradientFill1;
         },
         borderColor: function (context) {
@@ -480,29 +485,33 @@ function MainContent() {
           const { ctx, chartArea } = chart;
 
           if (!chartArea) {
-            return '#000000';
+            return "#000000";
           }
 
-          const gradientBorder1 = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradientBorder1.addColorStop(0, '#005bea');
-          gradientBorder1.addColorStop(1, '#00c6fb');
+          const gradientBorder1 = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradientBorder1.addColorStop(0, "#005bea");
+          gradientBorder1.addColorStop(1, "#00c6fb");
           return gradientBorder1;
         },
         borderWidth: 0,
         borderRadius: 30, // Rounded corners
         categoryPercentage: 0.3, // Width of the bars
       },
-     
     ],
   };
 
   // Define the bar chart options
-  const barChartOptionsadmin: ChartOptions<'bar'> = {
+  const barChartOptionsadmin: ChartOptions<"bar"> = {
     maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
-        position: 'bottom',
+        position: "bottom",
       },
     },
     scales: {
@@ -513,8 +522,6 @@ function MainContent() {
     },
   };
 
- 
- 
   // const lineData = {
   //   labels: [
   //     "Entities",
@@ -541,89 +548,97 @@ function MainContent() {
   //   ],
   // };
 
-    //line chart
-    const chartRef = useRef<ChartJS<'line', number[], string> | null>(null);
-    const data: ChartData<'line', number[], string> = {
-      labels: [
-        "Entities",
-        "Institute",
-        "Student",
-        "Course",
-        "Subject",
-        "Department",
-      ],
-      datasets: [
-        {
-          label: 'This Week',
-          data: [
-            stats.entityCount,
-            stats.institutionCount,
-            stats.studentCount,
-            stats.courseCount,
-            stats.subjectCount,
-            stats.departmentCount,
-          ],
-          fill: {
-            target: 'origin',
-            above: 'rgba(13, 110, 253, 0.15)', // Area above the origin
-          },
-          backgroundColor: function (context) {
-            const chart = context.chart;
-            const { ctx, chartArea } = chart;
-  
-            if (!chartArea) {
-              // This case happens on initial chart load
-              return 'rgba(0, 0, 0, 0)';
-            }
-            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-            gradient.addColorStop(0, '#005bea');
-            gradient.addColorStop(1, '#00c6fb');
-            return gradient;
-          },
-          borderColor: function (context) {
-            const chart = context.chart;
-            const { ctx, chartArea } = chart;
-  
-            if (!chartArea) {
-              return '#000000';
-            }
-            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-            gradient.addColorStop(0, '#005bea');
-            gradient.addColorStop(1, '#00c6fb');
-            return gradient;
-          },
-          borderWidth: 4,
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 0,
+  //line chart
+  const chartRef = useRef<ChartJS<"line", number[], string> | null>(null);
+  const data: ChartData<"line", number[], string> = {
+    labels: [
+      "Entities",
+      "Institute",
+      "Student",
+      "Course",
+      "Subject",
+      "Department",
+    ],
+    datasets: [
+      {
+        label: "This Week",
+        data: [
+          stats.entityCount,
+          stats.institutionCount,
+          stats.studentCount,
+          stats.courseCount,
+          stats.subjectCount,
+          stats.departmentCount,
+        ],
+        fill: {
+          target: "origin",
+          above: "rgba(13, 110, 253, 0.15)", // Area above the origin
         },
-       
-      ],
-    };
-    const options: ChartOptions<'line'> = {
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          display: true,
+        backgroundColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            // This case happens on initial chart load
+            return "rgba(0, 0, 0, 0)";
+          }
+          const gradient = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradient.addColorStop(0, "#005bea");
+          gradient.addColorStop(1, "#00c6fb");
+          return gradient;
         },
-        tooltip: {
-          enabled: true,
+        borderColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            return "#000000";
+          }
+          const gradient = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradient.addColorStop(0, "#005bea");
+          gradient.addColorStop(1, "#00c6fb");
+          return gradient;
+        },
+        borderWidth: 4,
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 0,
+      },
+    ],
+  };
+  const options: ChartOptions<"line"> = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "bottom",
+        display: true,
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          // Optional: Customize Y-axis ticks
         },
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            // Optional: Customize Y-axis ticks
-          },
-        },
-        x: {
-          // Optional: Customize X-axis
-        },
+      x: {
+        // Optional: Customize X-axis
       },
-    };
-  
+    },
+  };
 
   useEffect(() => {
     setLoader(loading);
@@ -1709,7 +1724,7 @@ function MainContent() {
                   <>
                     <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
                       <div className="card">
-                       <div className="card-body">
+                        <div className="card-body">
                           <div className="mb-3 d-flex align-items-center justify-content-between">
                             <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
                               <PermContactCalendarIcon />
@@ -1724,7 +1739,7 @@ function MainContent() {
                             <h4 className="mb-0">{stats.entityCount}</h4>
                             <p className="mb-0">Total Entities</p>
                           </div>
-                        </div>                       
+                        </div>
                       </div>
                     </div>
                     <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
@@ -1744,12 +1759,12 @@ function MainContent() {
                             <h4 className="mb-0">{stats.institutionCount}</h4>
                             <p className="mb-0">Total Institutions</p>
                           </div>
-                        </div> 
+                        </div>
                       </div>
                     </div>
                     <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
                       <div className="card">
-                      <div className="card-body">
+                        <div className="card-body">
                           <div className="mb-3 d-flex align-items-center justify-content-between">
                             <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
                               <PermContactCalendarIcon />
@@ -1765,12 +1780,11 @@ function MainContent() {
                             <p className="mb-0">Total Students</p>
                           </div>
                         </div>
-                       
                       </div>
                     </div>
                     <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
                       <div className="card">
-                       <div className="card-body">
+                        <div className="card-body">
                           <div className="mb-3 d-flex align-items-center justify-content-between">
                             <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
                               <PermContactCalendarIcon />
@@ -1786,12 +1800,11 @@ function MainContent() {
                             <p className="mb-0">Total Courses</p>
                           </div>
                         </div>
-                       
                       </div>
                     </div>
                     <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
                       <div className="card">
-                      <div className="card-body">
+                        <div className="card-body">
                           <div className="mb-3 d-flex align-items-center justify-content-between">
                             <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
                               <PermContactCalendarIcon />
@@ -1807,12 +1820,11 @@ function MainContent() {
                             <p className="mb-0">Total Subjects</p>
                           </div>
                         </div>
-                        
                       </div>
                     </div>
                     <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
                       <div className="card">
-                       <div className="card-body">
+                        <div className="card-body">
                           <div className="mb-3 d-flex align-items-center justify-content-between">
                             <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
                               <CollectionsBookmarkIcon />
@@ -1828,7 +1840,6 @@ function MainContent() {
                             <p className="mb-0">Total Departments</p>
                           </div>
                         </div>
-                       
                       </div>
                     </div>
                   </>
@@ -1965,7 +1976,6 @@ function MainContent() {
                             data-bs-toggle="dropdown"
                           >
                             <MoreVertIcon />
-                            
                           </a>
                           <ul className="dropdown-menu">
                             <li>
@@ -1990,8 +2000,12 @@ function MainContent() {
                     <div className="card-body">
                       {/* <Bar data={barData} /> */}
                       <div className="chart-container1">
-      <Bar ref={barChartRef} data={barChartData} options={barChartOptionsadmin} />
-    </div>
+                        <Bar
+                          ref={barChartRef}
+                          data={barChartData}
+                          options={barChartOptionsadmin}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2006,7 +2020,7 @@ function MainContent() {
                             className="dropdown-toggle-nocaret options dropdown-toggle"
                             data-bs-toggle="dropdown"
                           >
-                             <MoreVertIcon />
+                            <MoreVertIcon />
                           </a>
                           <ul className="dropdown-menu">
                             <li>
@@ -2031,37 +2045,36 @@ function MainContent() {
                     <div className="card-body">
                       {/* <Line data={lineData} /> */}
                       <div className="chart-container1">
-      <Line ref={chartRef} data={data} options={options} />
-    </div>
+                        <Line ref={chartRef} data={data} options={options} />
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="col-lg-6">
                   <div className="card">
-                  <div className="card-body">
-                  <PieChart
-                    className="pie"
-                    series={[
-                      {
-                        data: pieData,
-                        highlightScope: {
-                          faded: "global",
-                          highlighted: "item",
-                        },
-                        faded: {
-                          innerRadius: 30,
-                          additionalRadius: -30,
-                          color: "gray",
-                        },
-                      },
-                    ]}
-                    width={450}
-                    height={200}
-                  />
-                </div>
+                    <div className="card-body">
+                      <PieChart
+                        className="pie"
+                        series={[
+                          {
+                            data: pieData,
+                            highlightScope: {
+                              faded: "global",
+                              highlighted: "item",
+                            },
+                            faded: {
+                              innerRadius: 30,
+                              additionalRadius: -30,
+                              color: "gray",
+                            },
+                          },
+                        ]}
+                        width={450}
+                        height={200}
+                      />
+                    </div>
                   </div>
                 </div>
-                
               </section>
             </main>
           </div>
