@@ -96,7 +96,6 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const getContacInfo = async () => {
     getData(`${"student_contact/edit/" + StudentId}`)
       .then((data: any) => {
-        console.log(data);
         if (data?.status === 200) {
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
@@ -170,7 +169,6 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     if (editFalg) {
       postData(`${"student_contact/add"}`, payload)
         .then((data: any) => {
-          console.log(data);
           if (data?.status === 200) {
             toast.success("Contact Details saved successfully", {
               hideProgressBar: true,
@@ -224,10 +222,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   return (
     <form>
       {/* <div className=' mt-5'> */}
-      <div
-        className="d-flex justify-content-start"
-      // style={{ margin: "25px" }}
-      >
+      <div className="d-flex justify-content-start">
         <div className="row">
           {/* <label className="pb-2">Mobile Number *</label> */}
           <div className="form_field_wrapper">

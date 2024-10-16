@@ -605,9 +605,7 @@ const Header = () => {
             </li> */}
             <li className="nav-item">
               <div className="toggle-mode nav-link" role="button">
-                <DarkModeOutlinedIcon
-                  onClick={toggleTheme}
-                />
+                <DarkModeOutlinedIcon onClick={toggleTheme} />
               </div>
             </li>
             <li className="nav-item dropdown">
@@ -966,7 +964,11 @@ const Header = () => {
                 <hr className="dropdown-divider" />
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
-                  to="/main/StudentProfile"
+                  to={
+                    user_type === "admin"
+                      ? "/main/adminprofile"
+                      : "/main/StudentProfile"
+                  }
                 >
                   <PersonOutlineOutlinedIcon />
                   Profile

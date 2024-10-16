@@ -287,7 +287,7 @@ const UserChangePassword = () => {
             <div className="ps-3">
 				<nav aria-label="breadcrumb">
 					<ol className="breadcrumb mb-0 p-0">
-						<li className="breadcrumb-item"><a href="javascript:;"><LockResetIcon/></a>
+						<li className="breadcrumb-item"><a href=""><LockResetIcon/></a>
 						</li>
 						<li className="breadcrumb-item active" aria-current="page">Reset My Password</li>
 					</ol>
