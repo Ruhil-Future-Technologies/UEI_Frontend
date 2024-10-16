@@ -270,10 +270,8 @@ export default function AdminProfile() {
       });
   };
   React.useEffect(() => {
-    if (activeForm === 5) {
-      adminAPI();
-    }
-  }, [activeForm]);
+    adminAPI();
+  }, []);
   // const handleMouseEnter = (event:any) => {
   //   event.target.style.backgroundColor = '#6c757d';  // Example hover style
   //   // event.target.style.fontSize= '.90rem'
