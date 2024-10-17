@@ -609,8 +609,9 @@ $dropdownAnimation: .6s cubic-bezier(.25, .8, .25, 1) 0s normal forwards 1 animd
 
         background-color: #fff;
         padding: 0;
-
+        border-radius: 8px;
         ul {
+          background-color: rgba($primary, .05);
           a {
             padding: 8px 15px 8px 30px;
           }
@@ -627,7 +628,7 @@ $dropdownAnimation: .6s cubic-bezier(.25, .8, .25, 1) 0s normal forwards 1 animd
         >a {
           color: $menuLink_Hover_Color;
           text-decoration: none;
-          background-color: $menu_bg_color;
+          //background-color: $menu_bg_color;
         }
       }
 
