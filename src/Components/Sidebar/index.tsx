@@ -269,7 +269,7 @@ const Sidebar = () => {
   }
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const toggleMenu = (id: number) => {
-    setOpenMenu(prevOpenMenu => (prevOpenMenu === id ? null : id));
+    setOpenMenu((prevOpenMenu) => (prevOpenMenu === id ? null : id));
   };
   // console.log("test hhh",selectedIndex1)
   // const SidebarContainer = styled.aside`
@@ -606,12 +606,12 @@ const Sidebar = () => {
                   {menuList1 && user_type !== "student" ? (
                     menuList1.map((menu: any) => {
                       return (
-                        <li key={menu.id} >
+                        <li key={menu.id}>
                           {menu.submenus && menu.submenus.length > 0 ? (
                             <>
                               <a
                                 key={menu.id}
-                                className="has-arrow"                                
+                                className="has-arrow"
                                 onClick={() => toggleMenu(menu.id)}
                                 aria-expanded={openMenu === menu.id}
                               >
@@ -625,7 +625,9 @@ const Sidebar = () => {
                               </a>
                               <ul
                                 id={menu.id}
-                                className={`mm-collapse ${openMenu === menu.id ? 'mm-show' : ''}`}
+                                className={`mm-collapse ${
+                                  openMenu === menu.id ? "mm-show" : ""
+                                }`}
                               >
                                 {menu?.submenus?.map((submenu: any) => {
                                   let menulist =
@@ -642,29 +644,13 @@ const Sidebar = () => {
                                   return (
                                     <li key={submenu.id}>
                                       <Link
-                                        // component={Link}
                                         to={menulist}
-                                        //  <Link component={Link} to={submenu.url}
-                                        // className={
-                                        //   selectedIndex1?.toLowerCase() ===
-                                        //   menulist.toLowerCase()
-                                        //     ? "selecteditem"
-                                        //     : "unselecteditem"
-                                        // }
-                                        // selected={
-                                        //   selectedIndex1?.toLowerCase() ===
-                                        //   menulist.toLowerCase()
-                                        // }
-                                        // style={{ backgroundColor: selectedIndex1?.toLowerCase() === menulist.toLowerCase() ? '#024f52' : 'transparent',color: selectedIndex1?.toLowerCase() === menulist.toLowerCase() ? "#fff":"#fff" }}
                                         onClick={() =>
                                           handleListItemClick1(menulist)
                                         }
                                       >
                                         <ArrowRightIcon />
-
                                         <div>{submenu.menu_name}</div>
-
-                                        {/* <ListItemText primary={menulist} /> */}
                                       </Link>
                                     </li>
                                   );
@@ -675,44 +661,13 @@ const Sidebar = () => {
                             <>
                               <li>
                                 <Link
-                                  //component={Link}
                                   to={menu?.form_data?.form_url}
-                                  // selected={selectedIndex === 0}
-                                  // className={
-                                  //   selectedIndex1?.toLowerCase() ===
-                                  //   menu?.form_data?.form_url?.toLowerCase()
-                                  //     ? "selecteditem"
-                                  //     : "unselecteditem"
-                                  // }
-                                  // selected={
-                                  //   selectedIndex1?.toLowerCase() ===
-                                  //   menu?.form_data?.form_url.toLowerCase()
-                                  // }
-                                  // style={{ backgroundColor: selectedIndex1?.toLowerCase() === menu?.form_data?.form_url?.toLowerCase() ? '#024f52' : 'transparent',color: selectedIndex1.toLowerCase() === menu?.form_data?.form_url.toLowerCase() ? "#fff":"#fff" }}
                                   onClick={() =>
                                     handleListItemClick1(
                                       menu?.form_data?.form_url
                                     )
                                   }
                                 >
-                                  {/* <ListItemIcon>
-                                    <div className="sidebar_icon">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="21"
-                                        height="21"
-                                        viewBox="0 0 21 21"
-                                        fill="#a8b0c5"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          clipRule="evenodd"
-                                          d="M0 10.5158C0 4.98448 4.4205 0 10.521 0C16.485 0 21 4.88983 21 10.4842C21 16.9725 15.708 21 10.5 21C8.778 21 6.867 20.5373 5.334 19.6329C4.7985 19.307 4.347 19.0651 3.7695 19.2544L1.6485 19.8853C1.113 20.0536 0.63 19.6329 0.7875 19.0651L1.491 16.7096C1.6065 16.3836 1.5855 16.0366 1.4175 15.7631C0.5145 14.1017 0 12.2824 0 10.5158ZM9.13574 10.5158C9.13574 11.2624 9.73424 11.8618 10.4797 11.8723C11.2252 11.8723 11.8237 11.2624 11.8237 10.5263C11.8237 9.77966 11.2252 9.18026 10.4797 9.18026C9.74474 9.16975 9.13574 9.77966 9.13574 10.5158ZM13.9775 10.5263C13.9775 11.2624 14.576 11.8723 15.3215 11.8723C16.067 11.8723 16.6655 11.2624 16.6655 10.5263C16.6655 9.77965 16.067 9.18025 15.3215 9.18025C14.576 9.18025 13.9775 9.77965 13.9775 10.5263ZM5.63892 11.8723C4.90392 11.8723 4.29492 11.2624 4.29492 10.5263C4.29492 9.77964 4.89342 9.18024 5.63892 9.18024C6.38442 9.18024 6.98292 9.77964 6.98292 10.5263C6.98292 11.2624 6.38442 11.8618 5.63892 11.8723Z"
-                                        />
-                                      </svg>
-                                    </div>
-                                  </ListItemIcon> */}
-                                  {/* <ListItemText primary={menu.menu_name} /> */}
                                   <div>{menu.menu_name}</div>
                                 </Link>
                               </li>
@@ -724,7 +679,7 @@ const Sidebar = () => {
                   ) : (
                     <></>
                   )}
-                  {user_type === "admin" && (
+                  {/* {user_type === "admin" && (
                     <>
                       <li>
                         <Link
@@ -801,38 +756,41 @@ const Sidebar = () => {
                         </Link>
                       </li>
                     </>
-                  )}
+                  )} */}
                 </>
               )}
               {/* </ul> */}
             </MetisMenu>
           </div>
-          { user_type === "student" && 
-          <div className="sidebar-footer">
-            <div className="sidebar-nav">
-              <ul className="metismenu">
-                { profileCompletion === "100" && <li>
-                  <Link
-                    to="/main/student-feedback/add-student-feedback"
-                    onClick={removeMobileToggle}
-                  >
-                    <div className="parent-icon">
-                      <InfoOutlinedIcon />
-                    </div>
-                    <div className="menu-title">Feedback</div>
-                  </Link>
-                </li>}
-                <li>
-                  <Link to="/main/faq" onClick={removeMobileToggle}>
-                    <div className="parent-icon">
-                      <LiveHelpOutlinedIcon />
-                    </div>
-                    <div className="menu-title">FAQs</div>
-                  </Link>
-                </li>
-              </ul>
+          {user_type === "student" && (
+            <div className="sidebar-footer">
+              <div className="sidebar-nav">
+                <ul className="metismenu">
+                  {profileCompletion === "100" && (
+                    <li>
+                      <Link
+                        to="/main/student-feedback/add-student-feedback"
+                        onClick={removeMobileToggle}
+                      >
+                        <div className="parent-icon">
+                          <InfoOutlinedIcon />
+                        </div>
+                        <div className="menu-title">Feedback</div>
+                      </Link>
+                    </li>
+                  )}
+                  <li>
+                    <Link to="/main/faq" onClick={removeMobileToggle}>
+                      <div className="parent-icon">
+                        <LiveHelpOutlinedIcon />
+                      </div>
+                      <div className="menu-title">FAQs</div>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>}
+          )}
         </PerfectScrollbar>
       </aside>
     </>
