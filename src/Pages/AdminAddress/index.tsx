@@ -438,7 +438,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             });
             getAddressInfo();
             setActiveForm((prev) => prev + 1);
-          } else {
+          } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
+          else {
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
             //   theme: "colored",
@@ -615,7 +616,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             name="address2"
             className="form-control"
             value={adminAddress.address2}
-            onChange={(e) => handleInputChange(e, "current")}
+            onChange={(e) => handleInputChange(e, "current_address")}
             // required
           />
           {/* <div> {adminAddress.address2 == "" && (
