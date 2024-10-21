@@ -941,7 +941,7 @@ const Header = () => {
                 />
               </a>
               <div className="dropdown-menu dropdown-user dropdown-menu-end shadow">
-                <a className="dropdown-item  gap-2 py-2" href="#">
+                <div className="dropdown-item  gap-2 py-2">
                   <div className="text-center">
                     <img
                       src={
@@ -960,7 +960,7 @@ const Header = () => {
                       namepro?.first_name || "User"
                     }`}</h5>
                   </div>
-                </a>
+                </div>
                 <hr className="dropdown-divider" />
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
