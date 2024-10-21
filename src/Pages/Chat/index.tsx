@@ -48,7 +48,6 @@ const Chat = () => {
   const userid = localStorage.getItem("_id") || "";
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const [regenerateSearch, setRegenerateSearch] = useState("");
   const [studentDetail, setStudentData] = useState<any>();
   const [studentCourse, setStudentCourse] = useState<any>();
   const [searcherr, setSearchErr] = useState(false);
@@ -420,7 +419,6 @@ const Chat = () => {
   };
 
   const searchData = () => {
-    setRegenerateSearch(search);
     setSearch("");
     setShowInitialPage(false);
     if (search === "") {
@@ -1016,7 +1014,7 @@ const Chat = () => {
   const toggleStarredChat = () => setIsStarredChatOpen(!isStarredChatOpen);
   const toggleChatHistory = () => setIsChatHistoryOpen(!isChatHistoryOpen);
 
-  const regenerateChat = () => {
+  const regenerateChat = (question: any) => {
     setLoading(true);
     setLoaderMsg("Fetching Data from Ollama model.");
     setSearchErr(false);
@@ -1026,7 +1024,7 @@ const Chat = () => {
 
     if (selectedchat?.question !== "") {
       payload = {
-        question: regenerateSearch,
+        question: question,
         prompt: prompt,
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
         // course: "class_10",
@@ -1045,7 +1043,7 @@ const Chat = () => {
       };
     } else {
       payload = {
-        question: regenerateSearch,
+        question: question,
         prompt: prompt,
         course: studentDetail?.course === null ? "" : studentDetail?.course,
         stream: studentDetail?.subject,
@@ -1054,14 +1052,14 @@ const Chat = () => {
 
     getData(
       // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://uatllm.gyansetu.ai/ollama-chat?user_query=${regenerateSearch}`
+      `https://uatllm.gyansetu.ai/ollama-chat?user_query=${question}`
     )
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);
           let ChatStorepayload = {
             student_id: userid,
-            chat_question: regenerateSearch,
+            chat_question: question,
             response: response?.answer,
           };
           postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
@@ -1860,7 +1858,11 @@ const Chat = () => {
                                       <span>Stop</span>
                                     </li>
                                   )}
-                                  <li onClick={regenerateChat}>
+                                  <li
+                                    onClick={() =>
+                                      regenerateChat(chat?.question)
+                                    }
+                                  >
                                     <CachedOutlinedIcon
                                       sx={{ fontSize: "14px" }}
                                     />{" "}
