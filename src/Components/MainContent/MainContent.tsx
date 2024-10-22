@@ -1870,7 +1870,7 @@ function MainContent() {
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={InstitutionsExists ? "/main/Student" : "#"}
+                        to={StudentsExists ? "/main/Student" : ""}
                         className="card"
                       >
                         <div className="card-body">
@@ -1893,7 +1893,7 @@ function MainContent() {
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={InstitutionsExists ? "/main/Course" : "#"}
+                        to={CoursesExists ? "/main/Course" : "#"}
                         className="card "
                       >
                         <div className="card-body">
@@ -1916,7 +1916,7 @@ function MainContent() {
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={InstitutionsExists ? "/main/Subject" : "#"}
+                        to={SubjectsExists ? "/main/Subject" : "#"}
                         className="card "
                       >
                         <div className="card-body">
@@ -1939,7 +1939,7 @@ function MainContent() {
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={InstitutionsExists ? "/main/Department" : "#"}
+                        to={DepartmentExists ? "/main/Department" : "#"}
                         className="card "
                       >
                         <div className="card-body">
@@ -1979,19 +1979,19 @@ function MainContent() {
                           </a>
                           <ul className="dropdown-menu">
                             <li>
-                              <a className="dropdown-item" href="">
+                              <div className="dropdown-item">
                                 Action
-                              </a>
+                              </div>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="">
+                              <div className="dropdown-item">
                                 Another action
-                              </a>
+                              </div>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="">
+                              <div className="dropdown-item">
                                 Something else here
-                              </a>
+                              </div>
                             </li>
                           </ul>
                         </div>
@@ -2015,28 +2015,27 @@ function MainContent() {
                       <div className="d-flex align-items-center justify-content-between">
                         <h5 className="mb-0">School Performance</h5>
                         <div className="dropdown">
-                          <a
-                            href=""
+                          <div
                             className="dropdown-toggle-nocaret options dropdown-toggle"
                             data-bs-toggle="dropdown"
                           >
                             <MoreVertIcon />
-                          </a>
+                          </div>
                           <ul className="dropdown-menu">
                             <li>
-                              <a className="dropdown-item" href="">
+                              <div className="dropdown-item">
                                 Action
-                              </a>
+                              </div>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="">
+                              <div className="dropdown-item">
                                 Another action
-                              </a>
+                              </div>
                             </li>
                             <li>
-                              <a className="dropdown-item" href="">
+                              <div className="dropdown-item">
                                 Something else here
-                              </a>
+                              </div>
                             </li>
                           </ul>
                         </div>

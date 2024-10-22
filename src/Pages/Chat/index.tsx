@@ -201,6 +201,15 @@ const Chat = () => {
     getVoices();
   }, []);
 
+  function getTodaysData(arr: any) {
+    const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
+
+    return arr.filter((item: any) => {
+      const itemDate = item.created_at.split(" ")[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+      return itemDate === today;
+    });
+  }
+
   const filterdataCall = async () => {
     if (Id === "recentChat") {
       // Convert updated_at strings to Date objects for comparison
@@ -210,6 +219,7 @@ const Chat = () => {
           updated_at: new Date(chat?.updated_at),
         })
       );
+      console.log("Parsed Chat", parsedChatHistory);
 
       // Sort the chat history by updated_at in descending order
       const sortedChatHistory = parsedChatHistory?.sort(
@@ -220,8 +230,8 @@ const Chat = () => {
       const chatmodify = JSON.parse(chatDataString);
 
       if (chatmodify && chatmodify[0].question !== "") {
-        const lastSixChats = sortedChatHistory?.slice(0, 5);
-        const newArray = [...lastSixChats];
+        const tadaysChat = getTodaysData(sortedChatHistory);
+        const newArray = [...tadaysChat];
         let column = [
           {
             question: chatmodify[0]?.question,
@@ -238,9 +248,9 @@ const Chat = () => {
         setchathistory(newArray);
       } else {
         // Get the last 6 chats
-        const lastSixChats = sortedChatHistory?.slice(0, 6);
+        const todaysChat = getTodaysData(sortedChatHistory);
         // Set the filtered chat history
-        setchathistory(lastSixChats);
+        setchathistory(todaysChat);
       }
     }
   };
@@ -386,9 +396,9 @@ const Chat = () => {
     setSearch("");
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
+        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
         setchatlistData(data?.data);
         setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
         setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
       })
       .catch((e) => {
@@ -725,15 +735,13 @@ const Chat = () => {
   }, [dataflagged]);
 
   useEffect(() => {
-    if (chat?.length > 0 || displayedChat?.length > 0) {
+    if (chat?.length > 0) {
       localStorage.setItem(
         "chatData",
         JSON.stringify(chat?.length ? chat : displayedChat)
       );
-      localStorage.setItem("chatsaved", JSON.stringify(chatsaved));
-      chatsaved && saveChatlocal();
     }
-  }, [chat, displayedChat, chatsaved]);
+  }, [chat]);
 
   let chatData: any;
   useEffect(() => {
@@ -746,6 +754,7 @@ const Chat = () => {
     }
 
     if (chatData?.length > 0) {
+      console.log("Chat Data Dependency ======>>>>>>", chatData);
       saveChatlocal();
     }
   }, [chatData]);
@@ -759,6 +768,8 @@ const Chat = () => {
 
     if (chatDataString) {
       chatData = JSON.parse(chatDataString);
+    } else if (displayedChat?.length > 0) {
+      chatData = displayedChat;
     } else {
       chatData = null;
     }
@@ -908,6 +919,8 @@ const Chat = () => {
     }
   };
   const displayChat = async (chats: any) => {
+    console.log("Display Chat", chats);
+
     setShowInitialPage(false);
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
@@ -927,35 +940,36 @@ const Chat = () => {
     setSelectedChat([]);
     let chatdataset: any[] = [];
     chatt.map((itemchat: any) => {
-      setTimeout(() => {
-        let chatdata: any = {};
-        chatdata.question = itemchat?.question;
-        // chatdata.answer = chat?.response
-        let elements: any = [];
-        try {
-          if (typeof itemchat?.answer === "string") {
-            elements = JSON.parse(itemchat?.answer);
-          } else {
-            elements = itemchat?.answer;
-          }
-        } catch (e) {
-          const cleanString = itemchat?.answer
-            .replace(/\\"/g, '"')
-            .replace(/[{}]/g, "")
-            .replace(/\\'/g, "'")
-            .replace(/(^"|"$)/g, "")
-            .replace(/(^\\\"|\\\"$)/g, "");
-          const stringArray = cleanString
-            .split(",")
-            .map((item: any) => item.trim());
-          elements = stringArray.map((item: any) => item.replace(/"/g, ""));
+      // setTimeout(() => {
+      let chatdata: any = {};
+      chatdata.question = itemchat?.question;
+      // chatdata.answer = chat?.response
+      let elements: any = [];
+      try {
+        if (typeof itemchat?.answer === "string") {
+          elements = JSON.parse(itemchat?.answer);
+        } else {
+          elements = itemchat?.answer;
         }
-        chatdata.answer = elements;
-        chatdata.speak = false;
-        chatdataset.push(chatdata);
-        setSelectedChat(chatdataset);
-      }, 500);
+      } catch (e) {
+        const cleanString = itemchat?.answer
+          .replace(/\\"/g, '"')
+          .replace(/[{}]/g, "")
+          .replace(/\\'/g, "'")
+          .replace(/(^"|"$)/g, "")
+          .replace(/(^\\\"|\\\"$)/g, "");
+        const stringArray = cleanString
+          .split(",")
+          .map((item: any) => item.trim());
+        elements = stringArray.map((item: any) => item.replace(/"/g, ""));
+      }
+      chatdata.answer = elements;
+      chatdata.speak = false;
+      chatdataset.push(chatdata);
+
+      // }, 500);
     });
+    setSelectedChat(chatdataset);
   };
 
   const handleDeleteFiles = (id: number | undefined) => {
@@ -969,6 +983,7 @@ const Chat = () => {
           hideProgressBar: true,
           theme: "colored",
         });
+        localStorage.removeItem("chatData");
         callAPI();
         setDataDelete(false);
       })
@@ -985,6 +1000,8 @@ const Chat = () => {
 
   const saveChatstar = () => {
     setChatSaved(!chatsaved);
+    localStorage.setItem("chatsaved", JSON.stringify(!chatsaved));
+    saveChatlocal();
   };
 
   const isSmallScreen = useMediaQuery("(max-width:600px)");

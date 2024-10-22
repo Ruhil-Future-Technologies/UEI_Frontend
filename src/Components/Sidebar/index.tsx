@@ -577,29 +577,10 @@ const Sidebar = () => {
                           <div className="menu-title">Chat History</div>
                         </Link>
                       </li>
-                      {/* <li>
-                        <Link
-                          to="/main/student-feedback/add-student-feedback"
-                          onClick={removeMobileToggle}
-                        >
-                          <div className="parent-icon">
-                            <InfoOutlinedIcon />
-                          </div>
-                          <div className="menu-title">Feedback</div>
-                        </Link>
-                      </li> */}
                     </>
                   ) : (
                     ""
                   )}
-                  {/* <li>
-                    <Link to="/main/faq" onClick={removeMobileToggle}>
-                      <div className="parent-icon">
-                        <LiveHelpOutlinedIcon />
-                      </div>
-                      <div className="menu-title">FAQs</div>
-                    </Link>
-                  </li> */}
                 </>
               ) : (
                 <>

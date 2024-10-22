@@ -713,56 +713,51 @@ const Header = () => {
                     </button>
                     <div className="dropdown-menu dropdown-option dropdown-menu-end shadow">
                       <div>
-                        <a
+                        <div
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
-                          href="#"
                         >
                           <Inventory2OutlinedIcon
                             style={{ fontSize: "1rem" }}
                           />
                           Archive All
-                        </a>
+                        </div>
                       </div>
                       <div>
-                        <a
+                        <div
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
-                          href="#"
                         >
                           <DoneAllOutlinedIcon style={{ fontSize: "1rem" }} />
                           Mark all as read
-                        </a>
+                        </div>
                       </div>
                       <div>
-                        <a
+                        <div
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
-                          href="#"
                         >
                           <MicOffOutlinedIcon style={{ fontSize: "1rem" }} />
                           Disable Notifications
-                        </a>
+                        </div>
                       </div>
                       <div>
-                        <a
+                        <div
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
-                          href="#"
                         >
                           <GradeOutlinedIcon style={{ fontSize: "1rem" }} />
                           What's new ?
-                        </a>
+                        </div>
                       </div>
                       <div>
                         <hr className="dropdown-divider" />
                       </div>
                       <div>
-                        <a
+                        <div
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
-                          href="#"
                         >
                           <LeaderboardOutlinedIcon
                             style={{ fontSize: "1rem" }}
                           />
                           Reports
-                        </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -770,7 +765,7 @@ const Header = () => {
                 <PerfectScrollbar className="notify-list">
                   <div>
                     <div>
-                      <a className="dropdown-item border-bottom py-2" href="#">
+                      <div className="dropdown-item border-bottom py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="">
                             <img
@@ -794,10 +789,10 @@ const Header = () => {
                             <CloseOutlinedIcon />
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                     <div>
-                      <a className="dropdown-item border-bottom py-2" href="#">
+                      <div className="dropdown-item border-bottom py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="user-wrapper bg-primary text-primary bg-opacity-10">
                             <span>RS</span>
@@ -815,10 +810,10 @@ const Header = () => {
                             <CloseOutlinedIcon />
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                     <div>
-                      <a className="dropdown-item border-bottom py-2" href="#">
+                      <div className="dropdown-item border-bottom py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="">
                             <img
@@ -840,10 +835,10 @@ const Header = () => {
                             <CloseOutlinedIcon />
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                     <div>
-                      <a className="dropdown-item border-bottom py-2" href="#">
+                      <div className="dropdown-item border-bottom py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="">
                             <img
@@ -865,10 +860,10 @@ const Header = () => {
                             <CloseOutlinedIcon />
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                     <div>
-                      <a className="dropdown-item border-bottom py-2" href="#">
+                      <div className="dropdown-item border-bottom py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="">
                             <img
@@ -892,10 +887,10 @@ const Header = () => {
                             <CloseOutlinedIcon />
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                     <div>
-                      <a className="dropdown-item py-2" href="#">
+                      <div className="dropdown-item py-2">
                         <div className="d-flex align-items-center gap-3">
                           <div className="user-wrapper bg-danger text-danger bg-opacity-10">
                             <span>PK</span>
@@ -913,7 +908,7 @@ const Header = () => {
                             <CloseOutlinedIcon />
                           </div>
                         </div>
-                      </a>
+                      </div>
                     </div>
                   </div>
                 </PerfectScrollbar>
