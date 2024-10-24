@@ -7,11 +7,11 @@ import MenuItem from '@mui/material/MenuItem';
 import { InputLabel, Typography } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { QUERY_KEYS } from '../../utils/const';
+import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
-import { IEntity, InstituteRep0oDTO, MenuListinter } from '../../Components/Table/columns';
+import { IEntity, InstituteRep0oDTO, IUniversity, MenuListinter } from '../../Components/Table/columns';
 import { dataaccess, inputfield, inputfieldhover, inputfieldselect, inputfieldtext, inputfieldtextselect } from '../../utils/helpers';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
@@ -28,6 +28,7 @@ interface IInstituteForm {
     entity_id: string
     mobile_no: string
     website_url: string
+    university_id: string
 }
 
 const AddEditInstitute = () => {
@@ -37,6 +38,7 @@ const AddEditInstitute = () => {
     const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
     const InstituteEditURL = QUERY_KEYS.INSTITUTE_EDIT;
     const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
+    const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
     const { getData, postData, putData } = useApi()
     const navigator = useNavigate()
     const { id } = useParams();
@@ -79,9 +81,11 @@ const AddEditInstitute = () => {
         entity_id: "",
         mobile_no: "",
         website_url: "",
+        university_id:"",
     };
     const [institute, setInstitute] = useState(initialState);
     const [dataEntity, setDataEntity] = useState<IEntity[]>([])
+    const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([])
     const formRef = useRef<FormikProps<IInstituteForm>>(null)
     const location = useLocation();
     const Menulist: any = localStorage.getItem('menulist1');
@@ -105,6 +109,20 @@ const AddEditInstitute = () => {
             const filteredData = data?.data.filter(entity => entity.is_active === 1);
             setDataEntity(filteredData);
             // setDataEntity(data?.data)
+        }).catch(e => {
+            if (e?.response?.status === 401) {
+                navigator("/")
+            }
+            toast.error(e?.message, {
+                hideProgressBar: true,
+                theme: "colored",
+            });
+        });
+        getData(`${UniversityURL}`).then((data: { data: IUniversity[] }) => {
+
+            if (data.data) {
+                setDataUniversity(data?.data)
+            }
         }).catch(e => {
             if (e?.response?.status === 401) {
                 navigator("/")
@@ -316,6 +334,8 @@ const AddEditInstitute = () => {
                 .matches(pincodePattern, 'Enter valid pincode number.'),
             entity_id: Yup.string()
                 .required("Please select Entity"),
+                university_id: Yup.string()
+                .required("Please select University"),
             mobile_no: Yup.string()
                 .required("Please enter Mobile number")
                 .matches(mobilePattern, 'Please enter a valid mobile number.It must be 10 digits long.')
@@ -377,6 +397,8 @@ const AddEditInstitute = () => {
                 .matches(pincodePattern, 'Enter valid pincode number.'),
             entity_id: Yup.string()
                 .required("Please select Entity"),
+                university_id: Yup.string()
+                .required("Please select University"),
             mobile_no: Yup.string()
                 .required("Please enter Mobile number")
                 .matches(mobilePattern, 'Please enter a valid mobile number.It must be 10 digits long.')
@@ -434,6 +456,7 @@ useEffect(() => {
   };
 }, []);
 
+
     return (
         <div className='main-wrapper'>
             <div className="main-content">
@@ -457,6 +480,7 @@ useEffect(() => {
                             entity_id: institute?.entity_id,
                             mobile_no: institute?.mobile_no,
                             website_url: institute?.website_url,
+                            university_id: institute?.university_id
                         }}
                         enableReinitialize
                         validationSchema={instituteSchema}
@@ -465,6 +489,48 @@ useEffect(() => {
                         {({ errors, values, touched ,isValid,dirty}) => (
                             <Form>
                                 <div className='row gy-4 mt-0'>
+                                <div className='col-md-4'>
+                                        <div className="form_field_wrapper">
+                                            <FormControl fullWidth>
+                                                <InputLabel id="demo-simple-select-label">University *</InputLabel>
+                                                <Select
+                                                    onChange={(e: SelectChangeEvent<string>) => handleChange(e, "entity_id")}
+                                                    label="University"
+                                                    name="university_id"
+                                                    value={values?.university_id}
+                                                    variant="outlined"
+                                                    sx={{
+                                                        backgroundColor: inputfield(namecolor) , 
+                                                        color: inputfieldtext(namecolor) 
+                                                    }}
+                                                    MenuProps={{
+                                                        PaperProps: {
+                                                            style: {
+                                                                backgroundColor: inputfield(namecolor),
+                                                                color: inputfieldtext(namecolor)
+                                                            },
+                                                        },
+                                                    }}
+                                                >
+                                                    {dataUniversity?.map((item, idx) => (
+                                                        <MenuItem value={item.university_id} key={`${item.university_name}-${idx + 1}`} 
+                                                        
+                                                        sx={{
+                                                            backgroundColor: inputfield(namecolor),
+                                                                color: inputfieldtext(namecolor),
+                                                            '&:hover': {
+                                                                backgroundColor:  inputfieldhover(namecolor),
+                                                            },
+                                                        }}
+                                                        >{item.university_name}</MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                            {touched?.university_id && errors?.university_id ?
+                                                <p style={{ color: 'red' }}>{errors?.university_id}</p> : <></>
+                                            }
+                                        </div>
+                                    </div>
                                 <div className='col-md-4'>
                                         <div className="form_field_wrapper">
                                             <FormControl fullWidth>

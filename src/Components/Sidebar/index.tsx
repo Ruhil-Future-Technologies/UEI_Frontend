@@ -100,7 +100,7 @@ const Sidebar = () => {
     callAPI();
   }, []);
 
- 
+
 
   useEffect(() => {
     console.log("Menu List 1", menuList1);
@@ -238,7 +238,7 @@ const Sidebar = () => {
       document.querySelector("body")?.classList.remove("toggled");
     }
   }
-  
+
   const toggleMenu = (id: number) => {
     setOpenMenu((prevOpenMenu) => (prevOpenMenu === id ? null : id));
   };
@@ -580,61 +580,93 @@ const Sidebar = () => {
                               </a>
                               <ul
                                 id={menu.id}
-                                className={`mm-collapse ${
-                                  openMenu === menu.id ? "mm-show" : ""
-                                }`}
+                                className={`mm-collapse ${openMenu === menu.id ? "mm-show" : ""
+                                  }`}
                               >
-                                <li className={`${
-                                  openSubMenu ? "mm-active" : ""
-                                }`}>
-                              <a  className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
-                              <ArrowRightIcon />
-                                Institution</a>
-                              <ul className={`mm-collapse ${
-                                  openSubMenu ? "mm-show" : ""
-                                }`}>
-                                <li>
-                                  <Link to="/main/Institute/add-Institute"> <ArrowRightIcon />Institute</Link>
-                                </li>
-                                <li>
-                                  <Link to="/main/Course/add-Course"> <ArrowRightIcon />Course</Link>
-                                </li>
-                                <li>
-                                  <Link to="/main/Subject/add-Subject"> <ArrowRightIcon />Semester</Link>
-                                </li>
-                                <li>
-                                  <Link to="/main/Subject/add-Subject"> <ArrowRightIcon />Subject</Link>
-                                </li>
-                              </ul>
-                            </li>
+                                {
+
+                                }
+                                {/* <li className={`${openSubMenu ? "mm-active" : ""
+                                  }`}>
+                                  <a className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
+                                    <ArrowRightIcon />
+                                    Institution</a>
+                                  <ul className={`mm-collapse ${openSubMenu ? "mm-show" : ""
+                                    }`}>
+                                    <li>
+                                      <Link to="/main/Institute"> <ArrowRightIcon />Institute</Link>
+                                    </li>
+                                    <li>
+                                      <Link to="/main/Course"> <ArrowRightIcon />Course</Link>
+                                    </li>
+                                    <li>
+                                      <Link to="/main/Subject"> <ArrowRightIcon />Semester</Link>
+                                    </li>
+                                    <li>
+                                      <Link to="/main/Subject"> <ArrowRightIcon />Subject</Link>
+                                    </li>
+                                  </ul>
+                                </li> */}
                                 {menu?.submenus?.map((submenu: any) => {
                                   let menulist =
                                     submenu.menu_name === "Sub Menu"
                                       ? "SubMenu"
                                       : submenu.menu_name === "Role Vs Form"
-                                      ? "RoleVsForm"
-                                      : submenu.menu_name === "Role Vs User" ||
-                                        submenu.menu_name === "RoleVsUser"
-                                      ? "RoleVsUser "
-                                      : submenu.menu_name === "Hobbies"
-                                      ? "Hobby"
-                                      : submenu.menu_name;
-                                  return (
-                                    <><li key={submenu.id}>
-                                      <Link
-                                        to={menulist}
-                                        onClick={() =>
-                                          handleListItemClick1(menulist)
-                                        }
-                                      >
-                                        <ArrowRightIcon />
-                                        <div>{submenu.menu_name}</div>
-                                      </Link>
-                                    </li>
-                        
-                          </>
-                                    
-                                  );
+                                        ? "RoleVsForm"
+                                        : submenu.menu_name === "Role Vs User" ||
+                                          submenu.menu_name === "RoleVsUser"
+                                          ? "RoleVsUser "
+                                          : submenu.menu_name === "Hobbies"
+                                            ? "Hobby"
+                                            : submenu.menu_name;
+                                            if(  submenu.menu_name.toLowerCase() === "institute"){
+
+                                              return (
+                                              <li className={`${openSubMenu ? "mm-active" : ""
+                                              }`}>
+                                              <a className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
+                                                <ArrowRightIcon />
+                                                Institution</a>
+                                              <ul className={`mm-collapse ${openSubMenu ? "mm-show" : ""
+                                                }`}>
+                                                  <li>
+                                                  <Link to="/main/University"> <ArrowRightIcon />University</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Institute"> <ArrowRightIcon />Institute</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Course"> <ArrowRightIcon />Course</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Semester"> <ArrowRightIcon />Semester</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Subject"> <ArrowRightIcon />Subject</Link>
+                                                </li>
+                                              </ul>
+                                            </li>
+                                              )
+                                            }else{
+
+                                              return (
+                                                <>
+                                                  <li key={submenu.id}>
+                                                    <Link
+                                                      to={menulist}
+                                                      onClick={() =>
+                                                        handleListItemClick1(menulist)
+                                                      }
+                                                    >
+                                                      <ArrowRightIcon />  
+                                                      <div>{submenu.menu_name}</div>
+                                                    </Link>
+                                                  </li>
+            
+                                                </>
+            
+                                              );
+                                            }
                                 })}
                               </ul>
                             </>

@@ -28,10 +28,12 @@ import {
   QUERY_KEYS_ROLE,
   QUERY_KEYS_ROLEVSADMIN,
   QUERY_KEYS_ROLEVSFORM,
+  QUERY_KEYS_SEMESTER,
   QUERY_KEYS_STUDENT,
   QUERY_KEYS_STUDENT_FEEDBACK,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBMENU,
+  QUERY_KEYS_UNIVERSITY,
 } from "../../utils/const";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -84,6 +86,7 @@ export interface InstituteRep0oDTO {
   mobile_no: MaybeNull<string>;
   website_url: MaybeNull<string>;
   id: number;
+  university_id:MaybeNull<string>;
 }
 export interface DepartmentRep0oDTO {
   department_name: MaybeNull<string>;
@@ -98,6 +101,25 @@ export interface CourseRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
 }
+export interface UniversityRep0oDTO {
+  university_name: MaybeNull<string>;
+  id: number;
+  created_at: MaybeNull<string>;
+  is_active: number;
+  updated_at: MaybeNull<string>;
+  icon?: MaybeNull<string>;
+  university_id:number;
+}
+export interface SemesterRep0oDTO {
+  semester_name: MaybeNull<string>;
+  id: number;
+  created_at: MaybeNull<string>;
+  is_active: number;
+  updated_at: MaybeNull<string>;
+  icon?: MaybeNull<string>;
+  semester_id:number;
+}
+
 export interface FormRep0oDTO {
   form_name: MaybeNull<string>;
   id: number;
@@ -191,6 +213,15 @@ export interface IEntity {
   is_active: number;
   updated_at: string;
 }
+export interface IUniversity {
+  university_name: MaybeNull<string>;
+  id: number;
+  created_at: MaybeNull<string>;
+  is_active: number;
+  updated_at: MaybeNull<string>;
+  icon?: MaybeNull<string>;
+  university_id:number;
+}
 export interface IClass {
   created_at: string;
   class_name: string;
@@ -228,6 +259,11 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   {
     accessorKey: "institution_name",
     header: "Institute name ",
+    size: 150,
+  },
+  {
+    accessorKey: "university_name",
+    header: "University name ",
     size: 150,
   },
   {
@@ -529,6 +565,11 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
     size: 150,
   },
   {
+    accessorKey: "institution_name",
+    header: "Institute Name",
+    size: 150,
+  },
+  {
     accessorKey: "created_by",
     header: "Created By",
     size: 150,
@@ -598,6 +639,171 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
     },
     size: 150,
   },
+];
+export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
+  // const columns: any[] = [
+  {
+    accessorKey: "university_name",
+    header: "University Name",
+    size: 150,
+  },
+  {
+    accessorKey: "created_by",
+    header: "Created By",
+    size: 150,
+  },
+  {
+    accessorKey: "created_at",
+    header: "Created At",
+    size: 150,
+  },
+  {
+    accessorKey: "updated_by",
+    header: "Updated By",
+    size: 150,
+  },
+  {
+    accessorKey: "updated_at",
+    header: "Last Updated At",
+    size: 150,
+  },
+  {
+    accessorKey: "is_active",
+    header: "Active/DeActive",
+    Cell: ({ cell, row }) => {
+      const { putData } = useApi();
+      const MenuActive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYACTIVE;
+      const MenuDeactive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYDEACTIVE;
+      const value = cell?.getValue();
+    
+console.log("====lll",row)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [Showvalue, setShowvalue] = useState(value);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [Show, setShow] = useState(value === 1 ? true : false);
+
+      const active = (id: number, valueset: any) => {
+        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status === 200) {
+              setShow((prevState) => !prevState);
+              setShowvalue(Showvalue === 1 ? 0 : 1);
+              // window.location.reload();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: "colored",
+            });
+          });
+      };
+
+      return (
+        <Box>
+          <Switch
+            isChecked={Show}
+            label={Show ? "Active" : "Deactive"}
+           
+            onChange={() => {
+              active(row?.original?.university_id, Showvalue);
+            }}
+            
+          />
+        </Box>
+      );
+    },
+    size: 150,
+  },
+];
+export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
+  // const columns: any[] = [
+  {
+    accessorKey: "semester_number",
+    header: "Semester",
+    size: 150,
+  },
+  {
+    accessorKey: "institution_name",
+    header: "Institute",
+    size: 150,
+  },
+  {
+    accessorKey: "course_name",
+    header: "Course",
+    size: 150,
+  },
+  {
+    accessorKey: "created_by",
+    header: "Created By",
+    size: 150,
+  },
+  {
+    accessorKey: "created_at",
+    header: "Created At",
+    size: 150,
+  },
+  {
+    accessorKey: "updated_by",
+    header: "Updated By",
+    size: 150,
+  },
+  {
+    accessorKey: "updated_at",
+    header: "Last Updated At",
+    size: 150,
+  },
+  {
+    accessorKey: "is_active",
+    header: "Active/DeActive",
+    Cell: ({ cell, row }) => {
+      const { putData } = useApi();
+      const MenuActive = QUERY_KEYS_SEMESTER.GET_SEMESTERACTIVE;
+      const MenuDeactive = QUERY_KEYS_SEMESTER.GET_SEMESTERDEACTIVE;
+      const value = cell?.getValue();
+      // if (!value) {
+      //   return EMPTY_CELL_VALUE;
+      // }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [Showvalue, setShowvalue] = useState(value);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [Show, setShow] = useState(value === 1 ? true : false);
+
+      const active = (id: number, valueset: any) => {
+        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status === 200) {
+              setShow((prevState) => !prevState);
+              setShowvalue(Showvalue === 1 ? 0 : 1);
+              // window.location.reload();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: "colored",
+            });
+          });
+      };
+
+      return (
+        <Box>
+          <Switch
+            isChecked={Show}
+            label={Show ? "Active" : "Deactive"}
+            // onChange={() => setShow((prevState) => !prevState)}
+            onChange={() => {
+              active(row?.original?.semester_id, Showvalue);
+            }}
+            // disabled={true}
+          />
+        </Box>
+      );
+    },
+    size: 150,
+  },
+
 ];
 export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   // const columns: any[] = [
