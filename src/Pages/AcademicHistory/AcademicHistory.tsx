@@ -47,6 +47,8 @@ interface Box {
   class_id: string;
   year: any;
   stream: string;
+  university_id: string;
+  semester_id: string;
 }
 interface Boxset {
   id: number;
@@ -62,6 +64,17 @@ interface Course {
   id: number;
   course_name: string;
   course_id: string;
+}
+interface University {
+  id: number;
+  university_name: string;
+  university_id: string;
+}
+
+interface Semester {
+  id: number;
+  semester_number: string;
+  semester_id: string;
 }
 interface Classes {
   id: number;
@@ -87,6 +100,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [university, setUniversity] = useState<University[]>([]);
+  const [semester, setSemester] = useState<Semester[]>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [particularClass, setParticularClass] = useState("");
   const [editFlag, setEditFlag] = useState<boolean>(false);
@@ -118,6 +133,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       learning_style: "",
       year: "",
       stream: "",
+      university_id: "",
+      semester_id: "",
       //   starting_date: null,
       //   ending_date: null,
     };
@@ -177,6 +194,40 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   useEffect(() => {
     listData();
+    getData("university/list")
+      .then((response: any) => {
+        if (response.status === 200) {
+          const filteredData = response?.data?.filter(
+            (item: any) => item?.is_active === 1
+          );
+          setUniversity(filteredData || []);
+          // setCourses(response.data);
+        }
+      })
+      .catch((error) => {
+        toast.error(error?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+          position: "top-center",
+        });
+      });
+      getData("/semester/list")
+      .then((response: any) => {
+        if (response.status === 200) {
+          const filteredData = response?.data?.filter(
+            (item: any) => item?.is_active === 1
+          );
+          setSemester(filteredData || []);
+          // setCourses(response.data);
+        }
+      })
+      .catch((error) => {
+        toast.error(error?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+          position: "top-center",
+        });
+      });
 
     getData("/course/list")
       .then((response: any) => {
@@ -290,6 +341,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               class_id: item?.class_id,
               year: item?.year ? dayjs(item?.year) : null,
               stream: item?.stream,
+              university_id: item?.university_id,
+              semester_id: item?.semester_id,
             };
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
@@ -309,6 +362,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               class_id: "",
               year: null,
               stream: "",
+              university_id: "",
+              semester_id: "",
             },
           ]);
           setEditFlag(true);
@@ -744,13 +799,53 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 </FormControl>
               </div>
             )}
+
             {box.institute_type == "college" && (
               <div className="col form_field_wrapper">
                 <FormControl
                   required
                   sx={{ m: 1, minWidth: 220, width: "100%" }}
                 >
-                  <InputLabel>University Name</InputLabel>
+                  <InputLabel>University name</InputLabel>
+                  <Select
+                    value={box.university_id}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, "institute_id", e.target.value)
+                    }
+                    label="University"
+                  >
+                    {university.map((item) => (
+                      <MenuItem
+                        key={item?.university_id}
+                        value={item?.university_id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          },
+                        }}
+                      >
+                        {item.university_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+
+
+
+            {box.institute_type == "college" && (
+              <div className="col form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 220, width: "100%" }}
+                >
+                  <InputLabel>Institute Name</InputLabel>
                   <Select
                     name="institute_id"
                     value={box.institute_id}
@@ -760,7 +855,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     onChange={(e) =>
                       handleInputChange(index, "institute_id", e.target.value)
                     }
-                    label="University Name"
+                    label="Institute Name"
                   >
                     {institutes.map((institute) => (
                       <MenuItem
@@ -827,6 +922,42 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         }}
                       >
                         {course.course_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+              {box.institute_type == "college" && (
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 220, width: "100%" }}
+                >
+                  <InputLabel>Semester</InputLabel>
+                  <Select
+                    value={box.semester_id}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, "institute_id", e.target.value)
+                    }
+                    label="Semester"
+                  >
+                    {semester.map((item) => (
+                      <MenuItem
+                        key={item?.semester_id}
+                        value={item?.semester_id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          },
+                        }}
+                      >
+                         Semester {item.semester_number}
                       </MenuItem>
                     ))}
                   </Select>
@@ -1021,9 +1152,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
             {box.institute_type === "college" && (
               <div
-                className={`${
-                  box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
-                } form_field_wrapper`}
+                className={`${box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
+                  } form_field_wrapper`}
               >
                 <FormControl
                   required
