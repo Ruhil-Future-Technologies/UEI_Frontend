@@ -1,20 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
-import '../Institute/Institute.scss';
+import '../Course/Course.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
-import { INSITUTION_COLUMNS, InstituteRep0oDTO, MenuListinter } from '../../Components/Table/columns';
+import { MaterialReactTable } from 'material-react-table';
+import { MenuListinter, UNIVERSITY_COLUMNS, UniversityRep0oDTO } from '../../Components/Table/columns';
 import { EditIcon, TrashIcon } from '../../assets';
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
-import { QUERY_KEYS } from '../../utils/const';
+import { QUERY_KEYS_COURSE, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { dataaccess, tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 
-const Institute = () => {
+
+const University = () => {
     const context = useContext(NameContext);
     const {namecolor }:any = context;
     const location = useLocation();
@@ -22,6 +23,45 @@ const Institute = () => {
     const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
+
+      const tableheader:any = {
+        light:'',dark:'#1D2A35',default:''
+      }
+//FOR PAGINATION CODE  
+    // const [loading, setLoading] = useState(false);
+    // const [pagination, setPagination] = useState({
+    //  pageIndex: 0,
+    //  pageSize: 100, 
+    // }); 
+
+    // const callAPI = useCallback(() => {
+    //     setLoading(true);
+    //     getData(`${CourseURL}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`)
+    //         .then((data) => {
+    //             setDataCourse(data?.data);
+    //             console.log("data test",data);
+    //             // setPagination({
+    //             //     pageIndex: pagination.pageIndex,
+    //             //     pageSize: pagination.pageSize, 
+    //             //   })
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching data:", error);
+    //             toast.error("Error fetching data", {
+    //                 hideProgressBar: true,
+    //                 theme: "colored",
+    //             });
+    //         })
+    //         .finally(() => {
+    //             setLoading(false);
+    //         });
+    // }, [ pagination.pageIndex, pagination.pageSize]);
+
+    // useEffect(() => {
+    //     callAPI();
+    // }, [callAPI]);
+
+//END CODE PAGINATION
 
     // useEffect(() => {
     //     JSON.parse(Menulist)?.map((data: any) => {
@@ -36,44 +76,50 @@ const Institute = () => {
     //     })
     // }, [Menulist])
     useEffect(() => {
-      
+        // let filteredData = null;
+    
+        // JSON.parse(Menulist)?.forEach((data: any) => {
+        //     if (data?.menu_name.toLowerCase() === lastSegment) {
+        //         filteredData = data; // Found a match in the main menu
+        //     } else {
+        //         const result = data?.submenus?.find((menu: any) => menu.menu_name.toLowerCase() === lastSegment);
+        //         if (result) {
+        //             // Found a match in the submenu
+        //             filteredData = {
+        //                 ...data,
+        //                 submenus: [result] // Include only the matched submenu
+        //             };
+        //         }
+        //     }
+        // });
+    
+        // if (filteredData) {
+        //     setFilteredData(filteredData);
+           
+        // } else {
+        //     // Handle case when no match is found
+        //     setFilteredData(null);
+         
+        // }
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment]);
-    // console.log('Menulist', filteredData,)
-    const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
-    const DeleteInstituteURL = QUERY_KEYS.INSTITUTE_DELETE;
-    const columns11 = INSITUTION_COLUMNS;
+    }, [Menulist, lastSegment])
+//  console.log('Menulist',filteredData,lastSegment)
+    const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
+    const DeleteUniversityURL = QUERY_KEYS_UNIVERSITY.UNIVERSITY_DELETE;
+    const columns = UNIVERSITY_COLUMNS;
     const navigate = useNavigate();
     const { getData, deleteData,loading } = useApi()
-    const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([])
+    // const { getData, deleteData } = useApi()
+    const [dataUniversity, setDataUniversity] = useState<UniversityRep0oDTO[]>([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState<number>()
 
-    const [columns, setColumns] = useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
-
-    // Calculate and update column widths based on content length
-    useEffect(() => {
-        const updatedColumns = columns11.map(column => {
-          if (column.accessorKey === 'email_id') {
-            // Calculate the maximum width needed for 'email_id' column based on data
-            const maxWidth = Math?.max(...dataInstitute?.map(item => (item?.email_id ? item?.email_id?.length * 10 : 0))); // Adjust multiplier as needed
-            return { ...column, size: maxWidth };
-          }
-          if (column.accessorKey === 'website_url') {
-            // Calculate the maximum width needed for 'email_id' column based on data
-            const maxWidth = Math?.max(...dataInstitute?.map(item => (item?.website_url ? item?.website_url?.length * 7 : 0))); // Adjust multiplier as needed
-            return { ...column, size: maxWidth };
-          }
-          return column;
-        });
-      
-        setColumns(updatedColumns);
-      }, [dataInstitute, columns11]);
-
     const callAPI = async () => {
-        getData(`${InstituteURL}`).then((data: { data: InstituteRep0oDTO[] }) => {
+
+        getData(`${UniversityURL}`).then((data: { data: UniversityRep0oDTO[] }) => {
+
             if (data.data) {
-                setDataInstitute(data?.data)
+                setDataUniversity(data?.data)
             }
         }).catch(e => {
             if (e?.response?.status === 401) {
@@ -84,6 +130,7 @@ const Institute = () => {
                 theme: "colored",
             });
         });
+
     }
 
     useEffect(() => {
@@ -91,7 +138,7 @@ const Institute = () => {
     }, [])
 
     const handleEditFile = (id: number) => {
-        navigate(`edit-Institute/${id}`)
+        navigate(`edit-University/${id}`)
     };
 
     const handlecancel = () => {
@@ -104,7 +151,7 @@ const Institute = () => {
     }
 
     const handleDelete = (id: number | undefined) => {
-        deleteData(`${DeleteInstituteURL}/${id}`).then((data: { message: string }) => {
+        deleteData(`${DeleteUniversityURL}/${id}`).then((data: { message: string }) => {
             toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: "colored",
@@ -123,36 +170,35 @@ const Institute = () => {
             });
         });
     }
-
     return (
         <>
          {loading && <FullScreenLoader />}
             <div className='main-wrapper'>
-                <div className="main-content">
-                <div className='card'>
+                <div className="main-content"><div className='card'>
                     <div className='card-body'>
                         <div className='table_wrapper'>
                             <div className='table_inner'>
                             <div className='containerbutton' style={{display:"flex", flexDirection:"row",justifyContent:"space-between"}}>
                                     <Typography variant="h6" sx={{m:1}}>
-                                        <div className='main_title'> Institute</div>
+                                        <div className='main_title'> University</div>
                                     </Typography>
-                                    {filteredData?.form_data?.is_save === true && (
+                                   
+                                    {/* {filteredData?.form_data?.is_save === true && ( */}
                                             <Button
-                                             className='mainbutton'
+                                            className='mainbutton'
                                                 variant="contained"
                                                 component={NavLink}
-                                                to="add-Institute"
+                                                to="add-University"
                                             >
-                                                Add Institute
+                                                Add University
                                             </Button>
-                                          )}
+                                          {/* )}   */}
                                 </div>
                                 <Box marginTop="10px" >
                                     <MaterialReactTable
                                         columns={columns}
-                                        // data={ dataInstitute }
-                                        data={filteredData?.form_data?.is_search ? dataInstitute : []}
+                                        // data={filteredData?.form_data?.is_search ? dataUniversity : []}
+                                        data={dataUniversity }
                                         enableRowVirtualization
                                         positionActionsColumn="first"
                                         muiTablePaperProps={{
@@ -165,6 +211,8 @@ const Institute = () => {
                                                 size: 150,
                                             },
                                         }}
+                                       
+
                                         renderRowActions={(row) => (
                                             <Box
                                                 sx={{
@@ -175,24 +223,24 @@ const Institute = () => {
                                                     width: "140px",
                                                 }}
                                             >
-                                                 {filteredData?.form_data?.is_update === true && (
-                                                     <Tooltip arrow placement="right" title="Edit">
-                                                     <IconButton
-                                                         sx={{ width: "35px", height: "35px",color:tabletools(namecolor) }}
-                                                         onClick={() => {
-                                                             handleEditFile(row?.row?.original?.id);
-                                                         }}
-                                                     >
-                                                         <EditIcon />
-                                                     </IconButton>
-                                                 </Tooltip>
-                                              )} 
-                                               
+                                                {/* {filteredData?.form_data?.is_update === true && ( */}
+                                                    <Tooltip arrow placement="right" title="Edit">
+                                                        <IconButton
+                                                            sx={{ width: "35px", height: "35px",color:tabletools(namecolor) }}
+                                                            onClick={() => {
+                                                                handleEditFile(row?.row?.original?.university_id);
+                                                            }}
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                  {/* )}  */}
+                                                
                                                 <Tooltip arrow placement="right" title="Delete">
                                                     <IconButton
-                                                        sx={{ width: "35px", height: "35px" ,color:tabletools(namecolor)}}
+                                                        sx={{ width: "35px", height: "35px" ,color:tabletools(namecolor) }}
                                                         onClick={() => {
-                                                            handleDeleteFiles(row?.row?.original?.id)
+                                                            handleDeleteFiles(row?.row?.original?.university_id)
                                                         }}
                                                     >
                                                         <TrashIcon />
@@ -205,9 +253,8 @@ const Institute = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-                </div>
-               
+                </div></div>
+                
             </div>
             <DeleteDialog
                 isOpen={dataDelete}
@@ -219,4 +266,4 @@ const Institute = () => {
     )
 }
 
-export default Institute
+export default University

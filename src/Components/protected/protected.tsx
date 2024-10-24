@@ -21,9 +21,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
     const currentURL = window.location.href;
     const parts = currentURL.split("/");
     const mName = parts[parts.length - 1];
+    const uName = parts[parts.length - 2];
     const feedbackRoute =
       parts[parts.length - 2] + "/" + parts[parts.length - 1];
-
     const MnameExist =
       mName?.toLowerCase() === "dashboard" ||
       (usertype === "admin"
@@ -39,6 +39,12 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === "admin" ? mName.toLowerCase() === "student-feedback" : "") ||
       (usertype === "student" ? mName.toLowerCase() === "add-student-feedback" : "") ||
       (usertype === "student" ? mName.toLowerCase() === "faq" : "") ||
+      (usertype === "admin" ? mName.toLowerCase() === "add-university" : "") ||
+      (usertype === "admin" ? mName.toLowerCase() === "university" : "") ||
+      (usertype === "admin" ? uName.toLowerCase() === "edit-university" : "") ||
+      (usertype === "admin" ? mName.toLowerCase() === "add-semester" : "") ||
+      (usertype === "admin" ? mName.toLowerCase() === "semester" : "") ||
+      (usertype === "admin" ? uName.toLowerCase() === "edit-semester" : "") ||
       (usertype === "admin"
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
         : "");

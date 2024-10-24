@@ -52,6 +52,9 @@ const Sidebar = () => {
   const [setting, setSetting] = useState(false);
   const defaultSelectedIndex = 0;
   const [open, setOpen] = useState(true);
+  const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
+
   const [masterCollapsible, setMasterCollapsible] = useState(false);
   const user_type = localStorage.getItem("user_type");
   const [profileCompletion, setProfileCompletion] = useState(
@@ -97,39 +100,7 @@ const Sidebar = () => {
     callAPI();
   }, []);
 
-  // add by amit
-  useEffect(() => {
-    const currentUrl = window.location.href;
-    const menuItems = document.querySelectorAll(".metismenu li a");
 
-    menuItems.forEach((item) => {
-      const anchor = item as HTMLAnchorElement;
-
-      // Highlight the active menu item based on the current URL
-      if (anchor.href === currentUrl) {
-        let parentLi = anchor.parentElement;
-        parentLi?.classList.add("mm-active");
-
-        while (parentLi && parentLi.tagName === "LI") {
-          parentLi.classList.add("mm-active");
-          const parentUl = parentLi.parentElement;
-          if (parentUl && parentUl.tagName === "UL") {
-            parentUl.classList.add("mm-show");
-          }
-          parentLi = parentUl ? parentUl.closest("li") : null;
-        }
-      }
-
-      // Add click event listener for toggling submenu
-      anchor.addEventListener("click", (e) => {
-        const submenu = item.nextElementSibling; // Assumes the submenu is the next sibling
-        if (submenu && submenu.tagName === "UL") {
-          e.preventDefault(); // Prevent the default action if it has a submenu
-          submenu.classList.toggle("mm-show"); // Toggle the mm-show class
-        }
-      });
-    });
-  }, []);
 
   useEffect(() => {
     console.log("Menu List 1", menuList1);
@@ -267,10 +238,13 @@ const Sidebar = () => {
       document.querySelector("body")?.classList.remove("toggled");
     }
   }
-  const [openMenu, setOpenMenu] = useState<number | null>(null);
+
   const toggleMenu = (id: number) => {
     setOpenMenu((prevOpenMenu) => (prevOpenMenu === id ? null : id));
   };
+
+
+
   // console.log("test hhh",selectedIndex1)
   // const SidebarContainer = styled.aside`
   //   width: 250px;
@@ -606,35 +580,93 @@ const Sidebar = () => {
                               </a>
                               <ul
                                 id={menu.id}
-                                className={`mm-collapse ${
-                                  openMenu === menu.id ? "mm-show" : ""
-                                }`}
+                                className={`mm-collapse ${openMenu === menu.id ? "mm-show" : ""
+                                  }`}
                               >
+                                {
+
+                                }
+                                {/* <li className={`${openSubMenu ? "mm-active" : ""
+                                  }`}>
+                                  <a className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
+                                    <ArrowRightIcon />
+                                    Institution</a>
+                                  <ul className={`mm-collapse ${openSubMenu ? "mm-show" : ""
+                                    }`}>
+                                    <li>
+                                      <Link to="/main/Institute"> <ArrowRightIcon />Institute</Link>
+                                    </li>
+                                    <li>
+                                      <Link to="/main/Course"> <ArrowRightIcon />Course</Link>
+                                    </li>
+                                    <li>
+                                      <Link to="/main/Subject"> <ArrowRightIcon />Semester</Link>
+                                    </li>
+                                    <li>
+                                      <Link to="/main/Subject"> <ArrowRightIcon />Subject</Link>
+                                    </li>
+                                  </ul>
+                                </li> */}
                                 {menu?.submenus?.map((submenu: any) => {
                                   let menulist =
                                     submenu.menu_name === "Sub Menu"
                                       ? "SubMenu"
                                       : submenu.menu_name === "Role Vs Form"
-                                      ? "RoleVsForm"
-                                      : submenu.menu_name === "Role Vs User" ||
-                                        submenu.menu_name === "RoleVsUser"
-                                      ? "RoleVsUser "
-                                      : submenu.menu_name === "Hobbies"
-                                      ? "Hobby"
-                                      : submenu.menu_name;
-                                  return (
-                                    <li key={submenu.id}>
-                                      <Link
-                                        to={menulist}
-                                        onClick={() =>
-                                          handleListItemClick1(menulist)
-                                        }
-                                      >
-                                        <ArrowRightIcon />
-                                        <div>{submenu.menu_name}</div>
-                                      </Link>
-                                    </li>
-                                  );
+                                        ? "RoleVsForm"
+                                        : submenu.menu_name === "Role Vs User" ||
+                                          submenu.menu_name === "RoleVsUser"
+                                          ? "RoleVsUser "
+                                          : submenu.menu_name === "Hobbies"
+                                            ? "Hobby"
+                                            : submenu.menu_name;
+                                            if(  submenu.menu_name.toLowerCase() === "institute"){
+
+                                              return (
+                                              <li className={`${openSubMenu ? "mm-active" : ""
+                                              }`}>
+                                              <a className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
+                                                <ArrowRightIcon />
+                                                Institution</a>
+                                              <ul className={`mm-collapse ${openSubMenu ? "mm-show" : ""
+                                                }`}>
+                                                  <li>
+                                                  <Link to="/main/University"> <ArrowRightIcon />University</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Institute"> <ArrowRightIcon />Institute</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Course"> <ArrowRightIcon />Course</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Semester"> <ArrowRightIcon />Semester</Link>
+                                                </li>
+                                                <li>
+                                                  <Link to="/main/Subject"> <ArrowRightIcon />Subject</Link>
+                                                </li>
+                                              </ul>
+                                            </li>
+                                              )
+                                            }else{
+
+                                              return (
+                                                <>
+                                                  <li key={submenu.id}>
+                                                    <Link
+                                                      to={menulist}
+                                                      onClick={() =>
+                                                        handleListItemClick1(menulist)
+                                                      }
+                                                    >
+                                                      <ArrowRightIcon />  
+                                                      <div>{submenu.menu_name}</div>
+                                                    </Link>
+                                                  </li>
+            
+                                                </>
+            
+                                              );
+                                            }
                                 })}
                               </ul>
                             </>
@@ -662,6 +694,7 @@ const Sidebar = () => {
                   )}
                   {/* {user_type === "admin" && (
                     <>
+                      
                       <li>
                         <Link
                           //component={Link}

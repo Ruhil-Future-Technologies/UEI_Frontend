@@ -52,6 +52,26 @@ export const QUERY_KEYS_COURSE = {
     GET_COURSEDEACTIVE: "/course/deactivate",
 
 };
+export const QUERY_KEYS_UNIVERSITY = {
+    GET_UNIVERSITY: "/university/list",
+    UNIVERSITY_ADD: "/university/add",
+    UNIVERSITY_GET: "/university/get",
+    UNIVERSITY_UPDATE: "/university/update",
+    UNIVERSITY_DELETE: "/university/delete",
+    GET_UNIVERSITYACTIVE: "/university/activate",
+    GET_UNIVERSITYDEACTIVE: "/university/deactivate",
+   
+};
+export const QUERY_KEYS_SEMESTER = {
+    GET_SEMESTER: "/semester/list",
+    SEMESTER_ADD: "/semester/add",
+    SEMESTER_GET: "/semester/get",
+    SEMESTER_UPDATE: "/semester/edit",
+    SEMESTER_DELETE: "/semester/delete",
+    GET_SEMESTERACTIVE: "/semester/activate",
+    GET_SEMESTERDEACTIVE: "/semester/deactivate",
+   
+};
 export const QUERY_KEYS_ENTITY = {
     GET_ENTITY: "/entity/list",
     GET_ENTITYACTIVE: "/entity/activate",
