@@ -45,7 +45,8 @@ const AddEditInstitute = () => {
     const charPattern = /^[a-zA-Z\s]*$/;
     const mobilePattern = /^\d{10}$/;
     const emailPattern = /\S+@\S+\.\S+/;
-    const pincodePattern = /^\d+$/;
+    // const pincodePattern = /^\d+$/;
+    const pincodePattern = /^\d{6}$/;
     // const websitePattern = /^[\w\s.,@#$%^&*()\-+=[\]{}|\\;:'"/?]+$/;
     const addressPattern = /^[\w\s,]+$/;
 
@@ -315,8 +316,8 @@ const AddEditInstitute = () => {
                   }),
                 
             address: Yup.string()
-                .required("Please enter Address")
-                .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
+                .required("Please enter Address"),
+                // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
             city: Yup.string()
                 .required("Please enter City")
                 .matches(charPattern, 'Please enter a valid City name only characters allowed.'),
@@ -331,7 +332,7 @@ const AddEditInstitute = () => {
                 .matches(charPattern, 'Please enter a valid District name only characters allowed.'),
             pincode: Yup.string()
                 .required("Please enter Pincode")
-                .matches(pincodePattern, 'Enter valid pincode number.'),
+                .matches(pincodePattern, 'Please enter a valid 6-digit pincode.'),
             entity_id: Yup.string()
                 .required("Please select Entity"),
                 university_id: Yup.string()
@@ -378,8 +379,8 @@ const AddEditInstitute = () => {
                     return !exists;
                 }),
             address: Yup.string()
-                .required("Please enter Address")
-                .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
+                .required("Please enter Address"),
+                // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
             city: Yup.string()
                 .required("Please enter City")
                 .matches(charPattern, 'Please enter a valid City name only characters allowed.'),
@@ -394,7 +395,7 @@ const AddEditInstitute = () => {
                 .matches(charPattern, 'Please enter a valid District name only characters allowed.'),
             pincode: Yup.string()
                 .required("Please enter Pincode")
-                .matches(pincodePattern, 'Enter valid pincode number.'),
+                .matches(pincodePattern, 'Please enter a valid 6-digit pincode.'),
             entity_id: Yup.string()
                 .required("Please select Entity"),
                 university_id: Yup.string()
@@ -613,6 +614,7 @@ useEffect(() => {
                                     <div className='col-md-4'>
                                         <div className="form_field_wrapper">
                                             <Field
+                                             fullWidth
                                                 component={TextField}
                                                 type="text"
                                                 name="institution_name"
@@ -628,21 +630,22 @@ useEffect(() => {
                                     <div className='col-md-4'>
                                         <div className="form_field_wrapper">
                                             <Field
+                                             fullWidth
                                                 component={TextField}
-                                                type="text"
-                                                name="mobile_no"
-                                                label="Mobile Number *"
-                                                value={values?.mobile_no}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "mobile_no")}
+                                                label="Address *"
+                                                name="address"
+                                                value={values?.address}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "address")}
                                             />
-                                            {touched?.mobile_no && errors?.mobile_no ?
-                                                <p style={{ color: 'red' }}>{errors?.mobile_no}</p> : <></>
+                                            {touched?.address && errors?.address ?
+                                                <p style={{ color: 'red' }}>{errors?.address}</p> : <></>
                                             }
                                         </div>
                                     </div>
                                     <div className='col-md-4'>
                                         <div className="form_field_wrapper">
                                             <Field
+                                             fullWidth
                                                 component={TextField}
                                                 type='email'
                                                 label="Email *"
@@ -670,18 +673,18 @@ useEffect(() => {
                                         </div> 
                                     </div> */}
                                     
-                                   
                                     <div className='col-md-4'>
                                         <div className="form_field_wrapper">
                                             <Field
                                                 component={TextField}
-                                                label="Address *"
-                                                name="address"
-                                                value={values?.address}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "address")}
+                                                type="text"
+                                                name="mobile_no"
+                                                label="Mobile Number *"
+                                                value={values?.mobile_no}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "mobile_no")}
                                             />
-                                            {touched?.address && errors?.address ?
-                                                <p style={{ color: 'red' }}>{errors?.address}</p> : <></>
+                                            {touched?.mobile_no && errors?.mobile_no ?
+                                                <p style={{ color: 'red' }}>{errors?.mobile_no}</p> : <></>
                                             }
                                         </div>
                                     </div>

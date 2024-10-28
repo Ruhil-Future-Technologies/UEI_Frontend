@@ -111,7 +111,6 @@ const AddEditCourse = () => {
         });
         if (id) {
             getData(`${CourseEditURL}${id ? `/${id}` : ''}`).then((data: { data: any }) => {
-                console.log("test course",data)
                 setInstitute(data?.data)
             }).catch(e => {
                 if (e?.response?.status === 401) {
@@ -213,7 +212,7 @@ const AddEditCourse = () => {
     const courseSchema = Yup.object().shape({
         course_name: Yup.string()
             .required("Please enter course name")
-            .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid Course name only characters allowed'),
+            .matches(/^[a-zA-Z0-9\s\-.]*$/,  'Please enter a valid Course name'),
             institute: Yup.string()
             .required("Please enter institute name"),
         // course_image: Yup.mixed()
@@ -244,7 +243,6 @@ const AddEditCourse = () => {
         //     ),
         // course_description: Yup.string()
     })
-console.log("test ===",institute,instituteList)
     return (
         <>
             <div className='main-wrapper'>

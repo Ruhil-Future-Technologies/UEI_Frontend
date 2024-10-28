@@ -647,26 +647,22 @@ const Sidebar = () => {
                                               </ul>
                                             </li>
                                               )
-                                            }else{
-
-                                              return (
-                                                <>
-                                                  <li key={submenu.id}>
-                                                    <Link
-                                                      to={menulist}
-                                                      onClick={() =>
-                                                        handleListItemClick1(menulist)
-                                                      }
-                                                    >
-                                                      <ArrowRightIcon />  
-                                                      <div>{submenu.menu_name}</div>
-                                                    </Link>
-                                                  </li>
-            
-                                                </>
-            
-                                              );
                                             }
+                                            else if (submenu.menu_name !== "Course" && submenu.menu_name !== "Subject") {
+                                              // Render only if it's not "Course" or "Subject"
+                                              return (
+                                                <li key={submenu.id}>
+                                                  <Link to={menulist} onClick={() => handleListItemClick1(menulist)}>
+                                                    <ArrowRightIcon />
+                                                    <div>{submenu.menu_name}</div>
+                                                  </Link>
+                                                </li>
+                                              );
+                                            } else {
+                                              // Return null for "Course" and "Subject" to skip rendering
+                                              return null;
+                                            }
+                                            
                                 })}
                               </ul>
                             </>

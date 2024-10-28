@@ -58,12 +58,14 @@ interface Institute {
   id: number;
   institute_id: string;
   institution_name: string;
+  university_id: any
 }
 
 interface Course {
   id: number;
   course_name: string;
   course_id: string;
+  institution_id: string;
 }
 interface University {
   id: number;
@@ -75,6 +77,7 @@ interface Semester {
   id: number;
   semester_number: string;
   semester_id: string;
+  course_id: string;
 }
 interface Classes {
   id: number;
@@ -99,9 +102,12 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [checkBoxes, setCheckBoxes] = useState<Box[]>([]);
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
+  const [institutesAll, setInstitutesAll] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [coursesAll, setCoursesAll] = useState<Course[]>([]);
   const [university, setUniversity] = useState<University[]>([]);
   const [semester, setSemester] = useState<Semester[]>([]);
+  const [totalSemester, setTotalSemester] = useState<any>([])
   const [classes, setClasses] = useState<Classes[]>([]);
   const [particularClass, setParticularClass] = useState("");
   const [editFlag, setEditFlag] = useState<boolean>(false);
@@ -111,7 +117,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
 
   let StudentId = localStorage.getItem("_id");
-
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
     const stateOptions = states.map((state) => ({
@@ -173,6 +178,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               (item: any) => item?.is_active === 1
             );
             setInstitutes(filteredData || []);
+            setInstitutesAll(filteredData || [])
             // setInstitutes(response.data);
             // return filteredData || []
             resolve(true);
@@ -211,7 +217,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           position: "top-center",
         });
       });
-      getData("/semester/list")
+    getData("/semester/list")
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
@@ -236,6 +242,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             (item: any) => item?.is_active === 1
           );
           setCourses(filteredData || []);
+          setCoursesAll(filteredData || [])
           // setCourses(response.data);
         }
       })
@@ -437,11 +444,14 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           course_id: String(!box.course_id ? 18 : box.course_id),
           learning_style: box.learning_style,
           class_id: String(!box.class_id ? 1 : box.class_id),
+          sem_id: String(box.semester_id),
+          university_id: String(box.university_id),
           year: String(box?.year?.$y), // Assuming 'year' is a string
           stream:
             particularClass === "class_11" || particularClass === "class_12"
               ? box?.stream
               : "",
+
         };
 
         //validatePayload(payload)
@@ -587,7 +597,24 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   ) => {
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
+    if (field === "university_id") {
+      const filterDataInstitute = institutesAll.filter((item) => item.university_id === value)
+      setInstitutes(filterDataInstitute)
+    }
+    if (field === "institute_id") {
+      const filterDataCourse = coursesAll.filter((item) => item.institution_id === value)
+      setCourses(filterDataCourse)
+    }
 
+    if (field === 'course_id') {
+      const semesterCount = semester.filter((item) => item.course_id === value)
+     
+      // const semesterCount = semester.reduce((acc: any, crr) => {
+      //   if (crr.semester_number === value) acc = crr.semester_number
+      //   return acc
+      // }, 0)
+      setTotalSemester(semesterCount)
+    }
     // Check date validity
     const year = dayjs(newBoxes[index].year);
     // const endDate = dayjs(newBoxes[index].ending_date);
@@ -623,7 +650,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     newBoxes[index][field] = value;
     setBoxes1(newBoxes);
   };
-
   return (
     <div className="mt-5">
       <form>
@@ -813,9 +839,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       backgroundColor: "#f5f5f5",
                     }}
                     onChange={(e) =>
-                      handleInputChange(index, "institute_id", e.target.value)
+                      handleInputChange(index, "university_id", e.target.value)
                     }
-                    label="University"
+                    label="University Name"
                   >
                     {university.map((item) => (
                       <MenuItem
@@ -825,7 +851,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
                           "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                            backgroundColor: inputfieldhover(namecolor),
                           },
                         }}
                       >
@@ -928,7 +954,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 </FormControl>
               </div>
             )}
-              {box.institute_type == "college" && (
+            {box.institute_type == "college" && (
               <div className="col-lg-3 form_field_wrapper">
                 <FormControl
                   required
@@ -941,11 +967,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       backgroundColor: "#f5f5f5",
                     }}
                     onChange={(e) =>
-                      handleInputChange(index, "institute_id", e.target.value)
+                      handleInputChange(index, "semester_id", e.target.value)
                     }
                     label="Semester"
                   >
-                    {semester.map((item) => (
+                    {/* {semester.map((item) => (
                       <MenuItem
                         key={item?.semester_id}
                         value={item?.semester_id}
@@ -958,6 +984,22 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         }}
                       >
                          Semester {item.semester_number}
+                      </MenuItem>
+                    ))} */}
+                  
+                    {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
+                      <MenuItem
+                        key={`${index + 1}`}
+                        value={index + 1}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        Semester {index + 1}
                       </MenuItem>
                     ))}
                   </Select>

@@ -235,7 +235,24 @@ const AddSemester = () => {
                                                                 },
                                                             }}
                                                         >
-                                                            {courseList.map((item, idx) => (
+                                                            {courseList
+                                                                .filter(item => values.institute === item.institution_id) // Filter condition
+                                                                .map((item, idx) => (
+                                                                    <MenuItem
+                                                                        value={item.id}
+                                                                        key={`${item.course_name}-${idx + 1}`}
+                                                                        sx={{
+                                                                            backgroundColor: inputfield(namecolor),
+                                                                            color: inputfieldtext(namecolor),
+                                                                            '&:hover': {
+                                                                                backgroundColor: inputfieldhover(namecolor),
+                                                                            },
+                                                                        }}
+                                                                    >
+                                                                        {item.course_name}
+                                                                    </MenuItem>
+                                                                ))}
+                                                            {/* {courseList.map((item, idx) => (
                                                                 <MenuItem value={item.id} key={`${item.course_name}-${idx + 1}`}
 
                                                                     sx={{
@@ -246,7 +263,7 @@ const AddSemester = () => {
                                                                         },
                                                                     }}
                                                                 >{item.course_name}</MenuItem>
-                                                            ))}
+                                                            ))} */}
                                                         </Select>
                                                         <Typography variant="body2" color="error">
                                                             {typeof errors?.course === "string" && errors.course}

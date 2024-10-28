@@ -401,6 +401,30 @@ function MainContent() {
     departmentCount: 0,
     courseCount: 0,
   });
+  const [statsweekly, setStatsweekly] = useState({
+    FridayCount: 0,
+    MondayCount: 0,
+    SaturdayCount: 0,
+    SundayCount: 0,
+    ThursdayCount: 0,
+    TuesdayCount: 0,
+    WednesdayCount: 0
+  });
+  const [statsChatCount, setStatsChatCount] = useState<any>([]);
+  // {
+  //   ChatCount1: 0,
+  //   StudentName1:"",
+  //   ChatCount2: 0,
+  //   StudentName2:"",
+  //   ChatCount3: 0,
+  //   StudentName3:"",
+  //   ChatCount4: 0,
+  //   StudentName4:"",
+  //   ChatCount5: 0,
+  //   StudentName5:"",
+   
+  // }
+  const [statsCourse, setStatsCourse] = useState<any>([]);
   const [stats1, setStats1] = useState<any>({
     Student_Profile: 0,
     Student_null: 0,
@@ -439,6 +463,149 @@ function MainContent() {
 
   // bar chart
   const barChartRef = useRef<ChartJS<"bar", number[], string> | null>(null);
+
+   // Define the bar chart data
+   const barChartDataStudent: ChartData<"bar", number[], string> = {
+    labels: [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ],
+    datasets: [
+      {
+        label: "This Week",
+        data: [
+          statsweekly?.SundayCount ,
+          statsweekly?.MondayCount,
+          statsweekly?.TuesdayCount,
+          statsweekly?.WednesdayCount,
+          statsweekly?.ThursdayCount,
+          statsweekly?.FridayCount,
+          statsweekly?.SaturdayCount,
+        
+        ],
+        backgroundColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            // This case happens on initial chart load
+            return "rgba(0, 0, 0, 0)";
+          }
+
+          const gradientFill1 = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradientFill1.addColorStop(0, "#005bea");
+          gradientFill1.addColorStop(1, "#00c6fb");
+          return gradientFill1;
+        },
+        borderColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            return "#000000";
+          }
+
+          const gradientBorder1 = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradientBorder1.addColorStop(0, "#005bea");
+          gradientBorder1.addColorStop(1, "#00c6fb");
+          return gradientBorder1;
+        },
+        borderWidth: 0,
+        borderRadius: 30, // Rounded corners
+        categoryPercentage: 0.3, // Width of the bars
+      },
+    ],
+  };
+// Sort statsChatCount by chat_count in descending order and take the top 5
+const top5Chats = statsChatCount
+    .sort((a: { chat_count: number; }, b: { chat_count: number; }) => b.chat_count - a.chat_count)
+    .slice(0, 5);
+
+// Extract student names and chat counts for the top 5 entries
+const studentNames = top5Chats.map((item:any) => item.student_name);
+const chatCounts = top5Chats.map((item:any) => item.chat_count);
+  const barChartDataStudentChatCount: ChartData<"bar", number[], string> = {
+    labels: studentNames,
+    datasets: [
+      {
+        label: "This Week",
+        data: chatCounts,
+        backgroundColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            // This case happens on initial chart load
+            return "rgba(0, 0, 0, 0)";
+          }
+
+          const gradientFill1 = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradientFill1.addColorStop(0, "#005bea");
+          gradientFill1.addColorStop(1, "#00c6fb");
+          return gradientFill1;
+        },
+        borderColor: function (context) {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+
+          if (!chartArea) {
+            return "#000000";
+          }
+
+          const gradientBorder1 = ctx.createLinearGradient(
+            0,
+            chartArea.top,
+            0,
+            chartArea.bottom
+          );
+          gradientBorder1.addColorStop(0, "#005bea");
+          gradientBorder1.addColorStop(1, "#00c6fb");
+          return gradientBorder1;
+        },
+        borderWidth: 0,
+        borderRadius: 30, // Rounded corners
+        categoryPercentage: 0.3, // Width of the bars
+      },
+    ],
+  };
+
+  // Define the bar chart options
+  const barChartOptionsStudent: ChartOptions<"bar"> = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+      x: {},
+    },
+  };
+  
 
   // Define the bar chart data
   const barChartData: ChartData<"bar", number[], string> = {
@@ -1112,6 +1279,80 @@ function MainContent() {
       }
     };
 
+    const fetchStudentweeklyData = async () => {
+      if (usertype === "admin") {
+        try {
+          const [
+            studentweeklycount,
+            
+          ] = await Promise.allSettled([
+            getData("/student/weekly_student_count"),
+          ]);
+          const studentweeklydata =
+            studentweeklycount?.status === "fulfilled"
+              ? studentweeklycount?.value?.data || 0
+              : 0;
+   
+    
+              setStatsweekly({
+                SundayCount: studentweeklydata?.Sunday,
+                MondayCount: studentweeklydata?.Monday,
+                TuesdayCount: studentweeklydata?.Tuesday,
+                WednesdayCount: studentweeklydata?.Wednesday,
+                ThursdayCount: studentweeklydata?.Thursday,
+                FridayCount:studentweeklydata?.Friday ,
+                SaturdayCount:studentweeklydata?.Saturday,
+          });
+
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+    const fetchStudentCourseData = async () => {
+      if (usertype === "admin") {
+        try {
+          const [
+            studentCoursecount,
+            
+          ] = await Promise.allSettled([
+            getData("/course/course-wise-student-count"),
+          ]);
+          const studentCoursedata =
+          studentCoursecount?.status === "fulfilled"
+              ? studentCoursecount?.value?.data || 0
+              : 0;
+   
+              setStatsCourse(studentCoursedata);
+
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+
+    const fetchStudentChatCountData = async () => {
+      if (usertype === "admin") {
+        try {
+          const [
+            studentChatCount,
+            
+          ] = await Promise.allSettled([
+            getData("/chat/api/chat-count"),
+          ]);
+          const studentChatCountdata =
+          studentChatCount?.status === "fulfilled"
+              ? studentChatCount?.value?.data || 0
+              : 0;
+   
+              setStatsChatCount(studentChatCountdata);
+
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+
     // const fetchstucount = async () => {
     //     getData("hobby/list")
     //     .then((data: any) => {
@@ -1128,7 +1369,9 @@ function MainContent() {
     //       });
     //     });
     // }
-
+fetchStudentweeklyData()
+fetchStudentCourseData()
+fetchStudentChatCountData()
     fetchData();
     getVoices();
     // fetchstucount();
@@ -1487,6 +1730,52 @@ function MainContent() {
     { id: 4, value: stats.subjectCount, label: "Subject" },
     { id: 5, value: stats.departmentCount, label: "Department" },
   ];
+
+
+//   const dataTest =[
+//     {
+//         "course_id": 46,
+//         "course_name": "llbb",
+//         "student_count": 1
+//     },
+//     {
+//         "course_id": 47,
+//         "course_name": "M com",
+//         "student_count": 0
+//     },
+//     {
+//         "course_id": 48,
+//         "course_name": "Bsc home science in Food and Nutrition",
+//         "student_count": 0
+//     },
+//     {
+//         "course_id": 49,
+//         "course_name": "Bsc home science ",
+//         "student_count": 0
+//     },
+//     {
+//         "course_id": 50,
+//         "course_name": "Bsc Home science in Food Science and Quality Control",
+//         "student_count": 0
+//     }
+// ]
+  // Get the top 5 courses
+const top5Courses = statsCourse.slice(0, 5);
+// const top5Courses = dataTest.slice(0, 5);
+
+
+// Truncate the label and add '...' if it's too long
+const truncateLabel = (label:any, maxLength = 10) => {
+  return label.length > maxLength ? `${label.slice(0, maxLength)}...` : label;
+};
+
+// Map to the format needed for pieDataCourse
+const pieDataCourse = top5Courses?.map((course: { student_count: any; course_name: any; }, index: any) => ({
+    id:index,
+    value: course?.student_count,
+    // label: course?.course_name
+    label: truncateLabel(course.course_name, 10),
+}));
 
   const pieData1 = [
     { id: 0, value: stats1?.Student_Profile, label: `Profile completed` },
@@ -1964,6 +2253,122 @@ function MainContent() {
                 )}
               </section>
               <section className="row">
+              <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-header py-3">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <h5 className="mb-0">No of Student</h5>
+                        <div className="dropdown">
+                          <a
+                            href=""
+                            className="dropdown-toggle-nocaret options dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                          >
+                            <MoreVertIcon />
+                          </a>
+                          <ul className="dropdown-menu">
+                            <li>
+                              <div className="dropdown-item">
+                                Action
+                              </div>
+                            </li>
+                            <li>
+                              <div className="dropdown-item">
+                                Another action
+                              </div>
+                            </li>
+                            <li>
+                              <div className="dropdown-item">
+                                Something else here
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      {/* <Bar data={barData} /> */}
+                      <div className="chart-container1">
+                        <Bar
+                          ref={barChartRef}
+                          data={barChartDataStudent}
+                          options={barChartOptionsStudent}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-header py-3">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <h5 className="mb-0">Students</h5>
+                        <div className="dropdown">
+                          <a
+                            href=""
+                            className="dropdown-toggle-nocaret options dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                          >
+                            <MoreVertIcon />
+                          </a>
+                          <ul className="dropdown-menu">
+                            <li>
+                              <div className="dropdown-item">
+                                Action
+                              </div>
+                            </li>
+                            <li>
+                              <div className="dropdown-item">
+                                Another action
+                              </div>
+                            </li>
+                            <li>
+                              <div className="dropdown-item">
+                                Something else here
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-body">
+                      {/* <Bar data={barData} /> */}
+                      <div className="chart-container1">
+                        <Bar
+                          ref={barChartRef}
+                          data={barChartDataStudentChatCount}
+                          options={barChartOptionsStudent}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="card">
+                    <div className="card-body">
+                      <PieChart
+                        className="pie"
+                        series={[
+                          {
+                            data: pieDataCourse,
+                            highlightScope: {
+                              faded: "global",
+                              highlighted: "item",
+                            },
+                            faded: {
+                              innerRadius: 30,
+                              additionalRadius: -30,
+                              color: "gray",
+                            },
+                          },
+                        ]}
+                        width={450}
+                        height={200}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6"></div>
                 <div className="col-lg-6">
                   <div className="card">
                     <div className="card-header py-3">
