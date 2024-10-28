@@ -182,7 +182,7 @@ const AddEditSubject = () => {
     // e.preventDefault();
     // e.target.reset()
     const submitData = {
-        subject_id:subjectData.subject_name,
+        subject_name:subjectData.subject_name,
          pdf_content:subjectData?.menu_image || "" ,
          semester_id:subjectData.semester_id,
          course_id:subjectData.course_id
@@ -275,9 +275,6 @@ const AddEditSubject = () => {
                   semester_id:subject?.semester_id,
                   course_id:subject?.course_id,
                   menu_image:subject?.pdf_content
-                  
-
-
                 }}
                 enableReinitialize
                 validationSchema={menuSchema}

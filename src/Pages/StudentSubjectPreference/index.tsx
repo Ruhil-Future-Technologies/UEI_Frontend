@@ -62,6 +62,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const [editFlag, setEditFlag] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
   const navigate = useNavigate()
   // const [pervalidet, setpervalidet] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{
@@ -98,6 +99,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           );
           setSubjects(filteredData || []);
           // setSubjects(response.data);
+          setSubjectsAll(filteredData || [])
         }
       })
       .catch((e) => {
@@ -181,6 +183,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const handleInputChange = (index: number, field: string, value: string) => {
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
+    if (field === 'course_id') {
+      const subjectData = subjectsAll.filter((item:any) => item.course_id === value)
+      setSubjects(subjectData)
+    }
 
     if (field === "score_in_percentage") {
       // Allow empty value
