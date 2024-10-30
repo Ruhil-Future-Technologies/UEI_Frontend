@@ -1,5 +1,5 @@
 import { TextField, Typography } from '@mui/material'
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, FormikHelpers } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import useApi from '../../hooks/useAPI';
@@ -38,7 +38,7 @@ const AddUniversity = () => {
     useEffect(() => {
         callAPI();
     }, []);
-    const handleSubmit = async (universityData: any) => {
+    const handleSubmit = async (universityData: any , { resetForm }: FormikHelpers<any>) => {
 
         if (id) {
             putData(`${UniversityupdateURL}/${id}`, universityData)
@@ -74,6 +74,7 @@ const AddUniversity = () => {
                         theme: "colored",
                     });
                     setUnivesity({ university_name: "" })
+                    resetForm({ values: initialState });
 
                 } else {
                     toast.error(data.message, {
@@ -95,6 +96,11 @@ const AddUniversity = () => {
     }
     const universitySchema = Yup.object().shape({
         university_name: Yup.string().required("Please enter university name")
+        .test(
+            "not-whitespace",
+            "Please enter a valid university name;not-whitespace only characters allowed.",
+            (value:any) => value && value?.trim().length > 0 
+          ),
         
     })
     return (
@@ -107,7 +113,8 @@ const AddUniversity = () => {
                                 <div className='main_title'>{id ? "Edit" : "Add"} University</div>
                             </Typography>
                             <Formik
-                                onSubmit={(formData) => handleSubmit(formData)}
+                                // onSubmit={(formData) => handleSubmit(formData)}
+                                onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
                                 initialValues={{
                                     university_name: univesity?.university_name,
                                 }}

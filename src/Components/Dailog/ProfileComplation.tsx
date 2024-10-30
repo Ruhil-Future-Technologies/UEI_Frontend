@@ -300,6 +300,8 @@ export const ProfileDialog: FunctionComponent<{
     "",
     "",
     "",
+    "",
+    "",
     "Mobile number should be 10 digits",
     "WhatsApp number should be 10 digits",
     "",
@@ -900,13 +902,13 @@ export const ProfileDialog: FunctionComponent<{
 
     const payload = {
       student_id: StudentId,
-      address1: answeredData?.address?.address1 || answers[32],
-      address2: answeredData?.address?.address2 || answers[33],
-      country: answeredData?.address?.country || answers[27],
-      state: answeredData?.address?.state || answers[28],
-      city: answeredData?.address?.city || answers[30],
-      district: answeredData?.address?.district || answers[29],
-      pincode: answeredData?.address?.pincode || answers[31],
+      address1: answeredData?.address?.address1 || answers[34],
+      address2: answeredData?.address?.address2 || answers[35],
+      country: answeredData?.address?.country || answers[29],
+      state: answeredData?.address?.state || answers[30],
+      city: answeredData?.address?.city || answers[32],
+      district: answeredData?.address?.district || answers[31],
+      pincode: answeredData?.address?.pincode || answers[33],
       address_type: "current",
     };
     postData("/student_address/add", payload).then((response) => {
@@ -1234,22 +1236,22 @@ export const ProfileDialog: FunctionComponent<{
         setgName(false);
       }
     }
-    if (currentQuestionIndex === 21) {
+    if (currentQuestionIndex === 23) {
       // Regular expression for exactly 10 digits
       const phoneRegex = /^\d{10}$/;
 
-      if (!phoneRegex.test(updatedAnswers[21])) {
+      if (!phoneRegex.test(updatedAnswers[23])) {
         setphnumber(true);
         return;
       } else {
         setphnumber(false);
       }
     }
-    if (currentQuestionIndex === 22) {
+    if (currentQuestionIndex === 24) {
       // Regular expression for exactly 10 digits
       const phoneRegex = /^\d{10}$/;
 
-      if (!phoneRegex.test(updatedAnswers[22])) {
+      if (!phoneRegex.test(updatedAnswers[24])) {
         setphnumber(true);
         return;
       } else {
@@ -1267,21 +1269,21 @@ export const ProfileDialog: FunctionComponent<{
         setdisct(false);
       }
     }
-    if (currentQuestionIndex === 30) {
-      // Regular expression for exactly 10 digits
+    if (currentQuestionIndex === 31) {
+      
       const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[30])) {
+      if (!disticRegex.test(updatedAnswers[31])) {
         setdisct(true);
         return;
       } else {
         setdisct(false);
       }
     }
-    if (currentQuestionIndex === 31) {
+    if (currentQuestionIndex === 33) {
       const pincodeRegex = /^\d{6}$/;
 
-      if (!pincodeRegex.test(updatedAnswers[31])) {
+      if (!pincodeRegex.test(updatedAnswers[33])) {
         // setpincode(true);
         setpincode(true);
       } else {
@@ -1298,11 +1300,11 @@ export const ProfileDialog: FunctionComponent<{
         setpreferenceError(false);
       }
     }
-    if (currentQuestionIndex === 26) {
+    if (currentQuestionIndex === 28) {
       // Regular expression for exactly 6 digits (adjust the length as per your requirement)
       const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
-      if (!regex.test(updatedAnswers[26])) {
+      if (!regex.test(updatedAnswers[28])) {
         setper(true);
         return;
       } else {
@@ -1520,7 +1522,7 @@ export const ProfileDialog: FunctionComponent<{
           saveAnswersforContact([...answers, e.currentTarget.value]);
         else if (currentQuestionIndex === 26)
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
-        else if (currentQuestionIndex === 33)
+        else if (currentQuestionIndex === 35)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
         if (answers.length === 10) {
@@ -1578,7 +1580,7 @@ export const ProfileDialog: FunctionComponent<{
             theme: "colored",
           });
         }
-      } else if (currentQuestionIndex === 31) {
+      } else if (currentQuestionIndex === 33) {
         if (answers[currentQuestionIndex].length === 6) {
           answerSaveandGotoNextquestoin(e);
           setError1("");
@@ -1732,8 +1734,8 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const handleDropdownChangeInstituteType = (e: any) => {
-    const filteredcourse = courses.filter((item)=> item.institution_id === e.value)
-    setCourses(filteredcourse)
+    // const filteredcourse = courses.filter((item)=> item.institution_id === e.value)
+    // setCourses(filteredcourse)
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = e.label;
     setSelectedInstituteType(e.value);
@@ -2018,6 +2020,9 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const handleDropdownChangeInstitute = (e: any) => {
+       const filteredcourse = courses.filter((item)=> item.institution_id === e.value)
+  
+    setCourses(filteredcourse)
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = e.label;
     setSelectedInstitute(e.value);
@@ -2179,6 +2184,7 @@ export const ProfileDialog: FunctionComponent<{
   //   }
 
   // },[messages,currentQuestionIndex,answers,selectedInstitute,selectCourse,selectSubject,selectedHobby,selectedLanguage,selectedproficiency])
+  // console.log("test currentQuestionIndex",currentQuestionIndex)
   return (
     <>
       <div
