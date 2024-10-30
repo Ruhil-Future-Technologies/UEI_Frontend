@@ -18,11 +18,11 @@ import NameContext from "../Context/NameContext";
 
 
 interface ISubjectForm {
-  menu_image:string,
+  menu_image: string,
   subject_name: string,
-  semester_id:string,
-  course_id:string,
-  pdf_content?:string
+  semester_id: string,
+  course_id: string,
+  pdf_content?: string,
 
   // created_by: string
 }
@@ -42,12 +42,13 @@ const AddEditSubject = () => {
   const initialState = {
     subject_name: "",
     created_by: userdata?.id,
-    semester_id:"",
-    course_id:"",
-    menu_image:"",
-    pdf_content:""
+    semester_id: "",
+    course_id: "",
+    menu_image: "",
+    pdf_content: "",
+    
   };
-  const [subject, setSubject] = useState(initialState);
+  const [subject, setSubject] = useState<any>(initialState);
   // const [subject_namecol, setSubjectNamevalid] = useState<boolean>(false);
   // const [selectedFile, setSelectedFile] = React.useState("");
   const formRef = useRef<FormikProps<ISubjectForm>>(null)
@@ -91,32 +92,32 @@ const AddEditSubject = () => {
       const filteredData = data?.data.filter(item => item.is_active === 1);
       setCourseList(filteredData);
       // setDataEntity(data?.data)
-  }).catch(e => {
+    }).catch(e => {
       if (e?.response?.status === 401) {
-          navigator("/")
+        navigator("/")
       }
       toast.error(e?.message, {
+        hideProgressBar: true,
+        theme: "colored",
+      });
+    });
+    getData("/semester/list")
+      .then((response: any) => {
+        if (response.status === 200) {
+          const filteredData = response?.data?.filter(
+            (item: any) => item?.is_active === 1
+          );
+          setSemester(filteredData || []);
+          // setCourses(response.data);
+        }
+      })
+      .catch((error) => {
+        toast.error(error?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
+        });
       });
-  });
-  getData("/semester/list")
-  .then((response: any) => {
-    if (response.status === 200) {
-      const filteredData = response?.data?.filter(
-        (item: any) => item?.is_active === 1
-      );
-      setSemester(filteredData || []);
-      // setCourses(response.data);
-    }
-  })
-  .catch((error) => {
-    toast.error(error?.message, {
-      hideProgressBar: true,
-      theme: "colored",
-      position: "top-center",
-    });
-  });
     if (id) {
       getData(`${SubjectEditURL}${id ? `/${id}` : ""}`)
         .then((data: any) => {
@@ -128,11 +129,20 @@ const AddEditSubject = () => {
             theme: "colored",
           });
         });
+
+
+
     }
   };
   useEffect(() => {
     callAPI();
   }, []);
+  useEffect(() => {
+    if (id) {
+      const semesterCount = semester.filter((item: any) => item.course_id === subject.course_id)
+      setTotalSemester(semesterCount)
+    }
+  }, [id, semester]);
   // const handleChange = (e: any) => {
   //   const { name, value } = e.target;
   //   if (name === "subject_name") {
@@ -153,10 +163,10 @@ const AddEditSubject = () => {
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>, fieldName: string) => {
 
     if (fieldName === 'course_id') {
-      const semesterCount = semester.filter((item:any) => item.course_id === e.target.value)
+      const semesterCount = semester.filter((item: any) => item.course_id === e.target.value)
       setTotalSemester(semesterCount)
     }
-    setSubject((prevMenu) => {
+    setSubject((prevMenu:any) => {
       return {
         ...prevMenu,
         [e.target.name]: e.target.value,
@@ -175,6 +185,41 @@ const AddEditSubject = () => {
   //   subjectData: { subject_name: string }
   // ) => {
   // const handleSubmit = async (subjectData: ISubjectForm) => {
+  const handleSubmit1 =()=>{
+    
+    const submitData = {
+      subject_name: subject[""] as string,
+      pdf_content: subject?.pdf_content || "",
+      semester_id: subject.semester_id,
+      course_id: subject.course_id
+    }
+    if (id) {
+      putData(`${SubjectEditURL}/${id}`, submitData)
+        .then((data: any) => {
+          // const linesInfo = data || [];
+          // dispatch(setLine(linesInfo))
+          if (data.status === 200) {
+            navigator("/main/Subject");
+            toast.success(data.message, {
+              hideProgressBar: true,
+              theme: "colored",
+            });
+          } else {
+            toast.error(data.message, {
+              hideProgressBar: true,
+              theme: "colored",
+            });
+
+          }
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: "colored",
+          });
+        });
+    }
+  }
   const handleSubmit = async (
     subjectData: ISubjectForm,
     { resetForm }: FormikHelpers<ISubjectForm>
@@ -182,13 +227,12 @@ const AddEditSubject = () => {
     // e.preventDefault();
     // e.target.reset()
     const submitData = {
-        subject_name:subjectData.subject_name,
-         pdf_content:subjectData?.menu_image || "" ,
-         semester_id:subjectData.semester_id,
-         course_id:subjectData.course_id
+      subject_name: subjectData.subject_name,
+      pdf_content: subjectData?.menu_image || "",
+      semester_id: subjectData.semester_id,
+      course_id: subjectData.course_id
     }
     if (id) {
-      // console.log("Submit 1", subjectData);
       putData(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
           // const linesInfo = data || [];
@@ -245,12 +289,17 @@ const AddEditSubject = () => {
   const menuSchema = Yup.object().shape({
     subject_name: Yup.string()
       .required("Please enter Subject name")
+      .test(
+        "not-whitespace",
+        "Please enter a valid Subject name;not-whitespace only characters allowed.",
+        (value:any) => value && value?.trim().length > 0 
+      )
       .matches(charPattern, 'Please enter a valid Subject name only characters allowed.'),
     description: Yup.string(),
     menu_image: Yup.string(),
     semester_id: Yup.string()
       .required("Please enter semester name"),
-      course_id: Yup.string()
+    course_id: Yup.string()
       .required("Please enter course name")
   })
 
@@ -272,9 +321,9 @@ const AddEditSubject = () => {
                 onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
                 initialValues={{
                   subject_name: subject?.subject_name,
-                  semester_id:subject?.semester_id,
-                  course_id:subject?.course_id,
-                  menu_image:subject?.pdf_content
+                  semester_id: subject?.semester_id,
+                  course_id: subject?.course_id,
+                  menu_image: subject?.pdf_content
                 }}
                 enableReinitialize
                 validationSchema={menuSchema}
@@ -284,53 +333,53 @@ const AddEditSubject = () => {
                   <Form>
                     {/* <form onSubmit={(e) => handleSubmit(e, subject)}> */}
                     <div className="row">
-                    <div className='col-md-4'>
-                                                <div className="form_field_wrapper">
-                                                    <FormControl fullWidth>
-                                                        <InputLabel id="demo-simple-select-label">Course *</InputLabel>
-                                                        <Select
-                                                            onChange={(e: SelectChangeEvent<string>) => handleChange(e, "course_id")}
-                                                            label="course"
-                                                            name="course_id"
+                      <div className='col-md-4'>
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Course *</InputLabel>
+                            <Select
+                              onChange={(e: SelectChangeEvent<string>) => handleChange(e, "course_id")}
+                              label="course"
+                              name="course_id"
 
 
-                                                            onBlur={handleBlur}
-                                                            value={values.course_id}
-                                                            variant="outlined"
-                                                            sx={{
-                                                                backgroundColor: inputfield(namecolor),
-                                                                color: inputfieldtext(namecolor)
-                                                            }}
-                                                            MenuProps={{
-                                                                PaperProps: {
-                                                                    style: {
-                                                                        backgroundColor: inputfield(namecolor),
-                                                                        color: inputfieldtext(namecolor)
-                                                                    },
-                                                                },
-                                                            }}
-                                                        >
-                                                        
-                                                            {courseList.map((item, idx) => (
-                                                                <MenuItem value={item.id} key={`${item.course_name}-${idx + 1}`}
+                              onBlur={handleBlur}
+                              value={values.course_id}
+                              variant="outlined"
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor)
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor)
+                                  },
+                                },
+                              }}
+                            >
 
-                                                                    sx={{
-                                                                        backgroundColor: inputfield(namecolor),
-                                                                        color: inputfieldtext(namecolor),
-                                                                        '&:hover': {
-                                                                            backgroundColor: inputfieldhover(namecolor),
-                                                                        },
-                                                                    }}
-                                                                >{item.course_name}</MenuItem>
-                                                            ))}
-                                                        </Select>
-                                                        <Typography variant="body2" color="error">
-                                                            {typeof errors?.course === "string" && errors.course}
-                                                        </Typography>
-                                                    </FormControl>
-                                                </div>
-                                            </div>
-                    <div className='col-md-4'>
+                              {courseList.map((item, idx) => (
+                                <MenuItem value={item.id} key={`${item.course_name}-${idx + 1}`}
+
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor: inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >{item.course_name}</MenuItem>
+                              ))}
+                            </Select>
+                            <Typography variant="body2" color="error">
+                              {typeof errors?.course === "string" && errors.course}
+                            </Typography>
+                          </FormControl>
+                        </div>
+                      </div>
+                      <div className='col-md-4'>
                         <div className="form_field_wrapper">
                           <FormControl fullWidth>
                             <InputLabel id="semester-select-label">Semester *</InputLabel>
@@ -380,14 +429,7 @@ const AddEditSubject = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <TextField
-                      label="Subject Name"
-                      name="subject_name"
-                      value={subject.subject_name}
-                      variant="outlined"
-                      onChange={handleChange}
-                     
-                    /> */}
+                      
                           <Field
                             component={TextField}
                             type="text"
@@ -400,13 +442,8 @@ const AddEditSubject = () => {
                             <p style={{ color: 'red' }}>{errors?.subject_name}</p> : <></>
                           }
                         </div>
-                        {/* {subject_namecol && (
-                    <p style={{ color: "red" }}>
-                      Please enter a valid Subject Name Only characters allowed.
-                    </p>
-                  )} */}
                       </div>
-                      
+
                     </div>
                     <div className="row">
                       <div className="col-md-4 mt-2">
@@ -426,34 +463,25 @@ const AddEditSubject = () => {
                               name='menu_image'
                               style={{ color: inputfieldtext(namecolor) }}
                             />
-
-                            {/* {selectedFile && (
-                        <Typography variant="body1">{selectedFile}</Typography>
-                      )} */}
                           </Grid>
                         </div>
                       </div>
                     </div>
-                    {/* <div className="row mt-4">
-                      <div className="col-md-4">
-                        <InputLabel className="text-secondary" sx={{ color: inputfieldtext(namecolor) }}>
-                          Description
-                        </InputLabel>
-                        <TextareaAutosize
-                          aria-label="empty textarea"
-                          minRows={5}
-                          style={{ width: "100%", fontSize: "1rem", backgroundColor: inputfield(namecolor), color: inputfieldtext(namecolor) }}
-                          placeholder="Enter your text here..."
-                          name="description"
-                          value={values.description}
-                          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange(e, "description")}
-                        />
-                      </div>
-                    </div> */}
+                   
                     <div className=" mt-3">
+                    {!id ?
                       <button className="btn btn-primary mainbutton">
                         {id ? "Update" : "Save"}
                       </button>
+                      :
+                      <button
+                        type="submit"
+                        className="btn btn-primary mainbutton"
+                        onClick={() => handleSubmit1()}
+                      >
+                        Update
+                      </button>
+}
                     </div>
                     {/* </form> */}
                   </Form>

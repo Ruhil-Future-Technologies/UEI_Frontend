@@ -279,6 +279,11 @@ const AddEditInstitute = () => {
          instituteSchema = Yup.object().shape({
             institution_name: Yup.string()
                 .required("Please enter Institute name")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid Institute name;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(charPattern, 'Please enter a valid Institute name only characters allowed.')
                 .test('unique', 'institute name already exists', function (value) {
                     if (!value) return true;
@@ -316,10 +321,20 @@ const AddEditInstitute = () => {
                   }),
                 
             address: Yup.string()
-                .required("Please enter Address"),
+                .required("Please enter Address")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid Address;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  ),
                 // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
             city: Yup.string()
                 .required("Please enter City")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid City;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(charPattern, 'Please enter a valid City name only characters allowed.'),
             country: Yup.string()
                 .required("Please enter Country")
@@ -329,6 +344,11 @@ const AddEditInstitute = () => {
                 .matches(charPattern, 'Please enter a valid State name only characters allowed.'),
             district: Yup.string()
                 .required("Please enter District")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid District;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(charPattern, 'Please enter a valid District name only characters allowed.'),
             pincode: Yup.string()
                 .required("Please enter Pincode")
@@ -364,6 +384,11 @@ const AddEditInstitute = () => {
          instituteSchema = Yup.object().shape({
             institution_name: Yup.string()
                 .required("Please enter Institute name")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid Institute name;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(charPattern, 'Please enter a valid Institute name only characters allowed.')
                 .test('unique', 'institute name already exists', value => {
                     if (!value) return true;
@@ -379,10 +404,20 @@ const AddEditInstitute = () => {
                     return !exists;
                 }),
             address: Yup.string()
-                .required("Please enter Address"),
+                .required("Please enter Address")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid Address;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  ),
                 // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
             city: Yup.string()
                 .required("Please enter City")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid City;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(charPattern, 'Please enter a valid City name only characters allowed.'),
             country: Yup.string()
                 .required("Please enter Country")
@@ -392,6 +427,11 @@ const AddEditInstitute = () => {
                 .matches(charPattern, 'Please enter a valid State name only characters allowed.'),
             district: Yup.string()
                 .required("Please enter District")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid District;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(charPattern, 'Please enter a valid District name only characters allowed.'),
             pincode: Yup.string()
                 .required("Please enter Pincode")
@@ -419,27 +459,33 @@ const [isFocused, setIsFocused] = useState(false);
 const [isFocusedstate, setIsFocusedstate] = useState(false);
 const dropdownRef = useRef<HTMLDivElement>(null);
 const dropdownstateRef = useRef<HTMLDivElement>(null);
+const [isCountryOpen, setIsCountryOpen] = useState(false);
 
 useEffect(() => {
   const handleFocus = () => setIsFocused(true);
   const handleFocusstate = () => setIsFocusedstate(true);
   const handleBlur = (e: FocusEvent) => {
+   
     if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget as Node)) {
       setIsFocused(false);
     }
   };
   const handleBlurstate = (e: FocusEvent) => {
+    console.log("Blurstate")
     if (dropdownstateRef.current && !dropdownstateRef.current.contains(e.relatedTarget as Node)) {
         setIsFocusedstate(false);
     }
   };
 
   const currentDropdown = dropdownRef.current;
+  console.log("currentDropdown",currentDropdown)
+
   if (currentDropdown) {
     currentDropdown.addEventListener('focus', handleFocus as EventListener);
     currentDropdown.addEventListener('blur', handleBlur as EventListener);
   }
   const currentDropdownstate = dropdownstateRef.current;
+  console.log("currentDropdownstate",currentDropdownstate)
   if (currentDropdownstate) {
     currentDropdownstate.addEventListener('focus', handleFocusstate as EventListener);
     currentDropdownstate.addEventListener('blur', handleBlurstate as EventListener);
@@ -578,12 +624,13 @@ useEffect(() => {
                                         <label className={`floating-label ${isFocused || values?.country ? "focused" : "focusedempty"}`}>
                                             Country <span>*</span>
                                         </label>
-                                        <div className="form_field_wrapper">
+                                        <div className="form_field_wrapper" onClick={() => setIsCountryOpen((prev) => !prev)}>
                                             <CountryDropdown
                                                 classes="form-control p-3 custom-dropdown"
                                                 defaultOptionLabel={values?.country || ""}
                                                 value={values?.country || ""}
-                                                onChange={(e) => handleInputChangecountry(e, "current_address", "country")}   
+                                                onChange={(e) => handleInputChangecountry(e, "current_address", "country")}  
+                                              
                                             />
                                             {/* {contry_col && <p style={{ color: "red" }}>Please enter Country Name.</p>} */}
                                             {touched?.country && errors?.country ?
