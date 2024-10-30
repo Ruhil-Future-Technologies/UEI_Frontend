@@ -33,7 +33,7 @@ interface Box {
   subject_id: string;
   preference: string;
   score_in_percentage: string;
-  semester_id: string;
+  sem_id: string;
 }
 interface Course {
   id: string;
@@ -141,7 +141,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               subject_id: item?.subject_id,
               preference: item?.preference,
               score_in_percentage: item?.score_in_percentage,
-              semester_id:item?.semester_id
+              sem_id:item?.sem_id
             };
             if (!boxes.some((box) => box.id === newBox.id)) {
               // setBoxes([...boxes, newBox]);
@@ -152,7 +152,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 preference: item?.preference,
                 score_in_percentage: item?.score_in_percentage,
                 student_id: String(item?.student_id),
-                semester_id:String(item?.semester_id)
+                sem_id:String(item?.sem_id)
               });
               setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
             }
@@ -165,7 +165,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               subject_id: "",
               preference: "",
               score_in_percentage: "",
-              semester_id:"",
+              sem_id:"",
             },
           ]);
           setEditFlag(true);
@@ -208,6 +208,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getPrefrencelist();
     getSemester();
   }, []);
+  useEffect(()=>{
+    const semesterCount = semester.filter((item: any) => item.semester_number === boxes[0].sem_id )
+    setTotalSemester(semesterCount)
+  },[StudentId,semester])
 
   const handleInputChange = (index: number, field: string, value: string) => {
     const newBoxes: any = [...boxes];
@@ -220,7 +224,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       const semesterCount = semester.filter((item: any) => item.course_id === value)
       setTotalSemester(semesterCount)
     }
-    if (field === 'semester_id') {
+    if (field === 'sem_id') {
       const semesterCount = subjectsAll.filter((item: any) => item.course_id === newBoxes[0].course_id )
          const subjectData = semesterCount.filter((item:any) => item.semester_id === value)
       setSubjects(subjectData)
@@ -266,7 +270,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       subject_id: "",
       preference: "",
       score_in_percentage: "",
-      semester_id:"",
+      sem_id:"",
     };
     setBoxes([...boxes, newBox]);
   };
@@ -392,7 +396,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           subject_id: String(box.subject_id),
           preference: box.preference,
           score_in_percentage: box.score_in_percentage,
-          semester_id:String(box.semester_id),
+          sem_id:String(box.sem_id),
         };
         initial = submissionData;
         eq = deepEqual(initialState, submissionData);
@@ -518,15 +522,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
                             <InputLabel id="semester-select-label">Semester </InputLabel>
                             <Select
-                              name="semester_id"
-                              value={box.semester_id}
+                              name="sem_id"
+                              value={box.sem_id}
                               sx={{
                                 backgroundColor: "#f5f5f5",
                               }}
                               onChange={(e) =>
-                                handleInputChange(index, "semester_id", e.target.value)
+                                handleInputChange(index, "sem_id", e.target.value)
                               }
-                              label="semester_id"
+                              label="sem_id"
                             >
                               {/* Generate menu items for semesters 1 to 8 */}
                               {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
@@ -546,7 +550,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                               ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {/* {typeof errors?.semester_id === "string" && errors.semester_id} */}
+                              {/* {typeof errors?.sem_id === "string" && errors.sem_id} */}
                             </Typography>
                           </FormControl>
                         </div>
