@@ -310,6 +310,7 @@ export const ProfileDialog: FunctionComponent<{
     "WhatsApp number should be 10 digits",
     "",
     "",
+    "",
     "Please enter a valid preference only characters allowed.",
     "Please enter a valid percentage.",
     "",

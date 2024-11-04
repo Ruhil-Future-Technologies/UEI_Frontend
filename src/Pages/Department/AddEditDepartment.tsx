@@ -144,6 +144,11 @@ const AddEditDepartment = () => {
     const departmentSchema = Yup.object().shape({
         department_name: Yup.string()
             .required("Please enter Department name")
+            .test(
+                "not-whitespace",
+                "Please enter a valid Department name;not-whitespace allowed.",
+                (value:any) => value && value?.trim().length > 0 
+              ) 
             .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid Department name only characters allowed.')
     })
 console.log("ttttt",inputfield(namecolor))

@@ -182,6 +182,11 @@ useEffect(()=>{
              languageSchema = Yup.object().shape({
                 language_name: Yup.string()
                     .required("Please enter Language name")
+                    .test(
+                        "not-whitespace",
+                        "Please enter a valid Language name;not-whitespace allowed.",
+                        (value:any) => value && value?.trim().length > 0 
+                      )
                     .matches(LanguageNamePattern, 'Please enter a valid Language name only characters allowed.')
                     .test('unique', 'Language name already exists', function (value) {
                         if (!value) return true;
@@ -207,6 +212,11 @@ useEffect(()=>{
              languageSchema = Yup.object().shape({
                 language_name: Yup.string()
                     .required("Please enter Language name")
+                    .test(
+                        "not-whitespace",
+                        "Please enter a valid Language name;not-whitespace allowed.",
+                        (value:any) => value && value?.trim().length > 0 
+                      )
                     .matches(LanguageNamePattern, 'Please enter a valid Language name only characters allowed.')
                     .test('unique', 'Language name already exists', value => {
                         if (!value) return true;
