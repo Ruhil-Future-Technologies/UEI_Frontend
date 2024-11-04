@@ -209,7 +209,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getSemester();
   }, []);
   useEffect(()=>{
-    const semesterCount = semester.filter((item: any) => item.semester_number === boxes[0].sem_id )
+    const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0].sem_id )
     setTotalSemester(semesterCount)
   },[StudentId,semester])
 

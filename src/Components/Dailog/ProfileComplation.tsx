@@ -274,6 +274,7 @@ export const ProfileDialog: FunctionComponent<{
   const [gName, setgName] = useState(false);
   const [phnumber, setphnumber] = useState(false);
   const [distic, setdisct] = useState(false);
+  const [city, setcity] = useState(false);
   const [preferenceError, setpreferenceError] = useState(false);
   const [pincode, setpincode] = useState(false);
   const [per, setper] = useState(false);
@@ -1301,6 +1302,17 @@ export const ProfileDialog: FunctionComponent<{
         setdisct(false);
       }
     }
+    if (currentQuestionIndex === 33) {
+      
+      const disticRegex = /^[a-zA-Z\s]+$/;
+
+      if (!disticRegex.test(updatedAnswers[33])) {
+        setcity(true);
+        return;
+      } else {
+        setcity(false);
+      }
+    }
     if (currentQuestionIndex === 34) {
       const pincodeRegex = /^\d{6}$/;
 
@@ -1584,6 +1596,7 @@ export const ProfileDialog: FunctionComponent<{
         gName ||
         phnumber ||
         distic ||
+        city ||
         pincode ||
         per ||
         preferenceError ||
@@ -2359,6 +2372,7 @@ export const ProfileDialog: FunctionComponent<{
                     gName ||
                     phnumber ||
                     distic ||
+                    city ||
                     pincode ||
                     per ||
                     preferenceError ||
