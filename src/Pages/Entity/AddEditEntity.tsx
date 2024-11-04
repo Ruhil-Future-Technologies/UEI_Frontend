@@ -158,6 +158,11 @@ const AddEditEntity = () => {
   const entitySchema = Yup.object().shape({
     entity_type: Yup.string()
       .required("Please enter Entity type")
+      .test(
+        "not-whitespace",
+        "Please enter a valid Entity type;not-whitespace allowed.",
+        (value:any) => value && value?.trim().length > 0 
+      )
       .matches(
         EntityNamePattern,
         "Please enter a valid Entity Type only characters allowed."

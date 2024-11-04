@@ -189,6 +189,11 @@ const AddEditHobby = () => {
          hobbySchema = Yup.object().shape({
             hobby_name: Yup.string()
                 .required("Please enter hobby name")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid hobby name;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid hobby name only characters allowed.')
                 .test('unique', 'Hobby name already exists', function (value) {
                     if (!value) return true;
@@ -211,6 +216,11 @@ const AddEditHobby = () => {
          hobbySchema = Yup.object().shape({
             hobby_name: Yup.string()
                 .required("Please enter Hobby name")
+                .test(
+                    "not-whitespace",
+                    "Please enter a valid hobby name;not-whitespace allowed.",
+                    (value:any) => value && value?.trim().length > 0 
+                  )
                 .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid Hobby name only characters allowed.')
                 .test('unique', 'Hobby name already exists', value => {
                     if (!value) return true;
