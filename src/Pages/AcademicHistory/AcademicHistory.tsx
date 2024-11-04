@@ -121,7 +121,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
     const stateOptions = states.map((state) => ({
-      value: state.isoCode,
+      // value: state.isoCode,
+      value:state.name,
       label: state.name,
     }));
     setStateOptions(stateOptions);
@@ -446,9 +447,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           course_id: String(!box.course_id ? 18 : box.course_id),
           learning_style: box.learning_style,
           class_id: String(!box.class_id ? 1 : box.class_id),
-          sem_id: String(box.sem_id),
-          university_id: String(box.university_id),
-          year: String(box?.year?.$y), // Assuming 'year' is a string
+          sem_id: box.sem_id ? String(box.sem_id) : "",
+          university_id:box.university_id ? String(box.university_id): "",
+          year: box?.year?.$y ? String(box?.year?.$y) : "", // Assuming 'year' is a string
           stream:
             particularClass === "class_11" || particularClass === "class_12"
               ? box?.stream
@@ -786,7 +787,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   <InputLabel>State</InputLabel>
                   <Select
                     name="state_for_stateboard"
-                    value={box.state_for_stateboard}
+                    value={box.state_for_stateboard.toLowerCase()}
                     sx={{
                       backgroundColor: "#f5f5f5",
                     }}
@@ -799,15 +800,15 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="State"
                   >
-                    {stateOptions.map((state) => (
+                    {stateOptions.map((state:any) => (
                       <MenuItem
                         key={state.value}
-                        value={state.label}
+                        value={state.label.toLowerCase()}
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
                           "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                            backgroundColor: inputfieldhover(namecolor), 
                           },
                         }}
                       >
