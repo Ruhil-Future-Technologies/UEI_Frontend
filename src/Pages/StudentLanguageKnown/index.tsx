@@ -285,7 +285,63 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             key={index}
           >
             <div className="col form_field_wrapper ">
-              <FormControl required sx={{ m: 1}} fullWidth>
+            <FormControl required sx={{ m: 1 }} fullWidth>
+        <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
+        <Select
+          labelId={`language-label-${box.id}`}
+          id={`language-select-${box.id}`}
+          name={`language_${box.id}`}
+          value={box.language_id}
+          label="Language *"
+          sx={{
+            backgroundColor: "#f5f5f5",
+          }}
+          onChange={(e) => handleChange(e, index)}
+          MenuProps={MenuProps}
+        >
+          {/* Render the selected language as a disabled MenuItem at the top */}
+          {alllanguage
+            .filter((lang) => lang.id === box.language_id)
+            .map((lang) => (
+              <MenuItem
+                key={lang.id}
+                value={lang.id}
+                disabled
+                sx={{
+                  backgroundColor: inputfield(namecolor),
+                  color: inputfieldtext(namecolor),
+                  fontWeight: "bold",
+                }}
+              >
+                {lang.language_name}
+              </MenuItem>
+            ))}
+
+          {/* Render the rest of the languages except the ones already selected in other boxes */}
+          {alllanguage
+            .filter(
+              (lang) =>
+                lang.id !== box.language_id &&
+                !boxes.some((b) => b.language_id === lang.id)
+            )
+            .map((lang) => (
+              <MenuItem
+                key={lang.id}
+                value={lang.id}
+                sx={{
+                  backgroundColor: inputfield(namecolor),
+                  color: inputfieldtext(namecolor),
+                  "&:hover": {
+                    backgroundColor: inputfieldhover(namecolor),
+                  },
+                }}
+              >
+                {lang.language_name}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
+              {/* <FormControl required sx={{ m: 1}} fullWidth>
                 <InputLabel id={`language-label-${box.id}`}>
                   Language
                 </InputLabel>
@@ -316,8 +372,10 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       {lang.language_name}
                     </MenuItem>
                   ))}
+                  
+    
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </div>
             <div className="col form_field_wrapper">
               <FormControl required sx={{ m: 1 }} fullWidth>

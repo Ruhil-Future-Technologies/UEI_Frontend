@@ -48,7 +48,8 @@ interface Box {
   year: any;
   stream: string;
   university_id: string;
-  semester_id: string;
+  // sem_id: string;
+  sem_id:string;
 }
 interface Boxset {
   id: number;
@@ -76,7 +77,7 @@ interface University {
 interface Semester {
   id: number;
   semester_number: string;
-  semester_id: string;
+  sem_id: string;
   course_id: string;
 }
 interface Classes {
@@ -139,7 +140,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       year: "",
       stream: "",
       university_id: "",
-      semester_id: "",
+      sem_id: "",
       //   starting_date: null,
       //   ending_date: null,
     };
@@ -349,8 +350,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               year: item?.year ? dayjs(item?.year) : null,
               stream: item?.stream,
               university_id: item?.university_id,
-              semester_id: item?.semester_id,
+              sem_id: item?.sem_id,
             };
+           
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
@@ -370,7 +372,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               year: null,
               stream: "",
               university_id: "",
-              semester_id: "",
+              sem_id: "",
             },
           ]);
           setEditFlag(true);
@@ -444,7 +446,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           course_id: String(!box.course_id ? 18 : box.course_id),
           learning_style: box.learning_style,
           class_id: String(!box.class_id ? 1 : box.class_id),
-          sem_id: String(box.semester_id),
+          sem_id: String(box.sem_id),
           university_id: String(box.university_id),
           year: String(box?.year?.$y), // Assuming 'year' is a string
           stream:
@@ -650,6 +652,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     newBoxes[index][field] = value;
     setBoxes1(newBoxes);
   };
+  useEffect(()=>{
+    const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
+    setTotalSemester(semesterCount)
+  },[boxes[0]?.course_id])
   return (
     <div className="mt-5">
       <form>
@@ -962,19 +968,19 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 >
                   <InputLabel>Semester</InputLabel>
                   <Select
-                    value={box.semester_id}
+                    value={box.sem_id}
                     sx={{
                       backgroundColor: "#f5f5f5",
                     }}
                     onChange={(e) =>
-                      handleInputChange(index, "semester_id", e.target.value)
+                      handleInputChange(index, "sem_id", e.target.value)
                     }
                     label="Semester"
                   >
                     {/* {semester.map((item) => (
                       <MenuItem
-                        key={item?.semester_id}
-                        value={item?.semester_id}
+                        key={item?.sem_id}
+                        value={item?.sem_id}
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
