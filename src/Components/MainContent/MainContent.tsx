@@ -938,6 +938,8 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
                 delete academic_history?.institution_name;
                 delete academic_history?.learning_style;
                 delete academic_history?.university_name;
+                delete academic_history?.university_id;
+                delete academic_history?.sem_id;
                 delete academic_history?.year;
                 academic_history?.board !== "state_board" &&
                   delete academic_history?.state_for_stateboard;
