@@ -146,7 +146,7 @@ const AddEditDepartment = () => {
             .required("Please enter Department name")
             .test(
                 "not-whitespace",
-                "Please enter a valid Department name;not-whitespace allowed.",
+                "Please enter a valid Department name; whitespace is not allowed.",
                 (value:any) => value && value?.trim().length > 0 
               ) 
             .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid Department name only characters allowed.')

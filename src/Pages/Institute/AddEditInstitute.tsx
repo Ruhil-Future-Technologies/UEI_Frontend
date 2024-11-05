@@ -281,7 +281,7 @@ const AddEditInstitute = () => {
                 .required("Please enter Institute name")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid Institute name;not-whitespace allowed.",
+                    "Please enter a valid Institute name; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(charPattern, 'Please enter a valid Institute name only characters allowed.')
@@ -324,7 +324,7 @@ const AddEditInstitute = () => {
                 .required("Please enter Address")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid Address;not-whitespace allowed.",
+                    "Please enter a valid Address; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   ),
                 // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
@@ -332,7 +332,7 @@ const AddEditInstitute = () => {
                 .required("Please enter City")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid City;not-whitespace allowed.",
+                    "Please enter a valid City; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(charPattern, 'Please enter a valid City name only characters allowed.'),
@@ -346,7 +346,7 @@ const AddEditInstitute = () => {
                 .required("Please enter District")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid District;not-whitespace allowed.",
+                    "Please enter a valid District; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(charPattern, 'Please enter a valid District name only characters allowed.'),
@@ -386,7 +386,7 @@ const AddEditInstitute = () => {
                 .required("Please enter Institute name")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid Institute name;not-whitespace allowed.",
+                    "Please enter a valid Institute name; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(charPattern, 'Please enter a valid Institute name only characters allowed.')
@@ -407,7 +407,7 @@ const AddEditInstitute = () => {
                 .required("Please enter Address")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid Address;not-whitespace allowed.",
+                    "Please enter a valid Address; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   ),
                 // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
@@ -415,7 +415,7 @@ const AddEditInstitute = () => {
                 .required("Please enter City")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid City;not-whitespace allowed.",
+                    "Please enter a valid City; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(charPattern, 'Please enter a valid City name only characters allowed.'),
@@ -429,7 +429,7 @@ const AddEditInstitute = () => {
                 .required("Please enter District")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid District;not-whitespace allowed.",
+                    "Please enter a valid District; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(charPattern, 'Please enter a valid District name only characters allowed.'),

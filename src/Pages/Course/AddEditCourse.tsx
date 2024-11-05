@@ -214,7 +214,7 @@ const AddEditCourse = () => {
             .required("Please enter course name")
             .test(
                 "not-whitespace",
-                "Please enter a valid course name;not-whitespace allowed.",
+                "Please enter a valid course name; whitespace is not allowed.",
                 (value:any) => value && value?.trim().length > 0 
               )
             .matches(/^[a-zA-Z0-9\s\-.]*$/,  'Please enter a valid course name'),

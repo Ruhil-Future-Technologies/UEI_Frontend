@@ -184,7 +184,7 @@ useEffect(()=>{
                     .required("Please enter Language name")
                     .test(
                         "not-whitespace",
-                        "Please enter a valid Language name;not-whitespace allowed.",
+                        "Please enter a valid Language name; whitespace is not allowed.",
                         (value:any) => value && value?.trim().length > 0 
                       )
                     .matches(LanguageNamePattern, 'Please enter a valid Language name only characters allowed.')
@@ -214,7 +214,7 @@ useEffect(()=>{
                     .required("Please enter Language name")
                     .test(
                         "not-whitespace",
-                        "Please enter a valid Language name;not-whitespace allowed.",
+                        "Please enter a valid Language name; whitespace is not allowed.",
                         (value:any) => value && value?.trim().length > 0 
                       )
                     .matches(LanguageNamePattern, 'Please enter a valid Language name only characters allowed.')
