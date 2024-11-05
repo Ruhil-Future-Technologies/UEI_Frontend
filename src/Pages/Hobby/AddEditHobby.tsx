@@ -191,7 +191,7 @@ const AddEditHobby = () => {
                 .required("Please enter hobby name")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid hobby name;not-whitespace allowed.",
+                    "Please enter a valid hobby name; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid hobby name only characters allowed.')
@@ -218,7 +218,7 @@ const AddEditHobby = () => {
                 .required("Please enter Hobby name")
                 .test(
                     "not-whitespace",
-                    "Please enter a valid hobby name;not-whitespace allowed.",
+                    "Please enter a valid hobby name; whitespace is not allowed.",
                     (value:any) => value && value?.trim().length > 0 
                   )
                 .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid Hobby name only characters allowed.')

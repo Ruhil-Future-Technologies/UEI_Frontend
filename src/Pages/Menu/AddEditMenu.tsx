@@ -185,6 +185,11 @@ const AddEditMenu = () => {
     const menuSchema = Yup.object().shape({
         menu_name: Yup.string()
             .required("Please enter Menu name")
+            .test(
+                "not-whitespace",
+                "Please enter a valid Menu name; whitespace is not allowed.",
+                (value:any) => value && value?.trim().length > 0 
+              )
             .matches(charPattern, 'Please enter a valid Menu name only characters allowed.'),
         priority: Yup.string()
             .required("Please enter valid Menu sequence number")

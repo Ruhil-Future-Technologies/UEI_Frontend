@@ -47,6 +47,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [isValid, setIsValid] = useState(true);
   const [errors, setErrors] = useState({ currentpin: "", permanentpin: "" });
   const [contry_col, setcontry_col] = useState<boolean>(false);
+  const [add_col, setAdd_col] = useState<boolean>(false);
+  const [add2_col, setAdd2_col] = useState<boolean>(false);
+  const [city_colerror, setCity_colerror] = useState<boolean>(false);
+  const [district_colerror, setDistrict_colerror] = useState<boolean>(false);
   const [state_col, setstate_col] = useState<boolean>(false);
   const [city_col, setcity_col] = useState<boolean>(false);
   const [district_col, setdistrict_col] = useState<boolean>(false);
@@ -187,6 +191,11 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "city") {
+        if(value === "" ){
+          setCity_colerror(true)
+        }else{
+          setCity_colerror(false)
+        }
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setcity_col(true);
         } else {
@@ -194,6 +203,11 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "district") {
+        if(value === "" ){
+          setDistrict_colerror(true)
+        }else{
+          setDistrict_colerror(false)
+        }
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setdistrict_col(true);
         } else {
@@ -205,6 +219,20 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           setpincode_col(false);
         } else {
           setpincode_col(true);
+        }
+      }
+      if (name === "address1") {
+        if (value === "") {
+          setAdd_col(true);
+        } else {
+          setAdd_col(false)
+        }
+      }
+      if (name === "address2") {
+        if (value === "") {
+          setAdd2_col(true);
+        } else {
+          setAdd2_col(false)
         }
       }
       // if(name==='pincode')
@@ -358,6 +386,36 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // }
 
   const SubmitHandle = async () => {
+    if(!("address1" in studentAddress) || studentAddress?.address1 === ""){
+      setAdd_col(true)
+
+    }else{
+      setAdd_col(false)
+    }
+    if(!("address2" in studentAddress) || studentAddress?.address2 === ""){
+      setAdd2_col(true)
+
+    }else{
+      setAdd2_col(false)
+    }
+    if(!("city" in studentAddress) || studentAddress?.city === ""){
+      setCity_colerror(true)
+
+    }else{
+      setCity_colerror(false)
+    }
+    if(!("district" in studentAddress) || studentAddress?.district === ""){
+      setDistrict_colerror(true)
+
+    }else{
+      setDistrict_colerror(false)
+    }
+    if(!("pincode" in studentAddress) || studentAddress?.pincode === ""){
+      setpincode_col(true)
+
+    }else{
+      setpincode_col(false)
+    }
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
     if (validatePincode(pincode)) {
@@ -590,7 +648,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {studentAddress.address1 == "" && (
+            {(studentAddress.address1 === "" || add_col) && (
               <p style={{ color: "red" }}>Please enter Address 1.</p>
             )}
           </div>
@@ -614,6 +672,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             onChange={(e) => handleInputChange(e, "current")}
             // required
           />
+           {" "}
+            {(studentAddress.address2 === "" || add2_col) && (
+              <p style={{ color: "red" }}>Please enter Address 2.</p>
+            )}
           {/* <div> {studentAddress.address2 == "" && (
             <p style={{ color: 'red' }}>Please enter Address 2.</p>
           )}</div> */}
@@ -746,7 +808,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {studentAddress?.city == "" && (
+            {(studentAddress?.city == "" || city_colerror) && (
               <p style={{ color: "red" }}>Please enter City name.</p>
             )}
           </div>
@@ -783,7 +845,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {studentAddress?.district == "" && (
+            {(studentAddress?.district == "" || district_colerror) && (
               <p style={{ color: "red" }}>Please enter District name.</p>
             )}
           </div>

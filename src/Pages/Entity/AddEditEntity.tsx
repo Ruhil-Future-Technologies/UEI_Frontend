@@ -160,7 +160,7 @@ const AddEditEntity = () => {
       .required("Please enter Entity type")
       .test(
         "not-whitespace",
-        "Please enter a valid Entity type;not-whitespace allowed.",
+        "Please enter a valid Entity type; whitespace is not allowed.",
         (value:any) => value && value?.trim().length > 0 
       )
       .matches(
