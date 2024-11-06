@@ -391,21 +391,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   }, []);
 
   const saveAcademicHistory = async (instituteId: number = 0) => {
-    // event: React.FormEvent<HTMLFormElement>
-    // event.preventDefault();
-    // const validatePayload = (
-    //   payload: { [s: string]: unknown } | ArrayLike<unknown>
-    // ) => {
-    //   return Object.values(payload).map((value: any) => {
-    //     console.log(value);
-
-    //     // debugger;
-    //     // if (value == "college") {
-    //     //   // value !== ""
-    //     //   isDateValid(value.year);
-    //     // }
-    //   });
-    // };
     const validatePayload = (college: string, year: string) => {
       if (college == "college") {
         return isDateValid(year);
@@ -414,27 +399,60 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     };
 
-    // const promises = boxes
-    //   .map((box) => {
-    //     const payload = {
-    //       student_id: StudentId,
-    //       institution_type: box.institute_type,
-    //       board: box.board,
-    //       state_for_stateboard: box.state_for_stateboard,
-    //       institute_id: String(!box.institute_id ? 95 : box.institute_id),
-    //       course_id: String(!box.course_id ? 18 : box.course_id),
-    //       learning_style: box.learning_style,
-    //       class_id: String(!box.class_id ? 1 : box.class_id),
-    //       year: String(box?.year?.$y), // Assuming 'year' is a string
-    //     };
-    // validatePayload(payload
-
     const isDateValid = (year: string) => {
       return (
         dayjs(year).isBefore(dayjs(year)) || dayjs(year).isSame(dayjs(year))
       );
     };
-    const promises = boxes
+    const canProceed = (boxes: Box[]) => {
+      for (const box of boxes) {
+        // Check if `institute_type` is empty
+        if (box.institute_type === "") {
+          return false; // Stop execution
+        }
+    
+        // Additional checks based on `institute_type`
+        if (box.institute_type === "college") {
+          // Required fields for "college"
+          if (
+            box.year === null ||
+            box.course_id === null ||
+            box.course_id === "" ||
+            box.university_id === null ||
+            box.university_id === "" ||
+            box.institute_id === "" ||
+            box.institute_id === null ||
+            box.sem_id === null ||
+            box.sem_id === "" ||
+            box.learning_style === "" ||
+            box.learning_style === null
+
+          ) {
+            return false; 
+          }
+        } else if (box.institute_type === "school") {
+          
+          if (
+            box.board === "" ||
+            box.class_id === "" ||
+            box.class_id === null ||
+           (
+             particularClass === "class_11" ||
+             particularClass === "class_12")
+                 ?
+                 box.stream === "" ||
+                 box.stream === null 
+                 : ""
+          ) {
+            return false; 
+          }
+        }
+      }
+    
+      return true; 
+    };
+    if (canProceed(boxes)) {
+      const promises = boxes
       .map((box) => {
         const payload = {
           student_id: StudentId,
@@ -520,6 +538,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         //   theme: "colored",
         // });
       });
+    } else {
+      console.log("Some required fields are missing. Cannot proceed.");
+    }
+  
   };
 
   const setDataInsitute = async (value: any) => {
@@ -657,6 +679,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
     setTotalSemester(semesterCount)
   },[boxes[0]?.course_id])
+ 
   return (
     <div className="mt-5">
       <form>
@@ -905,19 +928,19 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         {institute.institution_name}
                       </MenuItem>
                     ))}
-                    <MenuItem
+                    {/* <MenuItem
                       key={1}
                       value={1}
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
                         "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          backgroundColor: inputfieldhover(namecolor), 
                         },
                       }}
                     >
                       Others
-                    </MenuItem>
+                    </MenuItem> */}
                   </Select>
                   {/* <div> {!box.institute_id && (
                         <p style={{ marginLeft: "10px", color: 'red' }}>Please select a Department name.</p>

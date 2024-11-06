@@ -136,7 +136,7 @@ const AddSemester = () => {
 
     }
     const semesterSchema = Yup.object().shape({
-        semester_name: Yup.string().required("Please enter semester"),
+        semester_name: Yup.string().required("Please select semester"),
         institute: Yup.string().required("Please select institute name"),
         course: Yup.string().required("Please select course name")
 
@@ -161,7 +161,7 @@ const AddSemester = () => {
                                 validationSchema={semesterSchema}
                             // innerRef={formRef}
                             >
-                                {({ errors, values, touched, isValid, dirty, handleChange, handleBlur }) => (
+                                {({ errors, values, touched, isValid, dirty, handleChange, handleBlur,setFieldValue,setFieldTouched,setFieldError }) => (
                                     <Form>
                                         <div className='row'>
                                             <div className='col-md-4'>
@@ -170,6 +170,18 @@ const AddSemester = () => {
                                                         <InputLabel id="demo-simple-select-label">Institute *</InputLabel>
                                                         <Select
                                                             onChange={handleChange}
+                                                            // onChange={(event) => {
+                                                            //     handleChange(event);
+                                                            //     setFieldValue('course', ''); 
+                                                            //     setFieldValue('semester_name', '');
+                                                            // }}
+                                                            // onChange={(event) => {
+                                                            //     handleChange(event);
+                                                            //     // setFieldValue('institute', event.target.value);
+                                                            //     // setFieldTouched('institute', true, false); // Mark as touched without showing error
+                                                            //     setFieldError('institute',undefined ); // Clear institute error message
+                                                            //     setFieldValue('course', ''); // Optionally reset course
+                                                            // }}
                                                             label="institute"
                                                             name="institute"
 
@@ -215,6 +227,10 @@ const AddSemester = () => {
                                                         <InputLabel id="demo-simple-select-label">Course *</InputLabel>
                                                         <Select
                                                             onChange={handleChange}
+                                                            // onChange={(event) => {
+                                                            //     handleChange(event);
+                                                            //     setFieldValue('semester_name', '');
+                                                            // }}
                                                             label="course"
                                                             name="course"
 

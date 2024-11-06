@@ -39,6 +39,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [whatsappNum, setWhatsappNum] = useState("");
   const [contcodePhone, setContcodePhone] = useState("+91");
   const [phoneNum, setPhoneNum] = useState("");
+  const [phoneNumerror, setPhoneNumerror] = useState({
+    phoneNum: "",
+  });
   const [email, setEmail] = useState(localStorage.getItem("userid"));
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [errors, setErrors] = useState({
@@ -63,6 +66,12 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       case "phoneNum":
         setPhoneNum(value);
         setErrors({
+          ...errors,
+          phoneNum: !/^\d{10}$/.test(value)
+            ? "Phone number should be 10 digits"
+            : "",
+        });
+        setPhoneNumerror({
           ...errors,
           phoneNum: !/^\d{10}$/.test(value)
             ? "Phone number should be 10 digits"
@@ -150,11 +159,17 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     }
 
     if (phoneNum.length !== 10) {
-      toast.error("Phone number should be 10 digits", {
-        hideProgressBar: true,
-        theme: "colored",
-        position: "top-center"
+      setPhoneNumerror({
+        ...errors,
+        phoneNum: !/^\d{10}$/.test(phoneNum)
+          ? "Phone number should be 10 digits"
+          : "",
       });
+      // toast.error("Phone number should be 10 digits", {
+      //   hideProgressBar: true,
+      //   theme: "colored",
+      //   position: "top-center"
+      // });
       return;
     }
     let payload = {
@@ -297,8 +312,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 backgroundColor: "#f5f5f5",
               }}
               required
-              error={!!errors.phoneNum}
-              helperText={errors.phoneNum}
+              error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
+              helperText={errors.phoneNum || phoneNumerror.phoneNum}
             />
           </div>
         </div>
