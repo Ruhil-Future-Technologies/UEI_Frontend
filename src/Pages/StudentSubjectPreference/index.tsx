@@ -529,7 +529,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     let initial = {};
     let eq;
     try {
-      const promises = boxes.map(async (box) => {
+      const promises = boxes.map(async (box,index) => {
         const submissionData = {
           student_id: StudentId,
           // course_id: String(box.course_id),
@@ -543,7 +543,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           // stream:(particularClass === "class_11" || particularClass === "class_12") ? String(box.stream) :""
           ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}), // Include sem_id only if it's not null or undefined
           ...(box.class_id ? { class_id: String(box.class_id) } : {}), // Include class_id only if it's not null or undefined
-          ...(["class_11", "class_12"].includes(particularClass) && box.stream ? { stream: String(box.stream) } : {}) // Include stream only if particularClass is class_11 or class_12
+          ...(["class_11", "class_12"].includes(particularClass[index]) && box.stream ? { stream: String(box.stream) } : {}) // Include stream only if particularClass is class_11 or class_12
         };
         initial = submissionData;
         eq = deepEqual(initialState, submissionData);
