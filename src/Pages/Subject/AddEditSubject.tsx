@@ -165,6 +165,12 @@ const AddEditSubject = () => {
     if (fieldName === 'course_id') {
       const semesterCount = semester.filter((item: any) => item.course_id === e.target.value)
       setTotalSemester(semesterCount)
+       setSubject((prevMenu:any) => {
+      return {
+        ...prevMenu,
+        ["semester_id"]: "",
+      };
+    });
     }
     setSubject((prevMenu:any) => {
       return {
@@ -298,9 +304,9 @@ const AddEditSubject = () => {
     description: Yup.string(),
     menu_image: Yup.string(),
     semester_id: Yup.string()
-      .required("Please enter semester name"),
+      .required("Please select Semester name"),
     course_id: Yup.string()
-      .required("Please enter course name")
+      .required("Please select Course name")
   })
 
   return (
@@ -345,6 +351,7 @@ const AddEditSubject = () => {
 
                               onBlur={handleBlur}
                               value={values.course_id}
+                              error={Boolean(errors.course_name && touched.course_id)}
                               variant="outlined"
                               sx={{
                                 backgroundColor: inputfield(namecolor),
@@ -374,7 +381,7 @@ const AddEditSubject = () => {
                               ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.course === "string" && errors.course}
+                              {typeof errors?.course_id === "string" && errors.course_id}
                             </Typography>
                           </FormControl>
                         </div>

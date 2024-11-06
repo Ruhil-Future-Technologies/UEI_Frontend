@@ -20,6 +20,7 @@ const AddEditCourse = () => {
         institution_id:"",
         institute: "",
         course_name: "",
+        duration:""
     };
     const context = useContext(NameContext);
     const { namecolor }: any = context;
@@ -35,6 +36,7 @@ const AddEditCourse = () => {
     const [selectedFile, setSelectedFile] = React.useState('');
     // const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
     const formRef = useRef<FormikProps<{
+        duration: any;
         institute: any;
         course_name: string | null
     }>>(null)
@@ -152,11 +154,17 @@ const AddEditCourse = () => {
     //     }
     // };
     // { course_name: string | null }
+
+
+    useEffect(() => {
+        // Update the institute field whenever the institute state changes
+        formRef.current?.resetForm();
+     }, [institute]);
     const handleSubmit = async (courseData: any) => {
       const coursedata =  {
             course_name: courseData.course_name,
             institution_id: JSON.stringify(courseData.institute),
-            //  duration: ""
+             duration:  JSON.stringify(courseData.duration)
           }
 
         if (id) {
@@ -191,6 +199,7 @@ const AddEditCourse = () => {
                         theme: "colored",
                     });
                     setCourse("")
+                    setInstitute(initialState)
                 }else {
                     toast.error(data.message, {
                         hideProgressBar: true,
@@ -219,7 +228,9 @@ const AddEditCourse = () => {
               )
             .matches(/^[a-zA-Z0-9\s\-.]*$/,  'Please enter a valid course name'),
             institute: Yup.string()
-            .required("Please enter institute name"),
+            .required("Please select institute name"),
+            duration: Yup.string()
+            .required("Please select duration")
         // course_image: Yup.mixed()
         //     .required("Profile Image Is Required")
         //     .test(
@@ -262,6 +273,7 @@ const AddEditCourse = () => {
                                 initialValues={{
                                     course_name: institute?.course_name,
                                     institute: institute?.institution_id,
+                                    duration: institute?.institute
                                     // course_image: null,
                                     // course_description: ""
                                 }}
@@ -295,6 +307,8 @@ const AddEditCourse = () => {
                                                                     },
                                                                 },
                                                             }}
+                                                            // error={Boolean(errors.institute && touched.institute)}
+                                                            
                                                         >
                                                             {instituteList.map((item, idx) => (
                                                                 <MenuItem value={item.id} key={`${item.institution_name}-${idx + 1}`}
@@ -334,6 +348,54 @@ const AddEditCourse = () => {
                                                     {/* {touched?.course_name && errors?.course_name ?
                                                     <p style={{ color: 'red' }}>{errors?.course_name}</p> : <></>
                                                 } */}
+                                                </div>
+                                            </div>
+                                            <div className='col-md-4'>
+                                                <div className="form_field_wrapper">
+                                                    <FormControl fullWidth>
+                                                        <InputLabel id="semester-select-label">Duration *</InputLabel>
+                                                        <Select
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            label="duration"
+                                                            name="duration"
+                                                            value={values?.duration}
+                                                            error={Boolean(errors.duration && touched.duration)}
+                                                            variant="outlined"
+                                                            sx={{
+                                                                backgroundColor: inputfield(namecolor),
+                                                                color: inputfieldtext(namecolor)
+                                                            }}
+                                                            MenuProps={{
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        backgroundColor: inputfield(namecolor),
+                                                                        color: inputfieldtext(namecolor),
+                                                                    },
+                                                                },
+                                                            }}
+                                                        >
+                                                            {/* Generate menu items for semesters 1 to 8 */}
+                                                            {[...Array(4)].map((_, index) => (
+                                                                <MenuItem
+                                                                    key={`${index + 1}`}
+                                                                    value={index + 1}
+                                                                    sx={{
+                                                                        backgroundColor: inputfield(namecolor),
+                                                                        color: inputfieldtext(namecolor),
+                                                                        '&:hover': {
+                                                                            backgroundColor: inputfieldhover(namecolor),
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                     {index + 1}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Select>
+                                                        <Typography variant="body2" color="error">
+                                                            {typeof errors?.duration === "string" && errors.duration}
+                                                        </Typography>
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>

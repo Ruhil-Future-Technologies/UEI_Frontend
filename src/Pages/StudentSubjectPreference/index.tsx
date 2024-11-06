@@ -34,6 +34,8 @@ interface Box {
   preference: string;
   score_in_percentage: string;
   sem_id: string;
+  class_id:string;
+  stream: string;
 }
 interface Course {
   id: string;
@@ -49,11 +51,18 @@ interface Subject {
 interface PropsItem {
   setActiveForm: React.Dispatch<React.SetStateAction<number>>;
   handleReset: () => Promise<void>;
+  activeForm?:number;
+}
+interface Classes {
+  id: number;
+  class_name: string;
+  class_id: string;
 }
 
 const StudentSubjectPreference: React.FC<PropsItem> = ({
   setActiveForm,
-  handleReset
+  handleReset,
+  activeForm
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
@@ -74,8 +83,78 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const [initialState, setInitialState] = useState<any | null>({});
   const [totalSemester, setTotalSemester] = useState<any>([])
   const [semester, setSemester] = useState<any>([]);
+  const [academic, setAcademic] = useState<any>(false);
+  const [classes, setClasses] = useState<Classes[]>([]);
+  const [particularClass, setParticularClass] = useState<any>([]);
 
   // Fetch data from the endpoints
+  const getacademic = async () => {
+    getData(`${"new_student_academic_history/get/" + StudentId}`)
+    .then((response: any) => {
+      if (response.status === 200) {
+        setAcademic(response?.data[0]?.institution_type === "school" ? true : false)
+        // getData(`/class/get/${response?.data?.[0]?.class_id}`).then(
+        //   (response: any) => {
+        //     if (response.status === 200) {
+        //       setParticularClass(response.data.class_name);
+        //     } else setParticularClass("");
+        //   }
+        // );
+      }
+    })
+    .catch((e) => {
+      toast.error(e?.message, {
+        hideProgressBar: true,
+        theme: "colored",
+        position: "top-center"
+      });
+    });
+  }
+  const getclass = async () => {
+    getData("/class/list")
+    .then((response: any) => {
+      if (response.status === 200) {
+        const filteredData = response?.data?.filter(
+          (item: any) => item?.is_active === true
+        );
+  
+        const getModifyClassName = (value: string) => {
+          return value?.replace("_", " ");
+        };
+  
+        // Map the filtered data to a new format
+        let newClassObject = filteredData.map((item: any) => {
+          return {
+            id: item?.id,
+            class_name: getModifyClassName(item?.class_name),
+            class_id: item?.class_id,
+          };
+        });
+  
+        // Sort by class_name in ascending order
+        newClassObject = newClassObject.sort((a: any, b: any) =>
+          a.class_name.localeCompare(b.class_name)
+        );
+  
+        // Set the sorted and modified class data
+        setClasses(newClassObject || []);
+      }
+    })
+    .catch((error) => {
+      toast.error(error?.message, {
+        hideProgressBar: true,
+        theme: "colored",
+        position: "top-center",
+      });
+    });
+
+  }
+  useEffect(()=>{
+    if(activeForm === 5){
+      getacademic();
+      getclass();
+    }
+  },[activeForm])
   const getCourse = async () => {
     getData("/course/list")
       .then((response: any) => {
@@ -141,7 +220,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               subject_id: item?.subject_id,
               preference: item?.preference,
               score_in_percentage: item?.score_in_percentage,
-              sem_id:item?.sem_id
+              sem_id:item?.sem_id,
+              class_id: item?.class_id,
+              stream: item?.stream,
             };
             if (!boxes.some((box) => box.id === newBox.id)) {
               // setBoxes([...boxes, newBox]);
@@ -156,6 +237,30 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               });
               setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
             }
+            // getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
+            //   (response: any) => {
+            //     if (response.status === 200) {
+            //       setParticularClass(response.data.class_name);
+            //     } else setParticularClass("");
+            //   }
+            // );
+             // Fetch class name for each preference item based on the index
+        getData(`/class/get/${item.class_id}`).then((response: any) => {
+          if (response.status === 200) {
+            // Optionally, log or store class name using the index to ensure uniqueness
+            setParticularClass((prevClasses: any) => {
+              const updatedClasses:any = [...prevClasses];
+              updatedClasses[index] = response.data.class_name; // store class name by index
+              return updatedClasses;
+            });
+          } else {
+            // Clear or reset the class name for the index if fetch fails
+            setParticularClass((prevClasses: any) => {
+              const updatedClasses = [...prevClasses];
+              updatedClasses[index] = ""; // Reset the class name for this index
+              return updatedClasses;
+            });
+          }});
           });
         } else if (data?.status === 404) {
           setBoxes([
@@ -166,6 +271,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               preference: "",
               score_in_percentage: "",
               sem_id:"",
+              class_id:"",
+              stream: "",
             },
           ]);
           setEditFlag(true);
@@ -207,13 +314,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getPrefrence();
     getPrefrencelist();
     getSemester();
+    getacademic();
   }, []);
   useEffect(()=>{
     const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0].sem_id )
     setTotalSemester(semesterCount)
   },[StudentId,semester])
 
-  const handleInputChange = (index: number, field: string, value: string) => {
+  const handleInputChange = async (index: number, field: string, value: string) => {
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
     // if (field === 'course_id') {
@@ -228,6 +336,36 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       const semesterCount = subjectsAll.filter((item: any) => item.course_id === newBoxes[0].course_id )
          const subjectData = semesterCount.filter((item:any) => item.semester_id === value)
       setSubjects(subjectData)
+    }
+    if (field === 'class_id') {
+         const subjectData = subjectsAll.filter((item:any) => item.class_id === value)
+      // setSubjects(subjectData)
+      
+      try {
+        const response = await getData(`/class/get/${value}`);
+  
+        if (response.status === 200) {
+          setParticularClass((prevClasses: any) => {
+            const updatedClasses: any = [...prevClasses];
+            updatedClasses[index] = response.data.class_name; // store class name by index
+            return updatedClasses;
+          });
+        } else {
+          setParticularClass((prevClasses: any) => {
+            const updatedClasses: any = [...prevClasses];
+            updatedClasses[index] = ""; // Reset the class name for this index
+            return updatedClasses;
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching class data:", error);
+        setParticularClass((prevClasses: any) => {
+          const updatedClasses: any = [...prevClasses];
+          updatedClasses[index] = ""; // Reset the class name for this index in case of error
+          return updatedClasses;
+        });
+      }
+      
     }
 
     if (field === "score_in_percentage") {
@@ -271,6 +409,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       preference: "",
       score_in_percentage: "",
       sem_id:"",
+      class_id:"",
+      stream: ""
     };
     setBoxes([...boxes, newBox]);
   };
@@ -392,11 +532,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       const promises = boxes.map(async (box) => {
         const submissionData = {
           student_id: StudentId,
-          course_id: String(box.course_id),
-          subject_id: String(box.subject_id),
+          // course_id: String(box.course_id),
+          // subject_id: String(box.subject_id),
+          ...(box.course_id ? { course_id: String(box.course_id) } : {}),
+          ...(box.subject_id ? { subject_id: String(box.subject_id) } : {}),
           preference: box.preference,
           score_in_percentage: box.score_in_percentage,
-          sem_id:String(box.sem_id),
+          // sem_id:String(box.sem_id),
+          // class_id:String(box.class_id) !== null ? String(box.class_id) : "",
+          // stream:(particularClass === "class_11" || particularClass === "class_12") ? String(box.stream) :""
+          ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}), // Include sem_id only if it's not null or undefined
+          ...(box.class_id ? { class_id: String(box.class_id) } : {}), // Include class_id only if it's not null or undefined
+          ...(["class_11", "class_12"].includes(particularClass) && box.stream ? { stream: String(box.stream) } : {}) // Include stream only if particularClass is class_11 or class_12
         };
         initial = submissionData;
         eq = deepEqual(initialState, submissionData);
@@ -476,7 +623,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
-
   return (
     <div>
       <form>
@@ -486,6 +632,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             key={box.id}
             style={{ marginBottom: "5px" }}
           >
+            {
+!academic ? (
+<>
+
             <div className="col form_field_wrapper">
               <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
                 <InputLabel>Course</InputLabel>
@@ -554,7 +704,108 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                             </Typography>
                           </FormControl>
                         </div>
-            <div className="col form_field_wrapper">
+            
+            </>
+):(
+  <>
+  <div className="col form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 220, width: "100%" }}
+                >
+                  <InputLabel>Class</InputLabel>
+                  <Select
+                    value={box.class_id}
+                    sx={{
+                      backgroundColor: "#f5f5f5",
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, "class_id", e.target.value)
+                    }
+                    label="Class"
+                  >
+                    {classes.map((classes) => (
+                      <MenuItem
+                        key={classes.id}
+                        value={classes.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          },
+                        }}
+                      >
+                        {classes.class_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            {/* {  (particularClass === "class_11" ||
+                particularClass === "class_12") && ( */}
+              {   particularClass[index] && (particularClass[index] === "class_11" || particularClass[index] === "class_12") && (
+                <div className="col-lg-3 form_field_wrapper">
+                  <FormControl
+                    required
+                    sx={{ m: 1, minWidth: 70, width: "100%", maxWidth: 200 }}
+                  >
+                    <InputLabel>Stream</InputLabel>
+                    <Select
+                      value={box.stream}
+                      sx={{
+                        backgroundColor: "#f5f5f5",
+                      }}
+                      onChange={(e) =>
+                        handleInputChange(index, "stream", e.target.value)
+                      }
+                      label="Stream"
+                    >
+                      <MenuItem
+                        value="science"
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        Science
+                      </MenuItem>
+                      <MenuItem
+                        value="commerce"
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        Commerce
+                      </MenuItem>
+                      <MenuItem
+                        value="arts"
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          "&:hover": {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        Arts
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+              </>
+)
+            
+}
+<div className="col form_field_wrapper">
               <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
                 <InputLabel>Subject</InputLabel>
                 <Select

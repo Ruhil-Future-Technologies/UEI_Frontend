@@ -253,6 +253,8 @@ const AddEditInstitute = () => {
                             ...prevInstitute,
                             ["state"]: "",
                             ["country"]: "",
+                            ["university_id"]:"",
+                            ["entity_id"]:""
                         };
                     });
                     

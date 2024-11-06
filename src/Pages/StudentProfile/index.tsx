@@ -723,6 +723,7 @@ const StudentProfile = () => {
                                     <StudentSubjectPreference
                                       handleReset={handleReset}
                                       setActiveForm={setActiveForm}
+                                      activeForm={activeForm}
                                     />
                                   </div>
                                 </div>
