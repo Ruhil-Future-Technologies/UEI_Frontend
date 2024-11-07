@@ -530,7 +530,7 @@ const Sidebar = () => {
               </li>
               {user_type === "student" ? (
                 <>
-                  {/* {profileCompletion === "100" ? ( */}
+                  {profileCompletion === "100" ? (
                     <>
                       <li>
                         <Link
@@ -552,9 +552,9 @@ const Sidebar = () => {
                         </Link>
                       </li>
                     </>
-                  {/* ) : (
+                   ) : (
                     ""
-                  )} */}
+                  )} 
                 </>
               ) : (
                 <>
