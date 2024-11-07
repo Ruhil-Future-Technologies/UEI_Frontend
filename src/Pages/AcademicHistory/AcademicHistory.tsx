@@ -47,9 +47,9 @@ interface Box {
   class_id: string;
   year: any;
   stream: string;
-  university_id: string;
+  university_id?: string;
   // sem_id: string;
-  sem_id:string;
+  sem_id?: string;
 }
 interface Boxset {
   id: number;
@@ -122,7 +122,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const states = State.getStatesOfCountry("IN");
     const stateOptions = states.map((state) => ({
       // value: state.isoCode,
-      value:state.name,
+      value: state.name,
       label: state.name,
     }));
     setStateOptions(stateOptions);
@@ -353,7 +353,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               university_id: item?.university_id,
               sem_id: item?.sem_id,
             };
-           
+
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
@@ -410,7 +410,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         if (box.institute_type === "") {
           return false; // Stop execution
         }
-    
+
         // Additional checks based on `institute_type`
         if (box.institute_type === "college") {
           // Required fields for "college"
@@ -428,120 +428,119 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             box.learning_style === null
 
           ) {
-            return false; 
+            return false;
           }
         } else if (box.institute_type === "school") {
-          
+
           if (
             box.board === "" ||
-            box.class_id === "" ||
-            box.class_id === null ||
-           (
-             particularClass === "class_11" ||
-             particularClass === "class_12")
-                 ?
-                 box.stream === "" ||
-                 box.stream === null 
-                 : ""
+              box.class_id === "" ||
+              box.class_id === null ||
+              (
+                particularClass === "class_11" ||
+                particularClass === "class_12")
+              ?
+              box.stream === "" ||
+              box.stream === null
+              : ""
           ) {
-            return false; 
+            return false;
           }
         }
       }
-    
-      return true; 
+
+      return true;
     };
     if (canProceed(boxes)) {
       const promises = boxes
-      .map((box) => {
-        const payload = {
-          student_id: StudentId,
-          institution_type: box.institute_type,
-          board: box.board,
-          state_for_stateboard: box.state_for_stateboard,
-          institute_id: String(
-            instituteId || (!box.institute_id ? 95 : box.institute_id)
-          ),
-          course_id: String(!box.course_id ? 18 : box.course_id),
-          learning_style: box.learning_style,
-          class_id: String(!box.class_id ? 1 : box.class_id),
-          sem_id: box.sem_id ? String(box.sem_id) : "",
-          university_id:box.university_id ? String(box.university_id): "",
-          year: box?.year?.$y ? String(box?.year?.$y) : "", // Assuming 'year' is a string
-          stream:
-            particularClass === "class_11" || particularClass === "class_12"
-              ? box?.stream
-              : "",
+        .map((box) => {
+          const payload = {
+            student_id: StudentId,
+            institution_type: box.institute_type,
+            board: box.board,
+            state_for_stateboard: box.state_for_stateboard,
+            institute_id: String(
+              instituteId || (!box.institute_id ? 95 : box.institute_id)
+            ),
+            course_id: String(!box.course_id ? 18 : box.course_id),
+            learning_style: box.learning_style,
+            class_id: String(!box.class_id ? 1 : box.class_id),
+            ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
+            ...(box.university_id ? { university_id: String(box.university_id) } : {}),
+            year: box?.year?.$y ? String(box?.year?.$y) : "", // Assuming 'year' is a string
+            stream:
+              particularClass === "class_11" || particularClass === "class_12"
+                ? box?.stream
+                : "",
+          };
 
-        };
-
-        //validatePayload(payload)
-        if (validatePayload(payload.institution_type, payload.year)) {
-          if (editFlag || box.id === 0) {
-            return postData("/new_student_academic_history/add", payload);
+          //validatePayload(payload)
+          if (validatePayload(payload.institution_type, payload.year)) {
+            if (editFlag || box.id === 0) {
+              return postData("/new_student_academic_history/add", payload);
+            } else {
+              return putData(
+                "/new_student_academic_history/edit/" + box.id,
+                payload
+              );
+            }
           } else {
-            return putData(
-              "/new_student_academic_history/edit/" + box.id,
-              payload
-            );
-          }
-        } else {
-          toast.error(" PLease Enter Year ", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
-          });
-          return Promise.resolve(null); // If payload is invalid, return a resolved promise
-        }
-      })
-      .filter((promise) => promise !== null);
-
-    Promise.all(promises)
-      .then((responses) => {
-        // Check if all responses have a status of 200
-        const allSuccessful = responses.every(
-          (response) => response?.status === 200
-        );
-
-        if (allSuccessful) {
-          if (editFlag) {
-            toast.success("Academic history saved successfully", {
+            toast.error(" PLease Enter Year ", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center",
             });
-            setActiveForm((prev) => prev + 1);
-          } else {
-            const isEqual = deepEqual(checkBoxes[0], boxes[0]);
-            if (!isEqual) {
-              toast.success("Academic history updated successfully", {
+            return Promise.resolve(null); // If payload is invalid, return a resolved promise
+          }
+        })
+        .filter((promise) => promise !== null);
+
+      Promise.all(promises)
+        .then((responses) => {
+          // Check if all responses have a status of 200
+          const allSuccessful = responses.every(
+            (response) => response?.status === 200
+          );
+
+          if (allSuccessful) {
+            if (editFlag) {
+              toast.success("Academic history saved successfully", {
                 hideProgressBar: true,
                 theme: "colored",
                 position: "top-center",
               });
+              setActiveForm((prev) => prev + 1);
+            } else {
+              const isEqual = deepEqual(checkBoxes[0], boxes[0]);
+              if (!isEqual) {
+                toast.success("Academic history updated successfully", {
+                  hideProgressBar: true,
+                  theme: "colored",
+                  position: "top-center",
+                });
+              }
+              setActiveForm((prev) => prev + 1);
             }
-            setActiveForm((prev) => prev + 1);
+          } else {
+            toast.error("An error occurred while saving", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center",
+            });
           }
-        } else {
-          toast.error("An error occurred while saving", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
-          });
-        }
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error processing payloads:", error);
-        // toast.error("An error occurred while saving", {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-      });
+        })
+        .catch((error) => {
+          // Handle error
+          console.error("Error processing payloads:", error);
+          // toast.error("An error occurred while saving", {
+          //   hideProgressBar: true,
+          //   theme: "colored",
+          // });
+        });
     } else {
       console.log("Some required fields are missing. Cannot proceed.");
     }
-  
+
   };
 
   const setDataInsitute = async (value: any) => {
@@ -633,7 +632,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
     if (field === 'course_id') {
       const semesterCount = semester.filter((item) => item.course_id === value)
-     
+
       // const semesterCount = semester.reduce((acc: any, crr) => {
       //   if (crr.semester_number === value) acc = crr.semester_number
       //   return acc
@@ -675,11 +674,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     newBoxes[index][field] = value;
     setBoxes1(newBoxes);
   };
-  useEffect(()=>{
+  useEffect(() => {
     const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
     setTotalSemester(semesterCount)
-  },[boxes[0]?.course_id])
- 
+  }, [boxes[0]?.course_id])
+
   return (
     <div className="mt-5">
       <form>
@@ -823,7 +822,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="State"
                   >
-                    {stateOptions.map((state:any) => (
+                    {stateOptions.map((state: any) => (
                       <MenuItem
                         key={state.value}
                         value={state.label.toLowerCase()}
@@ -831,7 +830,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
                           "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), 
+                            backgroundColor: inputfieldhover(namecolor),
                           },
                         }}
                       >
@@ -1016,7 +1015,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                          Semester {item.semester_number}
                       </MenuItem>
                     ))} */}
-                  
+
                     {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}

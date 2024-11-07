@@ -422,7 +422,7 @@ function MainContent() {
   //   StudentName4:"",
   //   ChatCount5: 0,
   //   StudentName5:"",
-   
+
   // }
   const [statsCourse, setStatsCourse] = useState<any>([]);
   const [stats1, setStats1] = useState<any>({
@@ -464,8 +464,8 @@ function MainContent() {
   // bar chart
   const barChartRef = useRef<ChartJS<"bar", number[], string> | null>(null);
 
-   // Define the bar chart data
-   const barChartDataStudent: ChartData<"bar", number[], string> = {
+  // Define the bar chart data
+  const barChartDataStudent: ChartData<"bar", number[], string> = {
     labels: [
       "Sunday",
       "Monday",
@@ -479,14 +479,14 @@ function MainContent() {
       {
         label: "This Week",
         data: [
-          statsweekly?.SundayCount ,
+          statsweekly?.SundayCount,
           statsweekly?.MondayCount,
           statsweekly?.TuesdayCount,
           statsweekly?.WednesdayCount,
           statsweekly?.ThursdayCount,
           statsweekly?.FridayCount,
           statsweekly?.SaturdayCount,
-        
+
         ],
         backgroundColor: function (context) {
           const chart = context.chart;
@@ -531,14 +531,14 @@ function MainContent() {
       },
     ],
   };
-// Sort statsChatCount by chat_count in descending order and take the top 5
-const top5Chats = statsChatCount
+  // Sort statsChatCount by chat_count in descending order and take the top 5
+  const top5Chats = statsChatCount
     .sort((a: { chat_count: number; }, b: { chat_count: number; }) => b.chat_count - a.chat_count)
     .slice(0, 5);
 
-// Extract student names and chat counts for the top 5 entries
-const studentNames = top5Chats.map((item:any) => item.student_name);
-const chatCounts = top5Chats.map((item:any) => item.chat_count);
+  // Extract student names and chat counts for the top 5 entries
+  const studentNames = top5Chats.map((item: any) => item.student_name);
+  const chatCounts = top5Chats.map((item: any) => item.chat_count);
   const barChartDataStudentChatCount: ChartData<"bar", number[], string> = {
     labels: studentNames,
     datasets: [
@@ -605,7 +605,7 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
       x: {},
     },
   };
-  
+
 
   // Define the bar chart data
   const barChartData: ChartData<"bar", number[], string> = {
@@ -870,8 +870,7 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(
-                  `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
+                  `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path
                   }`
                 )
                   .then((imgdata: any) => {
@@ -929,7 +928,7 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
                           .replace("_", " ")
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace("_", " ").slice(1)
+                        response.data.class_name.replace("_", " ").slice(1)
                       )
                   );
                 }
@@ -976,7 +975,7 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
             } else {
               sectionCount++;
             }
-
+        
             if (
               subject_preference &&
               Object.keys(subject_preference)?.length > 0
@@ -1099,14 +1098,13 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
             if (basic_info && Object.keys(basic_info)?.length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(
-                  `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
+                  `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path
                   }`
                 )
                   .then((imgdata: any) => {
                     setprofileImage(imgdata?.data);
                   })
-                  .catch((e) => {});
+                  .catch((e) => { });
               }
 
               let totalcount = Object.keys(basic_info)?.length;
@@ -1286,7 +1284,7 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
         try {
           const [
             studentweeklycount,
-            
+
           ] = await Promise.allSettled([
             getData("/student/weekly_student_count"),
           ]);
@@ -1294,16 +1292,16 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
             studentweeklycount?.status === "fulfilled"
               ? studentweeklycount?.value?.data || 0
               : 0;
-   
-    
-              setStatsweekly({
-                SundayCount: studentweeklydata?.Sunday,
-                MondayCount: studentweeklydata?.Monday,
-                TuesdayCount: studentweeklydata?.Tuesday,
-                WednesdayCount: studentweeklydata?.Wednesday,
-                ThursdayCount: studentweeklydata?.Thursday,
-                FridayCount:studentweeklydata?.Friday ,
-                SaturdayCount:studentweeklydata?.Saturday,
+
+
+          setStatsweekly({
+            SundayCount: studentweeklydata?.Sunday,
+            MondayCount: studentweeklydata?.Monday,
+            TuesdayCount: studentweeklydata?.Tuesday,
+            WednesdayCount: studentweeklydata?.Wednesday,
+            ThursdayCount: studentweeklydata?.Thursday,
+            FridayCount: studentweeklydata?.Friday,
+            SaturdayCount: studentweeklydata?.Saturday,
           });
 
         } catch (error) {
@@ -1316,16 +1314,16 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
         try {
           const [
             studentCoursecount,
-            
+
           ] = await Promise.allSettled([
             getData("/course/course-wise-student-count"),
           ]);
           const studentCoursedata =
-          studentCoursecount?.status === "fulfilled"
+            studentCoursecount?.status === "fulfilled"
               ? studentCoursecount?.value?.data || 0
               : 0;
-   
-              setStatsCourse(studentCoursedata);
+
+          setStatsCourse(studentCoursedata);
 
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -1338,16 +1336,16 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
         try {
           const [
             studentChatCount,
-            
+
           ] = await Promise.allSettled([
             getData("/chat/api/chat-count"),
           ]);
           const studentChatCountdata =
-          studentChatCount?.status === "fulfilled"
+            studentChatCount?.status === "fulfilled"
               ? studentChatCount?.value?.data || 0
               : 0;
-   
-              setStatsChatCount(studentChatCountdata);
+
+          setStatsChatCount(studentChatCountdata);
 
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -1371,9 +1369,9 @@ const chatCounts = top5Chats.map((item:any) => item.chat_count);
     //       });
     //     });
     // }
-fetchStudentweeklyData()
-fetchStudentCourseData()
-fetchStudentChatCountData()
+    fetchStudentweeklyData()
+    fetchStudentCourseData()
+    fetchStudentChatCountData()
     fetchData();
     getVoices();
     // fetchstucount();
@@ -1408,15 +1406,15 @@ fetchStudentChatCountData()
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -1734,50 +1732,50 @@ fetchStudentChatCountData()
   ];
 
 
-//   const dataTest =[
-//     {
-//         "course_id": 46,
-//         "course_name": "llbb",
-//         "student_count": 1
-//     },
-//     {
-//         "course_id": 47,
-//         "course_name": "M com",
-//         "student_count": 0
-//     },
-//     {
-//         "course_id": 48,
-//         "course_name": "Bsc home science in Food and Nutrition",
-//         "student_count": 0
-//     },
-//     {
-//         "course_id": 49,
-//         "course_name": "Bsc home science ",
-//         "student_count": 0
-//     },
-//     {
-//         "course_id": 50,
-//         "course_name": "Bsc Home science in Food Science and Quality Control",
-//         "student_count": 0
-//     }
-// ]
+  //   const dataTest =[
+  //     {
+  //         "course_id": 46,
+  //         "course_name": "llbb",
+  //         "student_count": 1
+  //     },
+  //     {
+  //         "course_id": 47,
+  //         "course_name": "M com",
+  //         "student_count": 0
+  //     },
+  //     {
+  //         "course_id": 48,
+  //         "course_name": "Bsc home science in Food and Nutrition",
+  //         "student_count": 0
+  //     },
+  //     {
+  //         "course_id": 49,
+  //         "course_name": "Bsc home science ",
+  //         "student_count": 0
+  //     },
+  //     {
+  //         "course_id": 50,
+  //         "course_name": "Bsc Home science in Food Science and Quality Control",
+  //         "student_count": 0
+  //     }
+  // ]
   // Get the top 5 courses
-const top5Courses = statsCourse.slice(0, 5);
-// const top5Courses = dataTest.slice(0, 5);
+  const top5Courses = statsCourse.slice(0, 5);
+  // const top5Courses = dataTest.slice(0, 5);
 
 
-// Truncate the label and add '...' if it's too long
-const truncateLabel = (label:any, maxLength = 10) => {
-  return label.length > maxLength ? `${label.slice(0, maxLength)}...` : label;
-};
+  // Truncate the label and add '...' if it's too long
+  const truncateLabel = (label: any, maxLength = 10) => {
+    return label.length > maxLength ? `${label.slice(0, maxLength)}...` : label;
+  };
 
-// Map to the format needed for pieDataCourse
-const pieDataCourse = top5Courses?.map((course: { student_count: any; course_name: any; }, index: any) => ({
-    id:index,
+  // Map to the format needed for pieDataCourse
+  const pieDataCourse = top5Courses?.map((course: { student_count: any; course_name: any; }, index: any) => ({
+    id: index,
     value: course?.student_count,
     // label: course?.course_name
     label: truncateLabel(course.course_name, 10),
-}));
+  }));
 
   const pieData1 = [
     { id: 0, value: stats1?.Student_Profile, label: `Profile completed` },
@@ -1848,7 +1846,7 @@ const pieDataCourse = top5Courses?.map((course: { student_count: any; course_nam
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = (event) => {};
+    utterance.onerror = (event) => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2255,7 +2253,7 @@ const pieDataCourse = top5Courses?.map((course: { student_count: any; course_nam
                 )}
               </section>
               <section className="row">
-              <div className="col-lg-6">
+                <div className="col-lg-6">
                   <div className="card">
                     <div className="card-header py-3">
                       <div className="d-flex align-items-center justify-content-between">
@@ -2611,8 +2609,8 @@ const pieDataCourse = top5Courses?.map((course: { student_count: any; course_nam
                                   ? profileImage
                                   : profileDatas?.basic_info?.gender.toLowerCase() ===
                                     "female"
-                                  ? femaleImage
-                                  : maleImage
+                                    ? femaleImage
+                                    : maleImage
                               }
                               className="rounded-circle img-fluid bg-grd-info p-1"
                               width="80"
@@ -2772,7 +2770,7 @@ const pieDataCourse = top5Courses?.map((course: { student_count: any; course_nam
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                    ?.score_in_percentage
+                                  ?.score_in_percentage
                                 : ""}
                             </p>
                           </div>
