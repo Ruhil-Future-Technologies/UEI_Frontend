@@ -106,13 +106,33 @@ export const QUERY_KEYS_DEPARTMENT = {
     GET_DEPARTMENTDEACTIVE: "/department/deactivate",
 
 };
+// export const QUERY_KEYS_SUBJECT = {
+//     GET_SUBJECT: "/subject/list",
+//     SUBJECT_ADD: "/subject/add",
+//     SUBJECT_EDIT: "/subject/edit",
+//     SUBJECT_DELETE: "/subjectdelete",
+//     GET_SUBJECTACTIVE: "/subject/activate",
+//     GET_SUBJECTDEACTIVE: "/subject/deactivate",
+
+// };
 export const QUERY_KEYS_SUBJECT = {
-    GET_SUBJECT: "/subject/list",
-    SUBJECT_ADD: "/subject/add",
-    SUBJECT_EDIT: "/subject/edit",
-    SUBJECT_DELETE: "/subjectdelete",
-    GET_SUBJECTACTIVE: "/subject/activate",
-    GET_SUBJECTDEACTIVE: "/subject/deactivate",
+    GET_SUBJECT: "/college_subject/list",
+    SUBJECT_ADD: "/college_subject/add",
+    SUBJECT_EDIT: "/college_subject/edit",
+    SUBJECT_DELETE: "/college_subject/delete",
+    GET_SUBJECTACTIVE: "/college_subject/activate",
+    GET_SUBJECTDEACTIVE: "/college_subject/deactivate",
+    SUBJECT_GET: "/college_subject/get",
+
+};
+export const QUERY_KEYS_SUBJECT_SCHOOL = {
+    GET_SUBJECT: "/school_subject/list",
+    SUBJECT_ADD: "/school_subject/add",
+    SUBJECT_EDIT: "/school_subject/edit",
+    SUBJECT_GET: "/school_subject/get",
+    SUBJECT_DELETE: "/school_subject/delete",
+    GET_SUBJECTACTIVE: "/school_subject/activate",
+    GET_SUBJECTDEACTIVE: "/school_subject/deactivate",
 
 };
 export const QUERY_KEYS_MENU = {

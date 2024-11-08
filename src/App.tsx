@@ -74,6 +74,7 @@ import Univesity from './Pages/University/University';
 import University from './Pages/University/University';
 import Semester from './Pages/Semester/Semester';
 import AddSemester from './Pages/Semester/AddSemester';
+import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
 // import "./assets/css/main.min.css";
 // import "./assets/css/newstyle.min.css";
 // import "./assets/css/main.scss";
@@ -269,6 +270,11 @@ function App() {
             <Route
               path="edit-Subject/:id"
               element={<Protected Component={AddEditSubject}  menuName="Subject" />}
+            />
+            <Route path="add-Subject-school" element={<Protected Component={AddEditSubjectSchool} menuName="Subject" />} />
+            <Route
+              path="edit-Subject-school/:id"
+              element={<Protected Component={AddEditSubjectSchool}  menuName="Subject" />}
             />
           </Route>
           <Route path="/main/Menu">

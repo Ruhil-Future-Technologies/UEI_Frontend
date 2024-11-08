@@ -31,6 +31,7 @@ const AddEditSubject = () => {
   const { namecolor }: any = context;
   const SubjectAddURL = QUERY_KEYS_SUBJECT.SUBJECT_ADD;
   const SubjectEditURL = QUERY_KEYS_SUBJECT.SUBJECT_EDIT;
+  const SubjectGETURL = QUERY_KEYS_SUBJECT.SUBJECT_GET;
   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
@@ -119,7 +120,7 @@ const AddEditSubject = () => {
         });
       });
     if (id) {
-      getData(`${SubjectEditURL}${id ? `/${id}` : ""}`)
+      getData(`${SubjectGETURL}${id ? `/${id}` : ""}`)
         .then((data: any) => {
           setSubject(data?.data);
         })

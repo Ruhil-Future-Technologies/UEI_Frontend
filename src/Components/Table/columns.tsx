@@ -32,6 +32,7 @@ import {
   QUERY_KEYS_STUDENT,
   QUERY_KEYS_STUDENT_FEEDBACK,
   QUERY_KEYS_SUBJECT,
+  QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
 } from "../../utils/const";
@@ -154,9 +155,11 @@ export interface RoleRep0oDTO {
   id: number;
 }
 export interface SubjectRep0oDTO {
+  subject_id(subject_id: any): unknown;
   subject_name: MaybeNull<string>;
   id: number;
 }
+
 
 export interface LanguageRep0oDTO {
   language_name: MaybeNull<string>;
@@ -1169,7 +1172,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
-      const active = (id: number, valueset: any) => {
+      const active = (id: any, valueset: any) => {
         putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
             if (data.status === 200) {
@@ -1193,7 +1196,95 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             label={Show ? "Active" : "Deactive"}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.id, Showvalue);
+              active(row?.original?.subject_id, Showvalue);
+            }}
+            // disabled={true}
+          />
+        </Box>
+      );
+    },
+    size: 150,
+  },
+];
+export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
+  // const columns: any[] = [
+    {
+      accessorKey: "class_name",
+      header: "Class Name",
+      size: 150,
+    },
+    {
+      accessorKey: "stream",
+      header: "Stream Name",
+      size: 150,
+    },
+  {
+    accessorKey: "subject_name",
+    header: "Subject Name",
+    size: 150,
+  },
+  {
+    accessorKey: "created_by",
+    header: "Created By",
+    size: 150,
+  },
+  {
+    accessorKey: "created_at",
+    header: "Created At",
+    size: 150,
+  },
+  {
+    accessorKey: "updated_by",
+    header: "Updated By",
+    size: 150,
+  },
+  {
+    accessorKey: "updated_at",
+    header: "Last Updated at",
+    size: 150,
+  },
+  {
+    accessorKey: "is_active",
+    header: "Active/DeActive",
+    Cell: ({ cell, row }) => {
+      const { putData } = useApi();
+      const MenuActive = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECTACTIVE;
+      const MenuDeactive = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECTDEACTIVE;
+      const value = cell?.getValue();
+      // if (!value) {
+      //   return EMPTY_CELL_VALUE;
+      // }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [Showvalue, setShowvalue] = useState(value);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [Show, setShow] = useState(value === 1 ? true : false);
+
+      const active = (id: any, valueset: any) => {
+        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status === 200) {
+              setShow((prevState) => !prevState);
+              setShowvalue(Showvalue === 1 ? 0 : 1);
+              // window.location.reload();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: "colored",
+            });
+          });
+      };
+
+      return (
+        <Box>
+          <Switch
+            isChecked={Show}
+            label={Show ? "Active" : "Deactive"}
+            // onChange={() => setShow((prevState) => !prevState)}
+            onChange={() => {
+              active(row?.original?.subject_id, Showvalue);
             }}
             // disabled={true}
           />

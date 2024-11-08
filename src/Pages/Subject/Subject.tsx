@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import '../Subject/Subject.scss';
 import useApi from "../../hooks/useAPI";
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, Button, IconButton, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
-import { MenuListinter, SUBJECT_COLUMNS } from '../../Components/Table/columns';
+import { MenuListinter, SUBJECT_COLUMNS, SUBJECT_COLUMNS_SCHOOL } from '../../Components/Table/columns';
 import { EditIcon, TrashIcon } from '../../assets';
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_SUBJECT } from '../../utils/const';
+import { QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
 import FullScreenLoader from '../Loader/FullScreenLoader';
@@ -55,13 +55,18 @@ const Subject = () => {
     }, [Menulist, lastSegment]);
     // console.log('Menulist', filteredData, lastSegment)
     const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
+    const SubjectSchoolURL = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
     const DeleteSubjectURL = QUERY_KEYS_SUBJECT.SUBJECT_DELETE;
+    const DeleteSubjectSchoolURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_DELETE;
     const columns = SUBJECT_COLUMNS;
+    const columns_SCHOOL = SUBJECT_COLUMNS_SCHOOL;
     const navigate = useNavigate();
     const { getData, deleteData ,loading} = useApi()
     const [dataSubject, setDataSubject] = useState([])
+    const [dataSubjectSchool, setDataSubjectSchool] = useState([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState("")
+    const [tabValue, setTabValue] = useState(0);
     const callAPI = async () => {
 
         getData(`${SubjectURL}`).then((data: any) => {
@@ -77,12 +82,26 @@ const Subject = () => {
             });
 
         })
+        getData(`${SubjectSchoolURL}`).then((data: any) => {
+            // const linesInfo = data || [];
+            // dispatch(setLine(linesInfo))
+            if (data.data) {
+                setDataSubjectSchool(data?.data)
+            }
+        }).catch((e) => {
+            toast.error(e?.message, {
+                hideProgressBar: true,
+                theme: "colored",
+            });
+
+        })
     }
     useEffect(() => {
         callAPI()
     }, [])
     const handleEditFile = (id: any) => {
-        navigate(`edit-Subject/${id}`)
+        console.log("test lod id",id)
+        navigate(tabValue === 0 ? `edit-Subject/${id}` : `edit-Subject-school/${id}`)
     };
     const handlecancel = () => {
 
@@ -95,7 +114,7 @@ const Subject = () => {
 
     }
     const handleDelete = (id: any) => {
-        deleteData(`${DeleteSubjectURL}/${id}`).then((data: any) => {
+        deleteData(`${tabValue === 0 ? DeleteSubjectURL : DeleteSubjectSchoolURL}/${id}`).then((data: any) => {
             toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: "colored",
@@ -109,7 +128,10 @@ const Subject = () => {
             });
         });
     }
-
+    const handleTabChange = (event: any, newValue: React.SetStateAction<number>) => {
+        setTabValue(newValue);
+      };
+      console.log("test tabs",tabValue)
     return (
         <>
          {loading && <FullScreenLoader />}
@@ -128,14 +150,26 @@ const Subject = () => {
                                              className='mainbutton'
                                                 variant="contained"
                                                 component={NavLink}
-                                                to="add-Subject"
+                                                to={tabValue === 0 ? "add-Subject" : "add-Subject-school"}
                                             >
                                                 Add Subject
                                             </Button>
                                           )} 
 
                                 </div>
+                                <Box>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label="secondary tabs example"
+              >
+                <Tab value={0}  label="college" id="simple-tab-0" aria-controls="simple-tabpanel-0" />
+                <Tab value={1}  label="School" id="simple-tab-1" aria-controls="simple-tabpanel-1" />
+               
+              </Tabs>
+            </Box>
                                 <Box marginTop="10px" >
+                                {tabValue === 0 && (
                                     <MaterialReactTable
                                         columns={columns}
                                         data={filteredData?.form_data?.is_search ? dataSubject : []}
@@ -167,19 +201,19 @@ const Subject = () => {
                                                         <IconButton
                                                             sx={{ width: "35px", height: "35px",color:tabletools(namecolor) }}
                                                             onClick={() => {
-                                                                handleEditFile(row?.row?.original?.id);
+                                                                handleEditFile(row?.row?.original?.subject_id );
                                                             }}
                                                         >
                                                             <EditIcon />
                                                         </IconButton>
                                                     </Tooltip>
-                                                 )}  
+                                                 )} 
 
                                                 <Tooltip arrow placement="right" title="Delete">
                                                     <IconButton
                                                         sx={{ width: "35px", height: "35px",color:tabletools(namecolor) }}
                                                         onClick={() => {
-                                                            handleDeleteFiles(row?.row?.original?.id)
+                                                            handleDeleteFiles(row?.row?.original?.subject_id )
                                                         }}
                                                     >
                                                         <TrashIcon />
@@ -188,6 +222,62 @@ const Subject = () => {
                                             </Box>
                                         )}
                                     />
+                                )}
+                                 {tabValue === 1 && (
+                                     <MaterialReactTable
+                                     columns={columns_SCHOOL}
+                                     data={filteredData?.form_data?.is_search ? dataSubjectSchool : []}
+                                     // data={ dataSubject}
+                                     enableRowVirtualization
+                                     positionActionsColumn="first"
+                                     muiTablePaperProps={{
+                                         elevation: 0
+                                     }}
+                                     enableRowActions
+                                     displayColumnDefOptions={{
+                                         'mrt-row-actions': {
+                                             header: 'Actions',
+                                             size: 150,
+                                         },
+                                     }}
+                                     renderRowActions={(row) => (
+                                         <Box
+                                             sx={{
+                                                 display: "flex",
+                                                 flexWrap: "nowrap",
+                                                 gap: "0.5",
+                                                 marginLeft: "-5px",
+                                                 width: "140px",
+                                             }}
+                                         >
+                                             {filteredData?.form_data?.is_update === true && (
+                                                 <Tooltip arrow placement="right" title="Edit">
+                                                     <IconButton
+                                                         sx={{ width: "35px", height: "35px",color:tabletools(namecolor) }}
+                                                         onClick={() => {
+                                                             handleEditFile(row?.row?.original?.subject_id);
+                                                         }}
+                                                     >
+                                                         <EditIcon />
+                                                     </IconButton>
+                                                 </Tooltip>
+                                              )}  
+
+                                             <Tooltip arrow placement="right" title="Delete">
+                                                 <IconButton
+                                                     sx={{ width: "35px", height: "35px",color:tabletools(namecolor) }}
+                                                     onClick={() => {
+                                                         handleDeleteFiles(row?.row?.original?.subject_id)
+                                                     }}
+                                                 >
+                                                     <TrashIcon />
+                                                 </IconButton>
+                                             </Tooltip>
+                                         </Box>
+                                     )}
+                                 />
+
+                                 )}
                                 </Box>
                             </div>
                         </div>
