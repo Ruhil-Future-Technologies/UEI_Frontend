@@ -367,8 +367,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       const filterData = subjectsAll?.filter((item:any)=> item.course_id === boxes[0].course_id && item?.semester_id === boxes[0]?.sem_id)
       setSubjects(filterData)
     }else{
-      const filterData = subjectsAll?.filter((item:any)=> item?.class_id  === boxes[0]?.class_id )
-      setSubjects(filterData)
+      if(boxes[0]?.stream !== "" || boxes[0]?.stream !== undefined){
+        const filterData = subjectsAll?.filter((item:any)=> item?.class_id  === boxes[0]?.class_id && item?.stream === boxes[0]?.stream )
+        setSubjects(filterData)
+      }else{
+        const filterData = subjectsAll?.filter((item:any)=> item?.class_id  === boxes[0]?.class_id )
+        setSubjects(filterData)
+      }
     }
 
   },[boxes,academic])
