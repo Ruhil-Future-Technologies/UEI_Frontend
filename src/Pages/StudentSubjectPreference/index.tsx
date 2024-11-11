@@ -247,7 +247,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getData("/subject_preference/edit/" + StudentId)
       .then((data: any) => {
         if (data?.status === 200) {
-          data.data.map((item: any, index: number) => {
+          data?.data.map((item: any, index: number) => {
             const newBox: Box = {
               id: item.id,
               course_id: item?.course_id,
@@ -279,23 +279,26 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             //   }
             // );
             // Fetch class name for each preference item based on the index
-            getData(`/class/get/${item.class_id}`).then((response: any) => {
-              if (response.status === 200) {
-                // Optionally, log or store class name using the index to ensure uniqueness
-                setParticularClass((prevClasses: any) => {
-                  const updatedClasses: any = [...prevClasses];
-                  updatedClasses[index] = response.data.class_name; // store class name by index
-                  return updatedClasses;
-                });
-              } else {
-                // Clear or reset the class name for the index if fetch fails
-                setParticularClass((prevClasses: any) => {
-                  const updatedClasses = [...prevClasses];
-                  updatedClasses[index] = ""; // Reset the class name for this index
-                  return updatedClasses;
-                });
-              }
-            });
+            if(item.class_id){
+
+              getData(`/class/get/${item.class_id}`).then((response: any) => {
+                if (response.status === 200) {
+                  // Optionally, log or store class name using the index to ensure uniqueness
+                  setParticularClass((prevClasses: any) => {
+                    const updatedClasses: any = [...prevClasses];
+                    updatedClasses[index] = response.data.class_name; // store class name by index
+                    return updatedClasses;
+                  });
+                } else {
+                  // Clear or reset the class name for the index if fetch fails
+                  setParticularClass((prevClasses: any) => {
+                    const updatedClasses = [...prevClasses];
+                    updatedClasses[index] = ""; // Reset the class name for this index
+                    return updatedClasses;
+                  });
+                }
+              });
+            }
           });
         } else if (data?.status === 404) {
           setBoxes([
