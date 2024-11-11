@@ -980,6 +980,16 @@ function MainContent() {
               subject_preference &&
               Object.keys(subject_preference)?.length > 0
             ) {
+
+              if (academic_history?.institution_type === "school") {
+                // console.log("test subject pref school",subject_preference)
+                delete subject_preference?.course_name;
+                delete subject_preference?.course_id; 
+                delete subject_preference?.sem_id;
+              
+              }else{
+                // console.log("test subject pref college",subject_preference)
+              }
               let totalcount = Object.keys(subject_preference)?.length;
               let filledCount = countKeysWithValue(subject_preference);
               let percentage = (filledCount / totalcount) * 100;

@@ -678,6 +678,16 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
     setTotalSemester(semesterCount)
   }, [boxes[0]?.course_id])
+  useEffect(()=>{
+    if(boxes[0]?.institute_type === "college"){
+      const filterDataInstitute = institutesAll.filter((item) => item.university_id === boxes[0].university_id)
+        setInstitutes(filterDataInstitute)
+        const filterDataCourse = coursesAll.filter((item) => item.institution_id === boxes[0].institute_id )
+        setCourses(filterDataCourse)
+        const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
+        setTotalSemester(semesterCount)
+    }
+  },[boxes])
 
   return (
     <div className="mt-5">
