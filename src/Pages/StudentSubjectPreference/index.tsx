@@ -86,7 +86,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const [academic, setAcademic] = useState<any>(false);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [particularClass, setParticularClass] = useState<any>([]);
-  console.log("particularClass", particularClass)
   // Fetch data from the endpoints
   const getacademic = async () => {
     getData(`${"new_student_academic_history/get/" + StudentId}`)
@@ -187,7 +186,27 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       });
   };
   const getSubject = async () => {
-    getData("/subject/list")
+    if(academic){
+      getData("school_subject/list")
+        .then((response: any) => {
+          if (response.status === 200) {
+            const filteredData = response?.data?.filter(
+              (item: any) => item?.is_active === 1
+            );
+            setSubjects(filteredData || []);
+            // setSubjects(response.data);
+            setSubjectsAll(filteredData || [])
+          }
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center"
+          });
+        });
+    }else{
+      getData("college_subject/list")
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
@@ -205,6 +224,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           position: "top-center"
         });
       });
+
+    }
+   
   };
   const getPrefrence = async () => {
     getData("/subject_preference/list")
@@ -323,18 +345,36 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   };
   useEffect(() => {
     getCourse();
-    getSubject();
     getPrefrence();
     getPrefrencelist();
     getSemester();
     getacademic();
+    // getSubject();
   }, []);
+
+  useEffect(()=>{
+   
+    
+    getSubject();
+
+  },[academic])
   useEffect(() => {
     const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0].sem_id)
     setTotalSemester(semesterCount)
   }, [StudentId, semester])
+  useEffect(()=>{
+    if(!academic){
+      const filterData = subjectsAll?.filter((item:any)=> item.course_id === boxes[0].course_id && item?.semester_id === boxes[0]?.sem_id)
+      setSubjects(filterData)
+    }else{
+      const filterData = subjectsAll?.filter((item:any)=> item?.class_id  === boxes[0]?.class_id )
+      setSubjects(filterData)
+    }
+
+  },[boxes,academic])
 
   const handleInputChange = async (index: number, field: string, value: string) => {
+    // console.log("test academic 66666666data",academic)
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
     // if (field === 'course_id') {
@@ -352,7 +392,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     }
     if (field === 'class_id') {
       const subjectData = subjectsAll.filter((item: any) => item.class_id === value)
-      // setSubjects(subjectData)
+      setSubjects(subjectData)
 
       try {
         const response = await getData(`/class/get/${value}`);
@@ -414,16 +454,40 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     setBoxes(newBoxes);
   };
 
-  const addRow = () => {
+  const addRow = async () => {
+    try {
+      const response = await getData(`/class/get/${boxes[0]?.class_id}`);
+
+      if (response.status === 200) {
+        setParticularClass((prevClasses: any) => {
+          const updatedClasses: any = [...prevClasses];
+          updatedClasses[boxes?.length] = response.data.class_name; // store class name by index
+          return updatedClasses;
+        });
+      } else {
+        setParticularClass((prevClasses: any) => {
+          const updatedClasses: any = [...prevClasses];
+          updatedClasses[boxes?.length] = ""; // Reset the class name for this index
+          return updatedClasses;
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching class data:", error);
+      setParticularClass((prevClasses: any) => {
+        const updatedClasses: any = [...prevClasses];
+        updatedClasses[boxes?.length] = ""; // Reset the class name for this index in case of error
+        return updatedClasses;
+      });
+    }
     const newBox: Box = {
       id: 0,
-      course_id: "",
-      subject_id: "",
+      course_id: boxes[0]?.course_id || "",
+      subject_id: boxes[0]?.subject_id || "",
       preference: "",
       score_in_percentage: "",
-      sem_id: "",
-      class_id: "",
-      stream: ""
+      sem_id: boxes[0]?.sem_id || "",
+      class_id: boxes[0]?.class_id || "",
+      stream: boxes[0]?.stream ||  ""
     };
     setBoxes([...boxes, newBox]);
   };
@@ -834,12 +898,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   onChange={(e) =>
                     handleInputChange(index, "subject_id", e.target.value)
                   }
-                  label="Subject"
+                  label="Subject"                
                 >
                   {subjects.map((subject) => (
                     <MenuItem
-                      key={subject.id}
-                      value={subject.id}
+                      key={subject.subject_id}
+                      value={subject.subject_id}
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
