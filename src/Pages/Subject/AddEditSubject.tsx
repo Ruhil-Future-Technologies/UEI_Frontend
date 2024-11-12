@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Grid, InputLabel, Typography } from "@mui/material";
 import useApi from "../../hooks/useAPI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from "../../utils/const";
+import { QUERY_KEYS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from "../../utils/const";
 import { toast } from "react-toastify";
 import { Field, Form, Formik, FormikHelpers, FormikProps, setNestedObjectValues } from 'formik';
 import * as Yup from 'yup';
@@ -23,6 +23,8 @@ interface ISubjectForm {
   semester_id: string,
   course_id: string,
   pdf_content?: string,
+  institution_id: string
+
 
   // created_by: string
 }
@@ -33,6 +35,7 @@ const AddEditSubject = () => {
   const SubjectEditURL = QUERY_KEYS_SUBJECT.SUBJECT_EDIT;
   const SubjectGETURL = QUERY_KEYS_SUBJECT.SUBJECT_GET;
   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
+  const InstituteListURL = QUERY_KEYS.GET_INSTITUTES;
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
@@ -42,6 +45,7 @@ const AddEditSubject = () => {
 
   const initialState = {
     subject_name: "",
+    institution_id: "",
     created_by: userdata?.id,
     semester_id: "",
     course_id: "",
@@ -60,8 +64,10 @@ const AddEditSubject = () => {
   const lastSegment = id ? pathSegments[pathSegments.length - 3].toLowerCase() : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const [courseList, setCourseList] = useState<any[]>([])
+  const [courseListAll, setCourseListAll] = useState<any[]>([])
   const [totalSemester, setTotalSemester] = useState<any>([])
   const [semester, setSemester] = useState<any>([]);
+  const [instituteList, setinstituteList] = useState<any[]>([])
 
   // const GetDataList = () => {
   //     JSON.parse(Menulist)?.map((data: any) => {
@@ -89,10 +95,24 @@ const AddEditSubject = () => {
 
 
   const callAPI = async () => {
+    getData(`${InstituteListURL}`).then((data: { data: any[] }) => {
+      const filteredData = data?.data.filter(item => item.is_active === 1);
+      setinstituteList(filteredData);
+      // setDataEntity(data?.data)
+  }).catch(e => {
+      if (e?.response?.status === 401) {
+          navigator("/")
+      }
+      toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+      });
+  });
     getData(`${CourseListURL}`).then((data: { data: any[] }) => {
       const filteredData = data?.data.filter(item => item.is_active === 1);
       setCourseList(filteredData);
-      // setDataEntity(data?.data)
+      setCourseListAll(filteredData);
+      
     }).catch(e => {
       if (e?.response?.status === 401) {
         navigator("/")
@@ -162,7 +182,18 @@ const AddEditSubject = () => {
   // };
   // const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>, fieldName: string) => {
-
+    if (fieldName === 'institution_id') {
+      const courses = courseListAll.filter((item: any) => item.institution_id === e.target.value)
+      setCourseList(courses)
+     
+       setSubject((prevMenu:any) => {
+      return {
+        ...prevMenu,
+        ["course_id"]: "",
+        ["semester_id"]: "",
+      };
+    });
+    }
     if (fieldName === 'course_id') {
       const semesterCount = semester.filter((item: any) => item.course_id === e.target.value)
       setTotalSemester(semesterCount)
@@ -198,7 +229,8 @@ const AddEditSubject = () => {
       subject_name: subject[""] as string,
       pdf_content: subject?.pdf_content || "",
       semester_id: subject.semester_id,
-      course_id: subject.course_id
+      course_id: subject.course_id,
+      institution_id: subject.institution_id
     }
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
@@ -237,7 +269,10 @@ const AddEditSubject = () => {
       subject_name: subjectData.subject_name,
       pdf_content: subjectData?.menu_image || "",
       semester_id: subjectData.semester_id,
-      course_id: subjectData.course_id
+      course_id: subjectData.course_id,
+      institution_id: subjectData.institution_id
+
+
     }
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
@@ -307,7 +342,9 @@ const AddEditSubject = () => {
     semester_id: Yup.string()
       .required("Please select Semester name"),
     course_id: Yup.string()
-      .required("Please select Course name")
+      .required("Please select Course name"),
+      institution_id: Yup.string()
+      .required("Please select institute name")
   })
 
   return (
@@ -330,7 +367,8 @@ const AddEditSubject = () => {
                   subject_name: subject?.subject_name,
                   semester_id: subject?.semester_id,
                   course_id: subject?.course_id,
-                  menu_image: subject?.pdf_content
+                  menu_image: subject?.pdf_content,
+                  institution_id: subject?.institution_id
                 }}
                 enableReinitialize
                 validationSchema={menuSchema}
@@ -340,6 +378,49 @@ const AddEditSubject = () => {
                   <Form>
                     {/* <form onSubmit={(e) => handleSubmit(e, subject)}> */}
                     <div className="row">
+                    <div className='col-md-4'>
+                                                <div className="form_field_wrapper">
+                                                    <FormControl fullWidth>
+                                                        <InputLabel id="demo-simple-select-label">Institute *</InputLabel>
+                                                        <Select
+                                                            onChange={(e: SelectChangeEvent<string>) => handleChange(e, "institution_id")}
+                                                            label="institute"
+                                                            name="institution_id"
+                                                            onBlur={handleBlur}
+                                                            value={values.institution_id}
+                                                            variant="outlined"
+                                                            sx={{
+                                                                backgroundColor: inputfield(namecolor),
+                                                                color: inputfieldtext(namecolor)
+                                                            }}
+                                                            MenuProps={{
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        backgroundColor: inputfield(namecolor),
+                                                                        color: inputfieldtext(namecolor)
+                                                                    },
+                                                                },
+                                                            }}
+                                                        >
+                                                            {instituteList.map((item, idx) => (
+                                                                <MenuItem value={item.id} key={`${item.institution_name}-${idx + 1}`}
+
+                                                                    sx={{
+                                                                        backgroundColor: inputfield(namecolor),
+                                                                        color: inputfieldtext(namecolor),
+                                                                        '&:hover': {
+                                                                            backgroundColor: inputfieldhover(namecolor),
+                                                                        },
+                                                                    }}
+                                                                >{item.institution_name}</MenuItem>
+                                                            ))}
+                                                        </Select>
+                            <Typography variant="body2" color="error">
+                              {typeof errors?.institution_id === "string" && errors.institution_id}
+                            </Typography>
+                                                    </FormControl>
+                                                </div>
+                                            </div>
                       <div className='col-md-4'>
                         <div className="form_field_wrapper">
                           <FormControl fullWidth>
@@ -435,7 +516,7 @@ const AddEditSubject = () => {
                           </FormControl>
                         </div>
                       </div>
-                      <div className="col-md-4">
+                      <div className="col-md-4 mt-4">
                         <div className="form_field_wrapper">
                       
                           <Field
