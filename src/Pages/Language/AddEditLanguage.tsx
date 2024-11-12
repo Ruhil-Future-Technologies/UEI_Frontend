@@ -81,7 +81,7 @@ const AddEditLanguage = () => {
 
     const callAPILanguage = async () => {
         getData(`${LanguageURL}`).then((data: any) => {
-            if (data.data) {
+            if (data?.data) {
                 setDataLanguage(data?.data)
             }
         }).catch(e => {
@@ -161,6 +161,7 @@ useEffect(()=>{
             postData(LanguageAddURL, languageData).then((data) => {
                 if (data.status === 200) {
                     // navigate('/main/Language');
+                    callAPILanguage()
                     toast.success(data.message, {
                         hideProgressBar: true,
                         theme: "colored",

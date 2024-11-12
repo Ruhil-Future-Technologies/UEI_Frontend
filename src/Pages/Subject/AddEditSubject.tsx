@@ -226,7 +226,7 @@ const AddEditSubject = () => {
   const handleSubmit1 =()=>{
     
     const submitData = {
-      subject_name: subject[""] as string,
+      subject_name: subject[""] as string || subject?.subject_name,
       pdf_content: subject?.pdf_content || "",
       semester_id: subject.semester_id,
       course_id: subject.course_id,

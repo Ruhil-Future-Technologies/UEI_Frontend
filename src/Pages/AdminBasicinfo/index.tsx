@@ -109,27 +109,32 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   let adminId = localStorage.getItem("_id");
 //   console.log(adminId);
   const [admin, setadmin] = useState<AdminInformation>({
+    first_name: "", 
+    last_name: "",
+    father_name: "",
+    mother_name: "",
     gender: "Male",
     dob: dayjs("dd-mm-yyyy"),
   });
   const [fname_col, setFname_col] = useState<boolean>(false);
   const [lname_col, setLname_col] = useState<boolean>(false);
+  const [fname_col1, setFname_col1] = useState<boolean>(false);
+  const [lname_col1, setLname_col1] = useState<boolean>(false);
   const [fathername_col, setFathername_col] = useState<boolean>(false);
   const [mothername_col, setMothername_col] = useState<boolean>(false);
   const [gname_col, setGname_col] = useState<boolean>(false);
+  const [fathername_col1, setFathername_col1] = useState<boolean>(false);
+  const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [error1, setError1] = useState("");
   useEffect(() => {
     setadmin((prevState) => ({ ...prevState, dob: adminDOB ?? null }));
   }, [adminDOB]);
-  // console.log("handle", admin,adminDepartment)
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-    // addressType: string
   ) => {
-    // console.log("handle sssss",event.target.name, event.target.value)
     const { name, value } = event.target;
-
     if (name === "first_name") {
+      setFname_col1(true);
       if (!/^[a-zA-Z\s]*$/.test(value)) {
         setFname_col(true);
       } else {
@@ -137,6 +142,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
     if (name === "last_name") {
+      setLname_col1(true);
       if (!/^[a-zA-Z\s]*$/.test(value)) {
         setLname_col(true);
       } else {
@@ -144,6 +150,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
     if (name === "father_name") {
+      setFathername_col1(true);
       if (!/^[a-zA-Z\s]*$/.test(value)) {
         setFathername_col(true);
       } else {
@@ -151,6 +158,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
     if (name === "mother_name") {
+      setMothername_col1(true);
       if (!/^[a-zA-Z\s]*$/.test(value)) {
         setMothername_col(true);
       } else {
@@ -166,11 +174,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     setadmin((prevState) => ({ ...prevState, [name]: value }));
   };
-
   const getBasicInfo = async () => {
     try {
       const response = await getData(`${"admin_basicinfo/edit/" + adminId}`);
-      //   console.log(response);
       if (response?.status === 200) {
         setadmin((prevState) => ({
           ...prevState,
@@ -212,7 +218,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         // empty
       }
     } catch (error: any) {
-      //   console.error('error comes :', error.response.status);
       if (error?.response?.status === 401) {
         toast.warning("Please login again", {
           hideProgressBar: true,
@@ -231,10 +236,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       const response = await getData(`${"department/list"}`);
       if (response?.status === 200) {
         setAllDepartment(response?.data);
-        //console.log("hello")
       }
     } catch (error: any) {
-      //   console.error('error comes :', error?.response?.status);
       if (error?.response?.status === 401) {
         toast.warning("Please login again", {
           hideProgressBar: true,
@@ -255,12 +258,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value as string;
-    //const selectedDepartments = value.map(id => allDepartment.find(dept => dept.id.toString() == id)?id.toString():'' );
     setAdminDepartment(value);
   };
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log(event.target.value)
     const { files } = event.target;
     const formData = new FormData();
 
@@ -293,7 +293,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       formData.append("file", file);
       postFileData(`${"upload_file/upload"}`, formData)
         .then((data: any) => {
-          // console.log(data)
           if (data?.status === 200) {
             toast.success(data?.message, {
               hideProgressBar: true,
@@ -321,7 +320,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
   const handleDateChange = (newDate: Dayjs | null) => {
     setAdminDOB(newDate);
-    // setBasicInfo((values) => ({ ...values, dob: newDate }));
     let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
@@ -331,20 +329,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
   const adminBasicInfo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // console.log(adminDOB);
-
+    if (!admin?.first_name) setFname_col1(true);
+    if (!admin?.last_name) setLname_col1(true);
+    if (!admin?.father_name) setFathername_col1(true);
+    if (!admin?.mother_name) setMothername_col1(true);
     let paylod = {
-      // admin_login_id: adminId,
-      // department_id: adminDepartment,
-      // first_name: adminFName,
-      // last_name: adminLName,
-      // gender: adminGender,
-      // dob: adminDOB,
-      // father_name: adminFatherName,
-      // mother_name: adminMotherName,
-      // guardian_name: adminGurdian,
-      // is_kyc_verified: true,
-      // pic_path: selectedFile ? selectedFile : adminFilePath
       admin_login_id: adminId,
       department_id: adminDepartment,
       first_name: admin?.first_name,
@@ -358,7 +347,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
     let compare = {
-      // admin_login_id: adminId,
       department_id: adminDepartment,
       first_name: admin?.first_name,
       last_name: admin?.last_name,
@@ -367,25 +355,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       father_name: admin?.father_name,
       mother_name: admin?.mother_name,
       guardian_name: admin?.guardian_name || "",
-      // is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    // console.log("admin",JSON.stringify(compare))
-    // function sortObjectKeys(obj: { [key: string]: any } | null): { [key: string]: any } | null {
-    //     if (obj === null) return null;
-
-    //     return Object.keys(obj).sort().reduce((result: { [key: string]: any }, key: string) => {
-    //         result[key] = obj[key];
-    //         return result;
-    //     }, {});
-    // }
-    // // console.log("admin 1",JSON.stringify(initialAdminState))
-    // const sortedObj1 = sortObjectKeys(compare);
-    // const sortedObj2 = sortObjectKeys(initialAdminState);
-
-    // const eq = JSON.stringify(sortedObj1) === JSON.stringify(sortedObj2);
     let datecheck: any = dayjs(paylod?.dob).format("DD/MM/YYYY");
-
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
     } else {
@@ -393,7 +365,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     const eq = deepEqual(compare, initialAdminState);
     setEditFlag1(true);
-
     if (editFalg) {
       const seveData = async () => {
         try {
@@ -415,7 +386,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               }`
             )
               .then((data: any) => {
-                // setprofileImage(imgdata.data)
                 if (data.status == 200) {
                   setProImage(data.data);
                 } else {
@@ -478,7 +448,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               }`
             )
               .then((data: any) => {
-                // setprofileImage(imgdata.data)
                 if (data.status == 200) {
                   setProImage(data.data);
                 } else {
@@ -502,7 +471,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           });
         }
       };
-      // !gname_col && admin.guardian_name !== ""
       if (
         !fname_col &&
         admin.first_name !== "" &&
@@ -523,311 +491,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
   };
-
+  console.log("test log",fname_col1,admin.first_name)
   return (
-    // <form onSubmit={adminBasicInfo}>
-    //     <div className='row d-flex justify-content-start' style={{ margin: "15px" }}>
-    //         <div className='col form_field_wrapper'>
-    //             <label > First Name <span>*</span> </label>
-    //             <TextField type="text"
-    //                 name='first_name'
-    //                 className='form-control'
-    //                 // value={adminFName}
-    //                 // onChange={(event) => setAdminFName(event.target.value)}
-    //                 value={admin.first_name}
-    //                 onChange={(e) => handleInputChange(e)}
-    //                 required
-    //             />
-    //             <div> {fname_col && (
-    //                 <p style={{ color: 'red' }}>Please enter a valid First Name only characters allowed.</p>
-    //             )}</div>
-    //             <div> {admin.first_name == "" && (
-    //                 <p style={{ color: 'red' }}>Please enter First name.</p>
-    //             )}</div>
-    //         </div>
-
-    //         <div className='col form_field_wrapper'>
-    //             <label > Last Name <span>*</span> </label>
-    //             <TextField type="text"
-    //                 name='last_name'
-    //                 className='form-control'
-    //                 // value={adminLName}
-    //                 // onChange={(event) => setAdminLName(event.target.value)}
-    //                 value={admin.last_name}
-    //                 onChange={(e) => handleInputChange(e)}
-    //                 required
-    //             />
-    //             <div> {lname_col && (
-    //                 <p style={{ color: 'red' }}>Please enter a valid Last Name only characters allowed.</p>
-    //             )}</div>
-    //             <div> {admin.last_name == "" && (
-    //                 <p style={{ color: 'red' }}>Please enter Last name.</p>
-    //             )}</div>
-    //         </div>
-    //     </div>
-    //     <div className='row d-flex justify-content-start' style={{ margin: "15px" }}>
-    //         <div className='col form_field_wrapper'>
-    //             <FormControl >
-    //                 <FormLabel id="demo-row-radio-buttons-group-label">Gender <span>*</span> </FormLabel>
-    //                 <RadioGroup
-
-    //                     row
-    //                     aria-labelledby="demo-row-radio-buttons-group-label"
-    //                     // name="row-radio-buttons-group"
-    //                     // value={adminGender}
-    //                     // onChange={(event) => setAdminGender(event.target.value)}
-    //                     name="gender"
-    //                     value={admin.gender}
-    //                     onChange={(e) => handleInputChange(e)}
-    //                 >
-    //                     <FormControlLabel value="Male" control={<Radio className='radiobutton' />} label="Male"/>
-    //                     <FormControlLabel value="Female" control={<Radio  className='radiobutton'/>} label="Female" />
-
-    //                 </RadioGroup>
-    //             </FormControl>
-    //         </div>
-    //         <div className='col form_field_wrapper' style={{ marginTop: "20PX" }}>
-
-    //             <LocalizationProvider dateAdapter={AdapterDayjs}>
-    //                 <DatePicker
-    //                     label="Date of Birth *"
-    //                     value={dayjs(admin.dob)}
-    //                     // onChange={(date: any) => setAdminDOB(date)}
-    //                     onChange={(date: any)=>handleDateChange(date)}
-    //                     // name="dob"
-    //                     // value={dayjs(admin.gender)}
-    //                     // onChange={(e:any) => handleInputChange(e)}
-    //                      format="DD/MM/YYYY"
-    //                     disableFuture
-    //                 />
-    //             </LocalizationProvider>
-    //             <div> {dobset_col && (
-    //                 <p style={{ color: 'red' }}>Please enter Date of Birth.</p>
-    //             )}</div>
-
-    //         </div>
-    //     </div>
-    //     <div className='row d-flex justify-content-start' style={{ margin: "15px" }}>
-
-    //         <div className='col form_field_wrapper'>
-
-    //             <label > Father Name <span>*</span> </label>
-    //             <TextField type="text"
-    //                 name='father_name'
-    //                 className='form-control'
-    //                 // value={adminFatherName}
-    //                 // onChange={(event) => setAdminFatherName(event.target.value)}
-    //                 value={admin.father_name}
-    //                 onChange={(e) => handleInputChange(e)}
-
-    //                 />
-    //                 <div> {fathername_col && (
-    //                 <p style={{ color: 'red' }}>Please enter a valid Father Name only characters allowed.</p>
-    //             )}</div>
-    //             <div> {admin.father_name == "" && (
-    //                 <p style={{ color: 'red' }}>Please enter Father name.</p>
-    //             )}</div>
-    //         </div>
-
-    //         <div className='col form_field_wrapper'>
-    //             <label > Mother Name <span>*</span> </label>
-    //             <TextField type="text"
-    //                 name='mother_name'
-    //                 className='form-control'
-    //                 // value={adminMotherName}
-    //                 // onChange={(event) => setAdminMotherName(event.target.value)}
-    //                 value={admin.mother_name}
-    //                 onChange={(e) => handleInputChange(e)}
-    //                  />
-    //                  <div> {mothername_col && (
-    //                 <p style={{ color: 'red' }}>Please enter a valid Mother Name only characters allowed.</p>
-    //             )}</div>
-    //             <div> {admin.mother_name == "" && (
-    //                 <p style={{ color: 'red' }}>Please enter Mother name.</p>
-    //             )}</div>
-
-    //         </div>
-    //     </div>
-    //     <div className='row d-flex justify-content-start' style={{ margin: "15px" }}>
-    //         <div className='col form_field_wrapper'>
-
-    //             <label > Guardian Name <span></span> </label>
-    //             <TextField type="text"
-    //                 name='guardian_name'
-    //                 className='form-control'
-    //                 // value={adminGurdian}
-    //                 // onChange={(event) => setAdminGurdian(event.target.value)}
-    //                 value={admin.guardian_name}
-    //                 onChange={(e) => handleInputChange(e)}
-
-    //                 />
-    //                 <div> {gname_col && (
-    //                 <p style={{ color: 'red' }}>Please enter a valid Guardian Name only characters allowed.</p>
-    //             )}</div>
-    //             {/* <div> {admin.guardian_name == "" && (
-    //                 <p style={{ color: 'red' }}>Please enter Guardian name.</p>
-    //             )}</div> */}
-    //         </div>
-
-    //         <div className='col form_field_wrapper'>
-    //             {/* <Grid item xs={12}>
-    //                 <Typography variant="h6">Upload Profile Picture *</Typography>
-
-    //             </Grid>
-    //             <Grid item xs={12}>
-    //                 <Button
-    //                     component="label"
-    //                     role={undefined}
-    //                     //variant="contained"
-    //                     tabIndex={-1}
-
-    //                     startIcon={<CloudUploadIcon />}
-    //                     sx={{
-    //                         '&:hover': {
-    //                             backgroundColor: 'primary.light',
-    //                             color: 'white'
-    //                         },
-    //                     }}
-    //                 >
-    //                     Upload Photo
-    //                     <VisuallyHiddenInput type="file" onChange={(event) => handleImageChange(event)} />
-    //                 </Button>
-    //                 {filePreview && (
-    //                     <img
-    //                         src={filePreview}
-    //                         alt="Uploaded Preview"
-    //                         style={{ maxWidth: "50%", marginTop: "10px" }}
-    //                     />
-    //                 )}
-    //             </Grid> */}
-    //              <FormControl sx={{
-    //                 m: 1, mt:3,minWidth: 250, width: {
-    //                     xs: '100%',
-    //                     sm: 'auto',
-    //                 }, marginLeft: 0
-    //             }} >
-    //                 <InputLabel id="demo-select-small-label">Department Name * </InputLabel>
-    //                 <Select
-
-    //                     labelId="demo-select-small-label"
-    //                     id="demo-select-small"
-    //                     value={adminDepartment}
-    //                     label="Department name"
-    //                     onChange={handleDepartmentChange}
-    //                     renderValue={(selected) => {
-    //                         const selectedDepartment = allDepartment.find(dept => dept.id.toString() == selected);
-    //                         const selectedDepartment1 = allDepartment.find(dept => dept.id.toString() == adminDepartment);
-    //                         return selectedDepartment ? selectedDepartment?.department_name : selectedDepartment1?.department_name;
-    //                     }}
-    //                       MenuProps={{
-    //                         sx: {
-    //                           "& .MuiPaper-root": {
-    //                             mt: 1,
-
-    //                           }
-    //                         },
-
-    //                       }}
-    //                 >
-    //                     {allDepartment.map((data) => (
-    //                         <MenuItem key={data.id} value={data.id}>
-    //                             {data.department_name}
-    //                         </MenuItem>
-    //                     ))}
-
-    //                 </Select>
-    //             </FormControl>
-    //             <div> {(!adminDepartment && editFalg1) && (
-    //                 <p style={{ marginLeft: "10px", color: 'red' }}>Please select a Department name.</p>
-    //             )}</div>
-
-    //         </div>
-    //     </div>
-    //     <div className='row d-flex justify-content-start' style={{ margin: "15px" }}>
-    //         <div className='col'>
-
-    //             {/* <FormControl sx={{
-    //                 m: 1, minWidth: 250, width: {
-    //                     xs: '100%',
-    //                     sm: 'auto',
-    //                 }, marginLeft: 0
-    //             }} >
-    //                 <InputLabel id="demo-select-small-label">Department Name * </InputLabel>
-
-    //                 <Select
-
-    //                     labelId="demo-select-small-label"
-    //                     id="demo-select-small"
-    //                     value={adminDepartment}
-    //                     label="Department name"
-    //                     onChange={handleDepartmentChange}
-    //                     renderValue={(selected) => {
-    //                         const selectedDepartment = allDepartment.find(dept => dept.id.toString() == selected);
-    //                         return selectedDepartment ? selectedDepartment.department_name : '';
-    //                     }}
-
-    //                       MenuProps={{
-    //                         sx: {
-    //                           "& .MuiPaper-root": {
-    //                             mt: 4,
-
-    //                           }
-    //                         },
-
-    //                       }}
-
-    //                 >
-    //                     {allDepartment.map((data) => (
-    //                         <MenuItem key={data.id} value={data.id}>
-    //                             {data.department_name}
-    //                         </MenuItem>
-    //                     ))}
-
-    //                 </Select>
-
-    //             </FormControl> */}
-    //             <Grid item xs={12}>
-    //                 <Typography variant="h6">Upload Profile Picture </Typography>
-    //             </Grid>
-    //             <Grid item xs={12}>
-    //                 <Button
-    //                     component="label"
-    //                     role={undefined}
-    //                     //variant="contained"
-    //                     tabIndex={-1}
-
-    //                     startIcon={<CloudUploadIcon />}
-    //                     sx={{
-    //                         '&:hover': {
-    //                             backgroundColor: 'primary.light',
-    //                             color: 'white'
-    //                         },
-    //                     }}
-    //                 >
-    //                     Upload Photo
-    //                     <VisuallyHiddenInput type="file" onChange={(event) => handleImageChange(event)} />
-    //                 </Button>
-    //                 {filePreview && (
-    //                     <img
-    //                         src={filePreview}
-    //                         alt="Uploaded Preview"
-    //                         style={{ maxWidth: "50%", marginTop: "10px" }}
-    //                     />
-    //                 )}
-    //                 {error1 && (
-    //                     <Typography variant="body1" style={{ color: 'red' }}>
-    //                         {error1}
-    //                     </Typography>
-    //                 )}
-    //             </Grid>
-    //         </div>
-    //         <div className='col' style={{marginTop:"320px"}}>
-    //             <button className='btn btn-primary mainbutton'>{editFalg ? "save" : "Save Changes"}</button>
-
-    //         </div>
-    //     </div>
-    // </form>
-
+  
     <form>
       <div className="row d-flex">
         <div className="col-md-6 pb-3form_field_wrapper">
@@ -835,16 +501,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             First Name <span>*</span>{" "}
           </label>
-          {/* <TextField
-            type="text"
-            name="first_name"
-            className="form-control"
-            // value={adminFName}
-            // onChange={(event) => setAdminFName(event.target.value)}
-            value={admin.first_name}
-            onChange={(e) => handleInputChange(e)}
-            required
-          /> */}
           <input
             name="first_name"
             value={admin.first_name}
@@ -863,7 +519,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {admin.first_name == "" && (
+            {admin?.first_name == ""  && fname_col1 && (
               <p style={{ color: "red" }}>Please enter First name.</p>
             )}
           </div>
@@ -874,16 +530,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Last Name <span>*</span>{" "}
           </label>
-          {/* <TextField
-            type="text"
-            name="last_name"
-            className="form-control"
-            // value={adminLName}
-            // onChange={(event) => setAdminLName(event.target.value)}
-            value={admin.last_name}
-            onChange={(e) => handleInputChange(e)}
-            required
-          /> */}
           <input
             type="text"
             name="last_name"
@@ -902,13 +548,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {admin.last_name == "" && (
+            {admin.last_name == "" && lname_col1 && (
               <p style={{ color: "red" }}>Please enter Last name.</p>
             )}
           </div>
         </div>
-
-        {/* <div className="row d-flex justify-content-start" style={{ margin: "15px" }}> */}
         <div className="col-md-6 pb-3 form_field_wrapper">
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">
@@ -916,10 +560,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             </FormLabel>
             <RadioGroup
               row
-              //   aria-labelledby="demo-row-radio-buttons-group-label"
-              // name="row-radio-buttons-group"
-              // value={adminGender}
-              // onChange={(event) => setAdminGender(event.target.value)}
               name="gender"
               value={admin.gender?.toLowerCase()}
               onChange={handleInputChange}
@@ -943,13 +583,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              //   label="Date of Birth *"
               value={dayjs(admin.dob)}
-              // onChange={(date: any) => setAdminDOB(date)}
               onChange={(date: any) => handleDateChange(date)}
-              // name="dob"
-              // value={dayjs(admin.gender)}
-              // onChange={(e:any) => handleInputChange(e)}
               format="DD/MM/YYYY"
               disableFuture
               sx={{
@@ -964,31 +599,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
           </div>
         </div>
-        {/* </div> */}
-        {/* <div
-        className="row d-flex justify-content-start"
-        style={{ margin: "15px" }}
-      > */}
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
             {" "}
             Father Name <span>*</span>{" "}
           </label>
-          {/* <TextField
-            type="text"
-            name="father_name"
-            className="form-control"
-            // value={adminFatherName}
-            // onChange={(event) => setAdminFatherName(event.target.value)}
-            value={admin.father_name}
-            onChange={(e) => handleInputChange(e)}
-          /> */}
           <input
             type="text"
             name="father_name"
             className="form-control"
-            // value={adminFatherName}
-            // onChange={(event) => setAdminFatherName(event.target.value)}
             value={admin.father_name}
             onChange={(e) => handleInputChange(e)}
           />
@@ -1002,9 +621,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {admin.father_name == "" && (
+            {admin.father_name == "" && fathername_col1 && (
               <p style={{ color: "red" }}>Please enter Father name.</p>
             )}
+            {" "}
+           
           </div>
         </div>
 
@@ -1013,21 +634,10 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Mother Name <span>*</span>{" "}
           </label>
-          {/* <TextField
-          type="text"
-          name="mother_name"
-          className="form-control"
-          // value={adminMotherName}
-          // onChange={(event) => setAdminMotherName(event.target.value)}
-          value={admin.mother_name}
-          onChange={(e) => handleInputChange(e)}
-        /> */}
           <input
             type="text"
             name="mother_name"
             className="form-control"
-            // value={adminMotherName}
-            // onChange={(event) => setAdminMotherName(event.target.value)}
             value={admin.mother_name}
             onChange={(e) => handleInputChange(e)}
           />
@@ -1041,30 +651,16 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {admin.mother_name == "" && (
+            {admin.mother_name == ""  && mothername_col1 && (
               <p style={{ color: "red" }}>Please enter Mother name.</p>
             )}
           </div>
         </div>
-        {/* </div> */}
-        {/* <div
-        className="row d-flex justify-content-start"
-        style={{ margin: "15px" }}
-      > */}
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
             {" "}
             Guardian Name <span></span>{" "}
           </label>
-          {/* <TextField
-            type="text"
-            name="guardian_name"
-            className="form-control"
-            // value={adminGurdian}
-            // onChange={(event) => setAdminGurdian(event.target.value)}
-            value={admin.guardian_name}
-            onChange={(e) => handleInputChange(e)}
-          /> */}
           <input
             type="text"
             name="guardian_name"
@@ -1080,42 +676,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               </p>
             )}
           </div>
-          {/* <div> {admin.guardian_name == "" && (
-            <p style={{ color: 'red' }}>Please enter Guardian name.</p>
-        )}</div> */}
         </div>
 
         <div className="col-md-6 pb-3 form_field_wrapper">
-          {/* <Grid item xs={12}>
-            <Typography variant="h6">Upload Profile Picture *</Typography>
-
-        </Grid>
-        <Grid item xs={12}>
-            <Button
-                component="label"
-                role={undefined}
-                //variant="contained"
-                tabIndex={-1}
-
-                startIcon={<CloudUploadIcon />}
-                sx={{
-                    '&:hover': {
-                        backgroundColor: 'primary.light',
-                        color: 'white'
-                    },
-                }}
-            >
-                Upload Photo
-                <VisuallyHiddenInput type="file" onChange={(event) => handleImageChange(event)} />
-            </Button>
-            {filePreview && (
-                <img
-                    src={filePreview}
-                    alt="Uploaded Preview"
-                    style={{ maxWidth: "50%", marginTop: "10px" }}
-                />
-            )}
-        </Grid> */}
           <FormControl
             sx={{
               m: 1,
@@ -1175,55 +738,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
           </div>
         </div>
-        {/* </div> */}
-        {/* <div
-          className="row d-flex justify-content-start"
-          style={{ margin: "15px" }}
-        >
-          <div className="col">
-            <Grid item xs={12}>
-              <Typography variant="h6">Upload Profile Picture </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                component="label"
-                role={undefined}
-                //variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "primary.light",
-                    color: "white",
-                  },
-                }}
-              >
-                Upload Photo
-                <VisuallyHiddenInput
-                  type="file"
-                  onChange={(event) => handleImageChange(event)}
-                />
-              </Button>
-              {filePreview && (
-                <img
-                  src={filePreview}
-                  alt="Uploaded Preview"
-                  style={{ maxWidth: "50%", marginTop: "10px" }}
-                />
-              )}
-              {error1 && (
-                <Typography variant="body1" style={{ color: "red" }}>
-                  {error1}
-                </Typography>
-              )}
-            </Grid>
-          </div>
-          <div className="col" style={{ marginTop: "320px" }}>
-            <button className="btn btn-primary mainbutton">
-              {editFalg ? "save" : "Save Changes"}
-            </button>
-          </div>
-        </div> */}
         <div className="col-lg-12">
           <div className="d-flex flex-wrap align-items-center gap-1">
             <div className="image-container">

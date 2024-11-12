@@ -166,7 +166,6 @@ const AddEditCourse = () => {
             institution_id: JSON.stringify(courseData.institute),
              duration:  JSON.stringify(courseData.duration)
           }
-
         if (id) {
             putData(`${CourseEditURL}/${id}`, courseData).then((data: { status: number,message:string }) => {
                 if (data.status === 200) {
@@ -231,33 +230,7 @@ const AddEditCourse = () => {
             .required("Please select institute name"),
             duration: Yup.string()
             .required("Please select duration")
-        // course_image: Yup.mixed()
-        //     .required("Profile Image Is Required")
-        //     .test(
-        //         "fileSize",
-        //         "Profile image size must be less than 10MB",
-        //         (value) => {
-        //             return !value || (value && value.size <= 10485760); // 10MB in bytes
-        //         }
-        //     )
-        //     .test(
-        //         "fileFormat",
-        //         "Profile image must be in jpg, png, jpeg, gif, or webp format",
-        //         (value) => {
-        //             return (
-        //                 !value ||
-        //                 (value &&
-        //                     [
-        //                         "image/jpeg",
-        //                         "image/png",
-        //                         "image/jpg",
-        //                         "image/gif",
-        //                         "image/webp",
-        //                     ].includes(value.type))
-        //             );
-        //         }
-        //     ),
-        // course_description: Yup.string()
+   
     })
     return (
         <>
@@ -273,7 +246,7 @@ const AddEditCourse = () => {
                                 initialValues={{
                                     course_name: institute?.course_name,
                                     institute: institute?.institution_id,
-                                    duration: institute?.institute
+                                    duration: institute?.duration
                                     // course_image: null,
                                     // course_description: ""
                                 }}
@@ -402,60 +375,10 @@ const AddEditCourse = () => {
                                         <div className='row'>
                                             <div className='col-md-4 mt-2'>
                                                 <div className='col'>
-                                                    {/* <Grid item xs={12}>
-                                                    <Typography variant="h6"  sx={{color:inputfieldtext(namecolor)}}>Upload a Photo</Typography>
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(event) => setSelectedFile(event.target.value) }
-                                                        id="file-upload"
-                                                        name='course_image'
-                                                        style={{ color:inputfieldtext(namecolor)}}
-
-                                                    /> */}
-                                                    {/* <input
-                                                        type="file"
-                                                        accept=".jpg,.png"
-                                                        onChange={(event) => {
-                                                            const fileInput = event?.target as HTMLInputElement;
-                                                            if (fileInput.files) {
-                                                                const file = fileInput?.files[0];
-                                                                const fileType = file?.type;
-                                                                const isValidImageType = fileType?.match(/image\/(jpg|jpeg|png)/i);
-                                                        
-                                                                if (isValidImageType) {
-                                                                    setSelectedFile(file);
-                                                                } else {
-                                                                    // alert('Only JPG and PNG images are allowed');
-                                                                    toast.error('Only JPG and PNG images are allowed', {
-                                                                        hideProgressBar: true,
-                                                                        theme: "colored",
-                                                                    });
-                                                                    event.target.value = ''; // reset the input field
-                                                                }
-                                                            }
-                                                        }}
-                                                        id="file-upload"
-                                                        name='course_image'
-                                                    /> */}
-                                                    {/* </Grid> */}
                                                 </div>
                                             </div>
                                         </div>
                                         <div className='row mt-4'>
-                                            {/* <div className='col-md-4'>
-                                            <InputLabel className='text-secondary'  sx={{color:inputfieldtext(namecolor)}}>Description</InputLabel>
-                                            <TextareaAutosize
-                                                aria-label="empty textarea"
-                                                minRows={5}
-                                                style={{ width: "100%", fontSize: "1rem",backgroundColor:inputfield(namecolor) , color:inputfieldtext(namecolor) }}
-                                                placeholder="Enter your text here..."
-                                                // name='course_description'
-                                                // onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange(e)}
-                                            />
-                                        </div>  */}
                                         </div>
                                         <div className=' mt-3'>
                                             <button className='btn btn-primary mainbutton' >{id ? "Update" : "Save"}</button>
