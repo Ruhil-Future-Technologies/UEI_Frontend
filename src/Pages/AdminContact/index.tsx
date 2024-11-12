@@ -147,7 +147,12 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       toast.error("Please fix the errors before submitting");
       return;
     }
-
+if(phoneNum === ""){
+  setErrors({
+    ...errors,
+    phoneNum: "Phone number should be 10 digits"   
+  });
+}
     let paylod = {
       admin_id: adminId,
       mobile_isd_call: contcodePhone,
