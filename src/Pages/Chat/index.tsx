@@ -541,7 +541,7 @@ const Chat = () => {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                    `https://69.197.142.27/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -566,7 +566,7 @@ const Chat = () => {
               .catch(() =>
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                  `https://69.197.142.27/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -607,7 +607,7 @@ const Chat = () => {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                    `https://69.197.142.27/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -633,7 +633,7 @@ const Chat = () => {
                 setLoaderMsg("Fetching Data from Ollama model.");
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                  `https://69.197.142.27/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -685,7 +685,7 @@ const Chat = () => {
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
-            `https://uatllm.gyansetu.ai/ollama-chat?user_query=${search}`
+            `https://69.197.142.27/ollama-chat?user_query=${search}`
           );
         } else if (data) {
           handleError(data);
@@ -1069,7 +1069,7 @@ const Chat = () => {
 
     getData(
       // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://uatllm.gyansetu.ai/ollama-chat?user_query=${question}`
+      `https://69.197.142.27/ollama-chat?user_query=${question}`
     )
       .then((response) => {
         if (response?.status === 200) {
