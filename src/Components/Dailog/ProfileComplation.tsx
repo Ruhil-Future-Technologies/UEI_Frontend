@@ -1662,6 +1662,9 @@ export const ProfileDialog: FunctionComponent<{
   }, [selectedproficiency]);
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    const charecterRegex = /^[a-zA-Z\s]+$/;
+    const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
+
     const updatedAnswers = [...answers];
     if (currentQuestionIndex === 0) {
       const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
@@ -1672,8 +1675,9 @@ export const ProfileDialog: FunctionComponent<{
         setFullName(false);
       }
     }
+   
     if (currentQuestionIndex === 2) {
-      if (updatedAnswers[2] === "" || updatedAnswers[2] == null) {
+      if (updatedAnswers[2] === "" || updatedAnswers[2] == null || !charecterRegex.test(updatedAnswers[2])) {
         setGoal(true);
         return;
       } else {
@@ -1681,7 +1685,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 4) {
-      if (updatedAnswers[4] === "" || updatedAnswers[4] == null) {
+      if (updatedAnswers[4] === "" || updatedAnswers[4] == null || !charecterRegex.test(updatedAnswers[4])) {
         setMotherNameError(true);
         return;
       } else {
@@ -1689,7 +1693,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 5) {
-      if (updatedAnswers[5] === "" || updatedAnswers[5] == null) {
+      if (updatedAnswers[5] === "" || updatedAnswers[5] == null || !charecterRegex.test(updatedAnswers[5])) {
         setFName(true);
         return;
       } else {
@@ -1697,7 +1701,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 6) {
-      if (updatedAnswers[6] === "" || updatedAnswers[6] == null) {
+      if (updatedAnswers[6] === "" || updatedAnswers[6] == null || !charecterRegex.test(updatedAnswers[6])) {
         setgName(true);
         return;
       } else {
@@ -1705,7 +1709,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 23) {
-      if (updatedAnswers[23] === "" || updatedAnswers[23] == null) {
+      if (updatedAnswers[23] === "" || updatedAnswers[23] == null || !/^\d{10}$/.test(updatedAnswers[23])) {
         setphnumber(true);
         return;
       } else {
@@ -1713,7 +1717,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 24) {
-      if (updatedAnswers[24] === "" || updatedAnswers[24] == null) {
+      if (updatedAnswers[24] === "" || updatedAnswers[24] == null || !/^\d{10}$/.test(updatedAnswers[24])) {
         setphnumber(true);
         return;
       } else {
@@ -1721,15 +1725,16 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 28) {
-      if (updatedAnswers[28] === "" || updatedAnswers[28] == null) {
+      if (updatedAnswers[28] === "" || updatedAnswers[28] == null || !charecterRegex.test(updatedAnswers[28])) {
         setpreferenceError(true);
         return;
       } else {
         setpreferenceError(false);
       }
     }
+  
     if (currentQuestionIndex === 29) {
-      if (updatedAnswers[29] === "" || updatedAnswers[29] == null) {
+      if (updatedAnswers[29] === "" || updatedAnswers[29] == null || !regex.test(updatedAnswers[29])) {
         setper(true);
         return;
       } else {
@@ -1737,7 +1742,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 32) {
-      if (updatedAnswers[32] === "" || updatedAnswers[32] == null) {
+      if (updatedAnswers[32] === "" || updatedAnswers[32] == null || !charecterRegex.test(updatedAnswers[32])) {
         setdisct(true);
         return;
       } else {
@@ -1745,7 +1750,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 33) {
-      if (updatedAnswers[33] === "" || updatedAnswers[33] == null) {
+      if (updatedAnswers[33] === "" || updatedAnswers[33] == null || !charecterRegex.test(updatedAnswers[33])) {
         setcity(true);
         return;
       } else {
