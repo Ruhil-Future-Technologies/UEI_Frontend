@@ -530,8 +530,8 @@ const Sidebar = () => {
               </li>
               {user_type === "student" ? (
                 <>
-                  {profileCompletion === "100" ? (
-                    <>
+                  {Number(profileCompletion) > 90 ? (
+                    <>                    
                       <li>
                         <Link
                           to="/main/Chat/recentChat"
@@ -776,7 +776,7 @@ const Sidebar = () => {
             <div className="sidebar-footer">
               <div className="sidebar-nav">
                 <ul className="metismenu">
-                  {profileCompletion === "100" && (
+                  {Number(profileCompletion) > 90 && (
                     <li>
                       <Link
                         to="/main/student-feedback/add-student-feedback"

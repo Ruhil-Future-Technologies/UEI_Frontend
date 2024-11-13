@@ -372,7 +372,7 @@ function MainContent() {
     const lastRoute = localStorage.getItem("lastRoute");
     if (usertype === "student") {
       if (lastRoute && ProPercentage) {
-        if (ProPercentage === 100) {
+        if (ProPercentage > 90) {
           navigate("/main/Chat/recentChat");
           localStorage.removeItem("lastRoute");
         } else {
@@ -825,6 +825,7 @@ function MainContent() {
         .then((data: any) => {
           if (data.data) {
             setProfileDatas(data?.data);
+            console.log("data log",data?.data)
             //   let basic_info = data.data.basic_info;
             let basic_info = {
               // aim: data?.data?.basic_info?.aim,
@@ -942,6 +943,7 @@ function MainContent() {
                 delete academic_history?.university_id;
                 delete academic_history?.sem_id;
                 delete academic_history?.year;
+                delete academic_history?.stream;
                 academic_history?.board !== "state_board" &&
                   delete academic_history?.state_for_stateboard;
               } else {
@@ -954,6 +956,7 @@ function MainContent() {
                 }
                 delete academic_history?.board;
                 delete academic_history?.class_id;
+                delete academic_history?.stream;
                 delete academic_history?.state_for_stateboard;
                 delete academic_history?.university_name;
               }
@@ -988,6 +991,7 @@ function MainContent() {
                 delete subject_preference?.course_name;
                 delete subject_preference?.course_id; 
                 delete subject_preference?.sem_id;
+                delete subject_preference?.subject_id;
               
               }else{
                 // console.log("test subject pref college",subject_preference)
@@ -2749,7 +2753,7 @@ function MainContent() {
                         </div>
                         <div
                           style={{ color: `#9943EC` }}
-                        >{`${stats1?.Student_Profile}%`}</div>
+                        >{`${stats1?.Student_Profile >= 90 ? 100 : stats1?.Student_Profile}%`}</div>
                       </div>
 
                       {/* <div className="d-flex align-items-center gap-3 mb-3">
