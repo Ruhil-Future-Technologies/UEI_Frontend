@@ -738,18 +738,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   >
                     College
                   </MenuItem>
-                  {/* <MenuItem
-                    value="competition_exams"
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Competition Exams
-                  </MenuItem> */}
                 </Select>
               </FormControl>
             </div>
@@ -937,23 +925,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         {institute.institution_name}
                       </MenuItem>
                     ))}
-                    {/* <MenuItem
-                      key={1}
-                      value={1}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), 
-                        },
-                      }}
-                    >
-                      Others
-                    </MenuItem> */}
                   </Select>
-                  {/* <div> {!box.institute_id && (
-                        <p style={{ marginLeft: "10px", color: 'red' }}>Please select a Department name.</p>
-                    )}</div> */}
                 </FormControl>
               </div>
             )}
@@ -1010,22 +982,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="Semester"
                   >
-                    {/* {semester.map((item) => (
-                      <MenuItem
-                        key={item?.sem_id}
-                        value={item?.sem_id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
-                      >
-                         Semester {item.semester_number}
-                      </MenuItem>
-                    ))} */}
-
                     {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}
@@ -1162,16 +1118,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     />
                   ))}
                 </FormControl>
-                {/* <div>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => saveAcademi(index)}
-                    style={{ marginTop: "25px" }}
-                  >
-                    Save Institute Name
-                  </Button>
-                </div> */}
               </div>
             )}
             {box.institute_type === "college" && (
@@ -1263,20 +1209,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
           </div>
         ))}
-        {/* <div className="row justify-content-center">
-          <div className="col-3">
-            <Button
-              className="mainbutton"
-              variant="contained"
-              color="primary"
-              type="submit"
-              // onClick={saveAcademicHistory}
-              style={{ marginTop: "25px" }}
-            >
-              Save Academic History
-            </Button>
-          </div>
-        </div> */}
+      
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button
             type="button"

@@ -541,7 +541,8 @@ const Chat = () => {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://69.197.142.27/ollama-chat?user_query=${search}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                    
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -566,7 +567,7 @@ const Chat = () => {
               .catch(() =>
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://69.197.142.27/ollama-chat?user_query=${search}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -588,9 +589,22 @@ const Chat = () => {
                   })
               );
           } else {
-            return getData(
-              `https://uatllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
-            )
+            const {institution_type, board,state_for_stateboard,stream,class_id,university_id} = studentDetail?.academic_history;
+            // return getData(
+            //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
+            // )
+            const queryParams = new URLSearchParams({
+              user_query: search,
+              student_id: userid,
+              ...(institution_type && { school_college_selection: institution_type }),
+              ...(board && { board_selection: board }),
+              ...(state_for_stateboard && { state_board_selection: state_for_stateboard }),
+              ...(stream && { stream_selection: stream }),
+              ...(class_id && { class_selection: class_id }),
+              ...(university_id && { university_selection: university_id })
+            });
+            
+            return getData(`https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -607,7 +621,7 @@ const Chat = () => {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://69.197.142.27/ollama-chat?user_query=${search}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -633,7 +647,7 @@ const Chat = () => {
                 setLoaderMsg("Fetching Data from Ollama model.");
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://69.197.142.27/ollama-chat?user_query=${search}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -685,7 +699,7 @@ const Chat = () => {
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
-            `https://69.197.142.27/ollama-chat?user_query=${search}`
+            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
           );
         } else if (data) {
           handleError(data);
@@ -1069,7 +1083,7 @@ const Chat = () => {
 
     getData(
       // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://69.197.142.27/ollama-chat?user_query=${question}`
+      `https://dbllm.gyansetu.ai/ollama-chat?user_query=${question}`
     )
       .then((response) => {
         if (response?.status === 200) {

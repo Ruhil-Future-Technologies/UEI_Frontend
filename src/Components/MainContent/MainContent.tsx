@@ -400,6 +400,8 @@ function MainContent() {
     entityCount: 0,
     departmentCount: 0,
     courseCount: 0,
+    schoolsubjectCount: 0,
+    collegesubjectCount: 0,
   });
   const [statsweekly, setStatsweekly] = useState({
     FridayCount: 0,
@@ -1229,17 +1231,21 @@ function MainContent() {
           const [
             institutionRes,
             studentRes,
-            subjectRes,
+            // subjectRes,
             entityRes,
             departmentRes,
             courseRes,
+            schoolRes,
+            collegeRes,
           ] = await Promise.allSettled([
             getData("/institution/list"),
             getData("/student/list"),
-            getData("/subject/list"),
+            // getData("/subject/list"),
             getData("/entity/list"),
             getData("/department/list"),
             getData("/course/list"),
+            getData("/school_subject/list"),
+            getData("/college_subject/list"),
           ]);
           const institutionCount =
             institutionRes?.status === "fulfilled"
@@ -1249,10 +1255,10 @@ function MainContent() {
             studentRes?.status === "fulfilled"
               ? studentRes?.value?.data?.length || 0
               : 0;
-          const subjectCount =
-            subjectRes?.status === "fulfilled"
-              ? subjectRes?.value?.data?.length || 0
-              : 0;
+          const subjectCount = 0;
+          //   subjectRes?.status === "fulfilled"
+          //     ? subjectRes?.value?.data?.length || 0
+          //     : 0;
           const entityCount =
             entityRes?.status === "fulfilled"
               ? entityRes?.value?.data?.length || 0
@@ -1265,6 +1271,14 @@ function MainContent() {
             courseRes?.status === "fulfilled"
               ? courseRes?.value?.data?.length || 0
               : 0;
+              const schoolsubjectCount =
+              schoolRes?.status === "fulfilled"
+                ? schoolRes?.value?.data?.length || 0
+                : 0;
+                const collegesubjectCount =
+                collegeRes?.status === "fulfilled"
+                  ? collegeRes?.value?.data?.length || 0
+                  : 0;
 
           setStats({
             institutionCount,
@@ -1273,6 +1287,8 @@ function MainContent() {
             entityCount,
             departmentCount,
             courseCount,
+            schoolsubjectCount,
+            collegesubjectCount
           });
 
           // setStats({
@@ -1546,7 +1562,7 @@ function MainContent() {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://69.197.142.27/ollama-chat?user_query=${search}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1571,7 +1587,7 @@ function MainContent() {
               .catch(() =>
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://69.197.142.27/ollama-chat?user_query=${search}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1593,9 +1609,22 @@ function MainContent() {
                   })
               );
           } else {
-            return getData(
-              `https://uatllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}`
-            )
+            const {institution_type, board,state_for_stateboard,stream,class_id,university_id} = profileDatas?.academic_history;
+            // return getData(
+            //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
+            // )
+            const queryParams = new URLSearchParams({
+              user_query: search,
+              student_id: StudentId,
+              ...(institution_type && { school_college_selection: institution_type }),
+              ...(board && { board_selection: board }),
+              ...(state_for_stateboard && { state_board_selection: state_for_stateboard }),
+              ...(stream && { stream_selection: stream }),
+              ...(class_id && { class_selection: class_id }),
+              ...(university_id && { university_selection: university_id })
+            });
+            
+            return getData(`https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -1612,7 +1641,7 @@ function MainContent() {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://69.197.142.27/ollama-chat?user_query=${search}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1638,7 +1667,7 @@ function MainContent() {
                 setLoaderMsg("Fetching Data from Ollama model.");
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://69.197.142.27/ollama-chat?user_query=${search}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1690,7 +1719,7 @@ function MainContent() {
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
-            `https://69.197.142.27/ollama-chat?user_query=${search}`
+            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
           );
         } else if (data) {
           handleError(data);
@@ -1923,7 +1952,7 @@ function MainContent() {
 
     getData(
       // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://69.197.142.27/ollama-chat?user_query=${regenerateSearch}`
+      `https://dbllm.gyansetu.ai/ollama-chat?user_query=${regenerateSearch}`
     )
       .then((response) => {
         if (response?.status === 200) {
@@ -2230,7 +2259,8 @@ function MainContent() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="mb-0">{stats.subjectCount}</h4>
+                            {/* <h4 className="mb-0">{stats.subjectCount}</h4> */}
+                            <h4 className="mb-0">{stats.schoolsubjectCount + stats.collegesubjectCount}</h4>
                             <p className="mb-0">Subjects</p>
                           </div>
                         </div>
