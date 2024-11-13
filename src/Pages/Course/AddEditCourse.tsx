@@ -167,7 +167,7 @@ const AddEditCourse = () => {
              duration:  JSON.stringify(courseData.duration)
           }
         if (id) {
-            putData(`${CourseEditURL}/${id}`, courseData).then((data: { status: number,message:string }) => {
+            putData(`${CourseEditURL}/${id}`, coursedata).then((data: { status: number,message:string }) => {
                 if (data.status === 200) {
                     navigator('/main/Course')
                     toast.success(data.message, {
