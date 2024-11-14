@@ -113,30 +113,31 @@ const AdminProfession: React.FC<PropsItem> = ({
   };
 
   const getSubject = async () => {
-    try {
-      const response = await getData("subject/list");
+    
+    // try {
+    //   const response = await getData("subject/list");
 
-      if (response?.status === 200) {
-        const filteredData = response?.data?.filter(
-          (item: any) => item?.is_active === 1
-        );
-        setSubject(filteredData || []);
-        // setSubject(response?.data);
-      }
-    } catch (error: any) {
-      // console.error("error comes :", error.response.status);
-      if (error?.response?.status === 401) {
-        toast.warning("Please login again", {
-          hideProgressBar: true,
-          theme: "colored",
-        });
-      } else {
-        toast.error("Request failed", {
-          hideProgressBar: true,
-          theme: "colored",
-        });
-      }
-    }
+    //   if (response?.status === 200) {
+    //     const filteredData = response?.data?.filter(
+    //       (item: any) => item?.is_active === 1
+    //     );
+    //     setSubject(filteredData || []);
+       
+    //   }
+    // } catch (error: any) {
+      
+    //   if (error?.response?.status === 401) {
+    //     toast.warning("Please login again", {
+    //       hideProgressBar: true,
+    //       theme: "colored",
+    //     });
+    //   } else {
+    //     toast.error("Request failed", {
+    //       hideProgressBar: true,
+    //       theme: "colored",
+    //     });
+    //   }
+    // }
   };
 
   const getProfation = async () => {

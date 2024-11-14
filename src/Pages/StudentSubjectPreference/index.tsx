@@ -101,7 +101,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               sem_id:response?.data[0]?.sem_id,
             }))
           );
-          getData(`/class/get/${response?.data?.[0]?.class_id}`).then(
+          if(response?.data?.[0]?.class_id) {getData(`/class/get/${response?.data?.[0]?.class_id}`).then(
             (classResponse: any) => {
               if (classResponse.status === 200) {
                 // Set particularClass as an array
@@ -110,7 +110,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 setParticularClass([]);
               }
             }
-          );
+          );}
         }
       })
       .catch((e) => {

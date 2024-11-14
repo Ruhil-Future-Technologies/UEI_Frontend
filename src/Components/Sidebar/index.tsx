@@ -530,7 +530,7 @@ const Sidebar = () => {
               </li>
               {user_type === "student" ? (
                 <>
-                  {Number(profileCompletion) > 90 ? (
+                  {Number(profileCompletion) === 100 ? (
                     <>                    
                       <li>
                         <Link
@@ -618,6 +618,9 @@ const Sidebar = () => {
                                           ? "RoleVsUser "
                                           : submenu.menu_name === "Hobbies"
                                             ? "Hobby"
+                                            :submenu.menu_name === "Student Feedback" ||
+                                            submenu.menu_name === "StudentFeedback"
+                                            ? "StudentFeedback"
                                             : submenu.menu_name;
                                             if(  submenu.menu_name.toLowerCase() === "institute"){
 
@@ -776,7 +779,7 @@ const Sidebar = () => {
             <div className="sidebar-footer">
               <div className="sidebar-nav">
                 <ul className="metismenu">
-                  {Number(profileCompletion) > 90 && (
+                  {Number(profileCompletion) === 100 && (
                     <li>
                       <Link
                         to="/main/student-feedback/add-student-feedback"

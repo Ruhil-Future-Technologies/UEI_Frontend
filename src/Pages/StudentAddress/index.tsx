@@ -475,7 +475,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 theme: "colored",
                 position: "top-center",
               });
-              setActiveForm((prev) => prev + 1);
+         if(addressType === "Current"){
+           setActiveForm((prev) => prev + 1);
+         }
             } else {
               // toast.error(`Failed to add ${addressType} address`, {
               //   hideProgressBar: true,
@@ -525,7 +527,15 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 position: "top-center",
               });
               listData();
-              setActiveForm((prev) => prev + 1);
+              
+              if (!eq || !permanentAddressEq){
+                if(!eq && !permanentAddressEq){
+                }else{
+                  console.log("tets log tt",!eq,!permanentAddressEq)
+                  setActiveForm((prev) => prev + 1);
+                }
+              }
+              
             } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
             else {
               // toast.error(`Failed to update ${addressType} address`, {

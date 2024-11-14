@@ -589,7 +589,9 @@ const Chat = () => {
                   })
               );
           } else {
-            const {institution_type, board,state_for_stateboard,stream,class_id,university_id} = studentDetail?.academic_history;
+            const {institution_type, board,state_for_stateboard,stream,class_id,university_id,institute_id, course_id ,year} = studentDetail?.academic_history;
+            const {subject_name } = studentDetail?.subject_preference ;
+
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
             // )
@@ -601,7 +603,11 @@ const Chat = () => {
               ...(state_for_stateboard && { state_board_selection: state_for_stateboard }),
               ...(stream && { stream_selection: stream }),
               ...(class_id && { class_selection: class_id }),
-              ...(university_id && { university_selection: university_id })
+              ...(university_id && { university_selection: university_id }),
+              ...(institute_id && { college_selection: institute_id }),
+              ...(course_id && { course_selection: course_id }),
+              ...(year && { year: year }),
+              ...(subject_name && { subject: subject_name })
             });
             
             return getData(`https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`)
