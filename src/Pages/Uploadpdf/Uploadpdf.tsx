@@ -110,7 +110,53 @@ const Uploadpdf = () => {
       // if (pdfFiles.length > 0) {
       //     setSelectedPdf(URL.createObjectURL(pdfFiles[0])); // Preview the first PDF
       // }
-    }
+      let payload={};
+      if(boxes[0].institute_type==="school"){
+         payload={
+          board_selection:boxes[0].board?boxes[0].board.toUpperCase():'',
+          class_selection:particularClass?particularClass:boxes[0].class_id,
+          state_board_selection:boxes[0].state_for_stateboard?boxes[0].state_for_stateboard:'',
+          stream_selection:boxes[0].stream?boxes[0].stream:"",
+          subject:boxes[0].subject_id?boxes[0].subject_id:'',
+          school_college_selection:boxes[0].institute_type?boxes[0].institute_type:'',
+          teacher_id:AdminId
+         }
+      }else{
+         payload={
+          college_selection:boxes[0].institute_id?boxes[0].institute_id:'',
+          university_selection:boxes[0].university_id?boxes[0].university_id:"",
+          course_selection:boxes[0].course_id?boxes[0].course_id:"",
+          sem_id:boxes[0].sem_id ?boxes[0].sem_id:"",
+          subject:boxes[0].subject_id?boxes[0].subject_id:"",
+          school_college_selection:boxes[0].institute_type?boxes[0].institute_type:"",
+          teacher_id:AdminId
+        }
+
+      }
+       console.log(payload);
+        postFileData("https://dbllm.gyansetu.ai/upload-pdf-hierarchy",payload).then((data: any) => {
+        //console.log("atul is doing some thing");
+          if (data?.status === 201) {
+          toast.success(data?.message, {
+            hideProgressBar: true,
+            theme: "colored",
+          });
+          setSelectedFiles([]);
+        } else {
+          toast.error(data?.message, {
+            hideProgressBar: true,
+            theme: "colored",
+          });
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+        });
+      });
+       }
+    
   };
 
   const handleFileUpload = async () => {
