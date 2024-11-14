@@ -331,13 +331,15 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
-          getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
-            (response: any) => {
-              if (response.status === 200) {
-                setParticularClass(response.data.class_name);
-              } else setParticularClass("");
-            }
-          );
+          if (data?.data?.[0]?.class_id) {
+            getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
+              (response: any) => {
+                if (response.status === 200) {
+                  setParticularClass(response.data.class_name);
+                } else setParticularClass("");
+              }
+            );
+          }
           data?.data?.forEach((item: any) => {
             const newBox = {
               id: item?.id,
@@ -457,19 +459,19 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           const payload = {
             student_id: StudentId,
             institution_type: box.institute_type,
-            board: box.board,
-            state_for_stateboard: box.state_for_stateboard,
-            institute_id: String(
-              instituteId || (!box.institute_id ? 95 : box.institute_id)
-            ),
-            course_id: String(!box.course_id ? 18 : box.course_id),
-            learning_style: box.learning_style,
-            class_id: String(!box.class_id ? 1 : box.class_id),
+            board: box.institute_type.toLowerCase() === 'school' ? box.board : box.id ? "" : null,
+            state_for_stateboard: box.institute_type.toLowerCase() === 'school' ? box.state_for_stateboard : box.id ? "" : null,
+            institute_id: box.institute_type.toLowerCase() === 'college' ? String(
+              instituteId || box.institute_id
+            ) : box.id ? "" : null,
+            course_id: box.institute_type.toLowerCase() === 'college' ? String(box.course_id) : box.id ? "" : null,
+            learning_style: box.institute_type.toLowerCase() === 'college' ? box.learning_style : box.id ? "" : null,
+            class_id: box.institute_type.toLowerCase() === 'school' ? String(box.class_id) : box.id ? "" : null,
             ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
             ...(box.university_id ? { university_id: String(box.university_id) } : {}),
-            year: box?.year?.$y ? String(box?.year?.$y) : "", // Assuming 'year' is a string
+            year: box?.year?.$y && box.institute_type.toLowerCase() === 'college' ? String(box?.year?.$y) : "", // Assuming 'year' is a string
             stream:
-              particularClass === "class_11" || particularClass === "class_12"
+              (particularClass === "class_11" || particularClass === "class_12") && box.institute_type.toLowerCase() === 'school'
                 ? box?.stream
                 : "",
           };
@@ -653,6 +655,23 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     } else {
       newEnddateInvalidList[index] = false;
     }
+    console.log("tets boxessss", newBoxes)
+    // if (newBoxes[0].institute_type?.toLowerCase() === "school"){
+    //   const newBox = [{
+    //     board:"state_board"
+    //     class_id:newBoxes[0].
+    //     course_id: null
+    //     id : 360
+    //     institute_id: 95
+    //     institute_type:"college"
+    //     learning_style :"online"
+    //     sem_id :  null
+    //     state_for_stateboard  :"chandigarh"
+    //     stream :  null
+    //     university_id :   null
+    //     year :
+
+    // }]
 
     setBoxes(newBoxes);
     setEnddateInvalidList(newEnddateInvalidList);
@@ -678,16 +697,16 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
     setTotalSemester(semesterCount)
   }, [boxes[0]?.course_id])
-  useEffect(()=>{
-    if(boxes[0]?.institute_type === "college"){
+  useEffect(() => {
+    if (boxes[0]?.institute_type === "college") {
       const filterDataInstitute = institutesAll.filter((item) => item.university_id === boxes[0].university_id)
-        setInstitutes(filterDataInstitute)
-        const filterDataCourse = coursesAll.filter((item) => item.institution_id === boxes[0].institute_id )
-        setCourses(filterDataCourse)
-        const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
-        setTotalSemester(semesterCount)
+      setInstitutes(filterDataInstitute)
+      const filterDataCourse = coursesAll.filter((item) => item.institution_id === boxes[0].institute_id)
+      setCourses(filterDataCourse)
+      const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
+      setTotalSemester(semesterCount)
     }
-  },[boxes])
+  }, [boxes])
 
   return (
     <div className="mt-5">
@@ -807,7 +826,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   <InputLabel>State</InputLabel>
                   <Select
                     name="state_for_stateboard"
-                    value={box.state_for_stateboard.toLowerCase()}
+                    value={box?.state_for_stateboard?.toLowerCase()}
                     sx={{
                       backgroundColor: "#f5f5f5",
                     }}
@@ -1209,7 +1228,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
           </div>
         ))}
-      
+
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button
             type="button"

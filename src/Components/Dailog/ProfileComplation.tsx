@@ -94,6 +94,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Flag } from "@mui/icons-material";
 import { ChatDialogClose } from "./ChatDialogClose";
 import { styled } from "@mui/material/styles";
+import Course from "../../Pages/Course/Course";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 50,
@@ -163,6 +164,7 @@ interface Course {
   course_name: string;
   course_id: string;
   institution_id: string;
+  institution_name: string;
 }
 interface Classes {
   id: number;
@@ -170,6 +172,7 @@ interface Classes {
 }
 
 interface Subject {
+  course_name: string;
   id: string;
   subject_name: string;
   subject_id: string;
@@ -521,7 +524,7 @@ export const ProfileDialog: FunctionComponent<{
             question !== "What is your learning style?" &&
             question !== "Please select year" &&
             question !==
-              "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
+            "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
             question !== "Please select your semester "
         );
       } else {
@@ -535,7 +538,7 @@ export const ProfileDialog: FunctionComponent<{
             question !== "Please select year" &&
             question !== "Please select your state" &&
             question !==
-              "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
+            "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
             question !== "Please select your semester "
         );
       }
@@ -965,29 +968,30 @@ export const ProfileDialog: FunctionComponent<{
       institution_type:
         answeredData?.academic_history?.institution_type ||
         selectedInstituteType,
-      board: answeredData?.academic_history?.board || selectedBoard,
-      state_for_stateboard:
+      board: ( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school") ? answeredData?.academic_history?.board || selectedBoard:null,
+      state_for_stateboard:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school") ?
         answeredData?.academic_history?.state_for_stateboard ||
-        selectedAcademicState.toLowerCase(),
-      institute_id:
+        selectedAcademicState.toLowerCase(): null ,
+      institute_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college") ?
         answeredData?.academic_history?.institute_id ||
-        selectedInstitute?.toString() ||
-        "95",
-      course_id:
+        selectedInstitute?.toString()  : null,
+      course_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
         answeredData?.academic_history?.course_id ||
-        selectCourse?.toString() ||
-        "18",
-      learning_style:
-        answeredData?.academic_history?.learning_style || selectedLearningStyle,
-      class_id:
+        selectCourse?.toString() : null,
+      learning_style:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+        answeredData?.academic_history?.learning_style || selectedLearningStyle : null,
+      class_id: ( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school") ?
         answeredData?.academic_history?.class_id ||
-        answers[11]?.toString() ||
-        "1",
-      year: answeredData?.academic_history?.year || answers[18] || "",
-      stream: answeredData?.academic_history?.stream || answers[12] || "",
-      university_id:
-        answeredData?.academic_history?.university_id || answers[13] || "",
-      sem_id: answeredData?.academic_history?.sem_id || answers[16] || "",
+        answers[11]?.toString() : null,
+      // year: answeredData?.academic_history?.year || answers[18] || "",
+      year:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+       answeredData?.academic_history?.year || (answers[18] ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"]).year().toString() : "") : "",
+      stream:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school")?
+       answeredData?.academic_history?.stream || answers[12] : null,
+      university_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+        answeredData?.academic_history?.university_id || answers[13] : null,
+      sem_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+       answeredData?.academic_history?.sem_id || answers[16] : null,
     };
 
     postData("/new_student_academic_history/add", payload).then((response) => {
@@ -1015,8 +1019,8 @@ export const ProfileDialog: FunctionComponent<{
       sem_id: answeredData?.subject_preference?.sem_id || answers[26],
       ...(answeredData?.academic_history?.institution_type === "school" &&
         answeredData?.academic_history?.stream && {
-          stream: answeredData?.academic_history?.stream || answers[12],
-        }),
+        stream: answeredData?.academic_history?.stream || answers[12],
+      }),
       ...((answeredData?.academic_history?.institution_type === "college" || answers[8]?.toLowerCase() === "college") && {
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
       }),
@@ -1165,15 +1169,14 @@ export const ProfileDialog: FunctionComponent<{
   ];
   useEffect(() => {
     if (currentQuestionIndex === 25) {
-      if (answers[8] === "school") {
+      if (answers[8] === "school" || answeredData?.academic_history?.institution_type === 'school') {
         setCourses(coursesAll);
       } else {
-        const filteredcourse = courses?.filter(
-          (item) =>
-            item?.institution_id ===
-              answeredData?.academic_history?.institute_id || selectedInstitute
+        const filteredCourse = courses?.filter(
+          (item) => ((item?.institution_id === answeredData?.academic_history?.institute_id && item.id === answeredData?.academic_history?.course_id) || (item?.institution_name === answers[14] && item.course_name === answers[15]))
         );
-        setCourses(filteredcourse);
+        console.log("FILTERED COURSE", filteredCourse);
+        setCourses(filteredCourse);
       }
     }
   }, [currentQuestionIndex, answeredData, selectedInstitute]);
@@ -1523,7 +1526,7 @@ export const ProfileDialog: FunctionComponent<{
     // setOpen(false);
     // setErordate("")
     datecheck = dayjs(newDate).format(
-      currentQuestionIndex === 16 ? "YYYY" : "DD/MM/YYYY"
+      currentQuestionIndex === 18 ? "YYYY" : "DD/MM/YYYY"
     );
 
     if (hitcount % 2 === 0) {
@@ -1618,8 +1621,8 @@ export const ProfileDialog: FunctionComponent<{
             text:
               (answers[8]?.toLowerCase() === "school" ||
                 answeredData?.academic_history?.institution_type ===
-                  "school") &&
-              currentQuestionIndex === 24
+                "school") &&
+                currentQuestionIndex === 24
                 ? currentQuestions[27]
                 : currentQuestions[currentQuestionIndex + 1],
             type: "question" as "question",
@@ -1675,7 +1678,7 @@ export const ProfileDialog: FunctionComponent<{
         setFullName(false);
       }
     }
-   
+
     if (currentQuestionIndex === 2) {
       if (updatedAnswers[2] === "" || updatedAnswers[2] == null || !charecterRegex.test(updatedAnswers[2])) {
         setGoal(true);
@@ -1732,7 +1735,7 @@ export const ProfileDialog: FunctionComponent<{
         setpreferenceError(false);
       }
     }
-  
+
     if (currentQuestionIndex === 29) {
       if (updatedAnswers[29] === "" || updatedAnswers[29] == null || !regex.test(updatedAnswers[29])) {
         setper(true);
@@ -1967,50 +1970,50 @@ export const ProfileDialog: FunctionComponent<{
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
-      if (e.value === "school"){
+      if (e.value === "school") {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         getData("school_subject/list")
-        .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1
-            );
-            setSubjects(filteredData || []);
-            // setSubjects(response.data);
-            // setSubjectsAll(filteredData || [])
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+          .then((response: any) => {
+            if (response.status === 200) {
+              const filteredData = response?.data?.filter(
+                (item: any) => item?.is_active === 1
+              );
+              setSubjects(filteredData || []);
+              // setSubjects(response.data);
+              // setSubjectsAll(filteredData || [])
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center",
+            });
           });
-        });
 
       }
       else {
         getData("college_subject/list")
-        .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1
-            );
-            setSubjects(filteredData || []);
-            // setSubjects(response.data);
-            // setSubjectsAll(filteredData || [])
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+          .then((response: any) => {
+            if (response.status === 200) {
+              const filteredData = response?.data?.filter(
+                (item: any) => item?.is_active === 1
+              );
+              setSubjects(filteredData || []);
+              // setSubjects(response.data);
+              // setSubjectsAll(filteredData || [])
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center",
+            });
           });
-        });
         setCurrentQuestionIndex(13);
-      } 
-        
+      }
+
       setMessages([
         ...updatedMessages,
         {
@@ -2123,7 +2126,7 @@ export const ProfileDialog: FunctionComponent<{
     setSelectedClass(e);
     setAnswers(updatedAnswers);
     if (e.label !== "class_11" && e.label !== "class_12") {
-     const filterData = subjects?.filter(
+      const filterData = subjects?.filter(
         (item: any) =>
           item.class_id === answeredData?.academic_history?.class_id ||
           item.class_id === e.value
@@ -2186,12 +2189,18 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const handleDropdownChangecourse = (e: any) => {
+    console.log("Course Handle Change currentQuestionIndex", currentQuestionIndex);
+    console.log("PRE SEM", semesterpre);
+    console.log("PRE SEM ANSWERED DATA", answeredData);
+    console.log("PRE SEM ANSWERS", answers);
+
     const filteredsem = semester.filter((item) => item.course_id === e.value);
     const filteredsempre = semesterpre.filter(
-      (item) => item.course_id === e.value
-    );
+      (item) => (item.course_id === e.value && (item.semester_number === answeredData?.academic_history?.sem_id || item.semester_number === answers[16])));
 
     setSemester(filteredsem);
+    console.log("FILTERED SEMESTER", filteredsempre);
+
     setSemesterpre(filteredsempre);
 
     const updatedAnswers = [...answers];
@@ -2277,12 +2286,15 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   const handleDropdownChangesemesterpre = (e: any) => {
+    console.log("SEMESTER EVENT VALUE", e.value);
+    console.log("ALL SUBJECTS", subjects);
+    console.log("ANS DATA", answeredData);
+    console.log("ANS", answers);
+    // const courses = courses.filter((item)=> item.course_name === answers[] )
     const filteredsubject = subjects.filter(
-      (item) =>
-        item.semester_id === e.value &&
-        Number(item?.course_id) === courses[0]?.id
-    );
-
+      (item) => item.semester_id === e.value && (item.course_id === answeredData?.academic_history?.course_id || item.course_name === answers[15]));
+    console.log("test log subject subjects", subjects)
+    console.log("test log subject filteredsubject", filteredsubject, e.value, courses, answers)
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = e.value;
@@ -2375,6 +2387,8 @@ export const ProfileDialog: FunctionComponent<{
   }));
 
   const handleCountryChange = (selectedOption: any) => {
+    console.log("COUNTRY SELECTED OPTION", selectedOption);
+
     setSelectedCountry(selectedOption);
     if (selectedOption) {
       const states = State.getStatesOfCountry(selectedOption.value);
@@ -2382,6 +2396,7 @@ export const ProfileDialog: FunctionComponent<{
         value: state.isoCode,
         label: state.name,
       }));
+      console.log("ALL STATES", stateOptions);
       setStateOptions(stateOptions);
     } else {
       setStateOptions([]);
@@ -2458,7 +2473,6 @@ export const ProfileDialog: FunctionComponent<{
   };
 
 
-
   return (
     <>
       <div
@@ -2471,17 +2485,17 @@ export const ProfileDialog: FunctionComponent<{
         //onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        // PaperProps={{
-        //   style: {
-        //     position: "fixed",
-        //     bottom: 50,
-        //     // left: 0,
-        //     right: 50,
-        //     margin: 0,
-        //     width: "400px",
-        //     backgroundColor: chatdialog(namecolor),
-        //   },
-        // }}
+      // PaperProps={{
+      //   style: {
+      //     position: "fixed",
+      //     bottom: 50,
+      //     // left: 0,
+      //     right: 50,
+      //     margin: 0,
+      //     width: "400px",
+      //     backgroundColor: chatdialog(namecolor),
+      //   },
+      // }}
       >
         <div className="profilechatinner">
           {/* <Button
@@ -2534,16 +2548,14 @@ export const ProfileDialog: FunctionComponent<{
                   return (
                     <div
                       key={index}
-                      className={`message-wrapper d-flex mb-3 ${
-                        message.type === "question"
-                          ? "justify-content-start"
-                          : "justify-content-end"
-                      }`}
+                      className={`message-wrapper d-flex mb-3 ${message.type === "question"
+                        ? "justify-content-start"
+                        : "justify-content-end"
+                        }`}
                     >
                       <div
-                        className={`message-bubble p-3 ${
-                          message.type === "question" ? "left" : "right"
-                        }`}
+                        className={`message-bubble p-3 ${message.type === "question" ? "left" : "right"
+                          }`}
                         style={{
                           maxWidth: "80%",
                           backgroundColor:
@@ -2585,10 +2597,10 @@ export const ProfileDialog: FunctionComponent<{
                     goal ||
                     firstaddress ||
                     secondaddress) && (
-                    <p className="error-text">
-                      {errordata[currentQuestionIndex]}
-                    </p>
-                  )}
+                      <p className="error-text">
+                        {errordata[currentQuestionIndex]}
+                      </p>
+                    )}
                   {error1 && (
                     <p
                       style={{
@@ -2601,7 +2613,7 @@ export const ProfileDialog: FunctionComponent<{
                     </p>
                   )}
                   {currentQuestionIndex === 15 ||
-                  currentQuestionIndex === 25 ? (
+                    currentQuestionIndex === 25 ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangecourse}
