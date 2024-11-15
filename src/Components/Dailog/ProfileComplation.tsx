@@ -968,29 +968,29 @@ export const ProfileDialog: FunctionComponent<{
       institution_type:
         answeredData?.academic_history?.institution_type ||
         selectedInstituteType,
-      board: ( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school") ? answeredData?.academic_history?.board || selectedBoard:null,
-      state_for_stateboard:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school") ?
+      board: ( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "school") ? answeredData?.academic_history?.board || selectedBoard:null,
+      state_for_stateboard:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "school") ?
         answeredData?.academic_history?.state_for_stateboard ||
-        selectedAcademicState.toLowerCase(): null ,
-      institute_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college") ?
+        selectedAcademicState?.toLowerCase(): null ,
+      institute_id:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "college") ?
         answeredData?.academic_history?.institute_id ||
         selectedInstitute?.toString()  : null,
-      course_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+      course_id:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "college")?
         answeredData?.academic_history?.course_id ||
         selectCourse?.toString() : null,
-      learning_style:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+      learning_style:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "college")?
         answeredData?.academic_history?.learning_style || selectedLearningStyle : null,
-      class_id: ( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school") ?
+      class_id: ( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "school") ?
         answeredData?.academic_history?.class_id ||
         answers[11]?.toString() : null,
       // year: answeredData?.academic_history?.year || answers[18] || "",
-      year:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
-       answeredData?.academic_history?.year || (answers[18] ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"]).year().toString() : "") : "",
-      stream:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "school")?
+      year:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "college")?
+       answeredData?.academic_history?.year || (answers[18] ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"])?.year()?.toString() : "") : "",
+      stream:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "school")?
        answeredData?.academic_history?.stream || answers[12] : null,
-      university_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+      university_id:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "college")?
         answeredData?.academic_history?.university_id || answers[13] : null,
-      sem_id:( answeredData?.academic_history?.institution_type.toLowerCase() || selectedInstituteType.toLowerCase() === "college")?
+      sem_id:( answeredData?.academic_history?.institution_type?.toLowerCase() || selectedInstituteType?.toLowerCase() === "college")?
        answeredData?.academic_history?.sem_id || answers[16] : null,
     };
 
@@ -1079,18 +1079,29 @@ export const ProfileDialog: FunctionComponent<{
   //   value: option.semester_id,
   //   label: option.semester_number,
   // }));
-  const semesterSelectOptions = [...Array(semester[0]?.semester_number)].map(
+  const maxSemester = semester && semester?.length > 0
+  ? Math.max(...semester?.map((item: { semester_number: any; }) => item?.semester_number))
+  : 0;
+  // const semesterSelectOptions = [...Array(semester[0]?.semester_number)].map(
+    const semesterSelectOptions = [...Array(maxSemester)]?.map(
     (_, index) => ({
       value: index + 1, // Setting the value based on index
       label: `Semester ${index + 1}`, // Displaying as "Semester {index + 1}"
     })
   );
-  const semesterSelectOptionspre = [
-    ...Array(semesterpre[0]?.semester_number),
-  ].map((_, index) => ({
-    value: index + 1, // Setting the value based on index
-    label: `Semester ${index + 1}`, // Displaying as "Semester {index + 1}"
-  }));
+  const semesterSelectOptionspre = semesterpre[0]?.semester_number
+  ? [{
+      value: semesterpre[0]?.semester_number,
+      label: `Semester ${semesterpre[0]?.semester_number}`,
+    }]
+  : [];
+
+  // const semesterSelectOptionspre = [
+  //   ...Array(semesterpre[0]?.semester_number),
+  // ].map((_, index) => ({
+  //   value: index + 1, 
+  //   label: `Semester ${index + 1}`, 
+  // }));
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
     label: option.institution_name,

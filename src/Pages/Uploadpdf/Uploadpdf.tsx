@@ -413,23 +413,37 @@ const Uploadpdf = () => {
     });
     if (AdminId !== null) {
       formData.append("teacher_id", String(AdminId));
-      if(boxes[0]?.institute_type?.toLowerCase() === "college"){
-        const { institute_id, university_id, course_id, sem_id, subject_id,institute_type } = boxes[0];
+      if (boxes[0]?.institute_type?.toLowerCase() === "college") {
+        const { institute_id, university_id, course_id, sem_id, institute_type } = boxes[0];
         if (institute_type) formData.append("school_college_selection", institute_type);
         if (institute_id) formData.append("college_selection", institute_id);
         if (university_id) formData.append("university_selection", university_id);
         if (course_id) formData.append("course_selection", course_id);
-        if (sem_id) formData.append("sem_id", sem_id);
-        if (subject_id) formData.append("subject", subject_id);
+        // if (sem_id) formData.append("sem_id", sem_id);
+      
+       // Convert sem_id to a number if it is a string
+    const semIdNumber = Number(sem_id);
+
+    let year = null;
+    if (semIdNumber === 1 || semIdNumber === 2) {
+      year = "1";
+    } else if (semIdNumber === 3 || semIdNumber === 4) {
+      year = "2";
+    } else if (semIdNumber === 5 || semIdNumber === 6) {
+      year = "3";
+    } else if (semIdNumber === 7 || semIdNumber === 8) {
+      year = "4";
+    }
+    if (year) formData.append("year", year);
       }
       if(boxes[0]?.institute_type?.toLowerCase() === "school"){
-        const { board, class_id, state_for_stateboard, stream, subject_id,institute_type } = boxes[0];
+        const { board, class_id, state_for_stateboard, stream,institute_type } = boxes[0];
         if (institute_type) formData.append("school_college_selection", institute_type);
-        if (board) formData.append("board_selection", board);
+        if (board) formData.append("board_selection", board?.toUpperCase());
         if (class_id) formData.append("class_selection",particularClass || class_id);
         if (state_for_stateboard) formData.append("state_board_selection", state_for_stateboard);
         if (stream) formData.append("stream_selection", stream);
-        if (subject_id) formData.append("subject", subject_id);
+        // if (subject_id) formData.append("subject", subject_id);
 
       }
       // formData.append("class_name", selectedClass);
@@ -447,6 +461,7 @@ const Uploadpdf = () => {
             theme: "colored",
           });
           setSelectedFiles([]);
+          setBoxes([initials]);
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,

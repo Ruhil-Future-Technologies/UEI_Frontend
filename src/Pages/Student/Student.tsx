@@ -283,6 +283,8 @@ const Student = () => {
         <>
          {loading && <FullScreenLoader />}
             <div className='dashboard'>
+            <div className='main-wrapper'>
+            <div className="main-content">
                 <div className='card'>
                     <div className='card-body'>
                         <Tabs value={activeTab} onChange={handleTabChange}>
@@ -348,6 +350,8 @@ const Student = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+                </div>
                 </div>
             </div>
             <DeleteDialog

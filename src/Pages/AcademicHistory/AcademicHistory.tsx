@@ -703,10 +703,14 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setInstitutes(filterDataInstitute)
       const filterDataCourse = coursesAll.filter((item) => item.institution_id === boxes[0].institute_id)
       setCourses(filterDataCourse)
-      const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
-      setTotalSemester(semesterCount)
+      // const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
+      // setTotalSemester(semesterCount)
     }
   }, [boxes])
+
+  const maxSemester = totalSemester && totalSemester?.length > 0
+  ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
+  : 0;
 
   return (
     <div className="mt-5">
@@ -1001,7 +1005,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="Semester"
                   >
-                    {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
+                    {[...Array(maxSemester)].map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}
                         value={index + 1}

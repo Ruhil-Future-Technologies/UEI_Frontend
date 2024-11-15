@@ -392,12 +392,12 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }else{
       setAdd_col(false)
     }
-    if(!("address2" in studentAddress) || studentAddress?.address2 === ""){
-      setAdd2_col(true)
+    // if(!("address2" in studentAddress) || studentAddress?.address2 === ""){
+    //   setAdd2_col(true)
 
-    }else{
-      setAdd2_col(false)
-    }
+    // }else{
+    //   setAdd2_col(false)
+    // }
     if(!("city" in studentAddress) || studentAddress?.city === ""){
       setCity_colerror(true)
 
@@ -640,14 +640,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Address 1 <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="address1"
-            className="form-control"
-            value={studentAddress.address1}
-            onChange={(e) => handleInputChange(e, "current")}
-            required
-          /> */}
           <input
             type="text"
             name="address1"
@@ -662,18 +654,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               <p style={{ color: "red" }}>Please enter Address 1.</p>
             )}
           </div>
-          {/* {error.address1 && <span style={{ color: 'red' }}>{error.address1}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label"> Address 2</label>
-          {/* <TextField
-            type="text"
-            name="address2"
-            className="form-control"
-            value={studentAddress.address2}
-            onChange={(e) => handleInputChange(e, "current")}
-            // required
-          /> */}
           <input
             type="text"
             name="address2"
@@ -682,55 +665,12 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             onChange={(e) => handleInputChange(e, "current")}
             // required
           />
-           {" "}
+           {/* {" "}
             {(studentAddress.address2 === "" || add2_col) && (
               <p style={{ color: "red" }}>Please enter Address 2.</p>
-            )}
-          {/* <div> {studentAddress.address2 == "" && (
-            <p style={{ color: 'red' }}>Please enter Address 2.</p>
-          )}</div> */}
-          {/* {error.address2 && <span style={{ color: 'red' }}>{error.address2}</span>} */}
+            )} */}
         </div>
-        {/* <div className="col-6 pb-3">
-          <label>
-            {" "}
-            Country <span>*</span>
-          </label>
-          <TextField
-            type="text"
-            name="country"
-            className="form-control"
-            value={studentAddress.country}
-            onChange={(e) => handleInputChange(e, "current")}
-            required
-          />
-           <div> {contry_col && (
-            <p style={{ color: 'red' }}>Please enter a valid Country Name only characters allowed.</p>
-          )}</div>
-          <div> {studentAddress.country == "" && (
-            <p style={{ color: 'red' }}>Please enter Country name.</p>
-          )}</div>
-        </div>
-        <div className="col-6 pb-3">
-          <label>
-            {" "}
-            State <span>*</span>
-          </label>
-          <TextField
-            type="text"
-            name="state"
-            className="form-control"
-            value={studentAddress.state}
-            onChange={(e) => handleInputChange(e, "current")}
-            required
-          />
-            <div> {state_col && (
-            <p style={{ color: 'red' }}>Please enter a valid state Name only characters allowed.</p>
-          )}</div>
-          <div> {studentAddress.state == "" && (
-            <p style={{ color: 'red' }}>Please enter State name.</p>
-          )}</div>
-        </div> */}
+       
 
         <div className="col-6 pb-3 form_field_wrapper">
           <label

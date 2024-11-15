@@ -376,11 +376,11 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }else{
       setAdd_col(false)
     }
-    if(!("address2" in adminAddress) || adminAddress?.address2 === ""){
-      setAdd2_col(true)
-    }else{
-      setAdd2_col(false)
-    }
+    // if(!("address2" in adminAddress) || adminAddress?.address2 === ""){
+    //   setAdd2_col(true)
+    // }else{
+    //   setAdd2_col(false)
+    // }
     if (!("country" in adminAddress) || adminAddress?.country === "") {
       setcontry_col(true);
     } else {
@@ -615,7 +615,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
           </div>
         </div>
-        <div className="col-6 pb-3 form_field_wrapper">
+        <div className="col-6 pb-3 form_field_wrapper mt-2">
           <label>
             {" "}
             Address 2 <span></span>
@@ -623,17 +623,17 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             type="text"
             name="address2"
-            className="form-control"
+            className="form-control mt-1"
             value={adminAddress.address2}
             onChange={(e) => handleInputChange(e, "current_address")}
             // required
           />
-           <div>
+           {/* <div>
             {" "}
             {(adminAddress.address2 == "" || add2_col) && (
               <p style={{ color: "red" }}>Please enter Address 2.</p>
             )}
-          </div>
+          </div> */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
