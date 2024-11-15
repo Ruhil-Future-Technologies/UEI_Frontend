@@ -204,7 +204,7 @@ const Chat = () => {
   function getTodaysData(arr: any) {
     const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
 
-    return arr.filter((item: any) => {
+    return arr?.filter((item: any) => {
       const itemDate = item.created_at.split(" ")[0]; // Extract 'YYYY-MM-DD' from 'created_at'
       return itemDate === today;
     });

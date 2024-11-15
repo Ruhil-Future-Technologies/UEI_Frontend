@@ -511,7 +511,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {fname_col && (
+            {fname_col &&  (
               <p style={{ color: "red" }}>
                 Please enter a valid First Name only characters allowed.
               </p>

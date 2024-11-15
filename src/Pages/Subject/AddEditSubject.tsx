@@ -347,6 +347,11 @@ const AddEditSubject = () => {
       .required("Please select institute name")
   })
 
+
+  const maxSemester = totalSemester && totalSemester?.length > 0
+  ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
+  : 0;
+ 
   return (
     <>
       <div className="main-wrapper">
@@ -493,8 +498,10 @@ const AddEditSubject = () => {
                                 },
                               }}
                             >
+                              
                               {/* Generate menu items for semesters 1 to 8 */}
-                              {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
+                              {/* {[...Array(totalSemester[0]?.semester_number)].map((_, index) => ( */}
+                            {  [...Array(maxSemester)]?.map((_, index) => (
                                 <MenuItem
                                   key={`${index + 1}`}
                                   value={index + 1}
