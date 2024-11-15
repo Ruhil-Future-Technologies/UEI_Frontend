@@ -381,7 +381,7 @@ const Uploadpdf = () => {
     if(boxes[0]?.institute_type?.toLowerCase() === "college"){
       const { institute_id, university_id, course_id, sem_id, subject_id } = boxes[0];
       // Check if any of the fields are empty
-      if (!institute_id || !university_id || !course_id || !sem_id || !subject_id) {
+      if (!institute_id || !university_id || !course_id || !sem_id ) {
         toast.error("Required fields are missing");
         return;
       }
@@ -390,7 +390,7 @@ const Uploadpdf = () => {
       const { board, class_id, state_for_stateboard, stream, subject_id } = boxes[0];
     
       // Check if any of the fields are empty
-      if (!board || !class_id || !subject_id) {
+      if (!board || !class_id ) {
         toast.error("Required fields are missing");
         return;
       }
