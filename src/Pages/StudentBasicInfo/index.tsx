@@ -205,7 +205,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
     if (name === "first_name") {
       setFname_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFname_col(true);
       } else {
         setFname_col(false);
@@ -213,7 +214,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "last_name") {
       setLname_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setLname_col(true);
       } else {
         setLname_col(false);
@@ -221,7 +223,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "father_name") {
       setFathername_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFathername_col(true);
       } else {
         setFathername_col(false);
@@ -229,21 +232,24 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "mother_name") {
       setMothername_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setMothername_col(true);
       } else {
         setMothername_col(false);
       }
     }
     if (name === "guardian_name") {
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setGname_col(true);
       } else {
         setGname_col(false);
       }
     }
     if (name === "aim") {
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setaim_col(true);
       } else {
         setaim_col(false);
@@ -619,7 +625,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {fname_col && (
+            {fname_col && basicInfo?.first_name !== "" &&(
               <p style={{ color: "red" }}>
                 Please enter a valid First Name only characters allowed.
               </p>
@@ -657,7 +663,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {lname_col && (
+            {lname_col && basicInfo?.last_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Last Name only characters allowed.
               </p>
@@ -757,7 +763,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {fathername_col && (
+            {fathername_col && basicInfo?.father_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Father Name only characters allowed.
               </p>
@@ -795,7 +801,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {mothername_col && (
+            {mothername_col && basicInfo?.mother_name !== "" &&(
               <p style={{ color: "red" }}>
                 Please enter a valid Mother Name only characters allowed.
               </p>
@@ -825,14 +831,14 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           /> */}
           <input
             name="guardian_name"
-            value={basicInfo.guardian_name || ""}
+            value={basicInfo?.guardian_name || ""}
             type="text"
             className="form-control"
             onChange={handleChange}
           />
           <div>
             {" "}
-            {gname_col && (
+            {gname_col && basicInfo?.guardian_name !== "" &&(
               <p style={{ color: "red" }}>
                 Please enter a valid Guardian Name only characters allowed.
               </p>
@@ -863,7 +869,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {aim_col && (
+            {aim_col && basicInfo.aim !== "" &&(
               <p style={{ color: "red" }}>
                 Please enter a valid Aim Name only characters allowed.
               </p>
@@ -872,40 +878,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           {/* {error.aim && <span style={{ color: 'red' }}>{error.aim}</span>} */}
         </div>
 
-        {/* <div className="col-md-6 pb-3">
-          <Grid item xs={12}>
-            <Typography variant="h6">
-              Upload Profile Photo <span></span>
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <input
-              type="file"
-              name="pic_path"
-              accept="image/*"
-              // value={basicInfo.pic_path}
-              onChange={(e) => {
-                handleChange(e);
-              }}
-            />
-
-            {selectedFile && (
-              <Typography variant="body1">{selectedFile}</Typography>
-            )}
-            {error1 && (
-              <Typography variant="body1" style={{ color: "red" }}>
-                {error1}
-              </Typography>
-            )}
-          </Grid>
-          {filePreview && (
-            <img
-              src={filePreview}
-              alt="Uploaded Preview"
-              style={{ maxWidth: "50%", marginTop: "10px" }}
-            />
-          )}
-        </div> */}
+       
         <div className="col-lg-12">
           <div className="d-flex flex-wrap align-items-center gap-1">
             <div className="image-container">

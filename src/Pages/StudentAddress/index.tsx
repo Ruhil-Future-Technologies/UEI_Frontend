@@ -196,7 +196,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }else{
           setCity_colerror(false)
         }
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
+        // if (!/^[a-zA-Z\s]*$/.test(value)) {
+          if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setcity_col(true);
         } else {
           setcity_col(false);
@@ -208,7 +209,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }else{
           setDistrict_colerror(false)
         }
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setdistrict_col(true);
         } else {
           setdistrict_col(false);
@@ -222,7 +223,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "address1") {
-        if (value === "") {
+        // if (value === "") {
+          if (value === "" || (!/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value))) {
           setAdd_col(true);
         } else {
           setAdd_col(false)
@@ -650,7 +652,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {(studentAddress.address1 === "" || add_col) && (
+            {(studentAddress?.address1 === "" || add_col) && (
               <p style={{ color: "red" }}>Please enter Address 1.</p>
             )}
           </div>
@@ -661,7 +663,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             name="address2"
             className="form-control"
-            value={studentAddress.address2}
+            value={studentAddress?.address2}
             onChange={(e) => handleInputChange(e, "current")}
             // required
           />
@@ -675,7 +677,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         <div className="col-6 pb-3 form_field_wrapper">
           <label
             className={`col-form-label  ${
-              isFocusedstate || studentAddress.country
+              isFocusedstate || studentAddress?.country
                 ? "focused"
                 : "focusedempty"
             }`}
@@ -694,7 +696,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <div>
             {" "}
             {contry_col && (
-              <p style={{ color: "red" }}>Please enter Country Name.</p>
+              <p style={{ color: "red" }}>Please select Country Name.</p>
             )}
           </div>
         </div>
@@ -723,7 +725,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <div>
             {" "}
             {state_col && (
-              <p style={{ color: "red" }}>Please enter a valid state Name.</p>
+              <p style={{ color: "red" }}>Please select a valid state Name.</p>
             )}
           </div>
         </div>
@@ -750,7 +752,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {city_col && (
+            {city_col && studentAddress?.city !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid City Name only characters allowed.
               </p>
@@ -787,7 +789,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {district_col && (
+            {district_col && studentAddress?.district !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid District Name only characters allowed.
               </p>
