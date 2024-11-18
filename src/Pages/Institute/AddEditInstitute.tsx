@@ -462,6 +462,7 @@ const [isFocusedstate, setIsFocusedstate] = useState(false);
 const dropdownRef = useRef<HTMLDivElement>(null);
 const dropdownstateRef = useRef<HTMLDivElement>(null);
 const [isCountryOpen, setIsCountryOpen] = useState(false);
+const [isStateOpen, setIsStateOpen] = useState(false);
 
 useEffect(() => {
   const handleFocus = () => setIsFocused(true);
@@ -505,7 +506,19 @@ useEffect(() => {
   };
 }, []);
 
-
+    const handleCountryClick = () => {
+        setIsCountryOpen(true);
+    };
+    const handleCountryBlur = () => {
+        setIsCountryOpen(false);
+    };
+    const handleStateClick = () => {
+        setIsStateOpen(true);
+    };
+    const handleStateBlur = () => {
+        setIsStateOpen(false);
+    };
+  
     return (
         <div className='main-wrapper'>
             <div className="main-content">
@@ -623,10 +636,15 @@ useEffect(() => {
                                         </div>
                                     </div>
                                     <div className="floating-label-container col-md-4" ref={dropdownRef}>
-                                        <label className={`floating-label ${isFocused || values?.country ? "focused" : "focusedempty"}`}>
+                                        <label className={`floating-label ${isFocused || values?.country || isCountryOpen ? "focused" : "focusedempty"}`}>
                                             Country <span>*</span>
                                         </label>
-                                        <div className="form_field_wrapper" onClick={() => setIsCountryOpen((prev) => !prev)}>
+                                        <div className="form_field_wrapper" 
+                                        // onClick={() => setIsCountryOpen((prev) => !prev)}
+                                        onClick={handleCountryClick}
+                                        onBlur={handleCountryBlur}    // Detect blur event (when the dropdown loses focus)
+                                        tabIndex={-1} 
+                                        >
                                             <CountryDropdown
                                                 classes="form-control p-3 custom-dropdown"
                                                 defaultOptionLabel={values?.country || ""}
@@ -643,10 +661,15 @@ useEffect(() => {
 
 
                                     <div className='floating-label-container col-md-4' ref={dropdownstateRef}>
-                                    <label className={`floating-label ${isFocusedstate || values?.state ? "focused" : "focusedempty"}`}>
+                                    <label className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? "focused" : "focusedempty"}`}>
                                             State <span>*</span>
                                         </label>
-                                        <div className="form_field_wrapper">
+                                        <div className="form_field_wrapper"
+                                        //  onClick={() => setIsStateOpen((prev) => !prev)}
+                                        onClick={handleStateClick}
+                                        onBlur={handleStateBlur}    // Detect blur event (when the dropdown loses focus)
+                                        tabIndex={-1} 
+                                         >
                                             <RegionDropdown
                                                 classes="form-control p-3 custom-dropdown"
                                                 defaultOptionLabel={values?.state || ""}
