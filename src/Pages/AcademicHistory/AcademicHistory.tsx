@@ -460,7 +460,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             student_id: StudentId,
             institution_type: box.institute_type,
             board: box.institute_type.toLowerCase() === 'school' ? box.board : box.id ? "" : null,
-            state_for_stateboard: box.institute_type.toLowerCase() === 'school' ? box.state_for_stateboard : box.id ? "" : null,
+            state_for_stateboard: box.institute_type.toLowerCase() === 'school' && box.state_for_stateboard !== null ? String(box.state_for_stateboard) : box.id ? "" : null,
             institute_id: box.institute_type.toLowerCase() === 'college' ? String(
               instituteId || box.institute_id
             ) : box.id ? "" : null,
@@ -1218,6 +1218,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       views={["year"]}
                       format="YYYY"
                       label="Year *"
+                      disableFuture
                       sx={{
                         backgroundColor: "#f5f5f5",
                       }}

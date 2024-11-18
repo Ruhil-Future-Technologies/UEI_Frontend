@@ -6,6 +6,7 @@ import StepLabel from "@mui/material/StepLabel";
 import {
   Button,
   FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -172,6 +173,21 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const saveLanguage = async () => {
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
+    let valid = true;
+    boxes.forEach((box, index) => {
+      if (!box.language_id || !box.proficiency) {
+        valid = false;
+        setError((prevError) => ({
+          ...prevError,
+          [index]: {
+            language_error: !box.language_id,
+            proficiency_error: !box.proficiency,
+          },
+        }));
+      }
+    });
+
+    if (!valid) return; // Don't proceed if validation fails
     setActiveForm((prev) => prev + 1);
     setIsSave(true);
     // console.log("saving",initialAdminState,boxes)
@@ -251,6 +267,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         i === index ? { ...box, language_id: value } : box
       )
     );
+    validateFields(index, "language");
   };
 
   const handleChange1 = (event: SelectChangeEvent<string>, index: number) => {
@@ -260,6 +277,19 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         i === index ? { ...box, proficiency: value } : box
       )
     );
+    validateFields(index, "proficiency");
+  };
+
+  const [error, setError] = useState<{ [key: number]: { language_error: boolean; proficiency_error: boolean } }>({});
+  const validateFields = (index: number, field: string) => {
+    setError((prevError) => ({
+      ...prevError,
+      [index]: {
+        ...prevError[index],
+        ...(field === "language" && { language_error: !boxes[index].language_id }),
+        ...(field === "proficiency" && { proficiency_error: !boxes[index].proficiency }),
+      },
+    }));
   };
 
   return (
@@ -285,7 +315,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             key={index}
           >
             <div className="col form_field_wrapper ">
-            <FormControl required sx={{ m: 1 }} fullWidth>
+            <FormControl required sx={{ m: 1 , mt:  error[index]?.language_error && box.language_id == "" ? 4 :1  }} fullWidth>
         <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
         <Select
           labelId={`language-label-${box.id}`}
@@ -298,6 +328,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           }}
           onChange={(e) => handleChange(e, index)}
           MenuProps={MenuProps}
+          onBlur={() => validateFields(index, "language")}
         >
           {/* Render the selected language as a disabled MenuItem at the top */}
           {alllanguage
@@ -340,45 +371,12 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               </MenuItem>
             ))}
         </Select>
+        {error[index]?.language_error && box.language_id == "" && <FormHelperText style={{color: "red"}}>Language is required</FormHelperText>}
       </FormControl>
-              {/* <FormControl required sx={{ m: 1}} fullWidth>
-                <InputLabel id={`language-label-${box.id}`}>
-                  Language
-                </InputLabel>
-                <Select
-                  labelId={`language-label-${box.id}`}
-                  id={`language-select-${box.id}`}
-                  name={`language_${box.id}`}
-                  value={box.language_id}
-                  label="Language *"
-                  sx={{
-                    backgroundColor: "#f5f5f5",
-                  }}
-                  onChange={(e) => handleChange(e, index)}
-                  MenuProps={MenuProps}
-                >
-                  {alllanguage.map((lang) => (
-                    <MenuItem
-                      key={lang.id}
-                      value={lang.id}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      {lang.language_name}
-                    </MenuItem>
-                  ))}
-                  
-    
-                </Select>
-              </FormControl> */}
+             
             </div>
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1 }} fullWidth>
+              <FormControl required sx={{ m: 1 , mt:  error[index]?.proficiency_error &&  box.proficiency == "" ? 4 :1  }} fullWidth>
                 <InputLabel id={`proficiency-label-${box.id}`}>
                   Proficiency
                 </InputLabel>
@@ -393,6 +391,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   label="Proficiency *"
                   onChange={(e) => handleChange1(e, index)}
                   MenuProps={MenuProps}
+                  onBlur={() => validateFields(index, "proficiency")}
                 >
                   <MenuItem
                     value={"read"}
@@ -431,6 +430,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     Both
                   </MenuItem>
                 </Select>
+                  {error[index]?.proficiency_error &&  box.proficiency == "" && <FormHelperText style={{color: "red"}}>Proficiency is required</FormHelperText>}
               </FormControl>
             </div>
             <div className="col form_field_wrapper d-flex">

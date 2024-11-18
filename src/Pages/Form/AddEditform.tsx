@@ -215,7 +215,7 @@ const AddEditForm = () => {
             if(isPathAvailable){
 
                 postData(`${FormAddURL}`, formdata1).then((data: any) => {
-                    if (data?.status === 200) {
+                    if (data?.status === 201) {
                         // navigator('/main/Form')
                         toast.success(data.message, {
                             hideProgressBar: true,

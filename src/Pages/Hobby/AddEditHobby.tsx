@@ -140,6 +140,7 @@ const AddEditHobby = () => {
                         hideProgressBar: true,
                         theme: "colored",
                     });
+                    callAPIHobby()
                 }else {
                     toast.error(data.message, {
                         hideProgressBar: true,
@@ -163,6 +164,7 @@ const AddEditHobby = () => {
                         hideProgressBar: true,
                         theme: "colored",
                     });
+                    callAPIHobby()
                     // setHobby("")
                     resetForm({ values: initialState });
                 }else {

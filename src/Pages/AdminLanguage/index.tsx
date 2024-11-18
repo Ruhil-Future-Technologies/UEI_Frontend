@@ -6,6 +6,7 @@ import {
   Button,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -187,7 +188,23 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     event: React.FormEvent<HTMLFormElement | typeof setSelectedLeng>
   ) => {
     event.preventDefault();
-    setActiveForm((prev) => prev + 1);
+    
+    let valid = true;
+    boxes.forEach((box, index) => {
+      if (!box.language_id || !box.proficiency) {
+        valid = false;
+        setError((prevError) => ({
+          ...prevError,
+          [index]: {
+            language_error: !box.language_id,
+            proficiency_error: !box.proficiency,
+          },
+        }));
+      }
+    });
+
+    if (!valid) return; // Don't proceed if validation fails
+      setActiveForm((prev) => prev + 1);
     boxes.forEach((box) => {
       const payload = {
         admin_id: AdminId,
@@ -279,6 +296,8 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     // setFormData({
     //     ...formData, [name]: value
     // })
+    // validateSelection(value, index);
+    validateFields(index, "language");
   };
 
   const handleChange1 = (event: SelectChangeEvent<string>, index: number) => {
@@ -288,10 +307,21 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         i === index ? { ...box, proficiency: value } : box
       )
     );
+    validateFields(index, "proficiency");
   };
 
   // console.log("boxes sasa", boxes);
-
+  const [error, setError] = useState<{ [key: number]: { language_error: boolean; proficiency_error: boolean } }>({});
+  const validateFields = (index: number, field: string) => {
+    setError((prevError) => ({
+      ...prevError,
+      [index]: {
+        ...prevError[index],
+        ...(field === "language" && { language_error: !boxes[index].language_id }),
+        ...(field === "proficiency" && { proficiency_error: !boxes[index].proficiency }),
+      },
+    }));
+  };
   return (
     <form>
       <p className="font-weight-bold profiletext mt-4">
@@ -303,7 +333,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           key={index}
         >
           <div className="col form_field_wrapper ">
-            <FormControl required sx={{ m: 1 }} fullWidth>
+            <FormControl required sx={{ m: 1 , mt:  error[index]?.language_error && box.language_id == "" ? 4 :1 }} fullWidth>
               <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
               <Select
                 labelId={`language-label-${box.id}`}
@@ -317,6 +347,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 onChange={(e) => {
                   handleChange(e, index);
                 }}
+                onBlur={() => validateFields(index, "language")}
               >
                 {alllanguage
                  .filter((lang) => lang.id === box.language_id)
@@ -359,10 +390,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               </MenuItem>
             ))}
               </Select>
+              {error[index]?.language_error && box.language_id == "" && <FormHelperText style={{color: "red"}}>Language is required</FormHelperText>}
             </FormControl>
           </div>
           <div className="col form_field_wrapper">
-            <FormControl required sx={{ m: 1 }} fullWidth>
+            <FormControl required sx={{ m: 1 , mt:  error[index]?.proficiency_error &&  box.proficiency == "" ? 4 :1 }} fullWidth>
               <InputLabel id={`proficiency-label-${box.id}`}>
                 Proficiency
               </InputLabel>
@@ -378,6 +410,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 onChange={(e) => {
                   handleChange1(e, index);
                 }}
+                onBlur={() => validateFields(index, "proficiency")}
               >
                 <MenuItem
                   value={"read"}
@@ -416,6 +449,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   Both
                 </MenuItem>
               </Select>
+              {error[index]?.proficiency_error &&  box.proficiency == "" && <FormHelperText style={{color: "red"}}>Proficiency is required</FormHelperText>}
             </FormControl>
           </div>
           <div className="col form_field_wrapper d-flex">
