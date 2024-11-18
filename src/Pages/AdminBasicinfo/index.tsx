@@ -135,7 +135,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const { name, value } = event.target;
     if (name === "first_name") {
       setFname_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFname_col(true);
       } else {
         setFname_col(false);
@@ -143,7 +144,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "last_name") {
       setLname_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      // if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setLname_col(true);
       } else {
         setLname_col(false);
@@ -151,7 +153,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "father_name") {
       setFathername_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFathername_col(true);
       } else {
         setFathername_col(false);
@@ -159,7 +161,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "mother_name") {
       setMothername_col1(true);
-      if (!/^[a-zA-Z\s]*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setMothername_col(true);
       } else {
         setMothername_col(false);
@@ -511,7 +513,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {fname_col &&  (
+            {fname_col && admin?.first_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid First Name only characters allowed.
               </p>
@@ -540,7 +542,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {lname_col && (
+            {lname_col && admin.last_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Last Name only characters allowed.
               </p>
@@ -613,7 +615,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {fathername_col && (
+            {fathername_col && admin.father_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Father Name only characters allowed.
               </p>
@@ -643,7 +645,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {mothername_col && (
+            {mothername_col && admin.mother_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Mother Name only characters allowed.
               </p>

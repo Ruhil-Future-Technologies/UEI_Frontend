@@ -160,6 +160,10 @@ const UserChangePassword = () => {
                 theme: "colored",
               }
             );
+            resetForm();
+            setPassword("");
+            setOldPassword("");
+            setConfPassword("");
           } else if (
             data?.status === 404 &&
             data?.message === "Invalid userid or password"

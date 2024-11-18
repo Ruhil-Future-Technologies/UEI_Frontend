@@ -226,7 +226,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }else{
           setCity_colerror(false)
         }
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setcity_col(true);
         } else {
           setcity_col(false);
@@ -238,7 +238,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }else{
           setDistrict_colerror(false)
         }
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setdistrict_col(true);
         } else {
           setdistrict_col(false);
@@ -252,7 +252,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "address1") {
-        if (value === "") {
+        if (value === "" || (!/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value))) {
           setAdd_col(true);
         } else {
           setAdd_col(false)
@@ -702,7 +702,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {city_col && (
+            {city_col && adminAddress.city !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid City Name only characters allowed.
               </p>
@@ -730,7 +730,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {district_col && (
+            {district_col && adminAddress.district !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid District Name only characters allowed.
               </p>
