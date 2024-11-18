@@ -1041,14 +1041,22 @@ function MainContent() {
       try {
         const [chatHistory, chatCount] = await Promise.all([
           getData(`${chatlisturl}/${userdata?.id}`),
-          getData("/chat/api/chat-count/" + StudentId),
+          getData("/chat/api/chat-summary"),
         ]);
-        const chatstarred =
-          chatHistory?.data?.filter((chat: any) => chat?.flagged) || [];
-        setStudent({
+        // const chatstarred =
+        //   chatHistory?.data?.filter((chat: any) => chat?.flagged) || [];
+
+        // setStudent({
+        //   // chatHistory: chatHistory?.data?.length || 0,
+        //   chatHistory: chatstarred?.length || 0,
+        //   chatCount: chatHistory?.data?.length || 0,
+        // });
+         const chatstarred =
+          chatHistory?.data?.filter((chat: any) => chat) || [];
+         setStudent({
           // chatHistory: chatHistory?.data?.length || 0,
-          chatHistory: chatstarred?.length || 0,
-          chatCount: chatHistory?.data?.length || 0,
+          chatHistory: chatCount?.data?.saved_chat_count || 0,
+          chatCount: chatCount?.data?.total_chat_count || 0,
         });
       } catch (error) {
         console.error("Error fetching data:", error);

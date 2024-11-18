@@ -819,7 +819,28 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const saveAnswersforBasic = (answers: string[]) => {
-    const birthdate = parseDate(answers[1]);
+    const birthdate:any = parseDate(answers[1]);
+    // Convert the birthdate to a Date object
+const birthdateObj = new Date(birthdate);
+// Get the current day of the month
+const dayOfMonth = birthdateObj?.getDate();
+// Increment the date to the next day
+birthdateObj?.setDate(dayOfMonth);
+function formatDateToISO(date: Date): string {
+  const year = date?.getFullYear();
+  const month = (date?.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+  const day = date?.getDate().toString().padStart(2, '0');
+  const hours = date?.getHours().toString().padStart(2, '0');
+  const minutes = date?.getMinutes().toString().padStart(2, '0');
+  const seconds = date?.getSeconds().toString().padStart(2, '0');
+  const milliseconds = date?.getMilliseconds().toString().padStart(3, '0');
+
+  // Format as "yyyy-mm-ddThh:mm:ss.sssZ"
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+}
+const formattedDate = formatDateToISO(birthdateObj);
+
+
     const fullName = answers?.[0];
     let nameParts: string[] = fullName?.split(" ");
     const firstname = nameParts?.[0];
@@ -830,7 +851,7 @@ export const ProfileDialog: FunctionComponent<{
       last_name: answeredData?.basic_info?.last_name || lastname,
       // gender: answers[1],
       gender: answeredData?.basic_info?.gender || answers[3] || selectedgender,
-      dob: answeredData?.basic_info?.dob || birthdate,
+      dob: answeredData?.basic_info?.dob || formattedDate,
       father_name: answeredData?.basic_info?.father_name || answers[5],
       mother_name: answeredData?.basic_info?.mother_name || answers[4],
       guardian_name: answeredData?.basic_info?.guardian_name || answers[6],
@@ -1541,6 +1562,7 @@ export const ProfileDialog: FunctionComponent<{
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
     // setOpen(false);
     // setErordate("")
+    
     datecheck = dayjs(newDate).format(
       currentQuestionIndex === 18 ? "YYYY" : "DD/MM/YYYY"
     );
