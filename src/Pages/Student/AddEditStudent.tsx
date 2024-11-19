@@ -583,9 +583,9 @@ const AddEditStudent = () => {
                   />
                 )}
                 {/* {error.pic_path && <span style={{ color: 'red' }}>{error.pic_path}</span>} */}
-                    <div> {student?.pic_path == "" && !loading && (
+                    {/* <div> {student?.pic_path == "" && !loading && (
                         <p style={{ color: 'red' }}>Please Upload Image.</p>
-                    )}</div>
+                    )}</div> */}
               </div>
               </div>
               <button className="btn btn-primary">
