@@ -379,12 +379,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
 
   }, [academic])
   useEffect(() => {
-    const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0].sem_id)
+    const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
     setTotalSemester(semesterCount)
   }, [StudentId, semester])
   useEffect(() => {
     if (!academic) {
-      const filterData = subjectsAll?.filter((item: any) => item.course_id === boxes[0].course_id && item?.semester_id === boxes[0]?.sem_id)
+      const filterData = subjectsAll?.filter((item: any) => item?.course_id === boxes[0]?.course_id && item?.semester_id === boxes[0]?.sem_id)
       setSubjects(filterData)
     } else {
       if (boxes[0]?.stream !== "" || boxes[0]?.stream !== undefined) {
@@ -834,6 +834,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     <FormControl
                       required
                       sx={{ m: 1, minWidth: 220, width: "100%" }}
+                      disabled
                     >
                       <InputLabel>Class</InputLabel>
                       <Select
@@ -845,7 +846,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                           handleInputChange(index, "class_id", e.target.value)
                         }
                         label="Class"
-                        disabled
+                        // disabled
                       >
                         {classes.map((classes) => (
                           <MenuItem
