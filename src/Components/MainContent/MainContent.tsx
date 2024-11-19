@@ -2161,7 +2161,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="mb-0">{stats.subjectCount}</h4>
+                            <h4 className="mb-0">{stats.collegesubjectCount + stats?.schoolsubjectCount}</h4>
                             <p className="mb-0">Total Subjects</p>
                           </div>
                         </div>
