@@ -352,12 +352,15 @@ const AddEditStudent = () => {
 
   return (
     <>
-      <div className="profile_section">
-        <div className="card">
+    <div className='main-wrapper'>
+    <div className="main-content">
+    <div className='card p-lg-4'>
+      {/* <div className="profile_section"> */}
+        {/* <div className="card"> */}
           <div className="card-body">
             <div className="main_title">Edit Student</div>
             <form onSubmit={(e) => handleSubmit(e, student)}>
-              <div className="row">
+              <div className="row  gy-4 mt-0">
                 <div className="col-md-4">
                   <div className="form_field_wrapper">
                     {/* <label>User Name</label> */}
@@ -435,7 +438,7 @@ const AddEditStudent = () => {
                     )}</div>
                 </div>
                 <div className="col-md-4">
-                  <div className="form_field_wrapper">
+                  <div className="form_field_wrapper" style={{maxWidth: 220, width:'100%'}}>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
@@ -590,7 +593,10 @@ const AddEditStudent = () => {
               </button>
             </form>
           </div>
-        </div>
+        {/* </div> */}
+      {/* </div> */}
+      </div>
+      </div>
       </div>
     </>
   );
