@@ -94,6 +94,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [add_col, setAdd_col] = useState<boolean>(false);
   const [add2_col, setAdd2_col] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [checked, setChecked] = useState<boolean>(false);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedstate, setIsFocusedstate] = useState(false);
@@ -165,18 +166,41 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       .then((response: any) => {
         // console.log(response);
         if (response?.status === 200) {
+          let add1 :any
+          let add2 :any
           response?.data.forEach((address: any) => {
             if (address?.address_type === "permanent_address") {
               setPermanentAddress(address);
               setPermanentAddress1(address);
+              add1 = address
             } else if (address?.address_type === "current_address") {
               setadminAddress(address);
               setadminAddress1(address);
+              add2 = address
             } else {
               //empty
               console.error("Unexpected response:", response);
             }
           });
+
+          const fieldsToCompare = ['address1', 'address2', 'city', 'country', 'district', 'pincode', 'state'];
+
+          const filteredAdd1:any = {};
+          const filteredAdd2:any = {};
+    
+          fieldsToCompare?.forEach(field => {
+            if (add1?.hasOwnProperty(field)) {
+              filteredAdd1[field] = add1[field];
+            }
+            if (add2?.hasOwnProperty(field)) {
+              filteredAdd2[field] = add2[field];
+            }
+          });
+          // Use deepEqual to compare only the selected fields
+          const equal = deepEqual(filteredAdd1, filteredAdd2);
+              if(equal){
+                setChecked(true)
+              }
         } else if (response?.status === 404) {
           setEditFlag(true);
         } else {
@@ -205,6 +229,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     addressType: string
   ) => {
     const { name, value } = event.target;
+    setChecked(false)
     if (addressType === "current_address") {
       if (name === "country") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -312,6 +337,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
+      setChecked(true)
       for (const key of Object.keys(adminAddress)) {
         if (key === "country") {
           if (!/^[a-zA-Z\s]*$/.test(adminAddress?.country || "")) {
@@ -355,6 +381,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         address_type: "permanent_address",
       });
     } else {
+      setChecked(false)
       setPermanentAddress((prevPermanentAddress) => ({
         ...prevPermanentAddress,
         address1: "",
@@ -788,6 +815,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 <Checkbox
                   onChange={handlePermanentAddressCheckbox}
                   name="sameAsCurrent"
+                  checked={checked}
                 />
               }
               label="Same as Current Address"
