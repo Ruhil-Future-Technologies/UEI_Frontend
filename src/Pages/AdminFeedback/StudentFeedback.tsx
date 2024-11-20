@@ -58,23 +58,9 @@ const StudentFeedback = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  // const roleset = lastSegment == "feedback" ? "feedbacks" : lastSegment;
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  // useEffect(() => {
-  //   debugger
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === roleset.toLowerCase() && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === roleset.toLowerCase())
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
 
   useEffect(() => {
     setFilteredData(
@@ -96,9 +82,17 @@ const StudentFeedback = () => {
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
       .then((data: { data: IStudentFeedback[] }) => {
-        if (data.data) {
-          setDataStudent(data?.data);
-          setDataStudentDeepCopy(data?.data);
+        if (data?.data) {
+          const sortedData = data?.data?.sort((a, b) => {
+            const dateA = new Date(a?.created_at);
+            const dateB = new Date(b?.created_at);
+            return dateB?.getTime() - dateA?.getTime();  // Reverse the comparison for descending order
+          });
+    
+          // Update your state with the sorted data
+          setDataStudent(sortedData || []);
+          // setDataStudent(data?.data);
+          setDataStudentDeepCopy(sortedData);
         }
       })
       .catch((e) => {
@@ -110,41 +104,6 @@ const StudentFeedback = () => {
           theme: "colored",
         });
       });
-    // getData(`student/list`)
-    //   .then((data: { data: any }) => {
-    //     if (data.data) {
-          // setDataStudent(data?.data);
-          // let newObject={
-          //   student_name: data.data.first_name + " " + data.data.last_name,
-          //   student_id :data.data.student_id
-          // }
-          // let newObject = [
-          //   {
-          //     student_name: "Aesglient",
-          //     student_id: 1,
-          //   },
-          //   {
-          //     student_name: "Ashish chopra",
-          //     student_id: 2,
-          //   },
-          //   {
-          //     student_name: "John Smith",
-          //     student_id: 3,
-          //   },
-          // ];
-          // setStudent(newObject);
-          // console.log(data.data);
-      //   }
-      // })
-      // .catch((e) => {
-      //   if (e?.response?.status === 401) {
-      //     navigate("/");
-      //   }
-      //   toast.error(e?.message, {
-      //     hideProgressBar: true,
-      //     theme: "colored",
-      //   });
-      // });
   };
 
   useEffect(() => {
@@ -209,50 +168,6 @@ const StudentFeedback = () => {
                   <Typography variant="h6" sx={{ m: 1 }}>
                     <div className="main_title">Student Feedback</div>
                   </Typography>
-                  {/* {filteredData?.form_data?.is_save === true && ( */}
-                  {/* <div className="form_field_wrapper">
-                    <FormControl fullWidth> 
-                      <InputLabel id="demo-simple-select-label">
-                        Select Student *
-                      </InputLabel>
-                      <Select
-                        // onChange={handleChange}
-                        // label="Role Master"
-                        name="student_name"
-                        // value={values?.role_master_id}
-                        variant="outlined"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                        }}
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                            },
-                          },
-                        }}
-                      >
-                        {student?.map((item: any) => (
-                          <MenuItem
-                            value={item.student_name}
-                            onClick={() => handleChange(item.student_id)}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              "&:hover": {
-                                backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                              },
-                            }}
-                          >
-                            {item.student_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div> */}
-                  {/* )} */}
                 </div>
                 <Box marginTop="10px">
                   <MaterialReactTable
@@ -280,36 +195,6 @@ const StudentFeedback = () => {
                           width: "140px",
                         }}
                       >
-                        {/* {filteredData?.form_data?.is_update === true && ( */}
-                        {/* <Tooltip arrow placement="right" title="Edit">
-                          <IconButton
-                            sx={{
-                              width: "35px",
-                              height: "35px",
-                              color: tabletools(namecolor),
-                            }}
-                            onClick={() => {
-                              handleEditFile(row?.row?.original?.id);
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip> */}
-                        {/* )} */}
-                        {/* <Tooltip arrow placement="right" title="Delete">
-                          <IconButton
-                            sx={{
-                              width: "35px",
-                              height: "35px",
-                              color: tabletools(namecolor),
-                            }}
-                            onClick={() => {
-                              handleDeleteFiles(row?.row?.original?.id);
-                            }}
-                          >
-                            <TrashIcon />
-                          </IconButton>
-                        </Tooltip> */}
                       </Box>
                     )}
                   />

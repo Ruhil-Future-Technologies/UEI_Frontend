@@ -493,7 +493,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
   };
-  console.log("test log",fname_col1,admin.first_name)
+  const sixYearsAgo = dayjs()?.subtract(6, 'year');
+  const maxSelectableDate = dayjs(sixYearsAgo);
   return (
   
     <form>
@@ -592,6 +593,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               sx={{
                 backgroundColor: "#f5f5f5",
               }}
+              maxDate={maxSelectableDate}
             />
           </LocalizationProvider>
           <div>

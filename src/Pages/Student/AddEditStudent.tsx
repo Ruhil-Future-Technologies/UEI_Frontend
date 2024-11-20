@@ -65,18 +65,6 @@ const AddEditStudent = () => {
   const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
 
   useEffect(() => {
       // GetDataList()
@@ -89,19 +77,7 @@ const AddEditStudent = () => {
 
 
   const callAPI = async () => {
-    // getData(`${InstituteEntityURL}`).then((data: any) => {
-    //     // const linesInfo = data || [];
-    //     // dispatch(setLine(linesInfo))
-    //     setDataEntity(data?.data)
-    // })
-    if (id) {
-      // getData(`${InstituteEditURL}${id ? `/${id}` : ''}`).then((data: any) => {
-      //     // const linesInfo = data || [];
-      //     // dispatch(setLine(linesInfo))
-      //     // setDataEntity(data?.data)
-      //     setStudent(data?.data)
-      // })
-    }
+  
     try {
       const response = await getData(StudentURL);
       if (response.data) {
@@ -329,27 +305,9 @@ const AddEditStudent = () => {
         });
     }
     callAPI();
-    // e.target.reset()
-    // if (id) {
-    //     console.log("Submit 1", studentData);
-    //     putData(`${InstituteEditURL}/${id}`, studentData).then((data: any) => {
-    //         // const linesInfo = data || [];
-    //         // dispatch(setLine(linesInfo))
-    //         if (data.status === 200) {
-    //             navigator('/main/Student')
-    //         }
-    //     })
-    // } else {
-    //     postData(`${InstituteAddURL}`, studentData).then((data: any) => {
-    //         // const linesInfo = data || [];
-    //         // dispatch(setLine(linesInfo))
-    //         if (data.status === 200) {
-    //             navigator('/main/Student')
-    //         }
-    //     })
-    // }
   };
-
+  const sixYearsAgo = dayjs()?.subtract(6, 'year');
+  const maxSelectableDate = dayjs(sixYearsAgo);
   return (
     <>
     <div className='main-wrapper'>
@@ -448,24 +406,12 @@ const AddEditStudent = () => {
                         name="dob"
                         format="DD/MM/YYYY"
                         disableFuture
+                        maxDate={maxSelectableDate}
                       />
                     </LocalizationProvider>
 
 
                   </div>
-                  {/* <div className="form_field_wrapper"> */}
-                  {/* <label>Address</label> */}
-                  {/* <TextField
-                      label="Dob"
-                      name="dob"
-                      value={student?.dob}
-                      variant="outlined"
-                      onChange={handleChange}
-                    /> */}
-                  {/* </div> */}
-                  {/* {addressvalid && (
-                                        <p style={{ color: 'red' }}>Please enter a valid Address Only characters allowed.</p>
-                                    )} */}
                 </div>
                 <div className="col-md-4">
                   <div className="form_field_wrapper">
