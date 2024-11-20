@@ -18,9 +18,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-// import { toast } from 'react-toastify';
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
-// import * as Yup from 'yup';
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import {
@@ -152,47 +149,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     getStudentBasicInfo();
-    // getData(`${"student/get/" + StudentId}`, StudentId)
-    //   .then((data: any) => {
-
-    //     if (data?.status === 200) {
-    //       console.log(data);
-    //       // setBasicInfo(data);
-    //       getData(`${"upload_file/get_image/" +data.data.pic_path }`)
-    //       .then((imgdata: any) => {
-    //         setFilePreview(imgdata.data)
-    //       }).catch((e) => {
-
-    //       });
-    //       setBasicInfo(data?.data);
-    //       setInitialState({
-    //         student_login_id: StudentId,
-    //         first_name:data?.data?.first_name,
-    //         last_name: data?.data?.last_name,
-    //         gender: data?.data?.gender,
-    //         dob: data?.data?.dob || null,
-    //         father_name: data?.data?.father_name,
-    //         mother_name: data?.data?.mother_name,
-    //         guardian_name: data?.data?.guardian_name,
-    //         pic_path: selectedFile ? selectedFile : data?.data?.pic_path,
-    //         aim: data?.data?.aim,
-
-    //       })
-
-    //       // setSelectedFile(data?.data?.pic_path);
-    //       // console.log(typeof data?.data?.gender);
-    //     } else if (data?.status === 404) {
-    //       setEditFlag(true);
-    //     } else {
-    //       // console.log("error comes from api");
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     toast.error(e?.message, {
-    //       hideProgressBar: true,
-    //       theme: "colored",
-    //     });
-    //   });
     if (Object.keys(basicInfo).length === 0) {
       //postData(`${'student/add'}`)
     }
@@ -536,58 +492,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             })
             .catch((e: any) => {
               console.log("--------- e --------", e);
-
-              // toast.error(e?.message, {
-              //   hideProgressBar: true,
-              //   theme: "colored",
-              // });
             });
-          // .then((data: any) => {
-          //   console.log("---------- data.data.pic_path -----------", data.data.pic_path);
-
-          //   if(data.status == 200)
-          //     {
-          //       toast.success(data?.message, {
-          //         hideProgressBar: true,
-          //         theme: "colored",
-          //       });
-          //       getStudentBasicInfo()
-          //       setNamepro({
-          //         first_name: basicInfo?.first_name,
-          //         last_name: basicInfo?.last_name,
-          //         gender: basicInfo?.gender,})
-          //         getData(`${"upload_file/get_image/"}${data.data.pic_path}`)
-          //         .then((data: any) => {
-          //           console.log("immmmmm",data)
-          //           // setprofileImage(imgdata.data)
-          //           if(data.status == 200){
-
-          //             setProImage(data.data)
-          //           }else{
-
-          //           }
-          //         }).catch((e) => {
-          //           console.log("------------- e -------------", e);
-
-          //         })
-
-          //     }
-          //     else
-          //     {
-          //       toast.error(data?.message, {
-          //         hideProgressBar: true,
-          //         theme: "colored",
-          //       });
-          //     }
-          // })
-          // .catch((e) => {
-          //   console.log("---------- e top data ------------",e);
-
-          //   toast.error(e?.message, {
-          //     hideProgressBar: true,
-          //     theme: "colored",
-          //   });
-          // });
         };
         // eslint-disable-next-line no-lone-blocks
         if (!eq) editData();
@@ -599,6 +504,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     setProFlag(!proFalg);
   };
 
+  const sixYearsAgo = dayjs()?.subtract(6, 'year');
+  const maxSelectableDate = dayjs(sixYearsAgo);
   return (
     <form>
       <div className="row d-flex">
@@ -607,14 +514,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             First Name <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="first_name"
-            className="form-control"
-            value={basicInfo.first_name}
-            onChange={handleChange}
-            required
-          /> */}
           <input
             name="first_name"
             value={basicInfo.first_name}
@@ -721,6 +620,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               onChange={handleDateChange}
               disableFuture
               format="DD/MM/YYYY"
+              maxDate={maxSelectableDate}
+            
             />
           </LocalizationProvider>
           {/* <input

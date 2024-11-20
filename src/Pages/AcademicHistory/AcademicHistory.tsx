@@ -118,6 +118,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [insituteFlag, setInsituteFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
+  const [maxSemester, setMaxSemester] = useState(0);
 
   let StudentId = localStorage.getItem("_id");
   useEffect(() => {
@@ -224,7 +225,13 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             const filteredData = await response?.data?.filter(
               (item: any) => item?.is_active === 1
             );
-            setInstitutes(filteredData || []);
+
+            if (boxes[0]?.institute_type === "college") {
+              const filterDataInstitute = filteredData?.filter((item:any) => item?.university_id === boxes[0]?.university_id)
+              setInstitutes(filterDataInstitute || [])
+            }else{
+              setInstitutes(filteredData || []);
+            }
             setInstitutesAll(filteredData || [])
             // setInstitutes(response.data);
             // return filteredData || []
@@ -246,7 +253,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   useEffect(() => {
-    listData();
+    
     getData("university/list")
       .then((response: any) => {
         if (response.status === 200) {
@@ -328,51 +335,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           position: "top-center",
         });
       });
-
-    // getData(`${"student_academic_history/edit/" + StudentId}`)
-    //   .then((data: any) => {
-    //     if (data?.status === 200) {
-    //       data?.data?.forEach((item: any) => {
-    //         const newBox = {
-    //           id: item?.id,
-    //           institute_type: item?.institution_type,
-    //           board: item?.board,
-    //           state_for_stateboard: item?.state_for_stateboard,
-    //           institute_id: item?.institute_id,
-    //           course_id: item?.course_id,
-    //           learning_style: item?.learning_style,
-    //           class_id: item?.class_id,
-    //           year: item?.year ? dayjs(item?.year) : null,
-    //         };
-    //         if (!boxes.some((box) => box.id === newBox.id)) {
-    //           setBoxes((prevBoxes) => [...prevBoxes, newBox]);
-    //         }
-    //       });
-    //     } else if (data?.status === 404) {
-    //       setBoxes([
-    //         {
-    //           id: 0,
-    //           institute_type: "",
-    //           board: "",
-    //           state_for_stateboard: "",
-    //           institute_id: "",
-    //           course_id: "",
-    //           learning_style: "",
-    //           class_id: "",
-    //           year: null,
-    //         },
-    //       ]);
-    //       setEditFlag(true);
-    //     } else {
-    //       console.error("Unexpected response:", data);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     toast.error(error?.message, {
-    //       hideProgressBar: true,
-    //       theme: "colored",
-    //     });
-    //   });
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
@@ -437,6 +399,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           position: "top-center",
         });
       });
+      listData();
   }, []);
   const [errors, setErrors] = useState(initialErrors);
 
@@ -856,10 +819,19 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   }, [boxes])
 
-  const maxSemester = totalSemester && totalSemester?.length > 0
-    ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-    : 0;
+//  const maxSemester = totalSemester && totalSemester?.length > 0
+//     ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
+//     : 0;
 
+
+useEffect(() => {
+  if (totalSemester && totalSemester?.length > 0) {
+    const max = Math?.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number));
+    setMaxSemester(max); 
+  } else {
+    setMaxSemester(0); 
+  }
+}, [totalSemester]);
   return (
     <div className="mt-5">
       <form>
@@ -1174,7 +1146,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="Semester"
                   >
-                    {[...Array(maxSemester)].map((_, index) => (
+                    {[...Array(maxSemester)]?.map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}
                         value={index + 1}
@@ -1213,7 +1185,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="Class"
                   >
-                    {classes.map((classes) => (
+                    {
+                    // classes.map((classes) => (
+                      classes
+                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                      ?.map((classes) => (
                       <MenuItem
                         key={classes.id}
                         value={classes.id}

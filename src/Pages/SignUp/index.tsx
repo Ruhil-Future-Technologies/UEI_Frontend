@@ -264,226 +264,6 @@ const Signup = () => {
   return (
     <>
       {loading && <FullScreenLoader />}
-      {/* <div className="login">
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          open={issuccess}
-          autoHideDuration={6000}
-          // onClose={handleClose}
-          message={msg}
-          action={action}
-        />
-        <div className="login_inner">
-          <div className="form_wrapper">
-            <div className="login_form">
-              <div className="login_form_inner">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    register(e as any);
-                  }}
-                >
-                  <div className="title_wrapper">
-                    <h1 className="login_title">Register Account</h1>
-                    <div className="desc">Sign up to continue as Student.</div>
-                  </div> */}
-
-      {/* <div className="form_field_wrapper">
-                  <Typography
-                    sx={{
-                      marginLeft: "15px",
-                      display: "flex",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    UserId Select
-                  </Typography>
-                  <RadioGroup row value={userId} onChange={handleChangeUserId}>
-                    <FormControlLabel
-                      value="Email"
-                      control={<Radio />}
-                      label="Email"
-                    />
-                    <FormControlLabel
-                      value="Number"
-                      control={<Radio />}
-                      label="Number"
-                    />
-                  </RadioGroup>
-                </div> */}
-      {/* {userId === "Email" && (
-                  <div className="form_field_wrapper">
-                    <TextField
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <img src={emailicon} alt="email" />
-                          </InputAdornment>
-                        ),
-                      }}
-                      placeholder="Email"
-                      variant="outlined"
-                    />
-                    {uservalue === "userid" && (
-                      <small className="text-danger">Please Enter Email</small>
-                    )}
-                  </div>
-                )}
-                {userId === "Number" && (
-                  <div className="form_field_wrapper">
-                    <TextField
-                      id="phone"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <img src={phoneicon} alt="phone" />
-                          </InputAdornment>
-                        ),
-                      }}
-                      placeholder="Mobile Number"
-                      variant="outlined"
-                    />
-                    {uservalue === "userid" && (
-                      <small className="text-danger">
-                        Please Enter Mobile No
-                      </small>
-                    )}
-                  </div>
-                )} */}
-      {/* <div className="form_field_wrapper-login">
-                    <TextField
-                      id="emailphone"
-                      value={emailphone}
-                      onChange={handleChangeData}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <MdContactMail />
-                          </InputAdornment>
-                        ),
-                      }}
-                      placeholder="Email or Mobile Number"
-                      variant="outlined"
-                      error={!!errorEmail}
-                      helperText={errorEmail}
-                      required={true}
-                      sx={{
-                        '& input:-webkit-autofill': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important', // Set the background color you want
-                          WebkitTextFillColor: 'black !important', // Set the text color you want
-                        },
-                        '& input:-webkit-autofill:hover': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important',
-                          WebkitTextFillColor: 'black !important',
-                        },
-                        '& input:-webkit-autofill:focus': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important',
-                          WebkitTextFillColor: 'black !important',
-                        },
-                        '& input:-webkit-autofill:active': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important',
-                          WebkitTextFillColor: 'black !important',
-                        },
-                      }}
-                    /> */}
-      {/* {uservalue === "userid" && (
-                    <small className="text-danger">
-                      Please Enter Mobile No
-                    </small>
-                  )} */}
-      {/* </div>
-                  <div className="form_field_wrapper-login">
-                    <TextField
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={password}
-                      onChange={handleChangePassword}
-                      error={!!errorPassword}
-                      helperText={errorPassword}
-                      onBlur={handleBlurPassword}
-                      required={true}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <img src={passwordicon} alt="password" />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              edge="end"
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                               
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{
-                        '& input:-webkit-autofill': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important', // Set the background color you want
-                          WebkitTextFillColor: 'black !important', // Set the text color you want
-                        },
-                        '& input:-webkit-autofill:hover': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important',
-                          WebkitTextFillColor: 'black !important',
-                        },
-                        '& input:-webkit-autofill:focus': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important',
-                          WebkitTextFillColor: 'black !important',
-                        },
-                        '& input:-webkit-autofill:active': {
-                          WebkitBoxShadow: '0 0 0 1000px white inset !important',
-                          WebkitTextFillColor: 'black !important',
-                        },
-                      }}
-                      fullWidth
-                    />
-                    {uservalue === "password" && (
-                      <small className="text-danger">
-                        Please Enter Password
-                      </small>
-                    )}
-                  </div> */}
-
-      {/* <RadioGroup row value={value} onChange={handleChange}>
-                    <FormControlLabel
-                      value="student"
-                      control={<Radio />}
-                      label="Student"
-                    />
-                    <FormControlLabel
-                      value="admin"
-                      control={<Radio />}
-                      label="Admin"
-                    />
-                  </RadioGroup> */}
-      {/* <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                    Register Now
-                  </button>
-                  <div className="form_field_wrapper signuplink_block">
-                    <Link className="ato signupa" to="/">
-                      Already have an account? &nbsp;
-                      <span className="signup_txt">Login Now</span>
-                    </Link>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
 
       <div className="without-login">
         <header className="container-fluid mb-5 py-3 d-none d-lg-block">
@@ -618,17 +398,11 @@ const Signup = () => {
                           }}
                         />
                       </div>
-                      {/* <div className="mb-3">
-                    <label htmlFor="" className="form-label">Phone</label>
-                    <input type="text" className="form-control   h-52"  placeholder="Enter Your Phone"/>
-                  </div> */}
                       <div className="mb-3">
                         <label htmlFor="passwordInput" className="form-label">
                           Password
                         </label>
                         <div className="position-relative">
-                          {/* <input type="password" className="form-control   h-52" id="passwordInput" placeholder="Enter your password"/>
-                    <img src="assets/images/icons/eye-off.svg" id="togglePassword" className="phone-btn" alt=""/> */}
                           <TextField
                             type={showPassword ? "text" : "password"}
                             placeholder="Password"
@@ -688,7 +462,7 @@ const Signup = () => {
                       </div>
 
                       <div className="form-check mb-3 fs-14">
-                        <input
+                        {/* <input
                           className="form-check-input"
                           type="checkbox"
                           value=""
@@ -700,7 +474,7 @@ const Signup = () => {
                         >
                           By Creating your account you have to agree with our{" "}
                           <a href=""> Terms and Condition</a>
-                        </label>
+                        </label> */}
                       </div>
                       <button className="btn btn-secondary w-100 mh-56 rounded-pill">
                         Sign Up Now
