@@ -163,9 +163,10 @@ const AddEditCourse = () => {
     const handleSubmit = async (courseData: any) => {
       const coursedata =  {
             course_name: courseData.course_name,
-            institution_id: JSON.stringify(courseData.institute),
+            institution_id: courseData.institute,
              duration:  JSON.stringify(courseData.duration)
           }
+          console.log("test log ===",coursedata,courseData)
         if (id) {
             putData(`${CourseEditURL}/${id}`, coursedata).then((data: { status: number,message:string }) => {
                 if (data.status === 200) {
