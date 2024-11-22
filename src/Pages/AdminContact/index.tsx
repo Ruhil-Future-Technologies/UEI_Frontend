@@ -117,6 +117,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           email_id: response?.data.email_id,
           admin_id: adminId,
         });
+        setEditFlag(false);
       } else if (response?.status === 404) {
         setEditFlag(true);
       } else {
@@ -170,6 +171,7 @@ if(phoneNum === ""){
           const response = await postData("admin_contact/add", paylod);
 
           if (response?.status === 200) {
+            setEditFlag(false);
             toast.success(response?.message, {
               hideProgressBar: true,
               theme: "colored",
@@ -184,10 +186,47 @@ if(phoneNum === ""){
               theme: "colored",
             });
           } else {
-            toast.error("Request Failed", {
-              hideProgressBar: true,
-              theme: "colored",
-            });
+            if(error?.response?.message === "Email Already exist"){
+              setEditFlag(false);
+              try {
+                const response = await putData(
+                  "admin_contact/edit/" + adminId,
+                  paylod
+                );
+      
+                if (response?.status === 200) {
+                  toast.success(response?.message, {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                  setActiveForm((prev) => prev + 1);
+                  getContact();
+                } else {
+                  toast.error("Something went wrong ", {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                }
+              } catch (error: any) {
+                if (error?.response?.status === 401) {
+                  toast.warning("Please login again", {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                } else {
+                  toast.error("Request failed", {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                }
+              }
+
+            }else{
+              toast.error("Request Failed", {
+                hideProgressBar: true,
+                theme: "colored",
+              });
+            }
           }
         }
       };
