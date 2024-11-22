@@ -64,6 +64,10 @@ const AddEditStudent = () => {
   const pathSegments = location.pathname.split('/').filter(Boolean);    
   const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
+  const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
+  const minSelectableDate = dayjs("01/01/1900");
+  const [error, setError] = React.useState<string | null>(null); 
+  const [dobset_col, setdobset_col] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -220,15 +224,49 @@ const AddEditStudent = () => {
       };
     });
   };
+
   const handleDateChange = (newDate: Dayjs | null) => {
-    if (newDate !== null) {
-      setStudent((prevUser) => {
-        return {
-          ...prevUser,
-          dob: newDate,
-        };
-      });
+    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
+      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+        if (newDate !== null) {
+          setStudent((prevUser) => {
+            return {
+              ...prevUser,
+              dob: newDate,
+            };
+          });
+        }
+        setError(null); 
+        setdobset_col(false);
+      } else {
+        // setDob(null);
+        let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+        if (datecheck === "Invalid Date") {
+          setError(null);
+          setdobset_col(true);
+        } else {
+          setdobset_col(false);
+          const currentDate = dayjs();
+          if (newDate?.isAfter(currentDate, 'day')) {
+            setError('Future date are not allow.');
+          }else{
+            setError('You must be at least 6 years old.');
+          }
+        }
+      }
+    }else{
+      setError('Invalid date selected. Please choose a valid date.');
     }
+
+
+    // if (newDate !== null) {
+    //   setStudent((prevUser) => {
+    //     return {
+    //       ...prevUser,
+    //       dob: newDate,
+    //     };
+    //   });
+    // }
   }
   const [isBase64Image, setIsBase64Image] = useState(false);
   const handleSubmit = async (
@@ -260,7 +298,7 @@ const AddEditStudent = () => {
     //   setIsBase64Image(false);
     // }
     let payload = {
-      aim: studentData.aim,
+      aim: studentData?.aim,
       first_name: studentData?.first_name,
       last_name: studentData?.last_name,
       gender: studentData?.gender,
@@ -270,14 +308,20 @@ const AddEditStudent = () => {
       guardian_name: studentData?.guardian_name,      
       is_kyc_verified: studentData?.is_kyc_verified,
       // pic_path:isBase64Image?studentData.image_name :fileName  ,
-      pic_path:uploadedfile ? uploadedfile : studentData.image_name ,
+      pic_path:uploadedfile ? uploadedfile : studentData?.image_name ,
       // pic_path:studentData?.pic_path,
       student_login_id: id,
       email_id:studentData?.email_id,
       mobile_no_call:studentData?.mobile_no_call
     }
+    let datecheck: any = dayjs(payload?.dob)?.format("DD/MM/YYYY");
+    if (datecheck === "Invalid Date") {
+      setdobset_col(true);
+    } else {
+      setdobset_col(false);
+    }
     // console.log("test stud p",payload,isBase64Image)
-    if(!aim && student?.aim !== ""&& !fname && student?.first_name !== "" && !lname && student?.last_name !== "" && !gender && student?.gender !== "" && !fathernm && student?.father_name !== "" && !mothernm && student?.mother_name !== "" && !gname && student?.guardian_name !== "" && student?.pic_path !== "" ){
+    if(!aim && student?.aim !== ""&& !fname && student?.first_name !== "" && !lname && student?.last_name !== "" && !gender && student?.gender !== "" && !fathernm && student?.father_name !== "" && !mothernm && student?.mother_name !== "" && !gname && student?.guardian_name !== "" && student?.pic_path !== "" && error === null && datecheck !== "Invalid Date" ){
 
       putData(`${EditStudentURL}${id ? `/${id}` : ''}`, payload)
         .then((data: any) => {
@@ -306,8 +350,6 @@ const AddEditStudent = () => {
     }
     callAPI();
   };
-  const sixYearsAgo = dayjs()?.subtract(6, 'year');
-  const maxSelectableDate = dayjs(sixYearsAgo);
   return (
     <>
     <div className='main-wrapper'>
@@ -398,8 +440,8 @@ const AddEditStudent = () => {
                 <div className="col-md-4">
                   <div className="form_field_wrapper" style={{maxWidth: 220, width:'100%'}}>
 
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        {/* <DatePicker
                         label="Date of Birth *"
                         value={dayjs(student?.dob)}
                         onChange={handleDateChange}
@@ -407,9 +449,40 @@ const AddEditStudent = () => {
                         format="DD/MM/YYYY"
                         disableFuture
                         maxDate={maxSelectableDate}
-                      />
-                    </LocalizationProvider>
-
+                      /> */}
+                        
+                          <DatePicker
+                            label="Date of Birth *"
+                            value={dayjs(student?.dob)}
+                            onChange={handleDateChange}
+                            name="dob"
+                            format="DD/MM/YYYY"
+                            disableFuture
+                            maxDate={exactSixYearsAgo}
+                            minDate={minSelectableDate}
+                            onError={() => { }}
+                            // sx={{
+                            //   backgroundColor: "#f5f5f5",
+                            // }}
+                            slotProps={{
+                              textField: {
+                                variant: 'outlined',
+                                helperText: error,
+                                error: Boolean(error),
+                                inputProps: {
+                                  maxLength: 10,
+                                },
+                              },
+                            }}
+                          />
+                      
+                      </LocalizationProvider>
+                      <div>
+                        {" "}
+                        {dobset_col && (
+                          <p style={{ color: "red" }}>Please enter Date of Birth.</p>
+                        )}
+                      </div>
 
                   </div>
                 </div>

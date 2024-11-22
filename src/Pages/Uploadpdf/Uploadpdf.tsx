@@ -47,13 +47,15 @@ interface Box {
   subject_id?: string;
 }
 interface Institute {
-  id: number;
+  // id: number;
   institute_id: string;
   institution_name: string;
   university_id: any
+  id: string | number;
 }
 interface Course {
-  id: number;
+  // id: number;
+  id: string | number;
   course_name: string;
   course_id: string;
   institution_id: string;
@@ -460,11 +462,36 @@ const Uploadpdf = () => {
     if (AdminId !== null) {
       formData.append("teacher_id", String(AdminId));
       if (boxes[0]?.institute_type?.toLowerCase() === "college") {
-        const { institute_id, university_id, course_id, sem_id, institute_type } = boxes[0];
+        const { institute_id, university_id, course_id, sem_id, institute_type ,subject_id } = boxes[0];
+        const universityNames = await university?.filter(item => item.university_id === university_id)?.map(item => item.university_name);
+        const filterInstitute = await institutesAll?.filter((item) => 
+          item.university_id === university_id && item?.id === institute_id
+        )?.map(item => item.institution_name);
+        const filterCourse = await coursesAll.filter((item) => 
+          item.institution_id === institute_id  && item?.id === course_id 
+        )?.map(item =>item.course_name)
+      //   const filterSubject = await subjectsAll?.filter((item:any)=> 
+      //     item?.institution_id  === institute_id && item?.course_id  === course_id && 
+      //   item?.semester_id  === sem_id && item?.subject_id  === subject_id
+      // )?.map(item => item.subject_name)
+        
+
+        if (universityNames && universityNames.length > 0) {
+          formData.append("university_selection", universityNames.join(','));
+        }
+        if (filterInstitute && filterInstitute.length > 0) {
+          formData.append("college_selection", filterInstitute.join(','));
+        }
+        if (filterCourse && filterCourse.length > 0) {
+          formData.append("course_selection", filterCourse.join(','));
+        }
+        // if (filterSubject && filterSubject.length > 0) {
+        //   formData.append("subject", filterSubject.join(','));
+        // }
         if (institute_type) formData.append("school_college_selection", institute_type);
-        if (institute_id) formData.append("college_selection", institute_id);
-        if (university_id) formData.append("university_selection", university_id);
-        if (course_id) formData.append("course_selection", course_id);
+        // if (institute_id) formData.append("college_selection", institute_id);
+        // if (university_id) formData.append("university_selection", university_id);
+        // if (course_id) formData.append("course_selection", course_id);
         // if (sem_id) formData.append("sem_id", sem_id);
       
        // Convert sem_id to a number if it is a string
@@ -483,12 +510,35 @@ const Uploadpdf = () => {
     if (year) formData.append("year", year);
       }
       if(boxes[0]?.institute_type?.toLowerCase() === "school"){
-        const { board, class_id, state_for_stateboard, stream,institute_type } = boxes[0];
+        const { board, class_id, state_for_stateboard, stream,institute_type  } = boxes[0];
+        // let filterSubject
+       
+      //   if(stream){
+          
+      //     filterSubject = await subjectsAll?.filter((item:any)=> 
+      //       item?.class_id  === class_id &&  item?.stream === stream && item?.subject_id  === subject_id
+      //      )?.map(item => item.subject_name)
+      //      console.log("strem ==>",stream,filterSubject)
+      //   }else{
+        
+      //     filterSubject = await subjectsAll?.filter((item:any)=> 
+      //       item?.class_id  === class_id && item?.subject_id  === subject_id
+      // )?.map(item => item.subject_name)
+      // console.log("strem  null==>",filterSubject)
+      //   }
         if (institute_type) formData.append("school_college_selection", institute_type);
+
+
+
         if (board) formData.append("board_selection", board?.toUpperCase());
         if (class_id) formData.append("class_selection",particularClass || class_id);
         if (state_for_stateboard) formData.append("state_board_selection", state_for_stateboard);
         if (stream) formData.append("stream_selection", stream);
+
+        // if (filterSubject && filterSubject.length > 0) {
+        //   formData.append("subject", filterSubject.join(','));
+        // }
+
         // if (subject_id) formData.append("subject", subject_id);
 
       }
@@ -505,8 +555,8 @@ const Uploadpdf = () => {
       formData
     )
       .then((data: any) => {
-        if (data?.status === 201) {
-          toast.success(data?.message, {
+        if (data?.status === 200) {
+          toast.success("PDF Uploaded Successfully", {
             hideProgressBar: true,
             theme: "colored",
           });
@@ -640,7 +690,7 @@ const Uploadpdf = () => {
   //   newBoxes[index][field] = value;
   //   setBoxes1(newBoxes);
   // };
-  console.log("test log",boxes,boxes1)
+ 
   return (
     <>
       {loading && <FullScreenLoader />}

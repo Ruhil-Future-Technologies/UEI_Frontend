@@ -78,6 +78,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [error1, setError1] = useState("");
+  const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
+  const minSelectableDate = dayjs("01/01/1900");
+  const [error, setError] = React.useState<string | null>(null); 
 
   useEffect(() => {
     localStorage.setItem("proFalg", proFalg ? "true" : "false");
@@ -154,7 +157,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   }, []);
 
-  const [error, setError]: any = useState({});
+  // const [error, setError]: any = useState({});
 
   const handleChange = (event: any) => {
     let { name, value } = event.target;
@@ -290,17 +293,41 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // const handleDate = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
   //     handleChange(event.target.value as Date | null);
   //   };
+ 
   const handleDateChange = (newDate: Dayjs | null) => {
-    console.log("handleDate", newDate);
-
-    setBasicInfo((values) => ({ ...values, dob: newDate }));
-
-    let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
-    if (datecheck === "Invalid Date") {
-      setdobset_col(true);
-    } else {
+    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
+    if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+      setBasicInfo((values) => ({ ...values, dob: newDate }));
+      setError(null); 
       setdobset_col(false);
+    } else {
+      // setDob(null);
+      let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+      if (datecheck === "Invalid Date") {
+        setError(null);
+        setdobset_col(true);
+      } else {
+        setdobset_col(false);
+        const currentDate = dayjs();
+        if (newDate?.isAfter(currentDate, 'day')) {
+          setError('Future date are not allow.');
+        }else{
+          setError('You must be at least 6 years old.');
+        }
+      }
     }
+  }else{
+    setError('Invalid date selected. Please choose a valid date.');
+  }
+
+    // setBasicInfo((values) => ({ ...values, dob: newDate }));
+
+    // let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
+    // if (datecheck === "Invalid Date") {
+    //   setdobset_col(true);
+    // } else {
+    //   setdobset_col(false);
+    // }
   };
 
   const [formData, setFormData] = useState({
@@ -400,7 +427,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       !fname_col &&
       !lname_col &&
       !fathername_col &&
-      !mothername_col
+      !mothername_col &&
+      error === null &&
+      datecheck !== "Invalid Date"
     ) {
       if (editFalg) {
         postData(`${"student/add"}`, payload)
@@ -504,8 +533,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     setProFlag(!proFalg);
   };
 
-  const sixYearsAgo = dayjs()?.subtract(6, 'year');
-  const maxSelectableDate = dayjs(sixYearsAgo);
   return (
     <form>
       <div className="row d-flex">
@@ -601,9 +628,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             </RadioGroup>
           </FormControl>
           <div>
-            {error.gender && (
+            {/* {error.gender && (
               <span style={{ color: "red" }}>{error.gender}</span>
-            )}
+            )} */}
           </div>
         </div>
         <div className="col-md-6 pb-3 form_field_wrapper">
@@ -611,7 +638,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             Date of Birth <span>*</span>
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            {/* <DatePicker
               // label="Date of Birth"
               sx={{
                 backgroundColor: "#f5f5f5",
@@ -622,7 +649,31 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               format="DD/MM/YYYY"
               maxDate={maxSelectableDate}
             
-            />
+            /> */}
+            <Box width={300}>
+        <DatePicker
+          value={dayjs(basicInfo?.dob)} 
+          onChange={handleDateChange} 
+          format="DD/MM/YYYY"
+          disableFuture 
+          maxDate={exactSixYearsAgo} 
+          minDate={minSelectableDate} 
+          onError={() => {}} 
+          sx={{
+            backgroundColor: "#f5f5f5",
+          }}
+          slotProps={{
+            textField: {
+              variant: 'outlined',
+              helperText: error, 
+              error: Boolean(error), 
+              inputProps: {
+                maxLength: 10, 
+              },
+            },
+          }}
+        />
+      </Box>
           </LocalizationProvider>
           {/* <input
             type="date"
