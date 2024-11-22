@@ -174,6 +174,7 @@ if(phoneNum === ""){
               hideProgressBar: true,
               theme: "colored",
             });
+            getContact();
             setActiveForm((prev) => prev + 1);
           }
         } catch (error: any) {

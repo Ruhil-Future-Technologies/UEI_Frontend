@@ -190,6 +190,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               theme: "colored",
               position: "top-center"
             });
+            getContacInfo();
             setActiveForm((prev) => prev + 1);
           } else {
             toast.error(data?.message, {

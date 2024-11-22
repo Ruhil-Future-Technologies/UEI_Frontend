@@ -1,65 +1,36 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {
-  Card,
-  CardContent,
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grid,
-  IconButton,
   InputLabel,
   MenuItem,
-  OutlinedInput,
-  Paper,
   Radio,
   RadioGroup,
   Select,
   SelectChangeEvent,
-  TextField,
-  Theme,
-  Tooltip,
-  useTheme,
 } from "@mui/material";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider} from "@mui/x-date-pickers";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
 //import DatePicker from 'react-datepicker';
 //import 'react-datepicker/dist/react-datepicker.css';
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import dayjs, { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 
-import { Field, Form, Formik, FormikProps } from "formik";
-import * as Yup from "yup";
 import { deepEqual } from "../../utils/helpers";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
 
 interface Department {
   id: number;
@@ -86,15 +57,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const { getData, postData, putData, postFileData } = useApi();
   const [initialAdminState, setInitialAdminState] =
     useState<AdminInformation | null>(null);
-  const [adminFName, setAdminFName] = useState("");
-  const [adminLName, setAdminLName] = useState("");
-  const [adminGender, setAdminGender] = useState("Male");
   const [adminDOB, setAdminDOB] = useState<Dayjs | null | undefined>(
     dayjs("dd-mm-yyyy")
   );
-  const [adminFatherName, setAdminFatherName] = useState("");
-  const [adminMotherName, setAdminMotherName] = useState("");
-  const [adminGurdian, setAdminGurdian] = useState("");
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [editFalg1, setEditFlag1] = useState<boolean>(false);
   const [dobset_col, setdobset_col] = useState<boolean>(false);
@@ -107,7 +72,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState("");
   let adminId = localStorage.getItem("_id");
-//   console.log(adminId);
   const [admin, setadmin] = useState<AdminInformation>({
     first_name: "", 
     last_name: "",
@@ -126,6 +90,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [error1, setError1] = useState("");
+  const exactSixYearsAgo = dayjs().subtract(6, 'year');
+  const minSelectableDate = dayjs("01/01/1900");
+  const [error, setError] = React.useState<string | null>(null); 
   useEffect(() => {
     setadmin((prevState) => ({ ...prevState, dob: adminDOB ?? null }));
   }, [adminDOB]);
@@ -321,13 +288,39 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   };
   const handleDateChange = (newDate: Dayjs | null) => {
-    setAdminDOB(newDate);
-    let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
-    if (datecheck === "Invalid Date") {
-      setdobset_col(true);
-    } else {
+    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
+    if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+      // setDob(newDate);
+      setAdminDOB(newDate);
+      setError(null); // Clear error
       setdobset_col(false);
+    } else {
+      // setDob(null);
+      let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+      if (datecheck === "Invalid Date") {
+        setError(null);
+        setdobset_col(true);
+      } else {
+        setdobset_col(false);
+        const currentDate = dayjs();
+        if (newDate?.isAfter(currentDate, 'day')) {
+          setError('Future date are not allow.');
+        }else{
+          setError('You must be at least 6 years old.');
+        }
+      }
     }
+  }else{
+    setError('Invalid date selected. Please choose a valid date.');
+  }
+
+    // setAdminDOB(newDate);
+    // let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
+    // if (datecheck === "Invalid Date") {
+    //   setdobset_col(true);
+    // } else {
+    //   setdobset_col(false);
+    // }
   };
   const adminBasicInfo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -420,7 +413,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         admin.mother_name !== "" &&
         !gname_col &&
         adminDepartment &&
-        !dobset_col
+        !dobset_col &&
+        error === null &&
+        datecheck !== "Invalid Date"
       ) {
         seveData();
       }
@@ -483,7 +478,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         !mothername_col &&
         !gname_col &&
         admin.mother_name !== "" &&
-        adminDepartment
+        adminDepartment &&
+        error === null &&
+        datecheck !== "Invalid Date"
       ) {
         // eslint-disable-next-line no-lone-blocks
         {
@@ -493,8 +490,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
   };
-  const sixYearsAgo = dayjs()?.subtract(6, 'year');
-  const maxSelectableDate = dayjs(sixYearsAgo);
   return (
   
     <form>
@@ -585,7 +580,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             Date of Birth <span>*</span>
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            {/* <DatePicker
               value={dayjs(admin.dob)}
               onChange={(date: any) => handleDateChange(date)}
               format="DD/MM/YYYY"
@@ -594,7 +589,31 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 backgroundColor: "#f5f5f5",
               }}
               maxDate={maxSelectableDate}
-            />
+            /> */}
+        <Box width={300}>
+        <DatePicker
+          value={dayjs(admin?.dob)} // Bind the value to dob state
+          onChange={handleDateChange} // Handle the date change
+          format="DD/MM/YYYY"
+          disableFuture // Disable future dates (optional)
+          maxDate={exactSixYearsAgo} // Set max date to exactly 6 years ago
+          minDate={minSelectableDate}  
+          onError={() => {}} // Handle errors if needed
+          sx={{
+            backgroundColor: "#f5f5f5",
+          }}
+          slotProps={{
+            textField: {
+              variant: 'outlined',
+              helperText: error, // Show the error message under the input field
+              error: Boolean(error), // Show error styling when there's an error
+              inputProps: {
+                maxLength: 10, // Limit input length to 10 (DD/MM/YYYY)
+              },
+            },
+          }}
+        />
+      </Box>
           </LocalizationProvider>
           <div>
             {" "}
