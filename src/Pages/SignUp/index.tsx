@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FormControlLabel, Radio, RadioGroup, Typography, Switch } from "@mui/material";
+import { FormControlLabel, Radio, RadioGroup, Typography, Switch, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { MdContactMail } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -60,6 +60,9 @@ const Signup = () => {
   const [errorEmail, setEmailError] = useState("");
   const [errorPassword, setPasswordError] = useState("");
   const [checked, setchecked] = useState(false);
+
+  const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
+  const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   // const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -81,10 +84,10 @@ const Signup = () => {
   useEffect(() => {
     const theme = localStorage?.getItem("theme") || "";
     if (theme === "light") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);      
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
     } else if (theme === "dark") {
       document?.documentElement?.setAttribute("data-bs-theme", theme);
-   
+
     } else if (theme === "blue-theme")
       document?.documentElement?.setAttribute("data-bs-theme", theme);
     else if (theme === "semi-dark")
@@ -92,9 +95,9 @@ const Signup = () => {
     else if (theme === "bordered-theme")
       document?.documentElement?.setAttribute("data-bs-theme", theme);
     else
-    document?.documentElement?.setAttribute("data-bs-theme", theme);
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
     // document.documentElement.setAttribute('data-theme', theme);
- }, []);
+  }, []);
 
 
   const handleCloseicon = (
@@ -260,7 +263,18 @@ const Signup = () => {
   const handleBlurPassword = () => {
     validatePassword(password);
   };
+  const handleTermandCondi = (e: ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
 
+    setCheckTermandcondi(!isChecked);
+  }
+
+  const handleTACpopup = () => {
+    setPopupTermandcondi(true)
+  }
+  const handleClose = () => {
+    setPopupTermandcondi(false);
+  }
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -492,8 +506,8 @@ const Signup = () => {
               <div className="logoui">
                 <img src={gLogo} alt="" onClick={() => navigate("/")} />
                 <span>Gyansetu</span>
-              </div>             
-            </div>         
+              </div>
+            </div>
           </div>
         </header>
         <section className="container pb-5">
@@ -559,12 +573,12 @@ const Signup = () => {
                     />
                   </div>
                   <div className="col-lg-12 d-lg-none d-block">
-                      <img
+                    <img
                       src={gyansetuLogo}
                       className=" mx-auto my-0 d-block"
                       alt="" width="120"
                     />
-                      </div>
+                  </div>
                   <div className="col-lg-12">
                     <h1 className=" mt-2 mt-lg-0 mb-0 inter-600">Sign Up</h1>
                     <p className="fs-14 d-lg-none">
@@ -693,23 +707,38 @@ const Signup = () => {
                           type="checkbox"
                           value=""
                           id="flexCheckDefault"
+                          onChange={handleTermandCondi}
                         />
                         <label
                           className="form-check-label"
                           htmlFor="flexCheckDefault"
                         >
                           By Creating your account you have to agree with our{" "}
-                          <a href=""> Terms and Condition</a>
+                          <a href="#" onClick={(e)=>{e.preventDefault();handleTACpopup()}}> Terms and Condition</a>
                         </label>
                       </div>
-                      <button className="btn btn-secondary w-100 mh-56 rounded-pill">
+                      <button className="btn btn-secondary w-100 mh-56 rounded-pill" disabled={CheckTermandcondi}>
                         Sign Up Now
                       </button>
                       <p className="my-4 text-center">
                         Already have an account?{" "}
-                        <Link to="/" style={{color:"#9943EC"}}> Sign in here </Link>
+                        <Link to="/" style={{ color: "#9943EC" }}> Sign in here </Link>
                       </p>
                     </form>
+                    <Dialog open={popupTermandCondi} onClose={handleClose}>
+                      <DialogTitle>{"Terms and Condition"}</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          {/* Todo by atul */}
+                          Content of Gyanshetu Terms and Condition...... will coming soon
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                          Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </div>
                 </div>
               </div>
