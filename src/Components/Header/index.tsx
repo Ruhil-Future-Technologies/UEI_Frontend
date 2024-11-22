@@ -951,9 +951,12 @@ const Header = () => {
                       height="90"
                       alt=""
                     />
-                    <h5 className="user-name mb-0 fw-bold">{`Hello, ${
-                      namepro?.first_name || "User"
-                    }`}</h5>
+                    <h5 className="user-name mb-0 fw-bold" style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis"
+                    }}>{`Hello, ${namepro?.first_name || "User"
+                      }`}</h5>
                   </div>
                 </div>
                 <hr className="dropdown-divider" />

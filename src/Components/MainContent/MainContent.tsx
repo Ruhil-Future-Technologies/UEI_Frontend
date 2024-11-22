@@ -535,12 +535,12 @@ function MainContent() {
   };
   // Sort statsChatCount by chat_count in descending order and take the top 5
   const top5Chats = statsChatCount
-    .sort((a: { chat_count: number; }, b: { chat_count: number; }) => b.chat_count - a.chat_count)
-    .slice(0, 5);
+    ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
+    ?.slice(0, 5);
 
   // Extract student names and chat counts for the top 5 entries
-  const studentNames = top5Chats.map((item: any) => item.student_name);
-  const chatCounts = top5Chats.map((item: any) => item.chat_count);
+  const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   const barChartDataStudentChatCount: ChartData<"bar", number[], string> = {
     labels: studentNames,
     datasets: [
@@ -825,7 +825,6 @@ function MainContent() {
         .then((data: any) => {
           if (data.data) {
             setProfileDatas(data?.data);
-            console.log("data log",data?.data)
             //   let basic_info = data.data.basic_info;
             let basic_info = {
               // aim: data?.data?.basic_info?.aim,
@@ -2161,7 +2160,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="mb-0">{stats.subjectCount}</h4>
+                            <h4 className="mb-0">{stats.collegesubjectCount + stats?.schoolsubjectCount}</h4>
                             <p className="mb-0">Total Subjects</p>
                           </div>
                         </div>
