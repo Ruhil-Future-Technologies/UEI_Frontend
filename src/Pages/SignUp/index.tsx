@@ -476,7 +476,7 @@ const Signup = () => {
                       </div>
 
                       <div className="form-check mb-3 fs-14">
-                        {/* <input
+                         <input
                           className="form-check-input"
                           type="checkbox"
                           value=""
@@ -505,7 +505,6 @@ const Signup = () => {
                       <DialogTitle>{"Terms and Condition"}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          {/* Todo by atul */}
                           Content of Gyanshetu Terms and Condition...... will coming soon
                         </DialogContentText>
                       </DialogContent>
