@@ -26,7 +26,7 @@ import {
 } from "../../utils/helpers";
 import { TrashIcon } from "../../assets";
 import useApi from "../../hooks/useAPI";
-import { PDF_LIST_COLUMNS, IPDFList } from "../../Components/Table/columns";
+import { PDF_LIST_FOR_COLLAGE_COLUMNS, IPDFList, PDF_LIST_FOR_SCHOOL_COLUMNS } from "../../Components/Table/columns";
 import "../Uploadpdf/Uploadpdf.scss";
 
 interface Classes {
@@ -56,6 +56,7 @@ const PDFList = () => {
   if (AdminId) {
     AdminId = String(AdminId);
   }
+  //lookafter
   const [selectedClass, setSelectedClass] = useState("");
   const [dataSubject, setDataSubject] = useState([]);
   const [classes, setClasses] = useState<Classes[]>([]);
@@ -63,9 +64,11 @@ const PDFList = () => {
   const [selectedFile, setSelectedFile] = useState<IPDFList>();
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-
+  const [schoolOrcollFile,setSchoolOrcollFile]=useState('');
+  const [buttenView, setButtenView] = useState(true);
   const { getData, loading, deleteFileData } = useApi();
-  const columns = PDF_LIST_COLUMNS;
+  const collageColumns = PDF_LIST_FOR_COLLAGE_COLUMNS;
+ const schoolColumns=PDF_LIST_FOR_SCHOOL_COLUMNS;
 
   useEffect(() => {
     callAPI();
@@ -98,14 +101,22 @@ const PDFList = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedClass && !dataDelete) {
+    if (schoolOrcollFile && !dataDelete) {
+      let payload={
+        admin_id:AdminId,
+        school_college_selection:schoolOrcollFile
+      }
+      
+      let apiUrl =`https://dbllm.gyansetu.ai/display-files?admin_id=${6}&school_college_selection=${schoolOrcollFile}`;
       getData(
-        `https://uatllm.gyansetu.ai/display-files?class_name=${selectedClass}`
+        apiUrl
       )
         .then((response: any) => {
-          if (response.status === 200) {
-            setFileList(response?.filenames);
-          }
+          console.log(response);
+          
+            setFileList(response);
+            //console.log("all are looking good");
+         
         })
         .catch((error) => {
           toast.error(error?.message, {
@@ -113,8 +124,10 @@ const PDFList = () => {
             theme: "colored",
           });
         });
+      console.log(payload);
     }
-  }, [selectedClass, dataDelete]);
+    console.log(schoolOrcollFile);
+  }, [schoolOrcollFile, dataDelete]);
 
   const callAPI = async () => {
     getData(`${SubjectURL}`)
@@ -180,6 +193,16 @@ const PDFList = () => {
         });
       });
   };
+  const handlefilter=(e:any)=>{
+   if(e=="school"){
+     setButtenView(false);
+     setSchoolOrcollFile("school");
+   }else{
+    setButtenView(true)
+    setSchoolOrcollFile("college")
+   }
+ 
+  }
 
   return (
     <>
@@ -211,7 +234,7 @@ const PDFList = () => {
                   }}
                 >
                   <div>
-                    <FormControl sx={{ minWidth: 300 }}>
+                    {/* <FormControl sx={{ minWidth: 300 }}>
                       <InputLabel
                         id="select-class-label"
                         sx={{ color: inputfieldtext(namecolor) }}
@@ -255,7 +278,13 @@ const PDFList = () => {
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>
+                    </FormControl> */}
+                    <button name="college" className="btn btn-primary m-2" onClick={()=>handlefilter("college")} disabled={buttenView}>
+                      college
+                    </button>
+                    <button name="school" className="btn btn-primary" disabled={!buttenView} onClick={()=>handlefilter("school")}>
+                      school
+                    </button>
                   </div>
                   {/* <div>
                     <FormControl sx={{ minWidth: 300 }}>
@@ -342,7 +371,7 @@ const PDFList = () => {
                 </div>
                 <Box marginTop="10px">
                   <MaterialReactTable
-                    columns={columns}
+                    columns={schoolOrcollFile== "college"?collageColumns:schoolColumns}
                     data={fileList}
                     enableRowVirtualization
                     positionActionsColumn="first"

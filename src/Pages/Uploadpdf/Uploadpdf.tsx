@@ -472,13 +472,13 @@ const Uploadpdf = () => {
 
     let year = null;
     if (semIdNumber === 1 || semIdNumber === 2) {
-      year = "1";
+      year = "1st";
     } else if (semIdNumber === 3 || semIdNumber === 4) {
-      year = "2";
+      year = "2nd";
     } else if (semIdNumber === 5 || semIdNumber === 6) {
-      year = "3";
+      year = "3rd";
     } else if (semIdNumber === 7 || semIdNumber === 8) {
-      year = "4";
+      year = "4th";
     }
     if (year) formData.append("year", year);
       }
