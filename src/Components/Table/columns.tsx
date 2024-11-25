@@ -679,7 +679,6 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
       const MenuDeactive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYDEACTIVE;
       const value = cell?.getValue();
     
-console.log("====lll",row)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -1131,7 +1130,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
       size: 150,
     },
     {
-      accessorKey: "semester_id",
+      accessorKey: "semester_number",
       header: "Semester Name",
       size: 150,
     },

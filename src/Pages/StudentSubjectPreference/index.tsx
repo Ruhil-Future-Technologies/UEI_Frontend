@@ -386,7 +386,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
 
   }, [academic])
   useEffect(() => {
-    const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
+    // const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
+    const semesterCount = semester?.filter((item: any) => item?.semester_id === boxes[0]?.sem_id)
     setTotalSemester(semesterCount)
   }, [StudentId, semester , boxes])
   useEffect(() => {
@@ -737,7 +738,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                         disabled
                       >
                         {/* Generate menu items for semesters 1 to 8 */}
-                        {[...Array(totalSemester[0]?.semester_number)]?.map((_, index) => (
+                        {/* {[...Array(totalSemester[0]?.semester_number)]?.map((_, index) => (
                           <MenuItem
                             key={`${index + 1}`}
                             value={index + 1}
@@ -751,7 +752,24 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                           >
                             Semester {index + 1}
                           </MenuItem>
-                        ))}
+                        ))} */}
+                         {totalSemester
+                      ?.sort((a: any, b: any) => a.semester_number - b.semester_number) 
+                      .map((item: any) => (
+                        <MenuItem
+                          key={item?.semester_id}
+                          value={item?.semester_id}
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                            },
+                          }}
+                        >
+                          Semester {item.semester_number}
+                        </MenuItem>
+                      ))}
                       </Select>
                       <Typography variant="body2" color="error">
                         {/* {typeof errors?.sem_id === "string" && errors.sem_id} */}

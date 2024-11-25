@@ -160,10 +160,10 @@ const AddEditSubject = () => {
   }, []);
   useEffect(() => {
     if (id) {
-      const semesterCount = semester.filter((item: any) => item.course_id === subject.course_id)
+      const semesterCount = semester?.filter((item: any) => item.course_id === subject.course_id)
       setTotalSemester(semesterCount)
     }
-  }, [id, semester]);
+  }, [id, semester,subject?.course_id]);
   // const handleChange = (e: any) => {
   //   const { name, value } = e.target;
   //   if (name === "subject_name") {
@@ -195,7 +195,7 @@ const AddEditSubject = () => {
     });
     }
     if (fieldName === 'course_id') {
-      const semesterCount = semester.filter((item: any) => item.course_id === e.target.value)
+      const semesterCount = semester?.filter((item: any) => item?.course_id === e.target.value)
       setTotalSemester(semesterCount)
        setSubject((prevMenu:any) => {
       return {
@@ -351,7 +351,6 @@ const AddEditSubject = () => {
   const maxSemester = totalSemester && totalSemester?.length > 0
   ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
   : 0;
- 
   return (
     <>
       <div className="main-wrapper">
@@ -499,9 +498,7 @@ const AddEditSubject = () => {
                               }}
                             >
                               
-                              {/* Generate menu items for semesters 1 to 8 */}
-                              {/* {[...Array(totalSemester[0]?.semester_number)].map((_, index) => ( */}
-                            {  [...Array(maxSemester)]?.map((_, index) => (
+                            {/* {  [...Array(maxSemester)]?.map((_, index) => (
                                 <MenuItem
                                   key={`${index + 1}`}
                                   value={index + 1}
@@ -515,10 +512,27 @@ const AddEditSubject = () => {
                                 >
                                   Semester {index + 1}
                                 </MenuItem>
-                              ))}
+                              ))} */}
+                              {totalSemester
+                                ?.sort((a: any, b: any) => a?.semester_number - b?.semester_number)
+                                ?.map((item: any) => (
+                                  <MenuItem
+                                    key={item?.semester_id}
+                                    value={item?.semester_id}
+                                    sx={{
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                      '&:hover': {
+                                        backgroundColor: inputfieldhover(namecolor),
+                                      },
+                                    }}
+                                  >
+                                    Semester {item.semester_number}
+                                  </MenuItem>
+                                ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.semester_id === "string" && errors.semester_id}
+                              {typeof errors?.semester_id === "string" && errors?.semester_id}
                             </Typography>
                           </FormControl>
                         </div>

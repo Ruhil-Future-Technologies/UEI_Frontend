@@ -1,38 +1,4 @@
-// import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-// import React, { FunctionComponent } from "react";
 
-// export const ProfileDialog: FunctionComponent<{
-//   isOpen: boolean;
-//   onCancel: () => void;
-//   onOkClick: () => void;
-//   title: string;
-// }> = ({ isOpen, onCancel, onOkClick, title}) => (
-
-//   <Dialog
-//     open={isOpen}
-//     onClose={onCancel}
-//     aria-labelledby="alert-dialog-title"
-//     aria-describedby="alert-dialog-description"
-//     disableBackdropClick
-//   >
-//     <DialogTitle id="alert-dialog-title">
-//       {title}
-//     </DialogTitle>
-//     <DialogContent>
-//       <DialogContentText id="alert-dialog-description">
-//       To access the chat feature, please complete your profile by filling in all required fields. Thank you!
-//       </DialogContentText>
-//     </DialogContent>
-//     <DialogActions>
-//       <Button onClick={onCancel} autoFocus>
-//         Cancel
-//       </Button>
-//       <Button onClick={onOkClick} autoFocus>
-//        Ok
-//       </Button>
-//     </DialogActions>
-//   </Dialog>
-// );
 
 import React, {
   FunctionComponent,
@@ -1084,41 +1050,58 @@ const formattedDate = formatDateToISO(birthdateObj);
       value: "female",
     },
   ];
-  const hobbyOptions = allHobbies.map((option) => ({
+  const hobbyOptions = allHobbies?.map((option) => ({
     value: option.id,
     label: option.hobby_name,
   }));
-  const courseSelectOptions = courses.map((option) => ({
+  const courseSelectOptions = courses?.map((option) => ({
     value: option.id,
     label: option.course_name,
   }));
-  const universitySelectOptions = university.map((option) => ({
+  const universitySelectOptions = university?.map((option) => ({
     value: option.university_id,
     label: option.university_name,
   }));
-  // const semesterSelectOptions = semester.map((option) => ({
-  //   value: option.semester_id,
-  //   label: option.semester_number,
-  // }));
-  const maxSemester = semester && semester?.length > 0
-    ? Math.max(...semester?.map((item: { semester_number: any; }) => item?.semester_number))
-    : 0;
-  // const semesterSelectOptions = [...Array(semester[0]?.semester_number)].map(
-  const semesterSelectOptions = [...Array(maxSemester)]?.map(
-    (_, index) => ({
-      value: index + 1, // Setting the value based on index
-      label: `Semester ${index + 1}`, // Displaying as "Semester {index + 1}"
-    })
-  );
+
+
+  const semesterSelectOptions = semester?.map((option) => ({
+    value: option.semester_id,
+    label:`Semester ${option?.semester_number}` ,
+  }));
+
+
+  // const maxSemester = semester && semester?.length > 0
+  //   ? Math.max(...semester?.map((item: { semester_number: any; }) => item?.semester_number))
+  //   : 0;
+  
+  // const semesterSelectOptions = [...Array(maxSemester)]?.map(
+  //   (_, index) => ({
+  //     value: index + 1, // Setting the value based on index
+  //     label: `Semester ${index + 1}`, // Displaying as "Semester {index + 1}"
+  //   })
+  // );
+
+  const semlable =  semester?.filter(
+    (item) => item?.semester_id === selectSemester );
   const semesterSelectOptionspre = selectSemester
-    ? [{
-      value: selectSemester,
-      label: `Semester ${selectSemester}`,
-    }]
-    : semesterpre[0]?.semester_number ? [{
-      value: semesterpre[0]?.semester_number,
-      label: `Semester ${semesterpre[0]?.semester_number}`,
-    }] : [];
+  ? [{
+    value: selectSemester,
+    label: `Semester ${semlable[0]?.semester_number}`,
+  }]
+  : semesterpre[0]?.semester_id ? [{
+    value: semesterpre[0]?.semester_id,
+    label: `Semester ${semesterpre[0]?.semester_number}`,
+  }] : [];
+
+  // const semesterSelectOptionspre = selectSemester
+  //   ? [{
+  //     value: selectSemester,
+  //     label: `Semester ${selectSemester}`,
+  //   }]
+  //   : semesterpre[0]?.semester_number ? [{
+  //     value: semesterpre[0]?.semester_number,
+  //     label: `Semester ${semesterpre[0]?.semester_number}`,
+  //   }] : [];
 
 
 
@@ -1212,7 +1195,6 @@ const formattedDate = formatDateToISO(birthdateObj);
         const filteredCourse = courses?.filter(
           (item) => ((item?.institution_id === answeredData?.academic_history?.institute_id && item.id === answeredData?.academic_history?.course_id) || (item?.institution_name === answers[14] && item.course_name === answers[15]))
         );
-        console.log("FILTERED COURSE", filteredCourse);
         setCourses(filteredCourse);
       }
     }
@@ -2227,17 +2209,15 @@ const formattedDate = formatDateToISO(birthdateObj);
   };
 
   const handleDropdownChangecourse = (e: any) => {
-    console.log("Course Handle Change currentQuestionIndex", currentQuestionIndex);
-    console.log("PRE SEM", semesterpre);
-    console.log("PRE SEM ANSWERED DATA", answeredData);
-    console.log("PRE SEM ANSWERS", answers);
 
     const filteredsem = semester.filter((item) => item.course_id === e.value);
+    // const filteredsempre = semesterpre.filter(
+    //   (item) => (item.course_id === e.value && (item.semester_number === answeredData?.academic_history?.sem_id || item.semester_number === answers[16])));
     const filteredsempre = semesterpre.filter(
-      (item) => (item.course_id === e.value && (item.semester_number === answeredData?.academic_history?.sem_id || item.semester_number === answers[16])));
+      (item) => (item.course_id === e.value && (item.semester_id === answeredData?.academic_history?.sem_id || item.semester_id === answers[16])));
 
     setSemester(filteredsem);
-    console.log("FILTERED SEMESTER", filteredsempre);
+    
 
     setSemesterpre(filteredsempre);
 
@@ -2324,15 +2304,10 @@ const formattedDate = formatDateToISO(birthdateObj);
     }
   };
   const handleDropdownChangesemesterpre = (e: any) => {
-    console.log("SEMESTER EVENT VALUE", e.value);
-    console.log("ALL SUBJECTS", subjects);
-    console.log("ANS DATA", answeredData);
-    console.log("ANS", answers);
+
     // const courses = courses.filter((item)=> item.course_name === answers[] )
     const filteredsubject = subjects.filter(
       (item) => item.semester_id === e.value && (item.course_id === answeredData?.academic_history?.course_id || item.course_name === answers[15]));
-    console.log("test log subject subjects", subjects)
-    console.log("test log subject filteredsubject", filteredsubject, e.value, courses, answers)
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = e.value;
@@ -2425,7 +2400,6 @@ const formattedDate = formatDateToISO(birthdateObj);
   }));
 
   const handleCountryChange = (selectedOption: any) => {
-    console.log("COUNTRY SELECTED OPTION", selectedOption);
 
     setSelectedCountry(selectedOption);
     if (selectedOption) {
@@ -2434,7 +2408,6 @@ const formattedDate = formatDateToISO(birthdateObj);
         value: state.isoCode,
         label: state.name,
       }));
-      console.log("ALL STATES", stateOptions);
       setStateOptions(stateOptions);
     } else {
       setStateOptions([]);

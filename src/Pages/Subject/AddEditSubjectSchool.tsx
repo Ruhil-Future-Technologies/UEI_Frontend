@@ -243,10 +243,10 @@ const AddEditSubjectSchool = () => {
     const handleSubmit1 = () => {
 
         const submitData = {
-            subject_name: subject[""] as string,
+            subject_name: subject[""] as string || subject?.subject_name,
             pdf_content: subject?.pdf_content || "",
             class_id: subject.class_id,
-            stream: subject.stream || ""
+            stream: (particularClass === "class_11" || particularClass === "class_12") ? subject.stream || "" : ""
         }
         if (!submitData.subject_name || !submitData.class_id) {
             return;

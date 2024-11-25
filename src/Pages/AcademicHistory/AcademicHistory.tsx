@@ -1146,7 +1146,7 @@ useEffect(() => {
                     }
                     label="Semester"
                   >
-                    {[...Array(maxSemester)]?.map((_, index) => (
+                    {/* {[...Array(maxSemester)]?.map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}
                         value={index + 1}
@@ -1160,7 +1160,24 @@ useEffect(() => {
                       >
                         Semester {index + 1}
                       </MenuItem>
-                    ))}
+                    ))} */}
+                    {totalSemester
+                      ?.sort((a: any, b: any) => a.semester_number - b.semester_number) 
+                      .map((item: any) => (
+                        <MenuItem
+                          key={item?.semester_id}
+                          value={item?.semester_id}
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                            },
+                          }}
+                        >
+                          Semester {item.semester_number}
+                        </MenuItem>
+                      ))}
                   </Select>
                   {errors.sem_id && !box?.sem_id && (
                     <FormHelperText error>{errors.sem_id}</FormHelperText>
