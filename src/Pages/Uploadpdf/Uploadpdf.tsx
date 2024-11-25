@@ -495,17 +495,20 @@ const Uploadpdf = () => {
         // if (sem_id) formData.append("sem_id", sem_id);
       
        // Convert sem_id to a number if it is a string
-    const semIdNumber = Number(sem_id);
+      //  const semIdNumber = Number(sem_id);
+      
+        const semnumber = totalSemester?.filter((item: any) => item?.semester_id === sem_id)
+        const semIdNumber = Number(semnumber[0]?.semester_number);
 
     let year = null;
     if (semIdNumber === 1 || semIdNumber === 2) {
-      year = "1";
+      year = "1st";
     } else if (semIdNumber === 3 || semIdNumber === 4) {
-      year = "2";
+      year = "2nd";
     } else if (semIdNumber === 5 || semIdNumber === 6) {
-      year = "3";
+      year = "3rd";
     } else if (semIdNumber === 7 || semIdNumber === 8) {
-      year = "4";
+      year = "4th";
     }
     if (year) formData.append("year", year);
       }
@@ -545,7 +548,6 @@ const Uploadpdf = () => {
       // formData.append("class_name", selectedClass);
       // formData.append('subject_id', selectedSubject);
     }
-    console.log("test log",formData)
     if(boxes[0]?.institute_type){
 
     }
@@ -1004,7 +1006,7 @@ const Uploadpdf = () => {
                     }
                     label="Semester"
                   >
-                    {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
+                    {/* {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}
                         value={index + 1}
@@ -1018,7 +1020,24 @@ const Uploadpdf = () => {
                       >
                         Semester {index + 1}
                       </MenuItem>
-                    ))}
+                    ))} */}
+                     {totalSemester
+                                ?.sort((a: any, b: any) => a?.semester_number - b?.semester_number)
+                                ?.map((item: any) => (
+                                  <MenuItem
+                                    key={item?.semester_id}
+                                    value={item?.semester_id}
+                                    sx={{
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                      '&:hover': {
+                                        backgroundColor: inputfieldhover(namecolor),
+                                      },
+                                    }}
+                                  >
+                                    Semester {item.semester_number}
+                                  </MenuItem>
+                                ))}
                   </Select>
                 </FormControl>
               </div>
