@@ -120,6 +120,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             email_id: data?.data.email_id,
             student_id: StudentId,
           });
+          setEditFlag(false);
         } else if (data?.status === 404) {
           setEditFlag(true);
           //   toast.warning("Please Add Your Information", {
@@ -185,18 +186,44 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       postData(`${"student_contact/add"}`, payload)
         .then((data: any) => {
           if (data?.status === 200) {
+            setEditFlag(false);
             toast.success("Contact Details saved successfully", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center"
             });
+            getContacInfo();
             setActiveForm((prev) => prev + 1);
           } else {
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-              position: "top-center"
-            });
+            if(data?.message === "Email Already exist"){
+              setEditFlag(false);
+              putData(`${"student_contact/edit/"}${StudentId}`, payload)
+              .then((data: any) => {
+                if (data.status === 200) {
+                  toast.success("Contact Details updated successfully", {
+                    hideProgressBar: true,
+                    theme: "colored",
+                    position: "top-center"
+                  });
+                  getContacInfo();
+                  setActiveForm((prev) => prev + 1);
+                }
+              })
+              .catch((e) => {
+                toast.error(e?.message, {
+                  hideProgressBar: true,
+                  theme: "colored",
+                  position: "top-center"
+                });
+              });
+            }else{
+
+              toast.error(data?.message, {
+                hideProgressBar: true,
+                theme: "colored",
+                position: "top-center"
+              });
+            }
           }
         })
         .catch((e) => {

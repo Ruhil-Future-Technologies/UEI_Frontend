@@ -2509,7 +2509,8 @@ const formattedDate = formatDateToISO(birthdateObj);
   const handleOpen = () => {
     // setOpen(true);
   };
-
+  const sixYearsAgo = dayjs()?.subtract(6, 'year');
+  const maxSelectableDate = dayjs(sixYearsAgo);
 
   return (
     <>
@@ -2517,45 +2518,16 @@ const formattedDate = formatDateToISO(birthdateObj);
         style={{ display: "flex" }}
         id="freechatbox"
         className={`${!isOpen ? "d-none" : ""} freechatbox`}
-        //open={isOpen}
-        // className="dialog"
-        // open={true}
-        //onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-      // PaperProps={{
-      //   style: {
-      //     position: "fixed",
-      //     bottom: 50,
-      //     // left: 0,
-      //     right: 50,
-      //     margin: 0,
-      //     width: "400px",
-      //     backgroundColor: chatdialog(namecolor),
-      //   },
-      // }}
       >
         <div className="profilechatinner">
-          {/* <Button
-   onClick={() => handleClose({}, 'backdropClick')}  // Adjusted to pass the expected arguments
-   style={{ position: 'absolute', top: 10, right: 10 }}
-   aria-label="close"
- > */}
           <div className="proheader">
             <div className="me-auto">
               {" "}
               <img src={glogo} width="20" alt="" /> Add your information <br />{" "}
               for better services
             </div>
-            {/* <FormControlLabel
-            control={
-              <Switch
-                checked={checked}
-                onChange={() => handleChange(checked ? "light" : "dark")}
-              />
-            }
-            label=""
-          /> */}
             <FormControlLabel
               className="me-0"
               control={
@@ -2574,11 +2546,6 @@ const formattedDate = formatDateToISO(birthdateObj);
           </div>
 
           <div className="afterheader">
-            {/* <DialogTitle id="alert-dialog-title">
-            <p style={{ color: inputfieldtext(namecolor) }}>
-              Add your information for better services
-            </p>
-          </DialogTitle> */}
 
             <div className="chat-box" ref={chatBoxRef}>
               {messages.map((message, index) => {
@@ -2826,6 +2793,7 @@ const formattedDate = formatDateToISO(birthdateObj);
                               // onClose={() => setOpen(false)}  // Close on outside click
                               disableFuture
                               format={"DD/MM/YYYY"}
+                              maxDate={maxSelectableDate}
                               // value={datecheck}
                               slotProps={{
                                 field: {
