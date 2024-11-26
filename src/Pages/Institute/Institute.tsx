@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react'
-
 import '../Institute/Institute.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
@@ -23,23 +23,10 @@ const Institute = () => {
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-    // useEffect(() => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }, [Menulist])
     useEffect(() => {
       
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist, lastSegment]);
-    // console.log('Menulist', filteredData,)
     const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
     const DeleteInstituteURL = QUERY_KEYS.INSTITUTE_DELETE;
     const columns11 = INSITUTION_COLUMNS;
@@ -56,12 +43,12 @@ const Institute = () => {
         const updatedColumns = columns11.map(column => {
           if (column.accessorKey === 'email_id') {
             // Calculate the maximum width needed for 'email_id' column based on data
-            const maxWidth = Math?.max(...dataInstitute?.map(item => (item?.email_id ? item?.email_id?.length * 10 : 0))); // Adjust multiplier as needed
+            const maxWidth = Math.max(...dataInstitute.map(item => (item?.email_id ? item?.email_id?.length * 10 : 0))); // Adjust multiplier as needed
             return { ...column, size: maxWidth };
           }
           if (column.accessorKey === 'website_url') {
             // Calculate the maximum width needed for 'email_id' column based on data
-            const maxWidth = Math?.max(...dataInstitute?.map(item => (item?.website_url ? item?.website_url?.length * 7 : 0))); // Adjust multiplier as needed
+            const maxWidth = Math.max(...dataInstitute.map(item => (item?.website_url ? item?.website_url?.length * 7 : 0))); // Adjust multiplier as needed
             return { ...column, size: maxWidth };
           }
           return column;

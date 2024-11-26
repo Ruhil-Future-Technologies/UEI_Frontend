@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from 'react'
 import '../Hobby/Hobby.scss';
 import TextField from '@mui/material/TextField';
@@ -6,16 +7,14 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS_HOBBY } from '../../utils/const';
 import { SelectChangeEvent, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { Field, Form, Formik, FormikHelpers, FormikProps, setNestedObjectValues } from 'formik';
+import { Field, Form, Formik, FormikHelpers, FormikProps} from 'formik';
 import * as Yup from 'yup';
 import { HobbyRep0oDTO, MenuListinter } from '../../Components/Table/columns';
 import { dataaccess } from '../../utils/helpers';
 
 interface IHobbyForm {
-    hobby_name: string
-    
+    hobby_name: string   
 }
-
 const AddEditHobby = () => {
     const HobbyAddURL = QUERY_KEYS_HOBBY.HOBBY_ADD;
     const HobbyEditURL = QUERY_KEYS_HOBBY.HOBBY_EDIT;
@@ -26,7 +25,6 @@ const AddEditHobby = () => {
 
     const initialState = {
         hobby_name: "",
-      
     };
     const [hobby, setHobby] = useState(initialState);
     const [dataHobby, setDataHobby] = useState<HobbyRep0oDTO[]>([])
@@ -37,30 +35,7 @@ const AddEditHobby = () => {
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   
-    // const GetDataList = () => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         // const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         const result = data?.submenus?.filter((menu: any) => {
-    //             if (menu.menu_name.toLowerCase() === 'hobbies') {
-    //               // Assuming menu.hobby exists and is the property you want to match with lastSegment
-    //               return "hobby" === lastSegment;
-    //             }
-    //             return menu.menu_name.toLowerCase() === lastSegment
-    //           });
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }
-
-
-
     useEffect(() => {
-        // GetDataList()
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist])
   
@@ -89,10 +64,7 @@ const AddEditHobby = () => {
             if (data.data) {
                 setDataHobby(data?.data)
             }
-        }).catch(e => {
-            if (e?.response?.status === 401) {
-                // navigate("/")
-            }
+        }).catch(() => {
             // toast.error(e?.message, {
             //     hideProgressBar: true,
             //     theme: "colored",
@@ -115,11 +87,6 @@ const AddEditHobby = () => {
             };
         });
         formRef?.current?.setFieldValue(fieldName, e.target.value);
-        const err = await formRef?.current?.validateForm(fieldName)
-        // if (err && Object.keys(err).length > 0) {
-        //     formRef?.current?.setErrors(err)
-        //     formRef?.current?.setTouched(setNestedObjectValues(err, true))
-        // }
         if (formRef?.current?.errors?.[fieldName as keyof IHobbyForm] !== undefined) {
             formRef?.current?.setFieldError(fieldName, formRef?.current?.errors?.[fieldName as keyof IHobbyForm])
             formRef?.current?.setFieldTouched(fieldName, true)
@@ -131,7 +98,6 @@ const AddEditHobby = () => {
             hobbyData: { hobby_name: string | null },
             { resetForm }: FormikHelpers<{ hobby_name: string | null }>
         ) => {
-        // console.log("hobbyData-->", hobbyData)
         if (id) {
             putData(`${HobbyEditURL}/${id}`, hobbyData).then((data: { status: number; message:string }) => {
                 if (data.status === 200) {
@@ -233,11 +199,6 @@ const AddEditHobby = () => {
 
     }
 }
-    // const hobbySchema = Yup.object().shape({
-    //     hobby_name: Yup.string()
-    //         .required("Please enter hobby name")
-    //         .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid hobby name only characters allowed.')
-    // })
 
     return (
         <>
@@ -258,7 +219,7 @@ const AddEditHobby = () => {
                             validationSchema={hobbySchema}
                             innerRef={formRef}
                         >
-                            {({ errors, values, touched ,isValid,dirty}) => (
+                            {({ errors, values, touched }) => (
                                 <Form>
                                     <div className='row'>
                                         <div className='col-md-4'>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import '../Institute/Institute.scss';
 import TextField from '@mui/material/TextField';
@@ -12,7 +13,7 @@ import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { IEntity, InstituteRep0oDTO, IUniversity, MenuListinter } from '../../Components/Table/columns';
-import { dataaccess, inputfield, inputfieldhover, inputfieldselect, inputfieldtext, inputfieldtextselect } from '../../utils/helpers';
+import { dataaccess, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
 
@@ -45,10 +46,7 @@ const AddEditInstitute = () => {
     const charPattern = /^[a-zA-Z\s]*$/;
     const mobilePattern = /^\d{10}$/;
     const emailPattern = /\S+@\S+\.\S+/;
-    // const pincodePattern = /^\d+$/;
     const pincodePattern = /^\d{6}$/;
-    // const websitePattern = /^[\w\s.,@#$%^&*()\-+=[\]{}|\\;:'"/?]+$/;
-    const addressPattern = /^[\w\s,]+$/;
 
     const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([])
 
@@ -93,7 +91,6 @@ const AddEditInstitute = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);    
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-    const [contry_col, setcontry_col] = useState<boolean>(false)
     const [state_col, setstate_col] = useState<boolean>(false)
     useEffect(() => {
         // GetDataList()
@@ -187,16 +184,7 @@ const AddEditInstitute = () => {
                 };
             });
             setstate_col(true)
-            setcontry_col(false);
-            // formRef?.current?.setFieldValue("country", value);
-            // await formRef?.current?.validateField("country")
-            // if (formRef?.current?.errors?.["country" as keyof IInstituteForm] !== undefined) {
-            //     formRef?.current?.setFieldError("country", formRef?.current?.errors?.["country"as keyof IInstituteForm])
-            //     formRef?.current?.setFieldTouched("country", true)
-            // }
           } else if (name === "state") {
-            // setStudentAddress((prevState) => ({ ...prevState, ["state"]: value }));
-            // setstate_col(false)
             setInstitute((prevInstitute) => {
                 return {
                     ...prevInstitute,
@@ -211,7 +199,6 @@ const AddEditInstitute = () => {
         } 
       }
 
-    // const handleSubmit = async (instituteData: IInstituteForm) => {
         const handleSubmit = async (
             instituteData: IInstituteForm, 
             { resetForm }: FormikHelpers<IInstituteForm>
@@ -548,7 +535,7 @@ useEffect(() => {
                         validationSchema={instituteSchema}
                         innerRef={formRef}
                     >
-                        {({ errors, values, touched ,isValid,dirty}) => (
+                        {({ errors, values, touched}) => (
                             <Form>
                                 <div className='row gy-4 mt-0'>
                                 <div className='col-md-4'>
