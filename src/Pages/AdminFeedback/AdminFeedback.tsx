@@ -4,10 +4,7 @@ import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useAPI";
-import {
-  FEEDBACK_COLUMNS,
-  IFeedback,
-} from "../../Components/Table/columns";
+import { FEEDBACK_COLUMNS, IFeedback } from "../../Components/Table/columns";
 import { EditIcon, TrashIcon } from "../../assets";
 import { QUERY_KEYS_FEEDBACK } from "../../utils/const";
 import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
@@ -18,6 +15,7 @@ import "../Hobby/Hobby.scss";
 
 const AdminFeedback = () => {
   const context = useContext(NameContext);
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const { namecolor }: any = context;
   // const location = useLocation();
   // const pathSegments = location.pathname.split("/").filter(Boolean);

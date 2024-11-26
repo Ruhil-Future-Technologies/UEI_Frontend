@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEvent, useEffect, useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
@@ -71,11 +72,11 @@ const AddStudentFeedback = () => {
     setFinalList(question_list);
   }, [questions]);
 
-  const handleSelectedOption = (id: number, value: string, question:any) => {
+  const handleSelectedOption = (id: number, value: string, question: any) => {
     setSelectAnswer((prevAnswers: any) => ({
       ...prevAnswers,
       [id]: value,
-      question: question
+      question: question,
     }));
 
     // Clear the error for this question if a value is selected
@@ -84,8 +85,7 @@ const AddStudentFeedback = () => {
       [id]: "",
     }));
     // setSelectAnswer(value);
-    console.log("answer",selectAnswer);
-    
+    console.log("answer", selectAnswer);
   };
 
   // const handleNextQuestion = () => {
@@ -110,7 +110,7 @@ const AddStudentFeedback = () => {
   //   } else {
   //     alert("Please select an answer before proceeding to the next question.");
   //   }
-   
+
   // };
 
   // const handleBackQuestion = () => {
@@ -122,7 +122,7 @@ const AddStudentFeedback = () => {
   //       answeredQuestions[currentQuestionIndex - 1]?.answer || "";
   //     setSelectAnswer(previousAnswer);
   //   }
-   
+
   // };
 
   // Validation function

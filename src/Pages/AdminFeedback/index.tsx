@@ -66,7 +66,7 @@ const AdminFeedback: React.FC = () => {
       </div>
       <div>
         {options.map((option, index) => (
-          <div className="row">
+          <div className="row" key={index}>
             <div key={index} className="mb-3 col-6">
               <input
                 type="text"

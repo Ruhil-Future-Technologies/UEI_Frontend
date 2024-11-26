@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate, useParams } from "react-router-dom";
 import { QUERY_KEYS_FEEDBACK } from "../../utils/const";
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
@@ -132,100 +133,99 @@ const AddEditAdminFeedback = () => {
   return (
     <div className="main-wrapper">
       <div className="main-content">
-      <div className="card p-lg-3">
-        <div className="card-body">
-          {/* <Typography variant="h6"> */}
-          <div className="card-title">
-            {id ? "Edit" : "Add"} Feedback Questions
-          </div>
-          <Formik
-            onSubmit={(values, formikHelpers) =>
-              handleSubmit(values, formikHelpers)
-            }
-            initialValues={initialValues}
-            enableReinitialize
-            validationSchema={validationSchema}
-            innerRef={formRef}
-          >
-            {({ values }) => (
-              <Form>
-                <div className="row gy-4">
-                  <div className="col-md-4">
-                    <div className="form_field_wrapper">
-                      <TextField
-                        label="Question *"
-                        name="question"
-                        value={values.question}
-                        variant="outlined"
-                        onChange={handleQuestionChange}
-                      />
-                      <ErrorMessage
-                        name="question"
-                        component="div"
-                        className="text-danger"
-                      />
-                    </div>
-                    <div>
-                      <FieldArray name="options">
-                        {({ push, remove }) => (
-                          <div>
-                            {values.options.length > 0 &&
-                              values.options.map(
-                                (option: any, index: number) => (
-                                  <div key={index} className="d-flex">
-                                    <div className="mb-3  pb-2">
-                                      <TextField
-                                        label="Option *"
-                                        name={`options[${index}].option`}
-                                        value={option.option}
-                                        placeholder={`Enter Option ${
-                                          index + 1
-                                        }`}
-                                        variant="outlined"
-                                        onChange={handleQuestionChange}
-                                      />
-                                      <ErrorMessage
-                                        name={`options.${index}.option`}
-                                        component="div"
-                                        className="text-danger"
-                                      />
-                                    </div>
-                                    <div className="d-flex justify-content-between align-items-center ">
-                                      {values.options.length > 1 && (
-                                        <DeleteIcon
-                                          type="button"
-                                          onClick={() => remove(index)}
-                                          style={{
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                          }}
+        <div className="card p-lg-3">
+          <div className="card-body">
+            {/* <Typography variant="h6"> */}
+            <div className="card-title">
+              {id ? "Edit" : "Add"} Feedback Questions
+            </div>
+            <Formik
+              onSubmit={(values, formikHelpers) =>
+                handleSubmit(values, formikHelpers)
+              }
+              initialValues={initialValues}
+              enableReinitialize
+              validationSchema={validationSchema}
+              innerRef={formRef}
+            >
+              {({ values }) => (
+                <Form>
+                  <div className="row gy-4">
+                    <div className="col-md-4">
+                      <div className="form_field_wrapper">
+                        <TextField
+                          label="Question *"
+                          name="question"
+                          value={values.question}
+                          variant="outlined"
+                          onChange={handleQuestionChange}
+                        />
+                        <ErrorMessage
+                          name="question"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
+                      <div>
+                        <FieldArray name="options">
+                          {({ push, remove }) => (
+                            <div>
+                              {values.options.length > 0 &&
+                                values.options.map(
+                                  (option: any, index: number) => (
+                                    <div key={index} className="d-flex">
+                                      <div className="mb-3  pb-2">
+                                        <TextField
+                                          label="Option *"
+                                          name={`options[${index}].option`}
+                                          value={option.option}
+                                          placeholder={`Enter Option ${
+                                            index + 1
+                                          }`}
+                                          variant="outlined"
+                                          onChange={handleQuestionChange}
                                         />
-                                      )}
-                                      <AddIcon
-                                        className="m-2"
-                                        onClick={() => push({ option: "" })}
-                                      />
+                                        <ErrorMessage
+                                          name={`options.${index}.option`}
+                                          component="div"
+                                          className="text-danger"
+                                        />
+                                      </div>
+                                      <div className="d-flex justify-content-between align-items-center ">
+                                        {values.options.length > 1 && (
+                                          <DeleteIcon
+                                            type="button"
+                                            onClick={() => remove(index)}
+                                            style={{
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                            }}
+                                          />
+                                        )}
+                                        <AddIcon
+                                          className="m-2"
+                                          onClick={() => push({ option: "" })}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                )
-                              )}
-                          </div>
-                        )}
-                      </FieldArray>
+                                  )
+                                )}
+                            </div>
+                          )}
+                        </FieldArray>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <button className="btn btn-primary mainbutton" type="submit">
-                  {id ? "Update" : "Save"}
-                </button>
-              </Form>
-            )}
-          </Formik>
+                  <button className="btn btn-primary mainbutton" type="submit">
+                    {id ? "Update" : "Save"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
-      </div>
-     
     </div>
   );
 };
