@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { IconButton, SelectChangeEvent } from "@mui/material";
-import { Formik, FormikHelpers, FormikProps, Form } from "formik";
+import { Formik, FormikProps, Form } from "formik";
 import * as Yup from "yup";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
@@ -25,23 +24,18 @@ interface changepasswordform {
 const ChangePassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
-  const [confpassword, setConfPassword] = useState("");
-  const [newpassword, setNewPassword] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [uservalue, setuserValue] = React.useState<any>("");
-  const initialState = {
-    new_password: "",
-    conf_password: "",
-  };
-  const [changepassword, setChangePassword] = useState(initialState);
-  const [email, setEmail] = useState(searchParams?.get("email"));
-  const [user_type, setUserType] = useState(searchParams?.get("user_type"));
+  const confpassword = "";
+  const newpassword = "";
+  const [searchParams] = useSearchParams();
+  // const [changepassword, setChangePassword] = useState(initialState);
+  const email = searchParams?.get("email");
+  const user_type = searchParams?.get("user_type");
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const changepassUrl = QUERY_KEYS.RESET_PASSWORD;
   const lowercaseRegex = /[a-z]/;
   const numberRegex = /[0-9]/;
-  const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+  const specialCharRegex = /[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/;
   const uppercaseRegex = /[A-Z]/;
 
   const formRef = useRef<FormikProps<changepasswordform>>(null);
@@ -53,63 +47,58 @@ const ChangePassword = () => {
     setShowOldPassword(!showOldPassword);
   };
 
-  const changePassword = (e: any) => {
-    e.preventDefault();
-    const UserSignUp = {
-      email: String(email),
-      new_password: String(newpassword),
-      conf_password: String(confpassword),
-      user_type: String(user_type),
-    };
-    const emptyKeys: string[] = [];
-    for (const key in UserSignUp) {
-      if (UserSignUp.hasOwnProperty(key)) {
-        if (UserSignUp[key as keyof typeof UserSignUp] === "") {
-          emptyKeys.push(key);
-          break;
-        } else {
-          setuserValue("");
-        }
-      }
-    }
+  // const changePassword = (e: any) => {
+  //   e.preventDefault();
+  //   const UserSignUp = {
+  //     email: String(email),
+  //     new_password: String(newpassword),
+  //     conf_password: String(confpassword),
+  //     user_type: String(user_type),
+  //   };
+  //   const emptyKeys: string[] = [];
+  //   for (const key in UserSignUp) {
+  //     if (UserSignUp.hasOwnProperty(key)) {
+  //       if (UserSignUp[key as keyof typeof UserSignUp] === "") {
+  //         emptyKeys.push(key);
+  //         break;
+  //       }
+  //     }
+  //   }
 
-    if (emptyKeys.length === 0) {
-      postData(`${changepassUrl}`, UserSignUp)
-        .then((data: any) => {
-          if (data?.status === 200) {
-            navigate("/");
-            toast.success(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else if (
-            data?.status === 404 &&
-            data?.message === "Invalid userid or password"
-          ) {
-            toast.error("Invalid userid or password!", {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else {
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        });
-    }
-  };
+  //   if (emptyKeys.length === 0) {
+  //     postData(`${changepassUrl}`, UserSignUp)
+  //       .then((data: any) => {
+  //         if (data?.status === 200) {
+  //           navigate("/");
+  //           toast.success(data?.message, {
+  //             hideProgressBar: true,
+  //             theme: "colored",
+  //           });
+  //         } else if (
+  //           data?.status === 404 &&
+  //           data?.message === "Invalid userid or password"
+  //         ) {
+  //           toast.error("Invalid userid or password!", {
+  //             hideProgressBar: true,
+  //             theme: "colored",
+  //           });
+  //         } else {
+  //           toast.error(data?.message, {
+  //             hideProgressBar: true,
+  //             theme: "colored",
+  //           });
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         toast.error(e?.message, {
+  //           hideProgressBar: true,
+  //           theme: "colored",
+  //         });
+  //       });
+  //   }
+  // };
 
-  const handleSubmit = async (
-    formData: changepasswordform,
-    { resetForm }: FormikHelpers<changepasswordform>
-  ) => {
+  const handleSubmit = async (formData: changepasswordform) => {
     // e.preventDefault()
     // e.target.reset()
     const UserSignUp = {
@@ -120,18 +109,17 @@ const ChangePassword = () => {
     };
     const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
-      if (UserSignUp.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {
           emptyKeys.push(key);
           break;
-        } else {
-          setuserValue("");
         }
       }
     }
 
     if (emptyKeys.length === 0) {
       postData(`${changepassUrl}`, UserSignUp)
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
           if (data?.status === 200) {
             navigate("/");
@@ -166,12 +154,12 @@ const ChangePassword = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
   ) => {
-    setChangePassword((prevValue) => {
-      return {
-        ...prevValue,
-        [e.target.name]: e.target.value,
-      };
-    });
+    // setChangePassword((prevValue) => {
+    //   return {
+    //     ...prevValue,
+    //     [e.target.name]: e.target.value,
+    //   };
+    // });
     formRef?.current?.setFieldValue(fieldName, e.target.value);
     await formRef?.current?.validateField(fieldName);
     if (
