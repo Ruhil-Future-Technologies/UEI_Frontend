@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from "react";
 //import "./MainContent.css";
 import { Bar, Line } from "react-chartjs-2";
@@ -110,8 +111,7 @@ function MainContent() {
   // const [chathistory, setchathistory] = useState<any>([]);
   // const [chathistoryrecent, setchathistoryrecent] = useState<any>();
   const [isTextCopied, setIsTextCopied] = useState<any>({});
-  let synth: SpeechSynthesis;
-  synth = window?.speechSynthesis;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
   synth.onvoiceschanged = () => {
     getVoices();
   };
@@ -929,8 +929,9 @@ function MainContent() {
                 delete academic_history?.sem_id;
                 delete academic_history?.year;
                 delete academic_history?.stream;
-                academic_history?.board !== "state_board" &&
+                if (academic_history?.board !== "state_board") {
                   delete academic_history?.state_for_stateboard;
+                }
               } else {
                 if (academic_history?.course_id) {
                   getData(`course/edit/${academic_history?.course_id}`).then(
@@ -1207,9 +1208,11 @@ function MainContent() {
     setDataCompleted(false);
   };
   const handleOk = (userName: string) => {
-    userName === "admin"
-      ? navigate("/main/adminprofile")
-      : navigate("/main/StudentProfile");
+    if (userName === "admin") {
+      navigate("/main/adminprofile");
+    } else {
+      navigate("/main/StudentProfile");
+    }
   };
 
   useEffect(() => {
@@ -1551,10 +1554,9 @@ function MainContent() {
                     chat_question: search,
                     response: response?.answer,
                   };
-                  response?.status !== 402 &&
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
-                      handleError
-                    );
+                  if (response?.status !== 402) {
+                    postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+                  }                  
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
@@ -1606,8 +1608,8 @@ function MainContent() {
                   })
               );
           } else {
-            const {institution_type, board,state_for_stateboard,stream,class_id,university_id,institute_id,course_id,year} = profileDatas?.academic_history;
-            const {subject_name } = profileDatas?.subject_preference ;
+            const {institution_type, board,state_for_stateboard,stream,class_id,university_id,institute_id,course_id,year} = profileDatas?.academic_history || {};
+            const {subject_name } = profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
@@ -1635,10 +1637,9 @@ function MainContent() {
                     chat_question: search,
                     response: response?.answer,
                   };
-                  response?.status !== 402 &&
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
-                      handleError
-                    );
+                  if (response?.status !== 402) {
+                    postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+                  }                  
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(

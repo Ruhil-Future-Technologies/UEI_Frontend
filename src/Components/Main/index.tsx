@@ -9,8 +9,7 @@ import { Outlet } from "react-router-dom";
 // import "../../assets/css/newstyle.scss";
 
 const Main = () => {
-  let synth: SpeechSynthesis;
-  synth = window.speechSynthesis;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
   useEffect(() => {
     synth.cancel();
   });

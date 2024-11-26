@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // import "../Header/Header.scss";
@@ -52,8 +53,8 @@ const Header = () => {
   const [language, setLanguage] = useState<any>("EN");
   const [gender, setGender] = useState<any>("");
   // const proFalg = localStorage.getItem("proFalg");
-  let synth: SpeechSynthesis;
-  synth = window.speechSynthesis;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
+  // synth = window.speechSynthesis;
   const { getData } = useApi();
   const handlogout = () => {
     setProPercentage(0);
@@ -721,7 +722,7 @@ const Header = () => {
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
                         >
                           <GradeOutlinedIcon style={{ fontSize: "1rem" }} />
-                          What's new ?
+                          What&apos;s new ?
                         </div>
                       </div>
                       <div>
