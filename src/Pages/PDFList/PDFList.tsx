@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { MaterialReactTable } from "material-react-table";
 import {
   Box,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import NameContext from "../Context/NameContext";
 import { tabletools } from "../../utils/helpers";
@@ -47,28 +46,25 @@ interface FileList {
 const PDFList = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useNavigate();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
+  // const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const usertype: any = localStorage.getItem("user_type");
   let AdminId: string | null = localStorage.getItem("_id");
   if (AdminId) {
     AdminId = String(AdminId);
   }
   const [selectedClass, setSelectedClass] = useState("");
-  const [dataSubject, setDataSubject] = useState([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [fileList, setFileList] = useState<FileList[]>([]);
   const [selectedFile, setSelectedFile] = useState<IPDFList>();
   const [dataDelete, setDataDelete] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState<number>();
 
   const { getData, loading, deleteFileData } = useApi();
   const columns = PDF_LIST_COLUMNS;
 
   useEffect(() => {
-    callAPI();
+    // callAPI();
 
     getData("/class/list")
       .then((response: any) => {
@@ -116,27 +112,24 @@ const PDFList = () => {
     }
   }, [selectedClass, dataDelete]);
 
-  const callAPI = async () => {
-    getData(`${SubjectURL}`)
-      .then((data: any) => {
-        if (data.data) {
-          setDataSubject(data?.data);
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-        });
-      });
-  };
+  // const callAPI = async () => {
+  //   getData(`${SubjectURL}`)
+  //     .then((data: any) => {
+  //     })
+  //     .catch((e) => {
+  //       toast.error(e?.message, {
+  //         hideProgressBar: true,
+  //         theme: "colored",
+  //       });
+  //     });
+  // };
 
   if (usertype !== "admin") {
     navigate("/main/*");
   }
 
   const handleChange = (event: any) => {
-    const { name, value } = event?.target;
+    const { name, value } = event.target;
     if (name === "class_id") setSelectedClass(value);
     else setSelectedFile(value);
   };

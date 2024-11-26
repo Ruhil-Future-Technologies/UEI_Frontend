@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import '../Language/Language.scss';
 import TextField from '@mui/material/TextField';
@@ -7,7 +8,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS_LANGUAGE } from '../../utils/const';
 import { Grid, InputLabel, SelectChangeEvent, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { Field, Form, Formik, FormikHelpers, setNestedObjectValues } from 'formik';
+import { Field, Form, Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import { LanguageRep0oDTO, MenuListinter } from '../../Components/Table/columns';
 import { dataaccess, inputfield, inputfieldtext } from '../../utils/helpers';
@@ -34,22 +35,8 @@ const AddEditLanguage = () => {
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   
-    // const GetDataList = () => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }
-
 
     useEffect(() => {
-        // GetDataList()
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist])
   
@@ -63,7 +50,6 @@ const AddEditLanguage = () => {
         // description: "",
     };
     const [language, setLanguage] = useState(initialState);
-    const [selectedFile, setSelectedFile] = useState('');
     const [dataLanguage, setDataLanguage] = useState<LanguageRep0oDTO[]>([])
 
     useEffect(() => {
@@ -121,12 +107,6 @@ useEffect(()=>{
         });
       
         formRef?.current?.setFieldValue(fieldName, e.target.value);
-        // await formRef?.current?.validateField(fieldName)
-        const err = await formRef?.current?.validateForm(fieldName)
-         // if (err && Object.keys(err).length > 0) {
-        //     formRef?.current?.setErrors(err)
-        //     formRef?.current?.setTouched(setNestedObjectValues(err, true))
-        // }
         if (formRef?.current?.errors?.[fieldName as keyof ILanguageForm] !== undefined) {
             formRef?.current?.setFieldError(fieldName, formRef?.current?.errors?.[fieldName as keyof ILanguageForm])
             formRef?.current?.setFieldTouched(fieldName, true)
@@ -230,14 +210,7 @@ useEffect(()=>{
             })
         }
     }
-    // const languageSchema = Yup.object().shape({
-    //     language_name: Yup.string()
-    //         .required("Please enter language name")
-    //         .matches(LanguageNamePattern, 'Please enter a valid language Name only characters allowed.'),
-    //         description: Yup.string()
-    //         // .required("Please enter description ")
-           
-    // })
+
 
     return (
         <div className='main-wrapper'>
@@ -259,20 +232,12 @@ useEffect(()=>{
                             validationSchema={languageSchema}
                             innerRef={formRef}
                         >
-                    {({ errors, values ,touched , isValid, dirty}:any) => (
+                    {({ errors, values ,touched}:any) => (
                         <Form>
                             <div className='row'>
                                 <div className='col-md-4'>
                                     <div className="form_field_wrapper">
-                                        {/* <TextField
-                                            label="Language Name *"
-                                            name="language_name"
-                                            value={values.language_name}
-                                            variant="outlined"
-                                            // onChange={handleChange}
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "language_name")}
-                                            fullWidth
-                                        /> */}
+                                  
                                          <Field
                                                     component={TextField}
                                                     type="text"
@@ -300,7 +265,7 @@ useEffect(()=>{
                                             <input
                                                 type="file"
                                                 accept="image/*"
-                                                onChange={(event) => setSelectedFile(event.target.value)}
+                                                // onChange={(event) => setSelectedFile(event.target.value)}
                                                 id="file-upload"
                                                 style={{ color:inputfieldtext(namecolor)}}
                                             />
@@ -322,16 +287,7 @@ useEffect(()=>{
                                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange(e, "description")}
 
                                     />
-                                        {/* <div> {values.description == "" && (
-                                            <p style={{ color: 'red' }}>Please enter description.</p>
-                                        )}</div> */}
-                                         {/* {errors.description ? 
-                                        <p style={{ color: 'red' }} color="error">
-                                            {errors.description}
-                                        </p> :
-                                         <></>
-                                        
-                                    } */}
+                                     
                                 </div>
                             </div>
                             <div className='mt-3'>
