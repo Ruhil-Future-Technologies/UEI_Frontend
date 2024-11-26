@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";

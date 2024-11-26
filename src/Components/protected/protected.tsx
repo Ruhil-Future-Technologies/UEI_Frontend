@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { hasSubMenu } from "../../utils/helpers";
