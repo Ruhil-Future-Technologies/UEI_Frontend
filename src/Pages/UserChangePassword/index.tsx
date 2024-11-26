@@ -1,31 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import emailicon from "../../assets/img/email.svg";
-import phoneicon from "../../assets/img/phone.svg";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useRef, useState } from "react";
 import passwordicon from "../../assets/img/password.svg";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import LockResetIcon from '@mui/icons-material/LockReset';
-import {
-  FormControlLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-  SelectChangeEvent,
-  Snackbar,
-  Typography,
-} from "@mui/material";
+import LockResetIcon from "@mui/icons-material/LockReset";
+import { IconButton, SelectChangeEvent } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { QUERY_KEYS } from "../../utils/const";
-import { Field, Formik, FormikHelpers, FormikProps, Form } from "formik";
+import { Formik, FormikHelpers, FormikProps, Form } from "formik";
 import * as Yup from "yup";
 interface changepasswordform {
   oldpassword: string;
@@ -37,18 +22,18 @@ const UserChangePassword = () => {
   const user_type = localStorage.getItem("user_type");
   const email = localStorage.getItem("userid");
   const { postData } = useApi();
-  const navigator = useNavigate();
+  // const navigator = useNavigate();
   const [password, setPassword] = useState("");
   const [oldpassword, setOldPassword] = useState("");
   const [confpassword, setConfPassword] = useState("");
-  const initialState = {
-    oldpassword: "",
-    password: "",
-    confpassword: "",
-  };
-  const [changepassword, setChangePassword] = useState(initialState);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [uservalue, setuserValue] = React.useState<any>("");
+  // const initialState = {
+  //   oldpassword: "",
+  //   password: "",
+  //   confpassword: "",
+  // };
+  // const [changepassword, setChangePassword] = useState(initialState);
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // const [uservalue, setuserValue] = React.useState<any>("");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -56,7 +41,7 @@ const UserChangePassword = () => {
   const changepassUrl = QUERY_KEYS.CHANGE_PASSWORD;
   const lowercaseRegex = /[a-z]/;
   const numberRegex = /[0-9]/;
-  const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+  const specialCharRegex = /[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/;
   const uppercaseRegex = /[A-Z]/;
 
   const formRef = useRef<FormikProps<changepasswordform>>(null);
@@ -69,61 +54,59 @@ const UserChangePassword = () => {
   const handleClickShowConfPassword = () => {
     setShowConfPassword(!showConfPassword);
   };
-  const changePassword = (e: any) => {
-    e.preventDefault();
-    const UserSignUp = {
-      email: String(email),
-      new_password: String(password),
-      old_password: String(oldpassword),
-      user_type: String(user_type),
-    };
-    const emptyKeys: string[] = [];
-    for (const key in UserSignUp) {
-      if (UserSignUp.hasOwnProperty(key)) {
-        if (UserSignUp[key as keyof typeof UserSignUp] === "") {
-          emptyKeys.push(key);
-          break;
-        } else {
-          setuserValue("");
-        }
-      }
-    }
+  // const changePassword = (e: any) => {
+  //   e.preventDefault();
+  //   const UserSignUp = {
+  //     email: String(email),
+  //     new_password: String(password),
+  //     old_password: String(oldpassword),
+  //     user_type: String(user_type),
+  //   };
+  //   const emptyKeys: string[] = [];
+  //   for (const key in UserSignUp) {
+  //     if (UserSignUp.hasOwnProperty(key)) {
+  //       if (UserSignUp[key as keyof typeof UserSignUp] === "") {
+  //         emptyKeys.push(key);
+  //         break;
+  //       }
+  //     }
+  //   }
 
-    if (emptyKeys.length === 0) {
-      postData(`${changepassUrl}`, UserSignUp)
-        .then((data: any) => {
-          if (data?.status === 200) {
-            // navigator('/')
-            toast.success(
-              "Your Password has been changed successfuly!! Please try to login again with new password",
-              {
-                hideProgressBar: true,
-                theme: "colored",
-              }
-            );
-          } else if (
-            data?.status === 404 &&
-            data?.message === "Invalid userid or password"
-          ) {
-            toast.error("Invalid userid or password!", {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else {
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        });
-    }
-  };
+  //   if (emptyKeys.length === 0) {
+  //     postData(`${changepassUrl}`, UserSignUp)
+  //       .then((data: any) => {
+  //         if (data?.status === 200) {
+  //           // navigator('/')
+  //           toast.success(
+  //             "Your Password has been changed successfuly!! Please try to login again with new password",
+  //             {
+  //               hideProgressBar: true,
+  //               theme: "colored",
+  //             }
+  //           );
+  //         } else if (
+  //           data?.status === 404 &&
+  //           data?.message === "Invalid userid or password"
+  //         ) {
+  //           toast.error("Invalid userid or password!", {
+  //             hideProgressBar: true,
+  //             theme: "colored",
+  //           });
+  //         } else {
+  //           toast.error(data?.message, {
+  //             hideProgressBar: true,
+  //             theme: "colored",
+  //           });
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         toast.error(e?.message, {
+  //           hideProgressBar: true,
+  //           theme: "colored",
+  //         });
+  //       });
+  //   }
+  // };
   const handleSubmit = async (
     formData: changepasswordform,
     { resetForm }: FormikHelpers<changepasswordform>
@@ -138,12 +121,10 @@ const UserChangePassword = () => {
     };
     const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
-      if (UserSignUp.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {
           emptyKeys.push(key);
           break;
-        } else {
-          setuserValue("");
         }
       }
     }
@@ -191,12 +172,12 @@ const UserChangePassword = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
   ) => {
-    setChangePassword((prevValue) => {
-      return {
-        ...prevValue,
-        [e.target.name]: e.target.value,
-      };
-    });
+    // setChangePassword((prevValue) => {
+    //   return {
+    //     ...prevValue,
+    //     [e.target.name]: e.target.value,
+    //   };
+    // });
     formRef?.current?.setFieldValue(fieldName, e.target.value);
     await formRef?.current?.validateField(fieldName);
     if (
@@ -286,18 +267,23 @@ const UserChangePassword = () => {
     <>
       <div className="main-wrapper">
         <div className="main-content">
-        <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-			<div className="breadcrumb-title pe-3">Change Password</div>		
+          <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div className="breadcrumb-title pe-3">Change Password</div>
             <div className="ps-3">
-				<nav aria-label="breadcrumb">
-					<ol className="breadcrumb mb-0 p-0">
-						<li className="breadcrumb-item"><a href=""><LockResetIcon/></a>
-						</li>
-						<li className="breadcrumb-item active" aria-current="page">Reset My Password</li>
-					</ol>
-				</nav>
-			</div>
-		</div>
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb mb-0 p-0">
+                  <li className="breadcrumb-item">
+                    <a href="">
+                      <LockResetIcon />
+                    </a>
+                  </li>
+                  <li className="breadcrumb-item active" aria-current="page">
+                    Reset My Password
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
           <div className="profile_section">
             <div className="card w-100 rounded-4 shadow-none desk-card p-4">
               <div className="card-body">
@@ -364,7 +350,6 @@ const UserChangePassword = () => {
                             )}
                           </div>
 
-                          
                           {/* </div> */}
                         </div>
 
@@ -404,16 +389,17 @@ const UserChangePassword = () => {
                               }}
                             />
                             {touched?.password && errors?.password ? (
-                              <small className="text-danger d-block">{errors?.password}</small>
+                              <small className="text-danger d-block">
+                                {errors?.password}
+                              </small>
                             ) : (
                               <></>
                             )}
                           </div>
                         </div>
                         <div className="col-lg-4">
-                        <div className="form_field_wrapper">
+                          <div className="form_field_wrapper">
                             <TextField
-                            
                               type={showConfPassword ? "text" : "password"}
                               name="confpassword"
                               className="w-100"
@@ -458,11 +444,11 @@ const UserChangePassword = () => {
                           </div>
                         </div>
                         <div className="col-lg-4">
-                        <button className="btn btn-primary w-100 mh-56">
-                          {"Change Password"}
-                        </button>
+                          <button className="btn btn-primary w-100 mh-56">
+                            {"Change Password"}
+                          </button>
+                        </div>
                       </div>
-                      </div>                     
                     </Form>
                   )}
                 </Formik>
