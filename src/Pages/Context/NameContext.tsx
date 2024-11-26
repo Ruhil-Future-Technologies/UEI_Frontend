@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {  ReactNode, createContext, useCallback, useState } from 'react';
-
 // Define the shape of the context state
 interface NameContextType {
     namepro: object;

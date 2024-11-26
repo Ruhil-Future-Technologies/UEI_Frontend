@@ -1,12 +1,12 @@
 import { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { httpClient } from "../utils/http-client";
 
 const useApi = () => {
 
-  const utoken = localStorage.getItem("token");
-  const baseUrl = "https://3.110.33.158:5000/";
+  // const utoken = localStorage.getItem("token");
+  // const baseUrl = "https://3.110.33.158:5000/";
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
