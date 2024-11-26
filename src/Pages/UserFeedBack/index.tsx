@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
+import React from "react";
 
 interface Question {
   id: string;
@@ -15,9 +16,9 @@ const Feedback = () => {
   const [question, setQuestion] = useState<Question>({
     id: "",
     question: "",
-    options: '',
+    options: "",
   });
-  const [options, setOptions] =useState<string[]>([''])
+  const [options, setOptions] = useState<string[]>([""]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [message, setMessage] = useState<string>("");
@@ -27,20 +28,19 @@ const Feedback = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectAnswer, setSelectAnswer] = useState<string>("");
 
-  const[editFlag, setEditFlag] = useState<boolean>(false);
+  // const [editFlag, setEditFlag] = useState<boolean>(false);
 
   useEffect(() => {
- 
-      getData(`${'/feedback/'}`).then((data)=>{
-        if(data.status===200){
-            console.log(data.data);
+    getData(`${"/feedback/"}`).then((data) => {
+      if (data.status === 200) {
+        console.log(data.data);
 
-          setQuestions(data.data);
-          setQuestion(data.data[0]);
-          setOptions(data.data[0].options.replace(/{|}/g, '').split(','));
-          console.log();
-        }
-      })
+        setQuestions(data.data);
+        setQuestion(data.data[0]);
+        setOptions(data.data[0].options.replace(/{|}/g, "").split(","));
+        console.log();
+      }
+    });
   }, []);
 
   const handleSelectedOption = (value: string) => {
@@ -60,7 +60,11 @@ const Feedback = () => {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setQuestion(questions[currentQuestionIndex + 1]);
         if (currentQuestionIndex + 1 < questions.length) {
-        setOptions(questions[currentQuestionIndex + 1].options.replace(/{|}/g, '').split(','));
+          setOptions(
+            questions[currentQuestionIndex + 1].options
+              .replace(/{|}/g, "")
+              .split(",")
+          );
         }
         setSelectAnswer("");
       } else {
@@ -75,7 +79,11 @@ const Feedback = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
       setQuestion(questions[currentQuestionIndex - 1]);
-      setOptions(questions[currentQuestionIndex - 1].options.replace(/{|}/g, '').split(','));
+      setOptions(
+        questions[currentQuestionIndex - 1].options
+          .replace(/{|}/g, "")
+          .split(",")
+      );
       const previousAnswer =
         answeredQuestions[currentQuestionIndex - 1]?.answer || "";
       setSelectAnswer(previousAnswer);
@@ -90,14 +98,13 @@ const Feedback = () => {
     ];
     setAnsweredQuestions(updatedAnswers);
 
-   
     alert("Form submitted successfully");
     // Handle submission logic here
     const payload = {
       student_id: StudentId,
       feedbacks: updatedAnswers,
     };
-  
+
     postData("/feedback/student_feedback", payload)
       .then((response) => {
         if (response.status === 200) {
@@ -137,7 +144,7 @@ const Feedback = () => {
                   Q. {question.question}
                 </h4>
                 <div className="row">
-                  { questions.length > currentQuestionIndex &&
+                  {questions.length > currentQuestionIndex &&
                   question.options.length > 0 ? (
                     options.map((option, index) => (
                       <div key={index} className="col-12 col-md-6 mb-2">

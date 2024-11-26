@@ -1,49 +1,11 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
-import { YearCalendar } from "@mui/x-date-pickers/YearCalendar";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Grid,
-  IconButton,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Theme,
-  Tooltip,
-  useTheme,
-} from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState, useEffect } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { log } from "console";
-import { YearPicker } from "@mui/lab";
-import StudentAddress from "../StudentAddress";
-import StudentBasicInfo from "../StudentBasicInfo";
-import StudentAcadmicHistory from "../StudentAcademicHistory";
-import StudentcontactDetails from "../StudentContactDetails";
-import StudentHobbies from "../StudentHobbies";
-import StudentLanguage from "../StudentLanguageKnown";
 
 const StudentId = localStorage.getItem("_id");
 console.log(StudentId);
@@ -101,9 +63,9 @@ export default function StudentProfileManagement() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
-  const isStepOptional = (step: number) => {
-    return step > 0 && step < steps.length - 1;
-  };
+  // const isStepOptional = (step: number) => {
+  //   return step > 0 && step < steps.length - 1;
+  // };
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -146,7 +108,7 @@ export default function StudentProfileManagement() {
   return (
     <Box sx={{ width: "100%" }}>
       <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
+        {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: {
             optional?: React.ReactNode;

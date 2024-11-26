@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   useState,
   ChangeEvent,
@@ -17,7 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
-import { Country, State, City } from "country-state-city";
+import { Country, State } from "country-state-city";
 
 
 interface Institute {
@@ -293,10 +294,10 @@ const NewModule: React.FC = () => {
   };
 
   const saveAnswersforContact = (answer: string[]) => {
-    const contfullPhone = answer[8];
-    const phoneNum = contfullPhone.split(" ");
-    const contfullPhonewtsp = answer[9];
-    const phoneNumwtsp = contfullPhonewtsp.split(" ");
+    // const contfullPhone = answer[8];
+    // const phoneNum = contfullPhone.split(" ");
+    // const contfullPhonewtsp = answer[9];
+    // const phoneNumwtsp = contfullPhonewtsp.split(" ");
     const email = localStorage.getItem("userid");
 
     const payload = {
@@ -330,8 +331,8 @@ const NewModule: React.FC = () => {
   };
 
   const saveAnswerforAddress = (answers: string[]) => {
-    const Address = answers[15];
-    const addressParts = Address.split(",");
+    // const Address = answers[15];
+    // const addressParts = Address.split(",");
 
     const payload = {
       student_id: StudentId,
@@ -434,7 +435,7 @@ const NewModule: React.FC = () => {
     label: option.subject_name,
   }));
 
-  const saveanswerForHobbeis = (answers: string[]) => {
+  const saveanswerForHobbeis = () => {
     const payload = {
       student_id: StudentId,
       hobby_id: selectedHobby,
@@ -678,7 +679,7 @@ const NewModule: React.FC = () => {
     }
   };
 
-  const handlePhoneChange = (value: string, country: any) => {
+  const handlePhoneChange = (value: string) => {
     setPhone(value);
     console.log(value);
     // Move to the next question
