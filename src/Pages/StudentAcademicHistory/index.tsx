@@ -1,20 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import {
   Box,
   Button,
   FormControl,
-  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -81,8 +75,8 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const [courses, setCourses] = useState<Course[]>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
-  const [idInstitute, setIdInstitute] = useState();
-  const [insituteFlag, setInsituteFlag] = useState<boolean>(false);
+  // const [idInstitute, setIdInstitute] = useState();
+  // const [insituteFlag, setInsituteFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
 
   const StudentId = localStorage.getItem("_id");
@@ -300,8 +294,8 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
   useEffect(() => {}, [boxes]);
 
-  const setDataInsitute = async (value: any) => {
-    setInsituteFlag(true);
+  const setDataInsitute = async () => {
+    // setInsituteFlag(true);
 
     //    institutes?.map((itemvalue: any) => {
 
@@ -399,7 +393,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       );
 
       if (allSuccessful) {
-        setIdInstitute(responses[0].institution.id);
+        // setIdInstitute(responses[0].institution.id);
         // setBoxes([...boxes, { institution_id: responses[0]?.institution?.id }]);
         const newBoxes: any = [...boxes];
         newBoxes[index]["institution_id"] = responses[0].institution.id;
@@ -501,7 +495,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                   sx={{
                     backgroundColor: "#f5f5f5",
                   }}
-                  onChange={(e) =>                    
+                  onChange={(e) =>
                     handleInputChange(index, "institution_id", e.target.value)
                   }
                   label="Institute Name"
@@ -606,9 +600,9 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
                 <InputLabel>Class</InputLabel>
                 <Select
-                 sx={{
-                  backgroundColor: "#f5f5f5",
-                }}
+                  sx={{
+                    backgroundColor: "#f5f5f5",
+                  }}
                   value={box.class_id}
                   onChange={(e) =>
                     handleInputChange(index, "class_id", e.target.value)

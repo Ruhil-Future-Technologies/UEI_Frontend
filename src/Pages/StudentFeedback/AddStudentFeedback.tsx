@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { TextField } from "@mui/material";
-import { QUERY_KEYS_STUDENT_FEEDBACK } from "../../utils/const";
 import useApi from "../../hooks/useAPI";
 import CommonModal from "../../Components/CommonModal";
 import ThemeSidebar from "../../Components/ThemeSidebar/ThemeSidebar";
@@ -16,12 +16,12 @@ interface Question {
 const AddStudentFeedback = () => {
   const StudentId = localStorage.getItem("_id");
   const { getData, postData } = useApi();
-  const [question, setQuestion] = useState<Question>({
-    id: "",
-    question: "",
-    options: "",
-  });
-  const [options, setOptions] = useState<any>([""]);
+  // const [question, setQuestion] = useState<Question>({
+  //   id: "",
+  //   question: "",
+  //   options: "",
+  // });
+  // const [options, setOptions] = useState<any>([""]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [message, setMessage] = useState<string>("");
@@ -41,14 +41,14 @@ const AddStudentFeedback = () => {
   useEffect(() => {
     const newTheme = localStorage.getItem("theme");
     setThemeMode(newTheme || "light");
-  }, [])
+  }, []);
 
   useEffect(() => {
     getData(`${"/feedback/list"}`).then((data) => {
       if (data.status === 200) {
         setQuestions(data.data);
-        setQuestion(data.data[0]);
-        setOptions(data.data[0].options);
+        // setQuestion(data.data[0]);
+        // setOptions(data.data[0].options);
         // .replace(/{|}/g, '').split(',')
       }
     });
@@ -65,7 +65,7 @@ const AddStudentFeedback = () => {
 
   useEffect(() => {
     const question_list: any = [];
-    questions.map((question, index) => {
+    questions.map((question) => {
       answeredQuestions.map((answer: any) => {
         if (question.question === answer.question) {
           const d = {
@@ -153,7 +153,7 @@ const AddStudentFeedback = () => {
           setMessage("");
           setAnsweredQuestions([]);
           setCurrentQuestionIndex(0);
-          setQuestion(questions[0]);
+          // setQuestion(questions[0]);
           setStudentFlag(false);
         })
         .catch((error) => {
@@ -288,7 +288,10 @@ const AddStudentFeedback = () => {
                 <div className="ps-3">
                   <nav aria-label="breadcrumb">
                     <ol className="breadcrumb mb-0 p-0">
-                      <li className="breadcrumb-item"><a href=""><i className="bx bx-home-alt"></i></a>
+                      <li className="breadcrumb-item">
+                        <a href="">
+                          <i className="bx bx-home-alt"></i>
+                        </a>
                       </li>
                       {/* <li className="breadcrumb-item" aria-current="page">Submit Feedback</li> */}
                       <li aria-current="page">Submit Feedback</li>
@@ -313,16 +316,22 @@ const AddStudentFeedback = () => {
                 <div className="feedback-questions">
                   {currentQuestionIndex < questions.length ? (
                     <>
-                      {questions.map((question: any, qIndex: any) => (
+                      {questions.map((question: any) => (
                         <div className="question" key={question.id}>
-                          <label htmlFor="" className="top-label"> {question.question}</label>
+                          <label htmlFor="" className="top-label">
+                            {" "}
+                            {question.question}
+                          </label>
                           <div className="row g-2">
                             {question?.options?.length > 0 ? (
                               question?.options.map(
                                 (option: any, index: number) => (
                                   <div className="col-lg-6" key={index}>
                                     <div className="form-check">
-                                      <input className="form-check-input" type="radio" name={`question-${question.id}`}
+                                      <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name={`question-${question.id}`}
                                         id={`option-${index}`}
                                         value={option}
                                         checked={
@@ -334,8 +343,12 @@ const AddStudentFeedback = () => {
                                             option,
                                             question.question
                                           )
-                                        } />
-                                      <label className="form-check-label" htmlFor={`option-${index}`}>
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={`option-${index}`}
+                                      >
                                         {option}
                                       </label>
                                     </div>
@@ -364,7 +377,6 @@ const AddStudentFeedback = () => {
                                 {errors[question.id]}
                               </span>
                             )}
-
                           </div>
                         </div>
                       ))}
@@ -387,7 +399,12 @@ const AddStudentFeedback = () => {
                     </div>
                   )}
                 </div>
-                <button className="btn btn-primary mt-4 mx-auto d-block rounded-pill px-4 mb-4" onClick={handleSubmit}>Submit</button>
+                <button
+                  className="btn btn-primary mt-4 mx-auto d-block rounded-pill px-4 mb-4"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </div>
@@ -448,7 +465,10 @@ const AddStudentFeedback = () => {
                 <div className="ps-3">
                   <nav aria-label="breadcrumb">
                     <ol className="breadcrumb mb-0 p-0">
-                      <li className="breadcrumb-item"><a href=""><i className="bx bx-home-alt"></i></a>
+                      <li className="breadcrumb-item">
+                        <a href="">
+                          <i className="bx bx-home-alt"></i>
+                        </a>
                       </li>
                       {/* <li className="breadcrumb-item" aria-current="page">Submit Feedback</li> */}
                       <li aria-current="page">Submit Feedback</li>
@@ -471,18 +491,24 @@ const AddStudentFeedback = () => {
               <div className="feedback">
                 <h1>You have already submitted your feedback</h1>
                 <div className="feedback-questions">
-                  {(
+                  {
                     <>
-                      {finalList.map((question: any, qIndex: any) => (
+                      {finalList.map((question: any) => (
                         <div className="question" key={question.id}>
-                          <label htmlFor="" className="top-label"> {question.question}</label>
+                          <label htmlFor="" className="top-label">
+                            {" "}
+                            {question.question}
+                          </label>
                           <div className="row g-2">
                             {question?.options?.length > 0 ? (
                               question?.options.map(
                                 (option: any, index: number) => (
                                   <div className="col-lg-6" key={index}>
                                     <div className="form-check">
-                                      <input className="form-check-input" type="radio" name={`question-${question.id}`}
+                                      <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name={`question-${question.id}`}
                                         id={`option-${index}`}
                                         value={option}
                                         checked={question.answer === option}
@@ -492,8 +518,12 @@ const AddStudentFeedback = () => {
                                             option,
                                             question.question
                                           )
-                                        } />
-                                      <label className="form-check-label" htmlFor={`option-${index}`}>
+                                        }
+                                      />
+                                      <label
+                                        className="form-check-label"
+                                        htmlFor={`option-${index}`}
+                                      >
                                         {option}
                                       </label>
                                     </div>
@@ -522,12 +552,11 @@ const AddStudentFeedback = () => {
                                 {errors[question.id]}
                               </span>
                             )}
-
                           </div>
                         </div>
                       ))}
                     </>
-                  )}
+                  }
                 </div>
               </div>
             </div>

@@ -1,36 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import {
   Box,
-  Button,
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
-  TextField,
   Typography,
 } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
-import {
-  LocalizationProvider,
-  DateTimePicker,
-  DatePicker,
-} from "@mui/x-date-pickers";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { QUERY_KEYS_STUDENT } from "../../utils/const";
-import { useNavigate, useParams } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
 import { toast } from "react-toastify";
 import maleImage from "../../assets/img/avatars/male.png";
@@ -57,15 +41,15 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const { setNamepro, setProImage }: any = context;
   const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, postFileData } = useApi();
-  const [gender, setGender] = useState("Male");
-  const [name, setName] = useState();
-  const [lastname, setlastName] = useState();
-  const [dob, setDob] = useState<Date | null>();
-  const [selectedFile, setSelectedFile] = useState();
+  // const [gender, setGender] = useState("Male");
+  // const [name, setName] = useState();
+  // const [lastname, setlastName] = useState();
+  // const [dob, setDob] = useState<Date | null>();
+  const [selectedFile] = useState();
   const [filePreview, setFilePreview] = useState(null);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [proFalg, setProFlag] = useState<boolean>(false);
-  const someDate = dayjs(); // Creating a Dayjs object representing the current date and time
+  // const someDate = dayjs(); // Creating a Dayjs object representing the current date and time
   const [fname_col, setFname_col] = useState<boolean>(false);
   const [lname_col, setLname_col] = useState<boolean>(false);
   const [fathername_col, setFathername_col] = useState<boolean>(false);
@@ -77,10 +61,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [lname_col1, setLname_col1] = useState<boolean>(false);
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
-  const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
+  // const [error1, setError1] = useState("");
+  const exactSixYearsAgo = dayjs()?.subtract(6, "year");
   const minSelectableDate = dayjs("01/01/1900");
-  const [error, setError] = React.useState<string | null>(null); 
+  const [error, setError] = React.useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem("proFalg", proFalg ? "true" : "false");
@@ -111,7 +95,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .then((imgdata: any) => {
                 setFilePreview(imgdata.data);
               })
-              .catch((e) => {});
+              .catch(() => {});
           }
           setBasicInfo(data?.data);
           setInitialState({
@@ -160,12 +144,13 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // const [error, setError]: any = useState({});
 
   const handleChange = (event: any) => {
-    let { name, value } = event.target;
+    const { name } = event.target;
+    let { value } = event.target;  // Use 'let' for value to allow reassignment
 
     if (name === "first_name") {
       setFname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFname_col(true);
       } else {
         setFname_col(false);
@@ -174,7 +159,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (name === "last_name") {
       setLname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setLname_col(true);
       } else {
         setLname_col(false);
@@ -183,7 +168,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (name === "father_name") {
       setFathername_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFathername_col(true);
       } else {
         setFathername_col(false);
@@ -192,7 +177,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (name === "mother_name") {
       setMothername_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setMothername_col(true);
       } else {
         setMothername_col(false);
@@ -200,7 +185,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "guardian_name") {
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setGname_col(true);
       } else {
         setGname_col(false);
@@ -208,7 +193,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     if (name === "aim") {
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setaim_col(true);
       } else {
         setaim_col(false);
@@ -223,7 +208,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         // Check file size (3MB = 3 * 1024 * 1024 bytes)
         if (file.size > 3 * 1024 * 1024) {
-          setError1("File size must be less than 3MB");
+          // setError1("File size must be less than 3MB");
           return;
         }
 
@@ -235,11 +220,11 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         // Check file type (only JPG and PNG allowed)
         if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
-          setError1("Only JPG and PNG files are allowed");
+          // setError1("Only JPG and PNG files are allowed");
           return;
         }
 
-        setError1("");
+        // setError1("");
         // console.log('file',file)
         const reader: any = new FileReader();
         reader.onloadend = () => {
@@ -286,39 +271,39 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     });
   };
 
-  const datachange = (event: Date | null) => {
-    setDob(event);
-  };
+  // const datachange = (event: Date | null) => {
+  //   setDob(event);
+  // };
 
   // const handleDate = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
   //     handleChange(event.target.value as Date | null);
   //   };
- 
+
   const handleDateChange = (newDate: Dayjs | null) => {
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-    if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
-      setBasicInfo((values) => ({ ...values, dob: newDate }));
-      setError(null); 
-      setdobset_col(false);
-    } else {
-      // setDob(null);
-      const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
-      if (datecheck === "Invalid Date") {
+      if (newDate && newDate?.isBefore(exactSixYearsAgo, "day")) {
+        setBasicInfo((values) => ({ ...values, dob: newDate }));
         setError(null);
-        setdobset_col(true);
-      } else {
         setdobset_col(false);
-        const currentDate = dayjs();
-        if (newDate?.isAfter(currentDate, 'day')) {
-          setError('Future date are not allow.');
-        }else{
-          setError('You must be at least 6 years old.');
+      } else {
+        // setDob(null);
+        const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+        if (datecheck === "Invalid Date") {
+          setError(null);
+          setdobset_col(true);
+        } else {
+          setdobset_col(false);
+          const currentDate = dayjs();
+          if (newDate?.isAfter(currentDate, "day")) {
+            setError("Future date are not allow.");
+          } else {
+            setError("You must be at least 6 years old.");
+          }
         }
       }
+    } else {
+      setError("Invalid date selected. Please choose a valid date.");
     }
-  }else{
-    setError('Invalid date selected. Please choose a valid date.');
-  }
 
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
 
@@ -455,7 +440,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   // setprofileImage(imgdata.data)
                   if (data.status == 200) {
                     setProImage(data.data);
-                  } else {
                   }
                 })
                 .catch((e) => {
@@ -504,8 +488,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       // setprofileImage(imgdata.data)
                       if (data.status == 200) {
                         setProImage(data.data);
-                      } else {
-                      }
+                      } 
                     })
                     .catch((e) => {
                       console.log("------------- e -------------", e);
@@ -551,7 +534,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {fname_col && basicInfo?.first_name !== "" &&(
+            {fname_col && basicInfo?.first_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid First Name only characters allowed.
               </p>
@@ -651,29 +634,29 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             
             /> */}
             <Box width={300}>
-        <DatePicker
-          value={dayjs(basicInfo?.dob)} 
-          onChange={handleDateChange} 
-          format="DD/MM/YYYY"
-          disableFuture 
-          maxDate={exactSixYearsAgo} 
-          minDate={minSelectableDate} 
-          onError={() => {}} 
-          sx={{
-            backgroundColor: "#f5f5f5",
-          }}
-          slotProps={{
-            textField: {
-              variant: 'outlined',
-              helperText: error, 
-              error: Boolean(error), 
-              inputProps: {
-                maxLength: 10, 
-              },
-            },
-          }}
-        />
-      </Box>
+              <DatePicker
+                value={dayjs(basicInfo?.dob)}
+                onChange={handleDateChange}
+                format="DD/MM/YYYY"
+                disableFuture
+                maxDate={exactSixYearsAgo}
+                minDate={minSelectableDate}
+                onError={() => {}}
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                }}
+                slotProps={{
+                  textField: {
+                    variant: "outlined",
+                    helperText: error,
+                    error: Boolean(error),
+                    inputProps: {
+                      maxLength: 10,
+                    },
+                  },
+                }}
+              />
+            </Box>
           </LocalizationProvider>
           {/* <input
             type="date"
@@ -753,7 +736,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {mothername_col && basicInfo?.mother_name !== "" &&(
+            {mothername_col && basicInfo?.mother_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Mother Name only characters allowed.
               </p>
@@ -790,7 +773,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {gname_col && basicInfo?.guardian_name !== "" &&(
+            {gname_col && basicInfo?.guardian_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Guardian Name only characters allowed.
               </p>
@@ -821,7 +804,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           />
           <div>
             {" "}
-            {aim_col && basicInfo.aim !== "" &&(
+            {aim_col && basicInfo.aim !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Aim Name only characters allowed.
               </p>
@@ -830,7 +813,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           {/* {error.aim && <span style={{ color: 'red' }}>{error.aim}</span>} */}
         </div>
 
-       
         <div className="col-lg-12">
           <div className="d-flex flex-wrap align-items-center gap-1">
             <div className="image-container">

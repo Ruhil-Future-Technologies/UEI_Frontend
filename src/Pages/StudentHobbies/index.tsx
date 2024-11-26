@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-
 import {
   FormControl,
   InputLabel,
@@ -9,7 +9,6 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
-  useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useAPI";
@@ -32,7 +31,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
-  const theme = useTheme();
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
@@ -61,7 +59,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
       });
 
@@ -81,7 +79,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
       });
   }, []);
@@ -146,13 +144,13 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           toast.success("Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         } else {
           toast.success("Hobbies update successfully", {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         }
       } else if (results.some((res) => res.status !== 204)) {
@@ -163,11 +161,11 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
       } else {
         //empty
       }
-    } catch (e) {
+    } catch {
       toast.error("An error occurred while saving hobbies", {
         hideProgressBar: true,
         theme: "colored",
-        position: "top-center"
+        position: "top-center",
       });
     }
     // >>>>>>> Stashed changes
@@ -196,7 +194,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           // });
         }
       })
-      .catch((e) => {
+      .catch(() => {
         // toast.error(e?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
@@ -215,17 +213,19 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
         <div className="col-12 justify-content-start form_field_wrapper">
-          <FormControl sx={{
-               maxWidth: "300px",
-               width: "100%",
-          }}>
+          <FormControl
+            sx={{
+              maxWidth: "300px",
+              width: "100%",
+            }}
+          >
             <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
             <Select
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
               sx={{
-                backgroundColor: "#f5f5f5",             
+                backgroundColor: "#f5f5f5",
               }}
               value={selectedHobbies}
               onChange={handleChange}
