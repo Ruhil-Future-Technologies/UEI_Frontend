@@ -641,7 +641,7 @@ const NewModule: React.FC = () => {
         } else if (answers.length === 26) {
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
         } else if (answers.length === 29) {
-          saveanswerForHobbeis([...answers, e.currentTarget.value]);
+          saveanswerForHobbeis();
           saveAnswerForLanguage([...answers, e.currentTarget.value]);
         }
       } else {

@@ -905,8 +905,8 @@ const ProfileChat: React.FC = () => {
         } else if (answers.length === 26) {
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
         } else if (selectedproficiency !== "") {
-          saveanswerForHobbeis([...answers, e.currentTarget.value]);
-          saveAnswerForLanguage([...answers, e.currentTarget.value]);
+          saveanswerForHobbeis();
+          saveAnswerForLanguage();
         }
       } else {
         setMessages(updatedMessages);
@@ -917,8 +917,8 @@ const ProfileChat: React.FC = () => {
   };
   useEffect(() => {
     if (selectedproficiency !== "") {
-      saveanswerForHobbeis([...answers]);
-      saveAnswerForLanguage([...answers]);
+      saveanswerForHobbeis();
+      saveAnswerForLanguage();
     }
   }, [selectedproficiency]);
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {

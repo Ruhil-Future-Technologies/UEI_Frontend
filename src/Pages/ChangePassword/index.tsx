@@ -397,8 +397,8 @@ const ChangePassword = () => {
                   <div className="col-lg-12">
                     <Formik
                       // onSubmit={(formData) => handleSubmit(formData)}
-                      onSubmit={(formData, formikHelpers) =>
-                        handleSubmit(formData, formikHelpers)
+                      onSubmit={(formData) =>
+                        handleSubmit(formData)
                       }
                       initialValues={{
                         newpassword: newpassword,

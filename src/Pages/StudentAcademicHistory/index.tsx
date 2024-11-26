@@ -111,7 +111,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           });
         });
     }
-    setBoxes(boxes.filter((box, index) => index !== indx));
+    setBoxes(boxes.filter((_box, index) => index !== indx));
   };
   const listData = async () => {
     return new Promise((resolve) => {
@@ -294,22 +294,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
   useEffect(() => {}, [boxes]);
 
-  const setDataInsitute = async () => {
-    // setInsituteFlag(true);
-
-    //    institutes?.map((itemvalue: any) => {
-
-    //     // const result = itemvalue?.filter((menu: any) => menu?.institution_name.toLowerCase() === value?.toLowerCase())
-    //     // if (result.length > 0) {
-    //     //     // setFilteredData(result)
-
-    //     console.log("Filtered IDs", itemvalue.institution_name);
-    //     // }
-    //     if(itemvalue?.institution_name.toLowerCase() === value?.toLowerCase()) {
-    //     }
-
-    // });
-  };
   // const saveAcademi = async () => {
   //   const validatePayload = (payload: { [s: string]: unknown; } | ArrayLike<unknown>) => {
   //     return Object.values(payload).every(value => value !== "");
@@ -412,7 +396,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           hideProgressBar: true,
           theme: "colored",
         });
-        setDataInsitute(boxes1[0]?.Institute_Name_Add);
+        // setDataInsitute(boxes1[0]?.Institute_Name_Add);
       }
     } catch (error) {
       console.error("Error while saving academia:", error);

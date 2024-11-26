@@ -342,8 +342,8 @@ const AddEditForm = () => {
                   is_menu_visible: form.is_menu_visible,
                 }}
                 // onSubmit={(formData:any)=>handleSubmit(formData)}
-                onSubmit={(formData, formikHelpers) =>
-                  handleSubmit(formData, formikHelpers)
+                onSubmit={(formData) =>
+                  handleSubmit(formData)
                 }
                 enableReinitialize
                 validationSchema={validationSchema}

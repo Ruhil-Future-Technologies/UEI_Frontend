@@ -148,7 +148,7 @@ const Subject = () => {
       });
   };
   const handleTabChange = (
-    event: any,
+    _event: any,
     newValue: React.SetStateAction<number>
   ) => {
     setTabValue(newValue);
