@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import AdminBasicInfo from "../AdminBasicinfo";
@@ -11,22 +12,10 @@ import { QUERY_KEYS_ADMIN_BASIC_INFO } from "../../utils/const";
 import useApi from "../../hooks/useAPI";
 
 export default function AdminProfile() {
-  // const context = React.useContext(NameContext);
-  // const { namecolor }: any = context;
   const adminId = localStorage.getItem("_id");
-  // const [activeStep, setActiveStep] = React.useState(0);
-  // const [skipped, setSkipped] = React.useState(new Set<number>());
-
-  // const [isEdit, setIsEdit] = React.useState(false);
-  // const [isEdit1, setIsEdit1] = React.useState(false);
   const [isProComplete, setIsProComplete] = React.useState(0);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const [activeForm, setActiveForm] = React.useState(0);
-  // const navigator = useNavigate();
-  // const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  // const isStepSkipped = (step: number) => {
-  //   return skipped.has(step);
-  // };
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const { getData } = useApi();
 
@@ -49,28 +38,7 @@ export default function AdminProfile() {
     };
   }, []);
 
-  // const handleNext = () => {
-  //   let newSkipped = skipped;
-  //   if (isStepSkipped(activeStep)) {
-  //     newSkipped = new Set(newSkipped.values());
-  //     newSkipped.delete(activeStep);
-  //   }
-
-  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  //   setSkipped(newSkipped);
-  // };
-
-  // const handleBack = () => {
-  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  // };
-
-  // const handleStep = (step: number) => () => {
-  //   setActiveStep(step);
-  //   window.scrollTo(0, 0);
-  // };
-
   const handleReset = async () => {
-    // console.log('resetting ===',isProComplate)
     if ((await isProComplete) !== 100 && (await isProComplete1)) {
       toast.success(
         "Your profile is incomplete. Please complete your profile.",
@@ -94,40 +62,17 @@ export default function AdminProfile() {
       );
     }
 
-    // setActiveStep(0);
   };
 
-  // const editProfile = () => {
-  //   setIsEdit(true);
-
-  //   // setIsEdit1(true)
-  // };
-  // const isEditfun = () => {
-  //   setIsEdit1(false);
-  // };
-  // const viewProfile = () => {
-  //   setIsEdit(false);
-  // };
-
-  // const viewProfileHome = () => {
-  //   navigator("/main/DashBoard");
-  // };
-  // const viewProfile1 = () => {
-  //   setIsEdit1(true);
-  // };
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
       (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
     ).length;
   };
   const adminAPI = async () => {
-    // console.log("======-=-=-==--=-=-==",adminId);
     getData(`${profileURL}/${adminId}`)
       .then((data: any) => {
-        // console.log(data.data)
         if (data.data) {
-          // setProfileData(data?.data)
-          // let basic_info = data.data.basic_info
           const basic_info = {
             first_name: data?.data?.basic_info?.first_name,
             last_name: data?.data?.basic_info?.last_name,
@@ -182,12 +127,6 @@ export default function AdminProfile() {
             sectionCount++;
           }
           if (language && Object.keys(language)?.length > 0) {
-            // let totalhobbycount = 0
-            // let filledhobbyCount = 0
-            // if (hobby && Object.keys(hobby).length > 0) {
-            //   totalhobbycount = Object.keys(hobby).length
-            //   filledhobbyCount = countKeysWithValue(hobby)
-            // }
             const totalcount = Object.keys(language)?.length;
             const filledCount = countKeysWithValue(language);
             const percentage = (filledCount / totalcount) * 100;
@@ -249,16 +188,6 @@ export default function AdminProfile() {
   React.useEffect(() => {
     adminAPI();
   }, []);
-  // const handleMouseEnter = (event:any) => {
-  //   event.target.style.backgroundColor = '#6c757d';  // Example hover style
-  //   // event.target.style.fontSize= '.90rem'
-  // };
-
-  // const handleMouseLeave = (event:any) => {
-  //   // event.target.style.color = 'initial';  // Reset to initial style
-  //   // event.target.style.fontSize= '.90rem'
-  //   event.target.style.backgroundColor = 'inherit';
-  // };
 
   React.useEffect(() => {
     updateWizard();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -12,23 +13,19 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
-//   IconButton,
   InputLabel,
   MenuItem,
   OutlinedInput,
-//   Paper,
   Radio,
   RadioGroup,
   Select,
   SelectChangeEvent,
   TextField,
   Theme,
-//   Tooltip,
   useTheme,
 } from "@mui/material";
 import {
   LocalizationProvider,
-//   DateTimePicker,
   DatePicker,
 } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -56,9 +53,6 @@ export default function AdminProfileMgt() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
-//   const isStepOptional = (step: number) => {
-//     return step > 0 && step < steps.length - 1;
-//   };
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -79,21 +73,6 @@ export default function AdminProfileMgt() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  // const handleSkip = () => {
-  //     if (!isStepOptional(activeStep)) {
-  //         // You probably want to guard against something like this,
-  //         // it should never occur unless someone's actively trying to break something.
-  //         throw new Error("You can't skip a step that isn't optional.");
-  //     }
-
-  //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  //     setSkipped((prevSkipped) => {
-  //         const newSkipped = new Set(prevSkipped.values());
-  //         newSkipped.add(activeStep);
-  //         return newSkipped;
-  //     });
-  // };
-
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -106,14 +85,6 @@ export default function AdminProfileMgt() {
           const labelProps: {
             optional?: React.ReactNode;
           } = {};
-          // if (isStepOptional(index)) {
-          //     labelProps.optional = (
-          //         <Typography variant="caption">Optional</Typography>
-          //     );
-          // }
-          // if (isStepSkipped(index)) {
-          //     stepProps.completed = false;
-          // }
           return (
             <Step key={label} {...stepProps}>
               <StepLabel {...labelProps}>{label}</StepLabel>
@@ -156,20 +127,6 @@ export default function AdminProfileMgt() {
             {activeStep === 4 && <AdmincontactDtails />}
             {activeStep === 5 && <AdminProfession />}
           </Typography>
-          {/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Button
-                            color="inherit"
-                            disabled={activeStep === 0}
-                            onClick={handleBack}
-                            sx={{ mr: 1 }}
-                        >
-                            Back
-                        </Button>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleNext}>
-                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
-                    </Box> */}
         </React.Fragment>
       )}
     </Box>
