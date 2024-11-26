@@ -3,7 +3,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
-const CommonModal = ({ message, isOpen, setIsOpen }: any) => {
+
+
+interface CommonModalProps {
+  message: string;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const CommonModal: React.FC<CommonModalProps> = ({ message, isOpen, setIsOpen }) => {
   const handleClose = () => setIsOpen(false);
   const style = {
     position: "absolute" as const,

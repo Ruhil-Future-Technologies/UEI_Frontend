@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   FunctionComponent,
   useState,
@@ -741,15 +742,15 @@ export const ProfileDialog: FunctionComponent<{
   const parseDate = (dateStr: string | number | Date) => {
     if (typeof dateStr === "string") {
       // Check if the date string is in DD/MM/YYYY format
-      const parts = dateStr?.split("/");
+      const parts = dateStr.split("/");
       if (parts.length === 3) {
-        const [day, month, year] = parts?.map(Number);
+        const [day, month, year] = parts.map(Number);
         // Create a new Date object using year, month (0-indexed), and day
         const date = new Date(year, month - 1, day);
-        if (isNaN(date?.getTime())) {
+        if (isNaN(date.getTime())) {
           return null;
         }
-        return date?.toISOString();
+        return date.toISOString();
       } else {
         return null;
       }
@@ -757,7 +758,7 @@ export const ProfileDialog: FunctionComponent<{
 
     // If dateStr is already a Date object or a number, use it directly
     const date = new Date(dateStr);
-    if (isNaN(date?.getTime())) {
+    if (isNaN(date.getTime())) {
       return null;
     }
     return date.toISOString();
@@ -1082,7 +1083,7 @@ export const ProfileDialog: FunctionComponent<{
   const maxSemester =
     semester && semester?.length > 0
       ? Math.max(
-          ...semester?.map(
+          ...semester.map(
             (item: { semester_number: any }) => item?.semester_number
           )
         )
