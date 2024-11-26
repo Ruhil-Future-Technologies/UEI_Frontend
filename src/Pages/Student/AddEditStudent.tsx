@@ -1,13 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import "../Student/Student.scss";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { Grid, InputLabel, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import useApi from "../../hooks/useAPI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS, QUERY_KEYS_STUDENT } from "../../utils/const";
+import { QUERY_KEYS_STUDENT } from "../../utils/const";
 import { toast } from "react-toastify";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -16,12 +14,12 @@ import { MenuListinter } from "../../Components/Table/columns";
 import { dataaccess } from "../../utils/helpers";
 
 const AddEditStudent = () => {
-  const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
-  const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
-  const InstituteEditURL = QUERY_KEYS.INSTITUTE_EDIT;
+  // const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
+  // const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
+  // const InstituteEditURL = QUERY_KEYS.INSTITUTE_EDIT;
   const EditStudentURL = QUERY_KEYS_STUDENT.STUDENT_EDIT_BY_ID;
   const StudentURL = QUERY_KEYS_STUDENT.GET_STUDENT;
-  const { getData, postData, putData,postFileData,loading } = useApi();
+  const { getData, putData,postFileData,loading } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
 
@@ -43,7 +41,7 @@ const AddEditStudent = () => {
   };
 
   const [student, setStudent] = useState(initialState);
-  const [dataEntity, setDataEntity] = useState<any>([]);
+  // const [dataEntity, setDataEntity] = useState<any>([]);
   const [aim, setAim] = useState<boolean>(false);
   const [fname, setFname] = useState<boolean>(false);
   const [lname, setLname] = useState<boolean>(false);
@@ -51,10 +49,10 @@ const AddEditStudent = () => {
   const [fathernm, setFathernm] = useState<boolean>(false);
   const [mothernm, setMothernm] = useState<boolean>(false);
   const [gname, setGname] = useState<boolean>(false);
-  const [districtvalid, setDistrictvalid] = useState<boolean>(false);
-  const [pincodevalid, setPincodevalid] = useState<boolean>(false);
-  const [urlvalid, setUrlvalid] = useState<boolean>(false);
-  const [selectedFile, setSelectedFile] = useState();
+  // const [districtvalid, setDistrictvalid] = useState<boolean>(false);
+  // const [pincodevalid, setPincodevalid] = useState<boolean>(false);
+  // const [urlvalid, setUrlvalid] = useState<boolean>(false);
+  // const [selectedFile, setSelectedFile] = useState();
   const [filePreview, setFilePreview] = useState(null);
   const [mobile_no_call, setMobileNoCall] = useState<boolean>(false);
   const [uploadedfile, setUploadedFile] = useState();
@@ -114,7 +112,7 @@ const AddEditStudent = () => {
   }, []);
 
   const handleChange = (e: any) => {
-    let { name, value } = e.target;
+    const { name, value } = e.target;
    
     if (name === 'aim') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -151,9 +149,7 @@ const AddEditStudent = () => {
         setGender(false)
       }
 
-    } else if (name === 'dob') {
-
-    } else if (name === 'father_name') {
+    }  else if (name === 'father_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
         setFathernm(true)
       } else {
@@ -187,8 +183,8 @@ const AddEditStudent = () => {
         };
         reader.readAsDataURL(file);
         formData.append('file', file);
-        value = file.name
-        setUploadedFile(value)
+       const  values = file.name
+        setUploadedFile(values)
         // console.log('value',value)
         postFileData(`${"upload_file/upload"}`,formData)
         .then((data: any) => {
@@ -268,7 +264,7 @@ const AddEditStudent = () => {
     //   });
     // }
   }
-  const [isBase64Image, setIsBase64Image] = useState(false);
+  // const [isBase64Image, setIsBase64Image] = useState(false);
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
     studentData: {
@@ -289,7 +285,7 @@ const AddEditStudent = () => {
   ) => {
     e.preventDefault()
    
-    const fileName = studentData?.pic_path.substring(studentData?.pic_path.lastIndexOf("\\") + 1);
+    // const fileName = studentData?.pic_path.substring(studentData?.pic_path.lastIndexOf("\\") + 1);
     // console.log("test stud",fileName)
 
     // if (fileName && fileName.includes("data:image")) {
@@ -590,9 +586,9 @@ const AddEditStudent = () => {
                     }}
                   />
 
-                  {selectedFile && (
+                  {/* {selectedFile && (
                     <Typography variant="body1">{selectedFile}</Typography>
-                  )}
+                  )} */}
                 </Grid>
                 {filePreview && (
                   <img

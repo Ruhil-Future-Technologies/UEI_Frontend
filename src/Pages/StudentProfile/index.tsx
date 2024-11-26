@@ -1,59 +1,46 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import { Box, Button, Typography } from "@mui/material";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {useEffect, useRef, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import StudentBasicInfo from "../StudentBasicInfo";
 import StudentAddress from "../StudentAddress";
 import StudentLanguageKnown from "../StudentLanguageKnown";
-import StudentAcademicHistory from "../StudentAcademicHistory";
 import StudentContactDetails from "../StudentContactDetails";
-import StudentHobbies from "../StudentHobbies";
 import StudentSubjectPreference from "../StudentSubjectPreference";
-import PreviewStudentProfile from "../PreviewStudentProfile";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 
 import { toast } from "react-toastify";
 
-import NameContext from "../Context/NameContext";
+// import NameContext from "../Context/NameContext";
 import useApi from "../../hooks/useAPI";
 import { QUERY_KEYS_STUDENT } from "../../utils/const";
-import { Await, useLocation, useNavigate } from "react-router-dom";
-import {
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
-} from "../../utils/helpers";
+import { useLocation} from "react-router-dom";
+
 import AcademicHistory from "../AcademicHistory/AcademicHistory";
-// import "../../assets/css/main.min.css";
-// import "../../assets/css/newstyle.min.css";
 export interface ChildComponentProps {
   setActiveForm: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const StudentProfile = () => {
-  const context = useContext(NameContext);
   const location: {
     state: {
       value: number;
     };
   } = useLocation();
 
-  const { namecolor }: any = context;
-  const steps = [
-    "Basic Information",
-    "Address",
-    "Hobbies / Language Known",
-    "Academic History",
-    "Contact Details",
-    "Subject Preference",
-    // "Student History",
-  ];
-  const [activeStep, setActiveStep] = useState(0);
+
+  // const steps = [
+  //   "Basic Information",
+  //   "Address",
+  //   "Hobbies / Language Known",
+  //   "Academic History",
+  //   "Contact Details",
+  //   "Subject Preference",
+  //   // "Student History",
+  // ];
+  // const [activeStep] = useState(0);
   const [studentData, setStudentData] = useState<any>({});
-  const [skipped, setSkipped] = useState(new Set<number>());
-  const [isEdit, setIsEdit] = useState(false);
+  // const [skipped] = useState(new Set<number>());
+  // const [isEdit, setIsEdit] = useState(false);
   const [isProComplete, setIsProComplete] = useState(0);
   const [isProComplete1, setIsProComplete1] = useState(false);
   const [activeForm, setActiveForm] = useState(0);
@@ -61,7 +48,7 @@ const StudentProfile = () => {
   const { getData } = useApi();
   const StudentId = localStorage.getItem("_id");
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
-  const navigator = useNavigate();
+  // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
       (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
@@ -180,15 +167,15 @@ const StudentProfile = () => {
             let sectionCount = 0;
 
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== "") {
-                getData(`${"upload_file/get_image/" + data?.data?.basic_info?.pic_path}`)
-                  .then((imgdata: any) => {
-                    // setprofileImage(imgdata.data);
-                  })
-                  .catch((e) => {
-                    // Handle error
-                  });
-              }
+              // if (data?.data?.basic_info?.pic_path !== "") {
+              //   getData(`${"upload_file/get_image/" + data?.data?.basic_info?.pic_path}`)
+              //     .then((imgdata: any) => {
+              //       // setprofileImage(imgdata.data);
+              //     })
+              //     .catch((e) => {
+              //       // Handle error
+              //     });
+              // }
 
               const totalCount = Object.keys(basic_info).length;
               const filledCount = countKeysWithValue(basic_info);
@@ -236,8 +223,11 @@ const StudentProfile = () => {
                 delete academic_history?.learning_style;
                 delete academic_history?.university_name;
                 delete academic_history?.year;
-                academic_history?.board !== "state_board" &&
+                if(academic_history?.board !== "state_board"){
                   delete academic_history?.state_for_stateboard;
+                }
+                // academic_history?.board !== "state_board" &&
+                //   delete academic_history?.state_for_stateboard;
               } else {
                 delete academic_history?.board;
                 delete academic_history?.class_id;
@@ -303,37 +293,37 @@ const StudentProfile = () => {
     }
   };
 
-  const isStepOptional = (step: number) => {
-    return step > 0 && step < steps.length - 1;
-  };
+  // const isStepOptional = (step: number) => {
+  //   return step > 0 && step < steps.length - 1;
+  // };
 
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
+  // const isStepSkipped = (step: number) => {
+  //   return skipped.has(step);
+  // };
 
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-    window.scrollTo(0, 0);
-  };
+  // const handleNext = () => {
+  //   let newSkipped = skipped;
+  //   if (isStepSkipped(activeStep)) {
+  //     newSkipped = new Set(newSkipped.values());
+  //     newSkipped.delete(activeStep);
+  //   }
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  //   setSkipped(newSkipped);
+  //   window.scrollTo(0, 0);
+  // };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    window.scrollTo(0, 0);
-  };
+  // const handleBack = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  //   window.scrollTo(0, 0);
+  // };
 
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
-    window.scrollTo(0, 0);
-  };
-  const viewProfileHome = () => {
-    navigator("/main/DashBoard");
-  };
+  // const handleStep = (step: number) => () => {
+  //   setActiveStep(step);
+  //   window.scrollTo(0, 0);
+  // };
+  // const viewProfileHome = () => {
+  //   navigator("/main/DashBoard");
+  // };
   const handleReset = async () => {
     if ((await isProComplete) === 100 && (await isProComplete1)) {
       toast.success("You have completed your profile", {
@@ -353,20 +343,20 @@ const StudentProfile = () => {
     }
 
     // setActiveStep(0);
-    setIsEdit(false);
+    // setIsEdit(false);
     window.scrollTo(0, 0);
   };
 
-  const editProfile = () => {
-    setIsEdit(true);
-  };
+  // const editProfile = () => {
+  //   setIsEdit(true);
+  // };
 
-  const viewProfile = () => {
-    setIsEdit(false);
-  };
-  useEffect(() => {
-    if (activeStep === 5 || activeForm === 5) callAPIStudent();
-  }, [activeStep, activeForm]);
+  // const viewProfile = () => {
+  //   setIsEdit(false);
+  // };
+  // useEffect(() => {
+  //   if (activeStep === 5 || activeForm === 5) callAPIStudent();
+  // }, [activeStep, activeForm]);
 
   return (
     <>
