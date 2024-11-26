@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 const CommonModal = ({ message, isOpen, setIsOpen }: any) => {
   const handleClose = () => setIsOpen(false);
   const style = {
-    position: "absolute" as "absolute",
+    position: "absolute" as const,
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",

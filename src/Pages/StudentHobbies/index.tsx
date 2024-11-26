@@ -38,7 +38,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
 
   useEffect(() => {
     if (save) {
@@ -103,8 +103,8 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
-    let payloadPromises = selectedHobbies.map((hobbyid) => {
-      let payload = {
+    const payloadPromises = selectedHobbies.map((hobbyid) => {
+      const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };

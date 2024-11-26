@@ -24,7 +24,7 @@ export const getDateFormat = (value: any) => {
   
     if (keysA.length !== keysB.length) return false;
   
-    for (let key of keysA) {
+    for (const key of keysA) {
       if (!keysB.includes(key)
    || !deepEqual(a[key], b[key])) {
         return false;

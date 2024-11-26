@@ -41,7 +41,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    let login_id = localStorage.getItem("_id");
+    const login_id = localStorage.getItem("_id");
     const token = localStorage.getItem("token");
     if (login_id) {
       navigate("/main/DashBoard");
@@ -232,7 +232,7 @@ const Login = () => {
       theme: "colored",
       autoClose: 500,
     });
-    let usertype = localStorage.getItem("token");
+    const usertype = localStorage.getItem("token");
     // if(data?.data?.id && data.data.user_type ==='student' && usertype){
     //  getData(profileURL+'/'+data?.data?.id).then((data) => {
     //    console.log(data.data);

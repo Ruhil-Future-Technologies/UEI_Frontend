@@ -27,7 +27,7 @@ interface StudentAddress {
 }
 
 const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   console.log(StudentId);
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({

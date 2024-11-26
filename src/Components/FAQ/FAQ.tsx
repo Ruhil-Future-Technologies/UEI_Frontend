@@ -10,7 +10,7 @@ const FAQ = () => {
 
     return (
         <>
-            <div className="main-wrapper">
+            <div className="main-wrapper" data-testid="theme-sidebar">
                 <div className="main-content">
                     {/* <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                         <div className="breadcrumb-title pe-3">Components</div>

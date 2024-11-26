@@ -55,7 +55,7 @@ interface StudentBasicInformation {
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { setNamepro, setProImage }: any = context;
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, postFileData } = useApi();
   const [gender, setGender] = useState("Male");
   const [name, setName] = useState();
@@ -302,7 +302,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setdobset_col(false);
     } else {
       // setDob(null);
-      let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+      const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
       if (datecheck === "Invalid Date") {
         setError(null);
         setdobset_col(true);
@@ -397,7 +397,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (!basicInfo?.father_name) setFathername_col1(true);
     if (!basicInfo?.mother_name) setMothername_col1(true);
 
-    let payload = {
+    const payload = {
       student_login_id: StudentId,
       first_name: basicInfo?.first_name,
       last_name: basicInfo?.last_name,
@@ -410,7 +410,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       aim: basicInfo?.aim,
     };
 
-    let datecheck: any = dayjs(payload?.dob).format("DD/MM/YYYY");
+    const datecheck: any = dayjs(payload?.dob).format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
     } else {

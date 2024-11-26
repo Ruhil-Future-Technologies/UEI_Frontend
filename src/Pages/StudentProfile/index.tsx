@@ -59,7 +59,7 @@ const StudentProfile = () => {
   const [activeForm, setActiveForm] = useState(0);
   const usertype: any = localStorage.getItem("user_type");
   const { getData } = useApi();
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
@@ -147,7 +147,7 @@ const StudentProfile = () => {
             // setProfileDatas(data?.data);
             setStudentData(data?.data);
             //   let basic_info = data.data.basic_info;
-            let basic_info = {
+            const basic_info = {
               // aim: data?.data?.basic_info?.aim,
               dob: data?.data?.basic_info?.dob,
               father_name: data?.data?.basic_info?.father_name,
@@ -161,11 +161,11 @@ const StudentProfile = () => {
               mother_name: data?.data?.basic_info?.mother_name,
               // student_registration_no: data?.data?.basic_info?.student_registration_no,
             };
-            let address = data?.data?.address;
-            let language = data?.data?.language_known;
-            let academic_history = data.data.academic_history;
+            const address = data?.data?.address;
+            const language = data?.data?.language_known;
+            const academic_history = data.data.academic_history;
             //   let contact = data.data.contact;
-            let contact = {
+            const contact = {
               // email_id: data?.data?.contact?.email_id,
               id: data?.data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
@@ -173,7 +173,7 @@ const StudentProfile = () => {
               mobile_no_call: data?.data?.contact?.mobile_no_call,
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
-            let subject_preference = data?.data?.subject_preference;
+            const subject_preference = data?.data?.subject_preference;
             //   let hobby = data.data.hobby;
 
             let totalPercentage = 0;
@@ -190,9 +190,9 @@ const StudentProfile = () => {
                   });
               }
 
-              let totalCount = Object.keys(basic_info).length;
-              let filledCount = countKeysWithValue(basic_info);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(basic_info).length;
+              const filledCount = countKeysWithValue(basic_info);
+              const percentage = (filledCount / totalCount) * 100;
               // setbasicinfoPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
@@ -201,9 +201,9 @@ const StudentProfile = () => {
             }
 
             if (address && Object.keys(address).length > 0) {
-              let totalCount = Object.keys(address).length;
-              let filledCount = countKeysWithValue(address);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(address).length;
+              const filledCount = countKeysWithValue(address);
+              const percentage = (filledCount / totalCount) * 100;
               // setaddressPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
@@ -212,15 +212,15 @@ const StudentProfile = () => {
             }
 
             if (language && Object.keys(language).length > 0) {
-              let totalhobbycount = 0;
-              let filledhobbyCount = 0;
+              const totalhobbycount = 0;
+              const filledhobbyCount = 0;
               // if (hobby && Object.keys(hobby).length > 0) {
               //   totalhobbycount = Object.keys(hobby).length;
               //   filledhobbyCount = countKeysWithValue(hobby);
               // }
-              let totalCount = Object.keys(language).length + totalhobbycount;
-              let filledCount = countKeysWithValue(language) + filledhobbyCount;
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(language).length + totalhobbycount;
+              const filledCount = countKeysWithValue(language) + filledhobbyCount;
+              const percentage = (filledCount / totalCount) * 100;
               // setlanguagePercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
@@ -244,9 +244,9 @@ const StudentProfile = () => {
                 delete academic_history?.state_for_stateboard;
                 delete academic_history?.university_name;
               }
-              let totalCount = Object.keys(academic_history).length;
-              let filledCount = countKeysWithValue(academic_history);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(academic_history).length;
+              const filledCount = countKeysWithValue(academic_history);
+              const percentage = (filledCount / totalCount) * 100;
               // setacademichistoryPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
@@ -255,9 +255,9 @@ const StudentProfile = () => {
             }
 
             if (contact && Object.keys(contact).length > 0) {
-              let totalCount = Object.keys(contact).length;
-              let filledCount = countKeysWithValue(contact);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(contact).length;
+              const filledCount = countKeysWithValue(contact);
+              const percentage = (filledCount / totalCount) * 100;
               // setcontactPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
@@ -269,9 +269,9 @@ const StudentProfile = () => {
               subject_preference &&
               Object.keys(subject_preference).length > 0
             ) {
-              let totalCount = Object.keys(subject_preference).length;
-              let filledCount = countKeysWithValue(subject_preference);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(subject_preference).length;
+              const filledCount = countKeysWithValue(subject_preference);
+              const percentage = (filledCount / totalCount) * 100;
               // setsubjectPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;

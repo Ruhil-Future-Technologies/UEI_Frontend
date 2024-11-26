@@ -54,7 +54,7 @@ const Forgotpassword = () => {
   const sendLink = (e: any) => {
     setIsLoading(true);
     e.preventDefault();
-    let UserSignUp = {
+    const UserSignUp = {
       email: email,
       user_type: String(value),
     };

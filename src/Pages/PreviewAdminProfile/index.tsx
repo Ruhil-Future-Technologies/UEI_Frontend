@@ -49,8 +49,8 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({ editProfile, 
   // console.log("isEdit",isEdit1)
   const context = useContext(NameContext);
   const {setProImage,namecolor }:any = context;
-  let AdminId = localStorage.getItem("_id");
-  var userId = localStorage.getItem('userid');
+  const AdminId = localStorage.getItem("_id");
+  const userId = localStorage.getItem('userid');
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const [profileData, setProfileData] = useState<any>({})
   const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0)
@@ -77,7 +77,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({ editProfile, 
       if (data.data) {
         setProfileData(data?.data)
         // let basic_info = data?.data?.basic_info
-        let basic_info = {
+        const basic_info = {
           // aim: data?.data?.basic_info?.aim,
           dob: data?.data?.basic_info?.dob,
           father_name: data?.data?.basic_info?.father_name,
@@ -93,12 +93,12 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({ editProfile, 
           department_id: data?.data?.basic_info?.department_id,
           guardian_name:data?.data?.basic_info?.guardian_name
       };
-        let address = data?.data?.address
-        let language = data?.data?.language_known
-        let description = data?.data?.admin_description
-        let contact = data?.data?.contact
-        let profession = data?.data?.profession
-        let hobby = data?.data?.hobby
+        const address = data?.data?.address
+        const language = data?.data?.language_known
+        const description = data?.data?.admin_description
+        const contact = data?.data?.contact
+        const profession = data?.data?.profession
+        const hobby = data?.data?.hobby
         if (basic_info && Object.keys(basic_info)?.length > 0) {
           if(data?.data?.pic_path !== ""){
 
@@ -110,15 +110,15 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({ editProfile, 
               });
           }
 
-          let totalcount = Object.keys(basic_info)?.length
-          let filledCount = countKeysWithValue(basic_info)
-          let percentage = (filledCount / totalcount) * 100
+          const totalcount = Object.keys(basic_info)?.length
+          const filledCount = countKeysWithValue(basic_info)
+          const percentage = (filledCount / totalcount) * 100
           setbasicinfoPercentage(percentage)
         }
         if (address && Object.keys(address)?.length > 0) {
-          let totalcount = Object.keys(address)?.length
-          let filledCount = countKeysWithValue(address)
-          let percentage = (filledCount / totalcount) * 100
+          const totalcount = Object.keys(address)?.length
+          const filledCount = countKeysWithValue(address)
+          const percentage = (filledCount / totalcount) * 100
           setaddressPercentage(percentage)
         }
         if (language && Object.keys(language).length > 0) {
@@ -128,27 +128,27 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({ editProfile, 
             totalhobbycount = Object.keys(hobby).length
             filledhobbyCount = countKeysWithValue(hobby)
           }
-          let totalcount = Object.keys(language).length + totalhobbycount
-          let filledCount = countKeysWithValue(language) + filledhobbyCount
-          let percentage = (filledCount / totalcount) * 100
+          const totalcount = Object.keys(language).length + totalhobbycount
+          const filledCount = countKeysWithValue(language) + filledhobbyCount
+          const percentage = (filledCount / totalcount) * 100
           setlanguagePercentage(percentage)
         }
         if (description && Object.keys(description).length > 0) {
-          let totalcount = Object.keys(description).length
-          let filledCount = countKeysWithValue(description)
-          let percentage = (filledCount / totalcount) * 100
+          const totalcount = Object.keys(description).length
+          const filledCount = countKeysWithValue(description)
+          const percentage = (filledCount / totalcount) * 100
           setdesctiptionPercentage(percentage)
         }
         if (contact && Object.keys(contact).length > 0) {
-          let totalcount = Object.keys(contact).length
-          let filledCount = countKeysWithValue(contact)
-          let percentage = (filledCount / totalcount) * 100
+          const totalcount = Object.keys(contact).length
+          const filledCount = countKeysWithValue(contact)
+          const percentage = (filledCount / totalcount) * 100
           setcontactPercentage(percentage)
         }
         if (profession && Object.keys(profession).length > 0) {
-          let totalcount = Object.keys(profession).length
-          let filledCount = countKeysWithValue(profession)
-          let percentage = (filledCount / totalcount) * 100
+          const totalcount = Object.keys(profession).length
+          const filledCount = countKeysWithValue(profession)
+          const percentage = (filledCount / totalcount) * 100
           setprofessionPercentage(percentage)
         }
         setper(true)
@@ -256,7 +256,7 @@ const handleAvatarSelect = async (avatarUrl: string | URL | Request | any) => {
       const dataadmin:any = await  getData(`${"admin_basicinfo/edit/" + AdminId}`, AdminId);
 
 
-      let payload = {
+      const payload = {
         admin_login_id: AdminId,
         pic_path: filename, 
       };

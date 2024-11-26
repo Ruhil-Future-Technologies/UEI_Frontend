@@ -87,7 +87,7 @@ const AddEditStudent = () => {
       if (response.data) {
         
         const allStudent = response?.data;
-        let filteredStudent = allStudent.filter((std: any) => std.id == id)[0]
+        const filteredStudent = allStudent.filter((std: any) => std.id == id)[0]
         if(filteredStudent?.pic_path)
         {
           setFilePreview(filteredStudent?.pic_path)
@@ -240,7 +240,7 @@ const AddEditStudent = () => {
         setdobset_col(false);
       } else {
         // setDob(null);
-        let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+        const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
         if (datecheck === "Invalid Date") {
           setError(null);
           setdobset_col(true);
@@ -289,7 +289,7 @@ const AddEditStudent = () => {
   ) => {
     e.preventDefault()
    
-    let fileName = studentData?.pic_path.substring(studentData?.pic_path.lastIndexOf("\\") + 1);
+    const fileName = studentData?.pic_path.substring(studentData?.pic_path.lastIndexOf("\\") + 1);
     // console.log("test stud",fileName)
 
     // if (fileName && fileName.includes("data:image")) {
@@ -297,7 +297,7 @@ const AddEditStudent = () => {
     // } else {
     //   setIsBase64Image(false);
     // }
-    let payload = {
+    const payload = {
       aim: studentData?.aim,
       first_name: studentData?.first_name,
       last_name: studentData?.last_name,
@@ -314,7 +314,7 @@ const AddEditStudent = () => {
       email_id:studentData?.email_id,
       mobile_no_call:studentData?.mobile_no_call
     }
-    let datecheck: any = dayjs(payload?.dob)?.format("DD/MM/YYYY");
+    const datecheck: any = dayjs(payload?.dob)?.format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
     } else {

@@ -127,7 +127,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           //     hideProgressBar: true,
           //     theme: "colored",
           //   });
-          var userId = localStorage.getItem("userid");
+          const userId = localStorage.getItem("userid");
           if (userId !== null) {
             setEmail(userId);
           } else {
@@ -173,7 +173,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // });
       return;
     }
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: contcodePhone,
       mobile_no_call: phoneNum,

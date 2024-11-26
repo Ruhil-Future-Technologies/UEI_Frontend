@@ -2,7 +2,6 @@ import * as React from "react";
 
 import {
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -25,7 +24,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  let adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem("_id");
 //   console.log(adminId);
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState("+91");
@@ -154,7 +153,7 @@ if(phoneNum === ""){
     phoneNum: "Phone number should be 10 digits"   
   });
 }
-    let paylod = {
+    const paylod = {
       admin_id: adminId,
       mobile_isd_call: contcodePhone,
       mobile_no_call: phoneNum,

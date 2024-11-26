@@ -72,7 +72,7 @@ interface Box {
 const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, deleteData } = useApi();
 
   const theme = useTheme();

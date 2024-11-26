@@ -1,6 +1,5 @@
 import React from 'react';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
 
 const AvatarModal = ({ open, handleClose, handleAvatarSelect, avatars }:any) => {
   return (

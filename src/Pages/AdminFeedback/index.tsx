@@ -6,9 +6,8 @@ import useApi from "../../hooks/useAPI";
 
 import { toast } from "react-toastify";
 const AdminFeedback: React.FC = () => {
-
-    let StudentId = localStorage.getItem("_id");
-    const {getData,postData}=useApi();
+  // let StudentId = localStorage.getItem("_id");
+  const { postData } = useApi();
   const [question, setQuestion] = useState<string>("");
   const [options, setOptions] = useState<string[]>([""]);
 
@@ -36,24 +35,23 @@ const AdminFeedback: React.FC = () => {
 
   const handleSave = () => {
     // Save question and options to your database or API here
-    let payload = {
+    const payload = {
       question: question,
       options: options,
     };
 
-    postData("/feedback/add",payload).then((response) => {
-        console.log(response);
-       if( response.status===200){
-     toast.success("question added successfully",{
-         hideProgressBar:true,
-         theme:"colored"
-       });
-       setOptions([""]);
-       setQuestion("");
-       }
-        
-  });
-}
+    postData("/feedback/add", payload).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        toast.success("question added successfully", {
+          hideProgressBar: true,
+          theme: "colored",
+        });
+        setOptions([""]);
+        setQuestion("");
+      }
+    });
+  };
   return (
     <div className="container mt-4">
       <h1>Add Feedback Questions</h1>

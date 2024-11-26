@@ -45,7 +45,7 @@ import StudentcontactDetails from "../StudentContactDetails";
 import StudentHobbies from "../StudentHobbies";
 import StudentLanguage from "../StudentLanguageKnown";
 
-let StudentId = localStorage.getItem("_id");
+const StudentId = localStorage.getItem("_id");
 console.log(StudentId);
 
 // interface StudentBasicInformation {

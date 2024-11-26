@@ -10,7 +10,7 @@ interface Question {
 }
 
 const Feedback = () => {
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData } = useApi();
   const [question, setQuestion] = useState<Question>({
     id: "",
@@ -90,18 +90,16 @@ const Feedback = () => {
     ];
     setAnsweredQuestions(updatedAnswers);
 
-    console.log(answeredQuestions, message);
+   
     alert("Form submitted successfully");
     // Handle submission logic here
-    console.log(updatedAnswers);
-    let payload = {
+    const payload = {
       student_id: StudentId,
       feedbacks: updatedAnswers,
     };
-    console.log(payload);
+  
     postData("/feedback/student_feedback", payload)
       .then((response) => {
-        console.log("Feedback submitted successfully:", response);
         if (response.status === 200) {
           toast.success("feedback sent successfully", {
             hideProgressBar: true,

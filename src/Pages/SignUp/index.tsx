@@ -129,7 +129,7 @@ const Signup = () => {
         user_type: String(value),
       };
 
-      let emptyKeys: string[] = [];
+      const emptyKeys: string[] = [];
 
       // Check for empty fields
       for (const key in UserSignUp) {

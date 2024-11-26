@@ -1,10 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import AdminBasicInfo from "../AdminBasicinfo";
 import AdminAddress from "../AdminAddress";
@@ -12,44 +6,27 @@ import AdminDescription from "../AdminDescription";
 import AdminLanguage from "../AdminLanguage";
 import AdminProfession from "../AdminProfession";
 import AdminContactDetails from "../AdminContact";
-import PreviewAdminProfile from "../PreviewAdminProfile";
-
-import { Divider, useMediaQuery, useTheme } from "@mui/material";
 import { toast } from "react-toastify";
-
-import { useNavigate } from "react-router-dom";
 import { QUERY_KEYS_ADMIN_BASIC_INFO } from "../../utils/const";
 import useApi from "../../hooks/useAPI";
-import { inputfieldtext } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-
-const steps = [
-  "Admin Basic Information",
-  "Admin Address",
-  "Language known",
-  "Admin Description",
-  "Admin Contact Details",
-  "Admin Profession",
-];
 
 export default function AdminProfile() {
-  const context = React.useContext(NameContext);
-  const { namecolor }: any = context;
-  let adminId = localStorage.getItem("_id");
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set<number>());
+  // const context = React.useContext(NameContext);
+  // const { namecolor }: any = context;
+  const adminId = localStorage.getItem("_id");
+  // const [activeStep, setActiveStep] = React.useState(0);
+  // const [skipped, setSkipped] = React.useState(new Set<number>());
 
-  const [isEdit, setIsEdit] = React.useState(false);
-  const [isEdit1, setIsEdit1] = React.useState(false);
+  // const [isEdit, setIsEdit] = React.useState(false);
+  // const [isEdit1, setIsEdit1] = React.useState(false);
   const [isProComplete, setIsProComplete] = React.useState(0);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const [activeForm, setActiveForm] = React.useState(0);
-  const theme = useTheme();
-  const navigator = useNavigate();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
+  // const navigator = useNavigate();
+  // const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  // const isStepSkipped = (step: number) => {
+  //   return skipped.has(step);
+  // };
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const { getData } = useApi();
 
@@ -72,25 +49,25 @@ export default function AdminProfile() {
     };
   }, []);
 
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
+  // const handleNext = () => {
+  //   let newSkipped = skipped;
+  //   if (isStepSkipped(activeStep)) {
+  //     newSkipped = new Set(newSkipped.values());
+  //     newSkipped.delete(activeStep);
+  //   }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-  };
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  //   setSkipped(newSkipped);
+  // };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
+  // const handleBack = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  // };
 
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
-    window.scrollTo(0, 0);
-  };
+  // const handleStep = (step: number) => () => {
+  //   setActiveStep(step);
+  //   window.scrollTo(0, 0);
+  // };
 
   const handleReset = async () => {
     // console.log('resetting ===',isProComplate)
@@ -117,27 +94,27 @@ export default function AdminProfile() {
       );
     }
 
-    setActiveStep(0);
+    // setActiveStep(0);
   };
 
-  const editProfile = () => {
-    setIsEdit(true);
+  // const editProfile = () => {
+  //   setIsEdit(true);
 
-    // setIsEdit1(true)
-  };
-  const isEditfun = () => {
-    setIsEdit1(false);
-  };
-  const viewProfile = () => {
-    setIsEdit(false);
-  };
+  //   // setIsEdit1(true)
+  // };
+  // const isEditfun = () => {
+  //   setIsEdit1(false);
+  // };
+  // const viewProfile = () => {
+  //   setIsEdit(false);
+  // };
 
-  const viewProfileHome = () => {
-    navigator("/main/DashBoard");
-  };
-  const viewProfile1 = () => {
-    setIsEdit1(true);
-  };
+  // const viewProfileHome = () => {
+  //   navigator("/main/DashBoard");
+  // };
+  // const viewProfile1 = () => {
+  //   setIsEdit1(true);
+  // };
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
       (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
@@ -151,7 +128,7 @@ export default function AdminProfile() {
         if (data.data) {
           // setProfileData(data?.data)
           // let basic_info = data.data.basic_info
-          let basic_info = {
+          const basic_info = {
             first_name: data?.data?.basic_info?.first_name,
             last_name: data?.data?.basic_info?.last_name,
             gender: data?.data?.basic_info?.gender,
@@ -161,16 +138,16 @@ export default function AdminProfile() {
             department_id: data?.data?.basic_info?.department_id,
             guardian_name: data?.data?.basic_info?.guardian_name,
           };
-          let address = data?.data?.address;
-          let language = data?.data?.language_known;
-          let description = data?.data?.admin_description;
+          const address = data?.data?.address;
+          const language = data?.data?.language_known;
+          const description = data?.data?.admin_description;
           // let contact = data.data.contact
-          let contact = {
+          const contact = {
             mobile_no_call: data?.data?.contact?.mobile_no_call,
             mobile_isd_call: data?.data?.contact?.mobile_isd_call,
             mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
           };
-          let profession = data.data.profession;
+          const profession = data.data.profession;
           // let hobby = data.data.hobby
 
           let totalPercentage = 0;
@@ -179,15 +156,15 @@ export default function AdminProfile() {
           if (basic_info && Object.keys(basic_info)?.length > 0) {
             if (data?.data?.pic_path !== "") {
               getData(`${"upload_file/get_image/" + data?.data?.pic_path}`)
-                .then((imgdata: any) => {
+                .then(() => {
                   // setprofileImage(imgdata.data)
                 })
-                .catch((e) => {});
+                .catch(() => {});
             }
 
-            let totalcount = Object.keys(basic_info)?.length;
-            let filledCount = countKeysWithValue(basic_info);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(basic_info)?.length;
+            const filledCount = countKeysWithValue(basic_info);
+            const percentage = (filledCount / totalcount) * 100;
             // setbasicinfoPercentage(percentage)
             totalPercentage += percentage;
             sectionCount++;
@@ -195,9 +172,9 @@ export default function AdminProfile() {
             sectionCount++;
           }
           if (address && Object.keys(address).length > 0) {
-            let totalcount = Object.keys(address)?.length;
-            let filledCount = countKeysWithValue(address);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(address)?.length;
+            const filledCount = countKeysWithValue(address);
+            const percentage = (filledCount / totalcount) * 100;
             // setaddressPercentage(percentage)
             totalPercentage += percentage;
             sectionCount++;
@@ -211,9 +188,9 @@ export default function AdminProfile() {
             //   totalhobbycount = Object.keys(hobby).length
             //   filledhobbyCount = countKeysWithValue(hobby)
             // }
-            let totalcount = Object.keys(language)?.length;
-            let filledCount = countKeysWithValue(language);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(language)?.length;
+            const filledCount = countKeysWithValue(language);
+            const percentage = (filledCount / totalcount) * 100;
             // setlanguagePercentage(percentage)
             totalPercentage += percentage;
             sectionCount++;
@@ -221,9 +198,9 @@ export default function AdminProfile() {
             sectionCount++;
           }
           if (description && Object.keys(description)?.length > 0) {
-            let totalcount = Object.keys(description)?.length;
-            let filledCount = countKeysWithValue(description);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(description)?.length;
+            const filledCount = countKeysWithValue(description);
+            const percentage = (filledCount / totalcount) * 100;
             // setdesctiptionPercentage(percentage)
             totalPercentage += percentage;
             sectionCount++;
@@ -231,9 +208,9 @@ export default function AdminProfile() {
             sectionCount++;
           }
           if (contact && Object.keys(contact)?.length > 0) {
-            let totalcount = Object.keys(contact)?.length;
-            let filledCount = countKeysWithValue(contact);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(contact)?.length;
+            const filledCount = countKeysWithValue(contact);
+            const percentage = (filledCount / totalcount) * 100;
             // setcontactPercentage(percentage)
             totalPercentage += percentage;
             sectionCount++;
@@ -241,9 +218,9 @@ export default function AdminProfile() {
             sectionCount++;
           }
           if (profession && Object.keys(profession)?.length > 0) {
-            let totalcount = Object.keys(profession)?.length;
-            let filledCount = countKeysWithValue(profession);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(profession)?.length;
+            const filledCount = countKeysWithValue(profession);
+            const percentage = (filledCount / totalcount) * 100;
             // setprofessionPercentage(percentage)
             totalPercentage += percentage;
             sectionCount++;
@@ -331,134 +308,6 @@ export default function AdminProfile() {
 
   return (
     <>
-      {/* <div className="profile_section">
-        <div className="card">
-          <div className="card-header custom-header">
-            <div className="card-header--actions d-flex justify-content-between align-items-right">
-              <Button className="float-left custom-header" onClick={viewProfileHome}>
-                Back
-              </Button>
-              <div>
-                {isEdit ? (
-                  <Button onClick={viewProfile} className="float-right custom-header">
-                    View Profile
-                  </Button>
-                ) : (
-                  <Button onClick={editProfile} className="float-right custom-header">
-                    Edit Profile
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="card-body admin-card-body">
-            {!isEdit ? (
-              <React.Fragment>
-                <PreviewAdminProfile editProfile={editProfile} handleStep={setActiveStep} isEdit1={isEdit1} isEditfun={isEditfun} ></PreviewAdminProfile>
-              </React.Fragment>
-            ) : (
-              <>
-                <Stepper activeStep={activeStep} className='mt-3'
-                  orientation={isSmallScreen ? 'vertical' : 'horizontal'}
-                >
-                  {steps.map((label, index) => {
-                    const stepProps: { completed?: boolean } = {};
-                    const labelProps: {
-                      optional?: React.ReactNode;
-                    } = {};
-
-                    return (
-                      <Step key={label} {...stepProps}>
-                        <StepLabel {...labelProps}
-                          onClick={handleStep(index)}
-                          style={{ cursor: "pointer"}}
-                          sx={{
-                            '& .MuiStepLabel-label': {
-                                color: activeStep === index ? inputfieldtext(namecolor) : 'gray', 
-                            },
-                            '& .MuiStepLabel-label.Mui-active': {
-                                color: inputfieldtext(namecolor), // Active step color
-                            },
-                            // '& .MuiStepLabel-label.Mui-completed': {
-                            //     color: inputfield(namecolor), // Completed step color
-                            // },
-                        }}
-                          
-                        >
-                          {label}</StepLabel>
-                      </Step>
-                    );
-                  })}
-                </Stepper>
-                <div className="hr border border[#9e9e9e] mt-5"></div>
-                <React.Fragment>
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <Button
-                      // color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                      variant="contained"
-                      className='mainbutton'
-                      
-                      // onMouseEnter={handleMouseEnter}
-                      // onMouseLeave={handleMouseLeave}
-                      
-                    >
-                      Previous
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 ?
-                      <Button onClick={handleNext}
-                      variant="contained"
-                       className='mainbutton'
-                      >
-                        Next
-                      </Button>
-                      : <Button onClick={() => {
-                        handleReset();
-                        viewProfile();
-                        viewProfile1();
-                      }}
-                      variant="contained"
-                       className='mainbutton'
-                      >
-
-                        Finish
-                      </Button>
-                    }
-                  </Box>
-
-                  <Typography sx={{ mt: 2, mb: 1 }}>
-
-                    {activeStep === 0 &&
-                      <AdminBasicInfo />
-                    }
-                    {activeStep === 1 &&
-                      <AdminAddress />
-                    }
-                    {activeStep === 2 &&
-                      <AdminLenguage />
-                    }
-                    {activeStep === 3 &&
-                      <AdminDescription />
-
-                    }
-                    {activeStep === 4 &&
-                      <AdmincontactDtails />
-                    }
-                    {
-                      activeStep === 5 &&
-                      <AdminProfession />
-                    }
-                  </Typography>
-                </React.Fragment>
-              </>
-            )}
-          </div>
-        </div>
-      </div> */}
-
       <div className="main-wrapper">
         <div className="main-content">
           <div className="container mb-5">
@@ -475,14 +324,6 @@ export default function AdminProfile() {
                       Complete Your{" "}
                       <span style={{ color: "#9943EC" }}> Account </span>
                     </h4>
-                    {/* <h4 className="fs-1 d-xxl-none fw-bold mb-0">
-                      {`Hey, ${studentData?.basic_info?.first_name || "User"} ${
-                        studentData?.basic_info?.last_name || ""
-                      }`}
-                      <small className="mt-1 fs-14 d-block opacity-50 fw-normal">
-                        Please Complete Your Profile
-                      </small>
-                    </h4> */}
                   </>
                 )}
               </div>

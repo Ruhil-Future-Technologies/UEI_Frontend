@@ -1,35 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import {
-  Button,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
-  OutlinedInput,
-  Radio,
-  RadioGroup,
+  // OutlinedInput,
+  // Radio,
+  // RadioGroup,
   Select,
   SelectChangeEvent,
-  TextField,
-  Theme,
-  Typography,
-  useTheme,
+  // TextField,
+  // Theme,
+  // Typography,
+  // useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import AddIcon from "@mui/icons-material/Add";
+// import DeleteIcon from "@mui/icons-material/Delete";
+// import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
+// import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   inputfield,
   inputfieldhover,
@@ -45,34 +40,34 @@ interface Language {
   language_name: string;
 }
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
+//     },
+//   },
+// };
 
-function getStyles(
-  languageName: string,
-  selectedLanguages: readonly Language[],
-  theme: Theme
-) {
-  return {
-    fontWeight:
-      selectedLanguages
-        .map((lang) => lang.language_name)
-        .indexOf(languageName) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
+// function getStyles(
+//   languageName: string,
+//   selectedLanguages: readonly Language[],
+//   theme: Theme
+// ) {
+//   return {
+//     fontWeight:
+//       selectedLanguages
+//         .map((lang) => lang.language_name)
+//         .indexOf(languageName) === -1
+//         ? theme.typography.fontWeightRegular
+//         : theme.typography.fontWeightMedium,
+//   };
+// }
 
 const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  let AdminId = localStorage.getItem("_id");
+  const AdminId = localStorage.getItem("_id");
   // console.log(AdminId);
   // const storeLanguage: Language[] = [];
   interface Box {
@@ -84,9 +79,9 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
 
-  const theme = useTheme();
+  // const theme = useTheme();
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
-  const [selectedLeng, setSelectedLeng] = useState<any>();
+  // const [selectedLeng, setSelectedLeng] = useState<any>();
   const [editFalg, setEditFlag] = useState<boolean>(false);
   //const [selectedLeng,setSelectedLeng]=useState();
   // const [id, setId] = useState([]);
@@ -97,7 +92,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // };
 
   const [boxes, setBoxes] = useState<Box[]>([]);
-  const [proficiency, setProficiency] = useState<any>("read");
+  // const [proficiency, setProficiency] = useState<any>("read");
 
   const addRow = () => {
     setBoxes((prevBoxes) => [
@@ -125,7 +120,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         });
     }
     // setBoxes(boxes.filter((box) => box.id !== id));
-    setBoxes(boxes.filter((box, index) => index !== indx));
+    setBoxes(boxes.filter((_box, index) => index !== indx));
     //   toast.success("Admin Language known Deleted Successfully", {
     //     hideProgressBar: true,
     //     theme: "colored",
@@ -153,9 +148,9 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       .then((data: any) => {
         if (data?.status === 200) {
           //    setAllLanguage(data?.data);
-          const lenduageIds = data.data.language_id;
-          setSelectedLeng(lenduageIds);
-          data.data.map((item: any, index: number) => {
+          // const lenduageIds = data.data.language_id;
+          // setSelectedLeng(lenduageIds);
+          data.data.map((item: any) => {
             const newBox: Box = {
               id: item.id,
               language_id: item.language_id,
@@ -184,11 +179,9 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       });
   }, []);
 
-  const saveLanguage = (
-    event: React.FormEvent<HTMLFormElement | typeof setSelectedLeng>
-  ) => {
+  const saveLanguage = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     let valid = true;
     boxes.forEach((box, index) => {
       if (!box.language_id || !box.proficiency) {
@@ -204,7 +197,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     });
 
     if (!valid) return; // Don't proceed if validation fails
-      setActiveForm((prev) => prev + 1);
+    setActiveForm((prev) => prev + 1);
     boxes.forEach((box) => {
       const payload = {
         admin_id: AdminId,
@@ -287,7 +280,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   //
   const handleChange = (event: SelectChangeEvent<string>, index: number) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
         i === index ? { ...box, language_id: value } : box
@@ -311,14 +304,20 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   // console.log("boxes sasa", boxes);
-  const [error, setError] = useState<{ [key: number]: { language_error: boolean; proficiency_error: boolean } }>({});
+  const [error, setError] = useState<{
+    [key: number]: { language_error: boolean; proficiency_error: boolean };
+  }>({});
   const validateFields = (index: number, field: string) => {
     setError((prevError) => ({
       ...prevError,
       [index]: {
         ...prevError[index],
-        ...(field === "language" && { language_error: !boxes[index].language_id }),
-        ...(field === "proficiency" && { proficiency_error: !boxes[index].proficiency }),
+        ...(field === "language" && {
+          language_error: !boxes[index].language_id,
+        }),
+        ...(field === "proficiency" && {
+          proficiency_error: !boxes[index].proficiency,
+        }),
       },
     }));
   };
@@ -333,7 +332,15 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           key={index}
         >
           <div className="col form_field_wrapper ">
-            <FormControl required sx={{ m: 1 , mt:  error[index]?.language_error && box.language_id == "" ? 4 :1 }} fullWidth>
+            <FormControl
+              required
+              sx={{
+                m: 1,
+                mt:
+                  error[index]?.language_error && box.language_id == "" ? 4 : 1,
+              }}
+              fullWidth
+            >
               <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
               <Select
                 labelId={`language-label-${box.id}`}
@@ -350,51 +357,65 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 onBlur={() => validateFields(index, "language")}
               >
                 {alllanguage
-                 .filter((lang) => lang.id === box.language_id)
-                .map((lang) => (
-                  <MenuItem
-                    key={lang.id}
-                    value={lang.id}
-                    disabled
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor),
-                      },
-                    }}
-                  >
-                    {lang.language_name}
-                  </MenuItem>
-                ))}
-                  {/* Render the rest of the languages except the ones already selected in other boxes */}
+                  .filter((lang) => lang.id === box.language_id)
+                  .map((lang) => (
+                    <MenuItem
+                      key={lang.id}
+                      value={lang.id}
+                      disabled
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        "&:hover": {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                      }}
+                    >
+                      {lang.language_name}
+                    </MenuItem>
+                  ))}
+                {/* Render the rest of the languages except the ones already selected in other boxes */}
                 {alllanguage
-            .filter(
-              (lang) =>
-                lang.id !== box.language_id &&
-                !boxes.some((b) => b.language_id === lang.id)
-            )
-            .map((lang) => (
-              <MenuItem
-                key={lang.id}
-                value={lang.id}
-                sx={{
-                  backgroundColor: inputfield(namecolor),
-                  color: inputfieldtext(namecolor),
-                  "&:hover": {
-                    backgroundColor: inputfieldhover(namecolor),
-                  },
-                }}
-              >
-                {lang.language_name}
-              </MenuItem>
-            ))}
+                  .filter(
+                    (lang) =>
+                      lang.id !== box.language_id &&
+                      !boxes.some((b) => b.language_id === lang.id)
+                  )
+                  .map((lang) => (
+                    <MenuItem
+                      key={lang.id}
+                      value={lang.id}
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        "&:hover": {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                      }}
+                    >
+                      {lang.language_name}
+                    </MenuItem>
+                  ))}
               </Select>
-              {error[index]?.language_error && box.language_id == "" && <FormHelperText style={{color: "red"}}>Language is required</FormHelperText>}
+              {error[index]?.language_error && box.language_id == "" && (
+                <FormHelperText style={{ color: "red" }}>
+                  Language is required
+                </FormHelperText>
+              )}
             </FormControl>
           </div>
           <div className="col form_field_wrapper">
-            <FormControl required sx={{ m: 1 , mt:  error[index]?.proficiency_error &&  box.proficiency == "" ? 4 :1 }} fullWidth>
+            <FormControl
+              required
+              sx={{
+                m: 1,
+                mt:
+                  error[index]?.proficiency_error && box.proficiency == ""
+                    ? 4
+                    : 1,
+              }}
+              fullWidth
+            >
               <InputLabel id={`proficiency-label-${box.id}`}>
                 Proficiency
               </InputLabel>
@@ -449,7 +470,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   Both
                 </MenuItem>
               </Select>
-              {error[index]?.proficiency_error &&  box.proficiency == "" && <FormHelperText style={{color: "red"}}>Proficiency is required</FormHelperText>}
+              {error[index]?.proficiency_error && box.proficiency == "" && (
+                <FormHelperText style={{ color: "red" }}>
+                  Proficiency is required
+                </FormHelperText>
+              )}
             </FormControl>
           </div>
           <div className="col form_field_wrapper d-flex">

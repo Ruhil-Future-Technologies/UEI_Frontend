@@ -47,7 +47,7 @@ const UserChangePassword = () => {
     confpassword: "",
   };
   const [changepassword, setChangePassword] = useState(initialState);
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [uservalue, setuserValue] = React.useState<any>("");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -71,13 +71,13 @@ const UserChangePassword = () => {
   };
   const changePassword = (e: any) => {
     e.preventDefault();
-    let UserSignUp = {
+    const UserSignUp = {
       email: String(email),
       new_password: String(password),
       old_password: String(oldpassword),
       user_type: String(user_type),
     };
-    let emptyKeys: string[] = [];
+    const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
       if (UserSignUp.hasOwnProperty(key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {
@@ -130,13 +130,13 @@ const UserChangePassword = () => {
   ) => {
     // e.preventDefault()
     // e.target.reset()
-    let UserSignUp = {
+    const UserSignUp = {
       email: String(email),
       new_password: String(formData.password),
       old_password: String(formData.oldpassword),
       user_type: String(user_type),
     };
-    let emptyKeys: string[] = [];
+    const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
       if (UserSignUp.hasOwnProperty(key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {

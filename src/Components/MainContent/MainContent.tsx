@@ -6,13 +6,6 @@ import "chart.js/auto";
 import { PieChart } from "@mui/x-charts/PieChart";
 import {
   Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Legend,
-  Tooltip,
-  Filler,
   ChartOptions,
   ChartData,
 } from "chart.js";
@@ -22,7 +15,7 @@ import {
 import useApi from "../../hooks/useAPI";
 // import Button from '@mui/material/Button';
 import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
@@ -48,14 +41,10 @@ import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import VolumeOffOutlinedIcon from "@mui/icons-material/VolumeOffOutlined";
 import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined";
-import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 import CircularProgress from "@mui/material/CircularProgress";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import IconButton from "@mui/material/IconButton";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import { toast, ToastContentProps } from "react-toastify";
 import logo from "../../assets/img/g-logo-white.svg";
 import chatLogo from "../../assets/img/chat-logo.svg";
@@ -64,14 +53,11 @@ import femaleImage from "../../assets/img/avatars/female.png";
 import robotImage from "../../assets/img/robot.png";
 import { hasSubMenu } from "../../utils/helpers";
 import FullScreenLoader from "../../Pages/Loader/FullScreenLoader";
-import { tuple } from "yup";
 import NameContext from "../../Pages/Context/NameContext";
-import Teacher from "../../Pages/Uploadpdf/Uploadpdf";
 import { ProfileDialog } from "../Dailog/ProfileComplation";
 import "../../../node_modules/react-perfect-scrollbar/dist/css/styles.css";
 import ThemeSidebar from "../ThemeSidebar/ThemeSidebar";
 import Chatbot from "../../Pages/Chatbot";
-import CommonModal from "../CommonModal";
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
@@ -80,8 +66,8 @@ function MainContent() {
   const navigate = useNavigate();
   const { ProPercentage, setProPercentage }: any = context;
   const [userName, setUserName] = useState("");
-  let StudentId = localStorage.getItem("_id");
-  let menuList = localStorage.getItem("menulist1");
+  const StudentId = localStorage.getItem("_id");
+  const menuList = localStorage.getItem("menulist1");
   let menudata: any = [];
   if (menuList !== null) {
     menudata = JSON.parse(menuList);
@@ -90,22 +76,22 @@ function MainContent() {
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const ChatURL = QUERY_KEYS.CHATADD;
   const ChatStore = QUERY_KEYS.CHAT_STORE;
-  const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
+  // const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const [profileDatas, setProfileDatas] = useState<any>({});
-  const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0);
-  const [addressPercentage, setaddressPercentage] = useState<number>(0);
-  const [languagePercentage, setlanguagePercentage] = useState<number>(0);
-  const [academichistoryPercentage, setacademichistoryPercentage] =
-    useState<number>(0);
-  const [contactPercentage, setcontactPercentage] = useState<number>(0);
-  const [hobbyPercentage, sethobbyPercentage] = useState<number>(0);
-  const [subjectPercentage, setsubjectPercentage] = useState<number>(0);
-  const [overallProfilePercentage, setoverallProfilePercentage] =
-    useState<number>(0);
-  const [desctiptionPercentage, setdesctiptionPercentage] = useState<number>(0);
+  // const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0);
+  // const [addressPercentage, setaddressPercentage] = useState<number>(0);
+  // const [languagePercentage, setlanguagePercentage] = useState<number>(0);
+  // const [academichistoryPercentage, setacademichistoryPercentage] =
+  //   useState<number>(0);
+  // const [contactPercentage, setcontactPercentage] = useState<number>(0);
+  // // const [hobbyPercentage, sethobbyPercentage] = useState<number>(0);
+  // const [subjectPercentage, setsubjectPercentage] = useState<number>(0);
+  // const [overallProfilePercentage, setoverallProfilePercentage] =
+  //   useState<number>(0);
+  // const [desctiptionPercentage, setdesctiptionPercentage] = useState<number>(0);
   const [profileImage, setprofileImage] = useState<any>();
   const [dataCompleted, setDataCompleted] = useState(false);
   const [themeMode, setThemeMode] = useState("");
@@ -121,8 +107,8 @@ function MainContent() {
   const [chatsaved, setChatSaved] = useState<boolean>(false);
   const [chat, setchatData] = useState<any>([]);
   const [chatlist, setchatlistData] = useState<any>();
-  const [chathistory, setchathistory] = useState<any>([]);
-  const [chathistoryrecent, setchathistoryrecent] = useState<any>();
+  // const [chathistory, setchathistory] = useState<any>([]);
+  // const [chathistoryrecent, setchathistoryrecent] = useState<any>();
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   let synth: SpeechSynthesis;
   synth = window?.speechSynthesis;
@@ -236,7 +222,7 @@ function MainContent() {
       },
     },
     stroke: {
-      lineCap: "round" as "round",
+      lineCap: "round" as const,
     },
     labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
   };
@@ -256,7 +242,7 @@ function MainContent() {
     },
     stroke: {
       width: 2,
-      curve: "smooth" as "smooth",
+      curve: "smooth" as const,
     },
     fill: {
       type: "gradient",
@@ -317,7 +303,7 @@ function MainContent() {
       enabled: false,
     },
     stroke: {
-      curve: "straight" as "straight",
+      curve: "straight" as const,
       width: 2,
       colors: ["#7DFF50"],
     },
@@ -385,14 +371,14 @@ function MainContent() {
     }
   }, [ProPercentage]);
 
-  const profileData: any = sessionStorage.getItem("profileData");
+  // const profileData: any = sessionStorage.getItem("profileData");
 
-  let basicinfo: any = {};
-  if (profileData !== null) {
-    basicinfo = JSON.parse(profileData);
-  }
+  // let basicinfo: any = {};
+  // if (profileData !== null) {
+  //   basicinfo = JSON.parse(profileData);
+  // }
 
-  const { postData, getData, deleteData, loading } = useApi();
+  const { postData, getData, loading } = useApi();
   const [stats, setStats] = useState({
     institutionCount: 0,
     studentCount: 0,
@@ -826,7 +812,7 @@ function MainContent() {
           if (data.data) {
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
-            let basic_info = {
+            const basic_info = {
               // aim: data?.data?.basic_info?.aim,
               dob: data?.data?.basic_info?.dob,
               father_name: data?.data?.basic_info?.father_name,
@@ -840,7 +826,7 @@ function MainContent() {
               mother_name: data?.data?.basic_info?.mother_name,
               // student_registration_no: data?.data?.basic_info?.student_registration_no
             };
-            let address = {
+            const address = {
               address1: data?.data?.address?.address1,
               country: data?.data?.address?.country,
               state: data?.data?.address?.state,
@@ -848,14 +834,14 @@ function MainContent() {
               district: data?.data?.address?.district,
               pincode: data?.data?.address?.pincode,
             };
-            let language = {
+            const language = {
               language_id: data?.data?.language_known?.language_id,
               proficiency: data?.data?.language_known?.proficiency,
             };
 
-            let academic_history = data?.data?.academic_history;
+            const academic_history = data?.data?.academic_history;
             //   let contact = data.data.contact;
-            let contact = {
+            const contact = {
               // email_id: data?.data?.contact?.email_id,
               id: data?.data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
@@ -863,7 +849,7 @@ function MainContent() {
               mobile_no_call: data?.data?.contact?.mobile_no_call,
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
-            let subject_preference = data?.data?.subject_preference;
+            const subject_preference = data?.data?.subject_preference;
             //   let hobby = data.data.hobby;
 
             let totalPercentage = 0;
@@ -878,14 +864,14 @@ function MainContent() {
                   .then((imgdata: any) => {
                     setprofileImage(imgdata.data);
                   })
-                  .catch((e) => {
+                  .catch(() => {
                     // Handle error
                   });
               }
-              let totalcount = Object.keys(basic_info).length;
-              let filledCount = countKeysWithValue(basic_info);
-              let percentage = (filledCount / totalcount) * 100;
-              setbasicinfoPercentage(percentage);
+              const totalcount = Object.keys(basic_info).length;
+              const filledCount = countKeysWithValue(basic_info);
+              const percentage = (filledCount / totalcount) * 100;
+              // setbasicinfoPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -893,10 +879,10 @@ function MainContent() {
             }
 
             if (address && Object.keys(address).length > 0) {
-              let totalcount = Object.keys(address).length;
-              let filledCount = countKeysWithValue(address);
-              let percentage = (filledCount / totalcount) * 100;
-              setaddressPercentage(percentage);
+              const totalcount = Object.keys(address).length;
+              const filledCount = countKeysWithValue(address);
+              const percentage = (filledCount / totalcount) * 100;
+              // setaddressPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -904,16 +890,16 @@ function MainContent() {
             }
 
             if (language && Object.keys(language).length > 0) {
-              let totalhobbycount = 0;
-              let filledhobbyCount = 0;
+              const totalhobbycount = 0;
+              const filledhobbyCount = 0;
               // if (hobby && Object.keys(hobby).length > 0) {
               //   totalhobbycount = Object.keys(hobby).length;
               //   filledhobbyCount = countKeysWithValue(hobby);
               // }
-              let totalcount = Object.keys(language).length + totalhobbycount;
-              let filledCount = countKeysWithValue(language) + filledhobbyCount;
-              let percentage = (filledCount / totalcount) * 100;
-              setlanguagePercentage(percentage);
+              const totalcount = Object.keys(language).length + totalhobbycount;
+              const filledCount = countKeysWithValue(language) + filledhobbyCount;
+              const percentage = (filledCount / totalcount) * 100;
+              // setlanguagePercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -959,10 +945,10 @@ function MainContent() {
                 delete academic_history?.state_for_stateboard;
                 delete academic_history?.university_name;
               }
-              let totalcount = Object.keys(academic_history).length;
-              let filledCount = countKeysWithValue(academic_history);
-              let percentage = (filledCount / totalcount) * 100;
-              setacademichistoryPercentage(percentage);
+              const totalcount = Object.keys(academic_history).length;
+              const filledCount = countKeysWithValue(academic_history);
+              const percentage = (filledCount / totalcount) * 100;
+              // setacademichistoryPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -970,10 +956,10 @@ function MainContent() {
             }
 
             if (contact && Object.keys(contact).length > 0) {
-              let totalcount = Object.keys(contact).length;
-              let filledCount = countKeysWithValue(contact);
-              let percentage = (filledCount / totalcount) * 100;
-              setcontactPercentage(percentage);
+              const totalcount = Object.keys(contact).length;
+              const filledCount = countKeysWithValue(contact);
+              const percentage = (filledCount / totalcount) * 100;
+              // setcontactPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -995,10 +981,10 @@ function MainContent() {
               }else{
                 // console.log("test subject pref college",subject_preference)
               }
-              let totalcount = Object.keys(subject_preference)?.length;
-              let filledCount = countKeysWithValue(subject_preference);
-              let percentage = (filledCount / totalcount) * 100;
-              setsubjectPercentage(percentage);
+              const totalcount = Object.keys(subject_preference)?.length;
+              const filledCount = countKeysWithValue(subject_preference);
+              const percentage = (filledCount / totalcount) * 100;
+              // setsubjectPercentage(percentage);
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -1038,7 +1024,7 @@ function MainContent() {
   const fetchStudentData = async () => {
     if (usertype === "student") {
       try {
-        const [chatHistory, chatCount] = await Promise.all([
+        const [chatCount] = await Promise.all([
           getData(`${chatlisturl}/${userdata?.id}`),
           getData("/chat/api/chat-summary"),
         ]);
@@ -1050,8 +1036,8 @@ function MainContent() {
         //   chatHistory: chatstarred?.length || 0,
         //   chatCount: chatHistory?.data?.length || 0,
         // });
-         const chatstarred =
-          chatHistory?.data?.filter((chat: any) => chat) || [];
+        //  const chatstarred =
+        //   chatHistory?.data?.filter((chat: any) => chat) || [];
          setStudent({
           // chatHistory: chatHistory?.data?.length || 0,
           chatHistory: chatCount?.data?.saved_chat_count || 0,
@@ -1070,7 +1056,7 @@ function MainContent() {
           if (data?.data) {
             // setProfileData(data?.data)
             // let basic_info = data?.data?.basic_info
-            let basic_info = {
+            const basic_info = {
               dob: data?.data?.basic_info?.dob,
               father_name: data?.data?.basic_info?.father_name,
               first_name: data?.data?.basic_info?.first_name,
@@ -1086,7 +1072,7 @@ function MainContent() {
               guardian_name: data?.data?.basic_info?.guardian_name,
             };
             // let address = data?.data?.address
-            let address = {
+            const address = {
               address1: data?.data?.address?.address1,
               country: data?.data?.address?.country,
               state: data?.data?.address?.state,
@@ -1095,13 +1081,13 @@ function MainContent() {
               pincode: data?.data?.address?.pincode,
             };
             // let language = data?.data?.language_known
-            let language = {
+            const language = {
               language_id: data?.data?.language_known?.language_id,
               proficiency: data?.data?.language_known?.proficiency,
             };
-            let description = data?.data?.admin_description;
+            const description = data?.data?.admin_description;
             // let contact = data?.data?.contact
-            let contact = {
+            const contact = {
               // email_id: data?.data?.contact?.email_id,
               id: data?.data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
@@ -1110,12 +1096,12 @@ function MainContent() {
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
             // let profession = data?.data?.profession
-            let profession = {
+            const profession = {
               course_id: data?.data?.profession?.course_id,
               subject_id: data?.data?.profession?.subject_id,
               institution_id: data?.data?.profession?.institution_id,
             };
-            let hobby = data?.data?.hobby;
+            const hobby = data?.data?.hobby;
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
@@ -1127,21 +1113,21 @@ function MainContent() {
                   .then((imgdata: any) => {
                     setprofileImage(imgdata?.data);
                   })
-                  .catch((e) => { });
+                  .catch(() => { });
               }
 
-              let totalcount = Object.keys(basic_info)?.length;
-              let filledCount = countKeysWithValue(basic_info);
-              let percentage = (filledCount / totalcount) * 100;
+              const totalcount = Object.keys(basic_info)?.length;
+              const filledCount = countKeysWithValue(basic_info);
+              const percentage = (filledCount / totalcount) * 100;
               totalPercentage += percentage;
               sectionCount++;
             } else {
               sectionCount++;
             }
             if (address && Object.keys(address)?.length > 0) {
-              let totalcount = Object.keys(address)?.length;
-              let filledCount = countKeysWithValue(address);
-              let percentage = (filledCount / totalcount) * 100;
+              const totalcount = Object.keys(address)?.length;
+              const filledCount = countKeysWithValue(address);
+              const percentage = (filledCount / totalcount) * 100;
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -1154,36 +1140,36 @@ function MainContent() {
                 totalhobbycount = Object.keys(hobby).length;
                 filledhobbyCount = countKeysWithValue(hobby);
               }
-              let totalcount = Object.keys(language).length + totalhobbycount;
-              let filledCount = countKeysWithValue(language) + filledhobbyCount;
-              let percentage = (filledCount / totalcount) * 100;
+              const totalcount = Object.keys(language).length + totalhobbycount;
+              const filledCount = countKeysWithValue(language) + filledhobbyCount;
+              const percentage = (filledCount / totalcount) * 100;
               totalPercentage += percentage;
               sectionCount++;
             } else {
               sectionCount++;
             }
             if (description && Object.keys(description).length > 0) {
-              let totalcount = Object.keys(description).length;
-              let filledCount = countKeysWithValue(description);
-              let percentage = (filledCount / totalcount) * 100;
+              const totalcount = Object.keys(description).length;
+              const filledCount = countKeysWithValue(description);
+              const percentage = (filledCount / totalcount) * 100;
               totalPercentage += percentage;
               sectionCount++;
             } else {
               sectionCount++;
             }
             if (contact && Object.keys(contact).length > 0) {
-              let totalcount = Object.keys(contact).length;
-              let filledCount = countKeysWithValue(contact);
-              let percentage = (filledCount / totalcount) * 100;
+              const totalcount = Object.keys(contact).length;
+              const filledCount = countKeysWithValue(contact);
+              const percentage = (filledCount / totalcount) * 100;
               totalPercentage += percentage;
               sectionCount++;
             } else {
               sectionCount++;
             }
             if (profession && Object.keys(profession).length > 0) {
-              let totalcount = Object.keys(profession).length;
-              let filledCount = countKeysWithValue(profession);
-              let percentage = (filledCount / totalcount) * 100;
+              const totalcount = Object.keys(profession).length;
+              const filledCount = countKeysWithValue(profession);
+              const percentage = (filledCount / totalcount) * 100;
               totalPercentage += percentage;
               sectionCount++;
             } else {
@@ -1194,7 +1180,7 @@ function MainContent() {
               let overallPercentage = totalPercentage / sectionCount;
               // setoverallProfilePercentage(overallPercentage); // Set the overall percentage
               overallPercentage = Math.round(overallPercentage);
-              const nandata = 100 - overallPercentage;
+              // const nandata = 100 - overallPercentage;
 
               // console.log("overallPercentage sss", nandata,overallPercentage);
               localStorage.setItem(
@@ -1209,7 +1195,7 @@ function MainContent() {
             }
           }
         })
-        .catch((e) => {
+        .catch(() => {
           // toast.error(e?.message, {
           //   hideProgressBar: true,
           //   theme: "colored",
@@ -1430,8 +1416,8 @@ function MainContent() {
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
         setchatlistData(data?.data);
-        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-        setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+        // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
+        // setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -1473,9 +1459,9 @@ function MainContent() {
     setLoaderMsg("Searching result from knowledge base");
     setSearchErr(false);
 
-    let prompt = profileDatas?.prompt?.replace("**question**", "answer");
+    const prompt = profileDatas?.prompt?.replace("**question**", "answer");
     let payload = {};
-    let rag_payload = {};
+    // let rag_payload = {};
     if (selectedchat?.question !== "") {
       payload = {
         student_id: StudentId,
@@ -1496,10 +1482,10 @@ function MainContent() {
           },
         ],
       };
-      rag_payload = {
-        user_query: search,
-        student_id: StudentId,
-      };
+      // rag_payload = {
+      //   user_query: search,
+      //   student_id: StudentId,
+      // };
     } else {
       payload = {
         student_id: StudentId,
@@ -1511,10 +1497,10 @@ function MainContent() {
             : studentCourse,
         stream: profileDatas?.subject,
       };
-      rag_payload = {
-        user_query: search,
-        student_id: StudentId,
-      };
+      // rag_payload = {
+      //   user_query: search,
+      //   student_id: StudentId,
+      // };
     }
 
     const handleResponsereg = (data: { data: any }) => {
@@ -1529,10 +1515,10 @@ function MainContent() {
       getData(`${chatlisturl}/${userdata?.id}`)
         .then((data: any) => {
           setchatlistData(data?.data);
-          setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-          setchathistoryrecent(
-            data?.data?.filter((chat: any) => !chat?.flagged)
-          );
+          // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
+          // setchathistoryrecent(
+          //   data?.data?.filter((chat: any) => !chat?.flagged)
+          // );
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -1560,7 +1546,7 @@ function MainContent() {
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
-                  let ChatStorepayload = {
+                  const ChatStorepayload = {
                     student_id: StudentId,
                     chat_question: search,
                     response: response?.answer,
@@ -1578,7 +1564,7 @@ function MainContent() {
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
-                        let ChatStorepayload = {
+                        const ChatStorepayload = {
                           student_id: StudentId,
                           chat_question: search,
                           response: response?.answer,
@@ -1603,7 +1589,7 @@ function MainContent() {
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
-                      let ChatStorepayload = {
+                      const ChatStorepayload = {
                         student_id: StudentId,
                         chat_question: search,
                         response: response?.answer,
@@ -1644,7 +1630,7 @@ function MainContent() {
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
-                  let ChatStorepayload = {
+                  const ChatStorepayload = {
                     student_id: StudentId,
                     chat_question: search,
                     response: response?.answer,
@@ -1662,7 +1648,7 @@ function MainContent() {
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
-                        let ChatStorepayload = {
+                        const ChatStorepayload = {
                           student_id: StudentId,
                           chat_question: search,
                           response: response?.answer,
@@ -1688,7 +1674,7 @@ function MainContent() {
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
-                      let ChatStorepayload = {
+                      const ChatStorepayload = {
                         student_id: StudentId,
                         chat_question: search,
                         response: response?.answer,
@@ -1711,7 +1697,7 @@ function MainContent() {
       })
       .then((data: any) => {
         if (data?.status === 200) {
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: StudentId,
             chat_question: search,
             response: data?.answer,
@@ -1729,9 +1715,9 @@ function MainContent() {
 
           handleResponsereg(data);
         } else if (data?.status === 404) {
-          let Ollamapayload = {
-            user_query: search,
-          };
+          // let Ollamapayload = {
+          //   user_query: search,
+          // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
@@ -1744,7 +1730,7 @@ function MainContent() {
       .then((data) => {
         if (data?.status === 200) {
           // handleResponse(data);
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: StudentId,
             chat_question: search,
             response: data?.answer,
@@ -1832,38 +1818,38 @@ function MainContent() {
     label: truncateLabel(course.course_name, 10),
   }));
 
-  const pieData1 = [
-    { id: 0, value: stats1?.Student_Profile, label: `Profile completed` },
-    { id: 1, value: stats1?.Student_null, label: `Pending Profile` },
-    //`${stats1.Student_Profile}% Profile`
-  ];
+  // const pieData1 = [
+  //   { id: 0, value: stats1?.Student_Profile, label: `Profile completed` },
+  //   { id: 1, value: stats1?.Student_null, label: `Pending Profile` },
+  //   //`${stats1.Student_Profile}% Profile`
+  // ];
 
-  const EntityExists = hasSubMenu(menudata, "Entity");
+  // const EntityExists = hasSubMenu(menudata, "Entity");
   const InstitutionsExists = hasSubMenu(menudata, "Institute");
   const StudentsExists = hasSubMenu(menudata, "Student");
   const CoursesExists = hasSubMenu(menudata, "Course");
   const SubjectsExists = hasSubMenu(menudata, "Subject");
   const DepartmentExists = hasSubMenu(menudata, "Department");
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const dataPoint = payload[0].payload;
-      return (
-        <div
-          style={{
-            backgroundColor: "white",
-            padding: "5px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <p>{dataPoint.label}</p>
-          <p>{`Points: ${dataPoint.value}`}</p>
-          <p>{`Rank: ${dataPoint.rank}`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
+  // const CustomTooltip = ({ active, payload }: any) => {
+  //   if (active && payload && payload.length) {
+  //     const dataPoint = payload[0].payload;
+  //     return (
+  //       <div
+  //         style={{
+  //           backgroundColor: "white",
+  //           padding: "5px",
+  //           border: "1px solid #ccc",
+  //         }}
+  //       >
+  //         <p>{dataPoint.label}</p>
+  //         <p>{`Points: ${dataPoint.value}`}</p>
+  //         <p>{`Rank: ${dataPoint.rank}`}</p>
+  //       </div>
+  //     );
+  //   }
+  //   return null;
+  // };
 
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
@@ -1901,7 +1887,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = (event) => { };
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -1933,7 +1919,7 @@ function MainContent() {
     setLoaderMsg("Fetching Data from Ollama model.");
     setSearchErr(false);
 
-    let prompt = profileDatas?.prompt?.replace("**question**", "answer");
+    const prompt = profileDatas?.prompt?.replace("**question**", "answer");
     let payload = {};
 
     if (selectedchat?.question !== "") {
@@ -1973,7 +1959,7 @@ function MainContent() {
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: StudentId,
             chat_question: regenerateSearch,
             response: response?.answer,
@@ -2016,7 +2002,7 @@ function MainContent() {
       };
     }
     await postData(`${chataddconversationurl}`, chat_payload)
-      .then((chatdata: any) => {
+      .then(() => {
         setChatSaved(false);
         // toast.success(chatdata?.message, {
         //   hideProgressBar: true,

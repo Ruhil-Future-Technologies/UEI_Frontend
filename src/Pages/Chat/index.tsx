@@ -111,7 +111,7 @@ const Chat = () => {
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   let synth: SpeechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  let selectedvoice: SpeechSynthesisVoice | null = null;
+  const selectedvoice: SpeechSynthesisVoice | null = null;
   synth = window?.speechSynthesis;
   synth.onvoiceschanged = () => {
     getVoices();
@@ -232,13 +232,13 @@ const Chat = () => {
       if (chatmodify && chatmodify[0].question !== "") {
         const tadaysChat = getTodaysData(sortedChatHistory);
         const newArray = [...tadaysChat];
-        let column = [
+        const column = [
           {
             question: chatmodify[0]?.question,
             answer: chatmodify[0]?.answer,
           },
         ];
-        let newObject = {
+        const newObject = {
           chat_conversation: JSON.stringify(column),
           chat_title: chatmodify[0]?.question,
           flagged: false,
@@ -440,7 +440,7 @@ const Chat = () => {
     setLoaderMsg("Searching result from knowledge base");
     setSearchErr(false);
 
-    let prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    const prompt = studentDetail?.prompt?.replace("**question**", "answer");
     let payload = {};
     let rag_payload = {};
     if (selectedchat?.question !== "") {
@@ -528,7 +528,7 @@ const Chat = () => {
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
-                  let ChatStorepayload = {
+                  const ChatStorepayload = {
                     student_id: userid,
                     chat_question: search,
                     response: response?.answer,
@@ -547,7 +547,7 @@ const Chat = () => {
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
-                        let ChatStorepayload = {
+                        const ChatStorepayload = {
                           student_id: userid,
                           chat_question: search,
                           response: response?.answer,
@@ -572,7 +572,7 @@ const Chat = () => {
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
-                      let ChatStorepayload = {
+                      const ChatStorepayload = {
                         student_id: userid,
                         chat_question: search,
                         response: response?.answer,
@@ -614,7 +614,7 @@ const Chat = () => {
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
-                  let ChatStorepayload = {
+                  const ChatStorepayload = {
                     student_id: userid,
                     chat_question: search,
                     response: response?.answer,
@@ -632,7 +632,7 @@ const Chat = () => {
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
-                        let ChatStorepayload = {
+                        const ChatStorepayload = {
                           student_id: userid,
                           chat_question: search,
                           response: response?.answer,
@@ -658,7 +658,7 @@ const Chat = () => {
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
-                      let ChatStorepayload = {
+                      const ChatStorepayload = {
                         student_id: userid,
                         chat_question: search,
                         response: response?.answer,
@@ -681,7 +681,7 @@ const Chat = () => {
       })
       .then((data: any) => {
         if (data?.status === 200) {
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: userid,
             chat_question: search,
             response: data?.answer,
@@ -699,7 +699,7 @@ const Chat = () => {
 
           handleResponsereg(data);
         } else if (data?.status === 404) {
-          let Ollamapayload = {
+          const Ollamapayload = {
             user_query: search,
           };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
@@ -714,7 +714,7 @@ const Chat = () => {
       .then((data) => {
         if (data?.status === 200) {
           // handleResponse(data);
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: userid,
             chat_question: search,
             response: data?.answer,
@@ -958,10 +958,10 @@ const Chat = () => {
     const chatt = JSON.parse(chats?.chat_conversation);
     setDisplayedChat(chatt);
     setSelectedChat([]);
-    let chatdataset: any[] = [];
+    const chatdataset: any[] = [];
     chatt.map((itemchat: any) => {
       // setTimeout(() => {
-      let chatdata: any = {};
+      const chatdata: any = {};
       chatdata.question = itemchat?.question;
       // chatdata.answer = chat?.response
       let elements: any = [];
@@ -1056,7 +1056,7 @@ const Chat = () => {
     setLoaderMsg("Fetching Data from Ollama model.");
     setSearchErr(false);
 
-    let prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    const prompt = studentDetail?.prompt?.replace("**question**", "answer");
     let payload = {};
 
     if (selectedchat?.question !== "") {
@@ -1094,7 +1094,7 @@ const Chat = () => {
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: userid,
             chat_question: question,
             response: response?.answer,

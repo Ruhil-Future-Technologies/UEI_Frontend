@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Card, CardContent, SelectChangeEvent, TextField } from "@mui/material";
+import {  SelectChangeEvent, TextField } from "@mui/material";
 
 import { useState, useEffect, useRef } from "react";
 import useApi from "../../hooks/useAPI";
@@ -11,7 +11,6 @@ import {
   Form,
   Formik,
   FormikProps,
-  setNestedObjectValues,
 } from "formik";
 import * as Yup from "yup";
 import { deepEqual, inputfieldtext } from "../../utils/helpers";
@@ -29,8 +28,8 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  let adminId = localStorage.getItem("_id");
-  const { getData, postData, putData, loading } = useApi();
+  const adminId = localStorage.getItem("_id");
+  const { getData, postData, putData } = useApi();
   const [description, setDesctiption] = useState(initialState);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const navigator = useNavigate();
@@ -107,7 +106,7 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const submitHandle = async (description1: IAdminDescription) => {
     const eq = deepEqual(description1, formRef?.current?.initialValues);
     // event.preventDefault();
-    let paylod = {
+    const paylod = {
       admin_id: adminId,
       description: description1?.description,
     };
@@ -196,7 +195,7 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       validationSchema={descriptionSchema}
       innerRef={formRef}
     >
-      {({ errors, values, touched, isValid, dirty, handleSubmit }: any) => (
+      {({ errors, values, touched, handleSubmit }: any) => (
         <Form>
           {/* <Card className="description" style={{ margin: "15px" }}>
             <CardContent className="description"> */}

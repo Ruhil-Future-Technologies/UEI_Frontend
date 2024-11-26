@@ -43,7 +43,7 @@ interface StudentPayload {
 
 const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfile, handleStep }) => {
   const context = useContext(NameContext);
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const {setProImage,namecolor }:any = context;
   const [profileData, setProfileData] = useState<any>({});
@@ -71,7 +71,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
         if (data.data) {
           setProfileData(data?.data);
           // let basic_info = data?.data?.basic_info;
-          let basic_info = {
+          const basic_info = {
             aim: data?.data?.basic_info?.aim,
             dob: data?.data?.basic_info?.dob,
             father_name: data?.data?.basic_info?.father_name,
@@ -85,12 +85,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
             mother_name: data?.data?.basic_info?.mother_name,
             student_registration_no: data?.data?.basic_info?.student_registration_no
           };
-          let address = data?.data?.address;
-          let language = data?.data?.language_known;
-          let academic_history = data?.data?.academic_history;
-          let contact = data?.data?.contact;
-          let subject_preference = data?.data?.subject_preference;
-          let hobby = data?.data?.hobby;
+          const address = data?.data?.address;
+          const language = data?.data?.language_known;
+          const academic_history = data?.data?.academic_history;
+          const contact = data?.data?.contact;
+          const subject_preference = data?.data?.subject_preference;
+          const hobby = data?.data?.hobby;
           if (basic_info && Object.keys(basic_info)?.length > 0) {
             // console.log("test pp",Object.keys(basic_info)?.length > 0 ,data?.data?.pic_path)
             if (data?.data?.pic_path !== "" && data?.data?.pic_path !== undefined) {
@@ -104,15 +104,15 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                 });
             }
 
-            let totalcount = Object.keys(basic_info).length;
-            let filledCount = countKeysWithValue(basic_info);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(basic_info).length;
+            const filledCount = countKeysWithValue(basic_info);
+            const percentage = (filledCount / totalcount) * 100;
             setbasicinfoPercentage(percentage);
           }
           if (address && Object.keys(address).length > 0) {
-            let totalcount = Object.keys(address).length;
-            let filledCount = countKeysWithValue(address);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(address).length;
+            const filledCount = countKeysWithValue(address);
+            const percentage = (filledCount / totalcount) * 100;
             setaddressPercentage(percentage);
           }
           if (language && Object.keys(language).length > 0) {
@@ -122,9 +122,9 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
               totalhobbycount = Object.keys(hobby).length;
               filledhobbyCount = countKeysWithValue(hobby);
             }
-            let totalcount = Object.keys(language).length + totalhobbycount;
-            let filledCount = countKeysWithValue(language) + filledhobbyCount;
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(language).length + totalhobbycount;
+            const filledCount = countKeysWithValue(language) + filledhobbyCount;
+            const percentage = (filledCount / totalcount) * 100;
             setlanguagePercentage(percentage);
           }
           if (academic_history && Object.keys(academic_history).length > 0) {
@@ -142,24 +142,24 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
               delete academic_history?.class_id;
               delete academic_history?.state_for_stateboard;
             }
-            let totalcount = Object.keys(academic_history).length;
-            let filledCount = countKeysWithValue(academic_history);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(academic_history).length;
+            const filledCount = countKeysWithValue(academic_history);
+            const percentage = (filledCount / totalcount) * 100;
             setacademichistoryPercentage(percentage);
           }
           if (contact && Object.keys(contact).length > 0) {
-            let totalcount = Object.keys(contact).length;
-            let filledCount = countKeysWithValue(contact);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(contact).length;
+            const filledCount = countKeysWithValue(contact);
+            const percentage = (filledCount / totalcount) * 100;
             setcontactPercentage(percentage);
           }
           if (
             subject_preference &&
             Object.keys(subject_preference).length > 0
           ) {
-            let totalcount = Object.keys(subject_preference).length;
-            let filledCount = countKeysWithValue(subject_preference);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(subject_preference).length;
+            const filledCount = countKeysWithValue(subject_preference);
+            const percentage = (filledCount / totalcount) * 100;
             setsubjectPercentage(percentage);
           }
         }
@@ -183,7 +183,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
     editProfile();
   }
   // console.log("testing",profileData?.contact?.email_id)
-  var userId = localStorage.getItem('userid');
+  const userId = localStorage.getItem('userid');
 
 
   const handleMouseEnter = (event: any) => {
@@ -259,7 +259,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
         const datastudent:any = await  getData(`${"student/get/" + StudentId}`, StudentId);
 
 
-        let payload = {
+        const payload = {
           student_login_id: StudentId,
           pic_path: filename, 
         };

@@ -1,38 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import emailicon from "../../assets/img/email.svg";
-import phoneicon from "../../assets/img/phone.svg";
-import passwordicon from "../../assets/img/password.svg";
+import React, { useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  FormControlLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-  SelectChangeEvent,
-  Snackbar,
-  Typography,
-} from "@mui/material";
-import { Field, Formik, FormikHelpers, FormikProps, Form } from "formik";
+import { IconButton, SelectChangeEvent } from "@mui/material";
+import { Formik, FormikHelpers, FormikProps, Form } from "formik";
 import * as Yup from "yup";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import gLogo from "../../assets/img/logo-white.svg";
 import loginImage from "../../assets/img/login-image.png";
 import { Autoplay, Pagination } from "swiper/modules";
-import {
-  ArrowLeft,
-  BackArrowCircle,
-  VisibilityOn,
-  VisibilityOff,
-} from "../../assets";
+import { VisibilityOn, VisibilityOff } from "../../assets";
 import "swiper/css";
 import "swiper/css/pagination";
 // import "../../assets/css/main.min.css";
@@ -47,7 +27,7 @@ const ChangePassword = () => {
   const navigate = useNavigate();
   const [confpassword, setConfPassword] = useState("");
   const [newpassword, setNewPassword] = useState("");
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [uservalue, setuserValue] = React.useState<any>("");
   const initialState = {
     new_password: "",
@@ -75,13 +55,13 @@ const ChangePassword = () => {
 
   const changePassword = (e: any) => {
     e.preventDefault();
-    let UserSignUp = {
+    const UserSignUp = {
       email: String(email),
       new_password: String(newpassword),
       conf_password: String(confpassword),
       user_type: String(user_type),
     };
-    let emptyKeys: string[] = [];
+    const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
       if (UserSignUp.hasOwnProperty(key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {
@@ -132,13 +112,13 @@ const ChangePassword = () => {
   ) => {
     // e.preventDefault()
     // e.target.reset()
-    let UserSignUp = {
+    const UserSignUp = {
       email: String(email),
       new_password: String(formData.newpassword),
       conf_password: String(formData.confpassword),
       user_type: String(user_type),
     };
-    let emptyKeys: string[] = [];
+    const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
       if (UserSignUp.hasOwnProperty(key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {
@@ -366,7 +346,6 @@ const ChangePassword = () => {
                 <img onClick={() => navigate("/")} src={gLogo} alt="" />
                 <span>Gyansetu</span>
               </div>
-              
             </div>
           </div>
         </header>

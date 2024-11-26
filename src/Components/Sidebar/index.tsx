@@ -1,36 +1,36 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Link, useLocation } from "react-router-dom";
-import List from "@mui/material/List";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+// import List from "@mui/material/List";
 import { toast } from "react-toastify";
-import SimpleBar from "simplebar-react";
-import styled from "styled-components";
+// import SimpleBar from "simplebar-react";
+// import styled from "styled-components";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
-import ThreePOutlinedIcon from "@mui/icons-material/ThreePOutlined";
+// import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
+// import UploadFileIcon from "@mui/icons-material/UploadFile";
+// import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
+// import ThreePOutlinedIcon from "@mui/icons-material/ThreePOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+// import ListItemButton from "@mui/material/ListItemButton";
+// import ListItemIcon from "@mui/material/ListItemIcon";
+// import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { Dashboard, Language, MenuOpen } from "@mui/icons-material";
-import ChatIcon from "@mui/icons-material/Chat";
-import MenuIcon from "@mui/icons-material/Menu";
+// import ListItemText from "@mui/material/ListItemText";
+// import Collapse from "@mui/material/Collapse";
+// import ExpandLess from "@mui/icons-material/ExpandLess";
+// import ExpandMore from "@mui/icons-material/ExpandMore";
+// import { Dashboard, Language, MenuOpen } from "@mui/icons-material";
+// import ChatIcon from "@mui/icons-material/Chat";
+// import MenuIcon from "@mui/icons-material/Menu";
 import MetisMenu from "@metismenu/react";
 import useApi from "../../hooks/useAPI";
 import gyansetuLogo from "../../assets/img/logo-white.svg";
 import { QUERY_KEYS_MENU } from "../../utils/const";
-import sidebarlog from "../../assets/img/logo.svg";
+// import sidebarlog from "../../assets/img/logo.svg";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -43,19 +43,19 @@ import "simplebar-react/dist/simplebar.min.css";
 // import { SidebarContainer } from "./SidebarContainer";
 
 const Sidebar = () => {
-  const [prescriptionsopen, setPrescriptionsopenOpen] = useState(false);
-  const [testopen, setTestOpen] = useState(false);
-  const [test, setTest] = useState(false);
-  const [bill, setBill] = useState(false);
-  const [menuList, setMenuList] = useState<any>([]);
+  // const [prescriptionsopen, setPrescriptionsopenOpen] = useState(false);
+  // const [testopen, setTestOpen] = useState(false);
+  // const [test, setTest] = useState(false);
+  // const [bill, setBill] = useState(false);
+  // const [menuList, setMenuList] = useState<any>([]);
   const [menuList1, setMenuList1] = useState<any>([]);
-  const [setting, setSetting] = useState(false);
-  const defaultSelectedIndex = 0;
-  const [open, setOpen] = useState(true);
+  // const [setting, setSetting] = useState(false);
+  // const defaultSelectedIndex = 0;
+  // const [open, setOpen] = useState(true);
   const [openMenu, setOpenMenu] = useState<number | null>(null);
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
 
-  const [masterCollapsible, setMasterCollapsible] = useState(false);
+  // const [masterCollapsible, setMasterCollapsible] = useState(false);
   const user_type = localStorage.getItem("user_type");
   const [profileCompletion, setProfileCompletion] = useState(
     localStorage.getItem("Profile_completion") || "0"
@@ -73,34 +73,32 @@ const Sidebar = () => {
   // const defaultSelectedPath = (user_type === "student" ? "/main/chat" : "/main/Dashboard");
 
   // const [selectedPath, setSelectedPath] = useState(defaultSelectedPath);
-  const [selectedIndex, setSelectedIndex] = useState(defaultSelectedIndex);
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
+  // const [selectedIndex, setSelectedIndex] = useState(defaultSelectedIndex);
+  // const location = useLocation();
+  // const pathSegments = location.pathname.split("/").filter(Boolean);
+  // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
   // console.log("==========menulistt", pathSegments, lastSegment)
   // const defaultSelectedIndex1 = "Dashboard";
-  const [selectedIndex1, setSelectedIndex1] = useState(lastSegment);
+  // const [selectedIndex1, setSelectedIndex1] = useState(lastSegment);
   // const [userType, setUserType] = useState(defaultUserType);
 
-  const menuItems = [
-    {
-      label: "Menu 1",
-      children: [
-        { label: "Submenu 1", href: "#" },
-        { label: "Submenu 2", href: "#" },
-      ],
-    },
-    { label: "Menu 2", href: "#" },
-  ];
+  // const menuItems = [
+  //   {
+  //     label: "Menu 1",
+  //     children: [
+  //       { label: "Submenu 1", href: "#" },
+  //       { label: "Submenu 2", href: "#" },
+  //     ],
+  //   },
+  //   { label: "Menu 2", href: "#" },
+  // ];
 
   useEffect(() => {
-    setSelectedIndex(defaultSelectedIndex);
+    // setSelectedIndex(defaultSelectedIndex);
     // setUserType(defaultUserType);
     // setSelectedPath(selectedPath);
     callAPI();
   }, []);
-
-
 
   useEffect(() => {
     console.log("Menu List 1", menuList1);
@@ -110,7 +108,7 @@ const Sidebar = () => {
     getData(`${MenuListURL}/${user_type}`)
       .then((data: any) => {
         if (data.data) {
-          setMenuList(data.data);
+          // setMenuList(data.data);
           localStorage.setItem("menulist", JSON.stringify(data?.data));
         }
       })
@@ -121,10 +119,10 @@ const Sidebar = () => {
         });
       });
   };
-  const handleListItemClick1 = (index: any) => {
-    // console.log("handleListItem", index);
-    setSelectedIndex1(index);
-  };
+  // const handleListItemClick1 = () => {
+  //   // console.log("handleListItem", index);
+  //   // setSelectedIndex1(index);
+  // };
   ///
 
   const callAPI1 = async () => {
@@ -149,7 +147,7 @@ const Sidebar = () => {
   useEffect(() => {
     // console.log("test data",profileData !== null,basicinfo?.basic_info !== null)
 
-    setSelectedIndex(defaultSelectedIndex);
+    // setSelectedIndex(defaultSelectedIndex);
 
     if (profileData !== null && basicinfo?.basic_info !== null) {
       // console.log("test data 11",profileData !== null,basicinfo?.basic_info !== null)
@@ -200,29 +198,29 @@ const Sidebar = () => {
   //         callAPI1();
   //     }, [callAPI1]);
 
-  const handleClickp = () => {
-    setPrescriptionsopenOpen(!prescriptionsopen);
-  };
+  // const handleClickp = () => {
+  //   setPrescriptionsopenOpen(!prescriptionsopen);
+  // };
 
-  const handleClickt = () => {
-    setTestOpen(!testopen);
-  };
+  // const handleClickt = () => {
+  //   setTestOpen(!testopen);
+  // };
 
-  const handleClicktest = () => {
-    setTest(!test);
-  };
+  // const handleClicktest = () => {
+  //   setTest(!test);
+  // };
 
-  const handleClickbill = () => {
-    setBill(!bill);
-  };
+  // const handleClickbill = () => {
+  //   setBill(!bill);
+  // };
 
-  const handleClicksetting = () => {
-    setSetting(!setting);
-  };
+  // const handleClicksetting = () => {
+  //   setSetting(!setting);
+  // };
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  // const handleClick = () => {
+  //   setOpen(!open);
+  // };
 
   const handleMouseEnter = () => {
     document.body.classList.add("sidebar-hovered");
@@ -242,8 +240,6 @@ const Sidebar = () => {
   const toggleMenu = (id: number) => {
     setOpenMenu((prevOpenMenu) => (prevOpenMenu === id ? null : id));
   };
-
-
 
   // console.log("test hhh",selectedIndex1)
   // const SidebarContainer = styled.aside`
@@ -531,7 +527,7 @@ const Sidebar = () => {
               {user_type === "student" ? (
                 <>
                   {Number(profileCompletion) === 100 ? (
-                    <>                    
+                    <>
                       <li>
                         <Link
                           to="/main/Chat/recentChat"
@@ -552,9 +548,9 @@ const Sidebar = () => {
                         </Link>
                       </li>
                     </>
-                   ) : (
+                  ) : (
                     ""
-                  )} 
+                  )}
                 </>
               ) : (
                 <>
@@ -580,12 +576,11 @@ const Sidebar = () => {
                               </a>
                               <ul
                                 id={menu.id}
-                                className={`mm-collapse ${openMenu === menu.id ? "mm-show" : ""
-                                  }`}
+                                className={`mm-collapse ${
+                                  openMenu === menu.id ? "mm-show" : ""
+                                }`}
                               >
-                                {
-
-                                }
+                                {}
                                 {/* <li className={`${openSubMenu ? "mm-active" : ""
                                   }`}>
                                   <a className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
@@ -608,64 +603,105 @@ const Sidebar = () => {
                                   </ul>
                                 </li> */}
                                 {menu?.submenus?.map((submenu: any) => {
-                                  let menulist =
+                                  const menulist =
                                     submenu.menu_name === "Sub Menu"
                                       ? "SubMenu"
                                       : submenu.menu_name === "Role Vs Form"
-                                        ? "RoleVsForm"
-                                        : submenu.menu_name === "Role Vs User" ||
-                                          submenu.menu_name === "RoleVsUser"
-                                          ? "RoleVsUser "
-                                          : submenu.menu_name === "Hobbies"
-                                            ? "Hobby"
-                                            :submenu.menu_name === "Student Feedback" ||
-                                            submenu.menu_name === "StudentFeedback"
-                                            ? "StudentFeedback"
-                                            : submenu.menu_name;
-                                            if(  submenu.menu_name.toLowerCase() === "institute"){
-
-                                              return (
-                                              <li className={`${openSubMenu ? "mm-active" : ""
-                                              }`}>
-                                              <a className="has-arrow" onClick={() => setOpenSubMenu(!openSubMenu)} >
-                                                <ArrowRightIcon />
-                                                Institution</a>
-                                              <ul className={`mm-collapse ${openSubMenu ? "mm-show" : ""
-                                                }`}>
-                                                  <li>
-                                                  <Link to="/main/University"> <ArrowRightIcon />University</Link>
-                                                </li>
-                                                <li>
-                                                  <Link to="/main/Institute"> <ArrowRightIcon />Institute</Link>
-                                                </li>
-                                                <li>
-                                                  <Link to="/main/Course"> <ArrowRightIcon />Course</Link>
-                                                </li>
-                                                <li>
-                                                  <Link to="/main/Semester"> <ArrowRightIcon />Semester</Link>
-                                                </li>
-                                                <li>
-                                                  <Link to="/main/Subject"> <ArrowRightIcon />Subject</Link>
-                                                </li>
-                                              </ul>
-                                            </li>
-                                              )
-                                            }
-                                            else if (submenu.menu_name !== "Course" && submenu.menu_name !== "Subject") {
-                                              // Render only if it's not "Course" or "Subject"
-                                              return (
-                                                <li key={submenu.id}>
-                                                  <Link to={menulist} onClick={() => handleListItemClick1(menulist)}>
-                                                    <ArrowRightIcon />
-                                                    <div>{submenu.menu_name}</div>
-                                                  </Link>
-                                                </li>
-                                              );
-                                            } else {
-                                              // Return null for "Course" and "Subject" to skip rendering
-                                              return null;
-                                            }
-                                            
+                                      ? "RoleVsForm"
+                                      : submenu.menu_name === "Role Vs User" ||
+                                        submenu.menu_name === "RoleVsUser"
+                                      ? "RoleVsUser "
+                                      : submenu.menu_name === "Hobbies"
+                                      ? "Hobby"
+                                      : submenu.menu_name ===
+                                          "Student Feedback" ||
+                                        submenu.menu_name === "StudentFeedback"
+                                      ? "StudentFeedback"
+                                      : submenu.menu_name;
+                                  if (
+                                    submenu.menu_name.toLowerCase() ===
+                                    "institute"
+                                  ) {
+                                    return (
+                                      <li
+                                        className={`${
+                                          openSubMenu ? "mm-active" : ""
+                                        }`}
+                                      >
+                                        <a
+                                          className="has-arrow"
+                                          onClick={() =>
+                                            setOpenSubMenu(!openSubMenu)
+                                          }
+                                        >
+                                          <ArrowRightIcon />
+                                          Institution
+                                        </a>
+                                        <ul
+                                          className={`mm-collapse ${
+                                            openSubMenu ? "mm-show" : ""
+                                          }`}
+                                        >
+                                          <li>
+                                            <Link to="/main/University">
+                                              {" "}
+                                              <ArrowRightIcon />
+                                              University
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link to="/main/Institute">
+                                              {" "}
+                                              <ArrowRightIcon />
+                                              Institute
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link to="/main/Course">
+                                              {" "}
+                                              <ArrowRightIcon />
+                                              Course
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link to="/main/Semester">
+                                              {" "}
+                                              <ArrowRightIcon />
+                                              Semester
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link to="/main/Subject">
+                                              {" "}
+                                              <ArrowRightIcon />
+                                              Subject
+                                            </Link>
+                                          </li>
+                                        </ul>
+                                      </li>
+                                    );
+                                  } else if (
+                                    submenu.menu_name !== "Course" &&
+                                    submenu.menu_name !== "Subject"
+                                  ) {
+                                    // Render only if it's not "Course" or "Subject"
+                                    return (
+                                      <li key={submenu.id}>
+                                        <Link
+                                          to={menulist}
+                                          // onClick={() =>
+                                          //   handleListItemClick1(menulist)
+                                          // }
+                                        >
+                                          <ArrowRightIcon />
+                                          <div>{submenu.menu_name}</div>
+                                        </Link>
+                                      </li>
+                                    );
+                                  } else {
+                                    // Return null for "Course" and "Subject" to skip rendering
+                                    return null;
+                                  }
                                 })}
                               </ul>
                             </>
@@ -674,11 +710,11 @@ const Sidebar = () => {
                               <li>
                                 <Link
                                   to={menu?.form_data?.form_url}
-                                  onClick={() =>
-                                    handleListItemClick1(
-                                      menu?.form_data?.form_url
-                                    )
-                                  }
+                                  // onClick={() =>
+                                  //   handleListItemClick1(
+                                  //     menu?.form_data?.form_url
+                                  //   )
+                                  // }
                                 >
                                   <div>{menu.menu_name}</div>
                                 </Link>

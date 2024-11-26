@@ -13,7 +13,7 @@ interface Question {
   answer?: string;
 }
 const AddStudentFeedback = () => {
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData } = useApi();
   const [question, setQuestion] = useState<Question>({
     id: "",
@@ -63,11 +63,11 @@ const AddStudentFeedback = () => {
   }, [studentFlag]);
 
   useEffect(() => {
-    let question_list: any = [];
+    const question_list: any = [];
     questions.map((question, index) => {
       answeredQuestions.map((answer: any) => {
         if (question.question === answer.question) {
-          let d = {
+          const d = {
             // question: question.question,
             // id: answer.id,
             // StudentId: answer.student_id,
@@ -84,7 +84,7 @@ const AddStudentFeedback = () => {
 
   useEffect(() => {
     if (selectAnswer) {
-      let newValue: any = [];
+      const newValue: any = [];
       questions.forEach((question: any) => {
         if (selectAnswer[question.id]) {
           newValue.push({
@@ -137,7 +137,7 @@ const AddStudentFeedback = () => {
       // alert("Form submitted successfully");
       // console.log(answeredQuestions, message);
       // Handle submission logic here
-      let payload = {
+      const payload = {
         student_id: Number(StudentId),
         feedbacks: updatedAnswers,
       };

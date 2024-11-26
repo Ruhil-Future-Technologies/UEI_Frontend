@@ -59,8 +59,8 @@ interface Option {
 const ProfileChat: React.FC = () => {
 
 
-  let StudentId = localStorage.getItem("_id");
-  let usertype = localStorage.getItem("user_type");
+  const StudentId = localStorage.getItem("_id");
+  const usertype = localStorage.getItem("user_type");
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
@@ -289,10 +289,10 @@ const ProfileChat: React.FC = () => {
 
   const saveAnswersforBasic = (answers: string[]) => {
     const fullName = answers[0];
-    let nameParts: string[] = fullName.split(" ");
+    const nameParts: string[] = fullName.split(" ");
     const firstname = nameParts[0];
     const lastname = nameParts[1];
-    let payload = {
+    const payload = {
       student_login_id: StudentId,
       first_name: firstname,
       last_name: lastname,
@@ -361,12 +361,12 @@ if (formData.has('file')) {
 
   const saveAnswersforContact = (answer: string[]) => {
     const contfullPhone = answer[8];
-    let phoneNum = contfullPhone.split(" ");
+    const phoneNum = contfullPhone.split(" ");
     const contfullPhonewtsp = answer[9];
-    let phoneNumwtsp = contfullPhonewtsp.split(" ");
-    let email = localStorage.getItem("userid");
+    const phoneNumwtsp = contfullPhonewtsp.split(" ");
+    const email = localStorage.getItem("userid");
 
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: answer[8],
       mobile_no_call: answer[9],
@@ -398,7 +398,7 @@ if (formData.has('file')) {
 
   const saveAnswerforAddress = (answers: string[]) => {
     const Address = answers[15];
-    let addressParts = Address.split(",");
+    const addressParts = Address.split(",");
 
     const payload = {
       student_id: StudentId,
@@ -509,7 +509,7 @@ const proficiency = [{
   }));
 
   const saveanswerForHobbeis = (answers: string[]) => {
-    let payload = {
+    const payload = {
       student_id: StudentId,
       hobby_id: selectedHobby,
     };
@@ -695,7 +695,7 @@ const handleSkip=()=>{
   const currentQuestions = initialQuestions[currentSection!];
   const updatedMessages = [
     ...messages,
-    { text: "", type: "answer" as "answer" },
+    { text: "", type: "answer" as const },
   ];
   if (currentQuestionIndex < currentQuestions.length - 1) {
     setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -703,7 +703,7 @@ const handleSkip=()=>{
       ...updatedMessages,
       {
         text: currentQuestions[currentQuestionIndex + 1],
-        type: "question" as "question",
+        type: "question" as const,
       },
     ]);
   } else {
@@ -723,7 +723,7 @@ const handleSkip=()=>{
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: e.target.files[0].name, type: "answer" as "answer" },
+        { text: e.target.files[0].name, type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -732,7 +732,7 @@ const handleSkip=()=>{
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
       } else {
@@ -757,7 +757,7 @@ if(datecheck){
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as "answer" },
+          { text: datecheck, type: "answer" as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -766,7 +766,7 @@ if(datecheck){
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as "question",
+              type: "question" as const,
             },
           ]);
         } else {
@@ -790,7 +790,7 @@ if(datecheck){
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: datecheck, type: "answer" as "answer" },
+        { text: datecheck, type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -799,7 +799,7 @@ if(datecheck){
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
       } else {
@@ -825,7 +825,7 @@ if(datecheck){
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as "answer" },
+            { text: datecheck, type: "answer" as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -834,7 +834,7 @@ if(datecheck){
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as "question",
+                type: "question" as const,
               },
             ]);
           } else {
@@ -858,7 +858,7 @@ if(datecheck){
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as "answer" },
+          { text: datecheck, type: "answer" as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -867,7 +867,7 @@ if(datecheck){
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as "question",
+              type: "question" as const,
             },
           ]);
         } else {
@@ -888,7 +888,7 @@ if(datecheck){
     if (answers[currentQuestionIndex]?.trim() !== "") {
       const updatedMessages = [
         ...messages,
-        { text: answers[currentQuestionIndex], type: "answer" as "answer" },
+        { text: answers[currentQuestionIndex], type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -897,7 +897,7 @@ if(datecheck){
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
 
@@ -969,7 +969,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "+" + value, type: "answer" as "answer" },
+      { text: "+" + value, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -978,7 +978,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -996,7 +996,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1005,7 +1005,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1023,7 +1023,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1032,7 +1032,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1050,7 +1050,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1059,7 +1059,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
       // answerSaveandGotoNextquestoin(e)
@@ -1079,7 +1079,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1088,7 +1088,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1106,7 +1106,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1115,7 +1115,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1133,7 +1133,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1142,7 +1142,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1177,7 +1177,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1186,7 +1186,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1204,7 +1204,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1213,7 +1213,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {

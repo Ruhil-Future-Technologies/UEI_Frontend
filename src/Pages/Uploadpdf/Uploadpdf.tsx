@@ -170,10 +170,10 @@ const Uploadpdf = () => {
       .then((response: any) => {
         if (response.status === 200) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          let filteredData: any[] = [];
+          const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
-              let updatedClassName = item.class_name.split("_").join(" ");
+              const updatedClassName = item.class_name.split("_").join(" ");
               item.new_class_name =
                 updatedClassName.charAt(0).toUpperCase() +
                 updatedClassName.slice(1);

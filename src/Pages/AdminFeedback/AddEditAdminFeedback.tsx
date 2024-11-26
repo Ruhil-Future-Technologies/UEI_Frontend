@@ -17,6 +17,7 @@ import {
   setNestedObjectValues,
 } from "formik";
 import TextField from "@mui/material/TextField";
+import React from "react";
 interface IFeedbackForm {
   question: string | null;
   options: any[];
@@ -26,7 +27,7 @@ const AddEditAdminFeedback = () => {
   const navigate = useNavigate();
   const context = useContext(NameContext);
   const formRef = useRef() as any;
-  const [question, setQuestion] = useState("");
+  // const [question, setQuestion] = useState("");
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const FeedbackAddURL = QUERY_KEYS_FEEDBACK.FEEDBACK_ADD;
@@ -43,15 +44,15 @@ const AddEditAdminFeedback = () => {
       getData(`${GetFeedbackURL}`).then((data: any) => {
         const datavalue = data?.data;
 
-        let getByIdFeedbackData = datavalue.filter(
+        const getByIdFeedbackData = datavalue.filter(
           (data: any) => data.id == id
         );
-        let optionStringify = getByIdFeedbackData[0].options;
-        let optionData = optionStringify.map((str: any) => {
+        const optionStringify = getByIdFeedbackData[0].options;
+        const optionData = optionStringify.map((str: any) => {
           return { option: str };
         });
 
-        let newObject = {
+        const newObject = {
           question: getByIdFeedbackData[0].question,
           options: optionData,
         };
@@ -62,14 +63,14 @@ const AddEditAdminFeedback = () => {
   }, [id]);
 
   const handleSubmit = (formData: any, { resetForm }: FormikHelpers<any>) => {
-    let optionsString: any = [];
+    const optionsString: any = [];
     formData.options.map((item: any) => {
       optionsString.push(item.option);
     });
-    let stringifyOptions: any = JSON.stringify(optionsString);
+    const stringifyOptions: any = JSON.stringify(optionsString);
 
     // Save question and options to your database or API here
-    let payload = {
+    const payload = {
       question: formData.question,
       options: stringifyOptions,
     };
@@ -105,7 +106,7 @@ const AddEditAdminFeedback = () => {
 
   const handleQuestionChange = async (e: ChangeEvent<HTMLInputElement>) => {
     // throw new Error("Function not implemented.");
-    setQuestion(e.target.value);
+    // setQuestion(e.target.value);
     formRef?.current?.setFieldValue(e.target.name, e.target.value);
     const err = await formRef?.current?.validateForm();
     if (err && Object.keys(err).length > 0) {
@@ -146,7 +147,7 @@ const AddEditAdminFeedback = () => {
             validationSchema={validationSchema}
             innerRef={formRef}
           >
-            {({ errors, values, touched, isValid, dirty }) => (
+            {({ values }) => (
               <Form>
                 <div className="row gy-4">
                   <div className="col-md-4">

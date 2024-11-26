@@ -1,47 +1,47 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+// import Box from "@mui/material/Box";
+// import Stepper from "@mui/material/Stepper";
+// import Step from "@mui/material/Step";
+// import StepLabel from "@mui/material/StepLabel";
+// import Button from "@mui/material/Button";
+// import Typography from "@mui/material/Typography";
 import {
-  Card,
-  CardContent,
+  // Card,
+  // CardContent,
   Checkbox,
   FormControl,
   FormControlLabel,
-  FormLabel,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
+  // FormLabel,
+  // Grid,
+  // IconButton,
+  // InputLabel,
+  // MenuItem,
+  // OutlinedInput,
+  // Paper,
+  // Radio,
+  // RadioGroup,
+  // Select,
   SelectChangeEvent,
-  TextField,
-  Theme,
-  Tooltip,
-  useTheme,
+  // TextField,
+  // Theme,
+  // Tooltip,
+  // useTheme,
 } from "@mui/material";
-import {
-  LocalizationProvider,
-  DateTimePicker,
-  DatePicker,
-} from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+// import {
+//   LocalizationProvider,
+//   DateTimePicker,
+//   DatePicker,
+// } from "@mui/x-date-pickers";
+// import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState, useEffect, useRef } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
-import { error } from "console";
+// import { error } from "console";
 import { deepEqual } from "../../utils/helpers";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { ChildComponentProps } from "../StudentProfile";
-let adminId = localStorage.getItem("_id");
+// let adminId = localStorage.getItem("_id");
 // console.log(adminId);
 interface AdminAddress {
   admin_id?: string;
@@ -56,7 +56,7 @@ interface AdminAddress {
 }
 ////start
 const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  let adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem("_id");
 
   // console.log(adminId);
 
@@ -92,8 +92,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
   const [add_col, setAdd_col] = useState<boolean>(false);
-  const [add2_col, setAdd2_col] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [add2_col, setAdd2_col] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
 
   const [isFocused, setIsFocused] = useState(false);
@@ -285,9 +285,9 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
       if (name === "address2") {
         if (value === "") {
-          setAdd2_col(true);
+          // setAdd2_col(true);
         } else {
-          setAdd2_col(false)
+          // setAdd2_col(false)
         }
       }
 

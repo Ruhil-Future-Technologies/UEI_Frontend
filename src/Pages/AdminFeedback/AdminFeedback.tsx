@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import { toast } from "react-toastify";
@@ -7,25 +7,24 @@ import useApi from "../../hooks/useAPI";
 import {
   FEEDBACK_COLUMNS,
   IFeedback,
-  MenuListinter,
 } from "../../Components/Table/columns";
 import { EditIcon, TrashIcon } from "../../assets";
-import { QUERY_KEYS_FEEDBACK, QUERY_KEYS_HOBBY } from "../../utils/const";
+import { QUERY_KEYS_FEEDBACK } from "../../utils/const";
 import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
 import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess, tabletools } from "../../utils/helpers";
+import { tabletools } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 import "../Hobby/Hobby.scss";
 
 const AdminFeedback = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
+  // const location = useLocation();
+  // const pathSegments = location.pathname.split("/").filter(Boolean);
+  // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
   // const roleset = lastSegment == "feedback" ? "feedbacks" : lastSegment;
-  const Menulist: any = localStorage.getItem("menulist1");
-  const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
+  // const Menulist: any = localStorage.getItem("menulist1");
+  // const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   // useEffect(() => {
   //   debugger
@@ -41,11 +40,11 @@ const AdminFeedback = () => {
   //     })
   // }, [Menulist])
 
-  useEffect(() => {
-    setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
-    );
-  }, [Menulist, lastSegment]);
+  // useEffect(() => {
+  //   setFilteredData(
+  //     dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+  //   );
+  // }, [Menulist, lastSegment]);
 
   const FeedbackURL = QUERY_KEYS_FEEDBACK.GET_FEEDBACK;
   const DeleteFeedbackURl = QUERY_KEYS_FEEDBACK.FEEDBACK_DELETE;
@@ -118,98 +117,97 @@ const AdminFeedback = () => {
       {loading && <FullScreenLoader />}
       <div className="main-wrapper">
         <div className="main-content">
-        <div className="card">
-          <div className="card-body">
-            <div className="table_wrapper">
-              <div className="table_inner">
-                <div
-                  className="containerbutton"
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography variant="h6" sx={{ m: 1 }}>
-                    <div className="main_title"> Feedback</div>
-                  </Typography>
-                  {/* {filteredData?.form_data?.is_save === true && ( */}
-                  <Button
-                    className="mainbutton"
-                    variant="contained"
-                    component={NavLink}
-                    to="add-feedback"
+          <div className="card">
+            <div className="card-body">
+              <div className="table_wrapper">
+                <div className="table_inner">
+                  <div
+                    className="containerbutton"
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
                   >
-                    Add Feedback
-                  </Button>
-                  {/* )} */}
+                    <Typography variant="h6" sx={{ m: 1 }}>
+                      <div className="main_title"> Feedback</div>
+                    </Typography>
+                    {/* {filteredData?.form_data?.is_save === true && ( */}
+                    <Button
+                      className="mainbutton"
+                      variant="contained"
+                      component={NavLink}
+                      to="add-feedback"
+                    >
+                      Add Feedback
+                    </Button>
+                    {/* )} */}
+                  </div>
+                  <Box marginTop="10px">
+                    <MaterialReactTable
+                      columns={columns}
+                      data={dataFeedback}
+                      enableRowVirtualization
+                      positionActionsColumn="first"
+                      muiTablePaperProps={{
+                        elevation: 0,
+                      }}
+                      enableRowActions
+                      displayColumnDefOptions={{
+                        "mrt-row-actions": {
+                          header: "Actions",
+                          size: 150,
+                        },
+                      }}
+                      renderRowActions={(row) => (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "nowrap",
+                            gap: "0.5",
+                            marginLeft: "-5px",
+                            width: "140px",
+                          }}
+                        >
+                          {/* {filteredData?.form_data?.is_update === true && ( */}
+                          <Tooltip arrow placement="right" title="Edit">
+                            <IconButton
+                              sx={{
+                                width: "35px",
+                                height: "35px",
+                                color: tabletools(namecolor),
+                              }}
+                              onClick={() => {
+                                handleEditFile(row?.row?.original?.id);
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          {/* )} */}
+                          <Tooltip arrow placement="right" title="Delete">
+                            <IconButton
+                              sx={{
+                                width: "35px",
+                                height: "35px",
+                                color: tabletools(namecolor),
+                              }}
+                              onClick={() => {
+                                handleDeleteFiles(row?.row?.original?.id);
+                              }}
+                            >
+                              <TrashIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                    />
+                  </Box>
                 </div>
-                <Box marginTop="10px">
-                  <MaterialReactTable
-                    columns={columns}
-                    data={dataFeedback}
-                    enableRowVirtualization
-                    positionActionsColumn="first"
-                    muiTablePaperProps={{
-                      elevation: 0,
-                    }}
-                    enableRowActions
-                    displayColumnDefOptions={{
-                      "mrt-row-actions": {
-                        header: "Actions",
-                        size: 150,
-                      },
-                    }}
-                    renderRowActions={(row) => (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexWrap: "nowrap",
-                          gap: "0.5",
-                          marginLeft: "-5px",
-                          width: "140px",
-                        }}
-                      >
-                        {/* {filteredData?.form_data?.is_update === true && ( */}
-                        <Tooltip arrow placement="right" title="Edit">
-                          <IconButton
-                            sx={{
-                              width: "35px",
-                              height: "35px",
-                              color: tabletools(namecolor),
-                            }}
-                            onClick={() => {
-                              handleEditFile(row?.row?.original?.id);
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        {/* )} */}
-                        <Tooltip arrow placement="right" title="Delete">
-                          <IconButton
-                            sx={{
-                              width: "35px",
-                              height: "35px",
-                              color: tabletools(namecolor),
-                            }}
-                            onClick={() => {
-                              handleDeleteFiles(row?.row?.original?.id);
-                            }}
-                          >
-                            <TrashIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    )}
-                  />
-                </Box>
               </div>
             </div>
           </div>
         </div>
-        </div>
-        
       </div>
       <DeleteDialog
         isOpen={dataDelete}

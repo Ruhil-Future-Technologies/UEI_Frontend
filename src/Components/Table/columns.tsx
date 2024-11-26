@@ -16,11 +16,11 @@ import useApi from "../../hooks/useAPI";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   QUERY_KEYS,
-  QUERY_KEYS_CLASS,
+  // QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_DEPARTMENT,
   QUERY_KEYS_ENTITY,
-  QUERY_KEYS_FEEDBACK,
+  // QUERY_KEYS_FEEDBACK,
   QUERY_KEYS_FORM,
   QUERY_KEYS_HOBBY,
   QUERY_KEYS_LANGUAGE,
@@ -30,14 +30,14 @@ import {
   QUERY_KEYS_ROLEVSFORM,
   QUERY_KEYS_SEMESTER,
   QUERY_KEYS_STUDENT,
-  QUERY_KEYS_STUDENT_FEEDBACK,
+  // QUERY_KEYS_STUDENT_FEEDBACK,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
 } from "../../utils/const";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export const EMPTY_CELL_VALUE = "-";
 
@@ -87,7 +87,7 @@ export interface InstituteRep0oDTO {
   mobile_no: MaybeNull<string>;
   website_url: MaybeNull<string>;
   id: number;
-  university_id:MaybeNull<string>;
+  university_id: MaybeNull<string>;
 }
 export interface DepartmentRep0oDTO {
   department_name: MaybeNull<string>;
@@ -109,7 +109,7 @@ export interface UniversityRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
-  university_id:number;
+  university_id: number;
 }
 export interface SemesterRep0oDTO {
   semester_name: MaybeNull<string>;
@@ -118,7 +118,7 @@ export interface SemesterRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
-  semester_id:number;
+  semester_id: number;
 }
 
 export interface FormRep0oDTO {
@@ -159,7 +159,6 @@ export interface SubjectRep0oDTO {
   subject_name: MaybeNull<string>;
   id: number;
 }
-
 
 export interface LanguageRep0oDTO {
   language_name: MaybeNull<string>;
@@ -223,7 +222,7 @@ export interface IUniversity {
   is_active: number;
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
-  university_id:number;
+  university_id: number;
 }
 export interface IClass {
   created_at: string;
@@ -678,8 +677,8 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
       const MenuActive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYACTIVE;
       const MenuDeactive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYDEACTIVE;
       const value = cell?.getValue();
-    
-console.log("====lll",row)
+
+      console.log("====lll", row);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -707,11 +706,9 @@ console.log("====lll",row)
           <Switch
             isChecked={Show}
             label={Show ? "Active" : "Deactive"}
-           
             onChange={() => {
               active(row?.original?.university_id, Showvalue);
             }}
-            
           />
         </Box>
       );
@@ -806,7 +803,6 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
     },
     size: 150,
   },
-
 ];
 export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   // const columns: any[] = [
@@ -1120,21 +1116,21 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
 
 export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
-    {
-      accessorKey: "institute_name",
-      header: "Institute Name",
-      size: 150,
-    },
-    {
-      accessorKey: "course_name",
-      header: "Course Name",
-      size: 150,
-    },
-    {
-      accessorKey: "semester_id",
-      header: "Semester Name",
-      size: 150,
-    },
+  {
+    accessorKey: "institute_name",
+    header: "Institute Name",
+    size: 150,
+  },
+  {
+    accessorKey: "course_name",
+    header: "Course Name",
+    size: 150,
+  },
+  {
+    accessorKey: "semester_id",
+    header: "Semester Name",
+    size: 150,
+  },
   {
     accessorKey: "subject_name",
     header: "Subject Name",
@@ -1213,16 +1209,16 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
 ];
 export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
-    {
-      accessorKey: "class_name",
-      header: "Class Name",
-      size: 150,
-    },
-    {
-      accessorKey: "stream",
-      header: "Stream Name",
-      size: 150,
-    },
+  {
+    accessorKey: "class_name",
+    header: "Class Name",
+    size: 150,
+  },
+  {
+    accessorKey: "stream",
+    header: "Stream Name",
+    size: 150,
+  },
   {
     accessorKey: "subject_name",
     header: "Subject Name",
@@ -2230,7 +2226,7 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
       }
 
       // Extract the 'answer' arrays
-      let dataset = parsedValue?.map((item: any) => item.answer);
+      const dataset = parsedValue?.map((item: any) => item.answer);
       // console.log("dataset ------", dataset);
 
       // Flatten the dataset array (if it contains multiple arrays)
@@ -2275,12 +2271,12 @@ export const PDF_LIST_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     accessorKey: "pdf_path",
     header: "File Path",
     enableSorting: false,
-    enableColumnActions:false,
+    enableColumnActions: false,
     size: 150,
   },
   {
     accessorKey: "upload_date_time",
     header: "Uploaded At",
     size: 150,
-  }
-]
+  },
+];

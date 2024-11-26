@@ -115,7 +115,7 @@ const SuperAdmin = () => {
     // };
     const [isemail,setIsEmail]=useState(false)
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
-        let email = e.target.value.includes('@');
+        const email = e.target.value.includes('@');
         if(email && e.target.name === "userid") {
             setIsEmail(true)
         }else{
@@ -145,7 +145,7 @@ const SuperAdmin = () => {
         // e.preventDefault()
         // e.target.reset()
         console.log("reset", menuData)
-   let payload ={
+   const payload ={
     user_type:value,
     userid:menuData?.userid,
     password:menuData?.password

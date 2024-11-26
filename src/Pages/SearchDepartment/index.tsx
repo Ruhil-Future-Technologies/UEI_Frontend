@@ -14,7 +14,7 @@ interface Department {
 }
 
 function User() {
-  let departmentData1:Department[]=[];
+  const departmentData1:Department[]=[];
   const navigat=useNavigate();
   const [departmentData, setDepartmentData] = useState<Department[]>(departmentData1);
   const [filtereddepartmentData, setfilteredDepartmentData] = useState<Department[]>(departmentData1);

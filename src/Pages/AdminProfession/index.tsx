@@ -31,7 +31,7 @@ const AdminProfession: React.FC<PropsItem> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  let adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem("_id");
   const { getData, postData, putData } = useApi();
   const [institude, setInstitude] = React.useState<
     [{ id: string; institution_name: string }]
@@ -41,8 +41,8 @@ const AdminProfession: React.FC<PropsItem> = ({
     [{ id: string; course_name: string }]
   >([{ id: "", course_name: "" }]);
   const [selectCourse, setSelectCourse] = React.useState("");
-  const [subject, setSubject] =
-    React.useState<[{ id: string; subject_name: string }]>();
+  // const [subject, setSubject] =
+  //   React.useState<[{ id: string; subject_name: string }]>();
   const [selectSubject, setSelectSubject] = React.useState("");
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [initialState, setInitialState] = useState<any | null>({});
@@ -183,7 +183,7 @@ const AdminProfession: React.FC<PropsItem> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let payload = {
+    const payload = {
       admin_id: adminId,
       institution_id: selectInstitude,
       course_id: selectCourse,
@@ -374,7 +374,7 @@ const AdminProfession: React.FC<PropsItem> = ({
               onChange={handleSubjectChange}
               label="Subject"
             >
-              {subject?.map((data) => (
+              {/* {subject?.map((data) => (
                 <MenuItem
                   key={data?.id}
                   value={data?.id}
@@ -388,7 +388,7 @@ const AdminProfession: React.FC<PropsItem> = ({
                 >
                   {data?.subject_name}
                 </MenuItem>
-              ))}
+              ))} */}
             </Select>
           </FormControl>
           {/* <div> {!selectSubject && (
