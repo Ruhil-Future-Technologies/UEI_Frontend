@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import List from "@mui/material/List";
@@ -602,107 +603,112 @@ const Sidebar = () => {
                                     </li>
                                   </ul>
                                 </li> */}
-                                {menu?.submenus?.map((submenu: any) => {
-                                  const menulist =
-                                    submenu.menu_name === "Sub Menu"
-                                      ? "SubMenu"
-                                      : submenu.menu_name === "Role Vs Form"
-                                      ? "RoleVsForm"
-                                      : submenu.menu_name === "Role Vs User" ||
-                                        submenu.menu_name === "RoleVsUser"
-                                      ? "RoleVsUser "
-                                      : submenu.menu_name === "Hobbies"
-                                      ? "Hobby"
-                                      : submenu.menu_name ===
-                                          "Student Feedback" ||
-                                        submenu.menu_name === "StudentFeedback"
-                                      ? "StudentFeedback"
-                                      : submenu.menu_name;
-                                  if (
-                                    submenu.menu_name.toLowerCase() ===
-                                    "institute"
-                                  ) {
-                                    return (
-                                      <li
-                                        className={`${
-                                          openSubMenu ? "mm-active" : ""
-                                        }`}
-                                      >
-                                        <a
-                                          className="has-arrow"
-                                          onClick={() =>
-                                            setOpenSubMenu(!openSubMenu)
-                                          }
-                                        >
-                                          <ArrowRightIcon />
-                                          Institution
-                                        </a>
-                                        <ul
-                                          className={`mm-collapse ${
-                                            openSubMenu ? "mm-show" : ""
+                                {menu?.submenus?.map(
+                                  (submenu: any, index: number) => {
+                                    const menulist =
+                                      submenu.menu_name === "Sub Menu"
+                                        ? "SubMenu"
+                                        : submenu.menu_name === "Role Vs Form"
+                                        ? "RoleVsForm"
+                                        : submenu.menu_name ===
+                                            "Role Vs User" ||
+                                          submenu.menu_name === "RoleVsUser"
+                                        ? "RoleVsUser "
+                                        : submenu.menu_name === "Hobbies"
+                                        ? "Hobby"
+                                        : submenu.menu_name ===
+                                            "Student Feedback" ||
+                                          submenu.menu_name ===
+                                            "StudentFeedback"
+                                        ? "StudentFeedback"
+                                        : submenu.menu_name;
+                                    if (
+                                      submenu.menu_name.toLowerCase() ===
+                                      "institute"
+                                    ) {
+                                      return (
+                                        <li
+                                          className={`${
+                                            openSubMenu ? "mm-active" : ""
                                           }`}
+                                          key={index}
                                         >
-                                          <li>
-                                            <Link to="/main/University">
-                                              {" "}
-                                              <ArrowRightIcon />
-                                              University
-                                            </Link>
-                                          </li>
-                                          <li>
-                                            <Link to="/main/Institute">
-                                              {" "}
-                                              <ArrowRightIcon />
-                                              Institute
-                                            </Link>
-                                          </li>
-                                          <li>
-                                            <Link to="/main/Course">
-                                              {" "}
-                                              <ArrowRightIcon />
-                                              Course
-                                            </Link>
-                                          </li>
-                                          <li>
-                                            <Link to="/main/Semester">
-                                              {" "}
-                                              <ArrowRightIcon />
-                                              Semester
-                                            </Link>
-                                          </li>
-                                          <li>
-                                            <Link to="/main/Subject">
-                                              {" "}
-                                              <ArrowRightIcon />
-                                              Subject
-                                            </Link>
-                                          </li>
-                                        </ul>
-                                      </li>
-                                    );
-                                  } else if (
-                                    submenu.menu_name !== "Course" &&
-                                    submenu.menu_name !== "Subject"
-                                  ) {
-                                    // Render only if it's not "Course" or "Subject"
-                                    return (
-                                      <li key={submenu.id}>
-                                        <Link
-                                          to={menulist}
-                                          // onClick={() =>
-                                          //   handleListItemClick1(menulist)
-                                          // }
-                                        >
-                                          <ArrowRightIcon />
-                                          <div>{submenu.menu_name}</div>
-                                        </Link>
-                                      </li>
-                                    );
-                                  } else {
-                                    // Return null for "Course" and "Subject" to skip rendering
-                                    return null;
+                                          <a
+                                            className="has-arrow"
+                                            onClick={() =>
+                                              setOpenSubMenu(!openSubMenu)
+                                            }
+                                          >
+                                            <ArrowRightIcon />
+                                            Institution
+                                          </a>
+                                          <ul
+                                            className={`mm-collapse ${
+                                              openSubMenu ? "mm-show" : ""
+                                            }`}
+                                          >
+                                            <li>
+                                              <Link to="/main/University">
+                                                {" "}
+                                                <ArrowRightIcon />
+                                                University
+                                              </Link>
+                                            </li>
+                                            <li>
+                                              <Link to="/main/Institute">
+                                                {" "}
+                                                <ArrowRightIcon />
+                                                Institute
+                                              </Link>
+                                            </li>
+                                            <li>
+                                              <Link to="/main/Course">
+                                                {" "}
+                                                <ArrowRightIcon />
+                                                Course
+                                              </Link>
+                                            </li>
+                                            <li>
+                                              <Link to="/main/Semester">
+                                                {" "}
+                                                <ArrowRightIcon />
+                                                Semester
+                                              </Link>
+                                            </li>
+                                            <li>
+                                              <Link to="/main/Subject">
+                                                {" "}
+                                                <ArrowRightIcon />
+                                                Subject
+                                              </Link>
+                                            </li>
+                                          </ul>
+                                        </li>
+                                      );
+                                    } else if (
+                                      submenu.menu_name !== "Course" &&
+                                      submenu.menu_name !== "Subject"
+                                    ) {
+                                      // Render only if it's not "Course" or "Subject"
+                                      return (
+                                        <li key={submenu.id}>
+                                          <Link
+                                            to={menulist}
+                                            // onClick={() =>
+                                            //   handleListItemClick1(menulist)
+                                            // }
+                                          >
+                                            <ArrowRightIcon />
+                                            <div>{submenu.menu_name}</div>
+                                          </Link>
+                                        </li>
+                                      );
+                                    } else {
+                                      // Return null for "Course" and "Subject" to skip rendering
+                                      return null;
+                                    }
                                   }
-                                })}
+                                )}
                               </ul>
                             </>
                           ) : (
