@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import MainContent from '../../Components/MainContent/MainContent'
 // import "../../assets/css/newstyle.min.css";
 // import "../../assets/css/main.min.css";

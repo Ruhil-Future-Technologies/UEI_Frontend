@@ -1,18 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import '../Course/Course.scss';
 import TextField from '@mui/material/TextField';
-import TextareaAutosize from 'react-textarea-autosize';
 import useApi from '../../hooks/useAPI';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS, QUERY_KEYS_COURSE } from '../../utils/const';
-import { FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { CourseRep0oDTO, MenuListinter } from '../../Components/Table/columns';
-import { Field, Form, Formik, FormikProps, setNestedObjectValues } from 'formik';
+import { MenuListinter } from '../../Components/Table/columns';
+import { Field, Form, Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { dataaccess, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-
 
 const AddEditCourse = () => {
     const initialState = {
@@ -30,11 +29,8 @@ const AddEditCourse = () => {
     const { getData, postData, putData } = useApi()
     const navigator = useNavigate()
     const { id } = useParams();
-    const [course, setCourse] = useState<string | null>("");
     const [institute, setInstitute] = useState<any>(initialState);
     const [instituteList, setinstituteList] = useState<any[]>([])
-    const [selectedFile, setSelectedFile] = React.useState('');
-    // const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
     const formRef = useRef<FormikProps<{
         duration: any;
         institute: any;
@@ -46,49 +42,8 @@ const AddEditCourse = () => {
     const lastSegment = id ? pathSegments[pathSegments.length - 3].toLowerCase() : pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-    // const GetDataList = () => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }
-
-    // const GetDataList = () => {
-    //     let filteredData = null;
-
-    //     JSON.parse(Menulist)?.forEach((data: any) => {
-    //         if (data?.menu_name.toLowerCase() === lastSegment) {
-    //             filteredData = data; // Found a match in the main menu
-    //         } else {
-    //             const result = data?.submenus?.find((menu: any) => menu.menu_name.toLowerCase() === lastSegment);
-    //             if (result) {
-    //                 // Found a match in the submenu
-    //                 filteredData = {
-    //                     ...data,
-    //                     submenus: [result] // Include only the matched submenu
-    //                 };
-    //             }
-    //         }
-    //     });
-
-    //     if (filteredData) {
-    //         setFilteredData(filteredData);
-
-    //     } else {
-    //         // Handle case when no match is found
-    //         setFilteredData(null);
-
-    //     }
-    // }
 
     useEffect(() => {
-        // GetDataList()
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" }));
     }, [Menulist])
 
@@ -130,30 +85,6 @@ const AddEditCourse = () => {
         callAPI()
     }, [])
 
-    // const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    //     setCourse(e.target.value);
-    //     formRef?.current?.setFieldValue("course_name", e.target.value);
-    //     const err = await formRef?.current?.validateForm()
-    //     if (err && Object.keys(err).length > 0) {
-    //         formRef?.current?.setErrors(err)
-    //         formRef?.current?.setTouched(setNestedObjectValues(err, true))
-    //     }
-    // };
-    // const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
-    //     setInstitute((prevInstitute: IInstituteForm) => {
-    //         return {
-    //             ...prevInstitute,
-    //             [e.target.name]: e.target.value,
-    //         };
-    //     });
-    //     formRef?.current?.setFieldValue(fieldName, e.target.value);
-    //     await formRef?.current?.validateField(fieldName)
-    //     if (formRef?.current?.errors?.[fieldName as keyof any] !== undefined) {
-    //         formRef?.current?.setFieldError(fieldName, formRef?.current?.errors?.[fieldName as keyof any])
-    //         formRef?.current?.setFieldTouched(fieldName, true)
-    //     }
-    // };
-    // { course_name: string | null }
 
 
     useEffect(() => {
@@ -197,7 +128,6 @@ const AddEditCourse = () => {
                         hideProgressBar: true,
                         theme: "colored",
                     });
-                    setCourse("")
                     setInstitute(initialState)
                 }else {
                     toast.error(data.message, {
@@ -247,14 +177,12 @@ const AddEditCourse = () => {
                                     course_name: institute?.course_name,
                                     institute: institute?.institution_id,
                                     duration: institute?.duration
-                                    // course_image: null,
-                                    // course_description: ""
                                 }}
                                 enableReinitialize
                                 validationSchema={courseSchema}
                                 innerRef={formRef}
                             >
-                                {({ errors, values, touched, isValid, dirty, handleChange, handleBlur }) => (
+                                {({ errors, values, touched, handleChange, handleBlur }) => (
                                     <Form>
                                         <div className='row'>
                                             <div className='col-md-4'>

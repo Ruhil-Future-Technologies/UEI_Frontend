@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import '../Department/Department.scss';
 import TextField from '@mui/material/TextField';
@@ -7,7 +8,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS_DEPARTMENT } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { DepartmentRep0oDTO, MenuListinter } from '../../Components/Table/columns';
-import { Field, Form, Formik, FormikHelpers, FormikProps, setNestedObjectValues } from 'formik';
+import { Field, Form, Formik, FormikProps, setNestedObjectValues } from 'formik';
 import * as Yup from 'yup';
 import { dataaccess, inputfield, inputfieldtext } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
@@ -29,21 +30,7 @@ const AddEditDepartment = () => {
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   
-    // const GetDataList = () => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }
-
     useEffect(() => {
-        // GetDataList()
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist])
   
@@ -82,10 +69,8 @@ const AddEditDepartment = () => {
         }
     };
 
-    // const handleSubmit = async (formData: { department_name: string | null; }) => {
         const handleSubmit = async (
             formData: { department_name: string | null;},
-            { resetForm }: FormikHelpers<{ department_name: string| null; }>
         ) => {
         const payload = {
             ...formData,
@@ -151,7 +136,7 @@ const AddEditDepartment = () => {
               ) 
             .matches(/^[a-zA-Z\s]*$/, 'Please enter a valid Department name only characters allowed.')
     })
-console.log("ttttt",inputfield(namecolor))
+
     return (
         <div className='main-wrapper'>
             <div className="main-content">
@@ -162,7 +147,7 @@ console.log("ttttt",inputfield(namecolor))
                     </Typography>
                     <Formik
                         // onSubmit={(formData) => handleSubmit(formData)}
-                        onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
+                        onSubmit={(formData) => handleSubmit(formData)}
                         initialValues={{
                             department_name: department
                         }}
@@ -170,7 +155,7 @@ console.log("ttttt",inputfield(namecolor))
                         validationSchema={departmentSchema}
                         innerRef={formRef}
                     >
-                        {({ errors, values, touched,isValid,dirty }:any) => (
+                        {({ errors, values, touched }:any) => (
                             <Form>
                                 <div className='row'>
                                     <div className='col-md-4'>

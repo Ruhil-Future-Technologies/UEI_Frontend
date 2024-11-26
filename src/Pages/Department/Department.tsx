@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react'
-
 import '../Department/Department.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
@@ -23,23 +23,10 @@ const Department = () => {
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
  
-    // useEffect(() => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }, [Menulist])
     useEffect(() => {
     
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist, lastSegment])
-    // console.log('Menulist', filteredData, lastSegment)
     const DepartmentURL = QUERY_KEYS_DEPARTMENT.GET_DEPARTMENT;
     const DeleteDepartmentURL = QUERY_KEYS_DEPARTMENT.DEPARTMENT_DELETE;
     const columns = Department_COLUMNS;
@@ -86,7 +73,7 @@ const Department = () => {
     }
 
     const handleDelete = (id: number | undefined) => {
-        deleteData(`${DeleteDepartmentURL}/${id}`).then((data: { message: string }) => {
+        deleteData(`${DeleteDepartmentURL}/${id}`).then(() => {
             toast.success("Department deleted successfully", {
                 hideProgressBar: true,
                 theme: "colored",
