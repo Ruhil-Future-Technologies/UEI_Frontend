@@ -1,34 +1,34 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useContext, useEffect, useState } from 'react'
 import '../Course/Course.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
-import { MenuListinter, SEMESTER_COLUMNS, SemesterRep0oDTO, UNIVERSITY_COLUMNS, UniversityRep0oDTO } from '../../Components/Table/columns';
+import {  SEMESTER_COLUMNS, SemesterRep0oDTO } from '../../Components/Table/columns';
 import { EditIcon, TrashIcon } from '../../assets';
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_COURSE, QUERY_KEYS_SEMESTER, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
+import { NavLink, useNavigate } from "react-router-dom";
+import { QUERY_KEYS_SEMESTER } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
 import FullScreenLoader from '../Loader/FullScreenLoader';
-import { dataaccess, tabletools } from '../../utils/helpers';
+import {  tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 
 
 const Semester = () => {
     const context = useContext(NameContext);
     const {namecolor }:any = context;
-    const location = useLocation();
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-    const Menulist: any = localStorage.getItem('menulist1');;
-    const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
+    // const location = useLocation();
+    // const pathSegments = location.pathname.split('/').filter(Boolean);
+    // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
+    // const Menulist: any = localStorage.getItem('menulist1');;
+    // const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
      
-    useEffect(() => {
+    // useEffect(() => {
     
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment])
+    //     setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    // }, [Menulist, lastSegment])
 //  console.log('Menulist',filteredData,lastSegment)
     const SemesterURL = QUERY_KEYS_SEMESTER.GET_SEMESTER;
     const DeleteSemesterURL =  QUERY_KEYS_SEMESTER.SEMESTER_DELETE;

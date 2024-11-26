@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import '../Form/Form.scss';
 import useApi from '../../hooks/useAPI';
@@ -5,7 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS_FORM, QUERY_KEYS_MENU, QUERY_KEYS_ROLE, QUERY_KEYS_ROLEVSFORM,} from '../../utils/const';
 import { FormControl, FormControlLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { Form, Formik, FormikHelpers, setNestedObjectValues } from 'formik';
+import { Form, Formik, setNestedObjectValues } from 'formik';
 import * as Yup from 'yup';
 import { MenuListinter } from '../../Components/Table/columns';
 import { dataaccess, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
@@ -37,19 +38,7 @@ const AddEditRolevsForm = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);    
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-  
-    // const GetDataList = () => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }
+
 
     useEffect(() => {
         // GetDataList()
@@ -67,14 +56,11 @@ const AddEditRolevsForm = () => {
         is_search: false,
         is_save: false,
         is_update: false,
-        
-
     };
     const [rolevsform, setRoleVsForm] = useState(initialState);
     const [dataRole, setDataRole] = useState<any>([])
     const [dataForm, setDataForm] = useState<any>([])
    
-
     const callAPI = async () => {
         getData(`${RoleURL}`).then((data: any) => {
             const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
@@ -128,7 +114,7 @@ const AddEditRolevsForm = () => {
     }
 
     const handleChange = async (e: any) => {
-        const { name, value } = e.target;
+        const { name } = e.target;
         formRef?.current?.setFieldValue(e.target.name, e.target.value);
         const err = await formRef?.current?.validateForm()
         if (err && Object.keys(err).length > 0) {
@@ -181,7 +167,7 @@ const AddEditRolevsForm = () => {
               localStorage.setItem('menulist',JSON.stringify(data?.data));
             }
         }).catch((e:any) => {
-            
+        console.error(e)
         });
         if(basicinfo?.basic_info !==null){
             
@@ -192,14 +178,13 @@ const AddEditRolevsForm = () => {
                 localStorage.setItem('menulist1',JSON.stringify(data?.data));
               }
           }).catch((e:any) => {
+            console.error(e)
           });
           }
       }
-    // const handleSubmit = async (e:any, rolevsformData: { role_master_id?: string; form_master_id?: string; is_search?: boolean; is_save?: boolean; is_update?: boolean; }) => {
-        // e.preventDefault()
+   
         const handleSubmit = async (
             rolevsformData: { role_master_id?: string; form_master_id?: string; is_search?: boolean; is_save?: boolean; is_update?: boolean; }, 
-            { resetForm }: FormikHelpers<{ role_master_id: string; form_master_id: string; is_search: boolean; is_save: boolean; is_update: boolean; }>
         ) => {
          rolevsformData.role_master_id = String(rolevsformData.role_master_id);
          rolevsformData.form_master_id = String(rolevsformData.form_master_id);
@@ -265,7 +250,7 @@ const AddEditRolevsForm = () => {
                         </Typography>
                         <Formik
                             // onSubmit={(e,formData:any)=>handleSubmit(e,formData)}
-                            onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
+                            onSubmit={(formData) => handleSubmit(formData)}
                             initialValues={{
                                 role_master_id:rolevsform.role_master_id,
                                 form_master_id:rolevsform.form_master_id,
@@ -277,7 +262,7 @@ const AddEditRolevsForm = () => {
                             validationSchema={rolevsformSchema}
                             innerRef={formRef}
                         >
-                            {({ errors, values ,touched,isValid,dirty }:any) => (
+                            {({ errors, values ,touched}:any) => (
                             <Form>
 
                                     <div className='row gy-4 mt-0'>
@@ -308,6 +293,7 @@ const AddEditRolevsForm = () => {
                                                         {
                                                             dataRole?.map((item: any) => (
                                                                 <MenuItem value={item.id}
+                                                                key={item.id}
                                                                 sx={{
                                                                     backgroundColor: inputfield(namecolor),
                                                                     color: inputfieldtext(namecolor),
@@ -352,6 +338,7 @@ const AddEditRolevsForm = () => {
                                                         {
                                                             dataForm?.map((item: any) => (
                                                                 <MenuItem value={item.id}
+                                                                key={item.id}
                                                                 sx={{
                                                                     backgroundColor: inputfield(namecolor),
                                                                     color: inputfieldtext(namecolor),

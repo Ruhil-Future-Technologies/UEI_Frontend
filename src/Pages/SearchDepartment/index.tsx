@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import './user.css';
 import useApi from '../../hooks/useAPI';
@@ -91,7 +92,6 @@ function User() {
     const productId = data.id;
     navigat(`/department/edit/${productId}`);
   };
-// console.log(filtereddepartmentData);
   return (
     <>
       <div className="container" style={{ paddingBottom: '20px' }}>

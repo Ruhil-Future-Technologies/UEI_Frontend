@@ -1,7 +1,8 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
-import { Field, Form, Formik } from 'formik'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { Form, Formik } from 'formik'
 import React, { useContext, useEffect, useState } from 'react'
-import { QUERY_KEYS, QUERY_KEYS_COURSE, QUERY_KEYS_SEMESTER, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
+import { QUERY_KEYS, QUERY_KEYS_COURSE, QUERY_KEYS_SEMESTER } from '../../utils/const';
 import useApi from '../../hooks/useAPI';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -161,7 +162,7 @@ const AddSemester = () => {
                                 validationSchema={semesterSchema}
                             // innerRef={formRef}
                             >
-                                {({ errors, values, touched, isValid, dirty, handleChange, handleBlur,setFieldValue,setFieldTouched,setFieldError }) => (
+                                {({ errors, values, touched, handleChange, handleBlur}) => (
                                     <Form>
                                         <div className='row'>
                                             <div className='col-md-4'>
