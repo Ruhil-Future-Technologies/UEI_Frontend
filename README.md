@@ -2,6 +2,37 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Quality Assurance and Code Standards
+
+### Linting
+
+Checks the entire project for linting errors based on ESLint rules. This ensures code consistency and prevents common issues.
+Note: Always run the linter before committing code to ensure compliance with the project's coding standards.
+
+cmd : `npm run lint:fix`
+
+### Type-Checking
+
+Runs TypeScript's type checker to catch any type errors or inconsistencies in your code. This is especially useful for maintaining type safety in large-scale applications.
+Note: Always run the typecheck before committing code to ensure compliance with the project's coding standards.
+
+cmd : `npm run typecheck`
+
+### Testing
+
+Launches the test runner in the interactive watch mode.
+It’s recommended to ensure that every change you make is thoroughly tested. Every file or feature that you modify should have test cases that provide 100% coverage for the following:
+
+-- Statements
+-- Branches
+-- Functions
+-- Lines
+
+cmd : `npm run test`
+
+This will generate a coverage report that you can find in the coverage/ folder as well as in your terminal.
+Note: Every pull request should include updated or new test cases for the code changes.
+
 ## Available Scripts
 
 In the project directory, you can run:
