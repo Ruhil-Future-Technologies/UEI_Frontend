@@ -157,12 +157,12 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           const filteredAdd2: any = {};
 
           fieldsToCompare?.forEach((field) => {
-            if (Object.prototype.hasOwnProperty.call(add1, field)) {
+            if (add1 && Object.prototype.hasOwnProperty.call(add1, field)) {
               filteredAdd1[field] = add1[field];
             }
-            if (Object.prototype.hasOwnProperty.call(add2, field)) {
+            if (add2 && Object.prototype.hasOwnProperty.call(add2, field)) {
               filteredAdd2[field] = add2[field];
-            }            
+            }
           });
 
           // Use deepEqual to compare only the selected fields
@@ -691,7 +691,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={studentAddress?.address2}
             onChange={(e) => handleInputChange(e, "current")}
-            // required
+          // required
           />
           {/* {" "}
             {(studentAddress.address2 === "" || add2_col) && (
@@ -701,11 +701,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label  ${
-              isFocusedstate || studentAddress?.country
+            className={`col-form-label  ${isFocusedstate || studentAddress?.country
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span>*</span>
@@ -727,11 +726,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label ${
-              isFocusedstate || studentAddress.state
+            className={`col-form-label ${isFocusedstate || studentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span>*</span>
@@ -850,8 +848,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "current")}
             required
-            // error={!!errors.currentpin}
-            // helperText={errors.currentpin}
+          // error={!!errors.currentpin}
+          // helperText={errors.currentpin}
           />
           <div>
             {" "}
@@ -912,7 +910,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.address1}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
@@ -934,7 +932,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.address2}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
           {/* {error.address2 && <span style={{ color: 'red' }}>{error.address2}</span>} */}
         </div>
@@ -974,9 +972,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div> */}
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
           <label
-            className={`col-form-label ${
-              isFocused || permanentAddress.country ? "focused" : "focusedempty"
-            }`}
+            className={`col-form-label ${isFocused || permanentAddress.country ? "focused" : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span></span>
@@ -998,11 +995,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
-            className={`col-form-label ${
-              isFocusedstate || permanentAddress.state
+            className={`col-form-label ${isFocusedstate || permanentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span></span>
@@ -1044,7 +1040,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.city}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
           <div>
             {" "}
@@ -1075,7 +1071,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.district}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
           <div>
             {" "}
@@ -1108,9 +1104,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-            // error={!!errors.permanentpin}
-            // helperText={errors.permanentpin}
+          // required
+          // error={!!errors.permanentpin}
+          // helperText={errors.permanentpin}
           />
           <div>
             {" "}
