@@ -107,7 +107,7 @@ const PDFList = () => {
         school_college_selection:schoolOrcollFile
       }
       
-      let apiUrl =`https://dbllm.gyansetu.ai/display-files?admin_id=${6}&school_college_selection=${schoolOrcollFile}`;
+      let apiUrl =`https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(
         apiUrl
       )
@@ -168,14 +168,11 @@ const PDFList = () => {
 
     const payload = {
       file_id:selectedFile?.pdf_id,
-      file_path: selectedFile?.pdf_path,
-      file_name: selectedFile?.pdf_file_name,
-      class_name: selectedClass,
     };
-    deleteFileData(`https://uatllm.gyansetu.ai/delete-files`, payload)
+    deleteFileData(`https://dbllm.gyansetu.ai/delete-files`, payload)
       .then((data: any) => {
         console.log("DELETED FILES", data);
-        if (data.status === 201) {
+        if (data.status === 200) {
           setDataDelete(false);
           toast.success(data?.message, {
             hideProgressBar: true,

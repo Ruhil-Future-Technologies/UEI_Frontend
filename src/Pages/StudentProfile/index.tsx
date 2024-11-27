@@ -195,6 +195,7 @@ const StudentProfile = () => {
               let percentage = (filledCount / totalCount) * 100;
               // setbasicinfoPercentage(percentage);
               totalPercentage += percentage;
+            console.log(percentage);
               sectionCount++;
             } else {
               sectionCount++;
@@ -206,6 +207,7 @@ const StudentProfile = () => {
               let percentage = (filledCount / totalCount) * 100;
               // setaddressPercentage(percentage);
               totalPercentage += percentage;
+              console.log(percentage);
               sectionCount++;
             } else {
               sectionCount++;
@@ -223,6 +225,7 @@ const StudentProfile = () => {
               let percentage = (filledCount / totalCount) * 100;
               // setlanguagePercentage(percentage);
               totalPercentage += percentage;
+              console.log(percentage);
               sectionCount++;
             } else {
               sectionCount++;
@@ -236,6 +239,11 @@ const StudentProfile = () => {
                 delete academic_history?.learning_style;
                 delete academic_history?.university_name;
                 delete academic_history?.year;
+                delete academic_history?.id;
+                delete academic_history?.is_active;
+                delete academic_history?.sem_id;
+                delete academic_history?.stream;
+                delete academic_history?.university_id;
                 academic_history?.board !== "state_board" &&
                   delete academic_history?.state_for_stateboard;
               } else {
@@ -243,12 +251,19 @@ const StudentProfile = () => {
                 delete academic_history?.class_id;
                 delete academic_history?.state_for_stateboard;
                 delete academic_history?.university_name;
+                delete academic_history?.id;
+                delete academic_history?.stream;
+                delete academic_history?.is_active;
               }
               let totalCount = Object.keys(academic_history).length;
               let filledCount = countKeysWithValue(academic_history);
               let percentage = (filledCount / totalCount) * 100;
               // setacademichistoryPercentage(percentage);
               totalPercentage += percentage;
+              console.log(percentage);
+              console.log(academic_history);
+              console.log(filledCount);
+              console.log(totalCount);
               sectionCount++;
             } else {
               sectionCount++;
@@ -260,6 +275,7 @@ const StudentProfile = () => {
               let percentage = (filledCount / totalCount) * 100;
               // setcontactPercentage(percentage);
               totalPercentage += percentage;
+              console.log(percentage);
               sectionCount++;
             } else {
               sectionCount++;
@@ -269,22 +285,43 @@ const StudentProfile = () => {
               subject_preference &&
               Object.keys(subject_preference).length > 0
             ) {
+              console.log(subject_preference);
+              if(academic_history?.institution_type === "school"){
+              delete subject_preference?.id;
+              delete subject_preference?.is_active;
+              delete subject_preference?.course_id;
+              delete subject_preference?.course_name;
+              delete subject_preference?.sem_id;
+              }else {    
+
+              
+              delete subject_preference?.id;
+              delete subject_preference?.is_active;
+              delete subject_preference?.course_id;
+              delete subject_preference?.course_name;
+              delete subject_preference?.sem_id;
+            }
               let totalCount = Object.keys(subject_preference).length;
               let filledCount = countKeysWithValue(subject_preference);
               let percentage = (filledCount / totalCount) * 100;
               // setsubjectPercentage(percentage);
               totalPercentage += percentage;
+              console.log(percentage);
+              console.log(subject_preference);
+              console.log(filledCount);
+              console.log(totalCount);
               sectionCount++;
             } else {
               sectionCount++;
             }
 
             if (sectionCount > 0) {
-              let overallPercentage = totalPercentage / sectionCount;
+              let overallPercentage = (totalPercentage+100) / sectionCount;
               // setoverallProfilePercentage(overallPercentage); // Set the overall percentage
               overallPercentage = Math.round(overallPercentage);
               // const nandata = 100 - overallPercentage
               setIsProComplete(overallPercentage);
+              console.log(totalPercentage,sectionCount);
               // console.log("overallPercentage sss", nandata,overallPercentage);
               // setStats1({
               //     Student_Profile:overallPercentage,
@@ -335,6 +372,7 @@ const StudentProfile = () => {
     navigator("/main/DashBoard");
   };
   const handleReset = async () => {
+    
     if ((await isProComplete) === 100 && (await isProComplete1)) {
       toast.success("You have completed your profile", {
         hideProgressBar: true,

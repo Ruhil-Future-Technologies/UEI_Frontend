@@ -49,6 +49,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   useEffect(() => {
     getData("hobby/list")
       .then((data: any) => {
+        console.log(data?.data);
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1
@@ -67,6 +68,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
 
     getData("student_hobby/edit/" + StudentId)
       .then((data: any) => {
+        console.log(data?.data);
         if (data?.status === 200) {
           const hobbyIds = data.data.map(
             (selecthobby: any) => selecthobby.hobby_id
@@ -103,18 +105,20 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
+    console.log(selectedHobbies);
     let payloadPromises = selectedHobbies.map((hobbyid) => {
       let payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-
+console.log(payload);
       // return editFlag
       //   ? postData("student_hobby/add", payload)
       //   : putData("student_hobby/edit/" + StudentId, payload);
       if (editFlag) {
         return postData("student_hobby/add", payload);
       } else if (!eq) {
+        console.log("edit hobby");
         return putData("student_hobby/edit/" + StudentId, payload);
       } else {
         return Promise.resolve({ status: 204 }); // Skip update
@@ -141,6 +145,9 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
     try {
       const results = await Promise.all(payloadPromises);
       const successfulResults = results.filter((res) => res.status === 200);
+      console.log(successfulResults);
+      console.log(results);
+      console.log(payloadPromises);
       if (successfulResults?.length > 0) {
         if (editFlag) {
           toast.success("Hobbies saved successfully", {
@@ -186,6 +193,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const hobbydelete = (id: any) => {
     deleteData("/student_hobby/delete/" + id)
       .then((data: any) => {
+        console.log(data);
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
           // setAllHobbies(filteredData ||[]);
@@ -204,6 +212,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
       });
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
+    console.log(event.target.checked);
     if (!event.target.checked) {
       // Call your function when checkbox is unchecked
       hobbydelete(hobbyId);

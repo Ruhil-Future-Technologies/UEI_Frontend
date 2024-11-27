@@ -470,10 +470,10 @@ const Uploadpdf = () => {
         const filterCourse = await coursesAll.filter((item) => 
           item.institution_id === institute_id  && item?.id === course_id 
         )?.map(item =>item.course_name)
-      //   const filterSubject = await subjectsAll?.filter((item:any)=> 
-      //     item?.institution_id  === institute_id && item?.course_id  === course_id && 
-      //   item?.semester_id  === sem_id && item?.subject_id  === subject_id
-      // )?.map(item => item.subject_name)
+        const filterSubject = await subjectsAll?.filter((item:any)=> 
+          item?.institution_id  === institute_id && item?.course_id  === course_id && 
+        item?.semester_id  === sem_id && item?.subject_id  === subject_id
+      )?.map(item => item.subject_name)
         
 
         if (universityNames && universityNames.length > 0) {
@@ -485,9 +485,9 @@ const Uploadpdf = () => {
         if (filterCourse && filterCourse.length > 0) {
           formData.append("course_selection", filterCourse.join(','));
         }
-        // if (filterSubject && filterSubject.length > 0) {
-        //   formData.append("subject", filterSubject.join(','));
-        // }
+        if (filterSubject && filterSubject.length > 0) {
+          formData.append("subject", filterSubject.join(','));
+        }
         if (institute_type) formData.append("school_college_selection", institute_type);
         // if (institute_id) formData.append("college_selection", institute_id);
         // if (university_id) formData.append("university_selection", university_id);
@@ -555,6 +555,7 @@ const Uploadpdf = () => {
       formData
     )
       .then((data: any) => {
+        console.log(data);
         if (data?.status === 200) {
           toast.success("PDF Uploaded Successfully", {
             hideProgressBar: true,

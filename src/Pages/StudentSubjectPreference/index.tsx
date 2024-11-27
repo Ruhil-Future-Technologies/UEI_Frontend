@@ -641,7 +641,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             theme: "colored",
             position: "top-center"
           });
-          handleReset()
+         await handleReset()
           navigate('/')
         } else {
           if (!eq === true) {
@@ -651,6 +651,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: "top-center"
             });
           }
+         
           navigate('/')
         }
         setInitialState(initial);
