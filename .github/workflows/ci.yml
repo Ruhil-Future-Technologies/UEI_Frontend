@@ -3,10 +3,10 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - main
+      - QA
   pull_request:
     branches:
-      - main
+      - QA
 
 jobs:
   build:
@@ -31,12 +31,14 @@ jobs:
       # Run linting
       - name: Run Linter
         run: npm run lint
+        continue-on-error: false
 
       # Run type-checking
       - name: Run TypeScript Typecheck
         run: npm run typecheck
+        continue-on-error: false
 
       # Run tests and collect coverage
       - name: Run Tests with Coverage
         run: npm run test -- --coverage
-
+        continue-on-error: false  # Ensures the pipeline fails if tests fail
