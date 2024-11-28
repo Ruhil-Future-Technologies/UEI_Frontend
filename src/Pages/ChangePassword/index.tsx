@@ -47,57 +47,6 @@ const ChangePassword = () => {
     setShowOldPassword(!showOldPassword);
   };
 
-  // const changePassword = (e: any) => {
-  //   e.preventDefault();
-  //   const UserSignUp = {
-  //     email: String(email),
-  //     new_password: String(newpassword),
-  //     conf_password: String(confpassword),
-  //     user_type: String(user_type),
-  //   };
-  //   const emptyKeys: string[] = [];
-  //   for (const key in UserSignUp) {
-  //     if (UserSignUp.hasOwnProperty(key)) {
-  //       if (UserSignUp[key as keyof typeof UserSignUp] === "") {
-  //         emptyKeys.push(key);
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   if (emptyKeys.length === 0) {
-  //     postData(`${changepassUrl}`, UserSignUp)
-  //       .then((data: any) => {
-  //         if (data?.status === 200) {
-  //           navigate("/");
-  //           toast.success(data?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         } else if (
-  //           data?.status === 404 &&
-  //           data?.message === "Invalid userid or password"
-  //         ) {
-  //           toast.error("Invalid userid or password!", {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         } else {
-  //           toast.error(data?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         toast.error(e?.message, {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //         });
-  //       });
-  //   }
-  // };
-
   const handleSubmit = async (formData: changepasswordform) => {
     // e.preventDefault()
     // e.target.reset()
@@ -223,108 +172,6 @@ const ChangePassword = () => {
   });
 
   return (
-    // <div className="login">
-    //     <div className="login_inner">
-
-    //         <div className="form_wrapper">
-    //             <div className="login_form">
-    //             <Formik
-    //             // onSubmit={(formData) => handleSubmit(formData)}
-    //             onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
-    //             initialValues={{
-    //             newpassword:newpassword,
-    //             confpassword:confpassword
-    //             }}
-    //             enableReinitialize
-    //             validationSchema={changePasswordSchema}
-    //             innerRef={formRef}
-    //         >
-
-    //             {({ errors, values, touched }) => (
-    //                 <Form>
-
-    //                 <div className="login_form_inner">
-    //                     <div className='title_wrapper'>
-    //                         <h1 className="login_title">Reset Password !</h1>
-    //                         <div className='desc'>Reset the password of user.</div>
-    //                     </div>
-    //                         <div className="form_field_wrapper">
-    //                                 <TextField
-    //                                     type={showOldPassword ? "text" : "password"}
-    //                                     placeholder="New Password"
-    //                                     id="newpassword"
-    //                                     name="newpassword"
-    //                                     value={values?.newpassword}
-    //                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "newpassword")}
-    //                                     required={true}
-    //                                     InputProps={{
-    //                                         startAdornment: (
-    //                                             <InputAdornment position="start">
-    //                                                 <img src={passwordicon} alt='newpassword' />
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                         endAdornment: (
-    //                                             <InputAdornment position="end">
-    //                                                 <IconButton
-    //                                                     aria-label="toggle password visibility"
-    //                                                     onClick={handleClickShowOldPassword}
-    //                                                     edge="end"
-    //                                                 >
-    //                                                     {showOldPassword ? <Visibility /> : <VisibilityOff />}
-    //                                                 </IconButton>
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                     }}
-    //                                     fullWidth
-    //                                 />
-    //                                  {touched?.newpassword && errors?.newpassword ?
-    //                                         <p style={{ color: 'red' }}>{errors?.newpassword}</p> : <></>
-    //                                     }
-    //                             </div>
-    //                             <div className="form_field_wrapper">
-    //                                 <TextField
-    //                                     type={showPassword ? "text" : "password"}
-    //                                     placeholder="Confirm password"
-    //                                     value={values?.confpassword}
-    //                                     id="confpassword"
-    //                                     name="confpassword"
-    //                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "confpassword")}
-    //                                     required={true}
-    //                                     InputProps={{
-    //                                         startAdornment: (
-    //                                             <InputAdornment position="start">
-    //                                                 <img src={passwordicon} alt='confpassword' />
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                         endAdornment: (
-    //                                             <InputAdornment position="end">
-    //                                                 <IconButton
-    //                                                     aria-label="toggle password visibility"
-    //                                                     onClick={handleClickShowPassword}
-    //                                                     edge="end"
-    //                                                 >
-    //                                                     {showPassword ? <Visibility /> :  <VisibilityOff />}
-    //                                                 </IconButton>
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                     }}
-    //                                     fullWidth
-    //                                 />
-    //                                 {touched?.confpassword && errors?.confpassword ?
-    //                                         <p style={{ color: 'red' }}>{errors?.confpassword}</p> : <></>
-    //                                     }
-    //                             </div>
-    //                             <button type="submit" className='btn btn-primary'> Reset Password</button>
-
-    //                 </div>
-
-    //                 </Form>
-    //             )}
-    //             </Formik>
-    //             </div>
-    //         </div>
-    //     </div>
-    // </div>
     <>
       <div className="without-login">
         <header className="container-fluid mb-5 py-3 d-none d-lg-block">
@@ -397,9 +244,7 @@ const ChangePassword = () => {
                   <div className="col-lg-12">
                     <Formik
                       // onSubmit={(formData) => handleSubmit(formData)}
-                      onSubmit={(formData) =>
-                        handleSubmit(formData)
-                      }
+                      onSubmit={(formData) => handleSubmit(formData)}
                       initialValues={{
                         newpassword: newpassword,
                         confpassword: confpassword,
@@ -416,6 +261,7 @@ const ChangePassword = () => {
                                 New Password
                               </label>
                               <TextField
+                                data-testid="new_password"
                                 className="mb-4"
                                 type={showOldPassword ? "text" : "password"}
                                 placeholder="New Password"

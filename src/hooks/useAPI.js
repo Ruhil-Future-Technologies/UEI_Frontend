@@ -5,9 +5,6 @@ import { httpClient } from "../utils/http-client";
 
 const useApi = () => {
 
-  // const utoken = localStorage.getItem("token");
-  // const baseUrl = "https://3.110.33.158:5000/";
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -15,23 +12,6 @@ const useApi = () => {
   const headers = {
     Authorization: `${token}`,
   };
-
-  // const loginUrl = `http://13.232.7.220:5000/auth/login`;
-
-  // const getData = async (url,id) => {
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     const requestUrl = id ? `${url}?id=${id}` : url;
-  //     const response = await axios.get(requestUrl,{ headers });
-  //     setLoading(false);
-  //     return response.data;
-  //   } catch (error) {
-  //     setError(error);
-  //     setLoading(false);
-  //     throw error; // Re-throw the error for the caller to handle
-  //   }
-  // };
   
   const getData = async (url, id) => {
     setLoading(true);
