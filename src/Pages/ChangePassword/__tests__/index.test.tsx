@@ -10,7 +10,7 @@ describe("Change Password Component", () => {
         <ChangePassword />
       </Router>
     );
-    // Assuming that you have added `data-testid="new_password"` to the password input in your Change Password component
+    
     const passwordInput = getByTestId("new_password");
     expect(passwordInput).toBeInTheDocument();
   });
