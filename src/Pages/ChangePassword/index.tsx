@@ -257,7 +257,7 @@ const ChangePassword = () => {
                         <Form>
                           <div className="login_form_inner">
                             <div className="form_field_wrapper">
-                              <label htmlFor="" className="form-label">
+                              <label htmlFor="newpassword" className="form-label">
                                 New Password
                               </label>
                               <TextField
@@ -300,10 +300,11 @@ const ChangePassword = () => {
                               )}
                             </div>
                             <div className="form_field_wrapper">
-                              <label htmlFor="" className="form-label">
+                              <label htmlFor="confpassword" className="form-label">
                                 Confirm Password
                               </label>
                               <TextField
+                               data-testid="confirm_password"
                                 className="mb-4"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Confirm password"
@@ -344,6 +345,7 @@ const ChangePassword = () => {
                             <button
                               type="submit"
                               className="btn btn-primary w-100"
+                              data-testid="reset_btn"
                             >
                               {" "}
                               Reset Password
