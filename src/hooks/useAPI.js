@@ -70,22 +70,22 @@ const useApi = () => {
     }
   };
 
-  const patchData = async (url, data, redirectUrl = null) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await httpClient.patch(url, data, { headers });
-      setLoading(false);
-      if (redirectUrl) {
-        navigate(redirectUrl);
-      }
-      return response.data;
-    } catch (error) {
-      setError(error);
-      setLoading(false);
-      throw error;
-    }
-  };
+  // const patchData = async (url, data, redirectUrl = null) => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await httpClient.patch(url, data, { headers });
+  //     setLoading(false);
+  //     if (redirectUrl) {
+  //       navigate(redirectUrl);
+  //     }
+  //     return response.data;
+  //   } catch (error) {
+  //     setError(error);
+  //     setLoading(false);
+  //     throw error;
+  //   }
+  // };
 
   const deleteData = async (url, redirectUrl = null) => {
     setLoading(true);
@@ -146,7 +146,7 @@ const useApi = () => {
     }
   };
 
-  return { getData, postData, putData, patchData, deleteData, postFileData, deleteFileData, loading, error };
+  return { getData, postData, putData, deleteData, postFileData, deleteFileData, loading, error };
 };
 
 export default useApi;
