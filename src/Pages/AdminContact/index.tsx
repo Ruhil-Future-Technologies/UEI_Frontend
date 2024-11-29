@@ -37,14 +37,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
-  // const validateWhatsappNum = (whatsappNum: string) => {
-  //     const whatsappPattern = /^[0-9]{10}$/;
-  //     return whatsappPattern.test(whatsappNum);
-  // }
-  // const validatePhoneNum = (phoneNum: string) => {
-  //     const phonePattern = /^[0-9]{10}$/;
-  //     return phonePattern.test(phoneNum);
-  // }
+ 
 
   const handleChange = (
     event: React.ChangeEvent<

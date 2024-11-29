@@ -28,7 +28,6 @@ const AddEditClass = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);    
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-    const selectedSubject = ""
 
     useEffect(() => {
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
@@ -130,7 +129,7 @@ const AddEditClass = () => {
     })
 // Create an array for classes from 1 to 12
 const classes = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
-console.log("test",classes,selectedSubject)
+
     return (
         <div className='main-wrapper'>
             <div className="main-content">

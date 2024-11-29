@@ -25,7 +25,6 @@ import NameContext from "../Context/NameContext";
 
 import { inputfieldtext } from "../../utils/helpers";
 
-// import { QUERY_STUDENT_PROFILE_KEYS } from '../../utils/const';
 interface PreviewAdminProfileProps {
   editProfile: () => void;
   handleStep: React.Dispatch<React.SetStateAction<number>>;
@@ -50,7 +49,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
   isEdit1,
   isEditfun,
 }) => {
-  // console.log("isEdit",isEdit1)
+  
   const context = useContext(NameContext);
   const { setProImage, namecolor }: any = context;
   const AdminId = localStorage.getItem("_id");
@@ -62,7 +61,6 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
   const [languagePercentage, setlanguagePercentage] = useState<number>(0);
   const [desctiptionPercentage, setdesctiptionPercentage] = useState<number>(0);
   const [contactPercentage, setcontactPercentage] = useState<number>(0);
-  // const [hobbyPercentage, sethobbyPercentage]=useState<number>(0)
   const [professionPercentage, setprofessionPercentage] = useState<number>(0);
   const [profileImage, setprofileImage] = useState<any>();
   const [isHovered, setIsHovered] = useState(false);
@@ -81,16 +79,12 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
         // console.log(data.data)
         if (data.data) {
           setProfileData(data?.data);
-          // let basic_info = data?.data?.basic_info
           const basic_info = {
-            // aim: data?.data?.basic_info?.aim,
             dob: data?.data?.basic_info?.dob,
             father_name: data?.data?.basic_info?.father_name,
             first_name: data?.data?.basic_info?.first_name,
             gender: data?.data?.basic_info?.gender,
             id: data?.data?.basic_info?.id,
-            // is_active: data?.data?.basic_info?.is_active,
-            // is_kyc_verified: data?.data?.basic_info?.is_kyc_verified,
             last_modified_datetime:
               data?.data.basic_info?.last_modified_datetime,
             last_name: data?.data?.basic_info?.last_name,
@@ -190,17 +184,10 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
     );
 
     if (!isProfileComplete) {
-      // toast.success("Your profile is not complete. Please complete your profile", {
-      //   hideProgressBar: true,
-      //   theme: "colored",
-      // });
       isEditfun();
       setper(false);
     } else {
-      // toast.success("You have completed your profile", {
-      //   hideProgressBar: true,
-      //   theme: "colored",
-      // });
+    
       isEditfun();
       setper(false);
     }
@@ -388,12 +375,6 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                           </span>
                           <div className="card-body text-center profilebody">
                             <img
-                              // src={profileImage ? profileImage : 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'}
-                              // src={
-                              //   loading ? '' : profileImage
-                              //     ? profileImage
-                              //     : (profileData?.gender === "Male" || profileData?.gender === "male") ? "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" :(profileData?.gender === "female" || profileData?.gender === "Female") ? "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp" :"https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                              // }
                               src={
                                 loading
                                   ? ""

@@ -23,20 +23,6 @@ const Submenu = () => {
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  // useEffect(() => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         // console.log('Menulist menu',fistMach)
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         // console.log('Menulist submenu',data?.submenus,lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
   useEffect(() => {
     setFilteredData(
       dataaccess(
@@ -47,7 +33,7 @@ const Submenu = () => {
       )
     );
   }, [Menulist, lastSegment]);
-  //  console.log('Menulist',filteredData)
+
   const SubmenuURL = QUERY_KEYS_SUBMENU.GET_SUBMENU;
   const DeleteSubmenuURL = QUERY_KEYS_SUBMENU.SUBMENU_DELETE;
   const columns = SUBMENU_COLUMNS;
@@ -103,7 +89,7 @@ const Submenu = () => {
         });
       });
   };
-  // console.log("-=======----=",filteredData)
+ 
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -141,13 +127,7 @@ const Submenu = () => {
                       data={
                         filteredData?.form_data?.is_search ? dataSubmenu : []
                       }
-                      // data={ dataSubmenu}
-                      // enablePagination={false}
                       enableRowVirtualization
-                      // enableFilters={false}
-                      // enableHiding={false}
-                      // enableDensityToggle={false}
-                      // enableFullScreenToggle={false}
                       positionActionsColumn="first"
                       muiTablePaperProps={{
                         elevation: 0,

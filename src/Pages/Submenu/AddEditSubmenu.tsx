@@ -45,8 +45,6 @@ const AddEditSubmenu = () => {
   };
   const [submenu, setSubmenu] = useState(initialState);
   const [dataMenu, setDataMenu] = useState<any>([]);
-  // const [submenunm, setSubmenunm] = useState<boolean>(false)
-  // const [priorityvalid, setPriorityvalid] = useState<boolean>(false)
   const formRef = useRef<FormikProps<ISubMenuForm>>(null);
 
   const location = useLocation();
@@ -57,21 +55,10 @@ const AddEditSubmenu = () => {
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
+ 
 
   useEffect(() => {
-    // GetDataList()
+    
     setFilteredData(
       dataaccess(
         Menulist,
@@ -109,10 +96,7 @@ const AddEditSubmenu = () => {
     if (id) {
       getData(`${SubmenuEditURL}${id ? `/${id}` : ""}`)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
-          // setDataMenu(data?.data)
-
+          
           setSubmenu(data?.data);
         })
         .catch((e) => {
@@ -126,29 +110,7 @@ const AddEditSubmenu = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  // const handleChange = (e: any) => {
-  //     const { name, value } = e.target;
-  //     if (name === 'submenu_name') {
-  //         if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //             setSubmenunm(true)
-  //         } else {
-  //             setSubmenunm(false)
-  //         }
-  //     } else if (name === 'priority') {
-  //         if (!/^\d$/.test(value)) {
-  //             setPriorityvalid(true)
-  //         } else {
-  //             setPriorityvalid(false)
-  //         }
-  //     }
 
-  //     setSubmenu((prevUser) => {
-  //         return {
-  //             ...prevUser,
-  //             [e.target.name]: e.target.value,
-  //         };
-  //     });
-  // };
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
@@ -172,19 +134,16 @@ const AddEditSubmenu = () => {
     }
   };
 
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, submenuData: { menu_name: string;priority: string; menu_master_id: string; }) => {
-  // const handleSubmit = async (submenuData: ISubMenuForm) => {
+ 
   const handleSubmit = async (
     submenuData: ISubMenuForm,
     { resetForm }: FormikHelpers<ISubMenuForm>
   ) => {
-    // e.preventDefault()
-    // e.target.reset()
+  
     if (id) {
       putData(`${SubmenuEditURL}/${id}`, submenuData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
+         
           if (data.status === 200) {
             navigator("/main/Submenu");
             toast.success(data.message, {
@@ -278,26 +237,6 @@ const AddEditSubmenu = () => {
                     <div className="row gy-4 mt-0">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <label>Speciality</label> */}
-                          {/* <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">Menu</InputLabel>
-                                            <Select
-                                                // id="demo-simple-select"
-                                                // value={speciality}
-                                                onChange={handleChange}
-                                                label="Menu"
-                                                name="menu_master_id"
-                                                value={submenu?.menu_master_id}
-                                                variant="outlined"
-                                            >
-                                                {
-                                                    dataMenu.map((item: any) => (
-                                                        <MenuItem value={item.id}>{item.menu_name}</MenuItem>
-                                                    ))
-                                                }
-
-                                            </Select>
-                                        </FormControl> */}
                           <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">
                               Menu name *
@@ -377,14 +316,6 @@ const AddEditSubmenu = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <TextField
-                                            label="Submenu name"
-                                            name="menu_name"
-                                            value={submenu.menu_name}
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                     
-                                        /> */}
                           <Field
                             component={TextField}
                             type="text"
@@ -401,20 +332,11 @@ const AddEditSubmenu = () => {
                             <></>
                           )}
                         </div>
-                        {/* {submenunm && (
-                                        <p style={{ color: 'red' }}>Please enter a valid Submenu name Only characters allowed.</p>
-                                    )} */}
+                       
                       </div>
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <TextField
-                                            // type='number'
-                                            label="Sequence"
-                                            name="priority"
-                                            value={submenu.priority}
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                        /> */}
+                          
                           <Field
                             component={TextField}
                             type="text"
@@ -431,15 +353,13 @@ const AddEditSubmenu = () => {
                             <></>
                           )}
                         </div>
-                        {/* {priorityvalid && (
-                                        <p style={{ color: 'red' }}>Please enter a valid Priority Only digits allowed.</p>
-                                    )} */}
+                        
                       </div>
                     </div>
                     <button className="btn btn-primary mainbutton mt-4">
                       {id ? "Update" : "Save"}
                     </button>
-                    {/* </form> */}
+                  
                   </Form>
                 )}
               </Formik>

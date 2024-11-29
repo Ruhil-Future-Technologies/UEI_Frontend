@@ -29,17 +29,7 @@ import FullScreenLoader from "../Loader/FullScreenLoader";
 import { dataaccess, tabletools } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 
-// interface RowData {
-//   patientname: string;
-//   orderid: string;
-//   datetime: string;
-//   consultationtype: string;
-//   madeby: string;
-//   reasonforappt: string;
-//   fee: string;
-//   status: string;
-//   action: string;
-// }
+
 
 const Subject = () => {
   const context = useContext(NameContext);
@@ -49,19 +39,6 @@ const Subject = () => {
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-  // useEffect(() => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
 
   useEffect(() => {
     setFilteredData(
@@ -99,8 +76,7 @@ const Subject = () => {
       });
     getData(`${SubjectSchoolURL}`)
       .then((data: any) => {
-        // const linesInfo = data || [];
-        // dispatch(setLine(linesInfo))
+       
         if (data.data) {
           setDataSubjectSchool(data?.data);
         }

@@ -14,14 +14,12 @@ import { MenuListinter } from "../../Components/Table/columns";
 import { dataaccess } from "../../utils/helpers";
 
 const AddEditStudent = () => {
-  // const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
-  // const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
-  // const InstituteEditURL = QUERY_KEYS.INSTITUTE_EDIT;
   const EditStudentURL = QUERY_KEYS_STUDENT.STUDENT_EDIT_BY_ID;
   const StudentURL = QUERY_KEYS_STUDENT.GET_STUDENT;
   const { getData, putData,postFileData,loading } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
 
   const initialState = {
     aim: "",
@@ -41,7 +39,6 @@ const AddEditStudent = () => {
   };
 
   const [student, setStudent] = useState(initialState);
-  // const [dataEntity, setDataEntity] = useState<any>([]);
   const [aim, setAim] = useState<boolean>(false);
   const [fname, setFname] = useState<boolean>(false);
   const [lname, setLname] = useState<boolean>(false);
@@ -49,15 +46,10 @@ const AddEditStudent = () => {
   const [fathernm, setFathernm] = useState<boolean>(false);
   const [mothernm, setMothernm] = useState<boolean>(false);
   const [gname, setGname] = useState<boolean>(false);
-  // const [districtvalid, setDistrictvalid] = useState<boolean>(false);
-  // const [pincodevalid, setPincodevalid] = useState<boolean>(false);
-  // const [urlvalid, setUrlvalid] = useState<boolean>(false);
-  // const [selectedFile, setSelectedFile] = useState();
   const [filePreview, setFilePreview] = useState(null);
   const [mobile_no_call, setMobileNoCall] = useState<boolean>(false);
   const [uploadedfile, setUploadedFile] = useState();
 
-  const location = useLocation();
   const Menulist: any = localStorage.getItem('menulist1');
   const pathSegments = location.pathname.split('/').filter(Boolean);    
   const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
@@ -89,12 +81,6 @@ const AddEditStudent = () => {
         if(filteredStudent?.pic_path)
         {
           setFilePreview(filteredStudent?.pic_path)
-          // getData(`${"upload_file/get_image/" +filteredStudent.pic_path}`)
-          // .then((imgdata: any) => {
-          //   setFilePreview(imgdata.data)
-          // }).catch((e) => {
-            
-          // });
 
         }
         filteredStudent.dob = dayjs(filteredStudent.dob)
@@ -264,7 +250,7 @@ const AddEditStudent = () => {
     //   });
     // }
   }
-  // const [isBase64Image, setIsBase64Image] = useState(false);
+  
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
     studentData: {
@@ -285,14 +271,6 @@ const AddEditStudent = () => {
   ) => {
     e.preventDefault()
    
-    // const fileName = studentData?.pic_path.substring(studentData?.pic_path.lastIndexOf("\\") + 1);
-    // console.log("test stud",fileName)
-
-    // if (fileName && fileName.includes("data:image")) {
-    //   setIsBase64Image(true);
-    // } else {
-    //   setIsBase64Image(false);
-    // }
     const payload = {
       aim: studentData?.aim,
       first_name: studentData?.first_name,
@@ -303,9 +281,7 @@ const AddEditStudent = () => {
       mother_name: studentData?.mother_name,
       guardian_name: studentData?.guardian_name,      
       is_kyc_verified: studentData?.is_kyc_verified,
-      // pic_path:isBase64Image?studentData.image_name :fileName  ,
       pic_path:uploadedfile ? uploadedfile : studentData?.image_name ,
-      // pic_path:studentData?.pic_path,
       student_login_id: id,
       email_id:studentData?.email_id,
       mobile_no_call:studentData?.mobile_no_call
@@ -316,7 +292,6 @@ const AddEditStudent = () => {
     } else {
       setdobset_col(false);
     }
-    // console.log("test stud p",payload,isBase64Image)
     if(!aim && student?.aim !== ""&& !fname && student?.first_name !== "" && !lname && student?.last_name !== "" && !gender && student?.gender !== "" && !fathernm && student?.father_name !== "" && !mothernm && student?.mother_name !== "" && !gname && student?.guardian_name !== "" && student?.pic_path !== "" && error === null && datecheck !== "Invalid Date" ){
 
       putData(`${EditStudentURL}${id ? `/${id}` : ''}`, payload)
@@ -351,15 +326,12 @@ const AddEditStudent = () => {
     <div className='main-wrapper'>
     <div className="main-content">
     <div className='card p-lg-4'>
-      {/* <div className="profile_section"> */}
-        {/* <div className="card"> */}
           <div className="card-body">
             <div className="main_title">Edit Student</div>
             <form onSubmit={(e) => handleSubmit(e, student)}>
               <div className="row  gy-4 mt-0">
                 <div className="col-md-4">
                   <div className="form_field_wrapper">
-                    {/* <label>User Name</label> */}
                     <TextField
                       label="Aim"
                       name="aim"
@@ -437,15 +409,6 @@ const AddEditStudent = () => {
                   <div className="form_field_wrapper" style={{maxWidth: 220, width:'100%'}}>
 
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        {/* <DatePicker
-                        label="Date of Birth *"
-                        value={dayjs(student?.dob)}
-                        onChange={handleDateChange}
-                        name="dob"
-                        format="DD/MM/YYYY"
-                        disableFuture
-                        maxDate={maxSelectableDate}
-                      /> */}
                         
                           <DatePicker
                             label="Date of Birth *"
@@ -585,10 +548,6 @@ const AddEditStudent = () => {
                       handleChange(e);
                     }}
                   />
-
-                  {/* {selectedFile && (
-                    <Typography variant="body1">{selectedFile}</Typography>
-                  )} */}
                 </Grid>
                 {filePreview && (
                   <img
@@ -597,10 +556,7 @@ const AddEditStudent = () => {
                     style={{ maxWidth: "50%", marginTop: "10px" }}
                   />
                 )}
-                {/* {error.pic_path && <span style={{ color: 'red' }}>{error.pic_path}</span>} */}
-                    {/* <div> {student?.pic_path == "" && !loading && (
-                        <p style={{ color: 'red' }}>Please Upload Image.</p>
-                    )}</div> */}
+              
               </div>
               </div>
               <button className="btn btn-primary">
@@ -608,8 +564,6 @@ const AddEditStudent = () => {
               </button>
             </form>
           </div>
-        {/* </div> */}
-      {/* </div> */}
       </div>
       </div>
       </div>

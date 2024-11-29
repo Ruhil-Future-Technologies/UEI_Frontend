@@ -40,19 +40,6 @@ const Student = () => {
     MenuListinter | any
   >([]);
 
-  // useEffect(() => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredDataAcess(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredDataAcess(result)
-  //             console.log("filteredDataAcess =====",result)
-  //         }
-  //     })
-  // }, [Menulist])
   useEffect(() => {
     setFilteredDataAcess(
       dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
@@ -123,7 +110,7 @@ const Student = () => {
   const filteredData = dataStudent.filter((student) =>
     activeTab === 0 ? student.is_active : !student.is_active
   );
-  // console.log("filteredDataAcess",filteredDataAcess,filteredDataAcess?.form_data?.is_search)
+  
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -146,8 +133,7 @@ const Student = () => {
                             ? filteredData
                             : []
                         }
-                        // data={filteredDataAcess?.[0]?.is_search ? filteredData : []}
-                        // data={ filteredData }
+                        
                         enableRowVirtualization
                         positionActionsColumn="first"
                         muiTablePaperProps={{

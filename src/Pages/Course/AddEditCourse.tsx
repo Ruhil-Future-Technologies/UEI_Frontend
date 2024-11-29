@@ -85,8 +85,6 @@ const AddEditCourse = () => {
         callAPI()
     }, [])
 
-
-
     useEffect(() => {
         // Update the institute field whenever the institute state changes
         formRef.current?.resetForm();

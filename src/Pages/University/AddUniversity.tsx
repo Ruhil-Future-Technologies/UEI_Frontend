@@ -155,9 +155,7 @@ const AddUniversity = () => {
                               />
                             )}
                           />
-                          {/* {touched?.course_name && errors?.course_name ?
-                                                    <p style={{ color: 'red' }}>{errors?.course_name}</p> : <></>
-                                                } */}
+                         
                         </div>
                       </div>
                     </div>

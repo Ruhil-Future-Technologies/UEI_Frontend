@@ -2,14 +2,6 @@ import { useEffect, useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import React from "react";
-// interface Department {
-//   department_name: string;
-//   is_active: string;
-//   created_by: string;
-//   created_at: string;
-//   lastModifiedBy: string;
-//   updated_at: string;
-// }
 function EditDepartment() {
   const { getData } = useApi();
   const [perdata, serPredata] = useState({

@@ -228,12 +228,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-  // const handleAvatarSelect = (avatar: any) => {
-  //   console.log("---==",avatar)
-
-  //   setSelectedImage(avatar);
-  //   setModalOpen(false);
-  // };
+ 
   const handleAvatarSelect = async (
     avatarUrl: string | URL | Request | any
   ) => {

@@ -42,20 +42,7 @@ const MenuProps = {
   },
 };
 
-// function getStyles(
-//   languageName: string,
-//   selectedLanguages: readonly Language[],
-//   theme: any
-// ) {
-//   return {
-//     fontWeight:
-//       selectedLanguages
-//         .map((lang) => lang.language_name)
-//         .indexOf(languageName) === -1
-//         ? theme.typography.fontWeightRegular
-//         : theme.typography.fontWeightMedium,
-//   };
-// }
+
 
 interface Box {
   id: number;
@@ -489,15 +476,6 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
         ))}
         <div className="row justify-content-center">
-          {/* <div className="col-md-12 d-flex justify-content-center">
-            <Button
-              className="btn btn-primary mainbutton"
-              type="submit"
-              style={{ marginTop: "25px" }}
-            >
-              {editFalg ? "save" : "Save Changes"}
-            </Button>
-          </div> */}
           <div className="col-lg-12">
             <div className="mt-3 d-flex align-items-center justify-content-between">
               <button

@@ -22,13 +22,6 @@ const Course = () => {
     const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-
-    useEffect(() => {
-     
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment])
-
     const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
     const DeleteCourseURL = QUERY_KEYS_COURSE.COURSE_DELETE;
     const columns = COURSE_COLUMNS;
@@ -37,7 +30,11 @@ const Course = () => {
     const [dataCourse, setDataCourse] = useState<CourseRep0oDTO[]>([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState<number>()
-
+    
+    useEffect(() => {
+     
+        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    }, [Menulist, lastSegment])
     const callAPI = async () => {
 
         getData(`${CourseURL}`).then((data: { data: CourseRep0oDTO[] }) => {

@@ -73,57 +73,7 @@ import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
 
 function App() {
 
-  // const loginUrl = `https://13.235.239.244/auth/login`;
-  //  const loginUrl = "https://qaapi.gyansetu.ai/";
-
-  // const loginUrl = `http://127.0.0.1:5000/login`;
-  // const { postData } = useApi();
   const navigate = useNavigate()
-
-  // setInterval(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     navigate("/")
-  //     // refreshToken()
-  //   }
-  // }, 3000000)
-  // useEffect(() => {
-  //   console.log("test inteval useeffect")
-  //   const intervalId = setInterval(() => {
-  //     console.log("test inteval in 1 hour")
-  //     const token = localStorage.getItem('token');
-  //     if (token) {
-  //       try {
-  //         const decodedToken: JwtPayload = jwtDecode<JwtPayload>(token);
-  //         const currentTime = Date.now() / 1000; // Current time in seconds
-
-  //         if (decodedToken.exp && decodedToken.exp < currentTime) {
-  //           // Token has expired
-  //           localStorage.removeItem("token");
-  //           localStorage.removeItem("_id");
-  //           navigate("/"); // Redirect to login page
-  //         } else {
-  //           // Token is valid
-  //           const login_id = localStorage.getItem("_id");
-  //           if (login_id) {
-  //             navigate("/main/DashBoard");
-  //           }
-  //         }
-  //       } catch (error) {
-  //         // Invalid token
-  //         localStorage.removeItem("token");
-  //         localStorage.removeItem("_id");
-  //         navigate("/"); // Redirect to login page
-  //       }
-  //     } else {
-  //       navigate("/"); // Redirect to login page if no token found
-  //     }
-  //   }, 3600000); // 1 hour interval
-
-  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  // }, [navigate]);
-
-
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -133,10 +83,7 @@ function App() {
       const currentTime = Date.now();
       // console.log("test expire time in",currentTime,tokenExpiry)
       if (currentTime > parseInt(tokenExpiry)) {
-        // console.log("test expire time finally done",currentTime,tokenExpiry)
-        // Token has expired
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('tokenExpiry');
+       
         navigate('/');
       }
     } else {
@@ -144,25 +91,7 @@ function App() {
     }
   }, [navigate]); 
 
-  // const refreshToken = async () => {
-  //   const userid = localStorage.getItem('userid');
-  //   const user_type = localStorage.getItem('user_type');
-  //   const password = localStorage.getItem('pd');
-  //   let UserSignUp = {
-  //     userid: String(userid),
-  //     password: String(password),
-  //     user_type: String(user_type)
-  //   };
-  //   postData(`${loginUrl}`, UserSignUp).then((data: { status: number; token: string; data: { id: number, user_type: string, userid: string } }) => {
-  //     if (data?.status === 200) {
-  //       localStorage.setItem('token', data?.token);
-  //       localStorage.setItem('userdata', JSON.stringify(data?.data));
-  //     } else {
-  //       // setIssuccess(true)
-  //       // setMsg(data?.message)
-  //     }
-  //   });
-  // };
+  
 
   return (
     <div className="App">

@@ -37,21 +37,7 @@ const AddEditRole = () => {
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
-
   useEffect(() => {
-    // GetDataList()
     setFilteredData(
       dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
     );
@@ -84,23 +70,7 @@ const AddEditRole = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  // const handleChange = async (e: any) => {
-  //     const { name, value } = e.target;
-  //     formRef?.current?.setFieldValue(e.target.name, e.target.value);
-  //     const err = await formRef?.current?.validateForm()
-  //     if (err && Object.keys(err).length > 0) {
-  //         formRef?.current?.setErrors(err)
-  //         formRef?.current?.setTouched(setNestedObjectValues(err, true))
-  //         formRef?.current?.setFieldError(name, formRef?.current?.errors?.[name as keyof IRoleForm])
-  //         formRef?.current?.setFieldTouched(name, true)
-  //     }
-  //     setRole((prevUser:any) => {
-  //         return {
-  //             ...prevUser,
-  //             [e.target.name]: e.target.value,
-  //         };
-  //     });
-  // };
+ 
   const handleChange11 = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
@@ -131,14 +101,11 @@ const AddEditRole = () => {
         "Please enter a valid Role name only characters allowed."
       ),
   });
-  // const handleSubmit = async (e: any, roleData: { role_name: string }) => {
-  // const handleSubmit = async (roleData: IRoleForm) => {
+  
   const handleSubmit = async (
     roleData: IRoleForm,
     { resetForm }: FormikHelpers<IRoleForm>
   ) => {
-    // e.preventDefault()
-    // console.log("handleSubmit", roleData)
     if (id) {
       putData(`${RoleEditURL}/${id}`, roleData)
         .then((data: any) => {
@@ -228,13 +195,6 @@ const AddEditRole = () => {
                     <div className="row gy-4 flex-column mt-0">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <Field
-                                                    label="Role Name"
-                                                    name="role_name"
-                                                    value={values.role_name}
-                                                    variant="outlined"
-                                                    onChange={handleChange}
-                                                /> */}
                           <Field
                             component={TextField}
                             type="text"
@@ -253,9 +213,6 @@ const AddEditRole = () => {
                             <></>
                           )}
                         </div>
-                        {/* {errors.role_name && touched.role_name ?
-                                                        <p style={{ color: 'red' }}>{errors.role_name}</p> : <></>
-                                            } */}
                       </div>
                       <div className="col-lg-4">
                         <button className="btn btn-primary mainbutton">

@@ -22,18 +22,11 @@ const UserChangePassword = () => {
   const user_type = localStorage.getItem("user_type");
   const email = localStorage.getItem("userid");
   const { postData } = useApi();
-  // const navigator = useNavigate();
+
   const [password, setPassword] = useState("");
   const [oldpassword, setOldPassword] = useState("");
   const [confpassword, setConfPassword] = useState("");
-  // const initialState = {
-  //   oldpassword: "",
-  //   password: "",
-  //   confpassword: "",
-  // };
-  // const [changepassword, setChangePassword] = useState(initialState);
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const [uservalue, setuserValue] = React.useState<any>("");
+  
 
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -54,65 +47,12 @@ const UserChangePassword = () => {
   const handleClickShowConfPassword = () => {
     setShowConfPassword(!showConfPassword);
   };
-  // const changePassword = (e: any) => {
-  //   e.preventDefault();
-  //   const UserSignUp = {
-  //     email: String(email),
-  //     new_password: String(password),
-  //     old_password: String(oldpassword),
-  //     user_type: String(user_type),
-  //   };
-  //   const emptyKeys: string[] = [];
-  //   for (const key in UserSignUp) {
-  //     if (UserSignUp.hasOwnProperty(key)) {
-  //       if (UserSignUp[key as keyof typeof UserSignUp] === "") {
-  //         emptyKeys.push(key);
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   if (emptyKeys.length === 0) {
-  //     postData(`${changepassUrl}`, UserSignUp)
-  //       .then((data: any) => {
-  //         if (data?.status === 200) {
-  //           // navigator('/')
-  //           toast.success(
-  //             "Your Password has been changed successfuly!! Please try to login again with new password",
-  //             {
-  //               hideProgressBar: true,
-  //               theme: "colored",
-  //             }
-  //           );
-  //         } else if (
-  //           data?.status === 404 &&
-  //           data?.message === "Invalid userid or password"
-  //         ) {
-  //           toast.error("Invalid userid or password!", {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         } else {
-  //           toast.error(data?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         toast.error(e?.message, {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //         });
-  //       });
-  //   }
-  // };
+ 
   const handleSubmit = async (
     formData: changepasswordform,
     { resetForm }: FormikHelpers<changepasswordform>
   ) => {
-    // e.preventDefault()
-    // e.target.reset()
+    
     const UserSignUp = {
       email: String(email),
       new_password: String(formData.password),
@@ -172,12 +112,7 @@ const UserChangePassword = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
   ) => {
-    // setChangePassword((prevValue) => {
-    //   return {
-    //     ...prevValue,
-    //     [e.target.name]: e.target.value,
-    //   };
-    // });
+   
     formRef?.current?.setFieldValue(fieldName, e.target.value);
     await formRef?.current?.validateField(fieldName);
     if (
@@ -287,9 +222,7 @@ const UserChangePassword = () => {
           <div className="profile_section">
             <div className="card w-100 rounded-4 shadow-none desk-card p-4">
               <div className="card-body">
-                {/* <Typography variant="h6">
-                  <div className="main_title"></div>
-                </Typography> */}
+               
                 <Formik
                   // onSubmit={(formData) => handleSubmit(formData)}
                   onSubmit={(formData, formikHelpers) =>

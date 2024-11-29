@@ -64,18 +64,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   activeForm,
 }) => {
   const context = useContext(NameContext);
+  const navigate = useNavigate();
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
-  // const [boxes11, setBoxes11] = useState<Box[]>([]);
   const StudentId = localStorage.getItem("_id");
-  // const [subjectPreferences, setSubjectPreferences] = useState([]);
   const [editFlag, setEditFlag] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
-  const navigate = useNavigate();
-  // const [pervalidet, setpervalidet] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{
     [key: number]: { [key: string]: boolean };
   }>({});
@@ -318,14 +315,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               });
               // setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
             }
-            // getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
-            //   (response: any) => {
-            //     if (response.status === 200) {
-            //       setParticularClass(response.data.class_name);
-            //     } else setParticularClass("");
-            //   }
-            // );
-            // Fetch class name for each preference item based on the index
+            
             if (item.class_id) {
               getData(`/class/get/${item.class_id}`).then((response: any) => {
                 if (response.status === 200) {
@@ -589,24 +579,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         });
     } else {
-      // toast.success("Data Deleted Successfully", {
-      //   hideProgressBar: true,
-      //   theme: "colored",
-      //   position: "top-center"
-      // });
-      // console.log("Data Deleted Successfully", boxes, indx);
+    
       setBoxes(boxes.filter((_box, index) => index !== indx));
     }
   };
 
   const handleSubmit = async () => {
-    // e: React.FormEvent
-    // e.preventDefault();
-
-    // const eqq = deepEqual(boxes11,boxes)
-    // console.log("test data11111",boxes11,boxes,eqq)
-    // if(!eqq === true)  {
-
+    
     let valid = true;
     boxes.forEach((box, index) => {
       if (!box?.subject_id || !box?.preference || !box?.score_in_percentage) {
@@ -1049,17 +1028,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           </div>
         ))}
         <div className="row justify-content-center">
-          {/* <div className="col-3">
-            <Button
-            className="mainbutton"
-              variant="contained"
-              color="primary"
-              type="submit"
-              style={{ marginTop: "25px" }}
-            >
-              Save Subject Preference
-            </Button>
-          </div> */}
+         
           <div className="mt-3 d-flex align-items-center justify-content-between">
             <button
               type="button"

@@ -18,18 +18,6 @@ import NameContext from '../Context/NameContext';
 const Semester = () => {
     const context = useContext(NameContext);
     const {namecolor }:any = context;
-    // const location = useLocation();
-    // const pathSegments = location.pathname.split('/').filter(Boolean);
-    // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-    // const Menulist: any = localStorage.getItem('menulist1');;
-    // const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-     
-    // useEffect(() => {
-    
-    //     setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    // }, [Menulist, lastSegment])
-//  console.log('Menulist',filteredData,lastSegment)
     const SemesterURL = QUERY_KEYS_SEMESTER.GET_SEMESTER;
     const DeleteSemesterURL =  QUERY_KEYS_SEMESTER.SEMESTER_DELETE;
     const columns = SEMESTER_COLUMNS;

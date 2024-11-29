@@ -75,8 +75,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const [courses, setCourses] = useState<Course[]>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
-  // const [idInstitute, setIdInstitute] = useState();
-  // const [insituteFlag, setInsituteFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
 
   const StudentId = localStorage.getItem("_id");
@@ -122,8 +120,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               (item: any) => item?.is_active === 1
             );
             setInstitutes(filteredData || []);
-            // setInstitutes(response.data);
-            // return filteredData || []
             resolve(true);
           } else {
             resolve(false);
@@ -161,12 +157,10 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     getData("/class/list")
       .then((response: any) => {
         if (response.status === 200) {
-          // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === true
           );
           setClasses(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
@@ -265,7 +259,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
     Promise.all(promises)
       .then((responses) => {
-        // Check if all responses have a status of 200
         const allSuccessful = responses.every(
           (response) => response?.status === 200
         );
@@ -291,58 +284,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
         // });
       });
   };
-
-  useEffect(() => {}, [boxes]);
-
-  // const saveAcademi = async () => {
-  //   const validatePayload = (payload: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-  //     return Object.values(payload).every(value => value !== "");
-  //   };
-
-  //   const promises = boxes1.map((box) => {
-  //     const payload = {
-  //       institution_name: box.Institute_Name_Add,
-
-  //     };
-  // // console.log("Setting", payload);
-  //     if (validatePayload(payload)) {
-  //       if (editFlag || box.id === 0) {
-  //         return postData("/institution/add", payload);
-
-  //       } else {
-  //         return postData("/institution/add", payload);
-  //         // return putData("/student_academic_history/edit/" + box.id, payload);
-  //       }
-  //     } else {
-  //       return Promise.resolve(null); // If payload is invalid, return a resolved promise
-  //     }
-  //   }).filter(promise => promise !== null);
-
-  //   Promise.all(promises)
-  //     .then(async responses => {
-  //       // Check if all responses have a status of 200
-  //       const allSuccessful = responses.every(response => response?.status === 200);
-
-  //       if (allSuccessful) {
-  //         await  listData()
-
-  //       //  console.log("datafilter", datafilter)
-  //         toast.success("institution Name saved successfully", {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //         });
-  //         setDataInsitute(boxes1[0]?.Institute_Name_Add)
-  //       } else {
-
-  //       }
-  //     })
-  //     .catch(error => {
-  //       // Handle error
-  //       console.error("Error processing payloads:", error);
-
-  //     });
-
-  // }
 
   const saveAcademi = async (index: number) => {
     try {
@@ -377,8 +318,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       );
 
       if (allSuccessful) {
-        // setIdInstitute(responses[0].institution.id);
-        // setBoxes([...boxes, { institution_id: responses[0]?.institution?.id }]);
         const newBoxes: any = [...boxes];
         newBoxes[index]["institution_id"] = responses[0].institution.id;
         setBoxes(newBoxes);
@@ -388,7 +327,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
             Institute_Name_Add: "",
           },
         ]);
-        // setBoxes((prevBoxes) => [...prevBoxes, { institution_id: responses[0]?.institution?.id }]);
+        
 
         console.log("response", responses[0].institution.id);
         await listData();
@@ -407,22 +346,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     }
   };
 
-  // const handleInputChange = (index: number, field: keyof Box, value: any) => {
-  //   if (field === "ending_date") {
-  //     const newEnddateInvalidList = [...enddateInvalidList];
-  //     if (dayjs(value) <= dayjs(boxes[index]["starting_date"])) {
-  //       newEnddateInvalidList[index] = true; // Set end date invalid for the current row
-  //     } else {
-  //       newEnddateInvalidList[index] = false; // Set end date valid for the current row
-
-  //     }
-  //     setEnddateInvalidList(newEnddateInvalidList);
-  //   }
-
-  //   const newBoxes: any = [...boxes];
-  //   newBoxes[index][field] = value;
-  //   setBoxes(newBoxes);
-  // };
+ 
   const handleInputChange = (
     index: number,
     field: keyof Box,
@@ -460,7 +384,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     setBoxes1(newBoxes);
   };
 
-  console.log("test class", classes);
   return (
     <div className="mt-5">
       <form onSubmit={saveAcademicHistory}>
@@ -723,18 +646,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           </div>
         ))}
         <div className="row justify-content-center">
-          {/* <div className="col-3">
-            <Button
-              className="mainbutton"
-              variant="contained"
-              color="primary"
-              type="submit"
-              // onClick={saveAcademicHistory}
-              style={{ marginTop: "25px" }}
-            >
-              Save Academic History
-            </Button>
-          </div> */}
+        
           <div className="mt-3 d-flex align-items-center justify-content-between">
             <button
               type="button"

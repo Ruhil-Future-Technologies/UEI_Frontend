@@ -73,14 +73,12 @@ const ProfileChat: React.FC = () => {
   >([]);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
-
   const [selectedHobby, setSelectedHobby] = useState<any>("");
   const [selectedLanguage, setSelectedLanguage] = useState<any>("");
   const [selectedproficiency, setSelectedproficiency] = useState<any>("");
   const [selectedInstitute, setSelectedInstitute] = useState<any>("");
   const [selectCourse, setSelectedCourse] = useState<any>("");
   const [selectSubject, setSelectedSubject] = useState<any>("");
-
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedstate, setSelectedState] = useState(null);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);

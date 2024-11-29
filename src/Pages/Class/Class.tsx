@@ -26,12 +26,6 @@ const Class = () => {
     const tabletools:any = {
         light:'#547476',dark:'#00D1D9',default:'#547476'
       }
-    useEffect(() => {
-       
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment]);
-
-
     const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
     const DeleteClassURL = QUERY_KEYS_CLASS.CLASS_DELETE;
     const columns = Class_COLUMNS;
@@ -40,7 +34,10 @@ const Class = () => {
     const [dataClass, setDataClass] = useState<IClass[]>([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState<number>()
-
+    
+    useEffect(() => {  
+        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    }, [Menulist, lastSegment]);
 
     const callAPI = async () => {
 

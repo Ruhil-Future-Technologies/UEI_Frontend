@@ -9,7 +9,7 @@ import {
   UniversityRep0oDTO,
 } from "../../Components/Table/columns";
 import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { QUERY_KEYS_UNIVERSITY } from "../../utils/const";
 import { toast } from "react-toastify";
 import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
@@ -20,92 +20,9 @@ import NameContext from "../Context/NameContext";
 const University = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
-  //   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  //   const tableheader: any = {
-  //     light: "",
-  //     dark: "#1D2A35",
-  //     default: "",
-  //   };
-  //FOR PAGINATION CODE
-  // const [loading, setLoading] = useState(false);
-  // const [pagination, setPagination] = useState({
-  //  pageIndex: 0,
-  //  pageSize: 100,
-  // });
+ 
 
-  // const callAPI = useCallback(() => {
-  //     setLoading(true);
-  //     getData(`${CourseURL}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`)
-  //         .then((data) => {
-  //             setDataCourse(data?.data);
-  //             console.log("data test",data);
-  //             // setPagination({
-  //             //     pageIndex: pagination.pageIndex,
-  //             //     pageSize: pagination.pageSize,
-  //             //   })
-  //         })
-  //         .catch((error) => {
-  //             console.error("Error fetching data:", error);
-  //             toast.error("Error fetching data", {
-  //                 hideProgressBar: true,
-  //                 theme: "colored",
-  //             });
-  //         })
-  //         .finally(() => {
-  //             setLoading(false);
-  //         });
-  // }, [ pagination.pageIndex, pagination.pageSize]);
-
-  // useEffect(() => {
-  //     callAPI();
-  // }, [callAPI]);
-
-  //END CODE PAGINATION
-
-  // useEffect(() => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
-  useEffect(() => {
-    // let filteredData = null;
-    // JSON.parse(Menulist)?.forEach((data: any) => {
-    //     if (data?.menu_name.toLowerCase() === lastSegment) {
-    //         filteredData = data; // Found a match in the main menu
-    //     } else {
-    //         const result = data?.submenus?.find((menu: any) => menu.menu_name.toLowerCase() === lastSegment);
-    //         if (result) {
-    //             // Found a match in the submenu
-    //             filteredData = {
-    //                 ...data,
-    //                 submenus: [result] // Include only the matched submenu
-    //             };
-    //         }
-    //     }
-    // });
-    // if (filteredData) {
-    //     setFilteredData(filteredData);
-    // } else {
-    //     // Handle case when no match is found
-    //     setFilteredData(null);
-    // }
-    // setFilteredData(
-    //   dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
-    // );
-  }, [Menulist, lastSegment]);
-  //  console.log('Menulist',filteredData,lastSegment)
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const DeleteUniversityURL = QUERY_KEYS_UNIVERSITY.UNIVERSITY_DELETE;
   const columns = UNIVERSITY_COLUMNS;

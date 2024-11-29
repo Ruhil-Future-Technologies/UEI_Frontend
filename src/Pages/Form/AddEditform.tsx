@@ -76,21 +76,8 @@ const AddEditForm = () => {
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const [dataUrl, setDataUrl] = useState(false);
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
 
   useEffect(() => {
-    // GetDataList()
     setFilteredData(
       dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
     );
@@ -194,7 +181,7 @@ const AddEditForm = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  // const handleSubmit = async (formData: { form_name: string; menu_master_id: string; sub_menu_master_id: string; form_url: string; form_description: string; is_menu_visible: boolean; }) => {
+
   const handleSubmit = async (
     formData: {
       form_name: string;
@@ -308,8 +295,6 @@ const AddEditForm = () => {
   const privewurl = () => {
     const pathToCheck = form.form_url;
     const isPathAvailable = routes.some((route) => route.path === pathToCheck);
-
-    console.log("privewurl rr", isPathAvailable);
 
     if (isPathAvailable) {
       setDataUrl(false);

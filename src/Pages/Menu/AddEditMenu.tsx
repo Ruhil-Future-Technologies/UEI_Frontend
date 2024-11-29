@@ -3,12 +3,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "../Menu/Menu.scss";
 import TextField from "@mui/material/TextField";
 import TextareaAutosize from "react-textarea-autosize";
-// import { styled } from '@mui/system';
-// import { TextareaAutosize } from '@mui/base/TextareaAutosize';
-// import FormControl from '@mui/material/FormControl';
-// import Select from '@mui/material/Select';
-// import MenuItem from '@mui/material/MenuItem';
-// import { InputLabel } from '@mui/material';
 import useApi from "../../hooks/useAPI";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { QUERY_KEYS_MENU } from "../../utils/const";
@@ -42,7 +36,6 @@ const AddEditMenu = () => {
     priority: "",
   };
   const [menu, setMenu] = useState(initialState);
-  // const [dataEntity, setDataEntity] = useState<any>([])
   const formRef = useRef<FormikProps<IMenuForm>>(null);
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const lastSegment = id
@@ -65,18 +58,6 @@ const AddEditMenu = () => {
     }
   };
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
 
   useEffect(() => {
     // GetDataList()
@@ -95,29 +76,7 @@ const AddEditMenu = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  // const handleChange = (e: any) => {
-  //     const { name, value } = e.target;
-  //     if (name === 'menu_name') {
-  //         if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //             setMenunamevalid(true)
-  //         } else {
-  //             setMenunamevalid(false)
-  //         }
-  //     }
-  //     if (name === 'priority') {
-  //         if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //             setMenupriorityvalid(true)
-  //         } else {
-  //             setMenupriorityvalid(false)
-  //         }
-  //     }
-  //     setMenu((prevUser) => {
-  //         return {
-  //             ...prevUser,
-  //             [e.target.name]: e.target.value,
-  //         };
-  //     });
-  // };
+
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
@@ -141,19 +100,14 @@ const AddEditMenu = () => {
     }
   };
 
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, menuData: { menu_name:string,priority:string }) => {
-  // const handleSubmit = async (menuData: IMenuForm) => {
+
   const handleSubmit = async (
     menuData: IMenuForm,
     { resetForm }: FormikHelpers<IMenuForm>
   ) => {
-    // e.preventDefault()
-    // e.target.reset()
     if (id) {
       putData(`${MenuEditURL}/${id}`, menuData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
           if (data.status === 200) {
             Navigate("/main/Menu");
             toast.success(data.message, {
@@ -176,10 +130,7 @@ const AddEditMenu = () => {
     } else {
       postData(`${MenuAddURL}`, menuData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
           if (data.status === 200) {
-            // Navigate('/main/Menu')
             toast.success(data.message, {
               hideProgressBar: true,
               theme: "colored",

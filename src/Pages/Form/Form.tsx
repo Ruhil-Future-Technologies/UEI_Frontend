@@ -23,12 +23,6 @@ const Form = () => {
     const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-    useEffect(() => {
-
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment]);
-
     const FormURL = QUERY_KEYS_FORM.GET_FORM;
     const DeleteFormURL = QUERY_KEYS_FORM.FORM_DELETE;
     const columns = FORM_COLUMNS;
@@ -38,6 +32,10 @@ const Form = () => {
     const [dataForm, setDataForm] = useState([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState("")
+    useEffect(() => {
+
+        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    }, [Menulist, lastSegment]);
     const callAPI = async () => {
 
         getData(`${FormURL}`).then((data: any) => {

@@ -17,9 +17,14 @@ interface Department {
 function User() {
   const departmentData1:Department[]=[];
   const navigat=useNavigate();
+  const { getData }=useApi();
   const [departmentData, setDepartmentData] = useState<Department[]>(departmentData1);
   const [filtereddepartmentData, setfilteredDepartmentData] = useState<Department[]>(departmentData1);
-  const { getData }=useApi();
+  const [filters, setFilters] = useState<{ departmentName: string; status: number }>({
+    departmentName: '',
+    status: 0
+  });
+
   useEffect(() => {
     try {
       getData(`${'department/list'}`, true).then((data: any) => {
@@ -38,15 +43,7 @@ function User() {
     }
   }, []); // Empty dependency array ensures the effect runs only once when the component mounts
   
- 
 
-  
-
-  //console.log(departmentData);
-  const [filters, setFilters] = useState<{ departmentName: string; status: number }>({
-    departmentName: '',
-    status: 0
-  });
 
   const handelChanges = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -54,7 +51,6 @@ function User() {
   };
 
   const submithandeler = () => {
-    console.log(filters);
  
     if (filters.departmentName.length > 2) {
     const filteredData = departmentData.filter(fdata => {

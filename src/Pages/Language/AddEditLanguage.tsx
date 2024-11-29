@@ -34,6 +34,11 @@ const AddEditLanguage = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);    
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
+    const initialState = {
+        language_name: "",
+    };
+    const [language, setLanguage] = useState(initialState);
+    const [dataLanguage, setDataLanguage] = useState<LanguageRep0oDTO[]>([])
   
 
     useEffect(() => {
@@ -45,12 +50,7 @@ const AddEditLanguage = () => {
         navigate('/main/Language');
     }
 
-    const initialState = {
-        language_name: "",
-        // description: "",
-    };
-    const [language, setLanguage] = useState(initialState);
-    const [dataLanguage, setDataLanguage] = useState<LanguageRep0oDTO[]>([])
+   
 
     useEffect(() => {
         if (id) {
@@ -83,21 +83,7 @@ const AddEditLanguage = () => {
 useEffect(()=>{
     callAPILanguage()
 },[])
-    // const handleChange = async (e: any) => {
-    //     const { name, value } = e.target;
-    //     formRef?.current?.setFieldValue("language_name", e.target.value);
-    //     const err = await formRef?.current?.validateForm()
-    //     if (err && Object.keys(err).length > 0) {
-    //         formRef?.current?.setErrors(err)
-    //         formRef?.current?.setTouched(setNestedObjectValues(err, true))
-    //         formRef?.current?.setFieldError(name, formRef?.current?.errors?.[name as keyof ILanguageForm])
-    //         formRef?.current?.setFieldTouched(name, true)
-    //     }
-    //     setLanguage((prevLanguage:any) => ({
-    //         ...prevLanguage,
-    //         [name]: value,
-    //     }));
-    // };
+    
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>, fieldName: string) => {
         setLanguage((prevMenu) => {
             return {
@@ -115,7 +101,7 @@ useEffect(()=>{
     
 
 
-    // const handleSubmit = async (languageData: { language_name: string}) => {
+    
        
             const handleSubmit = async (
                 languageData: ILanguageForm, 
@@ -221,7 +207,7 @@ useEffect(()=>{
                         {id ? <div className='main_title'>Edit Language</div> : <div className='main_title'>Add Language</div>}
                     </Typography>
                     <Formik
-                            // onSubmit={(formData) => handleSubmit(formData)}
+                            
                             onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
                     
                             initialValues={{
@@ -265,7 +251,6 @@ useEffect(()=>{
                                             <input
                                                 type="file"
                                                 accept="image/*"
-                                                // onChange={(event) => setSelectedFile(event.target.value)}
                                                 id="file-upload"
                                                 style={{ color:inputfieldtext(namecolor)}}
                                             />
@@ -283,7 +268,6 @@ useEffect(()=>{
                                         placeholder="Enter your text here..."
                                         name="description"
                                         value={values.description}
-                                        // onChange={handleChange}
                                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange(e, "description")}
 
                                     />

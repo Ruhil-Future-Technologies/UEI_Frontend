@@ -442,12 +442,6 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           />
         </div>
       </div>
-      {/* <div className="col-6 d-flex justify-content-center mt-3">
-        <button className="btn btn-primary mainbutton">
-          {" "}
-          {editFalg ? "save" : "Save Changes"}
-        </button>
-      </div> */}
       <div className="col-lg-12">
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button

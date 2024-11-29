@@ -76,21 +76,8 @@ const AddEditSubject = () => {
   const [semester, setSemester] = useState<any>([]);
   const [instituteList, setinstituteList] = useState<any[]>([]);
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
 
   useEffect(() => {
-    // GetDataList()
     setFilteredData(
       dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
     );
@@ -108,7 +95,7 @@ const AddEditSubject = () => {
       .then((data: { data: any[] }) => {
         const filteredData = data?.data.filter((item) => item.is_active === 1);
         setinstituteList(filteredData);
-        // setDataEntity(data?.data)
+        
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
@@ -175,23 +162,7 @@ const AddEditSubject = () => {
       setTotalSemester(semesterCount);
     }
   }, [id, semester]);
-  // const handleChange = (e: any) => {
-  //   const { name, value } = e.target;
-  //   if (name === "subject_name") {
-  //     if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //       setSubjectNamevalid(true);
-  //     } else {
-  //       setSubjectNamevalid(false);
-  //     }
-  //   }
-  //   setSubject((prevUser) => {
-  //     return {
-  //       ...prevUser,
-  //       [e.target.name]: e.target.value,
-  //     };
-  //   });
-  // };
-  // const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
+ 
   const handleChange = async (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -243,11 +214,7 @@ const AddEditSubject = () => {
     }
   };
 
-  // const handleSubmit = async (
-  //   e: React.FormEvent<HTMLFormElement>,
-  //   subjectData: { subject_name: string }
-  // ) => {
-  // const handleSubmit = async (subjectData: ISubjectForm) => {
+ 
   const handleSubmit1 = () => {
     const submitData = {
       subject_name: (subject[""] as string) || subject?.subject_name,
@@ -286,8 +253,7 @@ const AddEditSubject = () => {
     subjectData: ISubjectForm,
     { resetForm }: FormikHelpers<ISubjectForm>
   ) => {
-    // e.preventDefault();
-    // e.target.reset()
+   
     const submitData = {
       subject_name: subjectData.subject_name,
       pdf_content: subjectData?.menu_image || "",
@@ -298,8 +264,7 @@ const AddEditSubject = () => {
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
+         
           if (data.status === 200) {
             navigator("/main/Subject");
             toast.success(data.message, {
@@ -322,14 +287,13 @@ const AddEditSubject = () => {
     } else {
       postData(`${SubjectAddURL}`, submitData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
+          
           if (data.status === 200) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: "colored",
             });
-            // navigator("/main/Subject");
+            
             resetForm({ values: initialState });
             setSubject(initialState);
           } else {

@@ -69,23 +69,11 @@ const AddEditSubjectSchool = () => {
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-//   const [courseList, setCourseList] = useState<any[]>([]);
-//   const [totalSemester, setTotalSemester] = useState<any>([]);
+
   const [semester, setSemester] = useState<any>([]);
   const [particularClass, setParticularClass] = useState("");
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
+ 
 
   useEffect(() => {
     // GetDataList()
@@ -102,23 +90,10 @@ const AddEditSubjectSchool = () => {
   }
 
   const callAPI = async () => {
-    // getData(`${CourseListURL}`).then((data: { data: any[] }) => {
-    //   const filteredData = data?.data.filter(item => item.is_active === 1);
-    //   setCourseList(filteredData);
-    //   // setDataEntity(data?.data)
-    // }).catch(e => {
-    //   if (e?.response?.status === 401) {
-    //     navigator("/")
-    //   }
-    //   toast.error(e?.message, {
-    //     hideProgressBar: true,
-    //     theme: "colored",
-    //   });
-    // });
+  
     getData("/class/list")
       .then((response: any) => {
         if (response.status === 200) {
-          // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === true
           );
@@ -195,39 +170,14 @@ const AddEditSubjectSchool = () => {
     //   setTotalSemester(semesterCount);
     }
   }, [id, semester]);
-  // const handleChange = (e: any) => {
-  //   const { name, value } = e.target;
-  //   if (name === "subject_name") {
-  //     if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //       setSubjectNamevalid(true);
-  //     } else {
-  //       setSubjectNamevalid(false);
-  //     }
-  //   }
-  //   setSubject((prevUser) => {
-  //     return {
-  //       ...prevUser,
-  //       [e.target.name]: e.target.value,
-  //     };
-  //   });
-  // };
-  // const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
+  
   const handleChange = async (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<string>,
     fieldName: string
   ) => {
-    // if (fieldName === 'course_id') {
-    //     const semesterCount = semester.filter((item: any) => item.course_id === e.target.value)
-    //     setTotalSemester(semesterCount)
-    //     setSubject((prevMenu: any) => {
-    //         return {
-    //             ...prevMenu,
-    //             ["semester_id"]: "",
-    //         };
-    //     });
-    // }
+  
     if (fieldName === "class_id") {
       getData(`/class/get/${e.target.value}`).then((response: any) => {
         if (response.status === 200) {
@@ -254,11 +204,7 @@ const AddEditSubjectSchool = () => {
     }
   };
 
-  // const handleSubmit = async (
-  //   e: React.FormEvent<HTMLFormElement>,
-  //   subjectData: { subject_name: string }
-  // ) => {
-  // const handleSubmit = async (subjectData: ISubjectForm) => {
+  
   const handleSubmit1 = () => {
     const submitData = {
       subject_name: subject[""] as string,
@@ -278,8 +224,7 @@ const AddEditSubjectSchool = () => {
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
+         
           if (data.status === 200) {
             navigator("/main/Subject");
             toast.success(data.message, {
@@ -303,11 +248,10 @@ const AddEditSubjectSchool = () => {
   };
   const handleSubmit123 = () => {};
   const handleSubmit = async () => {
-    // e.preventDefault();
-    // e.target.reset()
+    
 
     const submitData = {
-      //   subject_name: subject.subject_name,
+     
       subject_name: subject[""] as string,
       pdf_content: subject?.menu_image || "",
       class_id: subject.class_id,
@@ -325,8 +269,7 @@ const AddEditSubjectSchool = () => {
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
+         
           if (data.status === 200) {
             navigator("/main/Subject");
             toast.success(data.message, {
@@ -349,15 +292,14 @@ const AddEditSubjectSchool = () => {
     } else {
       postData(`${SubjectAddURL}`, submitData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
+         
           if (data.status === 200) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: "colored",
             });
 
-            // resetForm({ values: initialState });
+           
             setSubject(initialState);
           } else {
             toast.error(data.message, {
@@ -407,7 +349,6 @@ const AddEditSubjectSchool = () => {
               </Typography>
               <Formik
                 onSubmit={() => handleSubmit123()}
-                // onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
                 initialValues={{
                   subject_name: subject?.subject_name,
                   class_id: subject?.class_id,
@@ -420,7 +361,6 @@ const AddEditSubjectSchool = () => {
               >
                 {({ errors, values, touched, handleBlur }: any) => (
                   <Form>
-                    {/* <form onSubmit={(e) => handleSubmit(e, subject)}> */}
                     <div className="row">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">

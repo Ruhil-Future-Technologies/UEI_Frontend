@@ -28,7 +28,7 @@ const Feedback = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectAnswer, setSelectAnswer] = useState<string>("");
 
-  // const [editFlag, setEditFlag] = useState<boolean>(false);
+ 
 
   useEffect(() => {
     getData(`${"/feedback/"}`).then((data) => {

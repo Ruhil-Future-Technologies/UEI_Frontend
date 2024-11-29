@@ -35,7 +35,6 @@ const AddSemester = () => {
         getData(`${InstituteListURL}`).then((data: { data: any[] }) => {
             const filteredData = data?.data.filter(item => item.is_active === 1);
             setinstituteList(filteredData);
-            // setDataEntity(data?.data)
         }).catch(e => {
             if (e?.response?.status === 401) {
                 navigator("/")
@@ -48,7 +47,6 @@ const AddSemester = () => {
         getData(`${CourseListURL}`).then((data: { data: any[] }) => {
             const filteredData = data?.data.filter(item => item.is_active === 1);
             setCourseList(filteredData);
-            // setDataEntity(data?.data)
         }).catch(e => {
             if (e?.response?.status === 401) {
                 navigator("/")
@@ -84,8 +82,6 @@ const AddSemester = () => {
         if (id) {
             putData(`${semesterUpdateURL}/${id}`, semPayload)
                 .then((data: any) => {
-                    // const linesInfo = data || [];
-                    // dispatch(setLine(linesInfo))
                     if (data.status === 200) {
                         navigator("/main/Semester");
                         resetForm();
@@ -110,7 +106,6 @@ const AddSemester = () => {
         } else {
             postData(`${SemesterAddURL}`, semPayload).then((data: { status: number, message: string }) => {
                 if (data.status === 200) {
-                    // navigator('/main/Course')
                     toast.success(data.message, {
                         hideProgressBar: true,
                         theme: "colored",
@@ -160,7 +155,6 @@ const AddSemester = () => {
                                 }}
                                 enableReinitialize
                                 validationSchema={semesterSchema}
-                            // innerRef={formRef}
                             >
                                 {({ errors, values, touched, handleChange, handleBlur}) => (
                                     <Form>
@@ -171,18 +165,7 @@ const AddSemester = () => {
                                                         <InputLabel id="demo-simple-select-label">Institute *</InputLabel>
                                                         <Select
                                                             onChange={handleChange}
-                                                            // onChange={(event) => {
-                                                            //     handleChange(event);
-                                                            //     setFieldValue('course', ''); 
-                                                            //     setFieldValue('semester_name', '');
-                                                            // }}
-                                                            // onChange={(event) => {
-                                                            //     handleChange(event);
-                                                            //     // setFieldValue('institute', event.target.value);
-                                                            //     // setFieldTouched('institute', true, false); // Mark as touched without showing error
-                                                            //     setFieldError('institute',undefined ); // Clear institute error message
-                                                            //     setFieldValue('course', ''); // Optionally reset course
-                                                            // }}
+                                                      
                                                             label="institute"
                                                             name="institute"
 

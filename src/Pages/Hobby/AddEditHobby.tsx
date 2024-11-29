@@ -77,9 +77,8 @@ const AddEditHobby = () => {
         callAPIHobby()
     }, [])
 
-    // const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+   
         const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
-        // setHobby(e.target.value);
         setHobby((prevHobby) => {
             return {
                 ...prevHobby,
@@ -93,7 +92,6 @@ const AddEditHobby = () => {
         }
     };
 
-    // const handleSubmit = async (hobbyData: { hobby_name: string | null }) => {
         const handleSubmit = async (
             hobbyData: { hobby_name: string | null },
             { resetForm }: FormikHelpers<{ hobby_name: string | null }>

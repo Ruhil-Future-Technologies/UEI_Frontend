@@ -327,50 +327,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     aim: "",
   });
 
-  // const validate = () => {
-  //     const validationError: any = {}
-
-  //     if (!formData.first_name) {
-  //         validationError.first_name = "First Name is required";
-  //     }
-
-  //     if (!formData.last_name) {
-  //         validationError.last_name = "Last Name is required";
-  //     }
-
-  //     if (!formData.gender) {
-  //         validationError.gender = "Gender is required";
-  //     }
-
-  //     if (!formData.dob) {
-  //         validationError.dob = "Date of Birth is required";
-  //     }
-
-  //     if (!formData.father_name) {
-  //         validationError.father_name = "Father Name is required";
-  //     }
-
-  //     if (!formData.mother_name) {
-  //         validationError.mother_name = "Mother Name is required"
-  //     }
-
-  //     if (!formData.guardian_name) {
-  //         validationError.guardian_name = "Guardian Name is required"
-  //     }
-
-  //     if (!formData.aim) {
-  //         validationError.aim = "Aim is required"
-  //     }
-
-  //     if (!formData.pic_path) {
-  //         validationError.pic_path = "Profile Picture is required"
-  //     }
-  //     setError(validationError)
-  //     return Object.keys(validationError).length === 0 ? true : false;
-  //     // if (Object.keys(validationError).length === 0) {
-  //     //     toast.success("Basic Info Added Successfully")
-  //     // }
-  // }
+ 
 
   const submitHandel = () => {
     // event.preventDefault();
@@ -554,14 +511,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Last Name <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="last_name"
-            className="form-control"
-            value={basicInfo.last_name || ""}
-            onChange={handleChange}
-            required
-          /> */}
+          
           <input
             name="last_name"
             value={basicInfo.last_name || ""}
@@ -621,18 +571,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             Date of Birth <span>*</span>
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {/* <DatePicker
-              // label="Date of Birth"
-              sx={{
-                backgroundColor: "#f5f5f5",
-              }}
-              value={dayjs(basicInfo.dob)}
-              onChange={handleDateChange}
-              disableFuture
-              format="DD/MM/YYYY"
-              maxDate={maxSelectableDate}
             
-            /> */}
             <Box width={300}>
               <DatePicker
                 value={dayjs(basicInfo?.dob)}
@@ -658,21 +597,14 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               />
             </Box>
           </LocalizationProvider>
-          {/* <input
-            type="date"
-            className="form-control"
-            value={basicInfo.dob}
-            onChange={handleDateChange}
-            // disableFuture
-            format="DD/MM/YYYY"
-          /> */}
+         
           <div>
             {" "}
             {dobset_col && (
               <p style={{ color: "red" }}>Please enter Date of Birth.</p>
             )}
           </div>
-          {/* <div>{error.dob && <span style={{ color: 'red' }}>{error.dob}</span>}</div> */}
+         
         </div>
 
         <div className="col-md-6 pb-3 form_field_wrapper">
@@ -680,14 +612,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Father Name <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="father_name"
-            className="form-control"
-            value={basicInfo.father_name}
-            onChange={handleChange}
-            required
-          /> */}
+         
           <input
             name="father_name"
             value={basicInfo.father_name}
@@ -718,14 +643,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Mother Name <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="mother_name"
-            className="form-control"
-            value={basicInfo.mother_name}
-            onChange={handleChange}
-            required
-          /> */}
+          
           <input
             name="mother_name"
             value={basicInfo.mother_name || ""}
@@ -748,7 +666,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               <p style={{ color: "red" }}>Please enter Mother name.</p>
             )}
           </div>
-          {/* {error.mother_name && <span style={{ color: 'red' }}>{error.mother_name}</span>} */}
+          
         </div>
 
         <div className="col-md-6 pb-3 form_field_wrapper">
@@ -756,14 +674,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Guardian Name <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="guardian_name"
-            className="form-control"
-            value={basicInfo.guardian_name}
-            onChange={handleChange}
-            // required
-          /> */}
+          
           <input
             name="guardian_name"
             value={basicInfo?.guardian_name || ""}
@@ -787,14 +698,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Aim <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="aim"
-            className="form-control"
-            value={basicInfo.aim}
-            onChange={handleChange}
-            // required
-          /> */}
+          
           <input
             name="aim"
             value={basicInfo.aim || ""}
@@ -875,11 +779,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </button>
         </div>
       </div>
-      {/* <div className="d-flex justify-content-center mt-5">
-        <button className="btn btn-primary sunbutton mainbutton" type="submit">
-          {editFalg ? "Save" : "Save Changes"}
-        </button>
-      </div> */}
     </form>
   );
 };

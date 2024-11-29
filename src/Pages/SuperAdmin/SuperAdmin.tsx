@@ -92,30 +92,7 @@ const SuperAdmin = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  // const handleChange = (e: any) => {
-  //     const { name, value } = e.target;
-  //     if (name === 'menu_name') {
-  //         if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //             setMenunamevalid(true)
-  //         } else {
-  //             setMenunamevalid(false)
-  //         }
-  //     }
-  //     if (name === 'priority') {
-  //         if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //             setMenupriorityvalid(true)
-  //         } else {
-  //             setMenupriorityvalid(false)
-  //         }
-  //     }
-  //     setMenu((prevUser) => {
-  //         return {
-  //             ...prevUser,
-  //             [e.target.name]: e.target.value,
-  //         };
-  //     });
-  // };
-//   const [isemail, setIsEmail] = useState(false);
+  
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
@@ -145,8 +122,7 @@ const SuperAdmin = () => {
     }
   };
 
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, menuData: { menu_name:string,priority:string }) => {
-  // const handleSubmit = async (menuData: IMenuForm) => {
+  
   const handleSubmit = async (
     menuData: IMenuForm,
     { resetForm }: FormikHelpers<IMenuForm>
@@ -162,8 +138,7 @@ const SuperAdmin = () => {
     };
     postData(`${signupUrl}`, payload)
       .then((data: any) => {
-        // const linesInfo = data || [];
-        // dispatch(setLine(linesInfo))
+       
         if (data.status === 200) {
           // Navigate('/main/Menu')
           toast.success(data.message, {
@@ -258,14 +233,7 @@ const SuperAdmin = () => {
                     <div className="row">
                       <div className="col-md-4">
                         <div className="form_field_wrapper mb-4">
-                          {/* <TextField
-                                            label="Menu Name"
-                                            name="menu_name"
-                                            value={menu.menu_name}
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                     
-                                        /> */}
+                          
 
                           <Field
                             component={TextField}
@@ -297,13 +265,7 @@ const SuperAdmin = () => {
                         </div>
                         {/* <div className='col-md-4'> */}
                         <div className="form_field_wrapper">
-                          {/* <TextField
-                                            label="Menu priority"
-                                            name="priority"
-                                            value={menu.priority}
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                        /> */}
+                          
                           <Field
                             component={TextField}
                             type="text"

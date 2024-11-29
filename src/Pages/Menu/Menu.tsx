@@ -22,24 +22,6 @@ const Menu = () => {
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-  // useEffect(() => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
-  useEffect(() => {
-    setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
-    );
-  }, [Menulist, lastSegment]);
   const MenuURL = QUERY_KEYS_MENU.GET_MENU;
   const DeleteMenuURL = QUERY_KEYS_MENU.MENU_DELETE;
   const columns = MENU_COLUMNS;
@@ -48,11 +30,15 @@ const Menu = () => {
   const [dataMenu, setDataMenu] = useState([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState("");
+
+  useEffect(() => {
+    setFilteredData(
+      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+    );
+  }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
-        // const linesInfo = data || [];
-        // dispatch(setLine(linesInfo))
         if (data.data) {
           setDataMenu(data?.data);
         }
@@ -79,20 +65,6 @@ const Menu = () => {
     setDataDelete(true);
   };
 
-  // const handleDelete = async (id: any) => {
-  //     try {
-  // deleteData(`${DeleteMenuURL}/${id}`).then((data: any) => {
-  //         toast.success(data?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //         });
-  //     }).catch(e => {
-  //         toast.error(e?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //         });
-  //     });
-  // }
   const handleDelete = async (id: any) => {
     try {
       const response = await deleteData(`${DeleteMenuURL}/${id}`);

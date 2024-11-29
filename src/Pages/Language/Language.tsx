@@ -25,25 +25,6 @@ const Language = () => {
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-  // useEffect(() => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
-  useEffect(() => {
-    setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
-    );
-  }, [Menulist, lastSegment]);
-
   const LanguageURL = QUERY_KEYS_LANGUAGE.GET_LANGUAGE;
   const DeleteLanguageURL = QUERY_KEYS_LANGUAGE.LANGUAGE_DELETE;
   const columns = LANGUAGE_COLUMNS;
@@ -52,6 +33,11 @@ const Language = () => {
   const [dataLanguage, setDataLanguage] = useState([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState("");
+  useEffect(() => {
+    setFilteredData(
+      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+    );
+  }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${LanguageURL}`)
       .then((data: any) => {

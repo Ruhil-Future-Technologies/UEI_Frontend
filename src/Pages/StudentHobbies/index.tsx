@@ -87,17 +87,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     setSelectedHobbies(event.target.value as string[]);
   };
-  //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
-  //     setSelectedHobbies(event.target.value as string[]);
-  //     const selectedHobbiesIds = event.target.value;
-  //     const uncheckedHobbyId = allHobbies.find(hobby => !selectedHobbiesIds.includes(hobby.id));
-  //     if (uncheckedHobbyId) {
-  //         // Call your function with the unchecked hobby id
-  //         // yourFunction(uncheckedHobbyId);
-  //         console.log("Check", uncheckedHobbyId,allHobbies);
-
-  //     }
-  // };
+  
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
@@ -107,9 +97,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         hobby_id: hobbyid,
       };
 
-      // return editFlag
-      //   ? postData("student_hobby/add", payload)
-      //   : putData("student_hobby/edit/" + StudentId, payload);
       if (editFlag) {
         return postData("student_hobby/add", payload);
       } else if (!eq) {
@@ -118,23 +105,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         return Promise.resolve({ status: 204 }); // Skip update
       }
     });
-    // <<<<<<< Updated upstream
-    //     if(payloadPromises.length >0)
-    //       {
-    //         try {
-    //           await Promise.all(payloadPromises);
-    //           toast.success("Hobbies saved successfully!!", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         } catch (e) {
-    //           toast.error("An error occurred while saving hobbies", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         }
-    //       }
-    // =======
+    
 
     try {
       const results = await Promise.all(payloadPromises);
@@ -168,7 +139,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         position: "top-center",
       });
     }
-    // >>>>>>> Stashed changes
+   
   };
 
   const ITEM_HEIGHT = 48;
@@ -186,12 +157,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
       .then((data: any) => {
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
-          // setAllHobbies(filteredData ||[]);
-          // setAllHobbies(data?.data);
-          // toast.error(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
         }
       })
       .catch(() => {
@@ -270,12 +235,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           </FormControl>
         </div>
       </div>
-      {/* Optional save button */}
-      {/* <div className="row justify-content-center mt-3">
-        <div className="col-12 d-flex justify-content-center">
-          <button className="btn btn-primary">Save</button>
-        </div>
-      </div> */}
+      
     </form>
   );
 };

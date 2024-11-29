@@ -23,12 +23,6 @@ const Hobby = () => {
     const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-    useEffect(() => {
-       
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment])
-
     const HobbyURL = QUERY_KEYS_HOBBY.GET_HOBBY;
     const DeleteHobbyURL = QUERY_KEYS_HOBBY.HOBBY_DELETE;
     const columns = HOBBY_COLUMNS;
@@ -37,6 +31,10 @@ const Hobby = () => {
     const [dataHobby, setDataHobby] = useState<HobbyRep0oDTO[]>([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState<number>()
+    useEffect(() => {
+       
+        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    }, [Menulist, lastSegment])
 
     const callAPI = async () => {
         getData(`${HobbyURL}`).then((data: { data: HobbyRep0oDTO[] }) => {

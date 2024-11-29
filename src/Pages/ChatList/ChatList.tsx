@@ -22,18 +22,13 @@ const ChatList = () => {
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   /* eslint-enable @typescript-eslint/no-explicit-any */
+  const ChatListURL = QUERY_KEYS.CHAT_LISTGETALL;
+  const columns = CHATLIST_COLUMNS;
+  const navigate = useNavigate();
+  const { getData, loading } = useApi();
+  const [dataAll, setDataAll] = useState<ChatListRep0oDTO[]>([]);
 
   useEffect(() => {
-    // JSON.parse(Menulist)?.map((data: any) => {
-    //     const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //     if (fistMach.length > 0) {
-    //         setFilteredData(fistMach)
-    //     }
-    //     const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //     if (result.length > 0) {
-    //         setFilteredData(result)
-    //     }
-    // })
     setFilteredData(
       dataaccess(
         Menulist,
@@ -43,16 +38,7 @@ const ChatList = () => {
       )
     );
   }, [Menulist]);
-  // //  console.log('Menulist',filteredData,lastSegment)
-  const ChatListURL = QUERY_KEYS.CHAT_LISTGETALL;
-  //     const DeleteCourseURL = QUERY_KEYS_COURSE.COURSE_DELETE;
-  const columns = CHATLIST_COLUMNS;
-  const navigate = useNavigate();
-  const { getData, loading } = useApi();
-  const [dataAll, setDataAll] = useState<ChatListRep0oDTO[]>([]);
-  //     const [dataDelete, setDataDelete] = useState(false)
-  //     const [dataDeleteId, setDataDeleteId] = useState<number>()
-
+ 
   const callAPI = async () => {
     getData(`${ChatListURL}`)
       .then((data: { data: ChatListRep0oDTO[] }) => {
@@ -75,38 +61,6 @@ const ChatList = () => {
     callAPI();
   }, []);
 
-  //     const handleEditFile = (id: number) => {
-  //         navigate(`edit-Course/${id}`)
-  //     };
-
-  //     const handlecancel = () => {
-  //         setDataDelete(false)
-  //     };
-
-  //     const handleDeleteFiles = (id: number) => {
-  //         setDataDeleteId(id)
-  //         setDataDelete(true)
-  //     }
-
-  //     const handleDelete = (id: number | undefined) => {
-  //         deleteData(`${DeleteCourseURL}/${id}`).then((data: { message: string }) => {
-  //             toast.success(data?.message, {
-  //                 hideProgressBar: true,
-  //                 theme: "colored",
-  //             });
-  //             callAPI();
-  //             setDataDelete(false);
-  //         }).catch(e => {
-  //             if (e?.response?.status === 401) {
-  //                 navigate("/")
-  //             }
-  //             toast.error(e?.message, {
-  //                 hideProgressBar: true,
-  //                 theme: "colored",
-  //             });
-  //         });
-  //     }
-  // console.log("testdat", dataAll)
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -145,48 +99,6 @@ const ChatList = () => {
                         muiTablePaperProps={{
                           elevation: 0,
                         }}
-                        // enableRowActions
-                        // displayColumnDefOptions={{
-                        //     'mrt-row-actions': {
-                        //         header: 'Actions',
-                        //         size: 150,
-                        //     },
-                        // }}
-                        // renderRowActions={(row) => (
-                        //     <Box
-                        //         sx={{
-                        //             display: "flex",
-                        //             flexWrap: "nowrap",
-                        //             gap: "0.5",
-                        //             marginLeft: "-5px",
-                        //             width: "140px",
-                        //         }}
-                        //     >
-                        //         {/* {filteredData?.[0]?.is_update === true && ( */}
-                        //             <Tooltip arrow placement="right" title="Edit">
-                        //                 <IconButton
-                        //                     sx={{ width: "35px", height: "35px" }}
-                        //                     onClick={() => {
-                        //                         handleEditFile(row?.row?.original?.id);
-                        //                     }}
-                        //                 >
-                        //                     <EditIcon />
-                        //                 </IconButton>
-                        //             </Tooltip>
-                        //         {/* )} */}
-
-                        //         <Tooltip arrow placement="right" title="Delete">
-                        //             <IconButton
-                        //                 sx={{ width: "35px", height: "35px" }}
-                        //                 onClick={() => {
-                        //                     handleDeleteFiles(row?.row?.original?.id)
-                        //                 }}
-                        //             >
-                        //                 <TrashIcon />
-                        //             </IconButton>
-                        //         </Tooltip>
-                        //     </Box>
-                        // )}
                       />
                     </Box>
                   </div>
@@ -196,12 +108,6 @@ const ChatList = () => {
           </div>
         </div>
       </div>
-      {/* <DeleteDialog
-                isOpen={dataDelete}
-                onCancel={handlecancel}
-                onDeleteClick={() => handleDelete(dataDeleteId)}
-                title="Delete documents?"
-            /> */}
     </>
   );
 };

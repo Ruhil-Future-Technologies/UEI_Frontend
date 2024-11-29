@@ -49,25 +49,6 @@ const AddEditInstitute = () => {
     const pincodePattern = /^\d{6}$/;
 
     const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([])
-
-
-    const callAPIfilter = async () => {
-        getData(`${InstituteURL}`).then((data: { data: InstituteRep0oDTO[] }) => {
-            if (data.data) {
-                setDataInstitute(data?.data)
-            }
-        }).catch(e => {
-            if (e?.response?.status === 401) {
-                // navigate("/")
-            }
-            
-        });
-    }
-
-    useEffect(() => {
-        callAPIfilter()
-    }, [])
-
     const initialState = {
         institution_name: "",
         email_id: "",
@@ -92,8 +73,30 @@ const AddEditInstitute = () => {
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
     const [state_col, setstate_col] = useState<boolean>(false)
+    const [isFocused, setIsFocused] = useState(false);
+    const [isFocusedstate, setIsFocusedstate] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const dropdownstateRef = useRef<HTMLDivElement>(null);
+    const [isCountryOpen, setIsCountryOpen] = useState(false);
+    const [isStateOpen, setIsStateOpen] = useState(false);
+
+    const callAPIfilter = async () => {
+        getData(`${InstituteURL}`).then((data: { data: InstituteRep0oDTO[] }) => {
+            if (data.data) {
+                setDataInstitute(data?.data)
+            }
+        }).catch(e => {
+            if (e?.response?.status === 401) {
+                // navigate("/")
+            }
+            
+        });
+    }
+
     useEffect(() => {
-        // GetDataList()
+        callAPIfilter()
+    }, [])
+    useEffect(() => {
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist])
 
@@ -148,6 +151,47 @@ const AddEditInstitute = () => {
     useEffect(() => {
         callAPI()
     }, [])
+    useEffect(() => {
+        const handleFocus = () => setIsFocused(true);
+        const handleFocusstate = () => setIsFocusedstate(true);
+        const handleBlur = (e: FocusEvent) => {
+         
+          if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget as Node)) {
+            setIsFocused(false);
+          }
+        };
+        const handleBlurstate = (e: FocusEvent) => {
+          console.log("Blurstate")
+          if (dropdownstateRef.current && !dropdownstateRef.current.contains(e.relatedTarget as Node)) {
+              setIsFocusedstate(false);
+          }
+        };
+      
+        const currentDropdown = dropdownRef.current;
+        console.log("currentDropdown",currentDropdown)
+      
+        if (currentDropdown) {
+          currentDropdown.addEventListener('focus', handleFocus as EventListener);
+          currentDropdown.addEventListener('blur', handleBlur as EventListener);
+        }
+        const currentDropdownstate = dropdownstateRef.current;
+        console.log("currentDropdownstate",currentDropdownstate)
+        if (currentDropdownstate) {
+          currentDropdownstate.addEventListener('focus', handleFocusstate as EventListener);
+          currentDropdownstate.addEventListener('blur', handleBlurstate as EventListener);
+        }
+      
+        return () => {
+          if (currentDropdown) {
+            currentDropdown.removeEventListener('focus', handleFocus as EventListener);
+            currentDropdown.removeEventListener('blur', handleBlur as EventListener);
+          }
+          if (currentDropdownstate) {
+              currentDropdownstate.removeEventListener('focus', handleFocusstate as EventListener);
+              currentDropdownstate.removeEventListener('blur', handleBlurstate as EventListener);
+            }
+        };
+      }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
         setInstitute((prevInstitute) => {
@@ -167,10 +211,6 @@ const AddEditInstitute = () => {
     const handleInputChangecountry = async (value: string, addressType: string, name: string) => {
         if (addressType === "current_address") {
           if (name === "country") {
-            // setStudentAddress((prevState) => ({ ...prevState, ["country"]: value }));
-            // setStudentAddress((prevState) => ({ ...prevState, ["state"]: "" }));
-            // setstate_col(true)
-            // setcontry_col(false);
             setInstitute((prevInstitute) => {
                 return {
                     ...prevInstitute,
@@ -444,55 +484,6 @@ const AddEditInstitute = () => {
     }
 }
  
-const [isFocused, setIsFocused] = useState(false);
-const [isFocusedstate, setIsFocusedstate] = useState(false);
-const dropdownRef = useRef<HTMLDivElement>(null);
-const dropdownstateRef = useRef<HTMLDivElement>(null);
-const [isCountryOpen, setIsCountryOpen] = useState(false);
-const [isStateOpen, setIsStateOpen] = useState(false);
-
-useEffect(() => {
-  const handleFocus = () => setIsFocused(true);
-  const handleFocusstate = () => setIsFocusedstate(true);
-  const handleBlur = (e: FocusEvent) => {
-   
-    if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget as Node)) {
-      setIsFocused(false);
-    }
-  };
-  const handleBlurstate = (e: FocusEvent) => {
-    console.log("Blurstate")
-    if (dropdownstateRef.current && !dropdownstateRef.current.contains(e.relatedTarget as Node)) {
-        setIsFocusedstate(false);
-    }
-  };
-
-  const currentDropdown = dropdownRef.current;
-  console.log("currentDropdown",currentDropdown)
-
-  if (currentDropdown) {
-    currentDropdown.addEventListener('focus', handleFocus as EventListener);
-    currentDropdown.addEventListener('blur', handleBlur as EventListener);
-  }
-  const currentDropdownstate = dropdownstateRef.current;
-  console.log("currentDropdownstate",currentDropdownstate)
-  if (currentDropdownstate) {
-    currentDropdownstate.addEventListener('focus', handleFocusstate as EventListener);
-    currentDropdownstate.addEventListener('blur', handleBlurstate as EventListener);
-  }
-
-  return () => {
-    if (currentDropdown) {
-      currentDropdown.removeEventListener('focus', handleFocus as EventListener);
-      currentDropdown.removeEventListener('blur', handleBlur as EventListener);
-    }
-    if (currentDropdownstate) {
-        currentDropdownstate.removeEventListener('focus', handleFocusstate as EventListener);
-        currentDropdownstate.removeEventListener('blur', handleBlurstate as EventListener);
-      }
-  };
-}, []);
-
     const handleCountryClick = () => {
         setIsCountryOpen(true);
     };

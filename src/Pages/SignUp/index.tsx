@@ -27,21 +27,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { QUERY_KEYS } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import registerHero from "../../assets/img/register-hero.png";
-// import "../../assets/css/main.min.css";
-
-// interface State extends SnackbarOrigin {
-//   open: boolean;
-// }
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
   const { postData, loading } = useApi();
   const [password, setPassword] = useState("");
-  // const [name, setName] = useState("")
-  //   const [email, setEmail] = useState("");
-  //   const [phone, setPhone] = useState("");
-  // const context = useContext(NameContext);
-  // const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
 
   const [emailphone, setEmailphone] = useState("");
   const value = "student";
@@ -49,24 +39,10 @@ const Signup = () => {
   const [uservalue, setuserValue] = React.useState<any>("");
   const [errorEmail, setEmailError] = useState("");
   const [errorPassword, setPasswordError] = useState("");
-  // const [checked, setchecked] = useState(false);
 
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
-
-  // const [issuccess, setIssuccess] = useState(false);
-  // const [msg, setMsg] = useState("");
-
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setValue((event.target as HTMLInputElement).value);
-  // };
-  //   const handleChangeUserId = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     setuserId((event.target as HTMLInputElement).value);
-  //   };
   const [showPassword, setShowPassword] = useState(false);
-  // let userdata: any = []
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -89,17 +65,6 @@ const Signup = () => {
     // document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
-
-  // const handleCloseicon = (
-  //   event: React.SyntheticEvent | Event,
-  //   reason?: string
-  // ) => {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
-
-  //   // setIssuccess(false);
-  // };
   useEffect(() => {
     if (emailphone && password) {
       setuserValue("");
@@ -181,18 +146,6 @@ const Signup = () => {
     }
   };
 
-  // const action = (
-  //   <React.Fragment>
-  //     <IconButton
-  //       size="small"
-  //       aria-label="close"
-  //       color="inherit"
-  //       onClick={handleCloseicon}
-  //     >
-  //       <CloseIcon fontSize="small" />
-  //     </IconButton>
-  //   </React.Fragment>
-  // );
 
   const validateInput = (value: string): boolean => {
     if (!value) {
@@ -369,7 +322,6 @@ const Signup = () => {
                         <label htmlFor="" className="form-label">
                           Email/Phone
                         </label>
-                        {/* <input type="text" className="form-control   h-52"  placeholder="Enter Your Email"/> */}
                         <TextField
                           id="emailphone"
                           value={emailphone}

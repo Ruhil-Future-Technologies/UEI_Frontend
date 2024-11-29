@@ -22,11 +22,6 @@ const Department = () => {
     const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
- 
-    useEffect(() => {
-    
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment])
     const DepartmentURL = QUERY_KEYS_DEPARTMENT.GET_DEPARTMENT;
     const DeleteDepartmentURL = QUERY_KEYS_DEPARTMENT.DEPARTMENT_DELETE;
     const columns = Department_COLUMNS;
@@ -35,7 +30,10 @@ const Department = () => {
     const [dataDepartement, setDepartment] = useState<DepartmentRep0oDTO[]>([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState<number>()
-
+    useEffect(() => {
+    
+        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    }, [Menulist, lastSegment])
     const callAPI = async () => {
 
         getData(`${DepartmentURL}`).then((data: { data: DepartmentRep0oDTO[] }) => {

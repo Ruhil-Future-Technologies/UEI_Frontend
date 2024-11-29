@@ -27,20 +27,7 @@ const StudentProfile = () => {
     };
   } = useLocation();
 
-
-  // const steps = [
-  //   "Basic Information",
-  //   "Address",
-  //   "Hobbies / Language Known",
-  //   "Academic History",
-  //   "Contact Details",
-  //   "Subject Preference",
-  //   // "Student History",
-  // ];
-  // const [activeStep] = useState(0);
   const [studentData, setStudentData] = useState<any>({});
-  // const [skipped] = useState(new Set<number>());
-  // const [isEdit, setIsEdit] = useState(false);
   const [isProComplete, setIsProComplete] = useState(0);
   const [isProComplete1, setIsProComplete1] = useState(false);
   const [activeForm, setActiveForm] = useState(0);
@@ -48,7 +35,6 @@ const StudentProfile = () => {
   const { getData } = useApi();
   const StudentId = localStorage.getItem("_id");
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
-  // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
       (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
@@ -141,9 +127,6 @@ const StudentProfile = () => {
               first_name: data?.data?.basic_info?.first_name,
               gender: data?.data?.basic_info?.gender,
               id: data?.data?.basic_info?.id,
-              // is_active: data?.data?.basic_info?.is_active,
-              // is_kyc_verified: data?.data?.basic_info?.is_kyc_verified,
-              // last_modified_datetime: data?.data.basic_info?.last_modified_datetime,
               last_name: data?.data?.basic_info?.last_name,
               mother_name: data?.data?.basic_info?.mother_name,
               // student_registration_no: data?.data?.basic_info?.student_registration_no,
@@ -167,16 +150,7 @@ const StudentProfile = () => {
             let sectionCount = 0;
 
             if (basic_info && Object.keys(basic_info).length > 0) {
-              // if (data?.data?.basic_info?.pic_path !== "") {
-              //   getData(`${"upload_file/get_image/" + data?.data?.basic_info?.pic_path}`)
-              //     .then((imgdata: any) => {
-              //       // setprofileImage(imgdata.data);
-              //     })
-              //     .catch((e) => {
-              //       // Handle error
-              //     });
-              // }
-
+            
               const totalCount = Object.keys(basic_info).length;
               const filledCount = countKeysWithValue(basic_info);
               const percentage = (filledCount / totalCount) * 100;
@@ -201,10 +175,6 @@ const StudentProfile = () => {
             if (language && Object.keys(language).length > 0) {
               const totalhobbycount = 0;
               const filledhobbyCount = 0;
-              // if (hobby && Object.keys(hobby).length > 0) {
-              //   totalhobbycount = Object.keys(hobby).length;
-              //   filledhobbyCount = countKeysWithValue(hobby);
-              // }
               const totalCount = Object.keys(language).length + totalhobbycount;
               const filledCount = countKeysWithValue(language) + filledhobbyCount;
               const percentage = (filledCount / totalCount) * 100;
@@ -293,37 +263,7 @@ const StudentProfile = () => {
     }
   };
 
-  // const isStepOptional = (step: number) => {
-  //   return step > 0 && step < steps.length - 1;
-  // };
-
-  // const isStepSkipped = (step: number) => {
-  //   return skipped.has(step);
-  // };
-
-  // const handleNext = () => {
-  //   let newSkipped = skipped;
-  //   if (isStepSkipped(activeStep)) {
-  //     newSkipped = new Set(newSkipped.values());
-  //     newSkipped.delete(activeStep);
-  //   }
-  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  //   setSkipped(newSkipped);
-  //   window.scrollTo(0, 0);
-  // };
-
-  // const handleBack = () => {
-  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  //   window.scrollTo(0, 0);
-  // };
-
-  // const handleStep = (step: number) => () => {
-  //   setActiveStep(step);
-  //   window.scrollTo(0, 0);
-  // };
-  // const viewProfileHome = () => {
-  //   navigator("/main/DashBoard");
-  // };
+  
   const handleReset = async () => {
     if ((await isProComplete) === 100 && (await isProComplete1)) {
       toast.success("You have completed your profile", {
@@ -347,145 +287,11 @@ const StudentProfile = () => {
     window.scrollTo(0, 0);
   };
 
-  // const editProfile = () => {
-  //   setIsEdit(true);
-  // };
-
-  // const viewProfile = () => {
-  //   setIsEdit(false);
-  // };
-  // useEffect(() => {
-  //   if (activeStep === 5 || activeForm === 5) callAPIStudent();
-  // }, [activeStep, activeForm]);
+  
 
   return (
     <>
-      {/* <div className="profile_section">
-        <div className="card">
-          <div className="card-header custom-header">
-            <div className="card-header--actions d-flex justify-content-between align-items-right">
-              <Button
-                className="float-left custom-header"
-                onClick={viewProfileHome}
-              >
-                Back
-              </Button>
-              <div>
-                {isEdit ? (
-                  <Button
-                    onClick={viewProfile}
-                    className="float-right custom-header"
-                  >
-                    View Profile
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={editProfile}
-                    className="float-right custom-header"
-                  >
-                    Edit Profile
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="card-body student-card-body">
-            {!isEdit ? (
-              <React.Fragment>
-                <PreviewStudentProfile
-                  editProfile={editProfile}
-                  handleStep={setActiveStep}
-                />
-              </React.Fragment>
-            ) : (
-              <>
-                <Stepper activeStep={activeStep} className="mt-3">
-                  {steps.map((label, index) => {
-                    const stepProps: { completed?: boolean } = {};
-                    const labelProps: {
-                      optional?: React.ReactNode;
-                    } = {};
-                    return (
-                      <Step key={label} {...stepProps}>
-                        <StepLabel
-                          {...labelProps}
-                          onClick={handleStep(index)}
-                          style={{ cursor: "pointer" }}
-                          sx={{
-                            "& .MuiStepLabel-label": {
-                              color:
-                                activeStep === index
-                                  ? inputfieldtext(namecolor)
-                                  : "gray",
-                            },
-                            "& .MuiStepLabel-label.Mui-active": {
-                              color: inputfieldtext(namecolor), // Active step color
-                            },
-                            // '& .MuiStepLabel-label.Mui-completed': {
-                            //     color: inputfield(namecolor), // Completed step color
-                            // },
-                          }}
-                        >
-                          {label}
-                        </StepLabel>
-                      </Step>
-                    );
-                  })}
-                </Stepper>
-                <div className="hr border border[#9e9e9e] mt-5"></div>
-
-                <React.Fragment>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      paddingTop: "10px",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Button
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                      variant="contained"
-                      className={`${
-                        activeStep === 0 ? "disabled-mainbutton" : "mainbutton"
-                      }`}
-                    >
-                      Previous
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 ? (
-                      <Button
-                        onClick={handleNext}
-                        variant="contained"
-                        className="mainbutton"
-                      >
-                        Next
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={handleReset}
-                        variant="contained"
-                        className="mainbutton"
-                      >
-                        Finish
-                      </Button>
-                    )}
-                  </div>
-                  {activeStep === 0 && <StudentBasicInfo setActiveForm={setActiveForm} />}
-                  {activeStep === 1 && <StudentAddress />}
-                  {activeStep === 2 && <StudentLanguageKnown />}
-                  {activeStep === 3 && <AcademicHistory />}
-                  {activeStep === 4 && <StudentContactDetails />}
-                  {activeStep === 5 && <StudentSubjectPreference />}
-                
-                </React.Fragment>
-              </>
-            )}
-          </div>
-        </div>
-      </div> */}
+      
       <div className="main-wrapper">
         <div className="main-content">
           <div className="container mb-5">
