@@ -17,32 +17,6 @@ const AdminFeedback = () => {
   const context = useContext(NameContext);
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const { namecolor }: any = context;
-  // const location = useLocation();
-  // const pathSegments = location.pathname.split("/").filter(Boolean);
-  // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  // const roleset = lastSegment == "feedback" ? "feedbacks" : lastSegment;
-  // const Menulist: any = localStorage.getItem("menulist1");
-  // const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-  // useEffect(() => {
-  //   debugger
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === roleset.toLowerCase() && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === roleset.toLowerCase())
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }, [Menulist])
-
-  // useEffect(() => {
-  //   setFilteredData(
-  //     dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
-  //   );
-  // }, [Menulist, lastSegment]);
 
   const FeedbackURL = QUERY_KEYS_FEEDBACK.GET_FEEDBACK;
   const DeleteFeedbackURl = QUERY_KEYS_FEEDBACK.FEEDBACK_DELETE;

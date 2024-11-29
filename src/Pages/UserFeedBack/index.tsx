@@ -90,7 +90,7 @@ const Feedback = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const updatedAnswers = [
       ...answeredQuestions.slice(0, currentQuestionIndex),
       { question: "comment", answer: message },
@@ -105,23 +105,39 @@ const Feedback = () => {
       feedbacks: updatedAnswers,
     };
 
-    postData("/feedback/student_feedback", payload)
-      .then((response) => {
-        if (response.status === 200) {
-          toast.success("feedback sent successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        }
-        setMessage("");
-        setAnsweredQuestions([]);
-        setCurrentQuestionIndex(0);
-        setQuestion(questions[0]);
-      })
-      .catch((error) => {
-        console.error("Error while submitting feedback:", error);
-        alert("Error while submitting feedback. Please try again later.");
-      });
+    // postData("/feedback/student_feedback", payload)
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       toast.success("feedback sent successfully", {
+    //         hideProgressBar: true,
+    //         theme: "colored",
+    //       });
+    //     }
+    //     setMessage("");
+    //     setAnsweredQuestions([]);
+    //     setCurrentQuestionIndex(0);
+    //     setQuestion(questions[0]);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error while submitting feedback:", error);
+    //     alert("Error while submitting feedback. Please try again later.");
+    //   });
+    try {
+      const response = await postData("/feedback/student_feedback", payload);
+      if (response.status === 200) {
+        toast.success("Feedback sent successfully", {
+          hideProgressBar: true,
+          theme: "colored",
+        });
+      }
+      setMessage("");
+      setAnsweredQuestions([]);
+      setCurrentQuestionIndex(0);
+      setQuestion(questions[0]);
+    } catch (error) {
+      console.error("Error while submitting feedback:", error);
+      alert("Error while submitting feedback. Please try again later.");
+    }
   };
 
   const handleWritenmessage = (e: ChangeEvent<HTMLTextAreaElement>) => {

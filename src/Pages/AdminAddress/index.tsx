@@ -125,6 +125,9 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     };
   }, []);
+  useEffect(() => {
+    getAddressInfo();
+  }, [adminId]);
 
   const getAddressInfo = async () => {
     getData(`${"admin_address/edit/" + adminId}`)
@@ -183,9 +186,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         });
       });
   };
-  useEffect(() => {
-    getAddressInfo();
-  }, [adminId]);
+ 
 
   const handleInputChange = (
     event:

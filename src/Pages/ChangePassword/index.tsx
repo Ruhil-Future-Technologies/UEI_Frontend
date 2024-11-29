@@ -37,9 +37,7 @@ const ChangePassword = () => {
   const numberRegex = /[0-9]/;
   const specialCharRegex = /[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/;
   const uppercaseRegex = /[A-Z]/;
-
   const formRef = useRef<FormikProps<changepasswordform>>(null);
-
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };

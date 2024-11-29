@@ -52,12 +52,9 @@ console.log(adminId);
 export default function AdminProfileMgt() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
-
-
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
-
   const handleNext = () => {
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {

@@ -96,6 +96,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     setadmin((prevState) => ({ ...prevState, dob: adminDOB ?? null }));
   }, [adminDOB]);
+
+  useEffect(() => {
+    getBasicInfo();
+    getDepatment();
+  }, [adminId]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
@@ -220,10 +225,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
   };
-  useEffect(() => {
-    getBasicInfo();
-    getDepatment();
-  }, [adminId]);
+
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value as string;

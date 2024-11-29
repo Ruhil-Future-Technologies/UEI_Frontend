@@ -39,11 +39,12 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
-
- 
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
+  const [error, setError] = useState<{
+    [key: number]: { language_error: boolean; proficiency_error: boolean };
+  }>({});
 
   const addRow = () => {
     setBoxes((prevBoxes) => [
@@ -234,9 +235,6 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     validateFields(index, "proficiency");
   };
 
-  const [error, setError] = useState<{
-    [key: number]: { language_error: boolean; proficiency_error: boolean };
-  }>({});
   const validateFields = (index: number, field: string) => {
     setError((prevError) => ({
       ...prevError,

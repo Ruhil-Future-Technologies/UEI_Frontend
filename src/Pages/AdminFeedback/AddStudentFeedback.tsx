@@ -88,42 +88,6 @@ const AddStudentFeedback = () => {
     console.log("answer", selectAnswer);
   };
 
-  // const handleNextQuestion = () => {
-  //   if (selectAnswer) {
-  //     const updatedAnswers = [
-  //       ...answeredQuestions.slice(0, currentQuestionIndex),
-  //       { question: question.question, answer: selectAnswer },
-  //       ...answeredQuestions.slice(currentQuestionIndex + 1),
-  //     ];
-  //     setAnsweredQuestions(updatedAnswers);
-
-  //     if (currentQuestionIndex + 1 <= questions.length) {
-  //       setCurrentQuestionIndex(currentQuestionIndex + 1);
-  //       setQuestion(questions[currentQuestionIndex + 1]);
-  //       if (currentQuestionIndex + 1 < questions.length) {
-  //         // setOptions(questions[currentQuestionIndex + 1].options);
-  //       }
-  //       setSelectAnswer("");
-  //     } else {
-  //       alert("You have reached the end of the questions");
-  //     }
-  //   } else {
-  //     alert("Please select an answer before proceeding to the next question.");
-  //   }
-
-  // };
-
-  // const handleBackQuestion = () => {
-  //   if (currentQuestionIndex > 0) {
-  //     setCurrentQuestionIndex(currentQuestionIndex - 1);
-  //     setQuestion(questions[currentQuestionIndex - 1]);
-  //     // setOptions(questions[currentQuestionIndex - 1].options); //.replace(/{|}/g, '').split(',')
-  //     const previousAnswer =
-  //       answeredQuestions[currentQuestionIndex - 1]?.answer || "";
-  //     setSelectAnswer(previousAnswer);
-  //   }
-
-  // };
 
   // Validation function
   const validateForm = () => {
@@ -286,33 +250,6 @@ const AddStudentFeedback = () => {
               />
             </div>
           )}
-          {/* <h4 className="text-center m-2">
-            {currentQuestionIndex + 1}/{questions.length + 1}
-          </h4> */}
-
-          {/* <div className="col">
-            <button
-              className="btn btn-primary m-3"
-              disabled={currentQuestionIndex === 0}
-              onClick={handleBackQuestion}
-              style={{ float: "left" }}
-            >
-              Back
-            </button>
-          </div> */}
-          {/* {currentQuestionIndex + 1 < questions.length + 1 ? (
-            <div className="col">
-              <button
-                className="btn btn-primary m-3"
-                onClick={handleNextQuestion}
-                style={{ float: "right" }}
-                // disabled = {}
-              >
-                Next
-              </button>
-            </div>
-          ) : (
-          )} */}
           <div className="mt-6 align-items-center justify-content-center d-flex">
             <button className="btn btn-primary" onClick={handleSubmit}>
               Submit

@@ -14,8 +14,6 @@ interface IAdminDescription {
   description: string;
 }
 
-// console.log(adminId);
-
 const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const initialState = {
     description: "",
@@ -61,18 +59,6 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     getDescription();
   }, [adminId]);
-  // const handleChange = async (e: any) => {
-  //     const { name, value } = e.target;
-  //     formRef?.current?.setFieldValue(e.target.name, e.target.value);
-  //     const err = await formRef?.current?.validateForm()
-  //     if (err && Object.keys(err).length > 0) {
-  //         formRef?.current?.setErrors(err)
-  //         formRef?.current?.setTouched(setNestedObjectValues(err, true))
-  //         formRef?.current?.setFieldError(name, formRef?.current?.errors?.[name as keyof IAdminDescription])
-  //         formRef?.current?.setFieldTouched(name, true)
-  //     }
-  //     setDesctiption(value);
-  // };
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
@@ -191,18 +177,6 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     >
       {({ errors, values, touched, handleSubmit }: any) => (
         <Form>
-          {/* <Card className="description" style={{ margin: "15px" }}>
-            <CardContent className="description"> */}
-          {/* <TextField
-                            id="description"
-                            label="Description *"
-                            multiline
-                            rows={9}
-                            fullWidth
-                            margin="normal"
-                            value={values.description}
-                            onChange={handleChange}
-                        /> */}
 
           <Field
             id="description"

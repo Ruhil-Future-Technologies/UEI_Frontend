@@ -18,7 +18,6 @@ export default function AdminProfile() {
   const [activeForm, setActiveForm] = React.useState(0);
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const { getData } = useApi();
-
   const [isMobile, setIsMobile] = React.useState(false);
   const totalSteps = 6;
   const stepsRef = React.useRef<HTMLDivElement[]>([]);

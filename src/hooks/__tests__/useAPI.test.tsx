@@ -375,7 +375,12 @@ describe("useApi deleteFileData Hook", () => {
     expect(httpClient.delete).toHaveBeenCalledTimes(1); // Ensure deleteData was called once
     expect(httpClient.delete).toHaveBeenCalledWith(
       `https://api.example.com/menu/${1}`,
-      { data: JSON.stringify({ name: "Test Menu" }) }, // Expect the payload to be stringifie
+      {
+        data: JSON.stringify({ name: "Test Menu" }),
+        headers: expect.objectContaining({
+          Authorization: "null", // Explicitly checking for Authorization being null
+        }),
+      }
     );
     expect(result.current.error).toBe(null); // Ensure there was no error
     expect(result.current.loading).toBe(false); // Ensure loading is false after the request

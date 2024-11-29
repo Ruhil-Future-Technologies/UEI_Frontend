@@ -31,10 +31,10 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import "../../assets/css/newstyle.scss";
 import "../../assets/css/main.scss";
 import "react-perfect-scrollbar/dist/css/styles.css";
-// import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+
 
 const Chat = () => {
-  // const context = useContext(NameContext);
+  
   const userid = localStorage.getItem("_id") || "";
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -42,47 +42,21 @@ const Chat = () => {
   const [studentCourse, setStudentCourse] = useState<any>();
   const [searcherr, setSearchErr] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  // const [starFlagged, setStarFlagged] = useState(false);
-  // const [filteredProducts, setFilteredProducts] = useState<any>([]);
   const { Id } = useParams();
-  // const intials = {
-  //   answer: [
-  //     "Welcome",
-  //     "to",
-  //     "Gyan",
-  //     "Setu",
-  //     "Chat",
-  //     "!",
-  //     "How",
-  //     "can",
-  //     "I",
-  //     "assist",
-  //     "you",
-  //     "today",
-  //     "?",
-  //   ],
-  // };
-  // const [selectedchat, setSelectedChat] = useState<any>([intials]);
   const [selectedchat, setSelectedChat] = useState<any>([]);
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-
   const ChatURL = QUERY_KEYS.CHATADD;
-  // const ChatURLRAG = QUERY_KEYS.CHATADDRAGMODEL;
-  // const ChatURLOLLAMA = QUERY_KEYS.CHATADDOLLAMA;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const ChatStore = QUERY_KEYS.CHAT_STORE;
-
   const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
-  // const chataddurl = QUERY_KEYS.CHAT_HISTORY;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const StudentGETURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const [chat, setchatData] = useState<any>([]);
   const [chatlist, setchatlistData] = useState<any>();
-  // const [statredchat, setstatredchat] = useState<any>([]);
   const [chathistory, setchathistory] = useState<any>([]);
   const [chathistoryrecent, setchathistoryrecent] = useState<any>();
   const [chatsaved, setChatSaved] = useState<boolean>(false);
@@ -90,17 +64,13 @@ const Chat = () => {
   const { postData, getData, deleteData } = useApi();
   const navigate = useNavigate();
   const profileCompletion = localStorage.getItem("Profile_completion") || "0";
-
   const [searchQuery, setSearchQuery] = useState("");
   const [searchQuerystarred, setSearchQuerystarred] = useState("");
-  // const [isStarredChatOpen, setIsStarredChatOpen] = useState(false);
-  // const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false);
   const [showInitialPage, setShowInitialPage] = useState(true);
   const [loaderMsg, setLoaderMsg] = useState("");
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  // const selectedvoice: SpeechSynthesisVoice | null = null;
   synth.onvoiceschanged = () => {
     getVoices();
   };
@@ -108,7 +78,6 @@ const Chat = () => {
     navigate("/*");
   }
   const chatRef = useRef<HTMLInputElement>(null);
-  // console.log();
   const handlecancel = () => {
     setDataDelete(false);
   };
@@ -118,7 +87,6 @@ const Chat = () => {
     setTimeout(() => {
       if (Id !== undefined) {
         setShowInitialPage(true);
-        // setSelectedChat([intials]);
         setSelectedChat([]);
         setSearchQuery("");
         setSearchQuerystarred("");
@@ -171,19 +139,8 @@ const Chat = () => {
 
   const getVoices = () => {
     setVoices(synth.getVoices());
-    // filterVoicesByGender("Google UK English Female");
-    // filterVoicesByGender("Microsoft Zira - English (United States)");
-    // filterVoicesByGender('Microsoft Mark - English (United States)');
   };
-  // const filterVoicesByGender = (gender: string) => {
-  //   const selectedVoice = voices?.find((voice) =>
-  //     voice?.name?.toLowerCase().includes(gender?.toLowerCase())
-  //   );
-  //   if (selectedVoice) {
-  //     selectedvoice = selectedVoice;
-  //   }
-  //   console.log("voices selecte", selectedVoice);
-  // };
+  
   useEffect(() => {
     callAPI();
     getVoices();
@@ -200,7 +157,6 @@ const Chat = () => {
 
   const filterdataCall = async () => {
     if (Id === "recentChat") {
-      // Convert updated_at strings to Date objects for comparison
       const parsedChatHistory = await chathistory?.map(
         (chat: { updated_at: string | number | Date }) => ({
           ...chat,
@@ -257,10 +213,6 @@ const Chat = () => {
 
     // Join the array into a single string
     let cleanedText = textArray.join(" ");
-
-    // Remove unwanted characters and replace with spaces
-    // cleanedText = cleanedText.replace(/[^\w\s]/gi, ' ');
-
     // Replace multiple spaces with a single space
     cleanedText = cleanedText.replace(/\s+/g, " ");
 
@@ -270,10 +222,6 @@ const Chat = () => {
     // Convert the first letter of the cleaned text to uppercase
     cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
 
-    // Add a period at the end if it's missing
-    // if (cleanedText.slice(-1) !== '.') {
-    //   cleanedText += '.';
-    // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
     utterance.onerror = () => {};
     // Event listener for when the speech ends
@@ -303,75 +251,6 @@ const Chat = () => {
     setSelectedChat(updatedChat);
     synth.cancel();
   };
-  // const searchData11 = () => {
-  //   if (search === "") {
-  //     setSearchErr(true);
-  //   } else {
-  //     // let address  = studentDetail.address.address1 +","+studentDetail.address.address2 +","+studentDetail.address.district +","+studentDetail.address.city +","+studentDetail.address.state +","+studentDetail.address.country +","+studentDetail.address.pincode
-  //     // let prompt = "Hi I am"+studentDetail.first_name+" "+ studentDetail.last_name + ".Currenly I am studying at "+ studentDetail.institution +" at "+address+ " in "+studentDetail.course+ " and persuing "+studentDetail.subject+" can you please provide "+search+" based on given course and subject"
-  //     setLoading(true);
-  //     setLoaderMsg("Searching result from knowledge base.");
-  //     setSearchErr(false);
-  //     // newchat();
-
-  //     let prompt = studentDetail?.prompt;
-  //     prompt = prompt?.replace("**question**", "answer");
-  //     let payload = {};
-  //     if (selectedchat?.question !== "") {
-  //       payload = {
-  //         student_id: userid,
-  //         question: search,
-  //         prompt: prompt,
-  //         course: studentDetail?.course === null ? "" : studentDetail?.course,
-  //         stream: studentDetail?.subject,
-  //         chat_hostory: [
-  //           { role: "user", content: selectedchat?.question },
-  //           {
-  //             role: "assistant",
-  //             content: selectedchat?.answer,
-  //           },
-  //         ],
-  //       };
-  //     } else {
-  //       payload = {
-  //         student_id: userid,
-  //         question: search,
-  //         prompt: prompt,
-  //         course: studentDetail?.course === null ? "" : studentDetail?.course,
-  //         stream: studentDetail?.subject,
-  //       };
-  //     }
-  //     postData(`${ChatURL}`, payload)
-  //       .then((data: any) => {
-  //         if (data?.data) {
-  //           const newData = data?.data;
-
-  //           data.data.speak = false;
-  //           // setFilteredProducts(data?.data);
-  //           // setSelectedChat(data?.data);
-  //           setSelectedChat((prevState: any) => [...prevState, newData]);
-  //           setChatSaved(false);
-  //           // setchatData(data?.data);
-  //           setchatData((prevState: any) => [...prevState, newData]);
-  //           setLoading(false);
-  //           setSearch("");
-  //         } else {
-  //           setLoading(false);
-  //           toast.error(data?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         setLoading(false);
-  //         toast.error(e?.message, {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //         });
-  //       });
-  //   }
-  // };
 
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
