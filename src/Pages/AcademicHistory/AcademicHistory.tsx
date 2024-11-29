@@ -25,7 +25,7 @@ import {
 import { State } from "country-state-city";
 import { ChildComponentProps } from "../StudentProfile";
 
-interface Box {
+export interface Box {
   errors?: any;
   id: number;
   institute_type: string;
@@ -164,29 +164,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
     return errors;
   };
-
-  // const deleterow = (id: number, indx: number) => {
-  //   if (id !== 0) {
-  //     deleteData(`/new_student_academic_history/delete/${id}`)
-  //       .then((data: any) => {
-  //         if (data.status === 200) {
-  //           toast.success("Academic history deleted successfully", {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //             position: "top-center",
-  //           });
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         toast.error(e?.message, {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //           position: "top-center",
-  //         });
-  //       });
-  //   }
-  //   setBoxes(boxes.filter((box, index) => index !== indx));
-  // };
 
   const listData = async () => {
     return new Promise((resolve) => {
@@ -412,39 +389,39 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           box.institute_type.toLowerCase() === "school"
             ? box.board
             : box.id
-              ? ""
-              : null,
+            ? ""
+            : null,
         state_for_stateboard:
           box.institute_type.toLowerCase() === "school" &&
-            box.state_for_stateboard !== null
+          box.state_for_stateboard !== null
             ? String(box.state_for_stateboard)
             : box.id
-              ? ""
-              : null,
+            ? ""
+            : null,
         institute_id:
           box.institute_type.toLowerCase() === "college"
             ? String(instituteId || box.institute_id)
             : box.id
-              ? ""
-              : null,
+            ? ""
+            : null,
         course_id:
           box.institute_type.toLowerCase() === "college"
             ? String(box.course_id)
             : box.id
-              ? ""
-              : null,
+            ? ""
+            : null,
         learning_style:
           box.institute_type.toLowerCase() === "college"
             ? box.learning_style
             : box.id
-              ? ""
-              : null,
+            ? ""
+            : null,
         class_id:
           box.institute_type.toLowerCase() === "school"
             ? String(box.class_id)
             : box.id
-              ? ""
-              : null,
+            ? ""
+            : null,
         ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
         ...(box.university_id
           ? { university_id: String(box.university_id) }
@@ -455,7 +432,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             : "", // Assuming 'year' is a string
         stream:
           (particularClass === "class_11" || particularClass === "class_12") &&
-            box.institute_type.toLowerCase() === "school"
+          box.institute_type.toLowerCase() === "school"
             ? box?.stream
             : "",
       };
@@ -601,10 +578,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   }, [boxes]);
 
-  //  const maxSemester = totalSemester && totalSemester?.length > 0
-  //     ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-  //     : 0;
-
   useEffect(() => {
     if (totalSemester && totalSemester?.length > 0) {
       const max = Math.max(
@@ -617,6 +590,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setMaxSemester(0);
     }
   }, [totalSemester]);
+
   return (
     <div className="mt-5">
       <form>
@@ -631,8 +605,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 required
                 sx={{ m: 1, minWidth: 70, width: "100%", maxWidth: 200 }}
               >
-                <InputLabel>Institute Type</InputLabel>
+                <InputLabel data-testid="institute_type_text">Institute Type</InputLabel>
                 <Select
+                  data-testid="institute_type"
                   value={box.institute_type}
                   sx={{
                     backgroundColor: "#f5f5f5",
@@ -1152,8 +1127,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             )}
             {box.institute_type === "college" && (
               <div
-                className={`${box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
-                  } form_field_wrapper`}
+                className={`${
+                  box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
+                } form_field_wrapper`}
               >
                 <FormControl
                   required
@@ -1189,6 +1165,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button
+            data-testid="preBtn"
             type="button"
             className="btn btn-outline-dark prev-btn px-lg-4 rounded-pill"
             onClick={() => setActiveForm((prev) => prev - 1)}
@@ -1196,6 +1173,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             Previous
           </button>
           <button
+            data-testid="nextBtn"
             type="button"
             className="btn btn-dark px-lg-5 ms-auto d-block rounded-pill next-btn"
             onClick={() => saveAcademy(0)}
