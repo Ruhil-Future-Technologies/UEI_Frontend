@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-// import "../Chat/Chat.scss";
+ import "../Chat/Chat.scss";
 import data from "./data.json";
 import axios from "axios";
 import useApi from "../../hooks/useAPI";
@@ -1622,7 +1622,7 @@ const Chat = () => {
                   </button>
                 </div>
                 <div className="history-label">Today's Search</div>
-                <ul className="history-list">
+                <ul className="history-list overflow-auto" style={{ maxHeight: '350px' }}>
                   <>
                     {filteredChats?.length > 0 &&
                       filteredChats?.map(
@@ -1942,7 +1942,7 @@ const Chat = () => {
                       <input
                         type="text"
                         ref={chatRef}
-                        className="form-control"
+                        className="form-control custom-input"
                         placeholder="Type your question"
                         aria-label="Search"
                         value={search}
@@ -1952,7 +1952,7 @@ const Chat = () => {
                       <button
                         type="button"
                         onClick={searchData}
-                        className="btn btn-primary p-0"
+                        className="btn btn-primary p-0 overlap-button"
                       >
                         <ArrowUpwardOutlinedIcon />
                       </button>

@@ -373,14 +373,14 @@ const StudentProfile = () => {
   };
   const handleReset = async () => {
     
-    if ((await isProComplete) === 100 && (await isProComplete1)) {
+    if (((await isProComplete) === 100 ||(await isProComplete) === 117)  && (await isProComplete1)) {
       toast.success("You have completed your profile", {
         hideProgressBar: true,
         theme: "colored",
         position: "top-center",
       });
     } else {
-      toast.success(
+      toast.error(
         "Your profile is incomplete. Please complete your profile.",
         {
           hideProgressBar: true,

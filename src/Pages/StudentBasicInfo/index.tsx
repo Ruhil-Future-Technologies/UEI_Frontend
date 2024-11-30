@@ -77,6 +77,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [lname_col1, setLname_col1] = useState<boolean>(false);
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
+  const [editBasicInfo, setEditBasicInfo] = useState(false);
   const [error1, setError1] = useState("");
   const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
   const minSelectableDate = dayjs("01/01/1900");
@@ -161,7 +162,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const handleChange = (event: any) => {
     let { name, value } = event.target;
-
+    setEditBasicInfo(true);
     if (name === "first_name") {
       setFname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -295,6 +296,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   //   };
  
   const handleDateChange = (newDate: Dayjs | null) => {
+    setEditBasicInfo(true);
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
     if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
       setBasicInfo((values) => ({ ...values, dob: newDate }));
@@ -431,6 +433,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       error === null &&
       datecheck !== "Invalid Date"
     ) {
+      if(editBasicInfo){
       if (editFalg) {
         postData(`${"student/add"}`, payload)
           .then((data: any) => {
@@ -526,6 +529,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         // eslint-disable-next-line no-lone-blocks
         if (!eq) editData();
         else setActiveForm((prev) => prev + 1);
+      }
+      setEditBasicInfo(false)
+       }else{
+        setActiveForm((prev) => prev + 1);
       }
     }
     // console.log(payload);

@@ -27,8 +27,13 @@ interface Hobby {
   id: number;
   is_active: number;
 }
-
-const StudentHobbies = ({ save }: { save: boolean }) => {
+interface StudentHobbiesProps {
+  save: boolean;
+  setSave: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsHobbiesUpdated:React.Dispatch<React.SetStateAction<boolean>>;
+  isLanguageUpdated:boolean;
+}
+const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHobbiesUpdated,isLanguageUpdated }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
@@ -38,9 +43,11 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
-  let StudentId = localStorage.getItem("_id");
 
+  let StudentId = localStorage.getItem("_id");
+  
   useEffect(() => {
+    console.log(save);
     if (save) {
       submitHandle();
     }
@@ -89,6 +96,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   }, []);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
+    Promise.resolve(setIsHobbiesUpdated(true));
     setSelectedHobbies(event.target.value as string[]);
   };
   //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
@@ -104,6 +112,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   // };
 
   const submitHandle = async () => {
+    
     const eq = deepEqual(initialAdminState, selectedHobbies);
     console.log(selectedHobbies);
     let payloadPromises = selectedHobbies.map((hobbyid) => {
@@ -148,20 +157,25 @@ console.log(payload);
       console.log(successfulResults);
       console.log(results);
       console.log(payloadPromises);
+      console.log(successfulResults);
       if (successfulResults?.length > 0) {
-        if (editFlag) {
+        console.log(successfulResults);
+        if(!isLanguageUpdated){
+           if (editFlag) {
           toast.success("Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center"
           });
-        } else {
+        }else {
           toast.success("Hobbies update successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center"
           });
         }
+        }
+       
       } else if (results.some((res) => res.status !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
@@ -177,6 +191,7 @@ console.log(payload);
         position: "top-center"
       });
     }
+    setSave(false);
     // >>>>>>> Stashed changes
   };
 

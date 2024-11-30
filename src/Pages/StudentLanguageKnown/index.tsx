@@ -78,12 +78,13 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const theme = useTheme();
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
   const [selectedLeng, setSelectedLeng] = useState<any>();
-  const [editFalg, setEditFlag] = useState<boolean>(false);
+  const [editFlag, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [isSave, setIsSave] = useState<boolean>(false);
   const [proficiency, setProficiency] = useState<any>("read");
   const [initialAdminState, setInitialState] = useState<any | null>([]);
-
+  const [isLanguageUpdated, setIsLanguageUpdated] = useState<boolean>(false);
+  const [isHobbiesUpdated, setIsHobbiesUpdated] = useState<boolean>(false);
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
@@ -114,9 +115,11 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     setBoxes(boxes.filter((box, index) => index !== indx));
   };
   const getdatalanguage = async () => {
+   
     getData(`student_language_known/edit/${StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
+          
           const lenduageIds = data.data.language_id;
           setSelectedLeng(lenduageIds);
           data.data.forEach((item: any) => {
@@ -199,7 +202,8 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      if (editFalg || box.id === 0) {
+      console.log(editFlag,"what is the output of editflag");
+      if (editFlag || box.id === 0) {
         return postData("student_language_known/add", payload);
       } else if (!eq) {
         return putData("student_language_known/edit/" + box.id, payload);
@@ -227,19 +231,47 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       );
 
       if (successfulResults?.length > 0) {
-        if (editFalg) {
-          toast.success("Language saved successfully", {
+        console.log(await isHobbiesUpdated,isLanguageUpdated);
+        if(isHobbiesUpdated &&isLanguageUpdated){
+          toast.success("Language And Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center"
-          });          
-        } else {
-          toast.success("Language updated successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
-          });
+          }); 
+          setIsLanguageUpdated(false);
+        }else if(isLanguageUpdated){
+          if (editFlag) {
+            setEditFlag(false);
+            toast.success("Language saved successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center"
+            });    
+               
+          } else {
+            toast.success("Language updated successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center"
+            });
+          }
+          setIsLanguageUpdated(false);  
+        }else if(isHobbiesUpdated){
+          if (editFlag) {
+            toast.success("Hobbies saved successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center"
+            });
+          }else {
+            toast.success("Hobbies update successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center"
+            });
+          }
         }
+       
         // getdatalanguage()
       } else if (
         results.some((res: { status: number }) => res.status !== 204)
@@ -261,6 +293,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const handleChange = (event: SelectChangeEvent<string>, index: number) => {
+    setIsLanguageUpdated(true);
     const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
@@ -271,6 +304,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const handleChange1 = (event: SelectChangeEvent<string>, index: number) => {
+    setIsLanguageUpdated(true);
     const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
@@ -291,7 +325,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       },
     }));
   };
-
+console.log(isSave);
   return (
     <>
       <div className="row">
@@ -302,7 +336,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
       </div>
       <div className="row form_field_wrapper mb-4">
-        <StudentHobbies save={isSave} />
+        <StudentHobbies  save={isSave} setSave={setIsSave} setIsHobbiesUpdated={setIsHobbiesUpdated} isLanguageUpdated={isLanguageUpdated}/>
       </div>
       
       <form>
