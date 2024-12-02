@@ -45,26 +45,27 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   }, [save]);
 
   useEffect(() => {
-    getData("hobby/list")
-      .then((data: any) => {
+    const fetchHobbyList = async () => {
+      try {
+        const data: any = await getData("hobby/list");
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1
           );
           setAllHobbies(filteredData || []);
-          // setAllHobbies(data?.data);
         }
-      })
-      .catch((e) => {
+      } catch (e: any) {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
           position: "top-center",
         });
-      });
-
-    getData("student_hobby/edit/" + StudentId)
-      .then((data: any) => {
+      }
+    };
+  
+    const fetchStudentHobbies = async () => {
+      try {
+        const data: any = await getData("student_hobby/edit/" + StudentId);
         if (data?.status === 200) {
           const hobbyIds = data.data.map(
             (selecthobby: any) => selecthobby.hobby_id
@@ -74,20 +75,22 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         } else if (data?.status === 404) {
           setEditFlag(true);
         }
-      })
-      .catch((e) => {
+      } catch (e: any) {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
           position: "top-center",
         });
-      });
-  }, []);
-
+      }
+    };
+  
+    fetchHobbyList();
+    fetchStudentHobbies();
+  }, [StudentId]);
+  
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     setSelectedHobbies(event.target.value as string[]);
   };
-  
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
@@ -105,7 +108,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         return Promise.resolve({ status: 204 }); // Skip update
       }
     });
-    
 
     try {
       const results = await Promise.all(payloadPromises);
@@ -139,7 +141,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         position: "top-center",
       });
     }
-   
   };
 
   const ITEM_HEIGHT = 48;
@@ -184,7 +185,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
               width: "100%",
             }}
           >
-            <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
+            <InputLabel data-testid="hobby_text" id="demo-multiple-checkbox-label">Hobby</InputLabel>
             <Select
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
@@ -212,7 +213,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
               }
               MenuProps={MenuProps}
             >
-              {allHobbies.map((hobby: any) => (
+              {allHobbies?.map((hobby: any) => (
                 <MenuItem
                   key={hobby.id}
                   value={hobby.id}
@@ -235,7 +236,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           </FormControl>
         </div>
       </div>
-      
     </form>
   );
 };
