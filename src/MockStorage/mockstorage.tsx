@@ -71,7 +71,7 @@ export const contextValue = {
   setProPercentage: jest.fn(),
   ProPercentage: "",
   setNamecolor: jest.fn(),
-  namecolor: "",
+  namecolor: "#ffffff",
 };
 
 export const mockBoxes: Box[] = [
