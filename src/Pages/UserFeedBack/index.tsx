@@ -30,18 +30,37 @@ const Feedback = () => {
 
  
 
+  // useEffect(() => {
+  //   getData(`${"/feedback/"}`).then((data) => {
+  //     if (data.status === 200) {
+  //       console.log(data.data);
+
+  //       setQuestions(data.data);
+  //       setQuestion(data.data[0]);
+  //       setOptions(data.data[0].options.replace(/{|}/g, "").split(","));
+  //       console.log();
+  //     }
+  //   });
+  // }, []);
   useEffect(() => {
     getData(`${"/feedback/"}`).then((data) => {
       if (data.status === 200) {
-        console.log(data.data);
-
         setQuestions(data.data);
-        setQuestion(data.data[0]);
-        setOptions(data.data[0].options.replace(/{|}/g, "").split(","));
-        console.log();
+        if (data?.data?.length > 0) {
+          setQuestion(data?.data[0]);
+          setOptions(data?.data[0]?.options?.replace(/{|}/g, "").split(","));
+        } else {
+          setQuestions([]); // explicitly handle empty questions list
+        }
+      } else {
+        setQuestions([]); // Handle API failure by setting questions to empty array
       }
+    }).catch(() => {
+      setQuestions([]); // Catch any fetch errors and handle by setting empty questions
     });
   }, []);
+  
+  
 
   const handleSelectedOption = (value: string) => {
     setSelectAnswer(value);
@@ -134,8 +153,9 @@ const Feedback = () => {
       setAnsweredQuestions([]);
       setCurrentQuestionIndex(0);
       setQuestion(questions[0]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error("Error while submitting feedback:", error);
+      // console.error("Error while submitting feedback:", error);
       alert("Error while submitting feedback. Please try again later.");
     }
   };
@@ -147,6 +167,10 @@ const Feedback = () => {
   return (
     <>
       <h3 className="text-center m-3 fst-italic">Welcome to feedback</h3>
+      {questions?.length === 0 ? (
+      <div>No options available</div>
+    ) : (
+      <>
       {currentQuestionIndex < questions.length ? (
         <div>
           <div className="container" style={{ marginTop: "40px" }}>
@@ -160,9 +184,9 @@ const Feedback = () => {
                   Q. {question.question}
                 </h4>
                 <div className="row">
-                  {questions.length > currentQuestionIndex &&
-                  question.options.length > 0 ? (
-                    options.map((option, index) => (
+                  {questions?.length > currentQuestionIndex &&
+                  question?.options?.length > 0 ? (
+                    options?.map((option, index) => (
                       <div key={index} className="col-12 col-md-6 mb-2">
                         <div className="form-check">
                           <input
@@ -208,6 +232,8 @@ const Feedback = () => {
           />
         </div>
       )}
+      </>
+       )}
       <h4 className="text-center m-2">
         {currentQuestionIndex + 1}/{questions.length + 1}
       </h4>

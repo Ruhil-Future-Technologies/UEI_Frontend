@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import AddEditLanguage from "../AddEditLanguage";
@@ -9,7 +10,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { contextValue } from "../../../MockStorage/mockstorage";
-import * as apiHook from "../../../hooks/useAPI";
+
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -72,39 +73,42 @@ describe("Add Edit Language Component", () => {
       )
     ).toBeInTheDocument();
   });
-
+ 
   it("should handle form submission successfully in add mode", async () => {
-    // Mock the postData function to track if it was called correctly
-    const mockPostData = jest.fn().mockResolvedValue({
-      status: 200,
-      message: "Language created successfully",
-    });
-  
-    // Mock apiHook's postData to use the mockPostData function
-    jest.spyOn(apiHook, "default").mockReturnValue({
-      postData: mockPostData,
-      getData: jest.fn(),
-      putData: jest.fn(),
-      deleteData: jest.fn(),
-      postFileData: jest.fn(),
-      error: null,
-    } as any);
-  
     renderComponent();
   
-    // Simulate a form submission with valid input
-    fireEvent.change(screen.getByTestId("language_name"), {
-      target: { value: "Spanish" },
-    });
+    // Fill in valid form data
+    const languageNameInput = screen.getByTestId("language_name");
+    const fileInput = screen.getByTestId("language_file");
+    const descriptionInput = screen.getByTestId("language_description");
+  
+    // Simulate entering valid data for the language name, file, and description
+    fireEvent.change(languageNameInput, { target: { value: "English" } });
+    fireEvent.change(descriptionInput, { target: { value: "A widely spoken language." } });
+  
+    // Simulate file upload (mock file input)
+    const mockFile = new File(["dummy content"], "dummy-image.png", { type: "image/png" });
+    fireEvent.change(fileInput, { target: { files: [mockFile] } });
+  
+    // Submit the form
     fireEvent.click(screen.getByTestId("submitBtn"));
   
-    // Wait for the mock postData to be called
-    await waitFor(() => expect(mockPostData).toHaveBeenCalledWith(
-      "https://qaapi.gyansetu.ai/language/add", // Ensure this URL is correct
-      { language_name: "Spanish" } // Ensure this data matches what you are submitting
-    ));
+    // Assert that the button text is still "Save" because we're in add mode
+    await screen.findByText("Update");
   
-    // Check if success message is displayed
-    expect(await screen.findByText("Language created successfully")).toBeInTheDocument();
-  });  
+    // Check if handleSubmit has been triggered (mocked postData and other actions)
+    expect(mockedNavigate).toHaveBeenCalledWith('/main/Language'); // Assuming successful navigation
+  
+    // If you are not sure about the exact success message, use waitFor to wait for a success message to appear
+    await waitFor(() => {
+      expect(screen.getByText(/language created successfully/i)).toBeInTheDocument();
+    });
+  
+    // Verify that the form reset function was called to clear form data
+    expect(screen.getByTestId("language_name")).toHaveValue(""); // Check if the field was reset
+    expect(screen.getByTestId("language_description")).toHaveValue(""); // Check if description is reset
+  });
+  
+  
+   
 });

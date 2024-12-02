@@ -1,20 +1,22 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Feedback from "../index";
 import React from "react";
+import useApi from "../../../hooks/useAPI";
 
 // Mocking useApi hook globally
 jest.mock('../../../hooks/useAPI', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
-
+(useApi as jest.Mock).mockReturnValue({
+  getData: jest.fn().mockResolvedValue({ status: 404, data: [] }),
+  postData: jest.fn(),
+});
 beforeAll(() => {
-  // Mocking window alert globally to capture calls in tests
   window.alert = jest.fn();
 });
 
 beforeEach(() => {
-  // Reset the mock before each test to ensure it's fresh
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { default: useApi } = require('../../../hooks/useAPI');
 
@@ -71,72 +73,58 @@ describe('Testing Feedback component', () => {
     expect(window.alert).toHaveBeenCalledWith('Form submitted successfully');
   });
 
-  // test('should show alert if form submission fails', async () => {
-  //   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  //   const { default: useApi } = require('../../../hooks/useAPI');
-    
-  //   // Mocking the failure case for postData (simulating a 404 error)
-  //   useApi.mockReturnValueOnce({
-  //     getData: jest.fn().mockResolvedValue({
-  //       status: 200,
-  //       data: [
-  //         { question: "What is your favorite color?", options: "Red,Blue,Green" },
-  //         { question: "What is your favorite animal?", options: "Dog,Cat,Bird" }
-  //       ]
-  //     }),
-  //     postData: jest.fn().mockResolvedValueOnce({
-  //       status: 404,  // Mocking a failed submission with 404 status
-  //     }),
-  //   });
-  
-  //   // Mock alert
-  //   window.alert = jest.fn();
-  
-  //   render(<Feedback />);
-  
-  //   // Wait for the first question to appear
-  //   await waitFor(() => screen.getByText(/What is your favorite color\?/i));
-  
-  //   // Select an answer for the first question
-  //   fireEvent.click(screen.getByLabelText(/Blue/i));
-  
-  //   // Go to the next question
-  //   fireEvent.click(screen.getByText(/Next/i));
-  
-  //   // Select an answer for the second question
-  //   fireEvent.click(screen.getByLabelText(/Cat/i));
-  
-  //   // Simulate reaching the last question and showing the Submit button
-  //   fireEvent.click(screen.getByText(/Next/i));
-  
-  //   // Simulate clicking 'Submit'
-  //   fireEvent.click(screen.getByText(/Submit/i));
-  //   window.alert = jest.fn();
-  
-  //   // Check if the error alert is shown with the correct message
-  //   expect(window.alert).toHaveBeenCalledWith('Error while submitting feedback. Please try again later.');
-  // });
-  
-
   test('should handle when no questions are returned', async () => {
     // Mock the scenario where no questions are returned
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { default: useApi } = require('../../../hooks/useAPI');
     useApi.mockReturnValue({
-      getData: jest.fn().mockResolvedValue({ status: 404, data: [] }),
+      getData: jest.fn().mockResolvedValue({ status: 200, data: [] }), // Mock empty data
       postData: jest.fn(),
     });
   
     render(<Feedback />);
   
-    // Log the DOM for debugging purposes
-    console.log(document.body.innerHTML);
-  
     // Wait for the "No options available" message to appear
-    await waitFor(() => {
-      expect(screen.getByText(/No options available/i)).toBeInTheDocument();
-    });
+    const noOptionsMessage = await screen.findByText(/No options available/i);
+    expect(noOptionsMessage).toBeInTheDocument();
+  });
+
+
+  test('should go back to the previous question when "Back" is clicked', async () => {
+    render(<Feedback />);
+  
+    // Wait for the first question to appear
+    await waitFor(() => screen.getByText(/What is your favorite color\?/i));
+  
+    // Select an answer for the first question
+    fireEvent.click(screen.getByLabelText(/Blue/i));
+  
+    // Go to the next question
+    fireEvent.click(screen.getByText(/Next/i));
+  
+    // Wait for the second question to appear
+    await waitFor(() => screen.getByText(/What is your favorite animal\?/i));
+  
+    // Select an answer for the second question
+    fireEvent.click(screen.getByLabelText(/Cat/i));
+  
+    // Go to the previous question using a more specific query
+    const backButton = screen.getByRole('button', { name: /Back/i });
+    fireEvent.click(backButton);
+  
+    // Check that the first question is back on the screen
+    await waitFor(() => screen.getByText(/What is your favorite color\?/i));
+  
+    // Get the Blue option and check if it's selected
+    const blueOption = screen.getByLabelText(/Blue/i) as HTMLInputElement;
+    expect(blueOption.checked).toBe(true);  // Check if the radio button is selected
+  
+    // Ensure the question options for the first question are displayed
+    expect(screen.getByText(/Red/i)).toBeInTheDocument();
+    expect(screen.getByText(/Blue/i)).toBeInTheDocument();
+    expect(screen.getByText(/Green/i)).toBeInTheDocument();
+    expect(screen.getByText(/1\/3/)).toBeInTheDocument();
   });
   
-
+  
 });
