@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-
 import {
   FormControl,
   InputLabel,
@@ -9,7 +9,6 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
-  useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useAPI";
@@ -32,13 +31,12 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
-  const theme = useTheme();
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
 
   useEffect(() => {
     if (save) {
@@ -47,26 +45,27 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   }, [save]);
 
   useEffect(() => {
-    getData("hobby/list")
-      .then((data: any) => {
+    const fetchHobbyList = async () => {
+      try {
+        const data: any = await getData("hobby/list");
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1
           );
           setAllHobbies(filteredData || []);
-          // setAllHobbies(data?.data);
         }
-      })
-      .catch((e) => {
+      } catch (e: any) {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
-      });
-
-    getData("student_hobby/edit/" + StudentId)
-      .then((data: any) => {
+      }
+    };
+  
+    const fetchStudentHobbies = async () => {
+      try {
+        const data: any = await getData("student_hobby/edit/" + StudentId);
         if (data?.status === 200) {
           const hobbyIds = data.data.map(
             (selecthobby: any) => selecthobby.hobby_id
@@ -76,42 +75,31 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         } else if (data?.status === 404) {
           setEditFlag(true);
         }
-      })
-      .catch((e) => {
+      } catch (e: any) {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
-      });
-  }, []);
-
+      }
+    };
+  
+    fetchHobbyList();
+    fetchStudentHobbies();
+  }, [StudentId]);
+  
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     setSelectedHobbies(event.target.value as string[]);
   };
-  //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
-  //     setSelectedHobbies(event.target.value as string[]);
-  //     const selectedHobbiesIds = event.target.value;
-  //     const uncheckedHobbyId = allHobbies.find(hobby => !selectedHobbiesIds.includes(hobby.id));
-  //     if (uncheckedHobbyId) {
-  //         // Call your function with the unchecked hobby id
-  //         // yourFunction(uncheckedHobbyId);
-  //         console.log("Check", uncheckedHobbyId,allHobbies);
-
-  //     }
-  // };
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
-    let payloadPromises = selectedHobbies.map((hobbyid) => {
-      let payload = {
+    const payloadPromises = selectedHobbies.map((hobbyid) => {
+      const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
 
-      // return editFlag
-      //   ? postData("student_hobby/add", payload)
-      //   : putData("student_hobby/edit/" + StudentId, payload);
       if (editFlag) {
         return postData("student_hobby/add", payload);
       } else if (!eq) {
@@ -120,23 +108,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         return Promise.resolve({ status: 204 }); // Skip update
       }
     });
-    // <<<<<<< Updated upstream
-    //     if(payloadPromises.length >0)
-    //       {
-    //         try {
-    //           await Promise.all(payloadPromises);
-    //           toast.success("Hobbies saved successfully!!", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         } catch (e) {
-    //           toast.error("An error occurred while saving hobbies", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         }
-    //       }
-    // =======
 
     try {
       const results = await Promise.all(payloadPromises);
@@ -146,13 +117,13 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           toast.success("Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         } else {
           toast.success("Hobbies update successfully", {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         }
       } else if (results.some((res) => res.status !== 204)) {
@@ -163,14 +134,13 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
       } else {
         //empty
       }
-    } catch (e) {
+    } catch {
       toast.error("An error occurred while saving hobbies", {
         hideProgressBar: true,
         theme: "colored",
-        position: "top-center"
+        position: "top-center",
       });
     }
-    // >>>>>>> Stashed changes
   };
 
   const ITEM_HEIGHT = 48;
@@ -188,15 +158,9 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
       .then((data: any) => {
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
-          // setAllHobbies(filteredData ||[]);
-          // setAllHobbies(data?.data);
-          // toast.error(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
         }
       })
-      .catch((e) => {
+      .catch(() => {
         // toast.error(e?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
@@ -215,17 +179,19 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
         <div className="col-12 justify-content-start form_field_wrapper">
-          <FormControl sx={{
-               maxWidth: "300px",
-               width: "100%",
-          }}>
-            <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
+          <FormControl
+            sx={{
+              maxWidth: "300px",
+              width: "100%",
+            }}
+          >
+            <InputLabel data-testid="hobby_text" id="demo-multiple-checkbox-label">Hobby</InputLabel>
             <Select
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
               sx={{
-                backgroundColor: "#f5f5f5",             
+                backgroundColor: "#f5f5f5",
               }}
               value={selectedHobbies}
               onChange={handleChange}
@@ -247,7 +213,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
               }
               MenuProps={MenuProps}
             >
-              {allHobbies.map((hobby: any) => (
+              {allHobbies?.map((hobby: any) => (
                 <MenuItem
                   key={hobby.id}
                   value={hobby.id}
@@ -270,12 +236,6 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           </FormControl>
         </div>
       </div>
-      {/* Optional save button */}
-      {/* <div className="row justify-content-center mt-3">
-        <div className="col-12 d-flex justify-content-center">
-          <button className="btn btn-primary">Save</button>
-        </div>
-      </div> */}
     </form>
   );
 };

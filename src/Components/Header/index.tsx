@@ -1,8 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // import "../Header/Header.scss";
-import notification from "../../assets/img/notification.svg";
-import profile from "../../assets/img/profile_img.svg";
 import { toast } from "react-toastify";
 import {
   QUERY_KEYS_ADMIN_BASIC_INFO,
@@ -10,23 +9,12 @@ import {
 } from "../../utils/const";
 import useApi from "../../hooks/useAPI";
 import NameContext from "../../Pages/Context/NameContext";
-import images_man from "../../assets/img/avatars/male.png";
-import images_female from "../../assets/img/avatars/female.png";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
-import Country1 from "../../assets/img/country/01.png";
-import Country2 from "../../assets/img/country/02.png";
-import Country3 from "../../assets/img/country/03.png";
-import Country4 from "../../assets/img/country/04.png";
-import Country5 from "../../assets/img/country/05.png";
-import Country6 from "../../assets/img/country/06.png";
-import Country7 from "../../assets/img/country/07.png";
-import Country8 from "../../assets/img/country/08.png";
 import App13 from "../../assets/img/apps/13.png";
 import App14 from "../../assets/img/apps/14.png";
 import Avatar6 from "../../assets/img/avatars/06.png";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -38,19 +26,11 @@ import GradeOutlinedIcon from "@mui/icons-material/GradeOutlined";
 import LeaderboardOutlinedIcon from "@mui/icons-material/LeaderboardOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
-import LocalBarOutlinedIcon from "@mui/icons-material/LocalBarOutlined";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import PowerSettingsNewOutlinedIcon from "@mui/icons-material/PowerSettingsNewOutlined";
-import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
-import ShoppingBasketOutlinedIcon from "@mui/icons-material/ShoppingBasketOutlined";
-import LaptopOutlinedIcon from "@mui/icons-material/LaptopOutlined";
+
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { CircularProgress, Switch } from "@mui/material";
-// import ThemeModel from "../../assets/css/themes/ThemeModel";
-// import "../../assets/css/newstyle.min.css";
-// import "../../assets/css/main.min.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
-// import { Button } from '@mui/material';
 
 const Header = () => {
   const context = useContext(NameContext);
@@ -60,22 +40,21 @@ const Header = () => {
     setNamepro,
     proImage,
     setProImage,
-    ProPercentage,
     setProPercentage,
   }: any = context;
-  const [modalOpen, setModalOpen] = useState(false);
-  let StudentId = localStorage.getItem("_id");
+  // const [modalOpen, setModalOpen] = useState(false);
+  const StudentId = localStorage.getItem("_id");
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const user_type = localStorage.getItem("user_type");
-  const [profileImage, setprofileImage] = useState<any>();
-  const [profileName, setprofileName] = useState<any>();
+  // const [profileImage, setprofileImage] = useState<any>();
+  // const [profileName, setprofileName] = useState<any>();
   const [language, setLanguage] = useState<any>("EN");
   const [gender, setGender] = useState<any>("");
-  const proFalg = localStorage.getItem("proFalg");
-  let synth: SpeechSynthesis;
-  synth = window.speechSynthesis;
+  // const proFalg = localStorage.getItem("proFalg");
+  const synth: SpeechSynthesis = window?.speechSynthesis;
+  // synth = window.speechSynthesis;
   const { getData } = useApi();
   const handlogout = () => {
     setProPercentage(0);
@@ -110,7 +89,7 @@ const Header = () => {
   };
 
   function handleClick() {
-    let main_content = document.querySelector("body");
+    const main_content = document.querySelector("body");
 
     if (main_content) {
       if (main_content.classList.contains("toggled")) {
@@ -123,25 +102,25 @@ const Header = () => {
     }
   }
 
-  function handleSearchClick() {
-    let main_content = document.getElementById("search-toggle");
-    if (main_content) {
-      if (main_content.classList.contains("search-bar-show")) {
-        main_content.classList.remove("search-bar-show");
-      } else {
-        main_content.classList.add("search-bar-show");
-      }
-    }
-  }
+  // function handleSearchClick() {
+  //   let main_content = document.getElementById("search-toggle");
+  //   if (main_content) {
+  //     if (main_content.classList.contains("search-bar-show")) {
+  //       main_content.classList.remove("search-bar-show");
+  //     } else {
+  //       main_content.classList.add("search-bar-show");
+  //     }
+  //   }
+  // }
   const callAPI = async () => {
     getData(`${profileURL}/${StudentId}`)
       .then((data: any) => {
         if (data.data) {
-          let basic_info = data.data.basic_info;
+          const basic_info = data.data.basic_info;
           if (basic_info && Object.keys(basic_info).length > 0) {
             // let name = basic_info.first_name + " " + basic_info.last_name;
-            let name = basic_info.first_name;
-            setprofileName(name);
+            // let name = basic_info.first_name;
+            // setprofileName(name);
             setGender(basic_info?.gender);
             setNamepro({
               first_name: basic_info?.first_name,
@@ -154,16 +133,16 @@ const Header = () => {
                 `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path}`
               )
                 .then((imgdata: any) => {
-                  setprofileImage(imgdata.data);
+                  // setprofileImage(imgdata.data);
                   setProImage(imgdata.data);
                 })
-                .catch((e) => {});
+                .catch(() => {});
             }
           }
           sessionStorage.setItem("profileData", JSON.stringify(data.data));
         }
       })
-      .catch((e: any) => {
+      .catch(() => {
         // toast.error(e?.message, {
         //     hideProgressBar: true,
         //     theme: "colored",
@@ -177,8 +156,8 @@ const Header = () => {
           sessionStorage.setItem("profileData", JSON.stringify(response.data));
           const adminInfo = response.data.basic_info;
           if (adminInfo && Object.keys(adminInfo).length > 0) {
-            const name = `${adminInfo?.first_name}  ${adminInfo?.last_name}`;
-            setprofileName(name);
+            // const name = `${adminInfo?.first_name}  ${adminInfo?.last_name}`;
+            // setprofileName(name);
             setGender(adminInfo?.gender);
             setNamepro({
               first_name: adminInfo?.first_name,
@@ -193,10 +172,10 @@ const Header = () => {
                 }`
               )
                 .then((imgdata) => {
-                  setprofileImage(imgdata.data);
+                  // setprofileImage(imgdata.data);
                   setProImage(imgdata.data);
                 })
-                .catch((e) => {});
+                .catch(() => {});
             }
           }
         }
@@ -216,16 +195,16 @@ const Header = () => {
     }
   }, []);
 
-  const defaultImage =
-    namepro?.gender === "male" || namepro?.gender === "Male"
-      ? images_man
-      : namepro?.gender === "female" || namepro?.gender === "Female"
-      ? images_female
-      : images_man;
+  // const defaultImage =
+  //   namepro?.gender === "male" || namepro?.gender === "Male"
+  //     ? images_man
+  //     : namepro?.gender === "female" || namepro?.gender === "Female"
+  //     ? images_female
+  //     : images_man;
 
   // const profileImage1:any =( proImage !== "" ||  !== 'undefined')  ? proImage : defaultImage;
-  const profileImage1: any =
-    proImage !== "" && proImage !== undefined ? proImage : defaultImage;
+  // const profileImage1: any =
+  //   proImage !== "" && proImage !== undefined ? proImage : defaultImage;
 
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   useEffect(() => {
@@ -331,26 +310,26 @@ const Header = () => {
       return newTheme;
     });
   };
-  const handleClickthemes = () => {
-    setModalOpen(true);
-  };
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
+  // const handleClickthemes = () => {
+  //   setModalOpen(true);
+  // };
+  // const handleCloseModal = () => {
+  //   setModalOpen(false);
+  // };
 
-  const displaySearchPopup = () => {
-    document.getElementsByClassName("search-popup")[0].classList.add("d-block");
-    document.getElementsByClassName("search-close")[0].classList.add("d-block");
-  };
+  // const displaySearchPopup = () => {
+  //   document.getElementsByClassName("search-popup")[0].classList.add("d-block");
+  //   document.getElementsByClassName("search-close")[0].classList.add("d-block");
+  // };
 
-  const hideSearchPopup = () => {
-    document
-      .getElementsByClassName("search-popup")[0]
-      .classList.remove("d-block");
-    document
-      .getElementsByClassName("search-close")[0]
-      .classList.remove("d-block");
-  };
+  // const hideSearchPopup = () => {
+  //   document
+  //     .getElementsByClassName("search-popup")[0]
+  //     .classList.remove("d-block");
+  //   document
+  //     .getElementsByClassName("search-close")[0]
+  //     .classList.remove("d-block");
+  // };
 
   return (
     <>
@@ -743,7 +722,7 @@ const Header = () => {
                           className="dropdown-item d-flex align-items-center gap-2 py-2"
                         >
                           <GradeOutlinedIcon style={{ fontSize: "1rem" }} />
-                          What's new ?
+                          What&apos;s new ?
                         </div>
                       </div>
                       <div>

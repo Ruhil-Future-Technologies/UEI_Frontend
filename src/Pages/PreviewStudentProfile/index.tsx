@@ -1,25 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import { QUERY_KEYS_STUDENT } from "../../utils/const";
 import { toast } from "react-toastify";
-import FullScreenLoader from "../Loader/FullScreenLoader";
 import images_man from "../../assets/img/images_man.png";
 import images_female from "../../assets/img/images_female.png";
 import AvatarModal from "../../Components/AvatarModal/AvatarModal";
-import maleAvatar from '../../assets/avatar/images_man.png';
-import femaleAvatar from '../../assets/avatar/images_female.png';
-import femaleAvatar1 from '../../assets/avatar/images_female1.png';
-import femaleAvatar2 from '../../assets/avatar/images_female2.png';
-import femaleAvatar3 from '../../assets/avatar/images_female3.png';
-import femaleAvatar4 from '../../assets/avatar/images_female4.png';
-import femaleAvatar5 from '../../assets/avatar/images_female5.png';
-import maleAvatar1 from '../../assets/avatar/images_man1.png';
-import maleAvatar2 from '../../assets/avatar/images_man2.png';
-import maleAvatar3 from '../../assets/avatar/images_man3.png';
-import maleAvatar4 from '../../assets/avatar/images_man4.png';
-import maleAvatar5 from '../../assets/avatar/images_man5.png';
-import maleAvatar6 from '../../assets/avatar/images_man6.png';
+import maleAvatar from "../../assets/avatar/images_man.png";
+import femaleAvatar from "../../assets/avatar/images_female.png";
+import femaleAvatar1 from "../../assets/avatar/images_female1.png";
+import femaleAvatar2 from "../../assets/avatar/images_female2.png";
+import femaleAvatar3 from "../../assets/avatar/images_female3.png";
+import femaleAvatar4 from "../../assets/avatar/images_female4.png";
+import femaleAvatar5 from "../../assets/avatar/images_female5.png";
+import maleAvatar1 from "../../assets/avatar/images_man1.png";
+import maleAvatar2 from "../../assets/avatar/images_man2.png";
+import maleAvatar3 from "../../assets/avatar/images_man3.png";
+import maleAvatar4 from "../../assets/avatar/images_man4.png";
+import maleAvatar5 from "../../assets/avatar/images_man5.png";
+import maleAvatar6 from "../../assets/avatar/images_man6.png";
 import NameContext from "../Context/NameContext";
 import { inputfieldtext } from "../../utils/helpers";
 
@@ -41,11 +41,14 @@ interface StudentPayload {
   aim?: string;
 }
 
-const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfile, handleStep }) => {
+const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
+  editProfile,
+  handleStep,
+}) => {
   const context = useContext(NameContext);
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
-  const {setProImage,namecolor }:any = context;
+  const { setProImage, namecolor }: any = context;
   const [profileData, setProfileData] = useState<any>({});
   const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0);
   const [addressPercentage, setaddressPercentage] = useState<number>(0);
@@ -53,11 +56,9 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
   const [academichistoryPercentage, setacademichistoryPercentage] =
     useState<number>(0);
   const [contactPercentage, setcontactPercentage] = useState<number>(0);
-  const [hobbyPercentage, sethobbyPercentage] = useState<number>(0);
   const [subjectPercentage, setsubjectPercentage] = useState<number>(0);
   const [profileImage, setprofileImage] = useState<any>();
-  const [editFalg, setEditFlag] = useState<boolean>(false);
-  const { getData, loading, postFileData,postData,putData } = useApi();
+  const { getData, loading, postFileData, postData, putData } = useApi();
   const [isHovered, setIsHovered] = useState(false);
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
@@ -71,7 +72,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
         if (data.data) {
           setProfileData(data?.data);
           // let basic_info = data?.data?.basic_info;
-          let basic_info = {
+          const basic_info = {
             aim: data?.data?.basic_info?.aim,
             dob: data?.data?.basic_info?.dob,
             father_name: data?.data?.basic_info?.father_name,
@@ -80,39 +81,41 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
             id: data?.data?.basic_info?.id,
             is_active: data?.data?.basic_info?.is_active,
             // is_kyc_verified: data?.data?.basic_info?.is_kyc_verified,
-            last_modified_datetime: data?.data.basic_info?.last_modified_datetime,
+            last_modified_datetime:
+              data?.data.basic_info?.last_modified_datetime,
             last_name: data?.data?.basic_info?.last_name,
             mother_name: data?.data?.basic_info?.mother_name,
-            student_registration_no: data?.data?.basic_info?.student_registration_no
+            student_registration_no:
+              data?.data?.basic_info?.student_registration_no,
           };
-          let address = data?.data?.address;
-          let language = data?.data?.language_known;
-          let academic_history = data?.data?.academic_history;
-          let contact = data?.data?.contact;
-          let subject_preference = data?.data?.subject_preference;
-          let hobby = data?.data?.hobby;
+          const address = data?.data?.address;
+          const language = data?.data?.language_known;
+          const academic_history = data?.data?.academic_history;
+          const contact = data?.data?.contact;
+          const subject_preference = data?.data?.subject_preference;
+          const hobby = data?.data?.hobby;
           if (basic_info && Object.keys(basic_info)?.length > 0) {
             // console.log("test pp",Object.keys(basic_info)?.length > 0 ,data?.data?.pic_path)
-            if (data?.data?.pic_path !== "" && data?.data?.pic_path !== undefined) {
-
+            if (
+              data?.data?.pic_path !== "" &&
+              data?.data?.pic_path !== undefined
+            ) {
               getData(`${"upload_file/get_image/" + data?.data?.pic_path}`)
                 .then((imgdata: any) => {
                   setprofileImage(imgdata?.data);
                 })
-                .catch((e) => {
-
-                });
+                .catch(() => {});
             }
 
-            let totalcount = Object.keys(basic_info).length;
-            let filledCount = countKeysWithValue(basic_info);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(basic_info).length;
+            const filledCount = countKeysWithValue(basic_info);
+            const percentage = (filledCount / totalcount) * 100;
             setbasicinfoPercentage(percentage);
           }
           if (address && Object.keys(address).length > 0) {
-            let totalcount = Object.keys(address).length;
-            let filledCount = countKeysWithValue(address);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(address).length;
+            const filledCount = countKeysWithValue(address);
+            const percentage = (filledCount / totalcount) * 100;
             setaddressPercentage(percentage);
           }
           if (language && Object.keys(language).length > 0) {
@@ -122,9 +125,9 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
               totalhobbycount = Object.keys(hobby).length;
               filledhobbyCount = countKeysWithValue(hobby);
             }
-            let totalcount = Object.keys(language).length + totalhobbycount;
-            let filledCount = countKeysWithValue(language) + filledhobbyCount;
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(language).length + totalhobbycount;
+            const filledCount = countKeysWithValue(language) + filledhobbyCount;
+            const percentage = (filledCount / totalcount) * 100;
             setlanguagePercentage(percentage);
           }
           if (academic_history && Object.keys(academic_history).length > 0) {
@@ -135,31 +138,32 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
               delete academic_history?.learning_style;
               delete academic_history?.university_name;
               delete academic_history?.year;
-              academic_history?.board !== "state_board" &&
+              if (academic_history?.board !== "state_board") {
                 delete academic_history?.state_for_stateboard;
+              }
             } else {
               delete academic_history?.board;
               delete academic_history?.class_id;
               delete academic_history?.state_for_stateboard;
             }
-            let totalcount = Object.keys(academic_history).length;
-            let filledCount = countKeysWithValue(academic_history);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(academic_history).length;
+            const filledCount = countKeysWithValue(academic_history);
+            const percentage = (filledCount / totalcount) * 100;
             setacademichistoryPercentage(percentage);
           }
           if (contact && Object.keys(contact).length > 0) {
-            let totalcount = Object.keys(contact).length;
-            let filledCount = countKeysWithValue(contact);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(contact).length;
+            const filledCount = countKeysWithValue(contact);
+            const percentage = (filledCount / totalcount) * 100;
             setcontactPercentage(percentage);
           }
           if (
             subject_preference &&
             Object.keys(subject_preference).length > 0
           ) {
-            let totalcount = Object.keys(subject_preference).length;
-            let filledCount = countKeysWithValue(subject_preference);
-            let percentage = (filledCount / totalcount) * 100;
+            const totalcount = Object.keys(subject_preference).length;
+            const filledCount = countKeysWithValue(subject_preference);
+            const percentage = (filledCount / totalcount) * 100;
             setsubjectPercentage(percentage);
           }
         }
@@ -172,7 +176,6 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
       });
   };
 
-
   useEffect(() => {
     window.scrollTo(0, 0);
     callAPI();
@@ -181,36 +184,37 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
   const redirectOnClick = (step: number) => {
     handleStep(step);
     editProfile();
-  }
+  };
   // console.log("testing",profileData?.contact?.email_id)
-  var userId = localStorage.getItem('userid');
-
+  const userId = localStorage.getItem("userid");
 
   const handleMouseEnter = (event: any) => {
-    event.target.style.color = 'blue';  // Example hover style
-    event.target.style.fontSize = '.90rem'
+    event.target.style.color = "blue"; // Example hover style
+    event.target.style.fontSize = ".90rem";
   };
 
   const handleMouseLeave = (event: any) => {
-    event.target.style.color = 'initial';  // Reset to initial style
-    event.target.style.fontSize = '.77rem'
+    event.target.style.color = "initial"; // Reset to initial style
+    event.target.style.fontSize = ".77rem";
   };
   function toCamelCase(str: string) {
     return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match: string) {
       return match.toUpperCase();
     });
   }
-  const genderCamelCase = profileData?.basic_info?.gender ? toCamelCase(profileData?.basic_info?.gender) : '';
+  const genderCamelCase = profileData?.basic_info?.gender
+    ? toCamelCase(profileData?.basic_info?.gender)
+    : "";
   const getDefaultImage = (gender: string) => {
-    if (gender === 'Male' || gender === 'male') {
+    if (gender === "Male" || gender === "male") {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
-      return images_man
-    } else if (gender === 'Female' || gender === 'female') {
+      return images_man;
+    } else if (gender === "Female" || gender === "female") {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp";
-      return images_female
+      return images_female;
     } else {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
-      return images_man
+      return images_man;
     }
   };
   // console.log("====",images_man)
@@ -224,84 +228,85 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-  // const handleAvatarSelect = (avatar: any) => {
-  //   console.log("---==",avatar)
-
-  //   setSelectedImage(avatar);
-  //   setModalOpen(false);
-  // };
-  const handleAvatarSelect = async (avatarUrl: string | URL | Request | any) => {
+ 
+  const handleAvatarSelect = async (
+    avatarUrl: string | URL | Request | any
+  ) => {
     try {
       const response = await fetch(avatarUrl);
       const blob = await response.blob();
-      let filename = ''; // Initialize filename variable
+      let filename = ""; // Initialize filename variable
 
       // Extract the original filename from the URL
-      if (avatarUrl.startsWith('data:image')) {
+      if (avatarUrl.startsWith("data:image")) {
         // If avatarUrl is a data URL
-        const contentType = avatarUrl.split(';')[0].split(':')[1];
-        const extension = contentType.split('/')[1];
+        const contentType = avatarUrl.split(";")[0].split(":")[1];
+        const extension = contentType.split("/")[1];
         filename = `avatar_${Date.now()}.${extension}`;
       } else {
-
-        const urlSegments = avatarUrl.split('/');
+        const urlSegments = avatarUrl.split("/");
         filename = urlSegments[urlSegments.length - 1];
       }
-      
+
       const file = new File([blob], filename, { type: blob.type });
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const data = await postFileData('upload_file/upload', formData);
+      const data = await postFileData("upload_file/upload", formData);
 
       if (data?.status === 200) {
-        const datastudent:any = await  getData(`${"student/get/" + StudentId}`, StudentId);
+        const datastudent: any = await getData(
+          `${"student/get/" + StudentId}`,
+          StudentId
+        );
 
-
-        let payload = {
+        const payload = {
           student_login_id: StudentId,
-          pic_path: filename, 
+          pic_path: filename,
         };
-     if (datastudent?.status === 404) {
-      const dataadd = await postData(`${"student/add"}`, payload);
-      if (dataadd?.status === 200) {
-       await callAPI()
-       setprofileImage(avatarUrl)
-      }
-     }else{
-    const payload:StudentPayload  = {
-        student_login_id: StudentId,
-        first_name: datastudent?.data?.first_name,
-        last_name: datastudent?.data?.last_name,
-        gender: datastudent?.data?.gender,
-        dob: datastudent?.data?.dob || null,
-        father_name: datastudent?.data?.father_name,
-        mother_name: datastudent?.data?.mother_name,
-        guardian_name: datastudent?.data?.guardian_name,
-        pic_path: filename,
-        aim: datastudent?.data?.aim,
-      };
-      const dataadd = await putData(`${"student/edit/"}${StudentId}`, payload)
-      if (dataadd?.status === 200) {
-        await callAPI()
-        setprofileImage(avatarUrl)
-        setProImage(avatarUrl)
-      }
-     }
+        if (datastudent?.status === 404) {
+          const dataadd = await postData(`${"student/add"}`, payload);
+          if (dataadd?.status === 200) {
+            await callAPI();
+            setprofileImage(avatarUrl);
+          }
+        } else {
+          const payload: StudentPayload = {
+            student_login_id: StudentId,
+            first_name: datastudent?.data?.first_name,
+            last_name: datastudent?.data?.last_name,
+            gender: datastudent?.data?.gender,
+            dob: datastudent?.data?.dob || null,
+            father_name: datastudent?.data?.father_name,
+            mother_name: datastudent?.data?.mother_name,
+            guardian_name: datastudent?.data?.guardian_name,
+            pic_path: filename,
+            aim: datastudent?.data?.aim,
+          };
+          const dataadd = await putData(
+            `${"student/edit/"}${StudentId}`,
+            payload
+          );
+          if (dataadd?.status === 200) {
+            await callAPI();
+            setprofileImage(avatarUrl);
+            setProImage(avatarUrl);
+          }
+        }
 
         // setSelectedImage(avatarUrl);
         setModalOpen(false);
       } else {
         toast.error(data?.message, {
           hideProgressBar: true,
-          theme: 'colored',
+          theme: "colored",
         });
       }
     } catch (e: any) {
       toast.error(e?.message, {
         hideProgressBar: true,
-        theme: 'colored',
+        theme: "colored",
       });
     }
   };
@@ -337,10 +342,10 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
       femaleAvatar3,
       femaleAvatar4,
       femaleAvatar5,
-    ]
+    ],
   };
 
-  const gender: string = profileData?.gender?.toString() || 'default';
+  const gender: string = profileData?.gender?.toString() || "default";
   const avatars = avatarsMap[gender.toLowerCase()];
 
   return (
@@ -356,16 +361,25 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                     <div className="row">
                       <div className="col-lg-4">
                         <div className="card mb-4">
-                          <span className="profilebody" style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                             padding: "10px"
-                          }} >
-                            <p style={{ cursor: "pointer" ,color:isHovered ?inputfieldtext(namecolor)  :inputfieldtext(namecolor)}}
+                          <span
+                            className="profilebody"
+                            style={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              padding: "10px",
+                            }}
+                          >
+                            <p
+                              style={{
+                                cursor: "pointer",
+                                color: isHovered
+                                  ? inputfieldtext(namecolor)
+                                  : inputfieldtext(namecolor),
+                              }}
                               onClick={handleImageClick}
                               onMouseEnter={() => setIsHovered(true)}
                               onMouseLeave={() => setIsHovered(false)}
-                              >
+                            >
                               Select Avatar
                             </p>
                           </span>
@@ -377,15 +391,23 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                               //     : (profileData?.gender === "Male" || profileData?.gender === "male") ? "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" :(profileData?.gender === "female" || profileData?.gender === "Female") ? "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp" :"https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
                               // }
                               // src={loading ? '' : profileImage ? profileImage : getDefaultImage(profileData?.gender)}
-                              src={loading ? '' : profileImage ? profileImage : getDefaultImage(profileData?.basic_info?.gender)}
+                              src={
+                                loading
+                                  ? ""
+                                  : profileImage
+                                  ? profileImage
+                                  : getDefaultImage(
+                                      profileData?.basic_info?.gender
+                                    )
+                              }
                               alt=""
                               className="rounded-circle img"
                               width="150px"
                               height="150px"
-
                             />
                             <h5 className="my-3">
-                              {profileData?.basic_info?.first_name} {profileData?.basic_info?.last_name}
+                              {profileData?.basic_info?.first_name}{" "}
+                              {profileData?.basic_info?.last_name}
                             </h5>
                             <p className="text-muted mb-1 profiletext">
                               {/* {profileData?.gender}*/}
@@ -408,8 +430,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                               <span className="text-primary font-italic me-1"></span>{" "}
                               Profile Completion Status
                             </p>
-                            <p className="mb-1" style={{ fontSize: ".77rem", cursor: "pointer" }} onClick={() => redirectOnClick(0)} onMouseEnter={handleMouseEnter}
-                              onMouseLeave={handleMouseLeave}>
+                            <p
+                              className="mb-1"
+                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              onClick={() => redirectOnClick(0)}
+                              onMouseEnter={handleMouseEnter}
+                              onMouseLeave={handleMouseLeave}
+                            >
                               Basic Information
                             </p>
                             <div
@@ -425,7 +452,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 aria-valuemax={100}
                               ></div>
                             </div>
-                            <span style={{display:"flex" , flexDirection:"row-reverse"}}>{`${Math.round(basicinfoPercentage)}%`}</span>
+                            <span
+                              style={{
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >{`${Math.round(basicinfoPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
                               style={{ fontSize: ".77rem", cursor: "pointer" }}
@@ -448,7 +480,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 aria-valuemax={100}
                               ></div>
                             </div>
-                            <span style={{display:"flex" , flexDirection:"row-reverse"}}>{`${Math.round(addressPercentage)}%`}</span>
+                            <span
+                              style={{
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >{`${Math.round(addressPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
                               style={{ fontSize: ".77rem", cursor: "pointer" }}
@@ -471,7 +508,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 aria-valuemax={100}
                               ></div>
                             </div>
-                            <span style={{display:"flex" , flexDirection:"row-reverse"}}>{`${Math.round(languagePercentage)}%`}</span>
+                            <span
+                              style={{
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >{`${Math.round(languagePercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
                               style={{ fontSize: ".77rem", cursor: "pointer" }}
@@ -496,7 +538,14 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 aria-valuemax={100}
                               ></div>
                             </div>
-                            <span style={{display:"flex" , flexDirection:"row-reverse"}}>{`${Math.round(academichistoryPercentage)}%`}</span>
+                            <span
+                              style={{
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >{`${Math.round(
+                              academichistoryPercentage
+                            )}%`}</span>
                             <p
                               className="mt-4 mb-1"
                               style={{ fontSize: ".77rem", cursor: "pointer" }}
@@ -519,7 +568,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 aria-valuemax={100}
                               ></div>
                             </div>
-                            <span style={{display:"flex" , flexDirection:"row-reverse"}}>{`${Math.round(contactPercentage)}%`}</span>
+                            <span
+                              style={{
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >{`${Math.round(contactPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
                               style={{ fontSize: ".77rem", cursor: "pointer" }}
@@ -542,7 +596,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 aria-valuemax={100}
                               ></div>
                             </div>
-                            <span style={{display:"flex" , flexDirection:"row-reverse"}}>{`${Math.round(subjectPercentage)}%`}</span>
+                            <span
+                              style={{
+                                display: "flex",
+                                flexDirection: "row-reverse",
+                              }}
+                            >{`${Math.round(subjectPercentage)}%`}</span>
                           </div>
                         </div>
                       </div>
@@ -569,7 +628,15 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0 profileinnertext">
                                   {/* {profileData?.contact?.email_id} */}
-                                  {profileData?.contact?.email_id !== undefined ? profileData?.contact?.email_id?.includes('@') ? profileData?.contact?.email_id : "" : userId && userId?.includes('@') ? userId : ""}
+                                  {profileData?.contact?.email_id !== undefined
+                                    ? profileData?.contact?.email_id?.includes(
+                                        "@"
+                                      )
+                                      ? profileData?.contact?.email_id
+                                      : ""
+                                    : userId && userId?.includes("@")
+                                    ? userId
+                                    : ""}
                                 </p>
                               </div>
                             </div>
@@ -580,8 +647,14 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0 profileinnertext">
-                                  {profileData?.contact?.mobile_no_call !== undefined ? profileData?.contact?.mobile_isd_call + " " + profileData?.contact?.mobile_no_call : userId && !userId?.includes('@') ? userId : ""}
-
+                                  {profileData?.contact?.mobile_no_call !==
+                                  undefined
+                                    ? profileData?.contact?.mobile_isd_call +
+                                      " " +
+                                      profileData?.contact?.mobile_no_call
+                                    : userId && !userId?.includes("@")
+                                    ? userId
+                                    : ""}
                                 </p>
                               </div>
                             </div>
@@ -592,7 +665,16 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0 profileinnertext">
-                                  {profileData?.contact?.mobile_no_watsapp !== undefined ? profileData?.contact?.mobile_no_watsapp !== "" ? profileData?.contact?.mobile_isd_watsapp + " " + profileData?.contact?.mobile_no_watsapp : "" : ""}
+                                  {profileData?.contact?.mobile_no_watsapp !==
+                                  undefined
+                                    ? profileData?.contact
+                                        ?.mobile_no_watsapp !== ""
+                                      ? profileData?.contact
+                                          ?.mobile_isd_watsapp +
+                                        " " +
+                                        profileData?.contact?.mobile_no_watsapp
+                                      : ""
+                                    : ""}
                                   {/* {profileData?.contact?.mobile_isd_watsapp}{" "}
                                   {profileData?.contact?.mobile_no_watsapp} */}
                                 </p>
@@ -607,7 +689,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({ editProfi
                                 <p className="text-muted mb-0 profileinnertext">
                                   {profileData?.address &&
                                     Object.keys(profileData?.address).length >
-                                    0 && (
+                                      0 && (
                                       <p className="text-muted mb-4 profileinnertext">
                                         {profileData?.address?.address1} ,
                                         {profileData?.address?.address2} ,

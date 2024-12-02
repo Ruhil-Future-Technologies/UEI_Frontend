@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react'
-
 import '../Class/Class.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
-import { Class_COLUMNS, Entity_COLUMNS, IClass, IEntity, MenuListinter } from '../../Components/Table/columns';
+import { Class_COLUMNS, IClass, MenuListinter } from '../../Components/Table/columns';
 import { EditIcon, TrashIcon } from '../../assets';
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_CLASS, QUERY_KEYS_ENTITY } from '../../utils/const';
+import { QUERY_KEYS_CLASS } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
 import FullScreenLoader from '../Loader/FullScreenLoader';
@@ -26,24 +26,6 @@ const Class = () => {
     const tabletools:any = {
         light:'#547476',dark:'#00D1D9',default:'#547476'
       }
-    // useEffect(() => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }, [Menulist])
-    useEffect(() => {
-       
-        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
-    }, [Menulist, lastSegment]);
-
-
     const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
     const DeleteClassURL = QUERY_KEYS_CLASS.CLASS_DELETE;
     const columns = Class_COLUMNS;
@@ -52,7 +34,10 @@ const Class = () => {
     const [dataClass, setDataClass] = useState<IClass[]>([])
     const [dataDelete, setDataDelete] = useState(false)
     const [dataDeleteId, setDataDeleteId] = useState<number>()
-
+    
+    useEffect(() => {  
+        setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
+    }, [Menulist, lastSegment]);
 
     const callAPI = async () => {
 

@@ -1,8 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { hasSubMenu } from "../../utils/helpers";
-import { QUERY_KEYS_MENU } from "../../utils/const";
-import useApi from "../../hooks/useAPI";
 import NotFound from "../../Pages/NotFound/NotFound";
 
 const Protected = (props: { Component: any; menuName?: string }) => {
@@ -11,7 +10,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   const { id } = useParams();
 
   useEffect(() => {
-    let logintoken = localStorage.getItem("token");
+    const logintoken = localStorage.getItem("token");
     if (!logintoken) {
       navigate("/");
     }

@@ -1,38 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import emailicon from "../../assets/img/email.svg";
-import phoneicon from "../../assets/img/phone.svg";
-import passwordicon from "../../assets/img/password.svg";
+import React, { useRef, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  FormControlLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-  SelectChangeEvent,
-  Snackbar,
-  Typography,
-} from "@mui/material";
-import { Field, Formik, FormikHelpers, FormikProps, Form } from "formik";
+import { IconButton, SelectChangeEvent } from "@mui/material";
+import { Formik, FormikProps, Form } from "formik";
 import * as Yup from "yup";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import gLogo from "../../assets/img/logo-white.svg";
 import loginImage from "../../assets/img/login-image.png";
 import { Autoplay, Pagination } from "swiper/modules";
-import {
-  ArrowLeft,
-  BackArrowCircle,
-  VisibilityOn,
-  VisibilityOff,
-} from "../../assets";
+import { VisibilityOn, VisibilityOff } from "../../assets";
 import "swiper/css";
 import "swiper/css/pagination";
 // import "../../assets/css/main.min.css";
@@ -45,27 +24,20 @@ interface changepasswordform {
 const ChangePassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
-  const [confpassword, setConfPassword] = useState("");
-  const [newpassword, setNewPassword] = useState("");
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [uservalue, setuserValue] = React.useState<any>("");
-  const initialState = {
-    new_password: "",
-    conf_password: "",
-  };
-  const [changepassword, setChangePassword] = useState(initialState);
-  const [email, setEmail] = useState(searchParams?.get("email"));
-  const [user_type, setUserType] = useState(searchParams?.get("user_type"));
+  const confpassword = "";
+  const newpassword = "";
+  const [searchParams] = useSearchParams();
+  // const [changepassword, setChangePassword] = useState(initialState);
+  const email = searchParams?.get("email");
+  const user_type = searchParams?.get("user_type");
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const changepassUrl = QUERY_KEYS.RESET_PASSWORD;
   const lowercaseRegex = /[a-z]/;
   const numberRegex = /[0-9]/;
-  const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+  const specialCharRegex = /[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/;
   const uppercaseRegex = /[A-Z]/;
-
   const formRef = useRef<FormikProps<changepasswordform>>(null);
-
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -73,85 +45,28 @@ const ChangePassword = () => {
     setShowOldPassword(!showOldPassword);
   };
 
-  const changePassword = (e: any) => {
-    e.preventDefault();
-    let UserSignUp = {
-      email: String(email),
-      new_password: String(newpassword),
-      conf_password: String(confpassword),
-      user_type: String(user_type),
-    };
-    let emptyKeys: string[] = [];
-    for (const key in UserSignUp) {
-      if (UserSignUp.hasOwnProperty(key)) {
-        if (UserSignUp[key as keyof typeof UserSignUp] === "") {
-          emptyKeys.push(key);
-          break;
-        } else {
-          setuserValue("");
-        }
-      }
-    }
-
-    if (emptyKeys.length === 0) {
-      postData(`${changepassUrl}`, UserSignUp)
-        .then((data: any) => {
-          if (data?.status === 200) {
-            navigate("/");
-            toast.success(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else if (
-            data?.status === 404 &&
-            data?.message === "Invalid userid or password"
-          ) {
-            toast.error("Invalid userid or password!", {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else {
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        });
-    }
-  };
-
-  const handleSubmit = async (
-    formData: changepasswordform,
-    { resetForm }: FormikHelpers<changepasswordform>
-  ) => {
+  const handleSubmit = async (formData: changepasswordform) => {
     // e.preventDefault()
     // e.target.reset()
-    let UserSignUp = {
+    const UserSignUp = {
       email: String(email),
       new_password: String(formData.newpassword),
       conf_password: String(formData.confpassword),
       user_type: String(user_type),
     };
-    let emptyKeys: string[] = [];
+    const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
-      if (UserSignUp.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
         if (UserSignUp[key as keyof typeof UserSignUp] === "") {
           emptyKeys.push(key);
           break;
-        } else {
-          setuserValue("");
         }
       }
     }
 
     if (emptyKeys.length === 0) {
       postData(`${changepassUrl}`, UserSignUp)
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
           if (data?.status === 200) {
             navigate("/");
@@ -186,12 +101,12 @@ const ChangePassword = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
   ) => {
-    setChangePassword((prevValue) => {
-      return {
-        ...prevValue,
-        [e.target.name]: e.target.value,
-      };
-    });
+    // setChangePassword((prevValue) => {
+    //   return {
+    //     ...prevValue,
+    //     [e.target.name]: e.target.value,
+    //   };
+    // });
     formRef?.current?.setFieldValue(fieldName, e.target.value);
     await formRef?.current?.validateField(fieldName);
     if (
@@ -255,108 +170,6 @@ const ChangePassword = () => {
   });
 
   return (
-    // <div className="login">
-    //     <div className="login_inner">
-
-    //         <div className="form_wrapper">
-    //             <div className="login_form">
-    //             <Formik
-    //             // onSubmit={(formData) => handleSubmit(formData)}
-    //             onSubmit={(formData, formikHelpers) => handleSubmit(formData, formikHelpers)}
-    //             initialValues={{
-    //             newpassword:newpassword,
-    //             confpassword:confpassword
-    //             }}
-    //             enableReinitialize
-    //             validationSchema={changePasswordSchema}
-    //             innerRef={formRef}
-    //         >
-
-    //             {({ errors, values, touched }) => (
-    //                 <Form>
-
-    //                 <div className="login_form_inner">
-    //                     <div className='title_wrapper'>
-    //                         <h1 className="login_title">Reset Password !</h1>
-    //                         <div className='desc'>Reset the password of user.</div>
-    //                     </div>
-    //                         <div className="form_field_wrapper">
-    //                                 <TextField
-    //                                     type={showOldPassword ? "text" : "password"}
-    //                                     placeholder="New Password"
-    //                                     id="newpassword"
-    //                                     name="newpassword"
-    //                                     value={values?.newpassword}
-    //                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "newpassword")}
-    //                                     required={true}
-    //                                     InputProps={{
-    //                                         startAdornment: (
-    //                                             <InputAdornment position="start">
-    //                                                 <img src={passwordicon} alt='newpassword' />
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                         endAdornment: (
-    //                                             <InputAdornment position="end">
-    //                                                 <IconButton
-    //                                                     aria-label="toggle password visibility"
-    //                                                     onClick={handleClickShowOldPassword}
-    //                                                     edge="end"
-    //                                                 >
-    //                                                     {showOldPassword ? <Visibility /> : <VisibilityOff />}
-    //                                                 </IconButton>
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                     }}
-    //                                     fullWidth
-    //                                 />
-    //                                  {touched?.newpassword && errors?.newpassword ?
-    //                                         <p style={{ color: 'red' }}>{errors?.newpassword}</p> : <></>
-    //                                     }
-    //                             </div>
-    //                             <div className="form_field_wrapper">
-    //                                 <TextField
-    //                                     type={showPassword ? "text" : "password"}
-    //                                     placeholder="Confirm password"
-    //                                     value={values?.confpassword}
-    //                                     id="confpassword"
-    //                                     name="confpassword"
-    //                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "confpassword")}
-    //                                     required={true}
-    //                                     InputProps={{
-    //                                         startAdornment: (
-    //                                             <InputAdornment position="start">
-    //                                                 <img src={passwordicon} alt='confpassword' />
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                         endAdornment: (
-    //                                             <InputAdornment position="end">
-    //                                                 <IconButton
-    //                                                     aria-label="toggle password visibility"
-    //                                                     onClick={handleClickShowPassword}
-    //                                                     edge="end"
-    //                                                 >
-    //                                                     {showPassword ? <Visibility /> :  <VisibilityOff />}
-    //                                                 </IconButton>
-    //                                             </InputAdornment>
-    //                                         ),
-    //                                     }}
-    //                                     fullWidth
-    //                                 />
-    //                                 {touched?.confpassword && errors?.confpassword ?
-    //                                         <p style={{ color: 'red' }}>{errors?.confpassword}</p> : <></>
-    //                                     }
-    //                             </div>
-    //                             <button type="submit" className='btn btn-primary'> Reset Password</button>
-
-    //                 </div>
-
-    //                 </Form>
-    //             )}
-    //             </Formik>
-    //             </div>
-    //         </div>
-    //     </div>
-    // </div>
     <>
       <div className="without-login">
         <header className="container-fluid mb-5 py-3 d-none d-lg-block">
@@ -366,7 +179,6 @@ const ChangePassword = () => {
                 <img onClick={() => navigate("/")} src={gLogo} alt="" />
                 <span>Gyansetu</span>
               </div>
-              
             </div>
           </div>
         </header>
@@ -430,9 +242,7 @@ const ChangePassword = () => {
                   <div className="col-lg-12">
                     <Formik
                       // onSubmit={(formData) => handleSubmit(formData)}
-                      onSubmit={(formData, formikHelpers) =>
-                        handleSubmit(formData, formikHelpers)
-                      }
+                      onSubmit={(formData) => handleSubmit(formData)}
                       initialValues={{
                         newpassword: newpassword,
                         confpassword: confpassword,
@@ -445,10 +255,11 @@ const ChangePassword = () => {
                         <Form>
                           <div className="login_form_inner">
                             <div className="form_field_wrapper">
-                              <label htmlFor="" className="form-label">
+                              <label htmlFor="newpassword" className="form-label">
                                 New Password
                               </label>
                               <TextField
+                                data-testid="new_password"
                                 className="mb-4"
                                 type={showOldPassword ? "text" : "password"}
                                 placeholder="New Password"
@@ -487,10 +298,11 @@ const ChangePassword = () => {
                               )}
                             </div>
                             <div className="form_field_wrapper">
-                              <label htmlFor="" className="form-label">
+                              <label htmlFor="confpassword" className="form-label">
                                 Confirm Password
                               </label>
                               <TextField
+                               data-testid="confirm_password"
                                 className="mb-4"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Confirm password"
@@ -531,6 +343,7 @@ const ChangePassword = () => {
                             <button
                               type="submit"
                               className="btn btn-primary w-100"
+                              data-testid="reset_btn"
                             >
                               {" "}
                               Reset Password

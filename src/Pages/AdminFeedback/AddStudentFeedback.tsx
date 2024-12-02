@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEvent, useEffect, useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
-import { QUERY_KEYS_STUDENT_FEEDBACK } from "../../utils/const";
+// import { QUERY_KEYS_STUDENT_FEEDBACK } from "../../utils/const";
 import { TextField } from "@mui/material";
+import React from "react";
 
 interface Question {
   id: string;
@@ -11,14 +13,14 @@ interface Question {
   answer?: string;
 }
 const AddStudentFeedback = () => {
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData } = useApi();
   const [question, setQuestion] = useState<Question>({
     id: "",
     question: "",
     options: "",
   });
-  const [options, setOptions] = useState<any>([""]);
+  // const [options, setOptions] = useState<any>([""]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const [message, setMessage] = useState<string>("");
@@ -38,7 +40,7 @@ const AddStudentFeedback = () => {
       if (data.status === 200) {
         setQuestions(data.data);
         setQuestion(data.data[0]);
-        setOptions(data.data[0].options);
+        // setOptions(data.data[0].options);
         // .replace(/{|}/g, '').split(',')
       }
     });
@@ -52,11 +54,11 @@ const AddStudentFeedback = () => {
     });
   }, []);
   useEffect(() => {
-    let question_list: any = [];
-    questions.map((question, index) => {
+    const question_list: any = [];
+    questions.map((question) => {
       answeredQuestions.map((answer: any) => {
         if (question.question == answer.question) {
-          let d = {
+          const d = {
             // question: question.question,
             // id: answer.id,
             // StudentId: answer.student_id,
@@ -70,11 +72,11 @@ const AddStudentFeedback = () => {
     setFinalList(question_list);
   }, [questions]);
 
-  const handleSelectedOption = (id: number, value: string, question:any) => {
+  const handleSelectedOption = (id: number, value: string, question: any) => {
     setSelectAnswer((prevAnswers: any) => ({
       ...prevAnswers,
       [id]: value,
-      question: question
+      question: question,
     }));
 
     // Clear the error for this question if a value is selected
@@ -83,46 +85,9 @@ const AddStudentFeedback = () => {
       [id]: "",
     }));
     // setSelectAnswer(value);
-    console.log("answer",selectAnswer);
-    
+    console.log("answer", selectAnswer);
   };
 
-  const handleNextQuestion = () => {
-    if (selectAnswer) {
-      const updatedAnswers = [
-        ...answeredQuestions.slice(0, currentQuestionIndex),
-        { question: question.question, answer: selectAnswer },
-        ...answeredQuestions.slice(currentQuestionIndex + 1),
-      ];
-      setAnsweredQuestions(updatedAnswers);
-
-      if (currentQuestionIndex + 1 <= questions.length) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setQuestion(questions[currentQuestionIndex + 1]);
-        if (currentQuestionIndex + 1 < questions.length) {
-          setOptions(questions[currentQuestionIndex + 1].options);
-        }
-        setSelectAnswer("");
-      } else {
-        alert("You have reached the end of the questions");
-      }
-    } else {
-      alert("Please select an answer before proceeding to the next question.");
-    }
-   
-  };
-
-  const handleBackQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setQuestion(questions[currentQuestionIndex - 1]);
-      setOptions(questions[currentQuestionIndex - 1].options); //.replace(/{|}/g, '').split(',')
-      const previousAnswer =
-        answeredQuestions[currentQuestionIndex - 1]?.answer || "";
-      setSelectAnswer(previousAnswer);
-    }
-   
-  };
 
   // Validation function
   const validateForm = () => {
@@ -150,7 +115,7 @@ const AddStudentFeedback = () => {
       alert("Form submitted successfully");
       // Handle submission logic here
       console.log(updatedAnswers);
-      let payload = {
+      const payload = {
         student_id: StudentId,
         feedbacks: updatedAnswers,
       };
@@ -285,33 +250,6 @@ const AddStudentFeedback = () => {
               />
             </div>
           )}
-          {/* <h4 className="text-center m-2">
-            {currentQuestionIndex + 1}/{questions.length + 1}
-          </h4> */}
-
-          {/* <div className="col">
-            <button
-              className="btn btn-primary m-3"
-              disabled={currentQuestionIndex === 0}
-              onClick={handleBackQuestion}
-              style={{ float: "left" }}
-            >
-              Back
-            </button>
-          </div> */}
-          {/* {currentQuestionIndex + 1 < questions.length + 1 ? (
-            <div className="col">
-              <button
-                className="btn btn-primary m-3"
-                onClick={handleNextQuestion}
-                style={{ float: "right" }}
-                // disabled = {}
-              >
-                Next
-              </button>
-            </div>
-          ) : (
-          )} */}
           <div className="mt-6 align-items-center justify-content-center d-flex">
             <button className="btn btn-primary" onClick={handleSubmit}>
               Submit

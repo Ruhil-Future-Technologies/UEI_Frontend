@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react'
-
 import '../RolevsForm/RolevsForm.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
@@ -24,18 +24,6 @@ const RolevsForm = () => {
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-    // useEffect(() => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }, [Menulist])
     useEffect(() => {
       
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: "role vs form"},{ datatest: "rolevsform" }));
@@ -136,15 +124,6 @@ const RolevsForm = () => {
                                             Add Role&nbsp;<span className='rolevsformbtn'> vs</span>&nbsp;Form
                                         </Button>
                                          )} 
-
-                                    {/* <Button
-
-                                        variant="contained"
-                                        component={NavLink}
-                                        to="add-RoleVsForm"
-                                    >
-                                        Add Role&nbsp;<span className='rolevsformbtn'> vs</span>&nbsp;Form
-                                    </Button> */}
 
                                 </div>
                                 <Box marginTop="10px" >

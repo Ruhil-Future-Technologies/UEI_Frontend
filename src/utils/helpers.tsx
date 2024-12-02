@@ -1,11 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const isNullOrUndefined = (value: unknown) =>
     value === undefined || value === null;
 
 
 export const getDateFormat = (value: any) => {
-    // if (value == null) {
-    //   return "DD-MM-YYYY";
-    // }
   
     const date = new Date(value);
     const options: Intl.DateTimeFormatOptions = { day: "2-digit", month: "short", year: "numeric" };
@@ -24,7 +22,7 @@ export const getDateFormat = (value: any) => {
   
     if (keysA.length !== keysB.length) return false;
   
-    for (let key of keysA) {
+    for (const key of keysA) {
       if (!keysB.includes(key)
    || !deepEqual(a[key], b[key])) {
         return false;
