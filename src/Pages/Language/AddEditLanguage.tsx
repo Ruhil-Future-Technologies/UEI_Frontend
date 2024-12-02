@@ -269,7 +269,6 @@ const AddEditLanguage = () => {
               validationSchema={languageSchema}
               innerRef={formRef}
               // data-testid="form"
-              inputProps={{ "data-testid": "form" }}
             >
               {({ errors, values, touched }: any) => (
                 <Form  data-testid = "form">
