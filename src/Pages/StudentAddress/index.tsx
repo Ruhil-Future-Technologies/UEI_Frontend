@@ -135,41 +135,46 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     getData(`${"student_address/edit/" + StudentId}`)
       .then((response: any) => {
         if (response?.status === 200) {
-          let add1 :any
-            let add2 :any
+          let add1: any;
+          let add2: any;
           response?.data.forEach((address: any) => {
-            
             if (address?.address_type === "permanent") {
               setPermanentAddress(address);
               setPermanentAddress1(address);
-               add1 = address
+              add1 = address;
             } else if (address?.address_type === "current") {
               setStudentAddress(address);
               setStudentAddress1(address);
-               add2 = address
-              
+              add2 = address;
             }
-          
           });
-           // Filter out unwanted fields from both add1 and add2
-      const fieldsToCompare = ['address1', 'address2', 'city', 'country', 'district', 'pincode', 'state'];
+          // Filter out unwanted fields from both add1 and add2
+          const fieldsToCompare = [
+            "address1",
+            "address2",
+            "city",
+            "country",
+            "district",
+            "pincode",
+            "state",
+          ];
 
-      const filteredAdd1:any = {};
-      const filteredAdd2:any = {};
+          const filteredAdd1: any = {};
+          const filteredAdd2: any = {};
 
-      fieldsToCompare?.forEach(field => {
-        if (add1?.hasOwnProperty(field)) {
-          filteredAdd1[field] = add1[field];
-        }
-        if (add2?.hasOwnProperty(field)) {
-          filteredAdd2[field] = add2[field];
-        }
-      });
+          fieldsToCompare?.forEach((field) => {
+            if (add1?.hasOwnProperty(field)) {
+              filteredAdd1[field] = add1[field];
+            }
+            if (add2?.hasOwnProperty(field)) {
+              filteredAdd2[field] = add2[field];
+            }
+          });
 
-      // Use deepEqual to compare only the selected fields
-      const equal = deepEqual(filteredAdd1, filteredAdd2);
-          if(equal){
-            setChecked(true)
+          // Use deepEqual to compare only the selected fields
+          const equal = deepEqual(filteredAdd1, filteredAdd2);
+          if (equal) {
+            setChecked(true);
           }
         } else if (response?.status === 404) {
           setEditFlag(true);
@@ -202,7 +207,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     addressType: string
   ) => {
     const { name, value } = event.target;
-    setChecked(false)
+    setChecked(false);
 
     if (addressType === "current") {
       if (name === "country") {
@@ -220,23 +225,23 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "city") {
-        if(value === "" ){
-          setCity_colerror(true)
-        }else{
-          setCity_colerror(false)
+        if (value === "") {
+          setCity_colerror(true);
+        } else {
+          setCity_colerror(false);
         }
         // if (!/^[a-zA-Z\s]*$/.test(value)) {
-          if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setcity_col(true);
         } else {
           setcity_col(false);
         }
       }
       if (name === "district") {
-        if(value === "" ){
-          setDistrict_colerror(true)
-        }else{
-          setDistrict_colerror(false)
+        if (value === "") {
+          setDistrict_colerror(true);
+        } else {
+          setDistrict_colerror(false);
         }
         if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setdistrict_col(true);
@@ -245,7 +250,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "pincode") {
-        if (value === "" || /^\d{6}$/.test(value)) {
+        const isValidPincode = validatePincode(value);
+        if (value === "" || isValidPincode) {
           setpincode_col(false);
         } else {
           setpincode_col(true);
@@ -253,17 +259,17 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
       if (name === "address1") {
         // if (value === "") {
-          if (value === "" || (!/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value))) {
+        if (value === "" || !/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value)) {
           setAdd_col(true);
         } else {
-          setAdd_col(false)
+          setAdd_col(false);
         }
       }
       if (name === "address2") {
         if (value === "") {
           setAdd2_col(true);
         } else {
-          setAdd2_col(false)
+          setAdd2_col(false);
         }
       }
       // if(name==='pincode')
@@ -304,7 +310,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "pincode") {
-        if (value === "" || /^\d{6}$/.test(value)) {
+        const isValidPincode = validatePincode(value);
+        if (value === "" || isValidPincode) {
           setpincode_col1(false);
         } else {
           setpincode_col1(true);
@@ -325,10 +332,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
-      setChecked(true)
+      setChecked(true);
       setPermanentAddress({ ...studentAddress, address_type: "permanent" });
     } else {
-      setChecked(false)
+      setChecked(false);
       setPermanentAddress((prevPermanentAddress) => ({
         ...prevPermanentAddress,
         address1: "",
@@ -419,11 +426,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // }
 
   const SubmitHandle = async () => {
-    if(!("address1" in studentAddress) || studentAddress?.address1 === ""){
-      setAdd_col(true)
-
-    }else{
-      setAdd_col(false)
+    if (!("address1" in studentAddress) || studentAddress?.address1 === "") {
+      setAdd_col(true);
+    } else {
+      setAdd_col(false);
     }
     // if(!("address2" in studentAddress) || studentAddress?.address2 === ""){
     //   setAdd2_col(true)
@@ -431,33 +437,35 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     // }else{
     //   setAdd2_col(false)
     // }
-    if(!("city" in studentAddress) || studentAddress?.city === ""){
-      setCity_colerror(true)
-
-    }else{
-      setCity_colerror(false)
+    if (!("city" in studentAddress) || studentAddress?.city === "") {
+      setCity_colerror(true);
+    } else {
+      setCity_colerror(false);
     }
-    if(!("district" in studentAddress) || studentAddress?.district === ""){
-      setDistrict_colerror(true)
-
-    }else{
-      setDistrict_colerror(false)
+    if (!("district" in studentAddress) || studentAddress?.district === "") {
+      setDistrict_colerror(true);
+    } else {
+      setDistrict_colerror(false);
     }
-    if(!("pincode" in studentAddress) || studentAddress?.pincode === ""){
-      setpincode_col(true)
-
-    }else{
-      setpincode_col(false)
+    if (
+      !("pincode" in studentAddress) ||
+      studentAddress?.pincode === "" ||
+      !validatePincode(studentAddress.pincode)
+    ) {
+      setpincode_col(true);
+      toast.error("Pincode is invalid");
+    } else {
+      setpincode_col(false);
     }
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
-    if (validatePincode(pincode)) {
-      setIsValid(true);
-      // toast.success('Pincode is valid');
-    } else {
-      setIsValid(false);
-      // toast.error('Pincode is invalid');
-    }
+    // if (validatePincode(pincode)) {
+    //   setIsValid(true);
+    // toast.success('Pincode is valid');
+    // } else {
+    //   setIsValid(false);
+    //   toast.error("Pincode is invalid");
+    // }
     // const validation = validate();
     // if (validation == true) {
 
@@ -473,6 +481,16 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setcontry_col1(false);
     }
 
+    if (
+      !("pincode" in permanentAddress) ||
+      permanentAddress?.pincode === "" ||
+      !validatePincode(permanentAddress.pincode)
+    ) {
+      setpincode_col1(true);
+      toast.error("Pincode is invalid");
+    } else {
+      setpincode_col1(false);
+    }
     const currentAddressPayload = {
       student_id: StudentId,
       ...studentAddress,
@@ -495,7 +513,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       studentAddress?.district &&
       studentAddress?.pincode &&
       !city_col &&
-      !district_col
+      !district_col &&
+      !pincode_col &&
+      !pincode_col1
     ) {
       if (editFlag) {
         const addAddress = async (addressType: string, addressPayload: any) => {
@@ -508,9 +528,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 theme: "colored",
                 position: "top-center",
               });
-         if(addressType === "Current"){
-           setActiveForm((prev) => prev + 1);
-         }
+              if (addressType === "Current") {
+                setActiveForm((prev) => prev + 1);
+              }
             } else {
               // toast.error(`Failed to add ${addressType} address`, {
               //   hideProgressBar: true,
@@ -560,15 +580,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 position: "top-center",
               });
               listData();
-              
-              if (!eq || !permanentAddressEq){
-                if(!eq && !permanentAddressEq){
-                }else{
-                  console.log("tets log tt",!eq,!permanentAddressEq)
+
+              if (!eq || !permanentAddressEq) {
+                if (!eq && !permanentAddressEq) {
+                } else {
+                  console.log("tets log tt", !eq, !permanentAddressEq);
                   setActiveForm((prev) => prev + 1);
                 }
               }
-              
             } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
             else {
               // toast.error(`Failed to update ${addressType} address`, {
@@ -698,12 +717,11 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             onChange={(e) => handleInputChange(e, "current")}
             // required
           />
-           {/* {" "}
+          {/* {" "}
             {(studentAddress.address2 === "" || add2_col) && (
               <p style={{ color: "red" }}>Please enter Address 2.</p>
             )} */}
         </div>
-       
 
         <div className="col-6 pb-3 form_field_wrapper">
           <label
@@ -853,6 +871,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             name="pincode"
             className="form-control"
+            maxLength={6}
             value={studentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "current")}
             required
@@ -1112,6 +1131,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             name="pincode"
             className="form-control"
+            maxLength={6}
             value={permanentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "permanent")}
             // required
