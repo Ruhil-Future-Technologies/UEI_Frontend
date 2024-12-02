@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box } from "../Pages/AcademicHistory/AcademicHistory";
 
 export const mockStorage: any = {

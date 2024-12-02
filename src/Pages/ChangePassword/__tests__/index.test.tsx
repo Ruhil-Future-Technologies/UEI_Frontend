@@ -2,7 +2,6 @@ import React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import ChangePassword from "..";
 import { BrowserRouter as Router } from "react-router-dom";
-import { Formik } from "formik";
 
 describe("Change Password Component", () => {
   it("should render the change password and confirm password field", () => {
