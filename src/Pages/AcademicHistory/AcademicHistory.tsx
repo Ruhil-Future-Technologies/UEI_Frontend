@@ -103,10 +103,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   const [maxSemester, setMaxSemester] = useState(0);
 
-  const [editAcademicHistory, setEditAcademicHistory]=useState(false);
-  const [updateBoxes, setUpdateBoxes] = useState(false);
-  let StudentId = localStorage.getItem("_id");
-
+  const StudentId = localStorage.getItem("_id");
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
     const stateOptions = states.map((state: any) => ({
@@ -320,7 +317,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
-            console.log(boxes.length);
           });
         } else if (data?.status === 404) {
           setBoxes([
@@ -352,10 +348,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           position: "top-center",
         });
       });
-
-      listData();
-  }, [updateBoxes]);
-
+    listData();
+  }, []);
   const [errors, setErrors] = useState(initialErrors);
 
   const saveAcademy = (instituteId: number = 0) => {
@@ -444,52 +438,26 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       };
 
       // Submit the form data (handle POST/PUT request here)
-      
-        if (editFlag && box.id === 0) {
-
-          console.log("/new_student_academic_history/add")
-          return postData("/new_student_academic_history/add", payload);
-        } else {
-          console.log("/new_student_academic_history/edit")
-          return putData(`/new_student_academic_history/edit/${box.id}`, payload);
-        }
-      
-     
+      if (box.id === 0) {
+        return postData("/new_student_academic_history/add", payload);
+      } else {
+        return putData(`/new_student_academic_history/edit/${box.id}`, payload);
+      }
     });
 
     // Handle all promises
     Promise.all(promises)
       .then((responses) => {
-
-        const allSuccessful = responses.every((response) => response?.status === 200);
-        if (allSuccessful ) {
-          if( editAcademicHistory){
-          if (editFlag) {
-            toast.success("Academic history saved successfully", {
-              hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
-            });
-            setEditAcademicHistory(false);
-            setUpdateBoxes(true);
-            setEditFlag(false);
-            setActiveForm((prev) => prev + 1);
-          } else {
-            const isEqual = deepEqual(checkBoxes[0], boxes[0]);
-           
-              toast.success("Academic history updated successfully", {
-                hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
-              });
-              setEditAcademicHistory(false);
-              setUpdateBoxes(true);
-              setEditFlag(false);
-          }
-      
-        }
-        setActiveForm((prev) => prev + 1);
-
+        const allSuccessful = responses.every(
+          (response) => response?.status === 200
+        );
+        if (allSuccessful) {
+          toast.success("Academic history saved successfully", {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center",
+          });
+          setActiveForm((prev) => prev + 1);
         } else {
           toast.error("An error occurred while saving", {
             hideProgressBar: true,
@@ -508,176 +476,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       });
   };
 
-
-  const saveAcademicHistory = async (instituteId: number = 0) => {
-    const validatePayload = (college: string, year: string) => {
-      if (college == "college") {
-        return isDateValid(year);
-      } else {
-        return true;
-      }
-    };
-
-    const isDateValid = (year: string) => {
-      return (
-        dayjs(year).isBefore(dayjs(year)) || dayjs(year).isSame(dayjs(year))
-      );
-    };
-    const canProceed = (boxes: Box[]) => {
-      for (const box of boxes) {
-        // Check if `institute_type` is empty
-        if (box.institute_type === "") {
-          return false; // Stop execution
-        }
-
-        // Additional checks based on `institute_type`
-        if (box.institute_type === "college") {
-          // Required fields for "college"
-          if (
-            box.year === null ||
-            box.course_id === null ||
-            box.course_id === "" ||
-            box.university_id === null ||
-            box.university_id === "" ||
-            box.institute_id === "" ||
-            box.institute_id === null ||
-            box.sem_id === null ||
-            box.sem_id === "" ||
-            box.learning_style === "" ||
-            box.learning_style === null
-
-          ) {
-            return false;
-          }
-        } else if (box.institute_type === "school") {
-
-          if (
-            box.board === "" ||
-              box.class_id === "" ||
-              box.class_id === null ||
-              (
-                particularClass === "class_11" ||
-                particularClass === "class_12")
-              ?
-              box.stream === "" ||
-              box.stream === null
-              : ""
-          ) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    };
-    if (canProceed(boxes)) {
-      const promises = boxes
-        .map((box) => {
-          const payload = {
-            student_id: StudentId,
-            institution_type: box.institute_type,
-            board: box.institute_type.toLowerCase() === 'school' ? box.board : box.id ? "" : null,
-            state_for_stateboard: box.institute_type.toLowerCase() === 'school' && box.state_for_stateboard !== null ? String(box.state_for_stateboard) : box.id ? "" : null,
-            institute_id: box.institute_type.toLowerCase() === 'college' ? String(
-              instituteId || box.institute_id
-            ) : box.id ? "" : null,
-            course_id: box.institute_type.toLowerCase() === 'college' ? String(box.course_id) : box.id ? "" : null,
-            learning_style: box.institute_type.toLowerCase() === 'college' ? box.learning_style : box.id ? "" : null,
-            class_id: box.institute_type.toLowerCase() === 'school' ? String(box.class_id) : box.id ? "" : null,
-            ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
-            ...(box.university_id ? { university_id: String(box.university_id) } : {}),
-            year: box?.year?.$y && box.institute_type.toLowerCase() === 'college' ? String(box?.year?.$y) : "", // Assuming 'year' is a string
-            stream:
-              (particularClass === "class_11" || particularClass === "class_12") && box.institute_type.toLowerCase() === 'school'
-                ? box?.stream
-                : "",
-          };
-
-          //validatePayload(payload)
-          if (validatePayload(payload.institution_type, payload.year) &&editAcademicHistory) {
-            console.log(box.id === 0)
-            if (editFlag || box.id === 0) {
-              return postData("/new_student_academic_history/add", payload);
-            } else {
-              return putData(
-                "/new_student_academic_history/edit/" + box.id,
-                payload
-              );
-            }
-          } else {
-            toast.error(" PLease Enter Year ", {
-              hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
-            });
-            return Promise.resolve(null); // If payload is invalid, return a resolved promise
-          }
-        })
-        .filter((promise) => promise !== null);
-
-      Promise.all(promises)
-        .then((responses) => {
-          // Check if all responses have a status of 200
-          const allSuccessful = responses.every(
-            (response) => response?.status === 200
-          );
-
-          if (allSuccessful ) {
-            if(editAcademicHistory){
-            if (editFlag) {
-              toast.success("Academic history saved successfully", {
-                hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
-              });
-              setEditAcademicHistory(false);
-              setActiveForm((prev) => prev + 1);
-            } else {
-              const isEqual = deepEqual(checkBoxes[0], boxes[0]);
-              if (!isEqual) {
-                toast.success("Academic history updated successfully", {
-                  hideProgressBar: true,
-                  theme: "colored",
-                  position: "top-center",
-                });
-              }
-              setEditAcademicHistory(false);
-              setActiveForm((prev) => prev + 1);
-            }
-          }
-          } else {
-            toast.error("An error occurred while saving", {
-              hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
-            });
-          }
-        })
-        .catch((error) => {
-          // Handle error
-          console.error("Error processing payloads:", error);
-          // toast.error("An error occurred while saving", {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
-        });
-    } else {
-      console.log("Some required fields are missing. Cannot proceed.");
-    }
-
-  };
-
-  const setDataInsitute = async (value: any) => {
-    setInsituteFlag(true);
-  };
-
- 
   const handleInputChange = (
     index: number,
     field: keyof Box,
     value: string | dayjs.Dayjs | null | number
   ) => {
-    setEditAcademicHistory(true);
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
     if (field === "university_id") {
@@ -749,7 +552,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     field: keyof Boxset,
     value: any
   ) => {
-    setEditAcademicHistory(true);
     // setenddateInvalid(value)
     const newBoxes: any = [...boxes1];
     newBoxes[index][field] = value;

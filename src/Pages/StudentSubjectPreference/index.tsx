@@ -663,15 +663,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
 
       if (allSuccessful) {
         if (editFlag) {
-
-          // toast.success("Subject Preference saved successfully", {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          //   position: "top-center"
-          // });
-         await handleReset()
-          navigate('/')
-
+          toast.success("Subject Preference saved successfully", {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center",
+          });
+          handleReset();
+          navigate("/");
         } else {
           if (!eq === true) {
             toast.success("Subject Preference updated successfully", {
@@ -680,10 +678,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: "top-center",
             });
           }
-         
-          navigate('/')
-
-
+          navigate("/");
         }
         setInitialState(initial);
 

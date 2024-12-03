@@ -2260,7 +2260,7 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
   },
 ];
 
-export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
+export const PDF_LIST_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   {
     accessorKey: "pdf_file_name",
     header: "File Name",
@@ -2277,67 +2277,5 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     accessorKey: "upload_date_time",
     header: "Uploaded At",
     size: 150,
-
-  } ,
-  {
-    accessorKey: "board_name",
-    header: "Board Name",
-    size: 150,
   },
-   {
-    accessorKey: "state_board_name",
-    header: "State Board Name",
-    size: 150,
-  } ,
-  {
-    accessorKey: "stream_name",
-    header: "Stream Name",
-    size: 150,
-  } ,
-  {
-    accessorKey: "class_name",
-    header: "Class Name",
-    size: 150,
-  }
-]
-
-export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
-  {
-    accessorKey: "pdf_file_name",
-    header: "File Name",
-    size: 150,
-  },
-  {
-    accessorKey: "pdf_path",
-    header: "File Path",
-    enableSorting: false,
-    enableColumnActions:false,
-    size: 150,
-  },
-  {
-    accessorKey: "upload_date_time",
-    header: "Uploaded At",
-    size: 150,
-  } ,
-  {
-    accessorKey: "university_name",
-    header: "University Name",
-    size: 150,
-  },
-   {
-    accessorKey: "college_name",
-    header: "Collage Name",
-    size: 150,
-  } ,
-  {
-    accessorKey: "course_name",
-    header: "Courase Name",
-    size: 150,
-  } ,
-  {
-    accessorKey: "year",
-    header: "Year",
-    size: 150,
-  }
-]
-
+];

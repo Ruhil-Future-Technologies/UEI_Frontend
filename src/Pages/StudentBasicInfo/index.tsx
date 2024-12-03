@@ -61,11 +61,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [lname_col1, setLname_col1] = useState<boolean>(false);
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
-
-  const [editBasicInfo, setEditBasicInfo] = useState(false);
-  const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
-
+  // const [error1, setError1] = useState("");
+  const exactSixYearsAgo = dayjs()?.subtract(6, "year");
   const minSelectableDate = dayjs("01/01/1900");
   const [error, setError] = React.useState<string | null>(null);
 
@@ -147,9 +144,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // const [error, setError]: any = useState({});
 
   const handleChange = (event: any) => {
-
-    let { name, value } = event.target;
-    setEditBasicInfo(true);
+    const { name } = event.target;
+    let { value } = event.target;  // Use 'let' for value to allow reassignment
 
     if (name === "first_name") {
       setFname_col1(true);
@@ -284,19 +280,25 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   //   };
 
   const handleDateChange = (newDate: Dayjs | null) => {
-    setEditBasicInfo(true);
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
       if (newDate && newDate?.isBefore(exactSixYearsAgo, "day")) {
         setBasicInfo((values) => ({ ...values, dob: newDate }));
         setError(null);
         setdobset_col(false);
-
-        const currentDate = dayjs();
-        if (newDate?.isAfter(currentDate, 'day')) {
-          setError('Future dates are not allowed.');
-        }else{
-          setError('You must be at least 6 years old.');
-
+      } else {
+        // setDob(null);
+        const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+        if (datecheck === "Invalid Date") {
+          setError(null);
+          setdobset_col(true);
+        } else {
+          setdobset_col(false);
+          const currentDate = dayjs();
+          if (newDate?.isAfter(currentDate, "day")) {
+            setError("Future date are not allow.");
+          } else {
+            setError("You must be at least 6 years old.");
+          }
         }
       }
     } else {
@@ -371,7 +373,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       error === null &&
       datecheck !== "Invalid Date"
     ) {
-      if(editBasicInfo){
       if (editFalg) {
         postData(`${"student/add"}`, payload)
           .then((data: any) => {
@@ -465,10 +466,6 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         // eslint-disable-next-line no-lone-blocks
         if (!eq) editData();
         else setActiveForm((prev) => prev + 1);
-      }
-      setEditBasicInfo(false)
-       }else{
-        setActiveForm((prev) => prev + 1);
       }
     }
     // console.log(payload);
