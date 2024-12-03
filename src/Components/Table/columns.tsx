@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MRT_ColumnDef } from "material-react-table";
 import { MaybeNull } from "../../types";
 import { getDateFormat, isNullOrUndefined } from "../../utils/helpers";
@@ -17,11 +16,11 @@ import useApi from "../../hooks/useAPI";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   QUERY_KEYS,
-  // QUERY_KEYS_CLASS,
+  QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_DEPARTMENT,
   QUERY_KEYS_ENTITY,
-  // QUERY_KEYS_FEEDBACK,
+  QUERY_KEYS_FEEDBACK,
   QUERY_KEYS_FORM,
   QUERY_KEYS_HOBBY,
   QUERY_KEYS_LANGUAGE,
@@ -31,14 +30,14 @@ import {
   QUERY_KEYS_ROLEVSFORM,
   QUERY_KEYS_SEMESTER,
   QUERY_KEYS_STUDENT,
-  // QUERY_KEYS_STUDENT_FEEDBACK,
+  QUERY_KEYS_STUDENT_FEEDBACK,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
 } from "../../utils/const";
 import { toast } from "react-toastify";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export const EMPTY_CELL_VALUE = "-";
 
@@ -88,7 +87,7 @@ export interface InstituteRep0oDTO {
   mobile_no: MaybeNull<string>;
   website_url: MaybeNull<string>;
   id: number;
-  university_id: MaybeNull<string>;
+  university_id:MaybeNull<string>;
 }
 export interface DepartmentRep0oDTO {
   department_name: MaybeNull<string>;
@@ -110,7 +109,7 @@ export interface UniversityRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
-  university_id: number;
+  university_id:number;
 }
 export interface SemesterRep0oDTO {
   semester_name: MaybeNull<string>;
@@ -119,7 +118,7 @@ export interface SemesterRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
-  semester_id: number;
+  semester_id:number;
 }
 
 export interface FormRep0oDTO {
@@ -160,6 +159,7 @@ export interface SubjectRep0oDTO {
   subject_name: MaybeNull<string>;
   id: number;
 }
+
 
 export interface LanguageRep0oDTO {
   language_name: MaybeNull<string>;
@@ -223,7 +223,7 @@ export interface IUniversity {
   is_active: number;
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
-  university_id: number;
+  university_id:number;
 }
 export interface IClass {
   created_at: string;
@@ -342,7 +342,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuInstituteActive = QUERY_KEYS.GET_INSTITUTEACTIVE;
       const MenuInstituteDeactive = QUERY_KEYS.GET_INSTITUTEDEACTIVE;
@@ -353,7 +353,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -434,7 +434,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuEntityActive = QUERY_KEYS_ENTITY.GET_ENTITYACTIVE;
       const MenuEntityDeactive = QUERY_KEYS_ENTITY.GET_ENTITYDEACTIVE;
@@ -445,7 +445,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
       // }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(Showvalue === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -595,7 +595,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_COURSE.GET_COURSEACTIVE;
       const MenuDeactive = QUERY_KEYS_COURSE.GET_COURSEDEACTIVE;
@@ -606,7 +606,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -673,15 +673,16 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYACTIVE;
       const MenuDeactive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYDEACTIVE;
       const value = cell?.getValue();
-
+    
+console.log("====lll",row)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -706,9 +707,11 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
           <Switch
             isChecked={Show}
             label={Show ? "Active" : "Deactive"}
+           
             onChange={() => {
               active(row?.original?.university_id, Showvalue);
             }}
+            
           />
         </Box>
       );
@@ -756,7 +759,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SEMESTER.GET_SEMESTERACTIVE;
       const MenuDeactive = QUERY_KEYS_SEMESTER.GET_SEMESTERDEACTIVE;
@@ -767,7 +770,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -803,6 +806,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
     },
     size: 150,
   },
+
 ];
 export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   // const columns: any[] = [
@@ -834,7 +838,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_DEPARTMENT.GET_DEPARTMENTACTIVE;
       const MenuDeactive = QUERY_KEYS_DEPARTMENT.GET_DEPARTMENTDEACTIVE;
@@ -845,7 +849,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -894,7 +898,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
     accessorKey: "pic_path",
     header: "Profile Image",
     size: 150,
-    Cell: ({ cell }: any) => {
+    Cell: ({ cell }) => {
       const value: any = cell?.getValue();
 
       if (isNullOrUndefined(value) || value === 0) {
@@ -938,7 +942,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
     accessorKey: "gender",
     header: "Gender",
     size: 150,
-    Cell: ({ cell }: any) => {
+    Cell: ({ cell }) => {
       const value = cell?.getValue() as string | undefined;
 
       const camelCaseValue = value?.replace(/\b(\w)/g, (match: string) =>
@@ -964,7 +968,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const StudentActive = QUERY_KEYS_STUDENT.GET_STUDENTACTIVE;
       const StudentDeactive = QUERY_KEYS_STUDENT.GET_STUDENTDEACTIVE;
@@ -976,7 +980,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1065,7 +1069,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_MENU.GET_MENUACTIVE;
       const MenuDeactive = QUERY_KEYS_MENU.GET_MENUDEACTIVE;
@@ -1076,7 +1080,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1116,21 +1120,21 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
 
 export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
-  {
-    accessorKey: "institute_name",
-    header: "Institute Name",
-    size: 150,
-  },
-  {
-    accessorKey: "course_name",
-    header: "Course Name",
-    size: 150,
-  },
-  {
-    accessorKey: "semester_id",
-    header: "Semester Name",
-    size: 150,
-  },
+    {
+      accessorKey: "institute_name",
+      header: "Institute Name",
+      size: 150,
+    },
+    {
+      accessorKey: "course_name",
+      header: "Course Name",
+      size: 150,
+    },
+    {
+      accessorKey: "semester_id",
+      header: "Semester Name",
+      size: 150,
+    },
   {
     accessorKey: "subject_name",
     header: "Subject Name",
@@ -1159,7 +1163,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SUBJECT.GET_SUBJECTACTIVE;
       const MenuDeactive = QUERY_KEYS_SUBJECT.GET_SUBJECTDEACTIVE;
@@ -1170,7 +1174,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: any, valueset: any) => {
@@ -1209,16 +1213,16 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
 ];
 export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
-  {
-    accessorKey: "class_name",
-    header: "Class Name",
-    size: 150,
-  },
-  {
-    accessorKey: "stream",
-    header: "Stream Name",
-    size: 150,
-  },
+    {
+      accessorKey: "class_name",
+      header: "Class Name",
+      size: 150,
+    },
+    {
+      accessorKey: "stream",
+      header: "Stream Name",
+      size: 150,
+    },
   {
     accessorKey: "subject_name",
     header: "Subject Name",
@@ -1247,7 +1251,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECTACTIVE;
       const MenuDeactive = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECTDEACTIVE;
@@ -1258,7 +1262,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: any, valueset: any) => {
@@ -1325,7 +1329,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_LANGUAGE.GET_LANGUAGEACTIVE;
       const MenuDeactive = QUERY_KEYS_LANGUAGE.GET_LANGUAGEDEACTIVE;
@@ -1336,7 +1340,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1403,7 +1407,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_HOBBY.GET_HOBBYACTIVE;
       const MenuDeactive = QUERY_KEYS_HOBBY.GET_HOBBYDEACTIVE;
@@ -1414,7 +1418,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1560,8 +1564,9 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
       size: 150,
       enableSorting: false,
       enableColumnActions: false,
-      Cell: ({ cell }: any) => {
-        const responses: IFeedbackResponse[] = cell.getValue();
+      Cell: ({ cell }) => {
+        const responses: IFeedbackResponse[] =
+          cell.getValue<IFeedbackResponse[]>();
 
         // State for modal
         const [open, setOpen] = useState(false);
@@ -1673,7 +1678,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SUBMENU.GET_SUBMENUACTIVE;
       const MenuDeactive = QUERY_KEYS_SUBMENU.GET_SUBMENUDEACTIVE;
@@ -1684,7 +1689,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1752,7 +1757,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_ROLE.GET_ROLEACTIVE;
       const MenuDeactive = QUERY_KEYS_ROLE.GET_ROLEDEACTIVE;
@@ -1763,7 +1768,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1845,7 +1850,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     header: "Menu Visible",
     size: 150,
     enableResizing: false,
-    Cell: ({ cell }: any) => {
+    Cell: ({ cell }) => {
       const value = cell?.getValue();
       let visible = "";
       if (value === true) {
@@ -1887,7 +1892,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_FORM.GET_FORMACTIVE;
       const MenuDeactive = QUERY_KEYS_FORM.GET_FORMDEACTIVE;
@@ -1898,7 +1903,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -1953,7 +1958,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: "is_search",
     header: "Search",
     size: 150,
-    Cell: ({ cell }: any) => {
+    Cell: ({ cell }) => {
       const value = cell?.getValue();
       let visible = "";
       if (value === true) {
@@ -1972,7 +1977,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: "is_save",
     header: "Save",
     size: 150,
-    Cell: ({ cell }: any) => {
+    Cell: ({ cell }) => {
       const value = cell?.getValue();
       let visible = "";
       if (value === true) {
@@ -1991,7 +1996,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: "is_update",
     header: "Update",
     size: 150,
-    Cell: ({ cell }: any) => {
+    Cell: ({ cell }) => {
       const value = cell.getValue();
       let visible = "";
       if (value === true) {
@@ -2029,7 +2034,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_ROLEVSFORM.GET_ROLEVSFORMACTIVE;
       const MenuDeactive = QUERY_KEYS_ROLEVSFORM.GET_ROLEVSFORMDEACTIVE;
@@ -2040,7 +2045,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -2112,7 +2117,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
   {
     accessorKey: "is_active",
     header: "Active/DeActive",
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row }) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_ROLEVSADMIN.GET_ROLEVSADMINACTIVE;
       const MenuDeactive = QUERY_KEYS_ROLEVSADMIN.GET_ROLEVSADMINDEACTIVE;
@@ -2123,7 +2128,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [Show, setShow] = useState(value === 1 ? true : false);
 
       const active = (id: number, valueset: any) => {
@@ -2221,11 +2226,11 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
         parsedValue = JSON.parse(value);
       } catch (e) {
         console.error("Failed to parse value", e);
-        return <div>&quot;&quot;</div>;
+        return <div>""</div>;
       }
 
       // Extract the 'answer' arrays
-      const dataset = parsedValue?.map((item: any) => item.answer);
+      let dataset = parsedValue?.map((item: any) => item.answer);
       // console.log("dataset ------", dataset);
 
       // Flatten the dataset array (if it contains multiple arrays)
@@ -2260,7 +2265,7 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
   },
 ];
 
-export const PDF_LIST_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
+export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   {
     accessorKey: "pdf_file_name",
     header: "File Name",
@@ -2270,12 +2275,72 @@ export const PDF_LIST_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     accessorKey: "pdf_path",
     header: "File Path",
     enableSorting: false,
-    enableColumnActions: false,
+    enableColumnActions:false,
     size: 150,
   },
   {
     accessorKey: "upload_date_time",
     header: "Uploaded At",
     size: 150,
+  } ,
+  {
+    accessorKey: "board_name",
+    header: "Board Name",
+    size: 150,
   },
-];
+   {
+    accessorKey: "state_board_name",
+    header: "State Board Name",
+    size: 150,
+  } ,
+  {
+    accessorKey: "stream_name",
+    header: "Stream Name",
+    size: 150,
+  } ,
+  {
+    accessorKey: "class_name",
+    header: "Class Name",
+    size: 150,
+  }
+]
+
+export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
+  {
+    accessorKey: "pdf_file_name",
+    header: "File Name",
+    size: 150,
+  },
+  {
+    accessorKey: "pdf_path",
+    header: "File Path",
+    enableSorting: false,
+    enableColumnActions:false,
+    size: 150,
+  },
+  {
+    accessorKey: "upload_date_time",
+    header: "Uploaded At",
+    size: 150,
+  } ,
+  {
+    accessorKey: "university_name",
+    header: "University Name",
+    size: 150,
+  },
+   {
+    accessorKey: "college_name",
+    header: "Collage Name",
+    size: 150,
+  } ,
+  {
+    accessorKey: "course_name",
+    header: "Courase Name",
+    size: 150,
+  } ,
+  {
+    accessorKey: "year",
+    header: "Year",
+    size: 150,
+  }
+]

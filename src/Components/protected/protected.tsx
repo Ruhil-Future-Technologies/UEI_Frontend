@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { hasSubMenu } from "../../utils/helpers";
+import { QUERY_KEYS_MENU } from "../../utils/const";
+import useApi from "../../hooks/useAPI";
 import NotFound from "../../Pages/NotFound/NotFound";
 
 const Protected = (props: { Component: any; menuName?: string }) => {
@@ -10,7 +11,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   const { id } = useParams();
 
   useEffect(() => {
-    const logintoken = localStorage.getItem("token");
+    let logintoken = localStorage.getItem("token");
     if (!logintoken) {
       navigate("/");
     }
@@ -32,6 +33,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === "admin" ? "" : mName.toLowerCase() === "chat") ||
       (usertype === "admin" ? mName.toLowerCase() === "uploadpdf" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "pdflist" : "") ||
+      (usertype === "admin" ? mName.toLowerCase() === "institution-deshboard" : "") ||
+      (usertype === "admin" ? mName.toLowerCase() === "teacher-deshboard" : "") ||
       (usertype === "student" ? mName.toLowerCase() === "recentchat" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "feedback" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "add-feedback" : "") ||
