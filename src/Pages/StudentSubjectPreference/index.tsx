@@ -73,8 +73,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
-
-
   const [validationErrors, setValidationErrors] = useState<{
     [key: number]: { [key: string]: boolean };
   }>({});
@@ -666,7 +664,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       if (allSuccessful) {
         if (editFlag) {
 
-
           // toast.success("Subject Preference saved successfully", {
           //   hideProgressBar: true,
           //   theme: "colored",
@@ -674,7 +671,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           // });
          await handleReset()
           navigate('/')
-
 
         } else {
           if (!eq === true) {
@@ -684,8 +680,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: "top-center",
             });
           }
+         
+          navigate('/')
 
-          navigate("/");
 
         }
         setInitialState(initial);
@@ -820,9 +817,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                         handleInputChange(index, "class_id", e.target.value)
                       }
                       label="Class"
-
-                      disabled
-
+                      // disabled
                     >
                       {classes.map((classes) => (
                         <MenuItem
