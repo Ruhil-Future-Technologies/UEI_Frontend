@@ -55,7 +55,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownstateRef = useRef<HTMLDivElement>(null);
-  const [editaddress,seteditaddress] = useState(false);
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
     const handleFocusstate = () => setIsFocusedstate(true);
@@ -193,7 +192,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     addressType: string
   ) => {
-    seteditaddress(true);
     const { name, value } = event.target;
     setChecked(false);
 
@@ -317,31 +315,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   };
 
-
-  const changeHendels = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    seteditaddress(true);
-    const { name, value } = event.target;
-    // setStudentAddress(values => ({ ...values, [name]: value }))
-    setPincode(event.target.value);
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-  const [error, setError]: any = useState({});
-  const [formData, setFormData] = useState({
-    address_type: "",
-    address1: "",
-    address2: "",
-    country: "",
-    state: "",
-    city: "",
-    district: "",
-    pincode: "",
-  });
-
+  
 
   const SubmitHandle = async () => {
     if (!("address1" in studentAddress) || studentAddress?.address1 === "") {

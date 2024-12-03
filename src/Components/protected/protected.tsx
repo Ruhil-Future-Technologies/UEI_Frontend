@@ -32,8 +32,6 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === "admin" ? "" : mName.toLowerCase() === "chat") ||
       (usertype === "admin" ? mName.toLowerCase() === "uploadpdf" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "pdflist" : "") ||
-      (usertype === "admin" ? mName.toLowerCase() === "institution-deshboard" : "") ||
-      (usertype === "admin" ? mName.toLowerCase() === "teacher-deshboard" : "") ||
       (usertype === "student" ? mName.toLowerCase() === "recentchat" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "feedback" : "") ||
       (usertype === "admin" ? mName.toLowerCase() === "add-feedback" : "") ||

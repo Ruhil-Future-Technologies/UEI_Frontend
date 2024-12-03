@@ -411,21 +411,29 @@ const Uploadpdf = () => {
     if (AdminId !== null) {
       formData.append("teacher_id", String(AdminId));
       if (boxes[0]?.institute_type?.toLowerCase() === "college") {
-
-        const { institute_id, university_id, course_id, sem_id, institute_type ,subject_id } = boxes[0];
-        const universityNames = await university?.filter(item => item.university_id === university_id)?.map(item => item.university_name);
-        const filterInstitute = await institutesAll?.filter((item) => 
-          item.university_id === university_id && item?.id === institute_id
-        )?.map(item => item.institution_name);
-        const filterCourse = await coursesAll.filter((item) => 
-          item.institution_id === institute_id  && item?.id === course_id 
-        )?.map(item =>item.course_name)
-        const filterSubject = await subjectsAll?.filter((item:any)=> 
-          item?.institution_id  === institute_id && item?.course_id  === course_id && 
-        item?.semester_id  === sem_id && item?.subject_id  === subject_id
-      )?.map(item => item.subject_name)
-        
-
+        const {
+          institute_id,
+          university_id,
+          course_id,
+          sem_id,
+          institute_type,
+        } = boxes[0];
+        const universityNames = await university
+          ?.filter((item) => item.university_id === university_id)
+          ?.map((item) => item.university_name);
+        const filterInstitute = await institutesAll
+          ?.filter(
+            (item) =>
+              item.university_id === university_id && item?.id === institute_id
+          )
+          ?.map((item) => item.institution_name);
+        const filterCourse = await coursesAll
+          .filter(
+            (item) =>
+              item.institution_id === institute_id && item?.id === course_id
+          )
+          ?.map((item) => item.course_name);
+       
 
         if (universityNames && universityNames.length > 0) {
           formData.append("university_selection", universityNames.join(","));
@@ -436,35 +444,23 @@ const Uploadpdf = () => {
         if (filterCourse && filterCourse.length > 0) {
           formData.append("course_selection", filterCourse.join(","));
         }
-
-        if (filterSubject && filterSubject.length > 0) {
-          formData.append("subject", filterSubject.join(','));
-        }
-        if (institute_type) formData.append("school_college_selection", institute_type);
-        // if (institute_id) formData.append("college_selection", institute_id);
-        // if (university_id) formData.append("university_selection", university_id);
-        // if (course_id) formData.append("course_selection", course_id);
-        // if (sem_id) formData.append("sem_id", sem_id);
-
       
         if (institute_type)
           formData.append("school_college_selection", institute_type);
         
         const semIdNumber = Number(sem_id);
 
-
-    let year = null;
-    if (semIdNumber === 1 || semIdNumber === 2) {
-      year = "1st";
-    } else if (semIdNumber === 3 || semIdNumber === 4) {
-      year = "2nd";
-    } else if (semIdNumber === 5 || semIdNumber === 6) {
-      year = "3rd";
-    } else if (semIdNumber === 7 || semIdNumber === 8) {
-      year = "4th";
-    }
-    if (year) formData.append("year", year);
-
+        let year = null;
+        if (semIdNumber === 1 || semIdNumber === 2) {
+          year = "1";
+        } else if (semIdNumber === 3 || semIdNumber === 4) {
+          year = "2";
+        } else if (semIdNumber === 5 || semIdNumber === 6) {
+          year = "3";
+        } else if (semIdNumber === 7 || semIdNumber === 8) {
+          year = "4";
+        }
+        if (year) formData.append("year", year);
       }
       if (boxes[0]?.institute_type?.toLowerCase() === "school") {
         const {
@@ -498,7 +494,6 @@ const Uploadpdf = () => {
       formData
     )
       .then((data: any) => {
-        console.log(data);
         if (data?.status === 200) {
           toast.success("PDF Uploaded Successfully", {
             hideProgressBar: true,
