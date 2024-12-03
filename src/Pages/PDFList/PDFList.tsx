@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { MaterialReactTable } from "material-react-table";
 import {
   Box,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import NameContext from "../Context/NameContext";
 import { tabletools } from "../../utils/helpers";
@@ -26,7 +25,7 @@ import {
 } from "../../utils/helpers";
 import { TrashIcon } from "../../assets";
 import useApi from "../../hooks/useAPI";
-import { PDF_LIST_COLUMNS, IPDFList } from "../../Components/Table/columns";
+import { PDF_LIST_FOR_COLLAGE_COLUMNS, IPDFList, PDF_LIST_FOR_SCHOOL_COLUMNS } from "../../Components/Table/columns";
 import "../Uploadpdf/Uploadpdf.scss";
 
 interface Classes {
@@ -47,37 +46,40 @@ interface FileList {
 const PDFList = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useNavigate();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
+  // const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const usertype: any = localStorage.getItem("user_type");
   let AdminId: string | null = localStorage.getItem("_id");
   if (AdminId) {
     AdminId = String(AdminId);
   }
+  //lookafter
   const [selectedClass, setSelectedClass] = useState("");
-  const [dataSubject, setDataSubject] = useState([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [fileList, setFileList] = useState<FileList[]>([]);
   const [selectedFile, setSelectedFile] = useState<IPDFList>();
   const [dataDelete, setDataDelete] = useState(false);
+
   const [dataDeleteId, setDataDeleteId] = useState<number>();
+  const [schoolOrcollFile,setSchoolOrcollFile]=useState('');
+  const [buttenView, setButtenView] = useState(true);
 
   const { getData, loading, deleteFileData } = useApi();
-  const columns = PDF_LIST_COLUMNS;
+  const collageColumns = PDF_LIST_FOR_COLLAGE_COLUMNS;
+ const schoolColumns=PDF_LIST_FOR_SCHOOL_COLUMNS;
 
   useEffect(() => {
-    callAPI();
+    // callAPI();
 
     getData("/class/list")
       .then((response: any) => {
         if (response.status === 200) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          let filteredData: any[] = [];
+          const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
-              let updatedClassName = item.class_name.split("_").join(" ");
+              const updatedClassName = item.class_name.split("_").join(" ");
               item.new_class_name =
                 updatedClassName.charAt(0).toUpperCase() +
                 updatedClassName.slice(1);
@@ -98,45 +100,54 @@ const PDFList = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedClass && !dataDelete) {
+    if (schoolOrcollFile && !dataDelete) {
+      let payload={
+        admin_id:AdminId,
+        school_college_selection:schoolOrcollFile
+      }
+      
+      let apiUrl =`https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(
-        `https://uatllm.gyansetu.ai/display-files?class_name=${selectedClass}`
+        apiUrl
       )
+
         .then((response: any) => {
-          if (response.status === 200) {
-            setFileList(response?.filenames);
-          }
+          console.log(response);
+          
+            setFileList(response);
+            //console.log("all are looking good");
+         
+
         })
-        .catch((error) => {
+        ?.catch((error) => {
           toast.error(error?.message, {
             hideProgressBar: true,
             theme: "colored",
           });
         });
+      console.log(payload);
     }
-  }, [selectedClass, dataDelete]);
+    console.log(schoolOrcollFile);
+  }, [schoolOrcollFile, dataDelete]);
 
-  const callAPI = async () => {
-    getData(`${SubjectURL}`)
-      .then((data: any) => {
-        if (data.data) {
-          setDataSubject(data?.data);
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-        });
-      });
-  };
+  // const callAPI = async () => {
+  //   getData(`${SubjectURL}`)
+  //     .then((data: any) => {
+  //     })
+  //     .catch((e) => {
+  //       toast.error(e?.message, {
+  //         hideProgressBar: true,
+  //         theme: "colored",
+  //       });
+  //     });
+  // };
 
   if (usertype !== "admin") {
     navigate("/main/*");
   }
 
   const handleChange = (event: any) => {
-    const { name, value } = event?.target;
+    const { name, value } = event.target;
     if (name === "class_id") setSelectedClass(value);
     else setSelectedFile(value);
   };
@@ -154,15 +165,19 @@ const PDFList = () => {
     console.log("Delete File", selectedFile);
 
     const payload = {
+
       file_id:selectedFile?.pdf_id,
+
+<!--       file_id: selectedFile?.pdf_id,
       file_path: selectedFile?.pdf_path,
       file_name: selectedFile?.pdf_file_name,
-      class_name: selectedClass,
+      class_name: selectedClass, -->
+
     };
-    deleteFileData(`https://uatllm.gyansetu.ai/delete-files`, payload)
+    deleteFileData(`https://dbllm.gyansetu.ai/delete-files`, payload)
       .then((data: any) => {
         console.log("DELETED FILES", data);
-        if (data.status === 201) {
+        if (data.status === 200) {
           setDataDelete(false);
           toast.success(data?.message, {
             hideProgressBar: true,
@@ -180,12 +195,23 @@ const PDFList = () => {
         });
       });
   };
+  const handlefilter=(e:any)=>{
+   if(e=="school"){
+     setButtenView(false);
+     setSchoolOrcollFile("school");
+   }else{
+    setButtenView(true)
+    setSchoolOrcollFile("college")
+   }
+ 
+  }
 
   return (
     <>
       {loading && <FullScreenLoader />}
       <div className="main-wrapper">
         <div className="main-content">
+
         <div className="card">
           <div className="card-body">
             <div className="table_wrapper">
@@ -211,7 +237,7 @@ const PDFList = () => {
                   }}
                 >
                   <div>
-                    <FormControl sx={{ minWidth: 300 }}>
+                    {/* <FormControl sx={{ minWidth: 300 }}>
                       <InputLabel
                         id="select-class-label"
                         sx={{ color: inputfieldtext(namecolor) }}
@@ -255,56 +281,74 @@ const PDFList = () => {
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>
+                    </FormControl> */}
+                    <button name="college" className="btn btn-primary m-2" onClick={()=>handlefilter("college")} disabled={buttenView}>
+                      college
+                    </button>
+                    <button name="school" className="btn btn-primary" disabled={!buttenView} onClick={()=>handlefilter("school")}>
+                      school
+                    </button>
+
                   </div>
-                  {/* <div>
-                    <FormControl sx={{ minWidth: 300 }}>
-                      <InputLabel
-                        id="select-file-label"
-                        sx={{ color: inputfieldtext(namecolor) }}
-                      >
-                        File *
-                      </InputLabel>
-                      <Select
-                        labelId="select-file-label"
-                        value={selectedFile}
-                        disabled={!selectedClass}
-                        onChange={handleChange}
-                        label="File *"
-                        placeholder="Select file"
-                        variant="outlined"
-                        name={"file_id"}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                        }}
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                            },
-                          },
-                        }}
-                      >
-                        {fileList?.map((file) => (
-                          <MenuItem
-                            key={file.pdf_path}
-                            value={file.pdf_path}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              "&:hover": {
-                                backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "20px",
+                      marginBottom: "20px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      <FormControl sx={{ minWidth: 300 }}>
+                        <InputLabel
+                          data-testid="class_text"
+                          id="select-class-label"
+                          sx={{ color: inputfieldtext(namecolor) }}
+                        >
+                          Class *
+                        </InputLabel>
+                        <Select
+                        data-testid="class_text_input"
+                          labelId="select-class-label"
+                          value={selectedClass}
+                          onChange={handleChange}
+                          label="Class *"
+                          placeholder="Select class"
+                          variant="outlined"
+                          name="class_id"
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                          }}
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
                               },
-                            }}
-                          >
-                            {file?.pdf_file_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                            },
+                          }}
+                        >
+                          {classes?.map((classes) => (
+                            <MenuItem
+                              key={classes.class_name}
+                              value={classes.class_name}
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                "&:hover": {
+                                  backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                                },
+                              }}
+                            >
+                              {classes?.new_class_name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
                   </div>
+
                   <div>
                     <a
                       href={
@@ -342,7 +386,7 @@ const PDFList = () => {
                 </div>
                 <Box marginTop="10px">
                   <MaterialReactTable
-                    columns={columns}
+                    columns={schoolOrcollFile== "college"?collageColumns:schoolColumns}
                     data={fileList}
                     enableRowVirtualization
                     positionActionsColumn="first"
@@ -371,41 +415,29 @@ const PDFList = () => {
                             href={`https://uatllm.gyansetu.ai/files/${row?.row?.original?.pdf_path}`}
                             target="_blank"
                           >
+
                             <IconButton
                               sx={{
                                 width: "35px",
                                 height: "35px",
                                 color: tabletools(namecolor),
                               }}
+                              onClick={() => {
+                                handleDeleteFiles(row?.row?.original);
+                              }}
                             >
-                              <VisibilityIcon />
+                              <TrashIcon />
                             </IconButton>
-                          </a>
-                        </Tooltip>
-                        <Tooltip arrow placement="bottom" title="Delete">
-                          <IconButton
-                            sx={{
-                              width: "35px",
-                              height: "35px",
-                              color: tabletools(namecolor),
-                            }}
-                            onClick={() => {
-                              handleDeleteFiles(row?.row?.original);
-                            }}
-                          >
-                            <TrashIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    )}
-                  />
-                </Box>
+                          </Tooltip>
+                        </Box>
+                      )}
+                    />
+                  </Box>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
-        
       </div>
       <DeleteDialog
         isOpen={dataDelete}

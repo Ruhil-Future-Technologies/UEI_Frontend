@@ -1,7 +1,5 @@
+import React from "react";
 import { RouteObject } from "react-router-dom";
-import Login from "../Login";
-import Signup from "../SignUp";
-
 import Entity from "../Entity/Entity";
 import Main from "../../Components/Main";
 import { Chat } from "@mui/icons-material";

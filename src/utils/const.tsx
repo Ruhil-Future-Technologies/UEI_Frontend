@@ -11,11 +11,6 @@ export const QUERY_KEYS = {
     CHANGE_PASSWORD: "/auth/changepassword",
     RESET_PASSWORD: "/auth/resetpassword",
     CHAT: "/chat/chat",
-
-    // CHATADD: "/chat/chatadd",
-    // CHATADD: "/chat/chat/fetch-or-generate",
-    // CHATADDRAGMODEL: "/rag-model",
-    // CHATADDOLLAMA: "/ollama-chat",
     CHATADD: "/chat/fetch-from-db",
     CHATADDRAGMODEL: "http://13.233.157.129:5000/rag-model",
     CHATADDOLLAMA: "http://13.233.157.129:5000/ollama-chat",
@@ -85,8 +80,6 @@ export const QUERY_KEYS_ENTITY = {
 
 export const QUERY_KEYS_CLASS = {
     GET_CLASS: "/class/list",
-    // GET_ENTITYACTIVE: "/entity/activate",
-    // GET_ENTITYDEACTIVE: "/entity/deactivate",
     CLASS_ADD: "/class/add",
     CLASS_EDIT: "/class/edit",
     CLASS_DELETE: "/class/delete",
@@ -106,15 +99,7 @@ export const QUERY_KEYS_DEPARTMENT = {
     GET_DEPARTMENTDEACTIVE: "/department/deactivate",
 
 };
-// export const QUERY_KEYS_SUBJECT = {
-//     GET_SUBJECT: "/subject/list",
-//     SUBJECT_ADD: "/subject/add",
-//     SUBJECT_EDIT: "/subject/edit",
-//     SUBJECT_DELETE: "/subjectdelete",
-//     GET_SUBJECTACTIVE: "/subject/activate",
-//     GET_SUBJECTDEACTIVE: "/subject/deactivate",
 
-// };
 export const QUERY_KEYS_SUBJECT = {
     GET_SUBJECT: "/college_subject/list",
     SUBJECT_ADD: "/college_subject/add",

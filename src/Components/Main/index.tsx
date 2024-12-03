@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "../Header/index";
 import Footer from "../Footer/index";
 import Sidebar from "../Sidebar/index";
@@ -9,8 +9,7 @@ import { Outlet } from "react-router-dom";
 // import "../../assets/css/newstyle.scss";
 
 const Main = () => {
-  let synth: SpeechSynthesis;
-  synth = window.speechSynthesis;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
   useEffect(() => {
     synth.cancel();
   });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -31,7 +32,7 @@ const AdminProfession: React.FC<PropsItem> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  let adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem("_id");
   const { getData, postData, putData } = useApi();
   const [institude, setInstitude] = React.useState<
     [{ id: string; institution_name: string }]
@@ -41,8 +42,6 @@ const AdminProfession: React.FC<PropsItem> = ({
     [{ id: string; course_name: string }]
   >([{ id: "", course_name: "" }]);
   const [selectCourse, setSelectCourse] = React.useState("");
-  const [subject, setSubject] =
-    React.useState<[{ id: string; subject_name: string }]>();
   const [selectSubject, setSelectSubject] = React.useState("");
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [initialState, setInitialState] = useState<any | null>({});
@@ -68,7 +67,6 @@ const AdminProfession: React.FC<PropsItem> = ({
           (item: any) => item?.is_active === 1
         );
         setInstitude(filteredData || []);
-        // setInstitude(response?.data);
       }
     } catch (error: any) {
       console.error("error comes :", error?.response?.status);
@@ -94,10 +92,8 @@ const AdminProfession: React.FC<PropsItem> = ({
           (item: any) => item?.is_active === 1
         );
         setCourse(filteredData || []);
-        // setCourse(response?.data);
       }
     } catch (error: any) {
-      // console.error("error comes :", error.response.status);
       if (error?.response?.status === 401) {
         toast.warning("Please login again ", {
           hideProgressBar: true,
@@ -112,33 +108,7 @@ const AdminProfession: React.FC<PropsItem> = ({
     }
   };
 
-  const getSubject = async () => {
-    
-    // try {
-    //   const response = await getData("subject/list");
-
-    //   if (response?.status === 200) {
-    //     const filteredData = response?.data?.filter(
-    //       (item: any) => item?.is_active === 1
-    //     );
-    //     setSubject(filteredData || []);
-       
-    //   }
-    // } catch (error: any) {
-      
-    //   if (error?.response?.status === 401) {
-    //     toast.warning("Please login again", {
-    //       hideProgressBar: true,
-    //       theme: "colored",
-    //     });
-    //   } else {
-    //     toast.error("Request failed", {
-    //       hideProgressBar: true,
-    //       theme: "colored",
-    //     });
-    //   }
-    // }
-  };
+  
 
   const getProfation = async () => {
     try {
@@ -177,13 +147,12 @@ const AdminProfession: React.FC<PropsItem> = ({
   useEffect(() => {
     getinstitutes();
     getCourse();
-    getSubject();
     getProfation();
   }, [adminId]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let payload = {
+    const payload = {
       admin_id: adminId,
       institution_id: selectInstitude,
       course_id: selectCourse,
@@ -263,7 +232,7 @@ const AdminProfession: React.FC<PropsItem> = ({
       else navigate("/");
     }
   };
-  // console.log("testing",selectInstitude,selectCourse,selectSubject)
+  
 
   return (
     <form>
@@ -303,9 +272,6 @@ const AdminProfession: React.FC<PropsItem> = ({
               ))}
             </Select>
           </FormControl>
-          {/* <div> {!selectInstitude && (
-            <p style={{marginLeft:"10px", color: 'red' }}>Please select an Institute.</p>
-          )}</div> */}
         </div>
         <div className="col form_field_wrapper">
           <FormControl required sx={{ m: 1, minWidth: 220 }}>
@@ -322,12 +288,6 @@ const AdminProfession: React.FC<PropsItem> = ({
               onChange={handleCourseChange}
               label="Course"
               MenuProps={{
-                // sx: {
-                //   "& .MuiPaper-root": {
-                //   // ml:"auto",
-
-                //   }
-                // },
                 anchorOrigin: {
                   vertical: "bottom",
                   horizontal: "left",
@@ -355,9 +315,6 @@ const AdminProfession: React.FC<PropsItem> = ({
               ))}
             </Select>
           </FormControl>
-          {/* <div> {!selectCourse && (
-            <p style={{marginLeft:"10px", color: 'red' }}>Please select a Course.</p>
-          )}</div> */}
         </div>
         <div className="col form_field_wrapper">
           <FormControl required sx={{ m: 1, minWidth: 220 }}>
@@ -374,7 +331,7 @@ const AdminProfession: React.FC<PropsItem> = ({
               onChange={handleSubjectChange}
               label="Subject"
             >
-              {subject?.map((data) => (
+              {/* {subject?.map((data) => (
                 <MenuItem
                   key={data?.id}
                   value={data?.id}
@@ -388,7 +345,7 @@ const AdminProfession: React.FC<PropsItem> = ({
                 >
                   {data?.subject_name}
                 </MenuItem>
-              ))}
+              ))} */}
             </Select>
           </FormControl>
           {/* <div> {!selectSubject && (

@@ -1,23 +1,19 @@
-import React, { ChangeEvent, useEffect, useState, useContext } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { ChangeEvent, useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+// import  { SnackbarOrigin } from "@mui/material/Snackbar";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FormControlLabel, Radio, RadioGroup, Typography, Switch, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
+import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { MdContactMail } from "react-icons/md";
+
 import { toast } from "react-toastify";
-import CloseIcon from "@mui/icons-material/Close";
-import phoneicon from "../../assets/img/phone.svg";
-import emailicon from "../../assets/img/email.svg";
-import passwordicon from "../../assets/img/password.svg";
-import NameContext from "../../Pages/Context/NameContext";
+// import CloseIcon from "@mui/icons-material/Close";
+// import NameContext from "../../Pages/Context/NameContext";
 import {
   ArrowLeft,
   BackArrowCircle,
-  FacebookIcon,
-  GoogleIcon,
   VisibilityOn,
   VisibilityOff,
 } from "../../assets";
@@ -31,52 +27,22 @@ import "react-toastify/dist/ReactToastify.css";
 import { QUERY_KEYS } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import registerHero from "../../assets/img/register-hero.png";
-// import "../../assets/css/main.min.css";
-import { styled } from "@mui/material/styles";
-
-
-
-
-
-
-interface State extends SnackbarOrigin {
-  open: boolean;
-}
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
   const { postData, loading } = useApi();
   const [password, setPassword] = useState("");
-  // const [name, setName] = useState("")
-  //   const [email, setEmail] = useState("");
-  //   const [phone, setPhone] = useState("");
-  const context = useContext(NameContext);
-  const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
 
   const [emailphone, setEmailphone] = useState("");
-  const [value, setValue] = React.useState("student");
-  const [userId, setuserId] = React.useState("Email");
+  const value = "student";
+  const userId ="Email";
   const [uservalue, setuserValue] = React.useState<any>("");
   const [errorEmail, setEmailError] = useState("");
   const [errorPassword, setPasswordError] = useState("");
-  const [checked, setchecked] = useState(false);
 
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [issuccess, setIssuccess] = useState(false);
-  const [msg, setMsg] = useState("");
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
-  //   const handleChangeUserId = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     setuserId((event.target as HTMLInputElement).value);
-  //   };
   const [showPassword, setShowPassword] = useState(false);
-  // let userdata: any = []
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -99,17 +65,6 @@ const Signup = () => {
     // document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
-
-  const handleCloseicon = (
-    event: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setIssuccess(false);
-  };
   useEffect(() => {
     if (emailphone && password) {
       setuserValue("");
@@ -117,7 +72,7 @@ const Signup = () => {
   }, [emailphone, password]);
 
   const register = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     e.preventDefault();
     // Validate email/phone and password
     if (validateInput(emailphone) && validatePassword(password)) {
@@ -129,11 +84,12 @@ const Signup = () => {
         user_type: String(value),
       };
 
-      let emptyKeys: string[] = [];
+      const emptyKeys: string[] = [];
 
       // Check for empty fields
       for (const key in UserSignUp) {
-        if (UserSignUp.hasOwnProperty(key)) {
+        // if (UserSignUp?.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
           if (UserSignUp[key as keyof typeof UserSignUp] === "") {
             setuserValue(key);
             emptyKeys.push(key);
@@ -155,7 +111,7 @@ const Signup = () => {
               hideProgressBar: true,
               theme: "colored",
             });
-            setIsLoading(false);
+            // setIsLoading(false);
             navigate("/");
           } else if (
             data?.status === 400 &&
@@ -167,14 +123,14 @@ const Signup = () => {
               theme: "colored",
             });
             // setLoading(false);
-            setIsLoading(false);
+            // setIsLoading(false);
           } else {
-            setIssuccess(true);
-            setMsg(data?.message);
+            // setIssuccess(true);
+            // setMsg(data?.message);
           }
         } catch (error) {
           // setLoading(false);
-          setIsLoading(false);
+          // setIsLoading(false);
           let errorMessage = "An unexpected error occurred";
 
           if (error instanceof Error) {
@@ -190,18 +146,6 @@ const Signup = () => {
     }
   };
 
-  const action = (
-    <React.Fragment>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleCloseicon}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </React.Fragment>
-  );
 
   const validateInput = (value: string): boolean => {
     if (!value) {
@@ -241,7 +185,7 @@ const Signup = () => {
     const uppercaseRegex = /[A-Z]/;
     const lowercaseRegex = /[a-z]/;
     const numberRegex = /[0-9]/;
-    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    const specialCharRegex = /[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/;
 
     if (
       !uppercaseRegex.test(password) ||
@@ -378,7 +322,6 @@ const Signup = () => {
                         <label htmlFor="" className="form-label">
                           Email/Phone
                         </label>
-                        {/* <input type="text" className="form-control   h-52"  placeholder="Enter Your Email"/> */}
                         <TextField
                           id="emailphone"
                           value={emailphone}
@@ -476,7 +419,9 @@ const Signup = () => {
                       </div>
 
                       <div className="form-check mb-3 fs-14">
-                         <input
+
+                        <input
+
                           className="form-check-input"
                           type="checkbox"
                           value=""
@@ -505,6 +450,7 @@ const Signup = () => {
                       <DialogTitle>{"Terms and Condition"}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
+
                           Content of Gyanshetu Terms and Condition...... will coming soon
                         </DialogContentText>
                       </DialogContent>
@@ -520,7 +466,8 @@ const Signup = () => {
             </div>
           </div>
         </section>
-      </div>
+      
+        </div>
     </>
   );
 };

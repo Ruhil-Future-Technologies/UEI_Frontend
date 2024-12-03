@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   useState,
   ChangeEvent,
@@ -17,7 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
-import { Country, State, City } from "country-state-city";
+import { Country, State } from "country-state-city";
 
 
 interface Institute {
@@ -56,7 +57,7 @@ interface Option {
 
 const NewModule: React.FC = () => {
   const { getData, postData, postFileData } = useApi();
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
   const [institutes, setInstitutes] = useState<Institute[]>([]);
@@ -223,10 +224,10 @@ const NewModule: React.FC = () => {
 
   const saveAnswersforBasic = (answers: string[]) => {
     const fullName = answers[0];
-    let nameParts: string[] = fullName.split(" ");
+    const nameParts: string[] = fullName.split(" ");
     const firstname = nameParts[0];
     const lastname = nameParts[1];
-    let payload = {
+    const payload = {
       student_login_id: StudentId,
       first_name: firstname,
       last_name: lastname,
@@ -293,13 +294,13 @@ const NewModule: React.FC = () => {
   };
 
   const saveAnswersforContact = (answer: string[]) => {
-    const contfullPhone = answer[8];
-    let phoneNum = contfullPhone.split(" ");
-    const contfullPhonewtsp = answer[9];
-    let phoneNumwtsp = contfullPhonewtsp.split(" ");
-    let email = localStorage.getItem("userid");
+    // const contfullPhone = answer[8];
+    // const phoneNum = contfullPhone.split(" ");
+    // const contfullPhonewtsp = answer[9];
+    // const phoneNumwtsp = contfullPhonewtsp.split(" ");
+    const email = localStorage.getItem("userid");
 
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: answer[8],
       mobile_no_call: answer[9],
@@ -330,8 +331,8 @@ const NewModule: React.FC = () => {
   };
 
   const saveAnswerforAddress = (answers: string[]) => {
-    const Address = answers[15];
-    let addressParts = Address.split(",");
+    // const Address = answers[15];
+    // const addressParts = Address.split(",");
 
     const payload = {
       student_id: StudentId,
@@ -434,8 +435,8 @@ const NewModule: React.FC = () => {
     label: option.subject_name,
   }));
 
-  const saveanswerForHobbeis = (answers: string[]) => {
-    let payload = {
+  const saveanswerForHobbeis = () => {
+    const payload = {
       student_id: StudentId,
       hobby_id: selectedHobby,
     };
@@ -515,7 +516,7 @@ const NewModule: React.FC = () => {
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: e.target.files[0].name, type: "answer" as "answer" },
+        { text: e.target.files[0].name, type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -524,7 +525,7 @@ const NewModule: React.FC = () => {
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
       } else {
@@ -540,7 +541,7 @@ const NewModule: React.FC = () => {
   const handleDateChange = (newDate: Dayjs | null) => {
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
     console.log(currentQuestionIndex);
-    let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
+    const datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
     if (hitcount % 2 === 0) {
       if (currentQuestionIndex == 14) {
         if (datecheck > answers[13]) {
@@ -550,7 +551,7 @@ const NewModule: React.FC = () => {
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as "answer" },
+            { text: datecheck, type: "answer" as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -559,7 +560,7 @@ const NewModule: React.FC = () => {
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as "question",
+                type: "question" as const,
               },
             ]);
           } else {
@@ -583,7 +584,7 @@ const NewModule: React.FC = () => {
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as "answer" },
+          { text: datecheck, type: "answer" as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -592,7 +593,7 @@ const NewModule: React.FC = () => {
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as "question",
+              type: "question" as const,
             },
           ]);
         } else {
@@ -615,7 +616,7 @@ const NewModule: React.FC = () => {
     if (answers[currentQuestionIndex]?.trim() !== "") {
       const updatedMessages = [
         ...messages,
-        { text: answers[currentQuestionIndex], type: "answer" as "answer" },
+        { text: answers[currentQuestionIndex], type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -624,7 +625,7 @@ const NewModule: React.FC = () => {
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
 
@@ -640,7 +641,7 @@ const NewModule: React.FC = () => {
         } else if (answers.length === 26) {
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
         } else if (answers.length === 29) {
-          saveanswerForHobbeis([...answers, e.currentTarget.value]);
+          saveanswerForHobbeis();
           saveAnswerForLanguage([...answers, e.currentTarget.value]);
         }
       } else {
@@ -678,7 +679,7 @@ const NewModule: React.FC = () => {
     }
   };
 
-  const handlePhoneChange = (value: string, country: any) => {
+  const handlePhoneChange = (value: string) => {
     setPhone(value);
     console.log(value);
     // Move to the next question
@@ -688,7 +689,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "+" + value, type: "answer" as "answer" },
+      { text: "+" + value, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -697,7 +698,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -715,7 +716,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -724,7 +725,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -742,7 +743,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -751,7 +752,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -769,7 +770,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -778,7 +779,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -796,7 +797,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -805,7 +806,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -823,7 +824,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -832,7 +833,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -866,7 +867,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -875,7 +876,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -893,7 +894,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -902,7 +903,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {

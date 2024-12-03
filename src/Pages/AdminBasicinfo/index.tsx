@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {
@@ -13,7 +14,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { LocalizationProvider} from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
 //import DatePicker from 'react-datepicker';
@@ -23,14 +24,13 @@ import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import dayjs, { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import { styled } from "@mui/material/styles";
+// import { styled } from "@mui/material/styles";
 
 import { deepEqual } from "../../utils/helpers";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
-
 
 interface Department {
   id: number;
@@ -71,9 +71,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [selectedFile, setSelectedFile] = React.useState("");
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState("");
-  let adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem("_id");
   const [admin, setadmin] = useState<AdminInformation>({
-    first_name: "", 
+    first_name: "",
     last_name: "",
     father_name: "",
     mother_name: "",
@@ -89,13 +89,18 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [gname_col, setGname_col] = useState<boolean>(false);
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
-  const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs().subtract(6, 'year');
+  // const [error1, setError1] = useState("");
+  const exactSixYearsAgo = dayjs().subtract(6, "year");
   const minSelectableDate = dayjs("01/01/1900");
-  const [error, setError] = React.useState<string | null>(null); 
+  const [error, setError] = React.useState<string | null>(null);
   useEffect(() => {
     setadmin((prevState) => ({ ...prevState, dob: adminDOB ?? null }));
   }, [adminDOB]);
+
+  useEffect(() => {
+    getBasicInfo();
+    getDepatment();
+  }, [adminId]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
@@ -103,7 +108,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (name === "first_name") {
       setFname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFname_col(true);
       } else {
         setFname_col(false);
@@ -112,7 +117,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (name === "last_name") {
       setLname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
-        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+      if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setLname_col(true);
       } else {
         setLname_col(false);
@@ -175,7 +180,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             .then((imgdata: any) => {
               setFilePreview(imgdata.data);
             })
-            .catch((e) => {});
+            .catch(() => {});
         }
       } else if (response?.status === 404) {
         setEditFlag(true);
@@ -220,10 +225,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     }
   };
-  useEffect(() => {
-    getBasicInfo();
-    getDepatment();
-  }, [adminId]);
+
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value as string;
@@ -237,7 +239,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       const file: any = files[0];
       // Check file size (3MB = 3 * 1024 * 1024 bytes)
       if (file.size > 3 * 1024 * 1024) {
-        setError1("File size must be less than 3MB");
+        // setError1("File size must be less than 3MB");
         return;
       }
 
@@ -249,10 +251,10 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
       // Check file type (only JPG and PNG allowed)
       if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
-        setError1("Only JPG and PNG files are allowed");
+        // setError1("Only JPG and PNG files are allowed");
         return;
       }
-      setError1("");
+      // setError1("");
       setSelectedFile(file.name);
       const reader: any = new FileReader();
       reader.onloadend = () => {
@@ -289,30 +291,23 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
   const handleDateChange = (newDate: Dayjs | null) => {
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-    if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
-      // setDob(newDate);
-      setAdminDOB(newDate);
-      setError(null); // Clear error
-      setdobset_col(false);
-    } else {
-      // setDob(null);
-      let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
-      if (datecheck === "Invalid Date") {
-        setError(null);
-        setdobset_col(true);
-      } else {
+      if (newDate && newDate?.isBefore(exactSixYearsAgo, "day")) {
+        // setDob(newDate);
+        setAdminDOB(newDate);
+        setError(null); // Clear error
         setdobset_col(false);
+
         const currentDate = dayjs();
         if (newDate?.isAfter(currentDate, 'day')) {
-          setError('Future date are not allow.');
+          setError('Future dates are not allowed.');
         }else{
           setError('You must be at least 6 years old.');
+
         }
       }
+    } else {
+      setError("Invalid date selected. Please choose a valid date.");
     }
-  }else{
-    setError('Invalid date selected. Please choose a valid date.');
-  }
 
     // setAdminDOB(newDate);
     // let datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
@@ -328,7 +323,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (!admin?.last_name) setLname_col1(true);
     if (!admin?.father_name) setFathername_col1(true);
     if (!admin?.mother_name) setMothername_col1(true);
-    let paylod = {
+    const paylod = {
       admin_login_id: adminId,
       department_id: adminDepartment,
       first_name: admin?.first_name,
@@ -341,7 +336,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    let compare = {
+    const compare = {
       department_id: adminDepartment,
       first_name: admin?.first_name,
       last_name: admin?.last_name,
@@ -352,7 +347,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       guardian_name: admin?.guardian_name || "",
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    let datecheck: any = dayjs(paylod?.dob).format("DD/MM/YYYY");
+    const datecheck: any = dayjs(paylod?.dob).format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
     } else {
@@ -383,7 +378,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .then((data: any) => {
                 if (data.status == 200) {
                   setProImage(data.data);
-                } else {
                 }
               })
               .catch((e) => {
@@ -447,7 +441,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .then((data: any) => {
                 if (data.status == 200) {
                   setProImage(data.data);
-                } else {
                 }
               })
               .catch((e) => {
@@ -461,7 +454,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               theme: "colored",
             });
           }
-        } catch (error) {
+        } catch {
           toast.error("Some issue are occuring.", {
             hideProgressBar: true,
             theme: "colored",
@@ -491,7 +484,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   };
   return (
-  
     <form>
       <div className="row d-flex">
         <div className="col-md-6 pb-3form_field_wrapper">
@@ -517,7 +509,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {admin?.first_name == ""  && fname_col1 && (
+            {admin?.first_name == "" && fname_col1 && (
               <p style={{ color: "red" }}>Please enter First name.</p>
             )}
           </div>
@@ -590,30 +582,30 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               }}
               maxDate={maxSelectableDate}
             /> */}
-        <Box width={300}>
-        <DatePicker
-          value={dayjs(admin?.dob)} // Bind the value to dob state
-          onChange={handleDateChange} // Handle the date change
-          format="DD/MM/YYYY"
-          disableFuture // Disable future dates (optional)
-          maxDate={exactSixYearsAgo} // Set max date to exactly 6 years ago
-          minDate={minSelectableDate}  
-          onError={() => {}} // Handle errors if needed
-          sx={{
-            backgroundColor: "#f5f5f5",
-          }}
-          slotProps={{
-            textField: {
-              variant: 'outlined',
-              helperText: error, // Show the error message under the input field
-              error: Boolean(error), // Show error styling when there's an error
-              inputProps: {
-                maxLength: 10, // Limit input length to 10 (DD/MM/YYYY)
-              },
-            },
-          }}
-        />
-      </Box>
+            <Box width={300}>
+              <DatePicker
+                value={dayjs(admin?.dob)} // Bind the value to dob state
+                onChange={handleDateChange} // Handle the date change
+                format="DD/MM/YYYY"
+                disableFuture // Disable future dates (optional)
+                maxDate={exactSixYearsAgo} // Set max date to exactly 6 years ago
+                minDate={minSelectableDate}
+                onError={() => {}} // Handle errors if needed
+                sx={{
+                  backgroundColor: "#f5f5f5",
+                }}
+                slotProps={{
+                  textField: {
+                    variant: "outlined",
+                    helperText: error, // Show the error message under the input field
+                    error: Boolean(error), // Show error styling when there's an error
+                    inputProps: {
+                      maxLength: 10, // Limit input length to 10 (DD/MM/YYYY)
+                    },
+                  },
+                }}
+              />
+            </Box>
           </LocalizationProvider>
           <div>
             {" "}
@@ -646,9 +638,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             {admin.father_name == "" && fathername_col1 && (
               <p style={{ color: "red" }}>Please enter Father name.</p>
-            )}
-            {" "}
-           
+            )}{" "}
           </div>
         </div>
 
@@ -674,7 +664,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {admin.mother_name == ""  && mothername_col1 && (
+            {admin.mother_name == "" && mothername_col1 && (
               <p style={{ color: "red" }}>Please enter Mother name.</p>
             )}
           </div>

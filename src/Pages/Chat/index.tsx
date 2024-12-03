@@ -1,22 +1,18 @@
+
 import React, { useContext, useEffect, useRef, useState } from "react";
-// import "../Chat/Chat.scss";
+ import "../Chat/Chat.scss";
 import data from "./data.json";
 import axios from "axios";
+
 import useApi from "../../hooks/useAPI";
 import { toast, ToastContentProps } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { QUERY_KEYS, QUERY_KEYS_STUDENT } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
-import soundimg from "../../assets/img/sound.gif";
 import Chatbot from "../Chatbot";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, IconButton, useMediaQuery } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SendIcon from "@mui/icons-material/Send";
 import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import StarIcon from "@mui/icons-material/Star";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import BookmarkOutlinedIcon from "@mui/icons-material/BookmarkOutlined";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
@@ -32,7 +28,6 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import FlagIcon from "@mui/icons-material/Flag";
-import NameContext from "../Context/NameContext";
 import searchWhite from "../../assets/icons/search-white.svg";
 import primaryLogo from "../../assets/icons/logo-primary.png";
 import chatLogo from "../../assets/img/chat-logo.svg";
@@ -40,12 +35,13 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import "../../assets/css/newstyle.scss";
 import "../../assets/css/main.scss";
 import "react-perfect-scrollbar/dist/css/styles.css";
+
 // import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import { useTheme } from "@mui/material/styles";
 
+
 const Chat = () => {
-  const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  
   const userid = localStorage.getItem("_id") || "";
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -53,70 +49,41 @@ const Chat = () => {
   const [studentCourse, setStudentCourse] = useState<any>();
   const [searcherr, setSearchErr] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  // const [starFlagged, setStarFlagged] = useState(false);
-  const [filteredProducts, setFilteredProducts] = useState<any>([]);
   const { Id } = useParams();
-  const intials = {
-    answer: [
-      "Welcome",
-      "to",
-      "Gyan",
-      "Setu",
-      "Chat",
-      "!",
-      "How",
-      "can",
-      "I",
-      "assist",
-      "you",
-      "today",
-      "?",
-    ],
-  };
-  // const [selectedchat, setSelectedChat] = useState<any>([intials]);
   const [selectedchat, setSelectedChat] = useState<any>([]);
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
+
   const [isUpIconClicked, setIsUpIconClicked] = useState(false);
   const [isDownIconClicked, setIsDownIconClicked] = useState(false);
   const theme = useTheme();
 
+
   const ChatURL = QUERY_KEYS.CHATADD;
-  const ChatURLRAG = QUERY_KEYS.CHATADDRAGMODEL;
-  const ChatURLOLLAMA = QUERY_KEYS.CHATADDOLLAMA;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const ChatStore = QUERY_KEYS.CHAT_STORE;
-
   const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
-  const chataddurl = QUERY_KEYS.CHAT_HISTORY;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const StudentGETURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const [chat, setchatData] = useState<any>([]);
   const [chatlist, setchatlistData] = useState<any>();
-  const [statredchat, setstatredchat] = useState<any>([]);
   const [chathistory, setchathistory] = useState<any>([]);
   const [chathistoryrecent, setchathistoryrecent] = useState<any>();
   const [chatsaved, setChatSaved] = useState<boolean>(false);
   const [displayedChat, setDisplayedChat] = useState<any>([]);
   const { postData, getData, deleteData } = useApi();
   const navigate = useNavigate();
-  const [profileCompletion, setProfileCompletion] = useState(
-    localStorage.getItem("Profile_completion") || "0"
-  );
+  const profileCompletion = localStorage.getItem("Profile_completion") || "0";
   const [searchQuery, setSearchQuery] = useState("");
   const [searchQuerystarred, setSearchQuerystarred] = useState("");
-  const [isStarredChatOpen, setIsStarredChatOpen] = useState(false);
-  const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false);
   const [showInitialPage, setShowInitialPage] = useState(true);
   const [loaderMsg, setLoaderMsg] = useState("");
   const [isTextCopied, setIsTextCopied] = useState<any>({});
-  let synth: SpeechSynthesis;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  let selectedvoice: SpeechSynthesisVoice | null = null;
-  synth = window?.speechSynthesis;
   synth.onvoiceschanged = () => {
     getVoices();
   };
@@ -124,7 +91,6 @@ const Chat = () => {
     navigate("/*");
   }
   const chatRef = useRef<HTMLInputElement>(null);
-  // console.log();
   const handlecancel = () => {
     setDataDelete(false);
   };
@@ -149,7 +115,6 @@ const Chat = () => {
     setTimeout(() => {
       if (Id !== undefined) {
         setShowInitialPage(true);
-        // setSelectedChat([intials]);
         setSelectedChat([]);
         setSearchQuerystarred("");
       } else {
@@ -187,7 +152,7 @@ const Chat = () => {
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
         setchatlistData(data?.data);
-        setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
+        // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
         setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
         setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
       })
@@ -201,19 +166,8 @@ const Chat = () => {
 
   const getVoices = () => {
     setVoices(synth.getVoices());
-    // filterVoicesByGender("Google UK English Female");
-    // filterVoicesByGender("Microsoft Zira - English (United States)");
-    // filterVoicesByGender('Microsoft Mark - English (United States)');
   };
-  // const filterVoicesByGender = (gender: string) => {
-  //   const selectedVoice = voices?.find((voice) =>
-  //     voice?.name?.toLowerCase().includes(gender?.toLowerCase())
-  //   );
-  //   if (selectedVoice) {
-  //     selectedvoice = selectedVoice;
-  //   }
-  //   console.log("voices selecte", selectedVoice);
-  // };
+  
   useEffect(() => {
     callAPI();
     getVoices();
@@ -230,7 +184,6 @@ const Chat = () => {
 
   const filterdataCall = async () => {
     if (Id === "recentChat") {
-      // Convert updated_at strings to Date objects for comparison
       const parsedChatHistory = await chathistory?.map(
         (chat: { updated_at: string | number | Date }) => ({
           ...chat,
@@ -250,13 +203,13 @@ const Chat = () => {
       if (chatmodify && chatmodify[0].question !== "") {
         const tadaysChat = getTodaysData(sortedChatHistory);
         const newArray = [...tadaysChat];
-        let column = [
+        const column = [
           {
             question: chatmodify[0]?.question,
             answer: chatmodify[0]?.answer,
           },
         ];
-        let newObject = {
+        const newObject = {
           chat_conversation: JSON.stringify(column),
           chat_title: chatmodify[0]?.question,
           flagged: false,
@@ -287,10 +240,6 @@ const Chat = () => {
 
     // Join the array into a single string
     let cleanedText = textArray.join(" ");
-
-    // Remove unwanted characters and replace with spaces
-    // cleanedText = cleanedText.replace(/[^\w\s]/gi, ' ');
-
     // Replace multiple spaces with a single space
     cleanedText = cleanedText.replace(/\s+/g, " ");
 
@@ -300,12 +249,8 @@ const Chat = () => {
     // Convert the first letter of the cleaned text to uppercase
     cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
 
-    // Add a period at the end if it's missing
-    // if (cleanedText.slice(-1) !== '.') {
-    //   cleanedText += '.';
-    // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = (event) => {};
+    utterance.onerror = () => {};
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -333,80 +278,11 @@ const Chat = () => {
     setSelectedChat(updatedChat);
     synth.cancel();
   };
-  const searchData11 = () => {
-    if (search === "") {
-      setSearchErr(true);
-    } else {
-      // let address  = studentDetail.address.address1 +","+studentDetail.address.address2 +","+studentDetail.address.district +","+studentDetail.address.city +","+studentDetail.address.state +","+studentDetail.address.country +","+studentDetail.address.pincode
-      // let prompt = "Hi I am"+studentDetail.first_name+" "+ studentDetail.last_name + ".Currenly I am studying at "+ studentDetail.institution +" at "+address+ " in "+studentDetail.course+ " and persuing "+studentDetail.subject+" can you please provide "+search+" based on given course and subject"
-      setLoading(true);
-      setLoaderMsg("Searching result from knowledge base.");
-      setSearchErr(false);
-      // newchat();
-
-      let prompt = studentDetail?.prompt;
-      prompt = prompt?.replace("**question**", "answer");
-      let payload = {};
-      if (selectedchat?.question !== "") {
-        payload = {
-          student_id: userid,
-          question: search,
-          prompt: prompt,
-          course: studentDetail?.course === null ? "" : studentDetail?.course,
-          stream: studentDetail?.subject,
-          chat_hostory: [
-            { role: "user", content: selectedchat?.question },
-            {
-              role: "assistant",
-              content: selectedchat?.answer,
-            },
-          ],
-        };
-      } else {
-        payload = {
-          student_id: userid,
-          question: search,
-          prompt: prompt,
-          course: studentDetail?.course === null ? "" : studentDetail?.course,
-          stream: studentDetail?.subject,
-        };
-      }
-      postData(`${ChatURL}`, payload)
-        .then((data: any) => {
-          if (data?.data) {
-            const newData = data?.data;
-
-            data.data.speak = false;
-            setFilteredProducts(data?.data);
-            // setSelectedChat(data?.data);
-            setSelectedChat((prevState: any) => [...prevState, newData]);
-            setChatSaved(false);
-            // setchatData(data?.data);
-            setchatData((prevState: any) => [...prevState, newData]);
-            setLoading(false);
-            setSearch("");
-          } else {
-            setLoading(false);
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
-        })
-        .catch((e) => {
-          setLoading(false);
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        });
-    }
-  };
 
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
     newData.speak = false;
-    setFilteredProducts(newData);
+    // setFilteredProducts(newData);
     setSelectedChat((prevState: any) => [...prevState, newData]);
     setChatSaved(false);
     setchatData((prevState: any) => [...prevState, newData]);
@@ -416,7 +292,7 @@ const Chat = () => {
       .then((data: any) => {
         setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
         setchatlistData(data?.data);
-        setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
+        // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
         setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
       })
       .catch((e) => {
@@ -458,9 +334,9 @@ const Chat = () => {
     setLoaderMsg("Searching result from knowledge base");
     setSearchErr(false);
 
-    let prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    const prompt = studentDetail?.prompt?.replace("**question**", "answer");
     let payload = {};
-    let rag_payload = {};
+    // let rag_payload = {};
     if (selectedchat?.question !== "") {
       payload = {
         student_id: userid,
@@ -481,10 +357,10 @@ const Chat = () => {
           },
         ],
       };
-      rag_payload = {
-        user_query: search,
-        student_id: userid,
-      };
+      // rag_payload = {
+      //   user_query: search,
+      //   student_id: userid,
+      // };
     } else {
       payload = {
         student_id: userid,
@@ -496,16 +372,16 @@ const Chat = () => {
             : studentCourse,
         stream: studentDetail?.subject,
       };
-      rag_payload = {
-        user_query: search,
-        student_id: userid,
-      };
+      // rag_payload = {
+      //   user_query: search,
+      //   student_id: userid,
+      // };
     }
 
     const handleResponsereg = (data: { data: any }) => {
       const newData = data;
       // newData.speak = false;
-      setFilteredProducts(newData);
+      // setFilteredProducts(newData);
       setSelectedChat((prevState: any) => [...prevState, newData]);
       setChatSaved(false);
       setchatData((prevState: any) => [...prevState, newData]);
@@ -514,7 +390,7 @@ const Chat = () => {
       getData(`${chatlisturl}/${userdata?.id}`)
         .then((data: any) => {
           setchatlistData(data?.data);
-          setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
+          // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
           setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
           setchathistoryrecent(
             data?.data?.filter((chat: any) => !chat?.flagged)
@@ -548,27 +424,30 @@ const Chat = () => {
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
-                  let ChatStorepayload = {
+                  const ChatStorepayload = {
                     student_id: userid,
                     chat_question: search,
                     response: response?.answer,
                   };
-                  response?.status !== 402 &&
+                  if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError
                     );
+                  }
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+
                     `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
                       search
                     )}`
+
                   )
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
-                        let ChatStorepayload = {
+                        const ChatStorepayload = {
                           student_id: userid,
                           chat_question: search,
                           response: response?.answer,
@@ -595,7 +474,7 @@ const Chat = () => {
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
-                      let ChatStorepayload = {
+                      const ChatStorepayload = {
                         student_id: userid,
                         chat_question: search,
                         response: response?.answer,
@@ -622,8 +501,10 @@ const Chat = () => {
               institute_id,
               course_id,
               year,
-            } = studentDetail?.academic_history;
-            const { subject_name } = studentDetail?.subject_preference;
+
+            } = studentDetail?.academic_history || {};
+            const { subject_name } = studentDetail?.subject_preference || {};
+
 
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
@@ -646,21 +527,23 @@ const Chat = () => {
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
             });
+
             return getData(
               `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             )
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
-                  let ChatStorepayload = {
+                  const ChatStorepayload = {
                     student_id: userid,
                     chat_question: search,
                     response: response?.answer,
                   };
-                  response?.status !== 402 &&
+                  if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError
                     );
+                  }
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
@@ -672,7 +555,7 @@ const Chat = () => {
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
-                        let ChatStorepayload = {
+                        const ChatStorepayload = {
                           student_id: userid,
                           chat_question: search,
                           response: response?.answer,
@@ -700,7 +583,7 @@ const Chat = () => {
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
-                      let ChatStorepayload = {
+                      const ChatStorepayload = {
                         student_id: userid,
                         chat_question: search,
                         response: response?.answer,
@@ -723,7 +606,7 @@ const Chat = () => {
       })
       .then((data: any) => {
         if (data?.status === 200) {
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: userid,
             chat_question: search,
             response: data?.answer,
@@ -741,9 +624,9 @@ const Chat = () => {
 
           handleResponsereg(data);
         } else if (data?.status === 404) {
-          let Ollamapayload = {
-            user_query: search,
-          };
+          // const Ollamapayload = {
+          //   user_query: search,
+          // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
@@ -758,7 +641,7 @@ const Chat = () => {
       .then((data) => {
         if (data?.status === 200) {
           // handleResponse(data);
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: userid,
             chat_question: search,
             response: data?.answer,
@@ -869,7 +752,7 @@ const Chat = () => {
     }
     // postData(`${chataddurl}`, chat_payload)
     await postData(`${chataddconversationurl}`, chat_payload)
-      .then((chatdata: any) => {
+      .then(() => {
         // setChatSaved(false);
         // toast.success(chatdata?.message, {
         //   hideProgressBar: true,
@@ -879,7 +762,7 @@ const Chat = () => {
         localStorage.removeItem("chatData");
         localStorage.removeItem("chatsaved");
       })
-      .catch((e) => {
+      .catch(() => {
         // toast.error(e?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
@@ -934,9 +817,9 @@ const Chat = () => {
       });
   };
 
-  useEffect(() => {
-    setFilteredProducts([]);
-  }, []);
+  // useEffect(() => {
+  //   setFilteredProducts([]);
+  // }, []);
 
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter") {
@@ -1002,10 +885,10 @@ const Chat = () => {
     const chatt = JSON.parse(chats?.chat_conversation);
     setDisplayedChat(chatt);
     setSelectedChat([]);
-    let chatdataset: any[] = [];
+    const chatdataset: any[] = [];
     chatt.map((itemchat: any) => {
       // setTimeout(() => {
-      let chatdata: any = {};
+      const chatdata: any = {};
       chatdata.question = itemchat?.question;
       // chatdata.answer = chat?.response
       let elements: any = [];
@@ -1015,13 +898,13 @@ const Chat = () => {
         } else {
           elements = itemchat?.answer;
         }
-      } catch (e) {
+      } catch {
         const cleanString = itemchat?.answer
           .replace(/\\"/g, '"')
           .replace(/[{}]/g, "")
           .replace(/\\'/g, "'")
           .replace(/(^"|"$)/g, "")
-          .replace(/(^\\\"|\\\"$)/g, "");
+          // .replace(/(^"|"$)/g, "");
         const stringArray = cleanString
           .split(",")
           .map((item: any) => item.trim());
@@ -1068,20 +951,20 @@ const Chat = () => {
     saveChatlocal();
   };
 
-  const isSmallScreen = useMediaQuery("(max-width:600px)");
-  const isMediumScreen = useMediaQuery(
-    "(min-width:601px) and (max-width:1200px)"
-  );
+  // const isSmallScreen = useMediaQuery("(max-width:600px)");
+  // const isMediumScreen = useMediaQuery(
+  //   "(min-width:601px) and (max-width:1200px)"
+  // );
 
-  let fontSize = "27px";
+  // let fontSize = "27px";
 
-  if (isSmallScreen) {
-    fontSize = "18px";
-  } else if (isMediumScreen) {
-    fontSize = "22px";
-  } else {
-    //empty
-  }
+  // if (isSmallScreen) {
+  //   fontSize = "18px";
+  // } else if (isMediumScreen) {
+  //   fontSize = "22px";
+  // } else {
+  //   //empty
+  // }
   //   let statredchat:any =[];
   //   let chathistory:any =[];
   // useEffect(()=>{
@@ -1092,15 +975,15 @@ const Chat = () => {
   // },[chatlist,statredchat,chathistory])
   // console.log("test starred",statredchat,chatlist,selectedchat)
 
-  const toggleStarredChat = () => setIsStarredChatOpen(!isStarredChatOpen);
-  const toggleChatHistory = () => setIsChatHistoryOpen(!isChatHistoryOpen);
+  // const toggleStarredChat = () => setIsStarredChatOpen(!isStarredChatOpen);
+  // const toggleChatHistory = () => setIsChatHistoryOpen(!isChatHistoryOpen);
 
   const regenerateChat = (question: any) => {
     setLoading(true);
     setLoaderMsg("Fetching Data from Ollama model.");
     setSearchErr(false);
 
-    let prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    const prompt = studentDetail?.prompt?.replace("**question**", "answer");
     let payload = {};
 
     if (selectedchat?.question !== "") {
@@ -1140,7 +1023,7 @@ const Chat = () => {
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);
-          let ChatStorepayload = {
+          const ChatStorepayload = {
             student_id: userid,
             chat_question: question,
             response: response?.answer,
@@ -1155,11 +1038,11 @@ const Chat = () => {
       });
   };
 
-  const iconcolor: any = {
-    light: "#003032",
-    dark: "#FFFFFF",
-    default: "#003032",
-  };
+  // const iconcolor: any = {
+  //   light: "#003032",
+  //   dark: "#FFFFFF",
+  //   default: "#003032",
+  // };
 
   // Handle search input change
   const handleSearchChange = (e: {
@@ -1667,8 +1550,10 @@ const Chat = () => {
                     <img src={searchWhite} alt="" />
                   </button>
                 </div>
+
                 <div className="history-label">Today's Search</div>
-                <ul className="history-list">
+                <ul className="history-list overflow-auto" style={{ maxHeight: '350px' }}>
+
                   <>
                     {filteredChats?.length > 0 &&
                       filteredChats?.map(
@@ -2010,7 +1895,7 @@ const Chat = () => {
                       <input
                         type="text"
                         ref={chatRef}
-                        className="form-control"
+                        className="form-control custom-input"
                         placeholder="Type your question"
                         aria-label="Search"
                         value={search}
@@ -2020,7 +1905,7 @@ const Chat = () => {
                       <button
                         type="button"
                         onClick={searchData}
-                        className="btn btn-primary p-0"
+                        className="btn btn-primary p-0 overlap-button"
                       >
                         <ArrowUpwardOutlinedIcon />
                       </button>

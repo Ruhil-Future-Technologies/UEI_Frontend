@@ -1,39 +1,4 @@
-// import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-// import React, { FunctionComponent } from "react";
-
-// export const ProfileDialog: FunctionComponent<{
-//   isOpen: boolean;
-//   onCancel: () => void;
-//   onOkClick: () => void;
-//   title: string;
-// }> = ({ isOpen, onCancel, onOkClick, title}) => (
-
-//   <Dialog
-//     open={isOpen}
-//     onClose={onCancel}
-//     aria-labelledby="alert-dialog-title"
-//     aria-describedby="alert-dialog-description"
-//     disableBackdropClick
-//   >
-//     <DialogTitle id="alert-dialog-title">
-//       {title}
-//     </DialogTitle>
-//     <DialogContent>
-//       <DialogContentText id="alert-dialog-description">
-//       To access the chat feature, please complete your profile by filling in all required fields. Thank you!
-//       </DialogContentText>
-//     </DialogContent>
-//     <DialogActions>
-//       <Button onClick={onCancel} autoFocus>
-//         Cancel
-//       </Button>
-//       <Button onClick={onOkClick} autoFocus>
-//        Ok
-//       </Button>
-//     </DialogActions>
-//   </Dialog>
-// );
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   FunctionComponent,
   useState,
@@ -43,31 +8,13 @@ import React, {
   useRef,
   useContext,
 } from "react";
-import Backdrop from "@mui/material/Backdrop";
-import type {
-  DialogProps,
-  FilledTextFieldProps,
-  OutlinedTextFieldProps,
-  StandardTextFieldProps,
-  TextFieldVariants,
-} from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./stylechat.css"; // Import your CSS file
 import useApi from "../../hooks/useAPI";
 import glogo from "../../assets/img/logo-white.svg";
 import { toast } from "react-toastify";
 import IconButton from "@mui/material/IconButton";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  Switch,
-  TextField,
-} from "@mui/material";
+import { Button, FormControlLabel, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
@@ -75,23 +22,19 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
-import { Country, State, City } from "country-state-city";
+import { Country, State } from "country-state-city";
 import { QUERY_KEYS_STUDENT } from "../../utils/const";
 import SendIcon from "@mui/icons-material/Send";
-import { JSX } from "react/jsx-runtime";
 import NameContext from "../../Pages/Context/NameContext";
 import {
   chatcalandericon,
   chatdatetext,
-  chatdialog,
   chattextbgleft,
   chattextbgright,
   chattextleft,
   chattextright,
-  inputfieldtext,
 } from "../../utils/helpers";
 import CloseIcon from "@mui/icons-material/Close";
-import { Flag } from "@mui/icons-material";
 import { ChatDialogClose } from "./ChatDialogClose";
 import { styled } from "@mui/material/styles";
 import Course from "../../Pages/Course/Course";
@@ -218,16 +161,16 @@ export const ProfileDialog: FunctionComponent<{
   onCancel: () => void;
   onOkClick: () => void;
   title: string;
-}> = ({ isOpen, onCancel, onOkClick, title }) => {
-  const handleClose: DialogProps["onClose"] = (event, reason) => {
-    if (reason && reason === "backdropClick") return;
-    onCancel();
-  };
+}> = ({ isOpen, onCancel }) => {
+  // const handleClose: DialogProps["onClose"] = (event, reason) => {
+  //   if (reason && reason === "backdropClick") return;
+  //   onCancel();
+  // };
 
   const context = useContext(NameContext);
   const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
-  let StudentId = localStorage.getItem("_id");
-  let usertype = localStorage.getItem("user_type");
+  const StudentId = localStorage.getItem("_id");
+  const usertype = localStorage.getItem("user_type");
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
@@ -241,7 +184,7 @@ export const ProfileDialog: FunctionComponent<{
   const [currentSection, setCurrentSection] = useState<string | null>("basic");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [error1, setError1] = useState("");
-  const [errordate, setErordate] = useState(false);
+  // const [errordate, setErordate] = useState(false);
   const [answers, setAnswers] = useState<string[]>([]);
   const [messages, setMessages] = useState<
     { text: string; type: "question" | "answer" }[]
@@ -268,7 +211,7 @@ export const ProfileDialog: FunctionComponent<{
   const [selectedClass, setSelectedClass] = useState<any>("");
   const [selectedStream, setSelectedStream] = useState<any>("");
   const [selectedLearningStyle, setSelectedLearningStyle] = useState<any>("");
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>("");
+  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>("");
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedstate, setSelectedState] = useState(null);
@@ -353,7 +296,7 @@ export const ProfileDialog: FunctionComponent<{
             }
           }
         })
-        .catch((e: any) => {
+        .catch(() => {
           // toast.error(e?.message, {
           //     hideProgressBar: true,
           //     theme: "colored",
@@ -509,8 +452,8 @@ export const ProfileDialog: FunctionComponent<{
 
   const adjustQuestionsForInstitutionType = (institutionType: string) => {
     let adjustedQuestions = [...initialQuestions[currentSection!]];
-    let adjustedMapping = { ...mapping };
-    let board = answeredData?.academic_history?.board;
+    const adjustedMapping = { ...mapping };
+    const board = answeredData?.academic_history?.board;
 
     if (institutionType === "school") {
       // Remove college-specific questions
@@ -638,10 +581,10 @@ export const ProfileDialog: FunctionComponent<{
               const keys: any = mapping[question];
               if (!keys) return true; // If no mapping exists, keep the question
 
-              const [index, section, ...fields] = keys;
+              const [section, ...fields] = keys;
               const sectionData = answeredData[section];
 
-              return !fields.every((field: any) => sectionData[field]); // Remove the question if all fields have values
+              return !fields.every((field: any) => sectionData && sectionData[field]); // Remove the question if all fields have values
             }
           });
         } else {
@@ -651,10 +594,10 @@ export const ProfileDialog: FunctionComponent<{
                 const keys: any = mapping[question];
                 if (!keys) return true; // If no mapping exists, keep the question
 
-                const [index, section, ...fields] = keys;
+                const [section, ...fields] = keys;
                 const sectionData = answeredData[section];
 
-                return !fields.every((field: any) => sectionData[field]); // Remove the question if all fields have values
+                return !fields.every((field: any) => sectionData && sectionData[field]); // Remove the question if all fields have values
               }
             }
           );
@@ -799,15 +742,15 @@ export const ProfileDialog: FunctionComponent<{
   const parseDate = (dateStr: string | number | Date) => {
     if (typeof dateStr === "string") {
       // Check if the date string is in DD/MM/YYYY format
-      const parts = dateStr?.split("/");
+      const parts = dateStr.split("/");
       if (parts.length === 3) {
-        const [day, month, year] = parts?.map(Number);
+        const [day, month, year] = parts.map(Number);
         // Create a new Date object using year, month (0-indexed), and day
         const date = new Date(year, month - 1, day);
-        if (isNaN(date?.getTime())) {
+        if (isNaN(date.getTime())) {
           return null;
         }
-        return date?.toISOString();
+        return date.toISOString();
       } else {
         return null;
       }
@@ -815,7 +758,7 @@ export const ProfileDialog: FunctionComponent<{
 
     // If dateStr is already a Date object or a number, use it directly
     const date = new Date(dateStr);
-    if (isNaN(date?.getTime())) {
+    if (isNaN(date.getTime())) {
       return null;
     }
     return date.toISOString();
@@ -844,10 +787,10 @@ export const ProfileDialog: FunctionComponent<{
     const formattedDate = formatDateToISO(birthdateObj);
 
     const fullName = answers?.[0];
-    let nameParts: string[] = fullName?.split(" ");
+    const nameParts: string[] = fullName?.split(" ");
     const firstname = nameParts?.[0];
     const lastname = nameParts?.[1];
-    let payload = {
+    const payload = {
       student_login_id: StudentId,
       first_name: answeredData?.basic_info?.first_name || firstname,
       last_name: answeredData?.basic_info?.last_name || lastname,
@@ -890,7 +833,7 @@ export const ProfileDialog: FunctionComponent<{
                   // });
                 }
               })
-              .catch((e) => {
+              .catch(() => {
                 // toast.error(e?.message, {
                 //   hideProgressBar: true,
                 //   theme: "colored",
@@ -917,13 +860,13 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const saveAnswersforContact = (answer: string[]) => {
-    const contfullPhone = answer[20];
-    let phoneNum = contfullPhone?.split(" ");
-    const contfullPhonewtsp = answer[21];
-    let phoneNumwtsp = contfullPhonewtsp?.split(" ");
-    let email = localStorage.getItem("userid");
+    // const contfullPhone = answer[20];
+    // let phoneNum = contfullPhone?.split(" ");
+    // const contfullPhonewtsp = answer[21];
+    // let phoneNumwtsp = contfullPhonewtsp?.split(" ");
+    const email = localStorage.getItem("userid");
 
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || answer[22],
       mobile_no_call: answeredData?.contact?.mobile_no_call || answer[23],
@@ -993,11 +936,14 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType,
       board:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
+
         selectedInstituteType?.toLowerCase() === "school"
+
           ? answeredData?.academic_history?.board || selectedBoard
           : null,
       state_for_stateboard:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
+
         selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.state_for_stateboard ||
             selectedAcademicState?.toLowerCase()
@@ -1023,11 +969,13 @@ export const ProfileDialog: FunctionComponent<{
       class_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === "school"
+
           ? answeredData?.academic_history?.class_id || answers[11]?.toString()
           : null,
       // year: answeredData?.academic_history?.year || answers[18] || "",
       year:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
+
         selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.year ||
             (answers[18]
@@ -1037,16 +985,21 @@ export const ProfileDialog: FunctionComponent<{
       stream:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === "school"
+
           ? answeredData?.academic_history?.stream || answers[12]
           : null,
       university_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
+
         selectedInstituteType?.toLowerCase() === "college"
+
           ? answeredData?.academic_history?.university_id || answers[13]
           : null,
       sem_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
+
         selectedInstituteType?.toLowerCase() === "college"
+
           ? answeredData?.academic_history?.sem_id || answers[16]
           : null,
     };
@@ -1076,8 +1029,10 @@ export const ProfileDialog: FunctionComponent<{
       sem_id: answeredData?.subject_preference?.sem_id || answers[26],
       ...(answeredData?.academic_history?.institution_type === "school" &&
         answeredData?.academic_history?.stream && {
+
           stream: answeredData?.academic_history?.stream || answers[12],
         }),
+
       ...((answeredData?.academic_history?.institution_type === "college" ||
         answers[8]?.toLowerCase() === "college") && {
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
@@ -1140,10 +1095,12 @@ export const ProfileDialog: FunctionComponent<{
   const maxSemester =
     semester && semester?.length > 0
       ? Math.max(
+
           ...semester?.map(
             (item: { semester_number: any }) => item?.semester_number
           )
         )
+
       : 0;
   // const semesterSelectOptions = [...Array(semester[0]?.semester_number)].map(
   const semesterSelectOptions = [...Array(maxSemester)]?.map((_, index) => ({
@@ -1152,6 +1109,7 @@ export const ProfileDialog: FunctionComponent<{
   }));
   const semesterSelectOptionspre = selectSemester
     ? [
+
         {
           value: selectSemester,
           label: `Semester ${selectSemester}`,
@@ -1159,12 +1117,15 @@ export const ProfileDialog: FunctionComponent<{
       ]
     : semesterpre[0]?.semester_number
     ? [
+
         {
           value: semesterpre[0]?.semester_number,
           label: `Semester ${semesterpre[0]?.semester_number}`,
         },
       ]
+
     : [];
+
 
   // const semesterSelectOptionspre = [
   //   ...Array(semesterpre[0]?.semester_number),
@@ -1277,8 +1238,8 @@ export const ProfileDialog: FunctionComponent<{
     })
   );
 
-  const saveanswerForHobbeis = (answers: string[]) => {
-    let payload = {
+  const saveanswerForHobbeis = () => {
+    const payload = {
       student_id: StudentId,
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
     };
@@ -1298,7 +1259,7 @@ export const ProfileDialog: FunctionComponent<{
     });
   };
 
-  const saveAnswerForLanguage = (answers: string[]) => {
+  const saveAnswerForLanguage = () => {
     const payload = {
       student_id: StudentId,
       language_id:
@@ -1515,7 +1476,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "", type: "answer" as "answer" },
+      { text: "", type: "answer" as const },
     ];
     saveAnswersforBasic([...answers]);
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1524,7 +1485,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1555,7 +1516,7 @@ export const ProfileDialog: FunctionComponent<{
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: e.target.files[0].name, type: "answer" as "answer" },
+        { text: e.target.files[0].name, type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1564,7 +1525,7 @@ export const ProfileDialog: FunctionComponent<{
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
       } else {
@@ -1590,7 +1551,7 @@ export const ProfileDialog: FunctionComponent<{
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: datecheck, type: "answer" as "answer" },
+        { text: datecheck, type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1599,7 +1560,7 @@ export const ProfileDialog: FunctionComponent<{
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
       } else {
@@ -1628,7 +1589,7 @@ export const ProfileDialog: FunctionComponent<{
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as "answer" },
+            { text: datecheck, type: "answer" as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1637,7 +1598,7 @@ export const ProfileDialog: FunctionComponent<{
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as "question",
+                type: "question" as const,
               },
             ]);
           } else {
@@ -1662,7 +1623,7 @@ export const ProfileDialog: FunctionComponent<{
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as "answer" },
+          { text: datecheck, type: "answer" as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1671,7 +1632,7 @@ export const ProfileDialog: FunctionComponent<{
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as "question",
+              type: "question" as const,
             },
           ]);
         } else {
@@ -1692,7 +1653,7 @@ export const ProfileDialog: FunctionComponent<{
     if (answers[currentQuestionIndex]?.trim() !== "") {
       const updatedMessages = [
         ...messages,
-        { text: answers[currentQuestionIndex], type: "answer" as "answer" },
+        { text: answers[currentQuestionIndex], type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1715,7 +1676,7 @@ export const ProfileDialog: FunctionComponent<{
               currentQuestionIndex === 24
                 ? currentQuestions[27]
                 : currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
 
@@ -1749,8 +1710,8 @@ export const ProfileDialog: FunctionComponent<{
   };
   useEffect(() => {
     if (selectedproficiency !== "") {
-      saveanswerForHobbeis([...answers]);
-      saveAnswerForLanguage([...answers]);
+      saveanswerForHobbeis();
+      saveAnswerForLanguage();
     }
   }, [selectedproficiency]);
 
@@ -1904,7 +1865,7 @@ export const ProfileDialog: FunctionComponent<{
         pincode ||
         per ||
         preferenceError ||
-        errordate ||
+        // errordate ||
         goal ||
         firstaddress ||
         secondaddress
@@ -1952,7 +1913,7 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
 
-  const handlePhoneChange = (value: string, country: any) => {
+  const handlePhoneChange = (value: string) => {
     setPhone(value);
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = "+" + value;
@@ -1960,7 +1921,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "+" + value, type: "answer" as "answer" },
+      { text: "+" + value, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1969,7 +1930,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1987,7 +1948,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1996,7 +1957,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2014,7 +1975,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2023,7 +1984,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2041,7 +2002,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2050,7 +2011,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
       // answerSaveandGotoNextquestoin(e)
@@ -2068,7 +2029,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2077,7 +2038,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
       // answerSaveandGotoNextquestoin(e)
@@ -2096,7 +2057,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2148,7 +2109,7 @@ export const ProfileDialog: FunctionComponent<{
           text: currentQuestions[
             e.value === "school" ? currentQuestionIndex + 1 : 13
           ],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2165,7 +2126,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2178,7 +2139,7 @@ export const ProfileDialog: FunctionComponent<{
           text: currentQuestions[
             e.value === "state_board" ? currentQuestionIndex + 1 : 11
           ],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2204,7 +2165,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.value, type: "answer" as "answer" },
+      { text: e.value, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2213,7 +2174,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[19],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2230,7 +2191,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2239,7 +2200,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2265,7 +2226,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2280,7 +2241,7 @@ export const ProfileDialog: FunctionComponent<{
               ? currentQuestionIndex + 1
               : 19
           ],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2297,7 +2258,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2306,7 +2267,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2345,7 +2306,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2354,7 +2315,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2376,7 +2337,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2385,7 +2346,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2402,7 +2363,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2411,7 +2372,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2448,7 +2409,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2457,7 +2418,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2475,7 +2436,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2484,7 +2445,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2507,7 +2468,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2516,7 +2477,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2552,7 +2513,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2561,7 +2522,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2579,7 +2540,7 @@ export const ProfileDialog: FunctionComponent<{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -2588,7 +2549,7 @@ export const ProfileDialog: FunctionComponent<{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -2613,9 +2574,11 @@ export const ProfileDialog: FunctionComponent<{
     document.body.classList.remove("overflow-hidden");
     // navigate("/main/Dashboard");
   };
+
   const handleOpen = () => {
     // setOpen(true);
   };
+
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
 
@@ -2659,11 +2622,13 @@ export const ProfileDialog: FunctionComponent<{
                   return (
                     <div
                       key={index}
+
                       className={`message-wrapper d-flex mb-3 ${
                         message.type === "question"
                           ? "justify-content-start"
                           : "justify-content-end"
                       }`}
+
                     >
                       <div
                         className={`message-bubble p-3 ${
@@ -2706,7 +2671,7 @@ export const ProfileDialog: FunctionComponent<{
                     pincode ||
                     per ||
                     preferenceError ||
-                    errordate ||
+                    // errordate ||
                     goal ||
                     firstaddress ||
                     secondaddress) && (
