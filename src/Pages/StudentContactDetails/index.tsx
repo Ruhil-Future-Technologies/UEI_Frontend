@@ -23,6 +23,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [whatsappNum, setWhatsappNum] = useState("");
   const [contcodePhone, setContcodePhone] = useState("+91");
   const [phoneNum, setPhoneNum] = useState("");
+  
   const [phoneNumerror, setPhoneNumerror] = useState({
     phoneNum: "",
   });
@@ -135,12 +136,18 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     // event.preventDefault();
 
     if (errors.phoneNum || errors.email || errors.whatsappNum) {
-      toast.error("Please fix the errors before submitting", {
-        hideProgressBar: true,
-        theme: "colored",
-        position: "top-center",
-      });
+
+      
+        
+     
+      // toast.error("Please fix the errors before submitting", {
+      //   hideProgressBar: true,
+      //   theme: "colored",
+      //   position: "top-center"
+      // });
+
       return;
+    
     }
 
     if (phoneNum.length !== 10) {

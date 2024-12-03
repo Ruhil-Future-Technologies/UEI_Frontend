@@ -71,6 +71,22 @@ import Semester from './Pages/Semester/Semester';
 import AddSemester from './Pages/Semester/AddSemester';
 import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
 
+import TeacherDash from './Pages/Teacher';
+import InstitutionDash from './Pages/Institution';
+
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import "./assets/css/main.scss";
+// import "./assets/css/newstyle.scss";
+
+
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import { jwtDecode, JwtPayload } from 'jwt-decode';
+
+
 function App() {
 
   const navigate = useNavigate()
@@ -275,6 +291,12 @@ function App() {
           </Route>
           <Route path="/main/pdflist">
             <Route path="" element={<Protected Component={PDFList} menuName="pdflist" />} />
+          </Route>
+          <Route path="/main/teacher-deshboard">
+            <Route path="" element={<Protected Component={TeacherDash} menuName="pdflist" />} />
+          </Route> 
+          <Route path="/main/institution-deshboard">
+            <Route path="" element={<Protected Component={InstitutionDash} menuName="pdflist" />} />
           </Route>
           <Route path="/main/feedback">
             <Route path="" element={<Protected Component={AdminFeedback} menuName="feedback" />} />

@@ -296,20 +296,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setAdminDOB(newDate);
         setError(null); // Clear error
         setdobset_col(false);
-      } else {
-        // setDob(null);
-        const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
-        if (datecheck === "Invalid Date") {
-          setError(null);
-          setdobset_col(true);
-        } else {
-          setdobset_col(false);
-          const currentDate = dayjs();
-          if (newDate?.isAfter(currentDate, "day")) {
-            setError("Future date are not allow.");
-          } else {
-            setError("You must be at least 6 years old.");
-          }
+
+        const currentDate = dayjs();
+        if (newDate?.isAfter(currentDate, 'day')) {
+          setError('Future dates are not allowed.');
+        }else{
+          setError('You must be at least 6 years old.');
+
         }
       }
     } else {

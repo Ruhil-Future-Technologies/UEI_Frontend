@@ -26,8 +26,13 @@ interface Hobby {
   id: number;
   is_active: number;
 }
-
-const StudentHobbies = ({ save }: { save: boolean }) => {
+interface StudentHobbiesProps {
+  save: boolean;
+  setSave: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsHobbiesUpdated:React.Dispatch<React.SetStateAction<boolean>>;
+  isLanguageUpdated:boolean;
+}
+const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHobbiesUpdated,isLanguageUpdated }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
@@ -36,18 +41,22 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
-  const StudentId = localStorage.getItem("_id");
 
+  let StudentId = localStorage.getItem("_id");
+  
   useEffect(() => {
+    console.log(save);
     if (save) {
       submitHandle();
     }
   }, [save]);
 
   useEffect(() => {
+
     const fetchHobbyList = async () => {
       try {
         const data: any = await getData("hobby/list");
+
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1
@@ -60,12 +69,14 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
           theme: "colored",
           position: "top-center",
         });
+
       }
     };
   
     const fetchStudentHobbies = async () => {
       try {
         const data: any = await getData("student_hobby/edit/" + StudentId);
+
         if (data?.status === 200) {
           const hobbyIds = data.data.map(
             (selecthobby: any) => selecthobby.hobby_id
@@ -89,20 +100,28 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   }, [StudentId]);
   
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
+    Promise.resolve(setIsHobbiesUpdated(true));
     setSelectedHobbies(event.target.value as string[]);
   };
 
   const submitHandle = async () => {
+    
     const eq = deepEqual(initialAdminState, selectedHobbies);
-    const payloadPromises = selectedHobbies.map((hobbyid) => {
-      const payload = {
+
+    let payloadPromises = selectedHobbies.map((hobbyid) => {
+      let payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
 
+      // return editFlag
+      //   ? postData("student_hobby/add", payload)
+      //   : putData("student_hobby/edit/" + StudentId, payload);
+
       if (editFlag) {
         return postData("student_hobby/add", payload);
       } else if (!eq) {
+        console.log("edit hobby");
         return putData("student_hobby/edit/" + StudentId, payload);
       } else {
         return Promise.resolve({ status: 204 }); // Skip update
@@ -112,20 +131,28 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
     try {
       const results = await Promise.all(payloadPromises);
       const successfulResults = results.filter((res) => res.status === 200);
+      console.log(successfulResults);
+      console.log(results);
+      console.log(payloadPromises);
+      console.log(successfulResults);
       if (successfulResults?.length > 0) {
-        if (editFlag) {
+        console.log(successfulResults);
+        if(!isLanguageUpdated){
+           if (editFlag) {
           toast.success("Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center",
           });
-        } else {
+        }else {
           toast.success("Hobbies update successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center",
           });
         }
+        }
+       
       } else if (results.some((res) => res.status !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
@@ -141,6 +168,10 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
         position: "top-center",
       });
     }
+
+    setSave(false);
+    // >>>>>>> Stashed changes
+
   };
 
   const ITEM_HEIGHT = 48;
@@ -156,6 +187,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
   const hobbydelete = (id: any) => {
     deleteData("/student_hobby/delete/" + id)
       .then((data: any) => {
+        console.log(data);
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
         }
@@ -168,6 +200,7 @@ const StudentHobbies = ({ save }: { save: boolean }) => {
       });
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
+    console.log(event.target.checked);
     if (!event.target.checked) {
       // Call your function when checkbox is unchecked
       hobbydelete(hobbyId);

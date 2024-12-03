@@ -230,7 +230,7 @@ const AddEditStudent = () => {
           setdobset_col(false);
           const currentDate = dayjs();
           if (newDate?.isAfter(currentDate, 'day')) {
-            setError('Future date are not allow.');
+            setError('Future dates are not allowed.');
           }else{
             setError('You must be at least 6 years old.');
           }
