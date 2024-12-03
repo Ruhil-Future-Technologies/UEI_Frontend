@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   useState,
   ChangeEvent,
@@ -17,10 +18,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Select from "react-select";
-import { Country, State, City } from "country-state-city";
+import { Country, State } from "country-state-city";
 import { QUERY_KEYS_STUDENT } from "../../utils/const";
-
-
 
 interface Institute {
   id: number;
@@ -57,10 +56,8 @@ interface Option {
 }
 
 const ProfileChat: React.FC = () => {
-
-
-  let StudentId = localStorage.getItem("_id");
-  let usertype = localStorage.getItem("user_type");
+  const StudentId = localStorage.getItem("_id");
+  const usertype = localStorage.getItem("user_type");
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
@@ -76,14 +73,12 @@ const ProfileChat: React.FC = () => {
   >([]);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
-
   const [selectedHobby, setSelectedHobby] = useState<any>("");
   const [selectedLanguage, setSelectedLanguage] = useState<any>("");
   const [selectedproficiency, setSelectedproficiency] = useState<any>("");
   const [selectedInstitute, setSelectedInstitute] = useState<any>("");
   const [selectCourse, setSelectedCourse] = useState<any>("");
   const [selectSubject, setSelectedSubject] = useState<any>("");
-
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedstate, setSelectedState] = useState(null);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
@@ -96,7 +91,7 @@ const ProfileChat: React.FC = () => {
   const [pincode, setpincode] = useState(false);
   const [per, setper] = useState(false);
 
-  const errordata=[
+  const errordata = [
     "Please enter a valid Full Name only characters allowed.",
     "please enter valid gender",
     "",
@@ -123,30 +118,28 @@ const ProfileChat: React.FC = () => {
     "",
     "",
     "Please enter a valid presentage.",
-    
-  ]
+  ];
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
-
-    if(usertype === 'student'){
-
-      getData(`${profileURL}/${StudentId}`).then((data:any) => {
-         if(data.status === 200 ){
-           navigate("/main/Dashboard");
-         }
-          
-      }).catch((e:any) => {
+    if (usertype === "student") {
+      getData(`${profileURL}/${StudentId}`)
+        .then((data: any) => {
+          if (data.status === 200) {
+            navigate("/main/Dashboard");
+          }
+        })
+        .catch((e: any) => {
           toast.error(e?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-              });
-      });
+            hideProgressBar: true,
+            theme: "colored",
+          });
+        });
     }
-}
+  };
 
-  useEffect(()=>{
-    callAPI()
-  },[])
+  useEffect(() => {
+    callAPI();
+  }, []);
 
   const initialQuestions: { [key: string]: string[] } = {
     basic: [
@@ -229,7 +222,6 @@ const ProfileChat: React.FC = () => {
     getData("/course/list")
       .then((response: any) => {
         if (response.status === 200) {
-       
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1
           );
@@ -289,10 +281,10 @@ const ProfileChat: React.FC = () => {
 
   const saveAnswersforBasic = (answers: string[]) => {
     const fullName = answers[0];
-    let nameParts: string[] = fullName.split(" ");
+    const nameParts: string[] = fullName.split(" ");
     const firstname = nameParts[0];
     const lastname = nameParts[1];
-    let payload = {
+    const payload = {
       student_login_id: StudentId,
       first_name: firstname,
       last_name: lastname,
@@ -312,32 +304,32 @@ const ProfileChat: React.FC = () => {
           const nfile: any = uploadedFile;
           formData.append("file", nfile);
 
-if (formData.has('file')) {
-          postFileData(`${"upload_file/upload"}`, formData)
-            .then((data: any) => {
-              if (data?.status === 200) {
-                toast.success(data?.message, {
+          if (formData.has("file")) {
+            postFileData(`${"upload_file/upload"}`, formData)
+              .then((data: any) => {
+                if (data?.status === 200) {
+                  toast.success(data?.message, {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                } else if (data?.status === 404) {
+                  toast.error(data?.message, {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                } else {
+                  toast.error(data?.message, {
+                    hideProgressBar: true,
+                    theme: "colored",
+                  });
+                }
+              })
+              .catch((e) => {
+                toast.error(e?.message, {
                   hideProgressBar: true,
                   theme: "colored",
                 });
-              } else if (data?.status === 404) {
-                toast.error(data?.message, {
-                  hideProgressBar: true,
-                  theme: "colored",
-                });
-              } else {
-                toast.error(data?.message, {
-                  hideProgressBar: true,
-                  theme: "colored",
-                });
-              }
-            })
-            .catch((e) => {
-              toast.error(e?.message, {
-                hideProgressBar: true,
-                theme: "colored",
               });
-            });
           }
           toast.success("Basic information saved successfully", {
             hideProgressBar: true,
@@ -356,17 +348,16 @@ if (formData.has('file')) {
           theme: "colored",
         });
       });
-
   };
 
   const saveAnswersforContact = (answer: string[]) => {
-    const contfullPhone = answer[8];
-    let phoneNum = contfullPhone.split(" ");
-    const contfullPhonewtsp = answer[9];
-    let phoneNumwtsp = contfullPhonewtsp.split(" ");
-    let email = localStorage.getItem("userid");
+    // const contfullPhone = answer[8];
+    // const phoneNum = contfullPhone.split(" ");
+    // const contfullPhonewtsp = answer[9];
+    // const phoneNumwtsp = contfullPhonewtsp.split(" ");
+    const email = localStorage.getItem("userid");
 
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: answer[8],
       mobile_no_call: answer[9],
@@ -397,8 +388,8 @@ if (formData.has('file')) {
   };
 
   const saveAnswerforAddress = (answers: string[]) => {
-    const Address = answers[15];
-    let addressParts = Address.split(",");
+    // const Address = answers[15];
+    // const addressParts = Address.split(",");
 
     const payload = {
       student_id: StudentId,
@@ -424,7 +415,6 @@ if (formData.has('file')) {
         });
       }
     });
-
   };
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
@@ -473,16 +463,20 @@ if (formData.has('file')) {
       }
     });
   };
-const proficiency = [{
-  lable:"read",
-  value:"read"
-},{
-  lable:"write",
-  value:"write"
-},{
-  lable:"both",
-  value:"both"
-}]
+  const proficiency = [
+    {
+      lable: "read",
+      value: "read",
+    },
+    {
+      lable: "write",
+      value: "write",
+    },
+    {
+      lable: "both",
+      value: "both",
+    },
+  ];
   const hobbyOptions = allHobbies.map((option) => ({
     value: option.id,
     label: option.hobby_name,
@@ -508,8 +502,8 @@ const proficiency = [{
     label: option.subject_name,
   }));
 
-  const saveanswerForHobbeis = (answers: string[]) => {
-    let payload = {
+  const saveanswerForHobbeis = () => {
+    const payload = {
       student_id: StudentId,
       hobby_id: selectedHobby,
     };
@@ -529,7 +523,7 @@ const proficiency = [{
     });
   };
 
-  const saveAnswerForLanguage = (answers: string[]) => {
+  const saveAnswerForLanguage = () => {
     const payload = {
       student_id: StudentId,
       language_id: selectedLanguage,
@@ -578,142 +572,141 @@ const proficiency = [{
     if (currentQuestionIndex === 0) {
       const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
       if (!fullNameRegex.test(updatedAnswers[0])) {
-          setFullName(true)
-          return;
-      }else{
-        setFullName(false)
+        setFullName(true);
+        return;
+      } else {
+        setFullName(false);
       }
-  }
-  if (currentQuestionIndex === 1) {
-    const gender = updatedAnswers[1].toLowerCase();
-    if (gender !== 'male' && gender !== 'female') {
-      // You can set an error state here if needed
-      setGenderError(true);
-      return;
-    } else {
-      setGenderError(false);
     }
-  }
-  if (currentQuestionIndex === 3) {
-    const nameRegex = /^[a-zA-Z\s]+$/;
-    if (!nameRegex.test(updatedAnswers[3])) {
-      setMotherNameError(true);
-      return;
-    } else {
-      setMotherNameError(false);
+    if (currentQuestionIndex === 1) {
+      const gender = updatedAnswers[1].toLowerCase();
+      if (gender !== "male" && gender !== "female") {
+        // You can set an error state here if needed
+        setGenderError(true);
+        return;
+      } else {
+        setGenderError(false);
+      }
     }
-  }
-  if (currentQuestionIndex === 4) {
-    const nameRegex = /^[a-zA-Z\s]+$/;
-    if (!nameRegex.test(updatedAnswers[4])) {
-      setFName(true);
-      return;
-    } else {
-      setFName(false);
+    if (currentQuestionIndex === 3) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(updatedAnswers[3])) {
+        setMotherNameError(true);
+        return;
+      } else {
+        setMotherNameError(false);
+      }
     }
-  }
-  if (currentQuestionIndex === 9) {
-    // Regular expression for exactly 10 digits
-    const phoneRegex = /^\d{10}$/;
-    
-    if (!phoneRegex.test(updatedAnswers[9])) {
-      setphnumber(true);
-      return;
-    } else {
-      setphnumber(false);
+    if (currentQuestionIndex === 4) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(updatedAnswers[4])) {
+        setFName(true);
+        return;
+      } else {
+        setFName(false);
+      }
     }
-  }
-  if (currentQuestionIndex === 10) {
-    // Regular expression for exactly 10 digits
-    const phoneRegex = /^\d{10}$/;
-    
-    if (!phoneRegex.test(updatedAnswers[10])) {
-      setphnumber(true);
-      return;
-    } else {
-      setphnumber(false);
-    }
-  }
-  if (currentQuestionIndex === 17) {
-    // Regular expression for exactly 10 digits
-    const disticRegex = /^[a-zA-Z\s]+$/;
-    
-    if (!disticRegex.test(updatedAnswers[17])) {
-      setdisct(true);
-      return;
-    } else {
-      setdisct(false);
-    }
-  }
-  if (currentQuestionIndex === 18) {
-    // Regular expression for exactly 10 digits
-    const disticRegex = /^[a-zA-Z\s]+$/;
-    
-    if (!disticRegex.test(updatedAnswers[18])) {
-      setdisct(true);
-      return;
-    } else {
-      setdisct(false);
-    }
-  }
-  if (currentQuestionIndex === 19) {
-    // Regular expression for exactly 6 digits (adjust the length as per your requirement)
-    const pincodeRegex = /^\d+$/;
-  
-    if (!pincodeRegex.test(updatedAnswers[19])) {
-      setpincode(true);
-      return;
-    } else {
-      setpincode(false);
-    }
-  }
-  if (currentQuestionIndex === 25) {
-    // Regular expression for exactly 6 digits (adjust the length as per your requirement)
-     const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
-  
-    if (!regex.test(updatedAnswers[25])) {
-      setper(true);
-      return;
-    } else {
-      setper(false);
-    }
-  }
+    if (currentQuestionIndex === 9) {
+      // Regular expression for exactly 10 digits
+      const phoneRegex = /^\d{10}$/;
 
-  if (currentQuestionIndex === 28) {
-    // Regular expression for exactly 6 digits (adjust the length as per your requirement)
-     const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
-  
-    if (!regex.test(updatedAnswers[28])) {
-      setper(true);
-      return;
-    } else {
-      setper(false);
+      if (!phoneRegex.test(updatedAnswers[9])) {
+        setphnumber(true);
+        return;
+      } else {
+        setphnumber(false);
+      }
     }
-  }
+    if (currentQuestionIndex === 10) {
+      // Regular expression for exactly 10 digits
+      const phoneRegex = /^\d{10}$/;
+
+      if (!phoneRegex.test(updatedAnswers[10])) {
+        setphnumber(true);
+        return;
+      } else {
+        setphnumber(false);
+      }
+    }
+    if (currentQuestionIndex === 17) {
+      // Regular expression for exactly 10 digits
+      const disticRegex = /^[a-zA-Z\s]+$/;
+
+      if (!disticRegex.test(updatedAnswers[17])) {
+        setdisct(true);
+        return;
+      } else {
+        setdisct(false);
+      }
+    }
+    if (currentQuestionIndex === 18) {
+      // Regular expression for exactly 10 digits
+      const disticRegex = /^[a-zA-Z\s]+$/;
+
+      if (!disticRegex.test(updatedAnswers[18])) {
+        setdisct(true);
+        return;
+      } else {
+        setdisct(false);
+      }
+    }
+    if (currentQuestionIndex === 19) {
+      // Regular expression for exactly 6 digits (adjust the length as per your requirement)
+      const pincodeRegex = /^\d+$/;
+
+      if (!pincodeRegex.test(updatedAnswers[19])) {
+        setpincode(true);
+        return;
+      } else {
+        setpincode(false);
+      }
+    }
+    if (currentQuestionIndex === 25) {
+      // Regular expression for exactly 6 digits (adjust the length as per your requirement)
+      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
+
+      if (!regex.test(updatedAnswers[25])) {
+        setper(true);
+        return;
+      } else {
+        setper(false);
+      }
+    }
+
+    if (currentQuestionIndex === 28) {
+      // Regular expression for exactly 6 digits (adjust the length as per your requirement)
+      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
+
+      if (!regex.test(updatedAnswers[28])) {
+        setper(true);
+        return;
+      } else {
+        setper(false);
+      }
+    }
   };
-const handleSkip=()=>{
-  const currentQuestions = initialQuestions[currentSection!];
-  const updatedMessages = [
-    ...messages,
-    { text: "", type: "answer" as "answer" },
-  ];
-  if (currentQuestionIndex < currentQuestions.length - 1) {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-    setMessages([
-      ...updatedMessages,
-      {
-        text: currentQuestions[currentQuestionIndex + 1],
-        type: "question" as "question",
-      },
-    ]);
-  } else {
-    setMessages(updatedMessages);
-    proceedToNextSection(currentSection!);
-    setCurrentQuestionIndex(0);
-  }
-}
+  const handleSkip = () => {
+    const currentQuestions = initialQuestions[currentSection!];
+    const updatedMessages = [
+      ...messages,
+      { text: "", type: "answer" as const },
+    ];
+    if (currentQuestionIndex < currentQuestions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setMessages([
+        ...updatedMessages,
+        {
+          text: currentQuestions[currentQuestionIndex + 1],
+          type: "question" as const,
+        },
+      ]);
+    } else {
+      setMessages(updatedMessages);
+      proceedToNextSection(currentSection!);
+      setCurrentQuestionIndex(0);
+    }
+  };
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-  
     if (e.target.files && e.target.files.length > 0) {
       setUploadedFile(e.target.files[0]);
       const updatedAnswers = [...answers];
@@ -723,7 +716,7 @@ const handleSkip=()=>{
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: e.target.files[0].name, type: "answer" as "answer" },
+        { text: e.target.files[0].name, type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -732,7 +725,7 @@ const handleSkip=()=>{
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
       } else {
@@ -742,81 +735,12 @@ const handleSkip=()=>{
       }
     }
   };
-  let datecheck:any;
+  let datecheck: any;
   let hitcount = 1;
-  
-  const handleclickdate=()=>{
-    console.log("test ss",datecheck)
-if(datecheck){
- 
-    if (currentQuestionIndex == 14) {
-      if (datecheck > answers[13]) {
-        const updatedAnswers = [...answers];
-        updatedAnswers[currentQuestionIndex] = datecheck;
-        setAnswers(updatedAnswers);
-        const currentQuestions = initialQuestions[currentSection!];
-        const updatedMessages = [
-          ...messages,
-          { text: datecheck, type: "answer" as "answer" },
-        ];
 
-        if (currentQuestionIndex < currentQuestions.length - 1) {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-          setMessages([
-            ...updatedMessages,
-            {
-              text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as "question",
-            },
-          ]);
-        } else {
-          setMessages(updatedMessages);
-          proceedToNextSection(currentSection!);
-          setCurrentQuestionIndex(0);
-        }
-      } else {
-        toast.error(
-          "Date of joining should be less than to the starting date of academic course",
-          {
-            hideProgressBar: true,
-            theme: "colored",
-          }
-        );
-      }
-    } else {
-      const updatedAnswers = [...answers];
-      updatedAnswers[currentQuestionIndex] = datecheck;
-      setAnswers(updatedAnswers);
-      const currentQuestions = initialQuestions[currentSection!];
-      const updatedMessages = [
-        ...messages,
-        { text: datecheck, type: "answer" as "answer" },
-      ];
-
-      if (currentQuestionIndex < currentQuestions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setMessages([
-          ...updatedMessages,
-          {
-            text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
-          },
-        ]);
-      } else {
-        setMessages(updatedMessages);
-        proceedToNextSection(currentSection!);
-        setCurrentQuestionIndex(0);
-      }
-    }
-  
-}
-  }
-
-  const handleDateChange = (newDate: Dayjs | null) => {
-    // setBasicInfo((values) => ({ ...values, dob: newDate }));
-     datecheck = dayjs(newDate).format("DD/MM/YYYY");
-    
-    if (hitcount % 2 === 0 ) {
+  const handleclickdate = () => {
+    console.log("test ss", datecheck);
+    if (datecheck) {
       if (currentQuestionIndex == 14) {
         if (datecheck > answers[13]) {
           const updatedAnswers = [...answers];
@@ -825,7 +749,7 @@ if(datecheck){
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as "answer" },
+            { text: datecheck, type: "answer" as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -834,7 +758,7 @@ if(datecheck){
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as "question",
+                type: "question" as const,
               },
             ]);
           } else {
@@ -858,7 +782,7 @@ if(datecheck){
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as "answer" },
+          { text: datecheck, type: "answer" as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -867,7 +791,74 @@ if(datecheck){
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as "question",
+              type: "question" as const,
+            },
+          ]);
+        } else {
+          setMessages(updatedMessages);
+          proceedToNextSection(currentSection!);
+          setCurrentQuestionIndex(0);
+        }
+      }
+    }
+  };
+
+  const handleDateChange = (newDate: Dayjs | null) => {
+    // setBasicInfo((values) => ({ ...values, dob: newDate }));
+    datecheck = dayjs(newDate).format("DD/MM/YYYY");
+
+    if (hitcount % 2 === 0) {
+      if (currentQuestionIndex == 14) {
+        if (datecheck > answers[13]) {
+          const updatedAnswers = [...answers];
+          updatedAnswers[currentQuestionIndex] = datecheck;
+          setAnswers(updatedAnswers);
+          const currentQuestions = initialQuestions[currentSection!];
+          const updatedMessages = [
+            ...messages,
+            { text: datecheck, type: "answer" as const },
+          ];
+
+          if (currentQuestionIndex < currentQuestions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setMessages([
+              ...updatedMessages,
+              {
+                text: currentQuestions[currentQuestionIndex + 1],
+                type: "question" as const,
+              },
+            ]);
+          } else {
+            setMessages(updatedMessages);
+            proceedToNextSection(currentSection!);
+            setCurrentQuestionIndex(0);
+          }
+        } else {
+          toast.error(
+            "Date of joining should be less than to the starting date of academic course",
+            {
+              hideProgressBar: true,
+              theme: "colored",
+            }
+          );
+        }
+      } else {
+        const updatedAnswers = [...answers];
+        updatedAnswers[currentQuestionIndex] = datecheck;
+        setAnswers(updatedAnswers);
+        const currentQuestions = initialQuestions[currentSection!];
+        const updatedMessages = [
+          ...messages,
+          { text: datecheck, type: "answer" as const },
+        ];
+
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setMessages([
+            ...updatedMessages,
+            {
+              text: currentQuestions[currentQuestionIndex + 1],
+              type: "question" as const,
             },
           ]);
         } else {
@@ -888,7 +879,7 @@ if(datecheck){
     if (answers[currentQuestionIndex]?.trim() !== "") {
       const updatedMessages = [
         ...messages,
-        { text: answers[currentQuestionIndex], type: "answer" as "answer" },
+        { text: answers[currentQuestionIndex], type: "answer" as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -897,14 +888,13 @@ if(datecheck){
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as "question",
+            type: "question" as const,
           },
         ]);
 
         if (answers.length === 10) {
           saveAnswersforBasic([...answers, e.currentTarget.value]);
         } else if (answers.length === 11) {
-          
           saveAnswersforContact([...answers, e.currentTarget.value]);
         } else if (answers.length === 18) {
           saveAnswersforacadmichistory([...answers, e.currentTarget.value]);
@@ -913,8 +903,8 @@ if(datecheck){
         } else if (answers.length === 26) {
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
         } else if (selectedproficiency !== "") {
-          saveanswerForHobbeis([...answers, e.currentTarget.value]);
-          saveAnswerForLanguage([...answers, e.currentTarget.value]);
+          saveanswerForHobbeis();
+          saveAnswerForLanguage();
         }
       } else {
         setMessages(updatedMessages);
@@ -923,17 +913,25 @@ if(datecheck){
       }
     }
   };
-useEffect(()=>{
-  if (selectedproficiency !== "") {
-    saveanswerForHobbeis([...answers,]);
-    saveAnswerForLanguage([...answers,]);
-  }
-},[selectedproficiency])
-    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (selectedproficiency !== "") {
+      saveanswerForHobbeis();
+      saveAnswerForLanguage();
+    }
+  }, [selectedproficiency]);
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-
-      if (fullName || genderError|| motherNameError || fName || phnumber || distic || pincode || per) {
-          return; // Stop further execution if full name validation fails 
+      if (
+        fullName ||
+        genderError ||
+        motherNameError ||
+        fName ||
+        phnumber ||
+        distic ||
+        pincode ||
+        per
+      ) {
+        return; // Stop further execution if full name validation fails
       }
       e.preventDefault();
 
@@ -961,7 +959,7 @@ useEffect(()=>{
     }
   };
 
-  const handlePhoneChange = (value: string, country: any) => {
+  const handlePhoneChange = (value: string) => {
     setPhone(value);
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = "+" + value;
@@ -969,7 +967,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "+" + value, type: "answer" as "answer" },
+      { text: "+" + value, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -978,7 +976,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -996,7 +994,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1005,7 +1003,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1023,7 +1021,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1032,7 +1030,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1050,7 +1048,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1059,11 +1057,10 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
       // answerSaveandGotoNextquestoin(e)
-      
     } else {
       setMessages(updatedMessages);
       proceedToNextSection(currentSection!);
@@ -1079,7 +1076,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1088,7 +1085,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1106,7 +1103,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1115,7 +1112,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1133,7 +1130,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as "answer" },
+      { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1142,7 +1139,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1159,7 +1156,7 @@ useEffect(()=>{
 
   const handleCountryChange = (selectedOption: any) => {
     setSelectedCountry(selectedOption);
-  // console.log("contry",selectedOption,selectedOption.value)
+    // console.log("contry",selectedOption,selectedOption.value)
     if (selectedOption) {
       const states = State.getStatesOfCountry(selectedOption.value);
       // console.log("contry ==s",states)
@@ -1177,7 +1174,7 @@ useEffect(()=>{
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1186,7 +1183,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1197,14 +1194,14 @@ useEffect(()=>{
   };
 
   const handleStateChange = async (selectedOption: any) => {
-    setSelectedState(selectedOption)
+    setSelectedState(selectedOption);
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = selectedOption.label;
     setAnswers(updatedAnswers);
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as "answer" },
+      { text: selectedOption.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1213,7 +1210,7 @@ useEffect(()=>{
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as "question",
+          type: "question" as const,
         },
       ]);
     } else {
@@ -1263,11 +1260,16 @@ useEffect(()=>{
 
       {currentSection && (
         <>
-         
-        <div className="fixed-bottom bg-light p-3" style={{ zIndex: 1000}}>
-            {(fullName || genderError || motherNameError || fName || phnumber || distic || pincode || per) && (
-
-              <p style={{color:"red"}}>{errordata[currentQuestionIndex]}</p>
+          <div className="fixed-bottom bg-light p-3" style={{ zIndex: 1000 }}>
+            {(fullName ||
+              genderError ||
+              motherNameError ||
+              fName ||
+              phnumber ||
+              distic ||
+              pincode ||
+              per) && (
+              <p style={{ color: "red" }}>{errordata[currentQuestionIndex]}</p>
             )}
             {currentQuestionIndex === 11 || currentQuestionIndex === 22 ? (
               <Select
@@ -1277,7 +1279,7 @@ useEffect(()=>{
                 placeholder="Select an option"
                 menuPlacement="top"
                 value={selectCourse}
-                />
+              />
             ) : currentQuestionIndex === 8 ? (
               <PhoneInput
                 country={""}
@@ -1292,53 +1294,66 @@ useEffect(()=>{
                 placeholder=""
                 enableSearch={true}
                 disableDropdown={false}
-                preferredCountries={["us", "in"]} />
+                preferredCountries={["us", "in"]}
+              />
             ) : currentQuestionIndex === 7 ? (
-              <><input
-                    type="file"
-                    className="form-control"
-                    onChange={handleFileUpload} /><p style={{cursor:"pointer"}} onClick={handleSkip}>Skip</p></>
+              <>
+                <input
+                  type="file"
+                  className="form-control"
+                  onChange={handleFileUpload}
+                />
+                <p style={{ cursor: "pointer" }} onClick={handleSkip}>
+                  Skip
+                </p>
+              </>
             ) : currentQuestionIndex === 12 ? (
               <Select
                 className="dropdown-wrapper"
                 onChange={handleDropdownChangeInstitute}
                 options={instituteSelectOptions}
                 placeholder="Select an option"
-                menuPlacement="top" 
+                menuPlacement="top"
                 value={selectedInstitute}
-                />
+              />
             ) : currentQuestionIndex === 23 ? (
               <Select
                 className="dropdown-wrapper"
                 onChange={handleDropdownChangesubject}
                 options={subjectOptions}
                 placeholder="Select an option"
-                menuPlacement="top" 
+                menuPlacement="top"
                 value={selectSubject}
-                />
+              />
             ) : currentQuestionIndex === 2 ||
               currentQuestionIndex === 13 ||
               currentQuestionIndex === 14 ? (
-                          <>
-                            <div style={{ display: "flex" }}>
-                              <div style={{width:"100%" }}>
-
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                  <DatePicker
-                                    label={currentQuestionIndex === 13 ? "Date of join" : currentQuestionIndex === 14 ? "Date of complete" : "Date of Birth"}
-                                    onChange={handleDateChange}
-                                    disableFuture
-                                    format="DD/MM/YYYY"
-                                    slotProps={{
-                                      field: {
-                                        readOnly: true
-                                      }
-                                    }} />
-                                </LocalizationProvider>
-                              </div>
-                              <button onClick={handleclickdate}>Enter</button>
-                            </div>
-                          </>
+              <>
+                <div style={{ display: "flex" }}>
+                  <div style={{ width: "100%" }}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label={
+                          currentQuestionIndex === 13
+                            ? "Date of join"
+                            : currentQuestionIndex === 14
+                            ? "Date of complete"
+                            : "Date of Birth"
+                        }
+                        onChange={handleDateChange}
+                        disableFuture
+                        format="DD/MM/YYYY"
+                        slotProps={{
+                          field: {
+                            readOnly: true,
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </div>
+                  <button onClick={handleclickdate}>Enter</button>
+                </div>
+              </>
             ) : currentQuestionIndex === 26 ? (
               <Select
                 className="dropdown-wrapper"
@@ -1347,7 +1362,7 @@ useEffect(()=>{
                 placeholder="Select an option"
                 menuPlacement="top"
                 value={selectedHobby}
-                />
+              />
             ) : currentQuestionIndex === 15 ? (
               <Select
                 className="dropdown-wrapper"
@@ -1356,7 +1371,7 @@ useEffect(()=>{
                 placeholder="Select a country"
                 menuPlacement="top"
                 value={selectedCountry}
-                />
+              />
             ) : currentQuestionIndex === 16 && stateOptions.length > 1 ? (
               <Select
                 className="dropdown-wrapper"
@@ -1364,27 +1379,27 @@ useEffect(()=>{
                 placeholder="Select a state"
                 onChange={handleStateChange}
                 isDisabled={!selectedCountry}
-                menuPlacement="top" 
+                menuPlacement="top"
                 value={selectedstate}
-                />
+              />
             ) : currentQuestionIndex === 27 ? (
               <Select
                 className="dropdown-wrapper"
                 onChange={handleDropdownChangelanguage}
                 options={languageOptions}
                 placeholder="Select an option"
-                menuPlacement="top" 
+                menuPlacement="top"
                 value={selectedLanguage}
-                />
-            ): currentQuestionIndex === 28 ? (
+              />
+            ) : currentQuestionIndex === 28 ? (
               <Select
                 className="dropdown-wrapper"
                 onChange={handleDropdownChangeproficiency}
                 options={proficiencyOptions}
                 placeholder="Select an option"
-                menuPlacement="top" 
+                menuPlacement="top"
                 value={selectedproficiency}
-                />
+              />
             ) : currentQuestionIndex + 1 === initialQuestions.basic.length ? (
               <Button
                 onClick={viewProfile}
@@ -1399,9 +1414,11 @@ useEffect(()=>{
                 placeholder="Type your answer and press Enter"
                 value={answers[currentQuestionIndex] || ""}
                 onChange={handleAnswerChange}
-                onKeyPress={handleKeyPress} />
+                onKeyPress={handleKeyPress}
+              />
             )}
-          </div></>
+          </div>
+        </>
       )}
     </div>
   );

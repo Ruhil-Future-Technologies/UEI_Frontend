@@ -1,22 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { FormControl, MenuItem, Select, TextField } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
@@ -88,8 +72,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             value === ""
               ? ""
               : !/^\d{10}$/.test(value)
-                ? "Phone number should be 10 digits"
-                : "",
+              ? "Phone number should be 10 digits"
+              : "",
         });
         break;
       case "email":
@@ -128,7 +112,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           //     hideProgressBar: true,
           //     theme: "colored",
           //   });
-          var userId = localStorage.getItem("userid");
+          const userId = localStorage.getItem("userid");
           if (userId !== null) {
             setEmail(userId);
           } else {
@@ -140,7 +124,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
       });
   };
@@ -152,6 +136,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     // event.preventDefault();
 
     if (errors.phoneNum || errors.email || errors.whatsappNum) {
+
       
         
      
@@ -160,6 +145,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       //   theme: "colored",
       //   position: "top-center"
       // });
+
       return;
     
     }
@@ -178,7 +164,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // });
       return;
     }
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: contcodePhone,
       mobile_no_call: phoneNum,
@@ -195,38 +181,37 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             toast.success("Contact Details saved successfully", {
               hideProgressBar: true,
               theme: "colored",
-              position: "top-center"
+              position: "top-center",
             });
             getContacInfo();
             setActiveForm((prev) => prev + 1);
           } else {
-            if(data?.message === "Email Already exist"){
+            if (data?.message === "Email Already exist") {
               setEditFlag(false);
               putData(`${"student_contact/edit/"}${StudentId}`, payload)
-              .then((data: any) => {
-                if (data.status === 200) {
-                  toast.success("Contact Details updated successfully", {
+                .then((data: any) => {
+                  if (data.status === 200) {
+                    toast.success("Contact Details updated successfully", {
+                      hideProgressBar: true,
+                      theme: "colored",
+                      position: "top-center",
+                    });
+                    getContacInfo();
+                    setActiveForm((prev) => prev + 1);
+                  }
+                })
+                .catch((e) => {
+                  toast.error(e?.message, {
                     hideProgressBar: true,
                     theme: "colored",
-                    position: "top-center"
+                    position: "top-center",
                   });
-                  getContacInfo();
-                  setActiveForm((prev) => prev + 1);
-                }
-              })
-              .catch((e) => {
-                toast.error(e?.message, {
-                  hideProgressBar: true,
-                  theme: "colored",
-                  position: "top-center"
                 });
-              });
-            }else{
-
+            } else {
               toast.error(data?.message, {
                 hideProgressBar: true,
                 theme: "colored",
-                position: "top-center"
+                position: "top-center",
               });
             }
           }
@@ -235,7 +220,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         });
     } else {
@@ -248,7 +233,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 toast.success("Contact Details updated successfully", {
                   hideProgressBar: true,
                   theme: "colored",
-                  position: "top-center"
+                  position: "top-center",
                 });
                 getContacInfo();
                 setActiveForm((prev) => prev + 1);
@@ -258,7 +243,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               toast.error(e?.message, {
                 hideProgressBar: true,
                 theme: "colored",
-                position: "top-center"
+                position: "top-center",
               });
             });
         } else setActiveForm((prev) => prev + 1);
@@ -353,7 +338,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       {/* <div className="mt-3"> */}
       <div
         className="d-flex justify-content-start"
-      // style={{ margin: "25px" }}
+        // style={{ margin: "25px" }}
       >
         <div className="row">
           {/* <label className="pb-2"> Whatsapp Number </label> */}
@@ -440,7 +425,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
 
       <div
         className="row d-flex justify-content-start"
-      // style={{ marginLeft: "1%" }}
+        // style={{ marginLeft: "1%" }}
       >
         <div className="col-lg-6 form_field_wrapper">
           {/* <label>{""}   E-mail <span></span></label> */}
@@ -464,12 +449,6 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           />
         </div>
       </div>
-      {/* <div className="col-6 d-flex justify-content-center mt-3">
-        <button className="btn btn-primary mainbutton">
-          {" "}
-          {editFalg ? "save" : "Save Changes"}
-        </button>
-      </div> */}
       <div className="col-lg-12">
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button

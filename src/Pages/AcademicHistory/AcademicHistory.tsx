@@ -1,26 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import {
   Box,
-  Button,
   FormControl,
-  FormControlLabel,
   FormHelperText,
-  IconButton,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 
 import "react-toastify/dist/ReactToastify.css";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import useApi from "../../hooks/useAPI";
 import dayjs from "dayjs";
@@ -31,27 +21,24 @@ import {
   inputfield,
   inputfieldhover,
   inputfieldtext,
-  tabletools,
-  deepEqual,
 } from "../../utils/helpers";
-import { Country, State, City } from "country-state-city";
+import { State } from "country-state-city";
 import { ChildComponentProps } from "../StudentProfile";
 
-interface Box {
+export interface Box {
   errors?: any;
   id: number;
   institute_type: string;
   board: string;
   state_for_stateboard: string;
   institute_id: string;
-  course_id: string;
+  course_id: string | number;
   learning_style: string;
   class_id: string;
   year: any;
   stream: string;
   university_id?: string;
-  // sem_id: string;
-  sem_id?: string;
+  sem_id?: string | number;
 }
 interface Boxset {
   id: number;
@@ -61,31 +48,31 @@ interface Institute {
   id: number;
   institute_id: string;
   institution_name: string;
-  university_id: any
+  university_id: string | number;
 }
 
 interface Course {
   id: number;
   course_name: string;
-  course_id: string;
+  course_id: string | number;
   institution_id: string;
 }
 interface University {
   id: number;
   university_name: string;
-  university_id: string;
+  university_id: string | number;
 }
 
 interface Semester {
   id: number;
   semester_number: string;
-  sem_id: string;
-  course_id: string;
+  sem_id: string | number;
+  course_id: string | number;
 }
 interface Classes {
   id: number;
   class_name: string;
-  class_id: string;
+  class_id: string | number;
 }
 
 const Boxsetvalue = {
@@ -100,9 +87,8 @@ interface Option {
 const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const { getData, postData, putData, deleteData } = useApi();
+  const { getData, postData, putData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
-  const [checkBoxes, setCheckBoxes] = useState<Box[]>([]);
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [institutesAll, setInstitutesAll] = useState<Institute[]>([]);
@@ -110,46 +96,26 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [coursesAll, setCoursesAll] = useState<Course[]>([]);
   const [university, setUniversity] = useState<University[]>([]);
   const [semester, setSemester] = useState<Semester[]>([]);
-  const [totalSemester, setTotalSemester] = useState<any>([])
+  const [totalSemester, setTotalSemester] = useState<any>([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [particularClass, setParticularClass] = useState("");
-  const [editFlag, setEditFlag] = useState<boolean>(false);
-  const [idInstitute, setIdInstitute] = useState();
-  const [insituteFlag, setInsituteFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   const [maxSemester, setMaxSemester] = useState(0);
+
   const [editAcademicHistory, setEditAcademicHistory]=useState(false);
   const [updateBoxes, setUpdateBoxes] = useState(false);
   let StudentId = localStorage.getItem("_id");
+
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
-    const stateOptions = states.map((state) => ({
-      // value: state.isoCode,
+    const stateOptions = states.map((state: any) => ({
       value: state.name,
       label: state.name,
     }));
     setStateOptions(stateOptions);
   }, [State]);
 
-  const addRow = () => {
-    const newBox: Box = {
-      id: 0,
-      institute_type: "",
-      board: "",
-      state_for_stateboard: "",
-      class_id: "",
-      institute_id: "",
-      course_id: "",
-      learning_style: "",
-      year: "",
-      stream: "",
-      university_id: "",
-      sem_id: "",
-      errors: undefined
-    };
-    setBoxes([...boxes, newBox]);
-  };
   const initialErrors = {
     institute_type: "",
     board: "",
@@ -165,18 +131,22 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const validateFields = (box: Box) => {
-    let errors = { ...initialErrors };
+    const errors = { ...initialErrors };
     if (box?.institute_type === "") {
-      if (!box?.institute_type) errors.institute_type = "institute type name is required";
+      if (!box?.institute_type)
+        errors.institute_type = "institute type name is required";
     }
 
     // Validation logic for "college"
     if (box?.institute_type === "college") {
-      if (!box?.university_id) errors.university_id = "University name is required";
-      if (!box?.institute_id) errors.institute_id = "Institute name is required";
+      if (!box?.university_id)
+        errors.university_id = "University name is required";
+      if (!box?.institute_id)
+        errors.institute_id = "Institute name is required";
       if (!box?.course_id) errors.course_id = "Course is required";
       if (!box?.sem_id) errors.sem_id = "Semester is required";
-      if (!box?.learning_style) errors.learning_style = "Learning style is required";
+      if (!box?.learning_style)
+        errors.learning_style = "Learning style is required";
       if (!box?.year) errors.year = "Year is required";
     }
 
@@ -187,35 +157,15 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       if (box?.board === "state_board" && !box?.state_for_stateboard) {
         errors.state_for_stateboard = "State is required";
       }
-      if ((particularClass === "class_11" || particularClass === "class_12") && !box?.stream) {
+      if (
+        (particularClass === "class_11" || particularClass === "class_12") &&
+        !box?.stream
+      ) {
         errors.stream = "Stream is required";
       }
     }
 
     return errors;
-  };
-
-  const deleterow = (id: number, indx: number) => {
-    if (id !== 0) {
-      deleteData(`/new_student_academic_history/delete/${id}`)
-        .then((data: any) => {
-          if (data.status === 200) {
-            toast.success("Academic history deleted successfully", {
-              hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
-            });
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
-          });
-        });
-    }
-    setBoxes(boxes.filter((box, index) => index !== indx));
   };
 
   const listData = async () => {
@@ -228,12 +178,14 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             );
 
             if (boxes[0]?.institute_type === "college") {
-              const filterDataInstitute = filteredData?.filter((item:any) => item?.university_id === boxes[0]?.university_id)
-              setInstitutes(filterDataInstitute || [])
-            }else{
+              const filterDataInstitute = filteredData?.filter(
+                (item: any) => item?.university_id === boxes[0]?.university_id
+              );
+              setInstitutes(filterDataInstitute || []);
+            } else {
               setInstitutes(filteredData || []);
             }
-            setInstitutesAll(filteredData || [])
+            setInstitutesAll(filteredData || []);
             // setInstitutes(response.data);
             // return filteredData || []
             resolve(true);
@@ -254,7 +206,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   useEffect(() => {
-    
     getData("university/list")
       .then((response: any) => {
         if (response.status === 200) {
@@ -297,7 +248,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             (item: any) => item?.is_active === 1
           );
           setCourses(filteredData || []);
-          setCoursesAll(filteredData || [])
+          setCoursesAll(filteredData || []);
           // setCourses(response.data);
         }
       })
@@ -362,12 +313,12 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               stream: item?.stream,
               university_id: item?.university_id,
               sem_id: item?.sem_id,
-              errors: undefined
+              errors: undefined,
             };
 
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
-              setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
+              // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
             console.log(boxes.length);
           });
@@ -386,10 +337,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               stream: "",
               university_id: "",
               sem_id: "",
-              errors: undefined
+              errors: undefined,
             },
           ]);
-          setEditFlag(true);
+          // setEditFlag(true);
         } else {
           console.error("Unexpected response:", data);
         }
@@ -401,8 +352,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           position: "top-center",
         });
       });
+
       listData();
   }, [updateBoxes]);
+
   const [errors, setErrors] = useState(initialErrors);
 
   const saveAcademy = (instituteId: number = 0) => {
@@ -410,7 +363,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     let updatedErrors: any = { ...initialErrors };
 
     // Validate each box and check for errors
-    const updatedBoxes = boxes.map((box, index) => {
+    const updatedBoxes = boxes.map((box) => {
       const errors = validateFields(box);
       updatedErrors = { ...updatedErrors, ...errors };
 
@@ -435,35 +388,57 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
     // If validation passes, proceed with form submission
     const promises = updatedBoxes.map((box) => {
-      // const payload = {
-      //   student_id: StudentId,
-      //   institution_type: box.institute_type,
-      //   // Populate other fields based on institute_type
-      //   board: box.institute_type.toLowerCase() === 'school' ? box.board : null,
-      //   institute_id: box.institute_type.toLowerCase() === 'college' ? String(box.institute_id) : null,
-      //   course_id: box.institute_type.toLowerCase() === 'college' ? String(box.course_id) : null,
-      //   sem_id: box.institute_type.toLowerCase() === 'college' ? String(box.sem_id) : null,
-      //   university_id: box.institute_type.toLowerCase() === 'college' ? String(box.university_id) : null,
-      //   year: box.year ? String(box.year) : "",
-      //   stream: (particularClass === "class_11" || particularClass === "class_12") && box.institute_type.toLowerCase() === 'school' ? box.stream : "",
-      //   class_id: box.institute_type.toLowerCase() === 'school' ? String(box.class_id) : box.id ? "" : null,
-      // };
       const payload = {
         student_id: StudentId,
         institution_type: box.institute_type,
-        board: box.institute_type.toLowerCase() === 'school' ? box.board : box.id ? "" : null,
-        state_for_stateboard: box.institute_type.toLowerCase() === 'school' && box.state_for_stateboard !== null ? String(box.state_for_stateboard) : box.id ? "" : null,
-        institute_id: box.institute_type.toLowerCase() === 'college' ? String(
-          instituteId || box.institute_id
-        ) : box.id ? "" : null,
-        course_id: box.institute_type.toLowerCase() === 'college' ? String(box.course_id) : box.id ? "" : null,
-        learning_style: box.institute_type.toLowerCase() === 'college' ? box.learning_style : box.id ? "" : null,
-        class_id: box.institute_type.toLowerCase() === 'school' ? String(box.class_id) : box.id ? "" : null,
+        board:
+          box.institute_type.toLowerCase() === "school"
+            ? box.board
+            : box.id
+            ? ""
+            : null,
+        state_for_stateboard:
+          box.institute_type.toLowerCase() === "school" &&
+          box.state_for_stateboard !== null
+            ? String(box.state_for_stateboard)
+            : box.id
+            ? ""
+            : null,
+        institute_id:
+          box.institute_type.toLowerCase() === "college"
+            ? String(instituteId || box.institute_id)
+            : box.id
+            ? ""
+            : null,
+        course_id:
+          box.institute_type.toLowerCase() === "college"
+            ? String(box.course_id)
+            : box.id
+            ? ""
+            : null,
+        learning_style:
+          box.institute_type.toLowerCase() === "college"
+            ? box.learning_style
+            : box.id
+            ? ""
+            : null,
+        class_id:
+          box.institute_type.toLowerCase() === "school"
+            ? String(box.class_id)
+            : box.id
+            ? ""
+            : null,
         ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
-        ...(box.university_id ? { university_id: String(box.university_id) } : {}),
-        year: box?.year?.$y && box.institute_type.toLowerCase() === 'college' ? String(box?.year?.$y) : "", // Assuming 'year' is a string
+        ...(box.university_id
+          ? { university_id: String(box.university_id) }
+          : {}),
+        year:
+          box?.year?.$y && box.institute_type.toLowerCase() === "college"
+            ? String(box?.year?.$y)
+            : "", // Assuming 'year' is a string
         stream:
-          (particularClass === "class_11" || particularClass === "class_12") && box.institute_type.toLowerCase() === 'school'
+          (particularClass === "class_11" || particularClass === "class_12") &&
+          box.institute_type.toLowerCase() === "school"
             ? box?.stream
             : "",
       };
@@ -485,6 +460,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     // Handle all promises
     Promise.all(promises)
       .then((responses) => {
+
         const allSuccessful = responses.every((response) => response?.status === 200);
         if (allSuccessful ) {
           if( editAcademicHistory){
@@ -513,6 +489,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       
         }
         setActiveForm((prev) => prev + 1);
+
         } else {
           toast.error("An error occurred while saving", {
             hideProgressBar: true,
@@ -530,6 +507,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         });
       });
   };
+
 
   const saveAcademicHistory = async (instituteId: number = 0) => {
     const validatePayload = (college: string, year: string) => {
@@ -693,98 +671,36 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     setInsituteFlag(true);
   };
 
-  // const saveAcademy = async (index: number) => {
-  //   if (boxes1[0].Institute_Name_Add) {
-  //     try {
-  //       const validatePayload = (
-  //         payload: { [s: string]: unknown } | ArrayLike<unknown>
-  //       ) => {
-  //         return Object.values(payload).every((value) => value !== "");
-  //       };
-
-  //       const promises = boxes1
-  //         .map((box) => {
-  //           const payload = {
-  //             institution_name: box.Institute_Name_Add,
-  //           };
-
-  //           if (validatePayload(payload)) {
-  //             if (editFlag || box.id === 0) {
-  //               return postData("/institution/add", payload);
-  //             } else {
-  //               return postData("/institution/add", payload);
-  //             }
-  //           } else {
-  //             return Promise.resolve(null);
-  //           }
-  //         })
-  //         .filter((promise) => promise !== null);
-
-  //       const responses = await Promise.all(promises);
-
-  //       const allSuccessful = responses.every(
-  //         (response) => response?.status === 200
-  //       );
-
-  //       if (allSuccessful) {
-  //         setIdInstitute(responses[0].institution.id);
-  //         // setBoxes([...boxes, { institute_id: responses[0]?.institution?.id }]);
-  //         const newBoxes: any = [...boxes];
-  //         newBoxes[index]["institute_id"] = responses[0].institution.id;
-  //         saveAcademicHistory(responses[0].institution.id);
-  //         setBoxes(newBoxes);
-  //         setBoxes1([
-  //           {
-  //             id: 0,
-  //             Institute_Name_Add: "",
-  //           },
-  //         ]);
-  //         // setBoxes((prevBoxes) => [...prevBoxes, { institute_id: responses[0]?.institution?.id }]);
-
-  //         await listData();
-  //         toast.success("Institution name saved successfully", {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //           position: "top-center",
-  //         });
-  //         setDataInsitute(boxes1[0]?.Institute_Name_Add);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error while saving academy", error);
-  //       toast.error("Error while saving institution name", {
-  //         hideProgressBar: true,
-  //         theme: "colored",
-  //         position: "top-center",
-  //       });
-  //     }
-  //   } else saveAcademicHistory();
-  // };
-
+ 
   const handleInputChange = (
     index: number,
     field: keyof Box,
-    value: string | dayjs.Dayjs | null
+    value: string | dayjs.Dayjs | null | number
   ) => {
     setEditAcademicHistory(true);
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
     if (field === "university_id") {
-      const filterDataInstitute = institutesAll.filter((item) => item.university_id === value)
-      setInstitutes(filterDataInstitute)
+      const filterDataInstitute = institutesAll.filter(
+        (item) => item.university_id === value
+      );
+      setInstitutes(filterDataInstitute);
     }
     if (field === "institute_id") {
-      const filterDataCourse = coursesAll.filter((item) => item.institution_id === value)
-      setCourses(filterDataCourse)
+      const filterDataCourse = coursesAll.filter(
+        (item) => item.institution_id === value
+      );
+      setCourses(filterDataCourse);
     }
 
-    if (field === 'course_id') {
-      const semesterCount = semester.filter((item) => item.course_id === value)
+    if (field === "course_id") {
+      const semesterCount = semester.filter((item) => item.course_id === value);
 
       // const semesterCount = semester.reduce((acc: any, crr) => {
       //   if (crr.semester_number === value) acc = crr.semester_number
       //   return acc
       // }, 0)
-      setTotalSemester(semesterCount)
+      setTotalSemester(semesterCount);
     }
     // Check date validity
     const year = dayjs(newBoxes[index].year);
@@ -840,33 +756,39 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     setBoxes1(newBoxes);
   };
   useEffect(() => {
-    const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
-    setTotalSemester(semesterCount)
-  }, [boxes[0]?.course_id])
+    const semesterCount = semester?.filter(
+      (items) => items.course_id === boxes[0]?.course_id
+    );
+    setTotalSemester(semesterCount);
+  }, [boxes[0]?.course_id]);
   useEffect(() => {
     if (boxes[0]?.institute_type === "college") {
-      const filterDataInstitute = institutesAll.filter((item) => item.university_id === boxes[0].university_id)
-      setInstitutes(filterDataInstitute)
-      const filterDataCourse = coursesAll.filter((item) => item.institution_id === boxes[0].institute_id)
-      setCourses(filterDataCourse)
+      const filterDataInstitute = institutesAll.filter(
+        (item) => item.university_id === boxes[0].university_id
+      );
+      setInstitutes(filterDataInstitute);
+      const filterDataCourse = coursesAll.filter(
+        (item) => item.institution_id === boxes[0].institute_id
+      );
+      setCourses(filterDataCourse);
       // const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
       // setTotalSemester(semesterCount)
     }
-  }, [boxes])
+  }, [boxes]);
 
-//  const maxSemester = totalSemester && totalSemester?.length > 0
-//     ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-//     : 0;
+  useEffect(() => {
+    if (totalSemester && totalSemester?.length > 0) {
+      const max = Math.max(
+        ...totalSemester.map(
+          (item: { semester_number: any }) => item?.semester_number
+        )
+      );
+      setMaxSemester(max);
+    } else {
+      setMaxSemester(0);
+    }
+  }, [totalSemester]);
 
-
-useEffect(() => {
-  if (totalSemester && totalSemester?.length > 0) {
-    const max = Math?.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number));
-    setMaxSemester(max); 
-  } else {
-    setMaxSemester(0); 
-  }
-}, [totalSemester]);
   return (
     <div className="mt-5">
       <form>
@@ -881,8 +803,9 @@ useEffect(() => {
                 required
                 sx={{ m: 1, minWidth: 70, width: "100%", maxWidth: 200 }}
               >
-                <InputLabel>Institute Type</InputLabel>
+                <InputLabel data-testid="institute_type_text">Institute Type</InputLabel>
                 <Select
+                  data-testid="institute_type"
                   value={box.institute_type}
                   sx={{
                     backgroundColor: "#f5f5f5",
@@ -1036,9 +959,12 @@ useEffect(() => {
                       Others
                     </MenuItem>
                   </Select>
-                  {errors.state_for_stateboard && !box?.state_for_stateboard?.toLowerCase() && (
-                    <FormHelperText error>{errors.state_for_stateboard}</FormHelperText>
-                  )}
+                  {errors.state_for_stateboard &&
+                    !box?.state_for_stateboard?.toLowerCase() && (
+                      <FormHelperText error>
+                        {errors.state_for_stateboard}
+                      </FormHelperText>
+                    )}
                 </FormControl>
               </div>
             )}
@@ -1077,13 +1003,13 @@ useEffect(() => {
                     ))}
                   </Select>
                   {errors.university_id && !box?.university_id && (
-                    <FormHelperText error>{errors.university_id}</FormHelperText>
+                    <FormHelperText error>
+                      {errors.university_id}
+                    </FormHelperText>
                   )}
                 </FormControl>
               </div>
             )}
-
-
 
             {box.institute_type == "college" && (
               <div className="col form_field_wrapper">
@@ -1188,7 +1114,7 @@ useEffect(() => {
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
-                          '&:hover': {
+                          "&:hover": {
                             backgroundColor: inputfieldhover(namecolor),
                           },
                         }}
@@ -1221,24 +1147,27 @@ useEffect(() => {
                     label="Class"
                   >
                     {
-                    // classes.map((classes) => (
+                      // classes.map((classes) => (
                       classes
-                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                      ?.map((classes) => (
-                      <MenuItem
-                        key={classes.id}
-                        value={classes.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
-                      >
-                        {classes.class_name}
-                      </MenuItem>
-                    ))}
+                        ?.sort((a, b) =>
+                          a.class_name.localeCompare(b.class_name)
+                        ) // Sort the classes array in ascending order by class_name
+                        ?.map((classes) => (
+                          <MenuItem
+                            key={classes.id}
+                            value={classes.id}
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              "&:hover": {
+                                backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                              },
+                            }}
+                          >
+                            {classes.class_name}
+                          </MenuItem>
+                        ))
+                    }
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1387,15 +1316,18 @@ useEffect(() => {
                     </MenuItem>
                   </Select>
                   {errors.learning_style && !box?.learning_style && (
-                    <FormHelperText error>{errors.learning_style}</FormHelperText>
+                    <FormHelperText error>
+                      {errors.learning_style}
+                    </FormHelperText>
                   )}
                 </FormControl>
               </div>
             )}
             {box.institute_type === "college" && (
               <div
-                className={`${box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
-                  } form_field_wrapper`}
+                className={`${
+                  box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
+                } form_field_wrapper`}
               >
                 <FormControl
                   required
@@ -1431,6 +1363,7 @@ useEffect(() => {
 
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button
+            data-testid="preBtn"
             type="button"
             className="btn btn-outline-dark prev-btn px-lg-4 rounded-pill"
             onClick={() => setActiveForm((prev) => prev - 1)}
@@ -1438,6 +1371,7 @@ useEffect(() => {
             Previous
           </button>
           <button
+            data-testid="nextBtn"
             type="button"
             className="btn btn-dark px-lg-5 ms-auto d-block rounded-pill next-btn"
             onClick={() => saveAcademy(0)}

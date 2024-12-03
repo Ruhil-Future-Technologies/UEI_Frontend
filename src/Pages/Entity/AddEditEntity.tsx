@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
 import "../Entity/Entity.scss";
 import TextField from "@mui/material/TextField";
@@ -10,7 +11,6 @@ import {
   Field,
   Form,
   Formik,
-  FormikHelpers,
   FormikProps,
   setNestedObjectValues,
 } from "formik";
@@ -35,18 +35,6 @@ const AddEditEntity = () => {
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-  // const GetDataList = () => {
-  //     JSON.parse(Menulist)?.map((data: any) => {
-  //         const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-  //         if (fistMach.length > 0) {
-  //             setFilteredData(fistMach)
-  //         }
-  //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === lastSegment)
-  //         if (result.length > 0) {
-  //             setFilteredData(result)
-  //         }
-  //     })
-  // }
 
   useEffect(() => {
     // GetDataList()
@@ -95,10 +83,7 @@ const AddEditEntity = () => {
   };
 
   // const handleSubmit = async (formData: { entity_type: string; }) => {
-  const handleSubmit = async (
-    formData: { entity_type: string },
-    { resetForm }: FormikHelpers<{ entity_type: string }>
-  ) => {
+  const handleSubmit = async (formData: { entity_type: string }) => {
     if (id) {
       putData(`${EntityEditURL}/${id}`, formData)
         .then((data: { status: number; message: string }) => {
@@ -161,7 +146,7 @@ const AddEditEntity = () => {
       .test(
         "not-whitespace",
         "Please enter a valid Entity type; whitespace is not allowed.",
-        (value:any) => value && value?.trim().length > 0 
+        (value: any) => value && value?.trim().length > 0
       )
       .matches(
         EntityNamePattern,
@@ -176,9 +161,7 @@ const AddEditEntity = () => {
           <div className="card-body">
             <Formik
               // onSubmit={(formData) => handleSubmit(formData)}
-              onSubmit={(formData, formikHelpers) =>
-                handleSubmit(formData, formikHelpers)
-              }
+              onSubmit={(formData) => handleSubmit(formData)}
               initialValues={{
                 entity_type: entity,
               }}
@@ -186,7 +169,7 @@ const AddEditEntity = () => {
               validationSchema={entitySchema}
               innerRef={formRef}
             >
-              {({ errors, values, touched, isValid, dirty }) => (
+              {({ errors, values, touched }) => (
                 <Form>
                   <div className="row gy-4 flex-column ">
                     <div className="col-lg-3">

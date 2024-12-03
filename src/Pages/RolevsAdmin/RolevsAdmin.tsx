@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react'
-
 import '../RolevsAdmin/RolevsAdmin.scss';
 import useApi from "../../hooks/useAPI";
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
@@ -21,22 +21,10 @@ const RoleVsAdmin = () => {
     const location = useLocation();
     const pathSegments = location.pathname.split('/').filter(Boolean);
     const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-    const roleset = lastSegment == "rolevsadmin" ? "RoleVsUser" : lastSegment
+    // const roleset = lastSegment == "rolevsadmin" ? "RoleVsUser" : lastSegment
     const Menulist: any = localStorage.getItem('menulist1');;
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-// console.log("Role",lastSegment,roleset)
-    // useEffect(() => {
-    //     JSON.parse(Menulist)?.map((data: any) => {
-    //         const fistMach = data?.menu_name.toLowerCase() === roleset.toLowerCase() && data;
-    //         if (fistMach.length > 0) {
-    //             setFilteredData(fistMach)
-    //         }
-    //         const result = data?.submenus?.filter((menu: any) => menu.menu_name.toLowerCase() === roleset.toLowerCase())
-    //         if (result.length > 0) {
-    //             setFilteredData(result)
-    //         }
-    //     })
-    // }, [Menulist])
+
     useEffect(() => {
        
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: "role vs user"},{ datatest: "rolevsuser" }));

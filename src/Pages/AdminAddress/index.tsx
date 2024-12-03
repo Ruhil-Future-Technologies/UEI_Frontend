@@ -1,48 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import {
-  Card,
-  CardContent,
   Checkbox,
   FormControl,
   FormControlLabel,
-  FormLabel,
-  Grid,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
   SelectChangeEvent,
-  TextField,
-  Theme,
-  Tooltip,
-  useTheme,
 } from "@mui/material";
-import {
-  LocalizationProvider,
-  DateTimePicker,
-  DatePicker,
-} from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState, useEffect, useRef } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
-import { error } from "console";
 import { deepEqual } from "../../utils/helpers";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { ChildComponentProps } from "../StudentProfile";
-let adminId = localStorage.getItem("_id");
-// console.log(adminId);
+
 interface AdminAddress {
   admin_id?: string;
   address1?: string;
@@ -56,10 +26,7 @@ interface AdminAddress {
 }
 ////start
 const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  let adminId = localStorage.getItem("_id");
-
-  // console.log(adminId);
-
+  const adminId = localStorage.getItem("_id");
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
     address_type: "current_address",
@@ -92,8 +59,6 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
   const [add_col, setAdd_col] = useState<boolean>(false);
-  const [add2_col, setAdd2_col] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
 
   const [isFocused, setIsFocused] = useState(false);
@@ -160,11 +125,13 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     };
   }, []);
+  useEffect(() => {
+    getAddressInfo();
+  }, [adminId]);
 
   const getAddressInfo = async () => {
     getData(`${"admin_address/edit/" + adminId}`)
       .then((response: any) => {
-        // console.log(response);
         if (response?.status === 200) {
           let add1 :any
           let add2 :any
@@ -178,21 +145,23 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               setadminAddress1(address);
               add2 = address
             } else {
-              //empty
               console.error("Unexpected response:", response);
             }
           });
-
           const fieldsToCompare = ['address1', 'address2', 'city', 'country', 'district', 'pincode', 'state'];
-
           const filteredAdd1:any = {};
           const filteredAdd2:any = {};
-    
           fieldsToCompare?.forEach(field => {
-            if (add1?.hasOwnProperty(field)) {
+            // if (add1.hasOwnProperty(field)) {
+            //   filteredAdd1[field] = add1[field];
+            // }
+            // if (add2.hasOwnProperty(field)) {
+            //   filteredAdd2[field] = add2[field];
+            // }
+            if (Object.prototype.hasOwnProperty.call(add1, field)) {
               filteredAdd1[field] = add1[field];
             }
-            if (add2?.hasOwnProperty(field)) {
+            if (Object.prototype.hasOwnProperty.call(add2, field)) {
               filteredAdd2[field] = add2[field];
             }
           });
@@ -217,9 +186,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         });
       });
   };
-  useEffect(() => {
-    getAddressInfo();
-  }, [adminId]);
+ 
 
   const handleInputChange = (
     event:
@@ -281,13 +248,6 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           setAdd_col(true);
         } else {
           setAdd_col(false)
-        }
-      }
-      if (name === "address2") {
-        if (value === "") {
-          setAdd2_col(true);
-        } else {
-          setAdd2_col(false)
         }
       }
 
@@ -403,11 +363,6 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }else{
       setAdd_col(false)
     }
-    // if(!("address2" in adminAddress) || adminAddress?.address2 === ""){
-    //   setAdd2_col(true)
-    // }else{
-    //   setAdd2_col(false)
-    // }
     if (!("country" in adminAddress) || adminAddress?.country === "") {
       setcontry_col(true);
     } else {
@@ -538,9 +493,12 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             !pincode_col &&
             adminAddress.pincode !== ""
           ) {
-            // eslint-disable-next-line no-lone-blocks
-            {
-              !eq && (await editAddress("Current", currentAddressPayload));
+           
+            // {
+            //   !eq && (await editAddress("Current", currentAddressPayload));
+            // }
+            if (!eq) {
+              await editAddress("Current", currentAddressPayload);
             }
           }
           // Edit permanent address
@@ -653,14 +611,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control mt-1"
             value={adminAddress.address2}
             onChange={(e) => handleInputChange(e, "current_address")}
-            // required
           />
-           {/* <div>
-            {" "}
-            {(adminAddress.address2 == "" || add2_col) && (
-              <p style={{ color: "red" }}>Please enter Address 2.</p>
-            )}
-          </div> */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
@@ -986,4 +937,3 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
 export default AdminAddress;
 
-//////end

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import '../Institute/Institute.scss';
 import TextField from '@mui/material/TextField';
@@ -12,7 +13,7 @@ import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { IEntity, InstituteRep0oDTO, IUniversity, MenuListinter } from '../../Components/Table/columns';
-import { dataaccess, inputfield, inputfieldhover, inputfieldselect, inputfieldtext, inputfieldtextselect } from '../../utils/helpers';
+import { dataaccess, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
 
@@ -45,31 +46,9 @@ const AddEditInstitute = () => {
     const charPattern = /^[a-zA-Z\s]*$/;
     const mobilePattern = /^\d{10}$/;
     const emailPattern = /\S+@\S+\.\S+/;
-    // const pincodePattern = /^\d+$/;
     const pincodePattern = /^\d{6}$/;
-    // const websitePattern = /^[\w\s.,@#$%^&*()\-+=[\]{}|\\;:'"/?]+$/;
-    const addressPattern = /^[\w\s,]+$/;
 
     const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([])
-
-
-    const callAPIfilter = async () => {
-        getData(`${InstituteURL}`).then((data: { data: InstituteRep0oDTO[] }) => {
-            if (data.data) {
-                setDataInstitute(data?.data)
-            }
-        }).catch(e => {
-            if (e?.response?.status === 401) {
-                // navigate("/")
-            }
-            
-        });
-    }
-
-    useEffect(() => {
-        callAPIfilter()
-    }, [])
-
     const initialState = {
         institution_name: "",
         email_id: "",
@@ -93,10 +72,31 @@ const AddEditInstitute = () => {
     const pathSegments = location.pathname.split('/').filter(Boolean);    
     const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-    const [contry_col, setcontry_col] = useState<boolean>(false)
     const [state_col, setstate_col] = useState<boolean>(false)
+    const [isFocused, setIsFocused] = useState(false);
+    const [isFocusedstate, setIsFocusedstate] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const dropdownstateRef = useRef<HTMLDivElement>(null);
+    const [isCountryOpen, setIsCountryOpen] = useState(false);
+    const [isStateOpen, setIsStateOpen] = useState(false);
+
+    const callAPIfilter = async () => {
+        getData(`${InstituteURL}`).then((data: { data: InstituteRep0oDTO[] }) => {
+            if (data.data) {
+                setDataInstitute(data?.data)
+            }
+        }).catch(e => {
+            if (e?.response?.status === 401) {
+                // navigate("/")
+            }
+            
+        });
+    }
+
     useEffect(() => {
-        // GetDataList()
+        callAPIfilter()
+    }, [])
+    useEffect(() => {
         setFilteredData(dataaccess(Menulist, lastSegment, { urlcheck: ""},{ datatest: "" }));
     }, [Menulist])
 
@@ -151,6 +151,47 @@ const AddEditInstitute = () => {
     useEffect(() => {
         callAPI()
     }, [])
+    useEffect(() => {
+        const handleFocus = () => setIsFocused(true);
+        const handleFocusstate = () => setIsFocusedstate(true);
+        const handleBlur = (e: FocusEvent) => {
+         
+          if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget as Node)) {
+            setIsFocused(false);
+          }
+        };
+        const handleBlurstate = (e: FocusEvent) => {
+          console.log("Blurstate")
+          if (dropdownstateRef.current && !dropdownstateRef.current.contains(e.relatedTarget as Node)) {
+              setIsFocusedstate(false);
+          }
+        };
+      
+        const currentDropdown = dropdownRef.current;
+        console.log("currentDropdown",currentDropdown)
+      
+        if (currentDropdown) {
+          currentDropdown.addEventListener('focus', handleFocus as EventListener);
+          currentDropdown.addEventListener('blur', handleBlur as EventListener);
+        }
+        const currentDropdownstate = dropdownstateRef.current;
+        console.log("currentDropdownstate",currentDropdownstate)
+        if (currentDropdownstate) {
+          currentDropdownstate.addEventListener('focus', handleFocusstate as EventListener);
+          currentDropdownstate.addEventListener('blur', handleBlurstate as EventListener);
+        }
+      
+        return () => {
+          if (currentDropdown) {
+            currentDropdown.removeEventListener('focus', handleFocus as EventListener);
+            currentDropdown.removeEventListener('blur', handleBlur as EventListener);
+          }
+          if (currentDropdownstate) {
+              currentDropdownstate.removeEventListener('focus', handleFocusstate as EventListener);
+              currentDropdownstate.removeEventListener('blur', handleBlurstate as EventListener);
+            }
+        };
+      }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
         setInstitute((prevInstitute) => {
@@ -170,10 +211,6 @@ const AddEditInstitute = () => {
     const handleInputChangecountry = async (value: string, addressType: string, name: string) => {
         if (addressType === "current_address") {
           if (name === "country") {
-            // setStudentAddress((prevState) => ({ ...prevState, ["country"]: value }));
-            // setStudentAddress((prevState) => ({ ...prevState, ["state"]: "" }));
-            // setstate_col(true)
-            // setcontry_col(false);
             setInstitute((prevInstitute) => {
                 return {
                     ...prevInstitute,
@@ -187,16 +224,7 @@ const AddEditInstitute = () => {
                 };
             });
             setstate_col(true)
-            setcontry_col(false);
-            // formRef?.current?.setFieldValue("country", value);
-            // await formRef?.current?.validateField("country")
-            // if (formRef?.current?.errors?.["country" as keyof IInstituteForm] !== undefined) {
-            //     formRef?.current?.setFieldError("country", formRef?.current?.errors?.["country"as keyof IInstituteForm])
-            //     formRef?.current?.setFieldTouched("country", true)
-            // }
           } else if (name === "state") {
-            // setStudentAddress((prevState) => ({ ...prevState, ["state"]: value }));
-            // setstate_col(false)
             setInstitute((prevInstitute) => {
                 return {
                     ...prevInstitute,
@@ -211,7 +239,6 @@ const AddEditInstitute = () => {
         } 
       }
 
-    // const handleSubmit = async (instituteData: IInstituteForm) => {
         const handleSubmit = async (
             instituteData: IInstituteForm, 
             { resetForm }: FormikHelpers<IInstituteForm>
@@ -457,55 +484,6 @@ const AddEditInstitute = () => {
     }
 }
  
-const [isFocused, setIsFocused] = useState(false);
-const [isFocusedstate, setIsFocusedstate] = useState(false);
-const dropdownRef = useRef<HTMLDivElement>(null);
-const dropdownstateRef = useRef<HTMLDivElement>(null);
-const [isCountryOpen, setIsCountryOpen] = useState(false);
-const [isStateOpen, setIsStateOpen] = useState(false);
-
-useEffect(() => {
-  const handleFocus = () => setIsFocused(true);
-  const handleFocusstate = () => setIsFocusedstate(true);
-  const handleBlur = (e: FocusEvent) => {
-   
-    if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget as Node)) {
-      setIsFocused(false);
-    }
-  };
-  const handleBlurstate = (e: FocusEvent) => {
-    console.log("Blurstate")
-    if (dropdownstateRef.current && !dropdownstateRef.current.contains(e.relatedTarget as Node)) {
-        setIsFocusedstate(false);
-    }
-  };
-
-  const currentDropdown = dropdownRef.current;
-  console.log("currentDropdown",currentDropdown)
-
-  if (currentDropdown) {
-    currentDropdown.addEventListener('focus', handleFocus as EventListener);
-    currentDropdown.addEventListener('blur', handleBlur as EventListener);
-  }
-  const currentDropdownstate = dropdownstateRef.current;
-  console.log("currentDropdownstate",currentDropdownstate)
-  if (currentDropdownstate) {
-    currentDropdownstate.addEventListener('focus', handleFocusstate as EventListener);
-    currentDropdownstate.addEventListener('blur', handleBlurstate as EventListener);
-  }
-
-  return () => {
-    if (currentDropdown) {
-      currentDropdown.removeEventListener('focus', handleFocus as EventListener);
-      currentDropdown.removeEventListener('blur', handleBlur as EventListener);
-    }
-    if (currentDropdownstate) {
-        currentDropdownstate.removeEventListener('focus', handleFocusstate as EventListener);
-        currentDropdownstate.removeEventListener('blur', handleBlurstate as EventListener);
-      }
-  };
-}, []);
-
     const handleCountryClick = () => {
         setIsCountryOpen(true);
     };
@@ -548,7 +526,7 @@ useEffect(() => {
                         validationSchema={instituteSchema}
                         innerRef={formRef}
                     >
-                        {({ errors, values, touched ,isValid,dirty}) => (
+                        {({ errors, values, touched}) => (
                             <Form>
                                 <div className='row gy-4 mt-0'>
                                 <div className='col-md-4'>

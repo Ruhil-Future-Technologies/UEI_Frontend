@@ -1,13 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-
+import { FormControl, MenuItem, Select, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
@@ -25,8 +18,8 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  let adminId = localStorage.getItem("_id");
-//   console.log(adminId);
+  const adminId = localStorage.getItem("_id");
+  //   console.log(adminId);
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState("+91");
   const [whatsappNum, setWhatsappNum] = useState("");
@@ -44,14 +37,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
-  // const validateWhatsappNum = (whatsappNum: string) => {
-  //     const whatsappPattern = /^[0-9]{10}$/;
-  //     return whatsappPattern.test(whatsappNum);
-  // }
-  // const validatePhoneNum = (phoneNum: string) => {
-  //     const phonePattern = /^[0-9]{10}$/;
-  //     return phonePattern.test(phoneNum);
-  // }
+ 
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -148,13 +134,13 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       toast.error("Please fix the errors before submitting");
       return;
     }
-if(phoneNum === ""){
-  setErrors({
-    ...errors,
-    phoneNum: "Phone number should be 10 digits"   
-  });
-}
-    let paylod = {
+    if (phoneNum === "") {
+      setErrors({
+        ...errors,
+        phoneNum: "Phone number should be 10 digits",
+      });
+    }
+    const paylod = {
       admin_id: adminId,
       mobile_isd_call: contcodePhone,
       mobile_no_call: phoneNum,
@@ -186,14 +172,14 @@ if(phoneNum === ""){
               theme: "colored",
             });
           } else {
-            if(error?.response?.message === "Email Already exist"){
+            if (error?.response?.message === "Email Already exist") {
               setEditFlag(false);
               try {
                 const response = await putData(
                   "admin_contact/edit/" + adminId,
                   paylod
                 );
-      
+
                 if (response?.status === 200) {
                   toast.success(response?.message, {
                     hideProgressBar: true,
@@ -220,8 +206,7 @@ if(phoneNum === ""){
                   });
                 }
               }
-
-            }else{
+            } else {
               toast.error("Request Failed", {
                 hideProgressBar: true,
                 theme: "colored",
@@ -419,7 +404,7 @@ if(phoneNum === ""){
           <div className="col form_field_wrapper ">
             <TextField
               type="text"
-              className="form-control"              
+              className="form-control"
               placeholder="Enter Whatsapp Number"
               name="whatsappNum"
               value={whatsappNum}
@@ -438,7 +423,10 @@ if(phoneNum === ""){
       <div className="row d-flex justify-content-start">
         {/* <div className="row" style={{ marginLeft: "0%" }}> */}
         <div className="col-lg-6 form_field_wrapper">
-          <label style={{ textAlign: "left", margin: "10px" }}> Email Id </label>
+          <label style={{ textAlign: "left", margin: "10px" }}>
+            {" "}
+            Email Id{" "}
+          </label>
           <TextField
             type="email"
             // label=" Email Id "

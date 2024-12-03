@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
-
 import {
   FormControl,
   InputLabel,
@@ -9,7 +9,6 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
-  useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useAPI";
@@ -37,7 +36,6 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
-  const theme = useTheme();
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
@@ -54,28 +52,31 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   }, [save]);
 
   useEffect(() => {
-    getData("hobby/list")
-      .then((data: any) => {
-        console.log(data?.data);
+
+    const fetchHobbyList = async () => {
+      try {
+        const data: any = await getData("hobby/list");
+
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1
           );
           setAllHobbies(filteredData || []);
-          // setAllHobbies(data?.data);
         }
-      })
-      .catch((e) => {
+      } catch (e: any) {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
-      });
 
-    getData("student_hobby/edit/" + StudentId)
-      .then((data: any) => {
-        console.log(data?.data);
+      }
+    };
+  
+    const fetchStudentHobbies = async () => {
+      try {
+        const data: any = await getData("student_hobby/edit/" + StudentId);
+
         if (data?.status === 200) {
           const hobbyIds = data.data.map(
             (selecthobby: any) => selecthobby.hobby_id
@@ -85,45 +86,38 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
         } else if (data?.status === 404) {
           setEditFlag(true);
         }
-      })
-      .catch((e) => {
+      } catch (e: any) {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
-      });
-  }, []);
-
+      }
+    };
+  
+    fetchHobbyList();
+    fetchStudentHobbies();
+  }, [StudentId]);
+  
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     Promise.resolve(setIsHobbiesUpdated(true));
     setSelectedHobbies(event.target.value as string[]);
   };
-  //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
-  //     setSelectedHobbies(event.target.value as string[]);
-  //     const selectedHobbiesIds = event.target.value;
-  //     const uncheckedHobbyId = allHobbies.find(hobby => !selectedHobbiesIds.includes(hobby.id));
-  //     if (uncheckedHobbyId) {
-  //         // Call your function with the unchecked hobby id
-  //         // yourFunction(uncheckedHobbyId);
-  //         console.log("Check", uncheckedHobbyId,allHobbies);
-
-  //     }
-  // };
 
   const submitHandle = async () => {
     
     const eq = deepEqual(initialAdminState, selectedHobbies);
-    console.log(selectedHobbies);
+
     let payloadPromises = selectedHobbies.map((hobbyid) => {
       let payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-console.log(payload);
+
       // return editFlag
       //   ? postData("student_hobby/add", payload)
       //   : putData("student_hobby/edit/" + StudentId, payload);
+
       if (editFlag) {
         return postData("student_hobby/add", payload);
       } else if (!eq) {
@@ -133,23 +127,6 @@ console.log(payload);
         return Promise.resolve({ status: 204 }); // Skip update
       }
     });
-    // <<<<<<< Updated upstream
-    //     if(payloadPromises.length >0)
-    //       {
-    //         try {
-    //           await Promise.all(payloadPromises);
-    //           toast.success("Hobbies saved successfully!!", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         } catch (e) {
-    //           toast.error("An error occurred while saving hobbies", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         }
-    //       }
-    // =======
 
     try {
       const results = await Promise.all(payloadPromises);
@@ -165,13 +142,13 @@ console.log(payload);
           toast.success("Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         }else {
           toast.success("Hobbies update successfully", {
             hideProgressBar: true,
             theme: "colored",
-            position: "top-center"
+            position: "top-center",
           });
         }
         }
@@ -184,15 +161,17 @@ console.log(payload);
       } else {
         //empty
       }
-    } catch (e) {
+    } catch {
       toast.error("An error occurred while saving hobbies", {
         hideProgressBar: true,
         theme: "colored",
-        position: "top-center"
+        position: "top-center",
       });
     }
+
     setSave(false);
     // >>>>>>> Stashed changes
+
   };
 
   const ITEM_HEIGHT = 48;
@@ -211,15 +190,9 @@ console.log(payload);
         console.log(data);
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
-          // setAllHobbies(filteredData ||[]);
-          // setAllHobbies(data?.data);
-          // toast.error(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
         }
       })
-      .catch((e) => {
+      .catch(() => {
         // toast.error(e?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
@@ -239,17 +212,19 @@ console.log(payload);
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
         <div className="col-12 justify-content-start form_field_wrapper">
-          <FormControl sx={{
-               maxWidth: "300px",
-               width: "100%",
-          }}>
-            <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
+          <FormControl
+            sx={{
+              maxWidth: "300px",
+              width: "100%",
+            }}
+          >
+            <InputLabel data-testid="hobby_text" id="demo-multiple-checkbox-label">Hobby</InputLabel>
             <Select
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
               sx={{
-                backgroundColor: "#f5f5f5",             
+                backgroundColor: "#f5f5f5",
               }}
               value={selectedHobbies}
               onChange={handleChange}
@@ -271,7 +246,7 @@ console.log(payload);
               }
               MenuProps={MenuProps}
             >
-              {allHobbies.map((hobby: any) => (
+              {allHobbies?.map((hobby: any) => (
                 <MenuItem
                   key={hobby.id}
                   value={hobby.id}
@@ -294,12 +269,6 @@ console.log(payload);
           </FormControl>
         </div>
       </div>
-      {/* Optional save button */}
-      {/* <div className="row justify-content-center mt-3">
-        <div className="col-12 d-flex justify-content-center">
-          <button className="btn btn-primary">Save</button>
-        </div>
-      </div> */}
     </form>
   );
 };

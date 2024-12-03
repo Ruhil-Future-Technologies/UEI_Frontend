@@ -1,21 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import InputAdornment from "@mui/material/InputAdornment";
 import useApi from "../../hooks/useAPI";
-import emailicon from "../../assets/img/email.svg";
 import gLogo from "../../assets/img/logo-white.svg";
-import gyansetuLogo from "../../assets/img/gyansetu-logo.svg";
 import loginImage from "../../assets/img/login-image.png";
 import { QUERY_KEYS } from "../../utils/const";
 import { Autoplay, Pagination } from "swiper/modules";
-import {
-  ArrowLeft,
-  BackArrowCircle
-} from "../../assets";
+import { ArrowLeft, BackArrowCircle } from "../../assets";
 import "swiper/css";
 import "swiper/css/pagination";
 // import "../../assets/css/main.min.css";
@@ -25,27 +20,25 @@ const Forgotpassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [msg, setMsg] = useState("");
+  // const [msg, setMsg] = useState("");
   const [value, setValue] = React.useState("student");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const theme = localStorage?.getItem("theme") || "";
     if (theme === "light") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);      
+      document?.documentElement?.setAttribute("data-bs-theme", theme);
     } else if (theme === "dark") {
       document?.documentElement?.setAttribute("data-bs-theme", theme);
-   
     } else if (theme === "blue-theme")
       document?.documentElement?.setAttribute("data-bs-theme", theme);
     else if (theme === "semi-dark")
       document?.documentElement?.setAttribute("data-bs-theme", theme);
     else if (theme === "bordered-theme")
       document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else
-    document?.documentElement?.setAttribute("data-bs-theme", theme);
+    else document?.documentElement?.setAttribute("data-bs-theme", theme);
     // document.documentElement.setAttribute('data-theme', theme);
- }, []);
+  }, []);
 
   const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +47,14 @@ const Forgotpassword = () => {
   const sendLink = (e: any) => {
     setIsLoading(true);
     e.preventDefault();
-    let UserSignUp = {
+    const UserSignUp = {
       email: email,
       user_type: String(value),
     };
     postData(`${forgotpassUrl}`, UserSignUp)
       .then((data: any) => {
         if (data?.status === 200) {
-          setMsg(data?.message);
+          // setMsg(data?.message);
           toast.success(data?.message, {
             hideProgressBar: true,
             theme: "colored",
@@ -87,77 +80,12 @@ const Forgotpassword = () => {
       });
   };
   return (
-    // <div className="login">
-    //   <div className="login_inner">
-    //     <div className="form_wrapper">
-    //       <div className="login_form">
-    //         <div className="login_form_inner">
-    //           <form>
-    //             <div className="title_wrapper">
-    //               <h1 className="login_title">Forgot Password</h1>
-    //               <div className="desc">
-    //                 We'll email you link to reset your password.
-    //               </div>
-    //             </div>
-    //             <h4 className="text-success">{msg}</h4>
-    //             <div className="form_field_wrapper">
-    //               <RadioGroup row value={value} onChange={handleChange}>
-    //                 <FormControlLabel
-    //                   value="student"
-    //                   control={<Radio />}
-    //                   label="Student"
-    //                 />
-    //                 <FormControlLabel
-    //                   value="admin"
-    //                   control={<Radio />}
-    //                   label="Admin"
-    //                 />
-    //               </RadioGroup>
-    //               <TextField
-    //                 onChange={(e) => setEmail(e.target.value)}
-    //                 id="input-with-icon-textfield"
-    //                 InputProps={{
-    //                   startAdornment: (
-    //                     <InputAdornment position="start">
-    //                       <img src={emailicon} alt="email" />
-    //                     </InputAdornment>
-    //                   ),
-    //                 }}
-    //                 placeholder="Email"
-    //                 variant="outlined"
-    //               />
-    //             </div>
-    //             {/* <div className="form_field_wrapper forgotpass">
-    //                     <Link className="ato" to="/">Login</Link>
-    //                 </div> */}
-    //             <div className="d-flex justify-content-between form_field_wrapper signuplink_block1 forgotpass">
-    //                 <span>Already have an account?</span>{"  "}
-    //               <Link className="ato signupa" to="/">
-    //                 <span className="signup_txt">Login</span>
-    //               </Link>
-    //             </div>
-
-    //             <button
-    //               type="submit"
-    //               className="btn btn-primary"
-    //               onClick={(e) => sendLink(e)}
-    //               disabled={isLoading}
-    //             >
-    //               Send Link
-    //             </button>
-    //           </form>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
     <>
       {isLoading && <FullScreenLoader />}
       <div className="without-login">
         <header className="container-fluid mb-5 py-3 d-none d-lg-block">
           <div className="row align-items-center">
             <div className="col-6">
-              
               <div className="logoui">
                 <img onClick={() => navigate("/")} src={gLogo} alt="" />
                 <span>Gyansetu</span>

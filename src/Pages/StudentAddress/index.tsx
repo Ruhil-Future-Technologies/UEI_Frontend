@@ -1,12 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef, useState } from "react";
-
-import {
-  TextField,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  Button,
-} from "@mui/material";
+import { Checkbox, FormControl, FormControlLabel } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
@@ -27,7 +21,7 @@ interface StudentAddress {
 }
 
 const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   console.log(StudentId);
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({
@@ -43,19 +37,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     address_type: "permanent",
   });
   const [editFlag, setEditFlag] = useState<boolean>(false);
-  const [pincode, setPincode] = useState("");
-  const [isValid, setIsValid] = useState(true);
-  const [errors, setErrors] = useState({ currentpin: "", permanentpin: "" });
   const [contry_col, setcontry_col] = useState<boolean>(false);
   const [add_col, setAdd_col] = useState<boolean>(false);
-  const [add2_col, setAdd2_col] = useState<boolean>(false);
   const [city_colerror, setCity_colerror] = useState<boolean>(false);
   const [district_colerror, setDistrict_colerror] = useState<boolean>(false);
   const [state_col, setstate_col] = useState<boolean>(false);
   const [city_col, setcity_col] = useState<boolean>(false);
   const [district_col, setdistrict_col] = useState<boolean>(false);
   const [pincode_col, setpincode_col] = useState<boolean>(false);
-  const [contry_col1, setcontry_col1] = useState<boolean>(false);
   const [state_col1, setstate_col1] = useState<boolean>(false);
   const [city_col1, setcity_col1] = useState<boolean>(false);
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
@@ -128,49 +117,51 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     };
   }, []);
 
-  const validatePincode = (pincode: any) => {
-    const pincodePattern = /^[1-9][0-9]{5}$/;
-    return pincodePattern.test(pincode);
-  };
+
   const listData = async () => {
     getData(`${"student_address/edit/" + StudentId}`)
       .then((response: any) => {
         if (response?.status === 200) {
-          let add1 :any
-            let add2 :any
+          let add1: any;
+          let add2: any;
           response?.data.forEach((address: any) => {
-            
             if (address?.address_type === "permanent") {
               setPermanentAddress(address);
               setPermanentAddress1(address);
-               add1 = address
+              add1 = address;
             } else if (address?.address_type === "current") {
               setStudentAddress(address);
               setStudentAddress1(address);
-               add2 = address
-              
+              add2 = address;
             }
-          
           });
-           // Filter out unwanted fields from both add1 and add2
-      const fieldsToCompare = ['address1', 'address2', 'city', 'country', 'district', 'pincode', 'state'];
+          // Filter out unwanted fields from both add1 and add2
+          const fieldsToCompare = [
+            "address1",
+            "address2",
+            "city",
+            "country",
+            "district",
+            "pincode",
+            "state",
+          ];
 
-      const filteredAdd1:any = {};
-      const filteredAdd2:any = {};
+          const filteredAdd1: any = {};
+          const filteredAdd2: any = {};
 
-      fieldsToCompare?.forEach(field => {
-        if (add1?.hasOwnProperty(field)) {
-          filteredAdd1[field] = add1[field];
-        }
-        if (add2?.hasOwnProperty(field)) {
-          filteredAdd2[field] = add2[field];
-        }
-      });
+          fieldsToCompare?.forEach((field) => {
+            if (add1 && Object.prototype.hasOwnProperty.call(add1, field)) {
+              filteredAdd1[field] = add1[field];
+            }
+            if (add2 && Object.prototype.hasOwnProperty.call(add2, field)) {
+              filteredAdd2[field] = add2[field];
+            }
+          });
 
-      // Use deepEqual to compare only the selected fields
-      const equal = deepEqual(filteredAdd1, filteredAdd2);
-          if(equal){
-            setChecked(true)
+          // Use deepEqual to compare only the selected fields
+          const equal = deepEqual(filteredAdd1, filteredAdd2);
+          if (equal) {
+            setChecked(true);
           }
         } else if (response?.status === 404) {
           setEditFlag(true);
@@ -204,7 +195,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   ) => {
     seteditaddress(true);
     const { name, value } = event.target;
-    setChecked(false)
+    setChecked(false);
 
     if (addressType === "current") {
       if (name === "country") {
@@ -222,23 +213,23 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "city") {
-        if(value === "" ){
-          setCity_colerror(true)
-        }else{
-          setCity_colerror(false)
+        if (value === "") {
+          setCity_colerror(true);
+        } else {
+          setCity_colerror(false);
         }
         // if (!/^[a-zA-Z\s]*$/.test(value)) {
-          if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
+        if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setcity_col(true);
         } else {
           setcity_col(false);
         }
       }
       if (name === "district") {
-        if(value === "" ){
-          setDistrict_colerror(true)
-        }else{
-          setDistrict_colerror(false)
+        if (value === "") {
+          setDistrict_colerror(true);
+        } else {
+          setDistrict_colerror(false);
         }
         if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setdistrict_col(true);
@@ -255,35 +246,16 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
       if (name === "address1") {
         // if (value === "") {
-          if (value === "" || (!/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value))) {
+        if (value === "" || !/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value)) {
           setAdd_col(true);
         } else {
-          setAdd_col(false)
+          setAdd_col(false);
         }
       }
-      if (name === "address2") {
-        if (value === "") {
-          setAdd2_col(true);
-        } else {
-          setAdd2_col(false)
-        }
-      }
-      // if(name==='pincode')
-      // {
-      //       setErrors({
-      //         ...errors,
-      //         currentpin: !validatePincode(value) ? 'Please enter a valid Pincode Only numbers allowed.' : '',
-      //       });
-      // }
+   
       setStudentAddress((prevState) => ({ ...prevState, [name]: value }));
     } else {
-      if (name === "country") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setcontry_col1(true);
-        } else {
-          setcontry_col1(false);
-        }
-      }
+      
       if (name === "state") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setstate_col1(true);
@@ -327,10 +299,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
-      setChecked(true)
+      setChecked(true);
       setPermanentAddress({ ...studentAddress, address_type: "permanent" });
     } else {
-      setChecked(false)
+      setChecked(false);
       setPermanentAddress((prevPermanentAddress) => ({
         ...prevPermanentAddress,
         address1: "",
@@ -344,6 +316,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }));
     }
   };
+
 
   const changeHendels = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -369,100 +342,30 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     pincode: "",
   });
 
-  //   const validate = () => {
-  //     const validationError: any = {}
-  //     // Address type validation
-  //     if (!formData.address_type) {
-  //         validationError.address_type = 'Address type is required';
-  //     }
-
-  //     // Address1 validation
-  //     if (!formData.address1) {
-  //         validationError.address1 = 'Address 1 is required';
-  //     }
-  //     // Address2 validation
-  //     if (!formData.address2) {
-  //         validationError.address2 = 'Address 2 is required';
-  //     }
-
-  //     // Country validation
-  //     if (!formData.country) {
-  //         validationError.country = 'Country is required';
-  //     }
-
-  //     // State validation
-  //     if (!formData.state) {
-  //         validationError.state = 'State is required';
-  //     }
-
-  //     // City validation
-  //     if (!formData.city) {
-  //         validationError.city = 'City is required';
-  //     }
-
-  //     // District validation
-  //     if (!formData.district) {
-  //         validationError.district = 'District is required';
-  //     }
-
-  //     // Pincode validation
-  //     if (!formData.pincode) {
-  //         validationError.pincode = 'Pincode is required';
-  //     } else if (!/^\d{6}$/.test(formData.pincode)) {
-  //         validationError.pincode = 'Invalid pincode';
-  //     }
-
-  //     setError(validationError);
-  //     return Object.keys(validationError).length === 0 ? true : false;
-  //     // // If no errors, proceed with form submission
-  //     if (Object.keys(validationError).length === 0) {
-  //         // Your form submission logic here
-  //         console.log('Form submitted successfully!');
-  //     }
-  // }
 
   const SubmitHandle = async () => {
-    if(!("address1" in studentAddress) || studentAddress?.address1 === ""){
-      setAdd_col(true)
-
-    }else{
-      setAdd_col(false)
-    }
-    // if(!("address2" in studentAddress) || studentAddress?.address2 === ""){
-    //   setAdd2_col(true)
-
-    // }else{
-    //   setAdd2_col(false)
-    // }
-    if(!("city" in studentAddress) || studentAddress?.city === ""){
-      setCity_colerror(true)
-
-    }else{
-      setCity_colerror(false)
-    }
-    if(!("district" in studentAddress) || studentAddress?.district === ""){
-      setDistrict_colerror(true)
-
-    }else{
-      setDistrict_colerror(false)
-    }
-    if(!("pincode" in studentAddress) || studentAddress?.pincode === ""){
-      setpincode_col(true)
-
-    }else{
-      setpincode_col(false)
-    }
-    // event: React.FormEvent<HTMLFormElement>
-    // event.preventDefault();
-    if (validatePincode(pincode)) {
-      setIsValid(true);
-      // toast.success('Pincode is valid');
+    if (!("address1" in studentAddress) || studentAddress?.address1 === "") {
+      setAdd_col(true);
     } else {
-      setIsValid(false);
-      // toast.error('Pincode is invalid');
+      setAdd_col(false);
     }
-    // const validation = validate();
-    // if (validation == true) {
+    
+    if (!("city" in studentAddress) || studentAddress?.city === "") {
+      setCity_colerror(true);
+    } else {
+      setCity_colerror(false);
+    }
+    if (!("district" in studentAddress) || studentAddress?.district === "") {
+      setDistrict_colerror(true);
+    } else {
+      setDistrict_colerror(false);
+    }
+    if (!("pincode" in studentAddress) || studentAddress?.pincode === "") {
+      setpincode_col(true);
+    } else {
+      setpincode_col(false);
+    }
+ 
 
     if (!("country" in studentAddress) || studentAddress?.country === "") {
       setcontry_col(true);
@@ -470,11 +373,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setcontry_col(false);
     }
 
-    if (!("country" in permanentAddress) || permanentAddress?.country === "") {
-      setcontry_col1(true);
-    } else {
-      setcontry_col1(false);
-    }
 
     const currentAddressPayload = {
       student_id: StudentId,
@@ -511,9 +409,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 theme: "colored",
                 position: "top-center",
               });
-         if(addressType === "Current"){
-           setActiveForm((prev) => prev + 1);
-         }
+              if (addressType === "Current") {
+                setActiveForm((prev) => prev + 1);
+              }
             } else {
               // toast.error(`Failed to add ${addressType} address`, {
               //   hideProgressBar: true,
@@ -563,15 +461,15 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 position: "top-center",
               });
               listData();
-              
-              if (!eq || !permanentAddressEq){
-                if(!eq && !permanentAddressEq){
-                }else{
-                  console.log("tets log tt",!eq,!permanentAddressEq)
+
+              if (!eq || !permanentAddressEq) {
+                if (!eq && !permanentAddressEq) {
+                  // block of code to write the address
+                } else {
+                  console.log("tets log tt", !eq, !permanentAddressEq);
                   setActiveForm((prev) => prev + 1);
                 }
               }
-              
             } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
             else {
               // toast.error(`Failed to update ${addressType} address`, {
@@ -648,7 +546,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }));
         setPermanentAddress((prevState) => ({ ...prevState, ["state"]: "" }));
         setstate_col1(true);
-        setcontry_col1(false);
+        // setcontry_col1(false);
       } else if (name === "state") {
         setPermanentAddress((prevState) => ({
           ...prevState,
@@ -699,22 +597,17 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={studentAddress?.address2}
             onChange={(e) => handleInputChange(e, "current")}
-            // required
+          // required
           />
-           {/* {" "}
-            {(studentAddress.address2 === "" || add2_col) && (
-              <p style={{ color: "red" }}>Please enter Address 2.</p>
-            )} */}
+          
         </div>
-       
 
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label  ${
-              isFocusedstate || studentAddress?.country
+            className={`col-form-label  ${isFocusedstate || studentAddress?.country
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span>*</span>
@@ -736,11 +629,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label ${
-              isFocusedstate || studentAddress.state
+            className={`col-form-label ${isFocusedstate || studentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span>*</span>
@@ -768,14 +660,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             City <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="city"
-            className="form-control"
-            value={studentAddress?.city}
-            onChange={(e) => handleInputChange(e, "current")}
-            required
-          /> */}
+          
           <input
             type="text"
             name="city"
@@ -805,14 +690,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             District <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="district"
-            className="form-control"
-            value={studentAddress?.district}
-            onChange={(e) => handleInputChange(e, "current")}
-            required
-          /> */}
+         
           <input
             type="text"
             name="district"
@@ -842,16 +720,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Pincode <span>*</span>
           </label>
-          {/* <TextField
-            type="text"
-            name="pincode"
-            className="form-control"
-            value={studentAddress.pincode}
-            onChange={(e) => handleInputChange(e, "current")}
-            required
-            // error={!!errors.currentpin}
-            // helperText={errors.currentpin}
-          /> */}
+         
           <input
             type="text"
             name="pincode"
@@ -859,8 +728,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "current")}
             required
-            // error={!!errors.currentpin}
-            // helperText={errors.currentpin}
+          // error={!!errors.currentpin}
+          // helperText={errors.currentpin}
           />
           <div>
             {" "}
@@ -876,7 +745,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               <p style={{ color: "red" }}>Please enter Pincode.</p>
             )}
           </div>
-          {/* {error.pincode && <span style={{ color: 'red' }}>{error.pincode}</span>} */}
+          
         </div>
       </div>
       <div className="row mt-4">
@@ -907,21 +776,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Address 1 <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="address1"
-            className="form-control"
-            value={permanentAddress.address1}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-          /> */}
+         
           <input
             type="text"
             name="address1"
             className="form-control"
             value={permanentAddress.address1}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
@@ -929,63 +791,22 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Address 2 <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="address2"
-            className="form-control"
-            value={permanentAddress.address2}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-          /> */}
+         
           <input
             type="text"
             name="address2"
             className="form-control"
             value={permanentAddress.address2}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
           {/* {error.address2 && <span style={{ color: 'red' }}>{error.address2}</span>} */}
         </div>
-        {/* <div className="col-6 pb-3">
-          <label>
-            {" "}
-            Country <span></span>
-          </label>
-          <TextField
-            type="text"
-            name="country"
-            className="form-control"
-            value={permanentAddress.country}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-          />
-           <div> {contry_col1 && (
-            <p style={{ color: 'red' }}>Please enter a valid Country Name only characters allowed.</p>
-          )}</div>
-        </div>
-        <div className="col-6 pb-3">
-          <label>
-            {" "}
-            State <span></span>
-          </label>
-          <TextField
-            type="text"
-            name="state"
-            className="form-control"
-            value={permanentAddress.state}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-          />
-           <div> {state_col1 && (
-            <p style={{ color: 'red' }}>Please enter a valid state Name only characters allowed.</p>
-          )}</div>
-        </div> */}
+       
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
           <label
-            className={`col-form-label ${
-              isFocused || permanentAddress.country ? "focused" : "focusedempty"
-            }`}
+            className={`col-form-label ${isFocused || permanentAddress.country ? "focused" : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span></span>
@@ -998,20 +819,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               handleInputChangecountry(e, "permanent_address", "country")
             }
           />
-          {/* <div>
-            {" "}
-            {contry_col1 && (
-              <p style={{ color: "red" }}>Please enter Country Name.</p>
-            )}
-          </div> */}
+         
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
-            className={`col-form-label ${
-              isFocusedstate || permanentAddress.state
+            className={`col-form-label ${isFocusedstate || permanentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span></span>
@@ -1039,21 +854,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             City <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="city"
-            className="form-control"
-            value={permanentAddress.city}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-          /> */}
+         
           <input
             type="text"
             name="city"
             className="form-control"
             value={permanentAddress.city}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
           <div>
             {" "}
@@ -1070,21 +878,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             District <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="district"
-            className="form-control"
-            value={permanentAddress.district}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-          /> */}
+         
           <input
             type="text"
             name="district"
             className="form-control"
             value={permanentAddress.district}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
+          // required
           />
           <div>
             {" "}
@@ -1101,25 +902,14 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             {" "}
             Pincode <span></span>
           </label>
-          {/* <TextField
-            type="text"
-            name="pincode"
-            className="form-control"
-            value={permanentAddress.pincode}
-            onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-            // error={!!errors.permanentpin}
-            // helperText={errors.permanentpin}
-          /> */}
+          
           <input
             type="text"
             name="pincode"
             className="form-control"
             value={permanentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "permanent")}
-            // required
-            // error={!!errors.permanentpin}
-            // helperText={errors.permanentpin}
+          
           />
           <div>
             {" "}
@@ -1129,7 +919,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               </p>
             )}
           </div>
-          {/* {error.pincode && <span style={{ color: 'red' }}>{error.pincode}</span>} */}
         </div>
         <div className="col-lg-12">
           <div className="mt-3 d-flex align-items-center justify-content-between">
@@ -1152,16 +941,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
         </div>
       </div>
-      {/* <div className="d-flex justify-content-center">
-        <Button
-          className="mainbutton"
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          {editFlag ? "save" : "Save Changes"}
-        </Button>
-      </div> */}
     </form>
   );
 };
