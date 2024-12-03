@@ -467,7 +467,7 @@ export const ProfileDialog: FunctionComponent<{
             question !== "What is your learning style?" &&
             question !== "Please select year" &&
             question !==
-              "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
+            "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
             question !== "Please select your semester "
         );
       } else {
@@ -481,7 +481,7 @@ export const ProfileDialog: FunctionComponent<{
             question !== "Please select year" &&
             question !== "Please select your state" &&
             question !==
-              "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
+            "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
             question !== "Please select your semester "
         );
       }
@@ -936,70 +936,60 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType,
       board:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-
-        selectedInstituteType?.toLowerCase() === "school"
-
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.board || selectedBoard
           : null,
       state_for_stateboard:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-
-        selectedInstituteType?.toLowerCase() === "school"
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.state_for_stateboard ||
-            selectedAcademicState?.toLowerCase()
+          selectedAcademicState?.toLowerCase()
           : null,
       institute_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.institute_id ||
-            selectedInstitute?.toString()
+          selectedInstitute?.toString()
           : null,
       course_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.course_id ||
-            selectCourse?.toString()
+          selectCourse?.toString()
           : null,
       learning_style:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.learning_style ||
-            selectedLearningStyle
+          selectedLearningStyle
           : null,
       class_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "school"
-
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.class_id || answers[11]?.toString()
           : null,
       // year: answeredData?.academic_history?.year || answers[18] || "",
       year:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.year ||
-            (answers[18]
-              ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"])?.year()?.toString()
-              : "")
+          (answers[18]
+            ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"])?.year()?.toString()
+            : "")
           : "",
       stream:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "school"
-
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.stream || answers[12]
           : null,
       university_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-
-        selectedInstituteType?.toLowerCase() === "college"
-
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.university_id || answers[13]
           : null,
       sem_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-
-        selectedInstituteType?.toLowerCase() === "college"
-
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.sem_id || answers[16]
           : null,
     };
@@ -1029,10 +1019,8 @@ export const ProfileDialog: FunctionComponent<{
       sem_id: answeredData?.subject_preference?.sem_id || answers[26],
       ...(answeredData?.academic_history?.institution_type === "school" &&
         answeredData?.academic_history?.stream && {
-
-          stream: answeredData?.academic_history?.stream || answers[12],
-        }),
-
+        stream: answeredData?.academic_history?.stream || answers[12],
+      }),
       ...((answeredData?.academic_history?.institution_type === "college" ||
         answers[8]?.toLowerCase() === "college") && {
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
@@ -1095,12 +1083,10 @@ export const ProfileDialog: FunctionComponent<{
   const maxSemester =
     semester && semester?.length > 0
       ? Math.max(
-
-          ...semester?.map(
-            (item: { semester_number: any }) => item?.semester_number
-          )
+        ...semester.map(
+          (item: { semester_number: any }) => item?.semester_number
         )
-
+      )
       : 0;
   // const semesterSelectOptions = [...Array(semester[0]?.semester_number)].map(
   const semesterSelectOptions = [...Array(maxSemester)]?.map((_, index) => ({
@@ -1109,23 +1095,19 @@ export const ProfileDialog: FunctionComponent<{
   }));
   const semesterSelectOptionspre = selectSemester
     ? [
-
-        {
-          value: selectSemester,
-          label: `Semester ${selectSemester}`,
-        },
-      ]
+      {
+        value: selectSemester,
+        label: `Semester ${selectSemester}`,
+      },
+    ]
     : semesterpre[0]?.semester_number
-    ? [
-
+      ? [
         {
           value: semesterpre[0]?.semester_number,
           label: `Semester ${semesterpre[0]?.semester_number}`,
         },
       ]
-
-    : [];
-
+      : [];
 
   // const semesterSelectOptionspre = [
   //   ...Array(semesterpre[0]?.semester_number),
@@ -1672,8 +1654,8 @@ export const ProfileDialog: FunctionComponent<{
             text:
               (answers[8]?.toLowerCase() === "school" ||
                 answeredData?.academic_history?.institution_type ===
-                  "school") &&
-              currentQuestionIndex === 24
+                "school") &&
+                currentQuestionIndex === 24
                 ? currentQuestions[27]
                 : currentQuestions[currentQuestionIndex + 1],
             type: "question" as const,
@@ -2574,11 +2556,9 @@ export const ProfileDialog: FunctionComponent<{
     document.body.classList.remove("overflow-hidden");
     // navigate("/main/Dashboard");
   };
-
-  const handleOpen = () => {
-    // setOpen(true);
-  };
-
+  // const handleOpen = () => {
+  //   // setOpen(true);
+  // };
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
 
@@ -2622,18 +2602,14 @@ export const ProfileDialog: FunctionComponent<{
                   return (
                     <div
                       key={index}
-
-                      className={`message-wrapper d-flex mb-3 ${
-                        message.type === "question"
+                      className={`message-wrapper d-flex mb-3 ${message.type === "question"
                           ? "justify-content-start"
                           : "justify-content-end"
-                      }`}
-
+                        }`}
                     >
                       <div
-                        className={`message-bubble p-3 ${
-                          message.type === "question" ? "left" : "right"
-                        }`}
+                        className={`message-bubble p-3 ${message.type === "question" ? "left" : "right"
+                          }`}
                         style={{
                           maxWidth: "80%",
                           backgroundColor:
@@ -2675,10 +2651,10 @@ export const ProfileDialog: FunctionComponent<{
                     goal ||
                     firstaddress ||
                     secondaddress) && (
-                    <p className="error-text">
-                      {errordata[currentQuestionIndex]}
-                    </p>
-                  )}
+                      <p className="error-text">
+                        {errordata[currentQuestionIndex]}
+                      </p>
+                    )}
                   {error1 && (
                     <p
                       style={{
@@ -2691,7 +2667,7 @@ export const ProfileDialog: FunctionComponent<{
                     </p>
                   )}
                   {currentQuestionIndex === 15 ||
-                  currentQuestionIndex === 25 ? (
+                    currentQuestionIndex === 25 ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangecourse}
@@ -2720,10 +2696,6 @@ export const ProfileDialog: FunctionComponent<{
                         autoFocus: true,
                         readOnly: true,
                       }}
-                      inputStyle={{
-                        color: "black",
-                      }}
-                      dropdownStyle={{ color: "black" }}
                       placeholder=""
                       enableSearch={true}
                       disableDropdown={false}
@@ -2750,7 +2722,7 @@ export const ProfileDialog: FunctionComponent<{
                             right: "10px", // Adjust this value to move the button horizontally
                             transform: "translateY(-50%)",
                             cursor: "pointer",
-                            // color: chattextbgright(namecolor),
+                            color: chattextbgright(namecolor),
                             margin: 0,
                           }}
                           onClick={handleSkip}

@@ -396,7 +396,7 @@ function MainContent() {
     SundayCount: 0,
     ThursdayCount: 0,
     TuesdayCount: 0,
-    WednesdayCount: 0,
+    WednesdayCount: 0
   });
   const [statsChatCount, setStatsChatCount] = useState<any>([]);
   // {
@@ -474,6 +474,7 @@ function MainContent() {
           statsweekly?.ThursdayCount,
           statsweekly?.FridayCount,
           statsweekly?.SaturdayCount,
+
         ],
         backgroundColor: function (context) {
           const chart = context.chart;
@@ -520,10 +521,7 @@ function MainContent() {
   };
   // Sort statsChatCount by chat_count in descending order and take the top 5
   const top5Chats = statsChatCount
-    ?.sort(
-      (a: { chat_count: number }, b: { chat_count: number }) =>
-        b?.chat_count - a?.chat_count
-    )
+    ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
     ?.slice(0, 5);
 
   // Extract student names and chat counts for the top 5 entries
@@ -595,6 +593,7 @@ function MainContent() {
       x: {},
     },
   };
+
 
   // Define the bar chart data
   const barChartData: ChartData<"bar", number[], string> = {
@@ -859,8 +858,7 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(
-                  `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
+                  `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path
                   }`
                 )
                   .then((imgdata: any) => {
@@ -918,7 +916,7 @@ function MainContent() {
                           .replace("_", " ")
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace("_", " ").slice(1)
+                        response.data.class_name.replace("_", " ").slice(1)
                       )
                   );
                 }
@@ -968,18 +966,20 @@ function MainContent() {
             } else {
               sectionCount++;
             }
-
+        
             if (
               subject_preference &&
               Object.keys(subject_preference)?.length > 0
             ) {
+
               if (academic_history?.institution_type === "school") {
                 // console.log("test subject pref school",subject_preference)
                 delete subject_preference?.course_name;
-                delete subject_preference?.course_id;
+                delete subject_preference?.course_id; 
                 delete subject_preference?.sem_id;
                 delete subject_preference?.subject_id;
-              } else {
+              
+              }else{
                 // console.log("test subject pref college",subject_preference)
               }
               const totalcount = Object.keys(subject_preference)?.length;
@@ -1037,11 +1037,9 @@ function MainContent() {
         //   chatHistory: chatstarred?.length || 0,
         //   chatCount: chatHistory?.data?.length || 0,
         // });
-
-        const chatstarred =
-          chatHistory?.data?.filter((chat: any) => chat) || [];
-        setStudent({
-
+        //  const chatstarred =
+        //   chatHistory?.data?.filter((chat: any) => chat) || [];
+         setStudent({
           // chatHistory: chatHistory?.data?.length || 0,
           chatHistory: chatCount?.data?.saved_chat_count || 0,
           chatCount: chatCount?.data?.total_chat_count || 0,
@@ -1110,16 +1108,13 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info)?.length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(
-                  `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
+                  `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path
                   }`
                 )
                   .then((imgdata: any) => {
                     setprofileImage(imgdata?.data);
                   })
-
-                  .catch((e) => {});
-
+                  .catch(() => { });
               }
 
               const totalcount = Object.keys(basic_info)?.length;
@@ -1276,14 +1271,14 @@ function MainContent() {
             courseRes?.status === "fulfilled"
               ? courseRes?.value?.data?.length || 0
               : 0;
-          const schoolsubjectCount =
-            schoolRes?.status === "fulfilled"
-              ? schoolRes?.value?.data?.length || 0
-              : 0;
-          const collegesubjectCount =
-            collegeRes?.status === "fulfilled"
-              ? collegeRes?.value?.data?.length || 0
-              : 0;
+              const schoolsubjectCount =
+              schoolRes?.status === "fulfilled"
+                ? schoolRes?.value?.data?.length || 0
+                : 0;
+                const collegesubjectCount =
+                collegeRes?.status === "fulfilled"
+                  ? collegeRes?.value?.data?.length || 0
+                  : 0;
 
           setStats({
             institutionCount,
@@ -1293,7 +1288,7 @@ function MainContent() {
             departmentCount,
             courseCount,
             schoolsubjectCount,
-            collegesubjectCount,
+            collegesubjectCount
           });
 
           // setStats({
@@ -1313,13 +1308,17 @@ function MainContent() {
     const fetchStudentweeklyData = async () => {
       if (usertype === "admin") {
         try {
-          const [studentweeklycount] = await Promise.allSettled([
+          const [
+            studentweeklycount,
+
+          ] = await Promise.allSettled([
             getData("/student/weekly_student_count"),
           ]);
           const studentweeklydata =
             studentweeklycount?.status === "fulfilled"
               ? studentweeklycount?.value?.data || 0
               : 0;
+
 
           setStatsweekly({
             SundayCount: studentweeklydata?.Sunday,
@@ -1330,6 +1329,7 @@ function MainContent() {
             FridayCount: studentweeklydata?.Friday,
             SaturdayCount: studentweeklydata?.Saturday,
           });
+
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -1338,7 +1338,10 @@ function MainContent() {
     const fetchStudentCourseData = async () => {
       if (usertype === "admin") {
         try {
-          const [studentCoursecount] = await Promise.allSettled([
+          const [
+            studentCoursecount,
+
+          ] = await Promise.allSettled([
             getData("/course/course-wise-student-count"),
           ]);
           const studentCoursedata =
@@ -1347,6 +1350,7 @@ function MainContent() {
               : 0;
 
           setStatsCourse(studentCoursedata);
+
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -1356,7 +1360,10 @@ function MainContent() {
     const fetchStudentChatCountData = async () => {
       if (usertype === "admin") {
         try {
-          const [studentChatCount] = await Promise.allSettled([
+          const [
+            studentChatCount,
+
+          ] = await Promise.allSettled([
             getData("/chat/api/chat-count"),
           ]);
           const studentChatCountdata =
@@ -1365,6 +1372,7 @@ function MainContent() {
               : 0;
 
           setStatsChatCount(studentChatCountdata);
+
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -1387,9 +1395,9 @@ function MainContent() {
     //       });
     //     });
     // }
-    fetchStudentweeklyData();
-    fetchStudentCourseData();
-    fetchStudentChatCountData();
+    fetchStudentweeklyData()
+    fetchStudentCourseData()
+    fetchStudentChatCountData()
     fetchData();
     getVoices();
     // fetchstucount();
@@ -1424,15 +1432,15 @@ function MainContent() {
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -1536,11 +1544,7 @@ function MainContent() {
           // );
           if (profileDatas?.academic_history?.institution_type === "school") {
             return getData(
-              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-                search
-              )}&student_id=${StudentId}&class_name=${
-                profileDatas?.class?.name
-              }`
+              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${search}&student_id=${StudentId}&class_name=${profileDatas?.class?.name}`
             )
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
@@ -1557,9 +1561,7 @@ function MainContent() {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                      search
-                    )}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1584,9 +1586,7 @@ function MainContent() {
               .catch(() =>
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                    search
-                  )}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1608,45 +1608,27 @@ function MainContent() {
                   })
               );
           } else {
-
-            const {
-              institution_type,
-              board,
-              state_for_stateboard,
-              stream,
-              class_id,
-              university_id,
-              institute_id,
-              course_id,
-              year,
-            } = profileDatas?.academic_history;
-            const { subject_name } = profileDatas?.subject_preference;
-
+            const {institution_type, board,state_for_stateboard,stream,class_id,university_id,institute_id,course_id,year} = profileDatas?.academic_history || {};
+            const {subject_name } = profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
             const queryParams = new URLSearchParams({
-              user_query: encodeURIComponent(search),
+              user_query: search,
               student_id: StudentId,
-              ...(institution_type && {
-                school_college_selection: institution_type,
-              }),
+              ...(institution_type && { school_college_selection: institution_type }),
               ...(board && { board_selection: board }),
-              ...(state_for_stateboard && {
-                state_board_selection: state_for_stateboard,
-              }),
+              ...(state_for_stateboard && { state_board_selection: state_for_stateboard }),
               ...(stream && { stream_selection: stream }),
               ...(class_id && { class_selection: class_id }),
               ...(university_id && { university_selection: university_id }),
               ...(institute_id && { college_selection: institute_id }),
               ...(course_id && { course_selection: course_id }),
               ...(year && { year: year }),
-              ...(subject_name && { subject: subject_name }),
+              ...(subject_name && { subject: subject_name })
             });
-
-            return getData(
-              `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            )
+            
+            return getData(`https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -1662,9 +1644,7 @@ function MainContent() {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                      search
-                    )}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1690,9 +1670,7 @@ function MainContent() {
                 setLoaderMsg("Fetching Data from Ollama model.");
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                    search
-                  )}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1744,9 +1722,7 @@ function MainContent() {
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
-            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-              search
-            )}`
+            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
           );
         } else if (data) {
           handleError(data);
@@ -1797,6 +1773,7 @@ function MainContent() {
     { id: 5, value: stats.departmentCount, label: "Department" },
   ];
 
+
   //   const dataTest =[
   //     {
   //         "course_id": 46,
@@ -1828,20 +1805,19 @@ function MainContent() {
   const top5Courses = statsCourse.slice(0, 5);
   // const top5Courses = dataTest.slice(0, 5);
 
+
   // Truncate the label and add '...' if it's too long
   const truncateLabel = (label: any, maxLength = 10) => {
     return label.length > maxLength ? `${label.slice(0, maxLength)}...` : label;
   };
 
   // Map to the format needed for pieDataCourse
-  const pieDataCourse = top5Courses?.map(
-    (course: { student_count: any; course_name: any }, index: any) => ({
-      id: index,
-      value: course?.student_count,
-      // label: course?.course_name
-      label: truncateLabel(course.course_name, 10),
-    })
-  );
+  const pieDataCourse = top5Courses?.map((course: { student_count: any; course_name: any; }, index: any) => ({
+    id: index,
+    value: course?.student_count,
+    // label: course?.course_name
+    label: truncateLabel(course.course_name, 10),
+  }));
 
   // const pieData1 = [
   //   { id: 0, value: stats1?.Student_Profile, label: `Profile completed` },
@@ -1912,9 +1888,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-
-    utterance.onerror = (event) => {};
-
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2173,10 +2147,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="mb-0">
-                              {stats.collegesubjectCount +
-                                stats?.schoolsubjectCount}
-                            </h4>
+                            <h4 className="mb-0">{stats.collegesubjectCount + stats?.schoolsubjectCount}</h4>
                             <p className="mb-0">Total Subjects</p>
                           </div>
                         </div>
@@ -2292,10 +2263,7 @@ function MainContent() {
                           </div>
                           <div>
                             {/* <h4 className="mb-0">{stats.subjectCount}</h4> */}
-                            <h4 className="mb-0">
-                              {stats.schoolsubjectCount +
-                                stats.collegesubjectCount}
-                            </h4>
+                            <h4 className="mb-0">{stats.schoolsubjectCount + stats.collegesubjectCount}</h4>
                             <p className="mb-0">Subjects</p>
                           </div>
                         </div>
@@ -2343,7 +2311,9 @@ function MainContent() {
                           </a>
                           <ul className="dropdown-menu">
                             <li>
-                              <div className="dropdown-item">Action</div>
+                              <div className="dropdown-item">
+                                Action
+                              </div>
                             </li>
                             <li>
                               <div className="dropdown-item">
@@ -2386,7 +2356,9 @@ function MainContent() {
                           </a>
                           <ul className="dropdown-menu">
                             <li>
-                              <div className="dropdown-item">Action</div>
+                              <div className="dropdown-item">
+                                Action
+                              </div>
                             </li>
                             <li>
                               <div className="dropdown-item">
@@ -2455,7 +2427,9 @@ function MainContent() {
                           </a>
                           <ul className="dropdown-menu">
                             <li>
-                              <div className="dropdown-item">Action</div>
+                              <div className="dropdown-item">
+                                Action
+                              </div>
                             </li>
                             <li>
                               <div className="dropdown-item">
@@ -2497,7 +2471,9 @@ function MainContent() {
                           </div>
                           <ul className="dropdown-menu">
                             <li>
-                              <div className="dropdown-item">Action</div>
+                              <div className="dropdown-item">
+                                Action
+                              </div>
                             </li>
                             <li>
                               <div className="dropdown-item">
@@ -2676,8 +2652,8 @@ function MainContent() {
                                   ? profileImage
                                   : profileDatas?.basic_info?.gender.toLowerCase() ===
                                     "female"
-                                  ? femaleImage
-                                  : maleImage
+                                    ? femaleImage
+                                    : maleImage
                               }
                               className="rounded-circle img-fluid bg-grd-info p-1"
                               width="80"
@@ -2774,11 +2750,9 @@ function MainContent() {
                             Profile Completed
                           </h6>
                         </div>
-                        <div style={{ color: `#9943EC` }}>{`${
-                          stats1?.Student_Profile >= 90
-                            ? 100
-                            : stats1?.Student_Profile
-                        }%`}</div>
+                        <div
+                          style={{ color: `#9943EC` }}
+                        >{`${stats1?.Student_Profile >= 90 ? 100 : stats1?.Student_Profile}%`}</div>
                       </div>
 
                       {/* <div className="d-flex align-items-center gap-3 mb-3">
@@ -2839,7 +2813,7 @@ function MainContent() {
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                    ?.score_in_percentage
+                                  ?.score_in_percentage
                                 : ""}
                             </p>
                           </div>
