@@ -23,11 +23,29 @@ import theme from './theme'; // Path to your theme.ts
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+const token = localStorage.getItem('token');
+const tokenExpiry = localStorage.getItem('tokenExpiry');
+const isTokenExpired = () => {
+if (token && tokenExpiry) {
+  const currentTime = Date.now();
+  // console.log("test expire time in",currentTime,tokenExpiry)
+  if (currentTime > parseInt(tokenExpiry)) {
+    return true
+  }
+  else{
+    return false
+  }
+} else {
+  return false
+}
+};
+
+
 root.render(
   <ThemeProvider theme={theme}>
   <NameProvider> 
      <BrowserRouter>
-   <ToastContainer closeOnClick={false} closeButton={false} autoClose={3000} style={{width:"auto"}}/>
+  { isTokenExpired() ? "" :<ToastContainer closeOnClick={false} closeButton={false} autoClose={3000} style={{width:"auto"}}/>}
     <App />
   </BrowserRouter>
   </NameProvider>

@@ -12,8 +12,26 @@ const useApi = () => {
   const headers = {
     Authorization: `${token}`,
   };
-  
+  const tokenExpiry = localStorage.getItem('tokenExpiry');
+const isTokenExpired = () => {
+if (token && tokenExpiry) {
+  const currentTime = Date.now();
+  // console.log("test expire time in",currentTime,tokenExpiry)
+  if (currentTime > parseInt(tokenExpiry)) {
+    return true
+  }
+  else{
+    return false
+  }
+} else {
+  return false
+}
+};
   const getData = async (url, id) => {
+    if (isTokenExpired()) {
+      navigate('/'); 
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -31,6 +49,10 @@ const useApi = () => {
   };
 
   const postData = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      navigate('/'); 
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -50,6 +72,10 @@ const useApi = () => {
   };
 
   const putData = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      navigate('/'); 
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -88,6 +114,10 @@ const useApi = () => {
   // };
 
   const deleteData = async (url, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      navigate('/'); 
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -108,6 +138,10 @@ const useApi = () => {
 
   
   const postFileData = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      navigate('/'); 
+      return;
+    }
     setLoading(true);
     setError(null);
     // console.log(data)
@@ -131,6 +165,10 @@ const useApi = () => {
   };
 
   const deleteFileData = async (url, payload) => {
+    if (isTokenExpired()) {
+      navigate('/'); 
+      return;
+    }
     setLoading(true);
     setError(null);
 
