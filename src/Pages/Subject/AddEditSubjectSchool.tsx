@@ -204,51 +204,63 @@ const AddEditSubjectSchool = () => {
     }
   };
 
-  
-  const handleSubmit1 = () => {
-    const submitData = {
-      subject_name: subject[""] as string,
-      pdf_content: subject?.pdf_content || "",
-      class_id: subject.class_id,
-      stream: subject.stream || "",
-    };
-    if (!submitData.subject_name || !submitData.class_id) {
-      return;
+    // const handleSubmit = async (
+    //   e: React.FormEvent<HTMLFormElement>,
+    //   subjectData: { subject_name: string }
+    // ) => {
+    // const handleSubmit = async (subjectData: ISubjectForm) => {
+    const handleSubmit1 = () => {
+
+        const submitData = {
+            subject_name: subject[""] as string || subject?.subject_name,
+            pdf_content: subject?.pdf_content || "",
+            class_id: subject.class_id,
+            stream: (particularClass === "class_11" || particularClass === "class_12") ? subject.stream || "" : ""
+        }
+        if (!submitData.subject_name || !submitData.class_id) {
+            return;
+        }
+        if (
+            (particularClass === "class_11" || particularClass === "class_12") &&
+            !submitData.stream
+        ) {
+            return;
+        }
+        if (id) {
+            putData(`${SubjectEditURL}/${id}`, submitData)
+                .then((data: any) => {
+                    // const linesInfo = data || [];
+                    // dispatch(setLine(linesInfo))
+                    if (data.status === 200) {
+                        navigator("/main/Subject");
+                        toast.success(data.message, {
+                            hideProgressBar: true,
+                            theme: "colored",
+                        });
+                    } else {
+                        toast.error(data.message, {
+                            hideProgressBar: true,
+                            theme: "colored",
+                        });
+
+                    }
+                })
+                .catch((e) => {
+                    toast.error(e?.message, {
+                        hideProgressBar: true,
+                        theme: "colored",
+                    });
+                });
+        }
     }
-    if (
-      (particularClass === "class_11" || particularClass === "class_12") &&
-      !submitData.stream
-    ) {
-      return;
+    const handleSubmit123 =()=>{
+
     }
-    if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
-        .then((data: any) => {
-         
-          if (data.status === 200) {
-            navigator("/main/Subject");
-            toast.success(data.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else {
-            toast.error(data.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        });
-    }
-  };
-  const handleSubmit123 = () => {};
-  const handleSubmit = async () => {
-    
+    const handleSubmit = async (
+
+    ) => {
+        // e.preventDefault();
+        // e.target.reset()
 
     const submitData = {
      
