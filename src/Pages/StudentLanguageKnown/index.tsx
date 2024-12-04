@@ -112,7 +112,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           });
         });
     }
-    setBoxes(boxes.filter((box, index) => index !== indx));
+    setBoxes(boxes.filter((_, index) => index !== indx));
   };
   const getdatalanguage = async () => {
    

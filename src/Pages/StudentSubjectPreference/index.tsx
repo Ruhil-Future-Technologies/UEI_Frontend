@@ -535,7 +535,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             theme: "colored",
             position: "top-center"
           });
-          setBoxes(boxes.filter((box, index) => index !== indx));
+          setBoxes(boxes.filter((_, index) => index !== indx));
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -551,7 +551,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       //   position: "top-center"
       // });
       // console.log("Data Deleted Successfully", boxes, indx);
-      setBoxes(boxes.filter((box, index) => index !== indx));
+      setBoxes(boxes.filter((_, index) => index !== indx));
     }
   };
 
