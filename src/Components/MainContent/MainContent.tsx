@@ -1549,18 +1549,24 @@ function MainContent() {
               class_selection: profileDatas.class.name,
               university_selection:
                 profileDatas.academic_history.university_name,
-              college_selection:
-                profileDatas.academic_history.institution_name,
+              college_selection: profileDatas.academic_history.institution_name,
               course_selection: profileDatas.academic_history.course_id,
               year: profileDatas.academic_history.year,
               subject: profileDatas.subject,
             })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: Array.isArray(response.answer)
+                        ? response.answer
+                        : [response.answer.toString()],
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: StudentId,
-                    chat_question: search,
+                    chat_question: response.question,
                     response: response?.answer,
                   };
                   if (response?.status !== 402) {
@@ -1568,6 +1574,7 @@ function MainContent() {
                       handleError
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
@@ -2963,6 +2970,7 @@ function MainContent() {
                                 </div>
                               </div>
                             )}
+
                             {chat?.answer && (
                               <div
                                 key={`dashboard_answer_${index}`}
