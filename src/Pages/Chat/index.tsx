@@ -407,11 +407,30 @@ const Chat = () => {
           //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
           // );
           if (studentDetail?.academic_history?.institution_type === "school") {
-            return getData(
-              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-                search
-              )}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
-            )
+            // return getData(
+            //   `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
+            //     search
+            //   )}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
+            // )
+            postData("https://dbllm.gyansetu.ai/rag-model-hierarchy", {
+              user_query: search,
+              student_id: userid,
+              school_college_selection:
+                studentDetail.academic_history.institution_type,
+              board_selection:
+                studentDetail.academic_history.board.toUpperCase(),
+              state_board_selection:
+                studentDetail.academic_history.state_for_stateboard,
+              stream_selection: studentDetail.academic_history.stream,
+              class_selection: studentDetail.class.name,
+              university_selection:
+                studentDetail.academic_history.university_name,
+              college_selection:
+                studentDetail.academic_history.institution_name,
+              course_selection: studentDetail.academic_history.course_id,
+              year: studentDetail.academic_history.year,
+              subject: studentDetail.subject,
+            })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);

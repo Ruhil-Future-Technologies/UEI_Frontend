@@ -701,6 +701,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             name="pincode"
             className="form-control"
+            maxLength={6}
             value={studentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "current")}
             required
