@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useContext, useEffect, } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { Route,  Routes, useNavigate  } from 'react-router-dom';
@@ -76,84 +77,43 @@ import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
 import TeacherDash from './Pages/Teacher';
 import InstitutionDash from './Pages/Institution';
 
-// import "./assets/css/main.min.css";
-// import "./assets/css/newstyle.min.css";
-// import "./assets/css/main.scss";
-// import "./assets/css/newstyle.scss";
-
-
-// import "./assets/css/main.min.css";
-// import "./assets/css/newstyle.min.css";
-// import "./assets/css/main.min.css";
-// import "./assets/css/newstyle.min.css";
-// import { jwtDecode, JwtPayload } from 'jwt-decode';
+import NameContext from './Pages/Context/NameContext';
 
 function App() {
-
-  // const loginUrl = `https://13.235.239.244/auth/login`;
-  // const loginUrl = "https://qaapi.gyansetu.ai/";
-
-  // const loginUrl = `http://127.0.0.1:5000/login`;
- // const { postData } = useApi();
   const navigate = useNavigate()
-
-  // setInterval(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     navigate("/")
-  //     // refreshToken()
-  //   }
-  // }, 3000000)
-  // useEffect(() => {
-  //   console.log("test inteval useeffect")
-  //   const intervalId = setInterval(() => {
-  //     console.log("test inteval in 1 hour")
-  //     const token = localStorage.getItem('token');
-  //     if (token) {
-  //       try {
-  //         const decodedToken: JwtPayload = jwtDecode<JwtPayload>(token);
-  //         const currentTime = Date.now() / 1000; // Current time in seconds
-
-  //         if (decodedToken.exp && decodedToken.exp < currentTime) {
-  //           // Token has expired
-  //           localStorage.removeItem("token");
-  //           localStorage.removeItem("_id");
-  //           navigate("/"); // Redirect to login page
-  //         } else {
-  //           // Token is valid
-  //           const login_id = localStorage.getItem("_id");
-  //           if (login_id) {
-  //             navigate("/main/DashBoard");
-  //           }
-  //         }
-  //       } catch (error) {
-  //         // Invalid token
-  //         localStorage.removeItem("token");
-  //         localStorage.removeItem("_id");
-  //         navigate("/"); // Redirect to login page
-  //       }
-  //     } else {
-  //       navigate("/"); // Redirect to login page if no token found
-  //     }
-  //   }, 3600000); // 1 hour interval
-
-  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  // }, [navigate]);
-
-
+  const context = useContext(NameContext);
+  const {setProPercentage }: any = context;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
+  const handlogout = () => {
+    setProPercentage(0);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_type");
+    localStorage.removeItem("userid");
+    localStorage.removeItem("pd");
+    localStorage.removeItem("userdata");
+    localStorage.removeItem("signupdata");
+    localStorage.removeItem("_id");
+    localStorage.removeItem("menulist");
+    localStorage.removeItem("menulist1");
+    localStorage.removeItem("proFalg");
+    localStorage.removeItem("loglevel");
+    sessionStorage.removeItem("profileData");
+    localStorage.removeItem("chatsaved");
+    localStorage.removeItem("Profile_completion");
+    localStorage.removeItem("Profile completion");
+    localStorage.removeItem("tokenExpiry");
+    synth.cancel();
+    // logoutpro();
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const tokenExpiry = localStorage.getItem('tokenExpiry');
-// console.log("test expire time",tokenExpiry)
     if (token && tokenExpiry) {
       const currentTime = Date.now();
-      // console.log("test expire time in",currentTime,tokenExpiry)
       if (currentTime > parseInt(tokenExpiry)) {
-        // console.log("test expire time finally done",currentTime,tokenExpiry)
-        // Token has expired
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('tokenExpiry');
+       
+        handlogout()
         navigate('/');
       }
     } else {
