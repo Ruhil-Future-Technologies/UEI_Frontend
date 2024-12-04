@@ -32,10 +32,9 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import "../../assets/css/newstyle.scss";
 import "../../assets/css/main.scss";
 import "react-perfect-scrollbar/dist/css/styles.css";
-
+import { useTheme } from "@mui/material/styles";
 
 const Chat = () => {
-  
   const userid = localStorage.getItem("_id") || "";
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -72,6 +71,10 @@ const Chat = () => {
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [isUpIconClicked, setIsUpIconClicked] = useState(false);
+  const [isDownIconClicked, setIsDownIconClicked] = useState(false);
+  const theme = useTheme();
+
   synth.onvoiceschanged = () => {
     getVoices();
   };
@@ -99,6 +102,21 @@ const Chat = () => {
       }
     }, 500);
   }, [Id]);
+
+  const handleUpIconClick = () => {
+    console.log(theme.palette);
+    if (isDownIconClicked) {
+      setIsDownIconClicked(false);
+    }
+    setIsUpIconClicked(!isUpIconClicked);
+  };
+
+  const handleDownIconClick = () => {
+    if (isUpIconClicked) {
+      setIsUpIconClicked(false);
+    }
+    setIsDownIconClicked(!isDownIconClicked);
+  };
 
   const callAPI = async () => {
     getData(`${StudentGETURL}${userdata ? `/${userdata?.id}` : ""}`)
@@ -141,7 +159,7 @@ const Chat = () => {
   const getVoices = () => {
     setVoices(synth.getVoices());
   };
-  
+
   useEffect(() => {
     callAPI();
     getVoices();
@@ -391,7 +409,9 @@ const Chat = () => {
           // );
           if (studentDetail?.academic_history?.institution_type === "school") {
             return getData(
-              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${search}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
+              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
+                search
+              )}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
             )
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
@@ -410,7 +430,9 @@ const Chat = () => {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                      search
+                    )}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -435,7 +457,9 @@ const Chat = () => {
               .catch(() =>
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                    search
+                  )}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -474,7 +498,7 @@ const Chat = () => {
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
             // )
             const queryParams = new URLSearchParams({
-              user_query: search,
+              user_query: encodeURIComponent(search),
               student_id: userid,
               ...(institution_type && {
                 school_college_selection: institution_type,
@@ -512,7 +536,9 @@ const Chat = () => {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
                     // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                      search
+                    )}`
                   )
                     .then((response) => {
                       if (response?.status === 200) {
@@ -538,7 +564,9 @@ const Chat = () => {
                 setLoaderMsg("Fetching Data from Ollama model.");
                 getData(
                   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
+                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                    search
+                  )}`
                 )
                   .then((response) => {
                     if (response?.status === 200) {
@@ -590,7 +618,9 @@ const Chat = () => {
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
           return getData(
-            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${search}`
+            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+              search
+            )}`
           );
         } else if (data) {
           handleError(data);
@@ -861,8 +891,8 @@ const Chat = () => {
           .replace(/\\"/g, '"')
           .replace(/[{}]/g, "")
           .replace(/\\'/g, "'")
-          .replace(/(^"|"$)/g, "")
-          // .replace(/(^"|"$)/g, "");
+          .replace(/(^"|"$)/g, "");
+        // .replace(/(^"|"$)/g, "");
         const stringArray = cleanString
           .split(",")
           .map((item: any) => item.trim());
@@ -974,7 +1004,9 @@ const Chat = () => {
 
     getData(
       // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://dbllm.gyansetu.ai/ollama-chat?user_query=${question}`
+      `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+        question
+      )}`
     )
       .then((response) => {
         if (response?.status === 200) {
@@ -1030,7 +1062,7 @@ const Chat = () => {
     : chathistory;
 
   const extractTime = (chatDate: string) => {
-    const date = chatDate ? new Date(chatDate) : new Date();
+    const date = chatDate ? new Date(chatDate + "z") : new Date();
 
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -1743,12 +1775,34 @@ const Chat = () => {
                                 <ul className="ansfooter">
                                   <li>
                                     <ThumbUpAltOutlinedIcon
-                                      sx={{ fontSize: "14px" }}
+                                      onClick={handleUpIconClick}
+                                      sx={{
+                                        fontSize: "14px",
+                                        color: isUpIconClicked
+                                          ? theme.palette.primary.main
+                                          : "",
+                                        cursor: "pointer",
+                                        transform: isUpIconClicked
+                                          ? "scale(1.3)"
+                                          : "scale(1)",
+                                        transition: "color 0.3s ease",
+                                      }}
                                     />
                                   </li>
                                   <li>
                                     <ThumbDownOutlinedIcon
-                                      sx={{ fontSize: "14px" }}
+                                      onClick={handleDownIconClick}
+                                      sx={{
+                                        fontSize: "14px",
+                                        color: isDownIconClicked
+                                          ? theme.palette.primary.main
+                                          : "",
+                                        cursor: "pointer",
+                                        transform: isDownIconClicked
+                                          ? "scale(1.3)"
+                                          : "scale(1)",
+                                        transition: "color 0.3s ease",
+                                      }}
                                     />
                                   </li>
                                   <li onClick={() => copyText(index)}>

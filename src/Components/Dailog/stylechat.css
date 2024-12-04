@@ -32,14 +32,14 @@
 .message-bubble.right::after {
   content: "";
   position: absolute;
-  right: -15px; 
-  top: 63%; 
+  right: -15px;
+  top: 63%;
   /* transform: translateY(-50%);  */
   transform: translate(-50%, -50%);
   border-width: 10px;
   border-style: solid;
-  border-color: transparent ;
-  border-bottom: 25px solid var(--chatcolor) !important;;
+  border-color: transparent;
+  border-bottom: 25px solid var(--chatcolor) !important;
 }
 
 .message-bubble:hover {
@@ -57,6 +57,7 @@
 
 .dropdown-wrapper {
   top: auto;
+  color: black;
 }
 
 .dropdown-wrapper .react-select__menu {
@@ -66,18 +67,18 @@
 }
 .css-z3c6am-MuiFormControl-root-MuiTextField-root {
   width: 100% !important;
- 
 }
-.react-tel-input .form-control {width:100% !important}
+.react-tel-input .form-control {
+  width: 100% !important;
+}
 
-.chatinput-body{
+.chatinput-body {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
   margin-top: 10px;
 }
-.chat_search_btn{
+.chat_search_btn {
   border: none;
-  background-color:transparent;
+  background-color: transparent;
 }
-
