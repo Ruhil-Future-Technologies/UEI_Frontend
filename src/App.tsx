@@ -1,6 +1,7 @@
-import React, { useEffect, } from 'react'
+import React, { useEffect } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Route, Routes, useNavigate  } from 'react-router-dom';
+
+import { Route,  Routes, useNavigate  } from 'react-router-dom';
 
 import Login from './Pages/Login';
 import Signup from './Pages/SignUp';
@@ -11,9 +12,11 @@ import Protected from './Components/protected/protected';
 import Institute from './Pages/Institute/Institute';
 import AddEditInstitute from './Pages/Institute/AddEditInstitute';
 
+// import useApi from './hooks/useAPI';
 import Entity from './Pages/Entity/Entity';
 import AddEditEntity from './Pages/Entity/AddEditEntity';
 import AddDepartment from './Pages/AddDepartment';
+
 import Student from './Pages/Student/Student';
 import AddEditStudent from './Pages/Student/AddEditStudent';
 import Course from './Pages/Course/Course';
@@ -70,10 +73,74 @@ import University from './Pages/University/University';
 import Semester from './Pages/Semester/Semester';
 import AddSemester from './Pages/Semester/AddSemester';
 import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
+import TeacherDash from './Pages/Teacher';
+import InstitutionDash from './Pages/Institution';
+
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import "./assets/css/main.scss";
+// import "./assets/css/newstyle.scss";
+
+
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import "./assets/css/main.min.css";
+// import "./assets/css/newstyle.min.css";
+// import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 function App() {
 
+  // const loginUrl = `https://13.235.239.244/auth/login`;
+  // const loginUrl = "https://qaapi.gyansetu.ai/";
+
+  // const loginUrl = `http://127.0.0.1:5000/login`;
+ // const { postData } = useApi();
   const navigate = useNavigate()
+
+  // setInterval(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     navigate("/")
+  //     // refreshToken()
+  //   }
+  // }, 3000000)
+  // useEffect(() => {
+  //   console.log("test inteval useeffect")
+  //   const intervalId = setInterval(() => {
+  //     console.log("test inteval in 1 hour")
+  //     const token = localStorage.getItem('token');
+  //     if (token) {
+  //       try {
+  //         const decodedToken: JwtPayload = jwtDecode<JwtPayload>(token);
+  //         const currentTime = Date.now() / 1000; // Current time in seconds
+
+  //         if (decodedToken.exp && decodedToken.exp < currentTime) {
+  //           // Token has expired
+  //           localStorage.removeItem("token");
+  //           localStorage.removeItem("_id");
+  //           navigate("/"); // Redirect to login page
+  //         } else {
+  //           // Token is valid
+  //           const login_id = localStorage.getItem("_id");
+  //           if (login_id) {
+  //             navigate("/main/DashBoard");
+  //           }
+  //         }
+  //       } catch (error) {
+  //         // Invalid token
+  //         localStorage.removeItem("token");
+  //         localStorage.removeItem("_id");
+  //         navigate("/"); // Redirect to login page
+  //       }
+  //     } else {
+  //       navigate("/"); // Redirect to login page if no token found
+  //     }
+  //   }, 3600000); // 1 hour interval
+
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, [navigate]);
+
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -83,7 +150,10 @@ function App() {
       const currentTime = Date.now();
       // console.log("test expire time in",currentTime,tokenExpiry)
       if (currentTime > parseInt(tokenExpiry)) {
-       
+        // console.log("test expire time finally done",currentTime,tokenExpiry)
+        // Token has expired
+        // localStorage.removeItem('token');
+        // localStorage.removeItem('tokenExpiry');
         navigate('/');
       }
     } else {
@@ -91,7 +161,7 @@ function App() {
     }
   }, [navigate]); 
 
-  
+ 
 
   return (
     <div className="App">
@@ -275,6 +345,12 @@ function App() {
           </Route>
           <Route path="/main/pdflist">
             <Route path="" element={<Protected Component={PDFList} menuName="pdflist" />} />
+          </Route>
+          <Route path="/main/teacher-deshboard">
+            <Route path="" element={<Protected Component={TeacherDash} menuName="pdflist" />} />
+          </Route> 
+          <Route path="/main/institution-deshboard">
+            <Route path="" element={<Protected Component={InstitutionDash} menuName="pdflist" />} />
           </Route>
           <Route path="/main/feedback">
             <Route path="" element={<Protected Component={AdminFeedback} menuName="feedback" />} />
