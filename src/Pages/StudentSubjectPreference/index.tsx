@@ -297,7 +297,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               });
               //setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
             }
-
+            // getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
+            //   (response: any) => {
+            //     if (response.status === 200) {
+            //       setParticularClass(response.data.class_name);
+            //     } else setParticularClass("");
+            //   }
+            // );
+            // Fetch class name for each preference item based on the index
             if (item.class_id) {
 
               getData(`/class/get/${item.class_id}`).then((response: any) => {
@@ -538,13 +545,23 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         });
     } else {
-
-      setBoxes(boxes.filter((_box, index) => index !== indx));
-
+      // toast.success("Data Deleted Successfully", {
+      //   hideProgressBar: true,
+      //   theme: "colored",
+      //   position: "top-center"
+      // });
+      // console.log("Data Deleted Successfully", boxes, indx);
+      setBoxes(boxes.filter((_, index) => index !== indx));
     }
   };
 
   const handleSubmit = async () => {
+    // e: React.FormEvent
+    // e.preventDefault();
+
+    // const eqq = deepEqual(boxes11,boxes)
+    // console.log("test data11111",boxes11,boxes,eqq)
+    // if(!eqq === true)  {
 
     let valid = true;
     boxes.forEach((box, index) => {
@@ -737,35 +754,21 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                           >
                             Semester {index + 1}
                           </MenuItem>
+                        ))}
+                      </Select>
+                      <Typography variant="body2" color="error">
+                        {/* {typeof errors?.sem_id === "string" && errors.sem_id} */}
+                      </Typography>
+                    </FormControl>
+                  </div>
 
-                        )
-                      )}
-                    </Select>
-                    <Typography variant="body2" color="error">
-                      {/* {typeof errors?.sem_id === "string" && errors.sem_id} */}
-                    </Typography>
-                  </FormControl>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="col form_field_wrapper">
-                  <FormControl
-                    required
-                    sx={{ m: 1, minWidth: 220, width: "100%" }}
-                    disabled
-                  >
-                    <InputLabel>Class</InputLabel>
-                    <Select
-                      value={box.class_id}
-                      sx={{
-                        backgroundColor: "#f5f5f5",
-                      }}
-                      onChange={(e) =>
-                        handleInputChange(index, "class_id", e.target.value)
-                      }
-                      label="Class"
-
+                </>
+              ) : (
+                <>
+                  <div className="col form_field_wrapper">
+                    <FormControl
+                      required
+                      sx={{ m: 1, minWidth: 220, width: "100%" }}
                       disabled
                     >
                       <InputLabel>Class</InputLabel>
@@ -976,7 +979,17 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           </div>
         ))}
         <div className="row justify-content-center">
-
+          {/* <div className="col-3">
+            <Button
+            className="mainbutton"
+              variant="contained"
+              color="primary"
+              type="submit"
+              style={{ marginTop: "25px" }}
+            >
+              Save Subject Preference
+            </Button>
+          </div> */}
           <div className="mt-3 d-flex align-items-center justify-content-between">
             <button
               type="button"
