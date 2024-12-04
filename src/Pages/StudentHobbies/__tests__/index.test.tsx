@@ -31,7 +31,13 @@ describe("Student Hobbies Compontent", () => {
     const { getByTestId } = render(
       <NameContext.Provider value={contextValue}>
         <BrowserRouter>
-          <StudentHobbies save={false} />
+        <StudentHobbies 
+  save={false} 
+  setSave={() => {}} 
+  setIsHobbiesUpdated={() => {}} 
+  isLanguageUpdated={false} 
+/>
+
         </BrowserRouter>{" "}
       </NameContext.Provider>
     );
@@ -50,7 +56,13 @@ describe("Student Hobbies Compontent", () => {
     const { getByLabelText, getByText } = render(
       <NameContext.Provider value={contextValue}>
         <BrowserRouter>
-          <StudentHobbies save={false} />
+        <StudentHobbies 
+  save={false} 
+  setSave={() => {}} 
+  setIsHobbiesUpdated={() => {}} 
+  isLanguageUpdated={false} 
+/>
+
         </BrowserRouter>
       </NameContext.Provider>
     );
@@ -76,7 +88,13 @@ describe("Student Hobbies Compontent", () => {
     const { getByLabelText, getByText, getAllByRole } = render(
       <NameContext.Provider value={contextValue}>
         <BrowserRouter>
-          <StudentHobbies save={false} />
+        <StudentHobbies 
+  save={false} 
+  setSave={() => {}} 
+  setIsHobbiesUpdated={() => {}} 
+  isLanguageUpdated={false} 
+/>
+
         </BrowserRouter>
       </NameContext.Provider>
     );
