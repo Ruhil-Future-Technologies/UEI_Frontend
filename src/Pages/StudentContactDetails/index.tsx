@@ -70,13 +70,13 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
         setErrors({
           ...errors,
           phoneNum: !/^\d{10}$/.test(value)
-            ? "Phone number should be 10 digits"
+            ? "Mobile number should be 10 digits"
             : "",
         });
         setPhoneNumerror({
           ...errors,
           phoneNum: !/^\d{10}$/.test(value)
-            ? "Phone number should be 10 digits"
+            ? "Mobile number should be 10 digits"
             : "",
         });
         break;
@@ -89,7 +89,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             value === ""
               ? ""
               : !/^\d{10}$/.test(value)
-                ? "Phone number should be 10 digits"
+                ? "Whatsapp number should be 10 digits"
                 : "",
         });
         break;
@@ -169,7 +169,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       setPhoneNumerror({
         ...errors,
         phoneNum: !/^\d{10}$/.test(phoneNum)
-          ? "Phone number should be 10 digits"
+          ? "Mobile number should be 10 digits"
           : "",
       });
       // toast.error("Phone number should be 10 digits", {

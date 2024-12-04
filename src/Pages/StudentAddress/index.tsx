@@ -453,7 +453,6 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 if(!eq && !permanentAddressEq){
                    // block of code to write the address
                 }else{
-                  console.log("tets log tt",!eq,!permanentAddressEq)
                   setActiveForm((prev) => prev + 1);
                 }
               }
