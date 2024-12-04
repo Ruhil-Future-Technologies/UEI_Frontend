@@ -1529,13 +1529,32 @@ function MainContent() {
           //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
           // );
           if (profileDatas?.academic_history?.institution_type === "school") {
-            return getData(
-              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-                search
-              )}&student_id=${StudentId}&class_name=${
-                profileDatas?.class?.name
-              }`
-            )
+            // return getData(
+            //   `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
+            //     search
+            //   )}&student_id=${StudentId}&class_name=${
+            //     profileDatas?.class?.name
+            //   }`
+            // )
+            postData("https://dbllm.gyansetu.ai/rag-model-hierarchy", {
+              user_query: search,
+              student_id: StudentId,
+              school_college_selection:
+                profileDatas.academic_history.institution_type,
+              board_selection:
+                profileDatas.academic_history.board.toUpperCase(),
+              state_board_selection:
+                profileDatas.academic_history.state_for_stateboard,
+              stream_selection: profileDatas.academic_history.stream,
+              class_selection: profileDatas.class.name,
+              university_selection:
+                profileDatas.academic_history.university_name,
+              college_selection:
+                profileDatas.academic_history.institution_name,
+              course_selection: profileDatas.academic_history.course_id,
+              year: profileDatas.academic_history.year,
+              subject: profileDatas.subject,
+            })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
