@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
 import "../Uploadpdf/Uploadpdf.scss";
 import useApi from "../../hooks/useAPI";
@@ -9,13 +10,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
+  //TextField,
   Typography,
 } from "@mui/material";
-import { QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from "../../utils/const";
+import {  QUERY_KEYS_SUBJECT } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import NameContext from "../Context/NameContext";
 import { State} from "country-state-city";
 import {
@@ -75,10 +76,10 @@ interface Option {
   value: string;
   label: string;
 }
-interface Boxset {
-  id: number;
-  Institute_Name_Add: string;
-}
+// interface Boxset {
+//   id: number;
+//   Institute_Name_Add: string;
+// }
 interface Subject {
   id: string;
   subject_name: string;
@@ -88,12 +89,12 @@ interface Subject {
 const Uploadpdf = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
+ // const location = useLocation();
   const navigator = useNavigate();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+ // const pathSegments = location.pathname.split("/").filter(Boolean);
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
-  const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
+  //const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
+  //const Menulist: any = localStorage.getItem("menulist1");
   let AdminId: string | null = localStorage.getItem("_id");
   if (AdminId) {
     AdminId = String(AdminId);
@@ -112,15 +113,15 @@ const Uploadpdf = () => {
       university_id: "",
       sem_id: "",
     }
-    const Boxsetvalue = {
-      id: 0,
-      Institute_Name_Add: "",
-    };
+    // const Boxsetvalue = {
+    //   id: 0,
+    //   Institute_Name_Add: "",
+    // };
   
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [selectedClass, setSelectedClass] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [dataSubject, setDataSubject] = useState([]);
+  //const [selectedClass, setSelectedClass] = useState("");
+  //const [selectedSubject, setSelectedSubject] = useState("");
+  //const [dataSubject, setDataSubject] = useState([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([initials]);
   const [institutesAll, setInstitutesAll] = useState<Institute[]>([]);
@@ -132,12 +133,12 @@ const Uploadpdf = () => {
   const [particularClass, setParticularClass] = useState("");
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   const [university, setUniversity] = useState<University[]>([]);
-  const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
+ // const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
 
-  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
-  const DeleteCourseURL = QUERY_KEYS_COURSE.COURSE_DELETE;
+ // const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
+ // const DeleteCourseURL = QUERY_KEYS_COURSE.COURSE_DELETE;
   const { getData, loading, postFileData } = useApi();
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
@@ -153,7 +154,7 @@ const Uploadpdf = () => {
     getData(`${SubjectURL}`)
       .then((data: any) => {
         if (data.data) {
-          setDataSubject(data?.data);
+         // setDataSubject(data?.data);
         }
       })
       .catch((e) => {
@@ -170,10 +171,10 @@ const Uploadpdf = () => {
       .then((response: any) => {
         if (response.status === 200) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          let filteredData: any[] = [];
+          const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
-              let updatedClassName = item.class_name.split("_").join(" ");
+              const updatedClassName = item.class_name.split("_").join(" ");
               item.new_class_name =
                 updatedClassName.charAt(0).toUpperCase() +
                 updatedClassName.slice(1);
@@ -427,7 +428,7 @@ const Uploadpdf = () => {
       return;
     }
     if(boxes[0]?.institute_type?.toLowerCase() === "college"){
-      const { institute_id, university_id, course_id, sem_id, subject_id } = boxes[0];
+      const { institute_id, university_id, course_id, sem_id } = boxes[0];
       // Check if any of the fields are empty
       if (!institute_id || !university_id || !course_id || !sem_id ) {
         toast.error("Required fields are missing");
@@ -435,7 +436,7 @@ const Uploadpdf = () => {
       }
     }
     if(boxes[0]?.institute_type?.toLowerCase() === "school"){
-      const { board, class_id, state_for_stateboard, stream, subject_id } = boxes[0];
+      const { board, class_id, state_for_stateboard, stream } = boxes[0];
     
       // Check if any of the fields are empty
       if (!board || !class_id ) {
@@ -546,9 +547,9 @@ const Uploadpdf = () => {
       // formData.append('subject_id', selectedSubject);
     }
     console.log("test log",formData)
-    if(boxes[0]?.institute_type){
+    // if(boxes[0]?.institute_type){
 
-    }
+    // }
     await postFileData(
       // `${"https://uatllm.gyansetu.ai/upload-pdf-class"}`,
       `${"https://dbllm.gyansetu.ai/upload-pdf-hierarchy"}`,
@@ -583,14 +584,14 @@ const Uploadpdf = () => {
     navigator("/main/*");
   }
 
-  const handleChange = (event: any) => {
-    const { name, value } = event?.target;
-    if (name === "class_id") {
-      setSelectedClass(value);
-    } else if (name === "subject_id") {
-      setSelectedSubject(value);
-    }
-  };
+  // const handleChange = (event: any) => {
+  //   const { name, value } = event?.target;
+  //   if (name === "class_id") {
+  //     setSelectedClass(value);
+  //   } else if (name === "subject_id") {
+  //     setSelectedSubject(value);
+  //   }
+  // };
   // Create an array for classes from 1 to 12
   // const classes = Array.from({ length: 12 }, (_, i) => i + 1);
   const midpoint = Math.ceil(selectedFiles.length / 2);

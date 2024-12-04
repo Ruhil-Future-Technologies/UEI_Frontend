@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// import Stepper from "@mui/material/Stepper";
+// import Step from "@mui/material/Step";
+// import StepLabel from "@mui/material/StepLabel";
 import {
-  Button,
+  //Button,
   FormControl,
   FormHelperText,
   IconButton,
@@ -12,8 +12,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  TextField,
-  useTheme,
+  //TextField,
+ // useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -48,20 +48,20 @@ const MenuProps = {
   },
 };
 
-function getStyles(
-  languageName: string,
-  selectedLanguages: readonly Language[],
-  theme: any
-) {
-  return {
-    fontWeight:
-      selectedLanguages
-        .map((lang) => lang.language_name)
-        .indexOf(languageName) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
+// function getStyles(
+//   languageName: string,
+//   selectedLanguages: readonly Language[],
+//   theme: any
+// ) {
+//   return {
+//     fontWeight:
+//       selectedLanguages
+//         .map((lang) => lang.language_name)
+//         .indexOf(languageName) === -1
+//         ? theme.typography.fontWeightRegular
+//         : theme.typography.fontWeightMedium,
+//   };
+// }
 
 interface Box {
   id: number;
@@ -72,16 +72,16 @@ interface Box {
 const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, deleteData } = useApi();
 
-  const theme = useTheme();
+  //const theme = useTheme();
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
-  const [selectedLeng, setSelectedLeng] = useState<any>();
+ // const [selectedLeng, setSelectedLeng] = useState<any>();
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [isSave, setIsSave] = useState<boolean>(false);
-  const [proficiency, setProficiency] = useState<any>("read");
+ // const [proficiency, setProficiency] = useState<any>("read");
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [isLanguageUpdated, setIsLanguageUpdated] = useState<boolean>(false);
   const [isHobbiesUpdated, setIsHobbiesUpdated] = useState<boolean>(false);
@@ -120,8 +120,8 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       .then((data: any) => {
         if (data?.status === 200) {
           
-          const lenduageIds = data.data.language_id;
-          setSelectedLeng(lenduageIds);
+       //   const lenduageIds = data.data.language_id;
+          //setSelectedLeng(lenduageIds);
           data.data.forEach((item: any) => {
             const newBox: Box = {
               id: item.id,

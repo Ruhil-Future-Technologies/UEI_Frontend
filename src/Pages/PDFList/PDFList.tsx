@@ -1,40 +1,37 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { MaterialReactTable } from "material-react-table";
 import {
   Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
+ 
   Typography,
   IconButton,
   Tooltip,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT } from "../../utils/const";
+import {  QUERY_KEYS_SUBJECT } from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import NameContext from "../Context/NameContext";
 import { tabletools } from "../../utils/helpers";
 import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import {
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
-} from "../../utils/helpers";
+// import {
+//   inputfield,
+//   inputfieldhover,
+//   inputfieldtext,
+// } from "../../utils/helpers";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TrashIcon } from "../../assets";
 import useApi from "../../hooks/useAPI";
 import { PDF_LIST_FOR_COLLAGE_COLUMNS, IPDFList, PDF_LIST_FOR_SCHOOL_COLUMNS } from "../../Components/Table/columns";
 import "../Uploadpdf/Uploadpdf.scss";
 
-interface Classes {
-  id: number;
-  class_name: string;
-  new_class_name: string;
-  class_id: string;
-}
+// interface Classes {
+//   id: number;
+//   class_name: string;
+//   new_class_name: string;
+//   class_id: string;
+// }
 
 interface FileList {
   pdf_id: string;
@@ -47,9 +44,9 @@ interface FileList {
 const PDFList = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
+//  const location = useLocation();
   const navigate = useNavigate();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  // const pathSegments = location.pathname.split("/").filter(Boolean);
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const usertype: any = localStorage.getItem("user_type");
   let AdminId: string | null = localStorage.getItem("_id");
@@ -57,13 +54,13 @@ const PDFList = () => {
     AdminId = String(AdminId);
   }
   //lookafter
-  const [selectedClass, setSelectedClass] = useState("");
-  const [dataSubject, setDataSubject] = useState([]);
-  const [classes, setClasses] = useState<Classes[]>([]);
+  // const [selectedClass, setSelectedClass] = useState("");
+  // const [dataSubject, setDataSubject] = useState([]);
+  // const [classes, setClasses] = useState<Classes[]>([]);
   const [fileList, setFileList] = useState<FileList[]>([]);
   const [selectedFile, setSelectedFile] = useState<IPDFList>();
   const [dataDelete, setDataDelete] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState<number>();
+  // const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [schoolOrcollFile,setSchoolOrcollFile]=useState('');
   const [buttenView, setButtenView] = useState(true);
   const { getData, loading, deleteFileData } = useApi();
@@ -77,10 +74,10 @@ const PDFList = () => {
       .then((response: any) => {
         if (response.status === 200) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          let filteredData: any[] = [];
+          const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
-              let updatedClassName = item.class_name.split("_").join(" ");
+              const updatedClassName = item.class_name.split("_").join(" ");
               item.new_class_name =
                 updatedClassName.charAt(0).toUpperCase() +
                 updatedClassName.slice(1);
@@ -88,7 +85,7 @@ const PDFList = () => {
             }
           });
 
-          setClasses(filteredData || []);
+          // setClasses(filteredData || []);
           // setCourses(response.data);
         }
       })
@@ -102,12 +99,12 @@ const PDFList = () => {
 
   useEffect(() => {
     if (schoolOrcollFile && !dataDelete) {
-      let payload={
+      const payload={
         admin_id:AdminId,
         school_college_selection:schoolOrcollFile
       }
       
-      let apiUrl =`https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
+      const apiUrl =`https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(
         apiUrl
       )
@@ -133,7 +130,7 @@ const PDFList = () => {
     getData(`${SubjectURL}`)
       .then((data: any) => {
         if (data.data) {
-          setDataSubject(data?.data);
+          // setDataSubject(data?.data);
         }
       })
       .catch((e) => {
@@ -148,11 +145,11 @@ const PDFList = () => {
     navigate("/main/*");
   }
 
-  const handleChange = (event: any) => {
-    const { name, value } = event?.target;
-    if (name === "class_id") setSelectedClass(value);
-    else setSelectedFile(value);
-  };
+  // const handleChange = (event: any) => {
+  //   const { name, value } = event?.target;
+  //   if (name === "class_id") setSelectedClass(value);
+  //   else setSelectedFile(value);
+  // };
 
   const handlecancel = () => {
     setDataDelete(false);
@@ -396,6 +393,7 @@ const PDFList = () => {
                           <a
                             href={`https://uatllm.gyansetu.ai/files/${row?.row?.original?.pdf_path}`}
                             target="_blank"
+                            rel="noreferrer"
                           >
                             <IconButton
                               sx={{

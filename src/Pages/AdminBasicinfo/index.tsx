@@ -1,7 +1,8 @@
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
   FormControlLabel,
@@ -23,7 +24,7 @@ import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import dayjs, { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import { styled } from "@mui/material/styles";
+// import { styled } from "@mui/material/styles";
 
 import { deepEqual } from "../../utils/helpers";
 import maleImage from "../../assets/img/avatars/male.png";
@@ -71,7 +72,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [selectedFile, setSelectedFile] = React.useState("");
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState("");
-  let adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem("_id");
   const [admin, setadmin] = useState<AdminInformation>({
     first_name: "", 
     last_name: "",
@@ -89,7 +90,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [gname_col, setGname_col] = useState<boolean>(false);
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
-  const [error1, setError1] = useState("");
+  // const [error1, setError1] = useState("");
   const exactSixYearsAgo = dayjs().subtract(6, 'year');
   const minSelectableDate = dayjs("01/01/1900");
   const [error, setError] = React.useState<string | null>(null); 
@@ -175,7 +176,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             .then((imgdata: any) => {
               setFilePreview(imgdata.data);
             })
-            .catch((e) => {});
+            .catch(() => {});
         }
       } else if (response?.status === 404) {
         setEditFlag(true);
@@ -237,7 +238,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       const file: any = files[0];
       // Check file size (3MB = 3 * 1024 * 1024 bytes)
       if (file.size > 3 * 1024 * 1024) {
-        setError1("File size must be less than 3MB");
+        //setError1("File size must be less than 3MB");
         return;
       }
 
@@ -249,10 +250,10 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
       // Check file type (only JPG and PNG allowed)
       if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
-        setError1("Only JPG and PNG files are allowed");
+        //setError1("Only JPG and PNG files are allowed");
         return;
       }
-      setError1("");
+      //setError1("");
       setSelectedFile(file.name);
       const reader: any = new FileReader();
       reader.onloadend = () => {
@@ -296,7 +297,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setdobset_col(false);
     } else {
       // setDob(null);
-      let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+      const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
       if (datecheck === "Invalid Date") {
         setError(null);
         setdobset_col(true);
@@ -328,7 +329,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (!admin?.last_name) setLname_col1(true);
     if (!admin?.father_name) setFathername_col1(true);
     if (!admin?.mother_name) setMothername_col1(true);
-    let paylod = {
+    const paylod = {
       admin_login_id: adminId,
       department_id: adminDepartment,
       first_name: admin?.first_name,
@@ -341,7 +342,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    let compare = {
+    const compare = {
       department_id: adminDepartment,
       first_name: admin?.first_name,
       last_name: admin?.last_name,
@@ -352,7 +353,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       guardian_name: admin?.guardian_name || "",
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    let datecheck: any = dayjs(paylod?.dob).format("DD/MM/YYYY");
+    const datecheck: any = dayjs(paylod?.dob).format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
     } else {
@@ -383,8 +384,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .then((data: any) => {
                 if (data.status == 200) {
                   setProImage(data.data);
-                } else {
-                }
+                } 
               })
               .catch((e) => {
                 console.log("------------- e -------------", e);
@@ -447,8 +447,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .then((data: any) => {
                 if (data.status == 200) {
                   setProImage(data.data);
-                } else {
-                }
+                } 
               })
               .catch((e) => {
                 console.log("------------- e -------------", e);
@@ -461,7 +460,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               theme: "colored",
             });
           }
-        } catch (error) {
+        } catch {
           toast.error("Some issue are occuring.", {
             hideProgressBar: true,
             theme: "colored",

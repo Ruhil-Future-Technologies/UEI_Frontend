@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import logo from './logo.svg';
-import { Route, Router, Routes, useNavigate,RouteObject  } from 'react-router-dom';
+
+import { Route,  Routes, useNavigate  } from 'react-router-dom';
 
 import Login from './Pages/Login';
 import Signup from './Pages/SignUp';
@@ -12,11 +12,11 @@ import Protected from './Components/protected/protected';
 import Institute from './Pages/Institute/Institute';
 import AddEditInstitute from './Pages/Institute/AddEditInstitute';
 
-import useApi from './hooks/useAPI';
+// import useApi from './hooks/useAPI';
 import Entity from './Pages/Entity/Entity';
 import AddEditEntity from './Pages/Entity/AddEditEntity';
 import AddDepartment from './Pages/AddDepartment';
-import SearchDepartment from './Pages/SearchDepartment';
+
 import Student from './Pages/Student/Student';
 import AddEditStudent from './Pages/Student/AddEditStudent';
 import Course from './Pages/Course/Course';
@@ -57,7 +57,6 @@ import AdminFeedbackView from './Pages/adminFeedbackView';
 
 import Feedback from './Pages/UserFeedBack';
 
-import Teacher from './Pages/Uploadpdf/Uploadpdf';
 import Uploadpdf from './Pages/Uploadpdf/Uploadpdf';
 import AddEditAdminFeedback from './Pages/AdminFeedback/AddEditAdminFeedback';
 import AdminFeedback from './Pages/AdminFeedback/AdminFeedback';
@@ -70,7 +69,6 @@ import AddEditClass from './Pages/Class/AddEditClass';
 import PDFList from './Pages/PDFList/PDFList';
 import FAQ from './Components/FAQ/FAQ';
 import AddUniversity from './Pages/University/AddUniversity';
-import Univesity from './Pages/University/University';
 import University from './Pages/University/University';
 import Semester from './Pages/Semester/Semester';
 import AddSemester from './Pages/Semester/AddSemester';
@@ -93,10 +91,10 @@ import InstitutionDash from './Pages/Institution';
 function App() {
 
   // const loginUrl = `https://13.235.239.244/auth/login`;
-   const loginUrl = "https://qaapi.gyansetu.ai/";
+  // const loginUrl = "https://qaapi.gyansetu.ai/";
 
   // const loginUrl = `http://127.0.0.1:5000/login`;
-  const { postData } = useApi();
+ // const { postData } = useApi();
   const navigate = useNavigate()
 
   // setInterval(() => {
@@ -163,25 +161,7 @@ function App() {
     }
   }, [navigate]); 
 
-  const refreshToken = async () => {
-    const userid = localStorage.getItem('userid');
-    const user_type = localStorage.getItem('user_type');
-    const password = localStorage.getItem('pd');
-    let UserSignUp = {
-      userid: String(userid),
-      password: String(password),
-      user_type: String(user_type)
-    };
-    postData(`${loginUrl}`, UserSignUp).then((data: { status: number; token: string; data: { id: number, user_type: string, userid: string } }) => {
-      if (data?.status === 200) {
-        localStorage.setItem('token', data?.token);
-        localStorage.setItem('userdata', JSON.stringify(data?.data));
-      } else {
-        // setIssuccess(true)
-        // setMsg(data?.message)
-      }
-    });
-  };
+ 
 
   return (
     <div className="App">

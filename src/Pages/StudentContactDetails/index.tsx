@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
+// import Stepper from "@mui/material/Stepper";
+// import Step from "@mui/material/Step";
+// import StepLabel from "@mui/material/StepLabel";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  Box,
-  Button,
+  //Box,
+  //Button,
   FormControl,
-  FormControlLabel,
-  InputLabel,
+  //FormControlLabel,
+  //InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
+  //Radio,
+  //RadioGroup,
   Select,
-  SelectChangeEvent,
+  //SelectChangeEvent,
   TextField,
-  Typography,
+  // Typography,
 } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
@@ -128,7 +129,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           //     hideProgressBar: true,
           //     theme: "colored",
           //   });
-          var userId = localStorage.getItem("userid");
+          const userId = localStorage.getItem("userid");
           if (userId !== null) {
             setEmail(userId);
           } else {
@@ -178,7 +179,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // });
       return;
     }
-    let payload = {
+    const payload = {
       student_id: StudentId,
       mobile_isd_call: contcodePhone,
       mobile_no_call: phoneNum,

@@ -1,30 +1,33 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import { Box, Button, Typography } from "@mui/material";
+import React, {  useEffect, useRef, useState } from "react";
+// import Stepper from "@mui/material/Stepper";
+// import Step from "@mui/material/Step";
+// import StepLabel from "@mui/material/StepLabel";
+// import { Box, Button, Typography } from "@mui/material";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import "react-toastify/dist/ReactToastify.css";
 import StudentBasicInfo from "../StudentBasicInfo";
 import StudentAddress from "../StudentAddress";
 import StudentLanguageKnown from "../StudentLanguageKnown";
-import StudentAcademicHistory from "../StudentAcademicHistory";
+//import StudentAcademicHistory from "../StudentAcademicHistory";
 import StudentContactDetails from "../StudentContactDetails";
-import StudentHobbies from "../StudentHobbies";
+// import StudentHobbies from "../StudentHobbies";
 import StudentSubjectPreference from "../StudentSubjectPreference";
-import PreviewStudentProfile from "../PreviewStudentProfile";
+//import PreviewStudentProfile from "../PreviewStudentProfile";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 
 import { toast } from "react-toastify";
 
-import NameContext from "../Context/NameContext";
+// import NameContext from "../Context/NameContext";
 import useApi from "../../hooks/useAPI";
 import { QUERY_KEYS_STUDENT } from "../../utils/const";
-import { Await, useLocation, useNavigate } from "react-router-dom";
-import {
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
-} from "../../utils/helpers";
+import { useLocation } from "react-router-dom";
+// import {
+//   inputfield,
+//   inputfieldhover,
+//   inputfieldtext,
+// } from "../../utils/helpers";
 import AcademicHistory from "../AcademicHistory/AcademicHistory";
 // import "../../assets/css/main.min.css";
 // import "../../assets/css/newstyle.min.css";
@@ -33,35 +36,35 @@ export interface ChildComponentProps {
 }
 
 const StudentProfile = () => {
-  const context = useContext(NameContext);
+ // const context = useContext(NameContext);
   const location: {
     state: {
       value: number;
     };
   } = useLocation();
 
-  const { namecolor }: any = context;
-  const steps = [
-    "Basic Information",
-    "Address",
-    "Hobbies / Language Known",
-    "Academic History",
-    "Contact Details",
-    "Subject Preference",
-    // "Student History",
-  ];
-  const [activeStep, setActiveStep] = useState(0);
+ // const { namecolor }: any = context;
+  // const steps = [
+  //   "Basic Information",
+  //   "Address",
+  //   "Hobbies / Language Known",
+  //   "Academic History",
+  //   "Contact Details",
+  //   "Subject Preference",
+  //   // "Student History",
+  // ];
+  //const [activeStep, setActiveStep] = useState(0);
   const [studentData, setStudentData] = useState<any>({});
-  const [skipped, setSkipped] = useState(new Set<number>());
-  const [isEdit, setIsEdit] = useState(false);
+ // const [skipped, setSkipped] = useState(new Set<number>());
+  //const [isEdit, setIsEdit] = useState(false);
   const [isProComplete, setIsProComplete] = useState(0);
   const [isProComplete1, setIsProComplete1] = useState(false);
   const [activeForm, setActiveForm] = useState(0);
   const usertype: any = localStorage.getItem("user_type");
   const { getData } = useApi();
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
-  const navigator = useNavigate();
+ // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
       (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
@@ -147,7 +150,7 @@ const StudentProfile = () => {
             // setProfileDatas(data?.data);
             setStudentData(data?.data);
             //   let basic_info = data.data.basic_info;
-            let basic_info = {
+            const basic_info = {
               // aim: data?.data?.basic_info?.aim,
               dob: data?.data?.basic_info?.dob,
               father_name: data?.data?.basic_info?.father_name,
@@ -161,11 +164,11 @@ const StudentProfile = () => {
               mother_name: data?.data?.basic_info?.mother_name,
               // student_registration_no: data?.data?.basic_info?.student_registration_no,
             };
-            let address = data?.data?.address;
-            let language = data?.data?.language_known;
-            let academic_history = data.data.academic_history;
+            const address = data?.data?.address;
+            const language = data?.data?.language_known;
+            const academic_history = data.data.academic_history;
             //   let contact = data.data.contact;
-            let contact = {
+            const contact = {
               // email_id: data?.data?.contact?.email_id,
               id: data?.data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
@@ -173,7 +176,7 @@ const StudentProfile = () => {
               mobile_no_call: data?.data?.contact?.mobile_no_call,
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
-            let subject_preference = data?.data?.subject_preference;
+            const subject_preference = data?.data?.subject_preference;
             //   let hobby = data.data.hobby;
 
             let totalPercentage = 0;
@@ -182,17 +185,17 @@ const StudentProfile = () => {
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(`${"upload_file/get_image/" + data?.data?.basic_info?.pic_path}`)
-                  .then((imgdata: any) => {
+                  .then(() => {
                     // setprofileImage(imgdata.data);
                   })
-                  .catch((e) => {
+                  .catch(() => {
                     // Handle error
                   });
               }
 
-              let totalCount = Object.keys(basic_info).length;
-              let filledCount = countKeysWithValue(basic_info);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(basic_info).length;
+              const filledCount = countKeysWithValue(basic_info);
+              const percentage = (filledCount / totalCount) * 100;
               // setbasicinfoPercentage(percentage);
               totalPercentage += percentage;
             console.log(percentage);
@@ -202,9 +205,9 @@ const StudentProfile = () => {
             }
 
             if (address && Object.keys(address).length > 0) {
-              let totalCount = Object.keys(address).length;
-              let filledCount = countKeysWithValue(address);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(address).length;
+              const filledCount = countKeysWithValue(address);
+              const percentage = (filledCount / totalCount) * 100;
               // setaddressPercentage(percentage);
               totalPercentage += percentage;
               console.log(percentage);
@@ -214,15 +217,15 @@ const StudentProfile = () => {
             }
 
             if (language && Object.keys(language).length > 0) {
-              let totalhobbycount = 0;
-              let filledhobbyCount = 0;
+              const totalhobbycount = 0;
+              const filledhobbyCount = 0;
               // if (hobby && Object.keys(hobby).length > 0) {
               //   totalhobbycount = Object.keys(hobby).length;
               //   filledhobbyCount = countKeysWithValue(hobby);
               // }
-              let totalCount = Object.keys(language).length + totalhobbycount;
-              let filledCount = countKeysWithValue(language) + filledhobbyCount;
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(language).length + totalhobbycount;
+              const filledCount = countKeysWithValue(language) + filledhobbyCount;
+              const percentage = (filledCount / totalCount) * 100;
               // setlanguagePercentage(percentage);
               totalPercentage += percentage;
               console.log(percentage);
@@ -244,8 +247,9 @@ const StudentProfile = () => {
                 delete academic_history?.sem_id;
                 delete academic_history?.stream;
                 delete academic_history?.university_id;
-                academic_history?.board !== "state_board" &&
+                if(academic_history?.board !== "state_board"){
                   delete academic_history?.state_for_stateboard;
+                }
               } else {
                 delete academic_history?.board;
                 delete academic_history?.class_id;
@@ -255,9 +259,9 @@ const StudentProfile = () => {
                 delete academic_history?.stream;
                 delete academic_history?.is_active;
               }
-              let totalCount = Object.keys(academic_history).length;
-              let filledCount = countKeysWithValue(academic_history);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(academic_history).length;
+              const filledCount = countKeysWithValue(academic_history);
+              const percentage = (filledCount / totalCount) * 100;
               // setacademichistoryPercentage(percentage);
               totalPercentage += percentage;
               console.log(percentage);
@@ -270,9 +274,9 @@ const StudentProfile = () => {
             }
 
             if (contact && Object.keys(contact).length > 0) {
-              let totalCount = Object.keys(contact).length;
-              let filledCount = countKeysWithValue(contact);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(contact).length;
+              const filledCount = countKeysWithValue(contact);
+              const percentage = (filledCount / totalCount) * 100;
               // setcontactPercentage(percentage);
               totalPercentage += percentage;
               console.log(percentage);
@@ -301,9 +305,9 @@ const StudentProfile = () => {
               delete subject_preference?.course_name;
               delete subject_preference?.sem_id;
             }
-              let totalCount = Object.keys(subject_preference).length;
-              let filledCount = countKeysWithValue(subject_preference);
-              let percentage = (filledCount / totalCount) * 100;
+              const totalCount = Object.keys(subject_preference).length;
+              const filledCount = countKeysWithValue(subject_preference);
+              const percentage = (filledCount / totalCount) * 100;
               // setsubjectPercentage(percentage);
               totalPercentage += percentage;
               console.log(percentage);
@@ -340,37 +344,37 @@ const StudentProfile = () => {
     }
   };
 
-  const isStepOptional = (step: number) => {
-    return step > 0 && step < steps.length - 1;
-  };
+  // const isStepOptional = (step: number) => {
+  //   return step > 0 && step < steps.length - 1;
+  // };
 
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
+  // const isStepSkipped = (step: number) => {
+  //   return skipped.has(step);
+  // };
 
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-    window.scrollTo(0, 0);
-  };
+  // const handleNext = () => {
+  //   let newSkipped = skipped;
+  //   if (isStepSkipped(activeStep)) {
+  //     newSkipped = new Set(newSkipped.values());
+  //     newSkipped.delete(activeStep);
+  //   }
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  //   setSkipped(newSkipped);
+  //   window.scrollTo(0, 0);
+  // };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    window.scrollTo(0, 0);
-  };
+  // const handleBack = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  //   window.scrollTo(0, 0);
+  // };
 
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
-    window.scrollTo(0, 0);
-  };
-  const viewProfileHome = () => {
-    navigator("/main/DashBoard");
-  };
+  // const handleStep = (step: number) => () => {
+  //   setActiveStep(step);
+  //   window.scrollTo(0, 0);
+  // };
+  // const viewProfileHome = () => {
+  //   navigator("/main/DashBoard");
+  // };
   const handleReset = async () => {
     
     if (((await isProComplete) === 100 ||(await isProComplete) === 117)  && (await isProComplete1)) {
@@ -391,20 +395,20 @@ const StudentProfile = () => {
     }
 
     // setActiveStep(0);
-    setIsEdit(false);
+    //setIsEdit(false);
     window.scrollTo(0, 0);
   };
 
-  const editProfile = () => {
-    setIsEdit(true);
-  };
+  // const editProfile = () => {
+  //   setIsEdit(true);
+  // };
 
-  const viewProfile = () => {
-    setIsEdit(false);
-  };
-  useEffect(() => {
-    if (activeStep === 5 || activeForm === 5) callAPIStudent();
-  }, [activeStep, activeForm]);
+  // const viewProfile = () => {
+  //   setIsEdit(false);
+  // };
+  // useEffect(() => {
+  //   if (activeStep === 5 || activeForm === 5) callAPIStudent();
+  // }, [activeStep, activeForm]);
 
   return (
     <>

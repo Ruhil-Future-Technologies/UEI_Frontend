@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Button,
+ // Button,
   FormControl,
   FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
+ // SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
@@ -25,7 +26,7 @@ import {
   tabletools,
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
-import { ChildComponentProps } from "../StudentProfile";
+//import { ChildComponentProps } from "../StudentProfile";
 
 // Define interfaces for Box, Course, and Subject
 interface Box {
@@ -69,9 +70,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
-  const [boxes11, setBoxes11] = useState<Box[]>([]);
-  let StudentId = localStorage.getItem("_id");
-  const [subjectPreferences, setSubjectPreferences] = useState([]);
+ // const [boxes11, setBoxes11] = useState<Box[]>([]);
+  const StudentId = localStorage.getItem("_id");
+  // const [subjectPreferences, setSubjectPreferences] = useState([]);
   const [editFlag, setEditFlag] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -257,7 +258,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getData("/subject_preference/list")
       .then((response: any) => {
         if (response.status === 200) {
-          setSubjectPreferences(response.data);
+         // setSubjectPreferences(response.data);
         }
       })
       .catch((e) => {
@@ -294,7 +295,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 student_id: String(item?.student_id),
                 sem_id: String(item?.sem_id)
               });
-              setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
+              //setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
             }
             // getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
             //   (response: any) => {

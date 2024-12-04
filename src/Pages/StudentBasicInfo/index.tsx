@@ -1,36 +1,36 @@
 import React, { useContext, useEffect, useState } from "react";
-
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// import Stepper from "@mui/material/Stepper";
+// import Step from "@mui/material/Step";
+// import StepLabel from "@mui/material/StepLabel";
 import {
   Box,
-  Button,
+ // Button,
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
+  //Grid,
+ // InputLabel,
+ // MenuItem,
   Radio,
   RadioGroup,
-  Select,
-  TextField,
+ // Select,
+  //TextField,
   Typography,
 } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import {
   LocalizationProvider,
-  DateTimePicker,
+  //DateTimePicker,
   DatePicker,
 } from "@mui/x-date-pickers";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+//import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { QUERY_KEYS_STUDENT } from "../../utils/const";
-import { useNavigate, useParams } from "react-router-dom";
+//import { QUERY_KEYS_STUDENT } from "../../utils/const";
+//import { useNavigate, useParams } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
 import { toast } from "react-toastify";
 import maleImage from "../../assets/img/avatars/male.png";
@@ -55,17 +55,17 @@ interface StudentBasicInformation {
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { setNamepro, setProImage }: any = context;
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, postFileData } = useApi();
-  const [gender, setGender] = useState("Male");
-  const [name, setName] = useState();
-  const [lastname, setlastName] = useState();
-  const [dob, setDob] = useState<Date | null>();
-  const [selectedFile, setSelectedFile] = useState();
+ // const [gender, setGender] = useState("Male");
+ // const [name, setName] = useState();
+ // const [lastname, setlastName] = useState();
+ // const [dob, setDob] = useState<Date | null>();
+  const [selectedFile] = useState();
   const [filePreview, setFilePreview] = useState(null);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [proFalg, setProFlag] = useState<boolean>(false);
-  const someDate = dayjs(); // Creating a Dayjs object representing the current date and time
+ // const someDate = dayjs(); // Creating a Dayjs object representing the current date and time
   const [fname_col, setFname_col] = useState<boolean>(false);
   const [lname_col, setLname_col] = useState<boolean>(false);
   const [fathername_col, setFathername_col] = useState<boolean>(false);
@@ -78,7 +78,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [editBasicInfo, setEditBasicInfo] = useState(false);
-  const [error1, setError1] = useState("");
+  //const [error1, setError1] = useState("");
   const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
   const minSelectableDate = dayjs("01/01/1900");
   const [error, setError] = React.useState<string | null>(null); 
@@ -112,7 +112,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .then((imgdata: any) => {
                 setFilePreview(imgdata.data);
               })
-              .catch((e) => {});
+              .catch(() => {});
           }
           setBasicInfo(data?.data);
           setInitialState({
@@ -161,7 +161,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // const [error, setError]: any = useState({});
 
   const handleChange = (event: any) => {
-    let { name, value } = event.target;
+    const { name} = event.target;
+    let { value } = event.target;
     setEditBasicInfo(true);
     if (name === "first_name") {
       setFname_col1(true);
@@ -224,7 +225,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         // Check file size (3MB = 3 * 1024 * 1024 bytes)
         if (file.size > 3 * 1024 * 1024) {
-          setError1("File size must be less than 3MB");
+          // setError1("File size must be less than 3MB");
           return;
         }
 
@@ -236,11 +237,11 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         // Check file type (only JPG and PNG allowed)
         if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
-          setError1("Only JPG and PNG files are allowed");
+          // setError1("Only JPG and PNG files are allowed");
           return;
         }
 
-        setError1("");
+        // setError1("");
         // console.log('file',file)
         const reader: any = new FileReader();
         reader.onloadend = () => {
@@ -287,9 +288,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     });
   };
 
-  const datachange = (event: Date | null) => {
-    setDob(event);
-  };
+  // const datachange = (event: Date | null) => {
+  //   // setDob(event);
+  // };
 
   // const handleDate = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
   //     handleChange(event.target.value as Date | null);
@@ -304,7 +305,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setdobset_col(false);
     } else {
       // setDob(null);
-      let datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
+      const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
       if (datecheck === "Invalid Date") {
         setError(null);
         setdobset_col(true);
@@ -399,7 +400,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (!basicInfo?.father_name) setFathername_col1(true);
     if (!basicInfo?.mother_name) setMothername_col1(true);
 
-    let payload = {
+    const payload = {
       student_login_id: StudentId,
       first_name: basicInfo?.first_name,
       last_name: basicInfo?.last_name,
@@ -412,7 +413,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       aim: basicInfo?.aim,
     };
 
-    let datecheck: any = dayjs(payload?.dob).format("DD/MM/YYYY");
+    const datecheck: any = dayjs(payload?.dob).format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
     } else {
@@ -458,8 +459,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   // setprofileImage(imgdata.data)
                   if (data.status == 200) {
                     setProImage(data.data);
-                  } else {
-                  }
+                  } 
                 })
                 .catch((e) => {
                   console.log("------------- e -------------", e);
@@ -507,8 +507,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       // setprofileImage(imgdata.data)
                       if (data.status == 200) {
                         setProImage(data.data);
-                      } else {
-                      }
+                      } 
                     })
                     .catch((e) => {
                       console.log("------------- e -------------", e);

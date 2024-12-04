@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
   InputLabel,
@@ -9,7 +9,7 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
-  useTheme,
+ // useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useAPI";
@@ -37,14 +37,14 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
-  const theme = useTheme();
+  //const theme = useTheme();
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
 
-  let StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem("_id");
   
   useEffect(() => {
     console.log(save);
@@ -115,8 +115,8 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
     
     const eq = deepEqual(initialAdminState, selectedHobbies);
     console.log(selectedHobbies);
-    let payloadPromises = selectedHobbies.map((hobbyid) => {
-      let payload = {
+    const payloadPromises = selectedHobbies.map((hobbyid) => {
+      const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
@@ -184,7 +184,7 @@ console.log(payload);
       } else {
         //empty
       }
-    } catch (e) {
+    } catch  {
       toast.error("An error occurred while saving hobbies", {
         hideProgressBar: true,
         theme: "colored",
@@ -219,7 +219,7 @@ console.log(payload);
           // });
         }
       })
-      .catch((e) => {
+      .catch(() => {
         // toast.error(e?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",

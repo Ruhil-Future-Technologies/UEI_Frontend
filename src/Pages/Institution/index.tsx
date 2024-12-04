@@ -1,3 +1,5 @@
+import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const InstitutionDash = () => {
     return (
 
