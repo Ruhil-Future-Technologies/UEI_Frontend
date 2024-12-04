@@ -315,7 +315,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               });
               // setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
             }
-            
+
             if (item.class_id) {
               getData(`/class/get/${item.class_id}`).then((response: any) => {
                 if (response.status === 200) {
@@ -579,13 +579,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         });
     } else {
-    
       setBoxes(boxes.filter((_box, index) => index !== indx));
     }
   };
 
   const handleSubmit = async () => {
-    
     let valid = true;
     boxes.forEach((box, index) => {
       if (!box?.subject_id || !box?.preference || !box?.score_in_percentage) {
@@ -812,7 +810,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                         handleInputChange(index, "class_id", e.target.value)
                       }
                       label="Class"
-                      // disabled
+                      disabled
                     >
                       {classes.map((classes) => (
                         <MenuItem
@@ -1028,7 +1026,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           </div>
         ))}
         <div className="row justify-content-center">
-         
           <div className="mt-3 d-flex align-items-center justify-content-between">
             <button
               type="button"
