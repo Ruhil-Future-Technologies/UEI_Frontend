@@ -160,23 +160,13 @@ const AddEditSubject = () => {
       setTotalSemester(semesterCount)
     }
   }, [id, semester,subject?.course_id]);
-  // const handleChange = (e: any) => {
-  //   const { name, value } = e.target;
-  //   if (name === "subject_name") {
-  //     if (!/^[a-zA-Z\s]*$/.test(value)) {
-  //       setSubjectNamevalid(true);
-  //     } else {
-  //       setSubjectNamevalid(false);
-  //     }
-  //   }
-  //   setSubject((prevUser) => {
-  //     return {
-  //       ...prevUser,
-  //       [e.target.name]: e.target.value,
-  //     };
-  //   });
-  // };
-  // const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>, fieldName: string) => {
+  useEffect(() => {
+    if (id) {
+      const courses = courseListAll.filter((item: any) => item.institution_id === subject?.institution_id)
+      setCourseList(courses)
+    }
+  }, [id,courseListAll,subject?.institution_id]);
+
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>, fieldName: string) => {
     if (fieldName === 'institution_id') {
       const courses = courseListAll.filter((item: any) => item.institution_id === e.target.value)
@@ -335,9 +325,9 @@ const AddEditSubject = () => {
     institution_id: Yup.string().required("Please select institute name"),
   });
 
-  const maxSemester = totalSemester && totalSemester?.length > 0
-  ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-  : 0;
+  // const maxSemester = totalSemester && totalSemester?.length > 0
+  // ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
+  // : 0;
   return (
     <>
       <div className="main-wrapper">
