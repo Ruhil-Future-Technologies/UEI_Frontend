@@ -1116,21 +1116,21 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
 
 export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
-  {
-    accessorKey: "institute_name",
-    header: "Institute Name",
-    size: 150,
-  },
-  {
-    accessorKey: "course_name",
-    header: "Course Name",
-    size: 150,
-  },
-  {
-    accessorKey: "semester_id",
-    header: "Semester Name",
-    size: 150,
-  },
+    {
+      accessorKey: "institute_name",
+      header: "Institute Name",
+      size: 150,
+    },
+    {
+      accessorKey: "course_name",
+      header: "Course Name",
+      size: 150,
+    },
+    {
+      accessorKey: "semester_number",
+      header: "Semester Name",
+      size: 150,
+    },
   {
     accessorKey: "subject_name",
     header: "Subject Name",

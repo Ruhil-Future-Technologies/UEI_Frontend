@@ -1,7 +1,9 @@
-import { useState } from "react";
+
+import { useContext, useState } from "react";
 // import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { httpClient } from "../utils/http-client";
+import NameContext from "../Pages/Context/NameContext";
 
 const useApi = () => {
 
@@ -11,6 +13,31 @@ const useApi = () => {
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `${token}`,
+  };
+
+  const context = useContext(NameContext);
+  const {setProPercentage }= context;
+  const synth = window?.speechSynthesis;
+  const handlogout = () => {
+    setProPercentage(0);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_type");
+    localStorage.removeItem("userid");
+    localStorage.removeItem("pd");
+    localStorage.removeItem("userdata");
+    localStorage.removeItem("signupdata");
+    localStorage.removeItem("_id");
+    localStorage.removeItem("menulist");
+    localStorage.removeItem("menulist1");
+    localStorage.removeItem("proFalg");
+    localStorage.removeItem("loglevel");
+    sessionStorage.removeItem("profileData");
+    localStorage.removeItem("chatsaved");
+    localStorage.removeItem("Profile_completion");
+    localStorage.removeItem("Profile completion");
+    localStorage.removeItem("tokenExpiry");
+    synth.cancel();
+    // logoutpro();
   };
   const tokenExpiry = localStorage.getItem('tokenExpiry');
 const isTokenExpired = () => {
@@ -29,6 +56,7 @@ if (token && tokenExpiry) {
 };
   const getData = async (url, id) => {
     if (isTokenExpired()) {
+      handlogout()
       navigate('/'); 
       return;
     }
@@ -50,6 +78,7 @@ if (token && tokenExpiry) {
 
   const postData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
+      handlogout()
       navigate('/'); 
       return;
     }
@@ -73,6 +102,7 @@ if (token && tokenExpiry) {
 
   const putData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
+      handlogout()
       navigate('/'); 
       return;
     }
@@ -115,6 +145,7 @@ if (token && tokenExpiry) {
 
   const deleteData = async (url, redirectUrl = null) => {
     if (isTokenExpired()) {
+      handlogout()
       navigate('/'); 
       return;
     }
@@ -139,6 +170,7 @@ if (token && tokenExpiry) {
   
   const postFileData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
+      handlogout()
       navigate('/'); 
       return;
     }
@@ -166,6 +198,7 @@ if (token && tokenExpiry) {
 
   const deleteFileData = async (url, payload) => {
     if (isTokenExpired()) {
+      handlogout()
       navigate('/'); 
       return;
     }

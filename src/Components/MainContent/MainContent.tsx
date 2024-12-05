@@ -514,17 +514,23 @@ function MainContent() {
       },
     ],
   };
-  // Sort statsChatCount by chat_count in descending order and take the top 5
-  const top5Chats = statsChatCount
-    ?.sort(
-      (a: { chat_count: number }, b: { chat_count: number }) =>
-        b?.chat_count - a?.chat_count
-    )
-    ?.slice(0, 5);
+  const statsChatCountArray = Array?.isArray(statsChatCount) ? statsChatCount : [];
 
-  // Extract student names and chat counts for the top 5 entries
-  const studentNames = top5Chats?.map((item: any) => item?.student_name);
-  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+const top5Chats = statsChatCountArray
+  ?.sort((a: { chat_count: number }, b: { chat_count: number }) => b?.chat_count - a?.chat_count)
+  ?.slice(0, 5);
+
+// Extract student names and chat counts for the top 5 entries
+const studentNames = top5Chats?.map((item: any) => item?.student_name);
+const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+  // // Sort statsChatCount by chat_count in descending order and take the top 5
+  // const top5Chats = statsChatCount
+  //   ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
+  //   ?.slice(0, 5);
+
+  // // Extract student names and chat counts for the top 5 entries
+  // const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   const barChartDataStudentChatCount: ChartData<"bar", number[], string> = {
     labels: studentNames,
     datasets: [
@@ -1529,19 +1535,44 @@ function MainContent() {
           //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
           // );
           if (profileDatas?.academic_history?.institution_type === "school") {
-            return getData(
-              `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-                search
-              )}&student_id=${StudentId}&class_name=${
-                profileDatas?.class?.name
-              }`
-            )
+            // return getData(
+            //   `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
+            //     search
+            //   )}&student_id=${StudentId}&class_name=${
+            //     profileDatas?.class?.name
+            //   }`
+            // )
+            postData("https://dbllm.gyansetu.ai/rag-model-hierarchy", {
+              user_query: search,
+              student_id: StudentId,
+              school_college_selection:
+                profileDatas.academic_history.institution_type,
+              board_selection:
+                profileDatas.academic_history.board.toUpperCase(),
+              state_board_selection:
+                profileDatas.academic_history.state_for_stateboard,
+              stream_selection: profileDatas.academic_history.stream,
+              class_selection: profileDatas.class.name,
+              university_selection:
+                profileDatas.academic_history.university_name,
+              college_selection: profileDatas.academic_history.institution_name,
+              course_selection: profileDatas.academic_history.course_id,
+              year: profileDatas.academic_history.year,
+              subject: profileDatas.subject,
+            })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: Array.isArray(response.answer)
+                        ? response.answer
+                        : [response.answer.toString()],
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: StudentId,
-                    chat_question: search,
+                    chat_question: response.question,
                     response: response?.answer,
                   };
                   if (response?.status !== 402) {
@@ -1549,6 +1580,7 @@ function MainContent() {
                       handleError
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
@@ -2944,6 +2976,7 @@ function MainContent() {
                                 </div>
                               </div>
                             )}
+
                             {chat?.answer && (
                               <div
                                 key={`dashboard_answer_${index}`}

@@ -52,7 +52,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
         setErrors({
           ...errors,
           phoneNum: !/^\d{10}$/.test(value)
-            ? "Phone number should be 10 digits"
+            ? "Mobile number should be 10 digits"
             : "",
         });
         break;
@@ -65,7 +65,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             value === ""
               ? ""
               : !/^\d{10}$/.test(value)
-              ? "Phone number should be 10 digits"
+              ? "Whatsapp number should be 10 digits"
               : "",
         });
         break;
@@ -137,7 +137,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
     if (phoneNum === "") {
       setErrors({
         ...errors,
-        phoneNum: "Phone number should be 10 digits",
+        phoneNum: "Mobile number should be 10 digits",
       });
     }
     const paylod = {
