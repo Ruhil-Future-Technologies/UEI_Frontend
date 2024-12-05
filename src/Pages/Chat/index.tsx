@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
- import "../Chat/Chat.scss";
+import "../Chat/Chat.scss";
 import useApi from "../../hooks/useAPI";
 import { toast, ToastContentProps } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -434,10 +434,17 @@ const Chat = () => {
             })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: Array.isArray(response.answer)
+                        ? response.answer
+                        : [response.answer.toString()],
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: userid,
-                    chat_question: search,
+                    chat_question: response.question,
                     response: response?.answer,
                   };
                   if (response?.status !== 402) {
@@ -445,6 +452,7 @@ const Chat = () => {
                       handleError
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   getData(
@@ -1558,7 +1566,10 @@ const Chat = () => {
                   </button>
                 </div>
                 <div className="history-label">Today&apos;s Search</div>
-                <ul className="history-list overflow-auto" style={{ maxHeight: '350px' }}>
+                <ul
+                  className="history-list overflow-auto"
+                  style={{ maxHeight: "350px" }}
+                >
                   <>
                     {filteredChats?.length > 0 &&
                       filteredChats?.map(
