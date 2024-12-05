@@ -38,6 +38,7 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
+  const [ishobbiestuch,setIshobbiestuch]=useState(false);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
@@ -98,6 +99,7 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     Promise.resolve(setIsHobbiesUpdated(true));
     setSelectedHobbies(event.target.value as string[]);
+    setIshobbiestuch(true);
   };
   //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
   //     setSelectedHobbies(event.target.value as string[]);
@@ -124,6 +126,8 @@ console.log(payload);
       // return editFlag
       //   ? postData("student_hobby/add", payload)
       //   : putData("student_hobby/edit/" + StudentId, payload);
+      if(ishobbiestuch){
+        console.log(ishobbiestuch);
       if (editFlag) {
         return postData("student_hobby/add", payload);
       } else if (!eq) {
@@ -132,6 +136,9 @@ console.log(payload);
       } else {
         return Promise.resolve({ status: 204 }); // Skip update
       }
+    }else{
+      return Promise.resolve({ status: 204 });
+    }
     });
     // <<<<<<< Updated upstream
     //     if(payloadPromises.length >0)
@@ -160,20 +167,26 @@ console.log(payload);
       console.log(successfulResults);
       if (successfulResults?.length > 0) {
         console.log(successfulResults);
-        if(!isLanguageUpdated){
+        if(!isLanguageUpdated && ishobbiestuch){ 
            if (editFlag) {
           toast.success("Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center"
           });
+          console.log("we will update here");
+          setIshobbiestuch(false);
         }else {
           toast.success("Hobbies update successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center"
           });
+          setIshobbiestuch(false);
+
         }
+        }else{
+          setIshobbiestuch(false);
         }
        
       } else if (results.some((res) => res.status !== 204)) {

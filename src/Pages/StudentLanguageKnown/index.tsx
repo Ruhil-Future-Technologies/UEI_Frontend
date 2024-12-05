@@ -202,14 +202,21 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
+      
       console.log(editFlag,"what is the output of editflag");
+      if(isLanguageUpdated){
       if (editFlag || box.id === 0) {
-        return postData("student_language_known/add", payload);
+       
+          return postData("student_language_known/add", payload);
+        
       } else if (!eq) {
         return putData("student_language_known/edit/" + box.id, payload);
       } else {
         return Promise.resolve({ status: 204 }); // Skip update
       }
+    }else{
+      return Promise.resolve({ status: 204 });
+    }
     });
 
     try {
@@ -247,13 +254,15 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               theme: "colored",
               position: "top-center"
             });    
-               
+            setIsLanguageUpdated(false);
+
           } else {
             toast.success("Language updated successfully", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center"
             });
+
           }
           setIsLanguageUpdated(false);  
         }else if(isHobbiesUpdated){
