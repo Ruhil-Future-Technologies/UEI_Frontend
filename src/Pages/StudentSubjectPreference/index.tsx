@@ -827,8 +827,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     sx={{ m: 1, minWidth: 220, width: "100%" }}
                     // disabled
                   >
-                    <InputLabel>Class</InputLabel>
+                    <InputLabel id="class-label" shrink>
+                      Class
+                    </InputLabel>
                     <Select
+                      labelId="class-label"
                       value={box.class_id}
                       sx={{
                         backgroundColor: "#f5f5f5",
@@ -838,6 +841,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                       }
                       label="Class"
                       disabled
+                      notched
                     >
                       {classes.map((classes) => (
                         <MenuItem
