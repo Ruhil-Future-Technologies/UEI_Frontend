@@ -514,17 +514,23 @@ function MainContent() {
       },
     ],
   };
-  // Sort statsChatCount by chat_count in descending order and take the top 5
-  const top5Chats = statsChatCount
-    ?.sort(
-      (a: { chat_count: number }, b: { chat_count: number }) =>
-        b?.chat_count - a?.chat_count
-    )
-    ?.slice(0, 5);
+  const statsChatCountArray = Array?.isArray(statsChatCount) ? statsChatCount : [];
 
-  // Extract student names and chat counts for the top 5 entries
-  const studentNames = top5Chats?.map((item: any) => item?.student_name);
-  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+const top5Chats = statsChatCountArray
+  ?.sort((a: { chat_count: number }, b: { chat_count: number }) => b?.chat_count - a?.chat_count)
+  ?.slice(0, 5);
+
+// Extract student names and chat counts for the top 5 entries
+const studentNames = top5Chats?.map((item: any) => item?.student_name);
+const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+  // // Sort statsChatCount by chat_count in descending order and take the top 5
+  // const top5Chats = statsChatCount
+  //   ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
+  //   ?.slice(0, 5);
+
+  // // Extract student names and chat counts for the top 5 entries
+  // const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   const barChartDataStudentChatCount: ChartData<"bar", number[], string> = {
     labels: studentNames,
     datasets: [

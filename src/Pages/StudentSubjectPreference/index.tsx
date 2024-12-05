@@ -408,11 +408,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getSubject();
   }, [academic]);
   useEffect(() => {
-    const semesterCount = semester?.filter(
-      (item: any) => item?.semester_number === boxes[0]?.sem_id
-    );
-    setTotalSemester(semesterCount);
-  }, [StudentId, semester, boxes]);
+    // const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
+    const semesterCount = semester?.filter((item: any) => item?.semester_id === boxes[0]?.sem_id)
+    setTotalSemester(semesterCount)
+  }, [StudentId, semester , boxes])
   useEffect(() => {
     if (!academic) {
       const filterData = subjectsAll?.filter(
@@ -736,67 +735,60 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             key={box.id}
             style={{ marginBottom: "5px" }}
           >
-            {!academic ? (
-              <>
-                <div className="col form_field_wrapper">
-                  <FormControl
-                    required
-                    sx={{ m: 1, minWidth: 220, width: "100%" }}
-                  >
-                    <InputLabel>Course</InputLabel>
-                    <Select
-                      name="course_id"
-                      value={box.course_id}
-                      sx={{
-                        backgroundColor: "#f5f5f5",
-                      }}
-                      onChange={(e) =>
-                        handleInputChange(index, "course_id", e.target.value)
-                      }
-                      label="Course"
-                      disabled
-                    >
-                      {courses?.map((course) => (
-                        <MenuItem
-                          key={course.id}
-                          value={course.id}
-                          sx={{
-                            backgroundColor: inputfield(namecolor),
-                            color: inputfieldtext(namecolor),
-                            "&:hover": {
-                              backgroundColor: inputfieldhover(namecolor),
-                            },
-                          }}
-                        >
-                          {course.course_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className=" col form_field_wrapper">
-                  <FormControl
-                    required
-                    sx={{ m: 1, minWidth: 220, width: "100%" }}
-                  >
-                    <InputLabel id="semester-select-label">
-                      Semester{" "}
-                    </InputLabel>
-                    <Select
-                      name="sem_id"
-                      value={box.sem_id}
-                      sx={{
-                        backgroundColor: "#f5f5f5",
-                      }}
-                      onChange={(e) =>
-                        handleInputChange(index, "sem_id", e.target.value)
-                      }
-                      label="sem_id"
-                      disabled
-                    >
-                      {/* Generate menu items for semesters 1 to 8 */}
-                      {[...Array(totalSemester[0]?.semester_number)]?.map(
-                        (_, index) => (
+            {
+              !academic ? (
+                <>
+
+                  <div className="col form_field_wrapper">
+                    <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
+                      <InputLabel>Course</InputLabel>
+                      <Select
+                        name="course_id"
+                        value={box.course_id}
+                        sx={{
+                          backgroundColor: "#f5f5f5",
+                        }}
+                        onChange={(e) =>
+                          handleInputChange(index, "course_id", e.target.value)
+                        }
+                        label="Course"
+                        disabled
+                      >
+                        {courses?.map((course) => (
+                          <MenuItem
+                            key={course.id}
+                            value={course.id}
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              "&:hover": {
+                                backgroundColor: inputfieldhover(namecolor),
+                              },
+                            }}
+                          >
+                            {course.course_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className=" col form_field_wrapper">
+                    <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
+                      <InputLabel id="semester-select-label">Semester </InputLabel>
+                      <Select
+                        name="sem_id"
+                        value={box.sem_id}
+                        sx={{
+                          backgroundColor: "#f5f5f5",
+                        }}
+                        onChange={(e) =>
+                          handleInputChange(index, "sem_id", e.target.value)
+                        }
+                        label="sem_id"
+                        disabled
+                      >
+                        {/* Generate menu items for semesters 1 to 8 */}
+                        {/* {[...Array(totalSemester[0]?.semester_number)]?.map((_, index) => (
                           <MenuItem
                             key={`${index + 1}`}
                             value={index + 1}
@@ -810,23 +802,40 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                           >
                             Semester {index + 1}
                           </MenuItem>
-                        )
-                      )}
-                    </Select>
-                    <Typography variant="body2" color="error">
-                      {/* {typeof errors?.sem_id === "string" && errors.sem_id} */}
-                    </Typography>
-                  </FormControl>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="col form_field_wrapper">
-                  <FormControl
-                    required
-                    sx={{ m: 1, minWidth: 220, width: "100%" }}
-                    // disabled
-                  >
+                        ))} */}
+                         {totalSemester
+                      ?.sort((a: any, b: any) => a.semester_number - b.semester_number) 
+                      .map((item: any) => (
+                        <MenuItem
+                          key={item?.semester_id}
+                          value={item?.semester_id}
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                            },
+                          }}
+                        >
+                          Semester {item.semester_number}
+                        </MenuItem>
+                      ))}
+                      </Select>
+                      <Typography variant="body2" color="error">
+                        {/* {typeof errors?.sem_id === "string" && errors.sem_id} */}
+                      </Typography>
+                    </FormControl>
+                  </div>
+
+                </>
+              ) : (
+                <>
+                  <div className="col form_field_wrapper">
+                    <FormControl
+                      required
+                      sx={{ m: 1, minWidth: 220, width: "100%" }}
+                      disabled
+                    >
                     <InputLabel id="class-label" shrink>
                       Class
                     </InputLabel>
@@ -843,25 +852,25 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                       disabled
                       notched
                     >
-                      {classes.map((classes) => (
-                        <MenuItem
-                          key={classes.id}
-                          value={classes.id}
-                          sx={{
-                            backgroundColor: inputfield(namecolor),
-                            color: inputfieldtext(namecolor),
-                            "&:hover": {
-                              backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                            },
-                          }}
-                        >
-                          {classes.class_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-                {/* {  (particularClass === "class_11" ||
+                        {classes.map((classes) => (
+                          <MenuItem
+                            key={classes.id}
+                            value={classes.id}
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              "&:hover": {
+                                backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                              },
+                            }}
+                          >
+                            {classes.class_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                  {/* {  (particularClass === "class_11" ||
                 particularClass === "class_12") && ( */}
                 {particularClass[index] &&
                   (particularClass[index] === "class_11" ||

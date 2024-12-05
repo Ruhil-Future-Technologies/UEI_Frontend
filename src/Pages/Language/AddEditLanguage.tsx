@@ -59,27 +59,17 @@ const AddEditLanguage = () => {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (id) {
-        try {
-          // Make sure getData is a valid function returning a promise
-          if (typeof getData === "function") {
-            const data = await getData(`${LanguageEditURL}/${id}`);
+    if (id) {
+        getData(`${LanguageEditURL}/${id}`).then((data) => {
             setLanguage(data?.data || initialState);
-          } else {
-            throw new Error("getData is not a function");
-          }
-        } catch (e: any) {
-          toast.error(e?.message || "An error occurred while fetching data", {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        }
-      }
-    };
-
-    fetchData();
-  }, [id, LanguageEditURL, getData]);
+        }).catch(e => {
+            toast.error(e?.message, {
+                hideProgressBar: true,
+                theme: "colored",
+            });
+        });
+    }
+}, [id, LanguageEditURL]);
   // const callAPILanguage = async () => {
   //   getData(`${LanguageURL}`)
   //     .then((data: any) => {

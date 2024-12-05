@@ -111,7 +111,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
-  const [maxSemester, setMaxSemester] = useState(0);
+  // const [maxSemester, setMaxSemester] = useState(0);
   const [editAcademicHistory, setEditAcademicHistory]=useState(false);
   const [updateBoxes, setUpdateBoxes] = useState(false);
   const StudentId = localStorage.getItem("_id");
@@ -390,19 +390,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
     // If validation passes, proceed with form submission
     const promises = updatedBoxes.map((box) => {
-      // const payload = {
-      //   student_id: StudentId,
-      //   institution_type: box.institute_type,
-      //   // Populate other fields based on institute_type
-      //   board: box.institute_type.toLowerCase() === 'school' ? box.board : null,
-      //   institute_id: box.institute_type.toLowerCase() === 'college' ? String(box.institute_id) : null,
-      //   course_id: box.institute_type.toLowerCase() === 'college' ? String(box.course_id) : null,
-      //   sem_id: box.institute_type.toLowerCase() === 'college' ? String(box.sem_id) : null,
-      //   university_id: box.institute_type.toLowerCase() === 'college' ? String(box.university_id) : null,
-      //   year: box.year ? String(box.year) : "",
-      //   stream: (particularClass === "class_11" || particularClass === "class_12") && box.institute_type.toLowerCase() === 'school' ? box.stream : "",
-      //   class_id: box.institute_type.toLowerCase() === 'school' ? String(box.class_id) : box.id ? "" : null,
-      // };
       const payload = {
         student_id: StudentId,
         institution_type: box.institute_type,
@@ -487,75 +474,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
 
- 
-
-  // const saveAcademy = async (index: number) => {
-  //   if (boxes1[0].Institute_Name_Add) {
-  //     try {
-  //       const validatePayload = (
-  //         payload: { [s: string]: unknown } | ArrayLike<unknown>
-  //       ) => {
-  //         return Object.values(payload).every((value) => value !== "");
-  //       };
-
-  //       const promises = boxes1
-  //         .map((box) => {
-  //           const payload = {
-  //             institution_name: box.Institute_Name_Add,
-  //           };
-
-  //           if (validatePayload(payload)) {
-  //             if (editFlag || box.id === 0) {
-  //               return postData("/institution/add", payload);
-  //             } else {
-  //               return postData("/institution/add", payload);
-  //             }
-  //           } else {
-  //             return Promise.resolve(null);
-  //           }
-  //         })
-  //         .filter((promise) => promise !== null);
-
-  //       const responses = await Promise.all(promises);
-
-  //       const allSuccessful = responses.every(
-  //         (response) => response?.status === 200
-  //       );
-
-  //       if (allSuccessful) {
-  //         setIdInstitute(responses[0].institution.id);
-  //         // setBoxes([...boxes, { institute_id: responses[0]?.institution?.id }]);
-  //         const newBoxes: any = [...boxes];
-  //         newBoxes[index]["institute_id"] = responses[0].institution.id;
-  //         saveAcademicHistory(responses[0].institution.id);
-  //         setBoxes(newBoxes);
-  //         setBoxes1([
-  //           {
-  //             id: 0,
-  //             Institute_Name_Add: "",
-  //           },
-  //         ]);
-  //         // setBoxes((prevBoxes) => [...prevBoxes, { institute_id: responses[0]?.institution?.id }]);
-
-  //         await listData();
-  //         toast.success("Institution name saved successfully", {
-  //           hideProgressBar: true,
-  //           theme: "colored",
-  //           position: "top-center",
-  //         });
-  //         setDataInsitute(boxes1[0]?.Institute_Name_Add);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error while saving academy", error);
-  //       toast.error("Error while saving institution name", {
-  //         hideProgressBar: true,
-  //         theme: "colored",
-  //         position: "top-center",
-  //       });
-  //     }
-  //   } else saveAcademicHistory();
-  // };
-
   const handleInputChange = (
     index: number,
     field: keyof Box,
@@ -596,23 +514,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     } else {
       newEnddateInvalidList[index] = false;
     }
-
-    // if (newBoxes[0].institute_type?.toLowerCase() === "school"){
-    //   const newBox = [{
-    //     board:"state_board"
-    //     class_id:newBoxes[0].
-    //     course_id: null
-    //     id : 360
-    //     institute_id: 95
-    //     institute_type:"college"
-    //     learning_style :"online"
-    //     sem_id :  null
-    //     state_for_stateboard  :"chandigarh"
-    //     stream :  null
-    //     university_id :   null
-    //     year :
-
-    // }]
 
     setBoxes(newBoxes);
     setEnddateInvalidList(newEnddateInvalidList);
@@ -655,18 +556,18 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 //     : 0;
 
 
-useEffect(() => {
-  if (totalSemester && totalSemester?.length > 0) {
-    const max = Math.max(
-      ...totalSemester.map(
-        (item: { semester_number: any }) => item?.semester_number
-      )
-    );
-    setMaxSemester(max); 
-  } else {
-    setMaxSemester(0); 
-  }
-}, [totalSemester]);
+// useEffect(() => {
+//   if (totalSemester && totalSemester?.length > 0) {
+//     const max = Math.max(
+//       ...totalSemester.map(
+//         (item: { semester_number: any }) => item?.semester_number
+//       )
+//     );
+//     setMaxSemester(max); 
+//   } else {
+//     setMaxSemester(0); 
+//   }
+// }, [totalSemester]);
   return (
     <div className="mt-5">
       <form>
@@ -981,7 +882,7 @@ useEffect(() => {
                     }
                     label="Semester"
                   >
-                    {[...Array(maxSemester)]?.map((_, index) => (
+                    {/* {[...Array(maxSemester)]?.map((_, index) => (
                       <MenuItem
                         key={`${index + 1}`}
                         value={index + 1}
@@ -995,7 +896,24 @@ useEffect(() => {
                       >
                         Semester {index + 1}
                       </MenuItem>
-                    ))}
+                    ))} */}
+                    {totalSemester
+                      ?.sort((a: any, b: any) => a.semester_number - b.semester_number) 
+                      .map((item: any) => (
+                        <MenuItem
+                          key={item?.semester_id}
+                          value={item?.semester_id}
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                            },
+                          }}
+                        >
+                          Semester {item.semester_number}
+                        </MenuItem>
+                      ))}
                   </Select>
                   {errors.sem_id && !box?.sem_id && (
                     <FormHelperText error>{errors.sem_id}</FormHelperText>

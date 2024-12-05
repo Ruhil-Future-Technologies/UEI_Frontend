@@ -158,10 +158,10 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             // if (add2.hasOwnProperty(field)) {
             //   filteredAdd2[field] = add2[field];
             // }
-            if (Object.prototype.hasOwnProperty.call(add1, field)) {
+            if (add1 && Object.prototype.hasOwnProperty.call(add1, field)) {
               filteredAdd1[field] = add1[field];
             }
-            if (Object.prototype.hasOwnProperty.call(add2, field)) {
+            if (add2 && Object.prototype.hasOwnProperty.call(add2, field)) {
               filteredAdd2[field] = add2[field];
             }
           });
