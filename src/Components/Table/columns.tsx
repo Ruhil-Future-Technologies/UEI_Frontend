@@ -976,9 +976,9 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
+      console.log(value);
       const [Show, setShow] = useState(value === 1 ? true : false);
-
+      console.log(Show);
       const active = (id: number, valueset: any) => {
         putData(`${valueset === 1 ? StudentDeactive : StudentActive}/${id}`)
           .then((data: any) => {
@@ -1000,7 +1000,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={value===1 ? "Active" : "Deactive"}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);

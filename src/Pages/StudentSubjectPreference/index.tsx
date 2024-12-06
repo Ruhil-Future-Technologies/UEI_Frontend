@@ -83,7 +83,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     [key: number]: { [key: string]: boolean };
   }>({});
   const [initialState, setInitialState] = useState<any | null>({});
-  const [totalSemester, setTotalSemester] = useState<any>([]);
+
+  const [totalSemester, setTotalSemester] = useState<any>([])
+  const [isSubjectPrefTuch,setIsSubjectPrefTuch]=useState(false);
+
   const [semester, setSemester] = useState<any>([]);
   const [academic, setAcademic] = useState<any>(false);
   const [classes, setClasses] = useState<Classes[]>([]);
@@ -447,6 +450,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     value: string
   ) => {
     // console.log("test academic 66666666data",academic)
+    setIsSubjectPrefTuch(true);
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
     // if (field === 'course_id') {
@@ -651,6 +655,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         eq = deepEqual(initialState, submissionData);
 
         if (editFlag) {
+          console.log("hallo add");
           return postData("/subject_preference/add", submissionData);
         } else {
           if (box.id === 0) {
@@ -694,7 +699,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           await handleReset();
           navigate("/");
         } else {
-          if (!eq === true) {
+          if (!eq === true && isSubjectPrefTuch) {
+            
             toast.success("Subject Preference updated successfully", {
               hideProgressBar: true,
               theme: "colored",

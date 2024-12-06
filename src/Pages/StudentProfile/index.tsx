@@ -89,7 +89,7 @@ const StudentProfile = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [activeForm]);
 
   useEffect(() => {
     updateWizard();

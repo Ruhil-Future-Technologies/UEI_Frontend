@@ -114,6 +114,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // const [maxSemester, setMaxSemester] = useState(0);
   const [editAcademicHistory, setEditAcademicHistory]=useState(false);
   const [updateBoxes, setUpdateBoxes] = useState(false);
+  
   const StudentId = localStorage.getItem("_id");
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
@@ -439,7 +440,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             setEditAcademicHistory(false);
             setUpdateBoxes(true);
             setEditFlag(false);
-            setActiveForm((prev) => prev + 1);
+            setBoxes([]);
+            //setActiveForm((prev) => prev + 1);
           } else {
             
            
@@ -452,7 +454,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               setUpdateBoxes(true);
               setEditFlag(false);
           }
-      
+          
         }
         setActiveForm((prev) => prev + 1);
         } else {
