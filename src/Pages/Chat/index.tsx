@@ -524,8 +524,8 @@ const Chat = () => {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
             // )
-            const queryParams = new URLSearchParams({
-              user_query: encodeURIComponent(search),
+            const queryParams = {
+              user_query: search,
               student_id: userid,
               ...(institution_type && {
                 school_college_selection: institution_type,
@@ -541,7 +541,7 @@ const Chat = () => {
               ...(course_id && { course_selection: course_id }),
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
-            });
+            };
 
             return getData(
               `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
@@ -1797,6 +1797,7 @@ const Chat = () => {
                                 <div className="chat-card-body">
                                   <p>
                                     <Chatbot
+                                      key={chat?.question}
                                       answer={chat?.answer}
                                       index={index}
                                     />

@@ -95,7 +95,7 @@ function MainContent() {
   const [studentClass, setStudentClass] = useState("");
   const [studentCourse, setStudentCourse] = useState("");
   const [search, setSearch] = useState("");
-  const [regenerateSearch, setRegenerateSearch] = useState("");
+  // const [regenerateSearch, setRegenerateSearch] = useState("");
   const [searcherr, setSearchErr] = useState(false);
   const [loaderMsg, setLoaderMsg] = useState("");
   const [loader, setLoader] = useState(false);
@@ -1442,7 +1442,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   };
 
   const searchData = () => {
-    setRegenerateSearch(search);
+    // setRegenerateSearch(search);
     setSearch("");
     // setShowInitialPage(false)
     if (search === "") {
@@ -1651,8 +1651,8 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
-            const queryParams = new URLSearchParams({
-              user_query: encodeURIComponent(search),
+            const queryParams = {
+              user_query: search,
               student_id: StudentId,
               ...(institution_type && {
                 school_college_selection: institution_type,
@@ -1668,7 +1668,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
               ...(course_id && { course_selection: course_id }),
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
-            });
+            };
 
             return getData(
               `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
@@ -1977,7 +1977,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
     if (selectedchat?.question !== "") {
       payload = {
-        question: regenerateSearch,
+        question: selectedchat.question,
         prompt: prompt,
         course:
           profileDatas?.academic_history?.institution_type === "school"
@@ -1995,7 +1995,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       };
     } else {
       payload = {
-        question: regenerateSearch,
+        question: selectedchat?.question,
         prompt: prompt,
         course:
           profileDatas?.academic_history?.institution_type === "school"
@@ -2008,7 +2008,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     getData(
       // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
       `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-        regenerateSearch
+        search
       )}`
     )
       .then((response) => {
@@ -2016,7 +2016,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           handleResponse(response);
           const ChatStorepayload = {
             student_id: StudentId,
-            chat_question: regenerateSearch,
+            chat_question: search,
             response: response?.answer,
           };
           postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
@@ -3002,6 +3002,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                       <div className="mb-4">
                                         <p>
                                           <Chatbot
+                                            key={chat?.question}
                                             answer={chat?.answer}
                                             index={index}
                                           />
