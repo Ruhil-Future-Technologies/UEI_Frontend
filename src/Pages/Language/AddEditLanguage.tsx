@@ -59,17 +59,22 @@ const AddEditLanguage = () => {
   }
 
   useEffect(() => {
-    if (id) {
-        getData(`${LanguageEditURL}/${id}`).then((data) => {
-            setLanguage(data?.data || initialState);
-        }).catch(e => {
-            toast.error(e?.message, {
-                hideProgressBar: true,
-                theme: "colored",
-            });
+    const fetchData = async () => {
+      try {
+        if (id) {
+          const data = await getData(`${LanguageEditURL}/${id}`);
+          setLanguage(data?.data || initialState);
+        }
+      } catch (e: any) {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: "colored",
         });
-    }
-}, [id, LanguageEditURL]);
+      }
+    };
+
+    fetchData();
+  }, [id, LanguageEditURL]);
   // const callAPILanguage = async () => {
   //   getData(`${LanguageURL}`)
   //     .then((data: any) => {
@@ -89,17 +94,17 @@ const AddEditLanguage = () => {
   // };
   const callAPILanguage = async () => {
     try {
-      console.log('Calling getData');
+      console.log("Calling getData");
       const data = await getData(`${LanguageURL}`);
-      console.log('Data received:', data);
+      console.log("Data received:", data);
       if (data?.data) {
         setDataLanguage(data?.data);
       }
     } catch (e) {
-      console.error('Error fetching data:', e);
+      console.error("Error fetching data:", e);
     }
   };
-  
+
   useEffect(() => {
     callAPILanguage();
   }, []);
@@ -261,7 +266,7 @@ const AddEditLanguage = () => {
               // data-testid="form"
             >
               {({ errors, values, touched }: any) => (
-                <Form  data-testid = "form">
+                <Form data-testid="form">
                   <div className="row">
                     <div className="col-md-4">
                       <div className="form_field_wrapper">

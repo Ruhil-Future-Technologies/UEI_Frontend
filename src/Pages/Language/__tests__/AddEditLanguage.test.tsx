@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fireEvent, render, screen,} from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import AddEditLanguage from "../AddEditLanguage";
 import NameContext from "../../Context/NameContext";
@@ -10,9 +10,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { contextValue } from "../../../MockStorage/mockstorage";
-import { toast } from "react-toastify";
-
-
+import useApi from "../../../hooks/useAPI";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -20,8 +18,29 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
   useParams: jest.fn(),
 }));
+jest.mock("../../../hooks/useAPI", () => ({
+  __esModule: true,
+  default: jest.fn().mockReturnValue({
+    postData: jest.fn().mockResolvedValueOnce({
+      status: 200,
+      message: "Language created successfully",
+    }),
+    getData: jest.fn(),
+    putData: jest.fn(),
+  }),
+}));
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
 const mockedNavigate = jest.fn();
+const mockPostData = jest.fn().mockResolvedValueOnce({
+  status: 200,
+  message: "Language created successfully",
+});
 
 beforeEach(() => {
   (useLocation as jest.Mock).mockReturnValue({
@@ -29,6 +48,13 @@ beforeEach(() => {
   });
   (useParams as jest.Mock).mockReturnValue({ id: "12" }); // Mock 'id' consistently
   (useNavigate as jest.Mock).mockReturnValue(mockedNavigate); // Mock navigate function
+
+  // Mock the `useApi` hook to return the necessary functions
+  (useApi as jest.Mock).mockReturnValue({
+    getData: jest.fn(),
+    postData: mockPostData,
+    putData: jest.fn(),
+  });
 });
 
 afterEach(() => {
@@ -39,6 +65,7 @@ describe("Add Edit Language Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   const renderComponent = () =>
     render(
       <NameContext.Provider value={contextValue}>
@@ -47,6 +74,7 @@ describe("Add Edit Language Component", () => {
         </BrowserRouter>
       </NameContext.Provider>
     );
+
   it("should render the add edit language component with all fields properly", () => {
     renderComponent();
     expect(screen.getByTestId("language_name")).toBeInTheDocument();
@@ -75,54 +103,66 @@ describe("Add Edit Language Component", () => {
       )
     ).toBeInTheDocument();
   });
-  // jest.mock('../../../hooks/useAPI'); // Mock the postData function
-  jest.spyOn(toast, 'success');
+
   // it("should handle form submission successfully in add mode", async () => {
-  //   render(<NameContext.Provider value={contextValue}>
-  //     <BrowserRouter>
-  //       <AddEditLanguage />
-  //     </BrowserRouter>
-  //   </NameContext.Provider>);
-  
+  //   const mockPostData = jest.fn().mockResolvedValueOnce({
+  //     status: 200,
+  //     message: "Language created successfully",
+  //   });
+
+  //   (useApi as jest.Mock).mockReturnValue({
+  //     postData: mockPostData,
+  //     getData: jest.fn(),
+  //     putData: jest.fn(),
+  //   });
+
+  //   render(
+  //     <NameContext.Provider value={contextValue}>
+  //       <BrowserRouter>
+  //         <AddEditLanguage />
+  //       </BrowserRouter>
+  //     </NameContext.Provider>
+  //   );
+
   //   // Fill in valid form data
   //   const languageNameInput = screen.getByTestId("language_name");
   //   const fileInput = screen.getByTestId("language_file");
   //   const descriptionInput = screen.getByTestId("language_description");
-  
-  //   // Simulate entering valid data for the language name, file, and description
+
   //   fireEvent.change(languageNameInput, { target: { value: "English" } });
-  //   fireEvent.change(descriptionInput, { target: { value: "A widely spoken language." } });
-  
-  //   // Simulate file upload (mock file input)
-  //   const mockFile = new File(["dummy content"], "dummy-image.png", { type: "image/png" });
+  //   fireEvent.change(descriptionInput, {
+  //     target: { value: "A widely spoken language." },
+  //   });
+
+  //   // Simulate file upload
+  //   const mockFile = new File(["dummy content"], "dummy-image.png", {
+  //     type: "image/png",
+  //   });
   //   fireEvent.change(fileInput, { target: { files: [mockFile] } });
-  
-  //   // Mock the postData to simulate a successful API response
-  //   // postData.mockResolvedValueOnce({
-  //   //   status: 200,
-  //   //   message: "Language created successfully"
-  //   // });
-  //   (useApi as jest.Mock).mockReturnValue({
-  //     postData: jest.fn().mockResolvedValueOnce({
-  //       status: 200,
-  //       message: "Language created successfully"
-  //     })
-  //   });
-  
-  //   // Submit the form
+
+  //   // Simulate form submission
   //   fireEvent.click(screen.getByTestId("submitBtn"));
-  
-  //   // Wait for the toast.success to be called
+
+  //   // Wait for toast.success to be called and ensure it's called once
   //   await waitFor(() => {
-  //     expect(toast.success).toHaveBeenCalledWith("Language created successfully", expect.any(Object));
+  //     expect(toast.success).toHaveBeenCalledTimes(1); // Ensure it's called only once
+  //     expect(toast.success).toHaveBeenCalledWith(
+  //       "Language created successfully",
+  //       expect.any(Object)
+  //     );
   //   });
-  
-  //   // Verify that the form reset function was called to clear form data
-  //   expect(screen.getByTestId("language_name")).toHaveValue(""); // Check if the field was reset
-  //   expect(screen.getByTestId("language_description")).toHaveValue(""); // Check if description is reset
+
+  //   // Verify the form is reset
+  //   expect(screen.getByTestId("language_name")).toHaveValue("");
+  //   expect(screen.getByTestId("language_description")).toHaveValue("");
+
+  //   // Ensure postData was called with the correct parameters
+  //   expect(mockPostData).toHaveBeenCalledWith(
+  //     expect.objectContaining({
+  //       language_name: "English",
+  //       description: "A widely spoken language.",
+  //       file: expect.any(File),
+  //     })
+  //   );
   // });
-  
-  
-  
-   
 });

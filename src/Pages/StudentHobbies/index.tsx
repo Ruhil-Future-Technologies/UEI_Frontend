@@ -9,7 +9,7 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
- // useTheme,
+  // useTheme,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import useApi from "../../hooks/useAPI";
@@ -30,23 +30,27 @@ interface Hobby {
 interface StudentHobbiesProps {
   save: boolean;
   setSave: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsHobbiesUpdated:React.Dispatch<React.SetStateAction<boolean>>;
-  isLanguageUpdated:boolean;
+  setIsHobbiesUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  isLanguageUpdated: boolean;
 }
-const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHobbiesUpdated,isLanguageUpdated }) => {
+const StudentHobbies: React.FC<StudentHobbiesProps> = ({
+  save,
+  setSave,
+  setIsHobbiesUpdated,
+  isLanguageUpdated,
+}) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
-  const [ishobbiestuch,setIshobbiestuch]=useState(false);
+  const [ishobbiestuch, setIshobbiestuch] = useState(false);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
-
   const StudentId = localStorage.getItem("_id");
-  
+
   useEffect(() => {
     console.log(save);
     if (save) {
@@ -55,45 +59,40 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   }, [save]);
 
   useEffect(() => {
-    getData("hobby/list")
-      .then((data: any) => {
-        console.log(data?.data);
-        if (data?.status === 200) {
-          const filteredData = data?.data?.filter(
+    const fetchData = async () => {
+      try {
+        const hobbyListData = await getData("hobby/list");
+        console.log(hobbyListData?.data);
+        if (hobbyListData?.status === 200) {
+          const filteredData = hobbyListData?.data?.filter(
             (item: any) => item?.is_active === 1
           );
           setAllHobbies(filteredData || []);
-          // setAllHobbies(data?.data);
         }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-          position: "top-center"
-        });
-      });
 
-    getData("student_hobby/edit/" + StudentId)
-      .then((data: any) => {
-        console.log(data?.data);
-        if (data?.status === 200) {
-          const hobbyIds = data.data.map(
+        const studentHobbyData = await getData(
+          "student_hobby/edit/" + StudentId
+        );
+        console.log(studentHobbyData?.data);
+        if (studentHobbyData?.status === 200) {
+          const hobbyIds = studentHobbyData.data.map(
             (selecthobby: any) => selecthobby.hobby_id
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
-        } else if (data?.status === 404) {
+        } else if (studentHobbyData?.status === 404) {
           setEditFlag(true);
         }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
+      } catch (e: any) {
+        toast.error(e?.message || "An error occurred", {
           hideProgressBar: true,
           theme: "colored",
-          position: "top-center"
+          position: "top-center",
         });
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
@@ -114,7 +113,6 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   // };
 
   const submitHandle = async () => {
-    
     const eq = deepEqual(initialAdminState, selectedHobbies);
     console.log(selectedHobbies);
     const payloadPromises = selectedHobbies.map((hobbyid) => {
@@ -122,23 +120,23 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-console.log(payload);
+      console.log(payload);
       // return editFlag
       //   ? postData("student_hobby/add", payload)
       //   : putData("student_hobby/edit/" + StudentId, payload);
-      if(ishobbiestuch){
+      if (ishobbiestuch) {
         console.log(ishobbiestuch);
-      if (editFlag) {
-        return postData("student_hobby/add", payload);
-      } else if (!eq) {
-        console.log("edit hobby");
-        return putData("student_hobby/edit/" + StudentId, payload);
+        if (editFlag) {
+          return postData("student_hobby/add", payload);
+        } else if (!eq) {
+          console.log("edit hobby");
+          return putData("student_hobby/edit/" + StudentId, payload);
+        } else {
+          return Promise.resolve({ status: 204 }); // Skip update
+        }
       } else {
-        return Promise.resolve({ status: 204 }); // Skip update
+        return Promise.resolve({ status: 204 });
       }
-    }else{
-      return Promise.resolve({ status: 204 });
-    }
     });
     // <<<<<<< Updated upstream
     //     if(payloadPromises.length >0)
@@ -167,28 +165,26 @@ console.log(payload);
       console.log(successfulResults);
       if (successfulResults?.length > 0) {
         console.log(successfulResults);
-        if(!isLanguageUpdated && ishobbiestuch){ 
-           if (editFlag) {
-          toast.success("Hobbies saved successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
-          });
-          console.log("we will update here");
+        if (!isLanguageUpdated && ishobbiestuch) {
+          if (editFlag) {
+            toast.success("Hobbies saved successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center",
+            });
+            console.log("we will update here");
+            setIshobbiestuch(false);
+          } else {
+            toast.success("Hobbies update successfully", {
+              hideProgressBar: true,
+              theme: "colored",
+              position: "top-center",
+            });
+            setIshobbiestuch(false);
+          }
+        } else {
           setIshobbiestuch(false);
-        }else {
-          toast.success("Hobbies update successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
-          });
-          setIshobbiestuch(false);
-
         }
-        }else{
-          setIshobbiestuch(false);
-        }
-       
       } else if (results.some((res) => res.status !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
@@ -197,11 +193,11 @@ console.log(payload);
       } else {
         //empty
       }
-    } catch  {
+    } catch {
       toast.error("An error occurred while saving hobbies", {
         hideProgressBar: true,
         theme: "colored",
-        position: "top-center"
+        position: "top-center",
       });
     }
     setSave(false);
@@ -252,17 +248,20 @@ console.log(payload);
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
         <div className="col-12 justify-content-start form_field_wrapper">
-          <FormControl sx={{
-               maxWidth: "300px",
-               width: "100%",
-          }}>
+          <FormControl
+            sx={{
+              maxWidth: "300px",
+              width: "100%",
+            }}
+          >
             <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
             <Select
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
+              data-testid="hobby_text"
               sx={{
-                backgroundColor: "#f5f5f5",             
+                backgroundColor: "#f5f5f5",
               }}
               value={selectedHobbies}
               onChange={handleChange}
