@@ -29,10 +29,10 @@ const AddEditEntity = () => {
   const formRef = useRef<FormikProps<{ entity_type: string }>>(null);
   const location = useLocation();
   const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location?.pathname?.split("/").filter(Boolean);
   const lastSegment = id
-    ? pathSegments[pathSegments.length - 3].toLowerCase()
-    : pathSegments[pathSegments.length - 2].toLowerCase();
+    ? pathSegments[pathSegments.length - 3]?.toLowerCase()
+    : pathSegments[pathSegments.length - 2]?.toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
 
@@ -182,6 +182,7 @@ const AddEditEntity = () => {
                     <div className="col-md-3">
                       <div className="form_field_wrapper">
                         <Field
+                        data-testid="entity_type"
                           className="w-100"
                           component={TextField}
                           type="text"

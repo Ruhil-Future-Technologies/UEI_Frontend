@@ -48,8 +48,8 @@ const SuperAdmin = () => {
   const formRef = useRef<FormikProps<IMenuForm>>(null);
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const lastSegment = id
-    ? pathSegments[pathSegments.length - 3].toLowerCase()
-    : pathSegments[pathSegments.length - 2].toLowerCase();
+    ? pathSegments[pathSegments.length - 3]?.toLowerCase()
+    : pathSegments[pathSegments.length - 2]?.toLowerCase();
 //   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   const callAPI = async () => {
@@ -67,20 +67,39 @@ const SuperAdmin = () => {
     }
   };
 
+  // const GetDataList = () => {
+  //   JSON.parse(Menulist)?.map((data: any) => {
+  //     const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
+  //     if (fistMach.length > 0) {
+  //       // setFilteredData(fistMach);
+  //     }
+  //     const result = data?.submenus?.filter(
+  //       (menu: any) => menu.menu_name.toLowerCase() === lastSegment
+  //     );
+  //     if (result.length > 0) {
+  //       // setFilteredData(result);
+  //     }
+  //   });
+  // };
+
   const GetDataList = () => {
-    JSON.parse(Menulist)?.map((data: any) => {
-      const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
-      if (fistMach.length > 0) {
-        // setFilteredData(fistMach);
+    if (Menulist) {
+      try {
+        const parsedMenuList = JSON.parse(Menulist);
+        parsedMenuList?.map((data: any) => {
+          const fistMach = data?.menu_name.toLowerCase() === lastSegment && data;
+          if (fistMach?.length > 0) {
+            // setFilteredData(fistMach);
+          }
+        });
+      } catch (error) {
+        console?.error('Error parsing Menulist:', error);
       }
-      const result = data?.submenus?.filter(
-        (menu: any) => menu.menu_name.toLowerCase() === lastSegment
-      );
-      if (result.length > 0) {
-        // setFilteredData(result);
-      }
-    });
+    } else {
+      console?.error('Menulist is undefined or null');
+    }
   };
+  
   useEffect(() => {
     GetDataList();
   }, [Menulist]);
@@ -236,6 +255,7 @@ const SuperAdmin = () => {
                           
 
                           <Field
+                           data-testid="userid"
                             component={TextField}
                             type="text"
                             name="userid"
@@ -267,6 +287,7 @@ const SuperAdmin = () => {
                         <div className="form_field_wrapper">
                           
                           <Field
+                           data-testid="password"
                             component={TextField}
                             type="text"
                             name="password"
@@ -302,6 +323,7 @@ const SuperAdmin = () => {
                       <button
                         className="btn btn-primary mainbutton"
                         disabled={isLoading}
+                         data-testid="save_btn"
                       >
                         {"Save"}
                       </button>
