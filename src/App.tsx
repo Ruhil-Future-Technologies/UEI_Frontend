@@ -16,7 +16,6 @@ import AddEditInstitute from './Pages/Institute/AddEditInstitute';
 // import useApi from './hooks/useAPI';
 import Entity from './Pages/Entity/Entity';
 import AddEditEntity from './Pages/Entity/AddEditEntity';
-import AddDepartment from './Pages/AddDepartment';
 
 import Student from './Pages/Student/Student';
 import AddEditStudent from './Pages/Student/AddEditStudent';
@@ -327,7 +326,6 @@ function App() {
           </Route>
         </Route>
         <Route path="profile" element={<Profile />} />
-        <Route path="adddepartment" element={<AddDepartment />} />
         <Route path="searchdepartment" element={<StudentProfileManagement />} />
         <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
         {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}

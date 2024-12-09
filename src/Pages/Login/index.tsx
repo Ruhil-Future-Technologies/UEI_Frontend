@@ -315,6 +315,7 @@ console.error(error)
                               /> */}
                             <TextField
                               id="email/phone"
+                              data-testid="email"
                               value={emailphone}
                               // className="form-control"
                               onChange={handleChangeData}
@@ -358,7 +359,7 @@ console.error(error)
                             <div className="position-relative">
                           
                               <TextField
-                                // id="passwordInput"
+                                id="passwordInput"
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Password"
                                 value={password}
