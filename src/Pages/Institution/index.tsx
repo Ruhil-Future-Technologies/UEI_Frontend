@@ -1,20 +1,685 @@
 import React from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import "../Institution/institution.css"
+import profile from "../../assets/img/profile.png";
+import studentimg from "../../assets/img/ins-1.png";
+import courseImg from "../../assets/img/courses-1.png";
+import robotimg from "../../assets/img/robot.png";
+import glogowhite from "../../assets/img/g-logo-white.svg";
+import toperstudent from "../../assets/img/topper-image.png";
 const InstitutionDash = () => {
     return (
 
         <div className="main-wrapper">
-            <div className="main-content">
-                <h1>Institution Dashboard</h1>
+            <main className="main-wrapper">
+                <div className="main-content">
 
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, vel? Ullam
-                    at eaque, voluptatum necessitatibus blanditiis totam voluptatem voluptas ut
-                    itaque natus repudiandae a id! Aliquam, tempora? Tenetur,
-                    provident voluptatibus.
-                </p>
+                    <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                        <div className="breadcrumb-title pe-3">Dashboard</div>
+                        <div className="ps-3">
+                            <nav aria-label="breadcrumb">
+                                <ol className="breadcrumb mb-0 p-0">
+                                    <li className="breadcrumb-item"><a href="javascript:;"><i className="bx bx-home-alt"></i></a>
+                                    </li>
+                                    <li className="breadcrumb-item active" aria-current="page">Report</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div className="ms-auto">
+                            <div className="btn-group">
+                                <button type="button" className="btn btn-outline-primary rounded-pill px-lg-4"
+                                    data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">Settings</button>
 
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div className="row">
+                        <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
+                            <div className="card w-100 overflow-hidden rounded-4">
+                                <div className="card-header bg-primary-20">
+                                    <div className="row">
+                                        <div className="col-12">
+                                            <div className="d-flex align-items-center gap-3">
+                                                <img src={profile} className="rounded-circle bg-grd-info p-1"
+                                                    width="94" height="94" alt="user" />
+                                                <div className="w-100">
+                                                    <h4 className="fw-semibold mb-0 fs-18 mb-0">RK Institute</h4>
+                                                    <small className="mb-3 d-block">A-11 Janakpuri East, Delhi</small>
+
+
+                                                    <div className="">
+
+                                                        <div className="progress mb-0" style={{ height: "5px;" }}>
+                                                            <div
+                                                                className="progress-bar bg-grd-success"
+                                                                role="progressbar"
+                                                                style={{ width: "60%" }}
+                                                                aria-valuenow={25}
+                                                                aria-valuemin={0}
+                                                                aria-valuemax={100}
+                                                            >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div className="card-body position-relative p-4">
+                                    <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
+                                        <div>
+                                            <h6 className="mb-0 fw-normal">Status</h6>
+                                        </div>
+
+                                        <div className="form-check form-switch mb-0 ">
+                                            <input className="form-check-input fs-5 m-0" type="checkbox" id="status" checked />
+                                        </div>
+
+                                    </div>
+
+                                    <div className="d-flex align-items-center gap-3 mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="mb-0 fw-normal">Chat History</h6>
+                                        </div>
+                                        <div>
+                                            <a href="">0</a>
+                                        </div>
+                                    </div>
+
+                                    <div className="d-flex align-items-center gap-3 mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="mb-0 fw-normal">Saved Chat</h6>
+                                        </div>
+                                        <div>
+                                            <a href="">0</a>
+                                        </div>
+                                    </div>
+
+                                    <div className="d-flex align-items-center gap-3 mb-3">
+                                        <div className="flex-grow-1">
+                                            <h6 className="mb-0 fw-normal">Profile Completed</h6>
+                                        </div>
+                                        <div>
+                                            <a href="profile.html">90%</a>
+                                        </div>
+                                    </div>
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
+                            <div className="card w-100 rounded-4">
+                                <div className="card-body">
+                                    <div className="d-flex align-items-start justify-content-between mb-3">
+
+                                        <h5 className="mb-0 fw-semibold fs-6">Total Teachers</h5>
+                                        <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
+                                            70 <span className="text-primary d-inline-flex align-items-center gap-1">(2.5%)<i className="material-icons-outlined fs-6">north</i></span>
+                                        </div>
+
+                                    </div>
+                                    <div className="table-responsive">
+
+                                        <table className="table fs-14 align-middle mntable">
+                                            <tr>
+                                                <th >Image</th><th>Name</th><th>Subject</th>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Ajay Chauhan</td>
+                                                <td>Science</td>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Ajay Chauhan</td>
+                                                <td>Science</td>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Ajay Chauhan</td>
+                                                <td>Science</td>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Ajay Chauhan</td>
+                                                <td>Science</td>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <a href="" className="text-center d-block">See All</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
+                            <div className="card w-100 rounded-4">
+                                <div className="card-body">
+                                    <div className="d-flex align-items-start justify-content-between mb-3">
+
+                                        <h5 className="mb-0 fw-semibold fs-6">Total Students</h5>
+                                        <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
+                                            300 <span className="text-primary d-inline-flex align-items-center gap-1">(2.5%)<i className="material-icons-outlined fs-6">north</i></span>
+                                        </div>
+
+                                    </div>
+                                    <div className="table-responsive">
+
+                                        <table className="table fs-14 align-middle mntable">
+                                            <tr>
+                                                <th >Image</th><th>Name</th><th>className</th>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Ajay Chauhan</td>
+                                                <td>2nd</td>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Rahul Jain</td>
+                                                <td>5th</td>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Disha</td>
+                                                <td>9th</td>
+                                            </tr>
+                                            <tr>
+                                                <td><img src={studentimg} alt="" /></td>
+                                                <td>Neha Gupta</td>
+                                                <td>3rd</td>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <a href="" className="text-center d-block">See All</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
+                            <div className="card w-100 rounded-4">
+                                <div className="card-body">
+                                    <div className="d-flex align-items-start justify-content-between mb-3">
+
+                                        <h5 className="mb-0 fw-semibold fs-6">Total Courses</h5>
+                                        <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
+                                            80                                </div>
+
+                                    </div>
+                                    <div className="table-responsive">
+
+                                        <table className="table fs-14 align-middle mntable">
+                                            <tr>
+                                                <th >Course Name</th><th>Duration (Yr)</th><th>Enrollment Status</th>
+                                            </tr>
+
+                                            <tr>
+                                                <td>B.S.C Science</td>
+                                                <td>4</td>
+                                                <td><a href="">Enroll Student</a></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>B.COM</td>
+                                                <td>4</td>
+                                                <td>25-Dec-2024</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>BA English</td>
+                                                <td>4</td>
+                                                <td>29-Dec-2024</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>BCA Computer</td>
+                                                <td>4</td>
+                                                <td><a href="">Enroll Student</a></td>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <a href="" className="text-center d-block">See All</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-12">
+                            <div className="d-flex mb-3 justify-content-between align-items-center">
+                                <h5 className="mb-0">Subject Wise Students</h5>
+                                <div className="d-flex align-items-center gap-3">
+                                    <div className="swiper-prev d-flex"><i className="material-icons-outlined">west</i></div>
+                                    <div className="swiper-next d-flex"><i className="material-icons-outlined">east</i></div>
+                                    <a href="" className="d-block text-dark btn btn-light rounded-3 btn-sm">See All</a>
+                                </div>
+                            </div>
+
+                            <div className="swiper studentslider ">
+                                <div className="swiper-wrapper">
+                                    <div className="swiper-slide">
+                                        <div className="card crcard">
+                                            <div className="card-body">
+                                                <div className="row g-3">
+                                                    <div className="col-lg-5">
+                                                        <img src={courseImg} alt="" />
+                                                    </div>
+                                                    <div className="col-lg-7">
+                                                        <ul>
+                                                            <li>
+                                                                <small>Subject</small>
+                                                                <h6>English</h6>
+                                                            </li>
+                                                            <li>
+                                                                <small>Total Students</small>
+                                                                <h6>30</h6>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="swiper-slide">
+                                        <div className="card crcard">
+                                            <div className="card-body">
+                                                <div className="row g-3">
+                                                    <div className="col-lg-5">
+                                                        <img src={courseImg} alt="" />
+                                                    </div>
+                                                    <div className="col-lg-7">
+                                                        <ul>
+                                                            <li>
+                                                                <small>Subject</small>
+                                                                <h6>English</h6>
+                                                            </li>
+                                                            <li>
+                                                                <small>Total Students</small>
+                                                                <h6>30</h6>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="swiper-slide">
+                                        <div className="card crcard">
+                                            <div className="card-body">
+                                                <div className="row g-3">
+                                                    <div className="col-lg-5">
+                                                        <img src={courseImg} alt="" />
+                                                    </div>
+                                                    <div className="col-lg-7">
+                                                        <ul>
+                                                            <li>
+                                                                <small>Subject</small>
+                                                                <h6>English</h6>
+                                                            </li>
+                                                            <li>
+                                                                <small>Total Students</small>
+                                                                <h6>30</h6>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="swiper-slide">
+                                        <div className="card crcard">
+                                            <div className="card-body">
+                                                <div className="row g-3">
+                                                    <div className="col-lg-5">
+                                                        <img src={courseImg} alt="" />
+                                                    </div>
+                                                    <div className="col-lg-7">
+                                                        <ul>
+                                                            <li>
+                                                                <small>Subject</small>
+                                                                <h6>English</h6>
+                                                            </li>
+                                                            <li>
+                                                                <small>Total Students</small>
+                                                                <h6>30</h6>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="swiper-slide">
+                                        <div className="card crcard">
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <div className="col-lg-5">
+                                                        <img src={courseImg} alt="" />
+                                                    </div>
+                                                    <div className="col-lg-7">
+                                                        <ul>
+                                                            <li>
+                                                                <small>Subject</small>
+                                                                <h6>English</h6>
+                                                            </li>
+                                                            <li>
+                                                                <small>Total Students</small>
+                                                                <h6>30</h6>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="swiper-slide">
+                                        <div className="card crcard">
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <div className="col-lg-5">
+                                                        <img src={courseImg} alt="" />
+                                                    </div>
+                                                    <div className="col-lg-7">
+                                                        <ul>
+                                                            <li>
+                                                                <small>Subject</small>
+                                                                <h6>English</h6>
+                                                            </li>
+                                                            <li>
+                                                                <small>Total Students</small>
+                                                                <h6>30</h6>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-xl-6 d-flex align-items-stretch">
+                            <div className="card w-100 rounded-4 mt-lg-0 mt-4">
+                                <div className="card-body">
+
+                                    <h6 className="mb-0">Exam Grade Statistics</h6>
+
+                                    <div className="mt-4" id="chart5"></div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-xl-6 d-flex align-items-stretch">
+                            <div className="row w-100">
+                                <div className="col-lg-6">
+                                    <div className="card w-100 rounded-4">
+                                        <div className="card-body">
+
+
+                                            <div className="chart-container2">
+                                                <div id="chart1"></div>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="mb-0 ">Addmission Rate</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-6">
+                                    <div className="card w-100 rounded-4">
+                                        <div className="card-body">
+
+
+                                            <div className="chart-container2">
+                                                <div id="chart4"></div>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="mb-0 ">Syllabus Coverage</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-6">
+                                    <div className="card w-100 rounded-4">
+                                        <div className="card-body">
+
+
+                                            <div className="chart-container2">
+                                                <div id="chart3"></div>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="mb-0 ">Fee Collection</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-xxl-8 d-flex align-items-stretch">
+                            <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
+
+                                <div className="chat-header d-flex align-items-center start-0 rounded-top-4">
+
+                                    <div>
+                                        <img src={robotimg} className="chatroboimg" alt="" />
+                                    </div>
+                                    <div className="chat-top-header-menu ms-auto">
+                                        <a href="javascript:;"
+                                            className="btn btn-outline-light btn-circle rounded-circle d-flex gap-2 wh-48"><i
+                                                className='material-icons-outlined'>open_in_full</i></a>
+
+                                    </div>
+                                </div>
+                                <div className="chat-content ms-0 rounded-top-4">
+                                    <div className="chat-content-rightside">
+                                        <div className="d-flex ms-auto">
+                                            <div className="flex-grow-1 me-2">
+
+                                                <div className="chat-right-msg">
+                                                    <span className="anstext"><i className="material-icons-outlined" aria-hidden="true">search</i> Question</span>
+                                                    <p className="mb-0">
+                                                        Give me a description of each one
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="chat-content-leftside">
+                                        <div className="d-flex">
+                                            <img src={glogowhite} width="38" height="38"
+                                                className="rounded-circle p-2 bg-primary" alt="" />
+                                            <div className="flex-grow-1 ms-2">
+                                                <div className="chat-left-msg">
+                                                    <span className="anstext"><i className="material-icons-outlined"
+                                                        aria-hidden="true">description</i> Answer</span>
+                                                    <div className="mb-4">
+                                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate
+                                                            alias iste minima! Illo blanditiis minima aspernatur id iste a!
+                                                            Dolore similique voluptate earum dolorem pariatur. Pariatur sint
+                                                            aliquam reiciendis minima.</p>
+
+                                                    </div>
+                                                    <ul className="ansfooter">
+                                                        <li><i className="material-icons-outlined">thumb_up</i></li>
+                                                        <li><i className="material-icons-outlined">thumb_down</i></li>
+                                                        <li><i className="material-icons-outlined">content_copy</i> <span>Copy</span></li>
+                                                        <li><i className="material-icons-outlined">volume_up</i> <span>Read</span></li>
+                                                        <li><i className="material-icons-outlined">cached</i> <span>Regenerate</span></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="chat-content-rightside">
+                                        <div className="d-flex ms-auto">
+                                            <div className="flex-grow-1 me-2">
+
+                                                <div className="chat-right-msg">
+                                                    <span className="anstext"><i className="material-icons-outlined" aria-hidden="true">search</i> Question</span>
+                                                    <p className="mb-0">
+                                                        Give me a description of each one
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="chat-footer d-flex align-items-center start-0 rounded-bottom-4">
+                                    <div className="flex-grow-1 pe-2">
+                                        <div className="input-group"><span className="input-group-text"><i
+                                            className="material-icons-outlined">mic</i></span>
+                                            <input type="text" className="form-control" placeholder="Type a message" />
+                                        </div>
+                                    </div>
+                                    <div className="chat-footer-menu">
+                                        <a href="javascript:;"
+                                            className="btn btn-outline-light btn-circle rounded-circle d-flex gap-2 wh-48"><i
+                                                className="material-icons-outlined">send</i></a>
+                                    </div>
+                                </div>
+                                
+                                <div className="overlay chat-toggle-btn-mobile"></div>
+
+                            </div>
+                        </div>
+
+                        <div className="col-xxl-4 d-flex align-items-stretch">
+                            <div className="card w-100">
+                                <div className="card-body">
+                                    <h6 className="text-center mb-5 fs-18">Top Students</h6>
+                                    <ul className="topper-chart">
+                                        <li>
+                                            <div className="topper-image"><img src={toperstudent} alt="" /></div>
+                                            <span className="name">Andrew</span>
+                                            <div className="bar">2</div>
+                                        </li>
+
+                                        <li>
+                                            <div className="topper-image"><img src={toperstudent} alt="" /></div>
+                                            <span className="name">Joseph</span>
+                                            <div className="bar">1</div>
+                                        </li>
+
+                                        <li>
+                                            <div className="topper-image"><img src={toperstudent} alt="" /></div>
+                                            <span className="name">Kareen</span>
+                                            <div className="bar">3  </div>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <div className="overlay btn-toggle"></div>
+
+            <div
+                className="offcanvas offcanvas-end"
+                data-bs-scroll="true"
+                tabIndex={-1}
+                id="staticBackdrop"
+            >
+                <div className="offcanvas-header border-bottom h-70">
+                    <div className="">
+                        <h5 className="mb-0">Theme Customizer</h5>
+                        <p className="mb-0">Customize your theme</p>
+                    </div>
+                    <a href="javascript:;" className="primaery-menu-close" data-bs-dismiss="offcanvas">
+                        <i className="material-icons-outlined">close</i>
+                    </a>
+                </div>
+                <div className="offcanvas-body">
+                    <div>
+                        <p>Theme variation</p>
+
+                        <div className="row g-3">
+                            <div className="col-12 col-xl-6">
+                                <input type="radio" className="btn-check" name="theme-options" id="BlueTheme" />
+                                <label
+                                    className="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4"
+                                    htmlFor="BlueTheme"
+                                >
+                                    <span className="material-icons-outlined">contactless</span>
+                                    <span>Blue</span>
+                                </label>
+                            </div>
+                            <div className="col-12 col-xl-6">
+                                <input type="radio" className="btn-check" name="theme-options" id="LightTheme" defaultChecked />
+                                <label
+                                    className="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4"
+                                    htmlFor="LightTheme"
+                                >
+                                    <span className="material-icons-outlined">light_mode</span>
+                                    <span>Light</span>
+                                </label>
+                            </div>
+                            <div className="col-12 col-xl-6">
+                                <input type="radio" className="btn-check" name="theme-options" id="DarkTheme" />
+                                <label
+                                    className="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4"
+                                    htmlFor="DarkTheme"
+                                >
+                                    <span className="material-icons-outlined">dark_mode</span>
+                                    <span>Dark</span>
+                                </label>
+                            </div>
+                            <div className="col-12 col-xl-6">
+                                <input type="radio" className="btn-check" name="theme-options" id="SemiDarkTheme" />
+                                <label
+                                    className="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4"
+                                    htmlFor="SemiDarkTheme"
+                                >
+                                    <span className="material-icons-outlined">contrast</span>
+                                    <span>Semi Dark</span>
+                                </label>
+                            </div>
+                            <div className="col-12 col-xl-6">
+                                <input type="radio" className="btn-check" name="theme-options" id="BoderedTheme" />
+                                <label
+                                    className="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4"
+                                    htmlFor="BoderedTheme"
+                                >
+                                    <span className="material-icons-outlined">border_style</span>
+                                    <span>Bordered</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
             </div>
-        </div>
+        </div >
     )
 }
 

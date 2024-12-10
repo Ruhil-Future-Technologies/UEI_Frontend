@@ -255,7 +255,9 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
+   
     if (theme === "default") {
+    
       document?.documentElement?.setAttribute("data-theme", theme);
       // document?.documentElement?.style.setProperty('--bodybackground', '#003032');
       // document?.documentElement?.style.setProperty('--bghovercolor', '#024f52');
@@ -268,6 +270,7 @@ const Header = () => {
       // localStorage?.setItem('--TitleColor', '#495057');
       // localStorage?.setItem('--buttonbgcolor', '#003032');
     } else if (theme === "light") {
+      
       document?.documentElement?.setAttribute("data-bs-theme", theme);
       // document?.documentElement?.style.setProperty('--bodybackground', '#003032');
       // document?.documentElement?.style.setProperty('--bghovercolor', '#024f52');
@@ -279,6 +282,7 @@ const Header = () => {
       // localStorage?.setItem('--TitleColor', '#495057');
     } else if (theme === "dark") {
       document?.documentElement?.setAttribute("data-bs-theme", theme);
+      console.log("It is changing or not");
       // document?.documentElement?.style.setProperty('--bodybackground', '#1d2a35');
       // document?.documentElement?.style.setProperty('--bodycolor', ' #1d2a35');
       // document?.documentElement?.style.setProperty('--bghovercolor', '#2a3c49');

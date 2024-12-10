@@ -36,6 +36,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     language_id: any;
     proficiency: any;
   }
+
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
@@ -45,7 +46,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [error, setError] = useState<{
     [key: number]: { language_error: boolean; proficiency_error: boolean };
   }>({});
-
+  const [checkChanges, setCheckChanges] = useState(false);
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
@@ -121,10 +122,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       });
   }, []);
 
-  const saveLanguage = (event: React.FormEvent<HTMLFormElement>) => {
+  const saveLanguage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     let valid = true;
+
     boxes.forEach((box, index) => {
       if (!box.language_id || !box.proficiency) {
         valid = false;
@@ -137,82 +139,59 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }));
       }
     });
-
+    
     if (!valid) return; // Don't proceed if validation fails
     setActiveForm((prev) => prev + 1);
-    boxes.forEach((box) => {
+    const promises = boxes.map((box) => {
       const payload = {
         admin_id: AdminId,
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      if (editFalg) {
-        postData("admin_language_known/add", payload)
-          .then((data: any) => {
-            if (data.status === 200) {
-              toast.success("Language saved successfully", {
-                hideProgressBar: true,
-                theme: "colored",
-              });
-            } else {
-              toast.error(data?.message, {
-                hideProgressBar: true,
-                theme: "colored",
-              });
-            }
-          })
-          .catch((e) => {
-            toast.error(e?.message, {
+      if (checkChanges) {
+        if (editFalg && box.id === 0) {
+          return postData("admin_language_known/add", payload);
+        } else {
+          return putData("admin_language_known/edit/" + AdminId, payload);
+        }
+      } else {
+        return Promise.resolve({ status: 204 });
+      }
+    });
+    try {
+      const results: any = await Promise.all(promises);
+
+      const successfulResults = results.filter((res: { status: number }) => res.status === 200);
+      if (successfulResults?.length > 0) {
+        if (checkChanges) {
+          if (editFalg) {
+            toast.success("Language save successfully", {
               hideProgressBar: true,
               theme: "colored",
             });
-          });
-      } else {
-        if (box.id === 0) {
-          postData("admin_language_known/add", payload)
-            .then((data: any) => {
-              if (data.status === 200) {
-                toast.success("Language saved successfully", {
-                  hideProgressBar: true,
-                  theme: "colored",
-                });
-              } else {
-                toast.error(data?.message, {
-                  hideProgressBar: true,
-                  theme: "colored",
-                });
-              }
-            })
-            .catch((e) => {
-              toast.error(e?.message, {
-                hideProgressBar: true,
-                theme: "colored",
-              });
+            setCheckChanges(false);
+          } else {
+            setCheckChanges(false);
+            toast.success("Language updated successfully", {
+              hideProgressBar: true,
+              theme: "colored",
             });
+          }
         } else {
-          putData("admin_language_known/edit/" + AdminId, payload)
-            .then((data: any) => {
-              if (data.status === 200) {
-                toast.success("Language updated successfully", {
-                  hideProgressBar: true,
-                  theme: "colored",
-                });
-              } else {
-                toast.error(data?.message, {
-                  hideProgressBar: true,
-                  theme: "colored",
-                });
-              }
-            })
-            .catch((e) => {
-              toast.error(e?.message, {
-                hideProgressBar: true,
-                theme: "colored",
-              });
-            });
+          //else
         }
+
       }
-    });
+    } catch (e: any) {
+      toast.error(e?.message, {
+        hideProgressBar: true,
+        theme: "colored",
+        position: "top-center"
+      });
+    }
+
+
+   
   };
 
   const handleChange = (event: SelectChangeEvent<string>, index: number) => {
@@ -223,6 +202,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       )
     );
     validateFields(index, "language");
+    setCheckChanges(true);
   };
 
   const handleChange1 = (event: SelectChangeEvent<string>, index: number) => {
@@ -233,6 +213,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       )
     );
     validateFields(index, "proficiency");
+    setCheckChanges(true);
   };
 
   const validateFields = (index: number, field: string) => {
