@@ -3,15 +3,15 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   FormControl,
-  
+
   FormHelperText,
-  
+
   InputLabel,
   MenuItem,
-  
+
   Select,
   TextField,
-  
+
 } from "@mui/material";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -26,9 +26,9 @@ import {
   inputfield,
   inputfieldhover,
   inputfieldtext,
- // deepEqual,
+  // deepEqual,
 } from "../../utils/helpers";
-import {  State,  } from "country-state-city";
+import { State, } from "country-state-city";
 import { ChildComponentProps } from "../StudentProfile";
 
 export interface Box {
@@ -55,7 +55,7 @@ interface Institute {
   id: number;
   institute_id: string;
   institution_name: string;
-  university_id: string |number;
+  university_id: string | number;
 }
 
 interface Course {
@@ -108,13 +108,13 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [classes, setClasses] = useState<Classes[]>([]);
   const [particularClass, setParticularClass] = useState("");
   const [editFlag, setEditFlag] = useState<boolean>(false);
-  
+
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   // const [maxSemester, setMaxSemester] = useState(0);
-  const [editAcademicHistory, setEditAcademicHistory]=useState(false);
+  const [editAcademicHistory, setEditAcademicHistory] = useState(false);
   const [updateBoxes, setUpdateBoxes] = useState(false);
-  
+  const currentYear = dayjs().year();
   const StudentId = localStorage.getItem("_id");
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
@@ -126,7 +126,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     setStateOptions(stateOptions);
   }, [State]);
 
- 
+
   const initialErrors = {
     institute_type: "",
     board: "",
@@ -142,6 +142,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const validateFields = (box: Box) => {
+
     const errors = { ...initialErrors };
     if (box?.institute_type === "") {
       if (!box?.institute_type) errors.institute_type = "institute type name is required";
@@ -154,7 +155,14 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       if (!box?.course_id) errors.course_id = "Course is required";
       if (!box?.sem_id) errors.sem_id = "Semester is required";
       if (!box?.learning_style) errors.learning_style = "Learning style is required";
-      if (!box?.year) errors.year = "Year is required";
+      if (!box?.year) {
+        errors.year = "Year is required"; // Field is empty
+      } else if ((box.year).year() > currentYear) {
+        console.log(box?.year > currentYear,box?.year)
+        errors.year = "You cannot enter future dates"; // Future date
+      }else {
+        errors.year = ""; // Clear the error when the input is valid
+    }
     }
 
     // Validation logic for "school"
@@ -172,7 +180,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     return errors;
   };
 
- 
+
 
   const listData = async () => {
     return new Promise((resolve) => {
@@ -184,9 +192,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             );
 
             if (boxes[0]?.institute_type === "college") {
-              const filterDataInstitute = filteredData?.filter((item:any) => item?.university_id === boxes[0]?.university_id)
+              const filterDataInstitute = filteredData?.filter((item: any) => item?.university_id === boxes[0]?.university_id)
               setInstitutes(filterDataInstitute || [])
-            }else{
+            } else {
               setInstitutes(filteredData || []);
             }
             setInstitutesAll(filteredData || [])
@@ -210,7 +218,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   useEffect(() => {
-    
+
     getData("university/list")
       .then((response: any) => {
         if (response.status === 200) {
@@ -294,7 +302,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       });
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((data: any) => {
+        console.log(data);
         if (data?.status === 200) {
+
           if (data?.data?.[0]?.class_id) {
             getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
               (response: any) => {
@@ -323,7 +333,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
-             // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
+              // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
             console.log(boxes.length);
           });
@@ -357,7 +367,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           position: "top-center",
         });
       });
-      listData();
+    listData();
   }, [updateBoxes]);
   const [errors, setErrors] = useState(initialErrors);
 
@@ -368,6 +378,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     // Validate each box and check for errors
     const updatedBoxes = boxes.map((box) => {
       const errors = validateFields(box);
+      console.log(errors)
       updatedErrors = { ...updatedErrors, ...errors };
 
       // If any field has errors, set hasErrors to true
@@ -412,39 +423,39 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       };
 
       // Submit the form data (handle POST/PUT request here)
-      
-        if (editFlag && box.id === 0) {
 
-          console.log("/new_student_academic_history/add")
-          return postData("/new_student_academic_history/add", payload);
-        } else {
-          console.log("/new_student_academic_history/edit")
-          return putData(`/new_student_academic_history/edit/${box.id}`, payload);
-        }
-      
-     
+      if (editFlag && box.id === 0) {
+
+        console.log("/new_student_academic_history/add")
+        return postData("/new_student_academic_history/add", payload);
+      } else {
+        console.log("/new_student_academic_history/edit")
+        return putData(`/new_student_academic_history/edit/${box.id}`, payload);
+      }
+
+
     });
 
     // Handle all promises
     Promise.all(promises)
       .then((responses) => {
         const allSuccessful = responses.every((response) => response?.status === 200);
-        if (allSuccessful ) {
-          if( editAcademicHistory){
-          if (editFlag) {
-            toast.success("Academic history saved successfully", {
-              hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
-            });
-            setEditAcademicHistory(false);
-            setUpdateBoxes(true);
-            setEditFlag(false);
-            setBoxes([]);
-            //setActiveForm((prev) => prev + 1);
-          } else {
-            
-           
+        if (allSuccessful) {
+          if (editAcademicHistory) {
+            if (editFlag) {
+              toast.success("Academic history saved successfully", {
+                hideProgressBar: true,
+                theme: "colored",
+                position: "top-center",
+              });
+              setEditAcademicHistory(false);
+              setUpdateBoxes(true);
+              setEditFlag(false);
+              setBoxes([]);
+              //setActiveForm((prev) => prev + 1);
+            } else {
+
+
               toast.success("Academic history updated successfully", {
                 hideProgressBar: true,
                 theme: "colored",
@@ -453,10 +464,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               setEditAcademicHistory(false);
               setUpdateBoxes(true);
               setEditFlag(false);
+            }
+
           }
-          
-        }
-        setActiveForm((prev) => prev + 1);
+          setActiveForm((prev) => prev + 1);
         } else {
           toast.error("An error occurred while saving", {
             hideProgressBar: true,
@@ -479,7 +490,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const handleInputChange = (
     index: number,
     field: keyof Box,
-    value: string | dayjs.Dayjs | null |number
+    value: string | dayjs.Dayjs | null | number
   ) => {
     setEditAcademicHistory(true);
     const newBoxes = [...boxes];
@@ -504,9 +515,12 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     // Check date validity
     const year = dayjs(newBoxes[index].year);
+    console.log(year);
     // const endDate = dayjs(newBoxes[index].ending_date);
 
     const newEnddateInvalidList = [...enddateInvalidList];
+    console.log(year.isValid());
+
     if (
       year.isValid()
       //   endDate.isValid() &&
@@ -516,7 +530,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     } else {
       newEnddateInvalidList[index] = false;
     }
-
+console.log(newEnddateInvalidList);
     setBoxes(newBoxes);
     setEnddateInvalidList(newEnddateInvalidList);
     if (field === "class_id") {
@@ -553,23 +567,23 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   }, [boxes])
 
-//  const maxSemester = totalSemester && totalSemester?.length > 0
-//     ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-//     : 0;
+  //  const maxSemester = totalSemester && totalSemester?.length > 0
+  //     ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
+  //     : 0;
 
 
-// useEffect(() => {
-//   if (totalSemester && totalSemester?.length > 0) {
-//     const max = Math.max(
-//       ...totalSemester.map(
-//         (item: { semester_number: any }) => item?.semester_number
-//       )
-//     );
-//     setMaxSemester(max); 
-//   } else {
-//     setMaxSemester(0); 
-//   }
-// }, [totalSemester]);
+  // useEffect(() => {
+  //   if (totalSemester && totalSemester?.length > 0) {
+  //     const max = Math.max(
+  //       ...totalSemester.map(
+  //         (item: { semester_number: any }) => item?.semester_number
+  //       )
+  //     );
+  //     setMaxSemester(max); 
+  //   } else {
+  //     setMaxSemester(0); 
+  //   }
+  // }, [totalSemester]);
   return (
     <div className="mt-5">
       <form>
@@ -900,7 +914,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       </MenuItem>
                     ))} */}
                     {totalSemester
-                      ?.sort((a: any, b: any) => a.semester_number - b.semester_number) 
+                      ?.sort((a: any, b: any) => a.semester_number - b.semester_number)
                       .map((item: any) => (
                         <MenuItem
                           key={item?.semester_id}
@@ -941,24 +955,24 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     label="Class"
                   >
                     {
-                    // classes.map((classes) => (
+                      // classes.map((classes) => (
                       classes
-                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                      ?.map((classes) => (
-                      <MenuItem
-                        key={classes.id}
-                        value={classes.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
-                      >
-                        {classes.class_name}
-                      </MenuItem>
-                    ))}
+                        ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                        ?.map((classes) => (
+                          <MenuItem
+                            key={classes.id}
+                            value={classes.id}
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              "&:hover": {
+                                backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                              },
+                            }}
+                          >
+                            {classes.class_name}
+                          </MenuItem>
+                        ))}
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1140,8 +1154,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       }
                     />
                   </LocalizationProvider>
-                  {errors?.year && !dayjs(box?.year) && (
-                    <FormHelperText error>{errors?.year}</FormHelperText>
+                  {errors?.year && errors.year !== "" && (
+                    <FormHelperText error>{errors.year}</FormHelperText>
                   )}
                 </FormControl>
               </div>

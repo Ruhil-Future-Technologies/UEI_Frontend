@@ -976,13 +976,15 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-      console.log(value);
+    //  console.log(value);
       const [Show, setShow] = useState(value === 1 ? true : false);
-      console.log(Show);
+     // console.log(Show,Showvalue);
       const active = (id: number, valueset: any) => {
         putData(`${valueset === 1 ? StudentDeactive : StudentActive}/${id}`)
           .then((data: any) => {
             if (data.status === 200) {
+             //console.log(Show);
+              //console.log(Showvalue);
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue === 1 ? 0 : 1);
               window.location.reload();
@@ -1003,7 +1005,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
             label={value===1 ? "Active" : "Deactive"}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.id, Showvalue);
+              active(row?.original?.id, value);
             }}
             // disabled={true}
           />

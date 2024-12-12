@@ -239,14 +239,22 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
       if (successfulResults?.length > 0) {
         console.log(await isHobbiesUpdated,isLanguageUpdated);
-        if(isHobbiesUpdated &&isLanguageUpdated){
+        if(isHobbiesUpdated &&isLanguageUpdated && editFlag){
           toast.success("Language And Hobbies saved successfully", {
             hideProgressBar: true,
             theme: "colored",
             position: "top-center"
           }); 
           setIsLanguageUpdated(false);
-        }else if(isLanguageUpdated){
+          setEditFlag(false);
+        }else if(isHobbiesUpdated &&isLanguageUpdated && !editFlag){
+          toast.success("Language And Hobbies updated successfully", {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center"
+          }); 
+          setIsLanguageUpdated(false);
+        } else if(isLanguageUpdated){
           if (editFlag) {
             setEditFlag(false);
             toast.success("Language saved successfully", {

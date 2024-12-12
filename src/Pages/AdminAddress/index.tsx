@@ -65,6 +65,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownstateRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
     const handleFocusstate = () => setIsFocusedstate(true);
@@ -133,8 +134,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     getData(`${"admin_address/edit/" + adminId}`)
       .then((response: any) => {
         if (response?.status === 200) {
-          let add1 :any
-          let add2 :any
+          let add1: any
+          let add2: any
           response?.data.forEach((address: any) => {
             if (address?.address_type === "permanent_address") {
               setPermanentAddress(address);
@@ -149,8 +150,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             }
           });
           const fieldsToCompare = ['address1', 'address2', 'city', 'country', 'district', 'pincode', 'state'];
-          const filteredAdd1:any = {};
-          const filteredAdd2:any = {};
+          const filteredAdd1: any = {};
+          const filteredAdd2: any = {};
           fieldsToCompare?.forEach(field => {
             // if (add1.hasOwnProperty(field)) {
             //   filteredAdd1[field] = add1[field];
@@ -167,9 +168,9 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           });
           // Use deepEqual to compare only the selected fields
           const equal = deepEqual(filteredAdd1, filteredAdd2);
-              if(equal){
-                setChecked(true)
-              }
+          if (equal) {
+            setChecked(true)
+          }
         } else if (response?.status === 404) {
           setEditFlag(true);
         } else {
@@ -186,7 +187,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         });
       });
   };
- 
+
 
   const handleInputChange = (
     event:
@@ -197,6 +198,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   ) => {
     const { name, value } = event.target;
     setChecked(false)
+   
     if (addressType === "current_address") {
       if (name === "country") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -213,9 +215,9 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "city") {
-        if(value === "" ){
+        if (value === "") {
           setCity_colerror(true)
-        }else{
+        } else {
           setCity_colerror(false)
         }
         if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -225,9 +227,9 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "district") {
-        if(value === "" ){
+        if (value === "") {
           setDistrict_colerror(true)
-        }else{
+        } else {
           setDistrict_colerror(false)
         }
         if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -358,9 +360,9 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const SubmitHandle = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(!("address1" in adminAddress) || adminAddress?.address1 === ""){
+    if (!("address1" in adminAddress) || adminAddress?.address1 === "") {
       setAdd_col(true)
-    }else{
+    } else {
       setAdd_col(false)
     }
     if (!("country" in adminAddress) || adminAddress?.country === "") {
@@ -373,19 +375,19 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     } else {
       setcontry_col1(false);
     }
-    if(!("city" in adminAddress) || adminAddress?.city === ""){
+    if (!("city" in adminAddress) || adminAddress?.city === "") {
       setCity_colerror(true)
-    }else{
+    } else {
       setCity_colerror(false)
     }
-    if(!("district" in adminAddress) || adminAddress?.district === ""){
+    if (!("district" in adminAddress) || adminAddress?.district === "") {
       setDistrict_colerror(true)
-    }else{
+    } else {
       setDistrict_colerror(false)
     }
-    if(!("pincode" in adminAddress) || adminAddress?.pincode === ""){
+    if (!("pincode" in adminAddress) || adminAddress?.pincode === "") {
       setpincode_col(true)
-    }else{
+    } else {
       setpincode_col(false)
     }
     const currentAddressPayload = {
@@ -406,11 +408,15 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         try {
           const data = await postData("/admin_address/add", addressPayload);
           if (data?.status === 200) {
+           
             toast.success(`${addressType} Address saved successfully`, {
               hideProgressBar: true,
               theme: "colored",
             });
-            setActiveForm((prev) => prev + 1);
+            console.log(addressType);
+            if (addressType === "Current") {
+              setActiveForm((prev) => prev + 1);
+            }
           } else {
             // toast.error(`Failed to add ${addressType} address`, {
             //   hideProgressBar: true,
@@ -447,14 +453,19 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             addressPayload
           );
           if (data?.status === 200) {
-            toast.success(`${addressType} Address updated successfully`, {
+       
+            toast.success(`${addressType} Address update successfully`, {
               hideProgressBar: true,
               theme: "colored",
             });
             getAddressInfo();
-            setActiveForm((prev) => prev + 1);
+            if (addressType === "Current") {
+              setActiveForm((prev) => prev + 1);
+            }
+            console.log(addressType);
           } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
           else {
+            
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
             //   theme: "colored",
@@ -493,7 +504,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             !pincode_col &&
             adminAddress.pincode !== ""
           ) {
-           
+
             // {
             //   !eq && (await editAddress("Current", currentAddressPayload));
             // }
@@ -523,7 +534,10 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             "pincode" in permanentAddress &&
             permanentAddress.pincode !== ""
           ) {
-            await editAddress("Permanent", permanentAddressPayload);
+            if(!permanentAddressEq){
+              await editAddress("Permanent", permanentAddressPayload);
+            }
+            
           }
         }
       } else {
@@ -531,6 +545,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         console.error("adminId is null. Unable to edit addresses.");
       }
     }
+
   };
   const handleInputChangecountry = (
     value: string,
@@ -615,11 +630,10 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label  ${
-              isFocusedstate || adminAddress.country
+            className={`col-form-label  ${isFocusedstate || adminAddress.country
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span>*</span>
@@ -641,9 +655,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label ${
-              isFocusedstate || adminAddress.state ? "focused" : "focusedempty"
-            }`}
+            className={`col-form-label ${isFocusedstate || adminAddress.state ? "focused" : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span>*</span>
@@ -688,7 +701,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
           <div>
             {" "}
-            {(adminAddress.city == "" || city_colerror )&& (
+            {(adminAddress.city == "" || city_colerror) && (
               <p style={{ color: "red" }}>Please enter City name.</p>
             )}
           </div>
@@ -801,9 +814,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper " ref={dropdownRef}>
           <label
-            className={`col-form-label ${
-              isFocused || permanentAddress.country ? "focused" : "focusedempty"
-            }`}
+            className={`col-form-label ${isFocused || permanentAddress.country ? "focused" : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span></span>
@@ -819,11 +831,10 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
-            className={`col-form-label ${
-              isFocusedstate || permanentAddress.state
+            className={`col-form-label ${isFocusedstate || permanentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span></span>
@@ -887,7 +898,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               </p>
             )}
           </div>
-         
+
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
