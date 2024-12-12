@@ -33,8 +33,10 @@ import "react-toastify/dist/ReactToastify.css";
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
+  toast.dismiss()
   const navigate = useNavigate();
   useEffect(() => {
+    toast.dismiss()
     const login_id = localStorage.getItem("_id");
     if (login_id) {
       navigate("/main/DashBoard");

@@ -1035,24 +1035,12 @@ function MainContent() {
     if (usertype === "student") {
       try {
         const [chatCount] = await Promise.all([
-          getData(`${chatlisturl}/${userdata?.id}`),
+          // getData(`${chatlisturl}/${userdata?.id}`),
           getData("/chat/api/chat-summary"),
         ]);
-        // const chatstarred =
-        //   chatHistory?.data?.filter((chat: any) => chat?.flagged) || [];
-
-        // setStudent({
-        //   // chatHistory: chatHistory?.data?.length || 0,
-        //   chatHistory: chatstarred?.length || 0,
-        //   chatCount: chatHistory?.data?.length || 0,
-        // });
-        //  const chatstarred =
-        //   chatHistory?.data?.filter((chat: any) => chat) || [];
-
         setStudent({
-          // chatHistory: chatHistory?.data?.length || 0,
-          chatHistory: (chatCount.data).length || 0,
-          chatCount: (chatCount.data).length || 0,
+          chatHistory: chatCount?.data?.saved_chat_count || 0,
+          chatCount: chatCount?.data?.total_chat_count || 0,
         });
          setchatlistData(chatCount?.data);
 
@@ -1423,7 +1411,6 @@ function MainContent() {
       if (chatDataString) {
         const chatData = JSON.parse(chatDataString);
         if (chatData?.length > 0) {
-          console.log("Chat Data Dependency ======>>>>>>", chatData);
           saveChat();
         }
       }
@@ -1577,7 +1564,8 @@ function MainContent() {
             //     profileDatas?.class?.name
             //   }`
             // )
-            postData("https://dbllm.gyansetu.ai/rag-model-hierarchy", {
+        
+            postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", {
               user_query: search,
               student_id: StudentId,
               school_college_selection:
@@ -1591,7 +1579,7 @@ function MainContent() {
               university_selection:
                 profileDatas.academic_history.university_name,
               college_selection: profileDatas.academic_history.institution_name,
-              course_selection: profileDatas.academic_history.course_id,
+              course_selection: profileDatas?.course,
               year: profileDatas.academic_history.year,
               subject: profileDatas.subject,
             })
@@ -1618,12 +1606,17 @@ function MainContent() {
                   handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
-                  getData(
-                    // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                      search
-                    )}`
-                  )
+                  // getData(
+                  //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                  //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                  //     search
+                  //   )}`
+                  // )
+                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                    user_query: search,
+                    student_id: StudentId,
+                    class_or_course_selection: profileDatas?.class.name, 
+                  })
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
@@ -1645,12 +1638,17 @@ function MainContent() {
                 }
               })
               .catch(() =>
-                getData(
-                  // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                    search
-                  )}`
-                )
+                // getData(
+                //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                //     search
+                //   )}`
+                // )
+                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  user_query: search,
+                  student_id: StudentId,
+                  class_or_course_selection: profileDatas?.class.name, 
+                })
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
@@ -1681,8 +1679,11 @@ function MainContent() {
               institute_id,
               course_id,
               year,
+              institution_name,
+              university_name,
+
             } = profileDatas?.academic_history || {};
-            const { subject_name } = profileDatas?.subject_preference || {};
+            const { subject_name , course_name, } = profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
@@ -1698,16 +1699,16 @@ function MainContent() {
               }),
               ...(stream && { stream_selection: stream }),
               ...(class_id && { class_selection: class_id }),
-              ...(university_id && { university_selection: university_id }),
-              ...(institute_id && { college_selection: institute_id }),
-              ...(course_id && { course_selection: course_id }),
+              ...(university_id && { university_selection: university_name }),
+              ...(institute_id && { college_selection: institution_name }),
+              ...(course_id && { course_selection:  profileDatas?.course }),
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
             };
-
-            return getData(
-              `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            )
+            // return getData(
+            //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
+            // )
+           return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -1723,12 +1724,17 @@ function MainContent() {
                   }
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
-                  getData(
-                    // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                      search
-                    )}`
-                  )
+                  // getData(
+                  //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                  //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                  //     search
+                  //   )}`
+                  // )
+                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                    user_query: search,
+                    student_id: StudentId,
+                    class_or_course_selection: course_name, 
+                  })
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
@@ -1751,12 +1757,17 @@ function MainContent() {
               })
               .catch(() => {
                 setLoaderMsg("Fetching Data from Ollama model.");
-                getData(
-                  // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                    search
-                  )}`
-                )
+                // getData(
+                //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                //     search
+                //   )}`
+                // )
+                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  user_query: search,
+                  student_id: StudentId,
+                  class_or_course_selection: course_name, 
+                })
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
@@ -1806,11 +1817,16 @@ function MainContent() {
           // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
-          return getData(
-            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-              search
-            )}`
-          );
+          // return getData(
+          //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+          //     search
+          //   )}`
+          // );
+        return  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+            user_query: search,
+            student_id: StudentId,
+            class_or_course_selection:  profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
+          })
         } else if (data) {
           handleError(data);
         }
@@ -1888,7 +1904,8 @@ function MainContent() {
   //     }
   // ]
   // Get the top 5 courses
-  const top5Courses = statsCourse.slice(0, 5);
+  // const top5Courses = statsCourse.slice(0, 5);
+  const top5Courses = Array.isArray(statsCourse) ? statsCourse?.slice(0, 5) : [];
   // const top5Courses = dataTest.slice(0, 5);
 
   // Truncate the label and add '...' if it's too long
@@ -2040,12 +2057,17 @@ function MainContent() {
       };
     }
 
-    getData(
-      // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-        search
-      )}`
-    )
+    // getData(
+    //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+    //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+    //     search
+    //   )}`
+    // )
+    postData("https://prodllm.gyansetu.ai/ollama-chat", {
+      user_query: search,
+      student_id: StudentId,
+      class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
+    })
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);

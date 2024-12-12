@@ -50,7 +50,6 @@ const Chat = () => {
   const [hasSavedLocal, setHasSavedLocal] = useState(false);
   const [selectedchat, setSelectedChat] = useState<any>(expandedChat);
   const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
-  console.log(savedExpandedChat);
 
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
@@ -215,7 +214,7 @@ const Chat = () => {
           updated_at: new Date(chat?.updated_at),
         })
       );
-      console.log("Parsed Chat", parsedChatHistory);
+      
 
       // Sort the chat history by updated_at in descending order
       const sortedChatHistory = parsedChatHistory?.sort(
@@ -277,7 +276,7 @@ const Chat = () => {
     cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
 
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => {};
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -332,15 +331,15 @@ const Chat = () => {
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setLoading(false);
     toast.error(e?.message, {
@@ -448,7 +447,7 @@ const Chat = () => {
             //     search
             //   )}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
             // )
-            postData("https://dbllm.gyansetu.ai/rag-model-hierarchy", {
+            postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", {
               user_query: search,
               student_id: userid,
               school_college_selection:
@@ -463,7 +462,7 @@ const Chat = () => {
                 studentDetail.academic_history.university_name,
               college_selection:
                 studentDetail.academic_history.institution_name,
-              course_selection: studentDetail.academic_history.course_id,
+              course_selection: studentDetail?.course,
               year: studentDetail.academic_history.year,
               subject: studentDetail.subject,
             })
@@ -490,12 +489,17 @@ const Chat = () => {
                   handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
-                  getData(
-                    // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                      search
-                    )}`
-                  )
+                  // getData(
+                  //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                  //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                  //     search
+                  //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.class.name)}`
+                  // )
+                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                    user_query: search,
+                    student_id: userid,
+                    class_or_course_selection: studentDetail.class.name,
+                  })
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
@@ -517,12 +521,17 @@ const Chat = () => {
                 }
               })
               .catch(() =>
-                getData(
-                  // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                    search
-                  )}`
-                )
+                // getData(
+                //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                //     search
+                //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.class.name)}`
+                // )
+                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  user_query: search,
+                  student_id: userid,
+                  class_or_course_selection: studentDetail?.class.name,
+                })
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
@@ -553,8 +562,10 @@ const Chat = () => {
               institute_id,
               course_id,
               year,
+              institution_name,
+              university_name
             } = studentDetail?.academic_history || {};
-            const { subject_name } = studentDetail?.subject_preference || {};
+            const { subject_name, course_name } = studentDetail?.subject_preference || {};
 
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
@@ -571,16 +582,16 @@ const Chat = () => {
               }),
               ...(stream && { stream_selection: stream }),
               ...(class_id && { class_selection: class_id }),
-              ...(university_id && { university_selection: university_id }),
-              ...(institute_id && { college_selection: institute_id }),
-              ...(course_id && { course_selection: course_id }),
+              ...(university_id && { university_selection: university_name }),
+              ...(institute_id && { college_selection: institution_name }),
+              ...(course_id && { course_selection: studentDetail?.course }),
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
             };
-
-            return getData(
-              `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            )
+            // return getData(
+            //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
+            // )
+            return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -596,12 +607,18 @@ const Chat = () => {
                   }
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
-                  getData(
-                    // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                    `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                      search
-                    )}`
-                  )
+                  // getData(
+                  //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                  //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                  //     search
+                  //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
+                  // )
+              
+                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                    user_query: search,
+                    student_id: userid,
+                    class_or_course_selection: course_name,
+                  })
                     .then((response) => {
                       if (response?.status === 200) {
                         handleResponse(response);
@@ -624,12 +641,17 @@ const Chat = () => {
               })
               .catch(() => {
                 setLoaderMsg("Fetching Data from Ollama model.");
-                getData(
-                  // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                    search
-                  )}`
-                )
+                // getData(
+                //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+                //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+                //     search
+                //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
+                // )
+                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  user_query: search,
+                  student_id: userid,
+                  class_or_course_selection: course_name,
+                })
                   .then((response) => {
                     if (response?.status === 200) {
                       handleResponse(response);
@@ -679,11 +701,16 @@ const Chat = () => {
           // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg("Fetching Data from Ollama model.");
-          return getData(
-            `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-              search
-            )}`
-          );
+          // return getData(
+          //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+          //     search
+          //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.academic_history?.course_id)}`
+          // );
+          return postData("https://prodllm.gyansetu.ai/ollama-chat", {
+            user_query: search,
+            student_id: userid,
+            class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
+          })
         } else if (data) {
           handleError(data);
         }
@@ -782,9 +809,7 @@ const Chat = () => {
         combinedChatData = [...parsedExistingChat, ...chat];
       }
 
-      console.log({ displayChat });
-      console.log({ chat });
-      console.log("useEffect called at 717");
+      
       localStorage.setItem("chatData", JSON.stringify(combinedChatData));
     }
   }, [chat, savedExpandedChat]);
@@ -792,7 +817,6 @@ const Chat = () => {
   let chatData: any;
 
   useEffect(() => {
-    console.log("svedExpandedChat in effect:", savedExpandedChat);
 
     if (hasSavedLocal) {
       return;
@@ -808,8 +832,6 @@ const Chat = () => {
       }
 
       if (!hasInitialExpandedChat) {
-        console.log("Chat Data Dependency ======>>>>>>", chatData);
-        console.log("save chat local gets called in chat index.tsx");
         saveChatlocal();
         setHasSavedLocal(true);
       }
@@ -976,7 +998,7 @@ const Chat = () => {
     }
   };
   const displayChat = async (chats: any) => {
-    console.log("Display Chat", chats);
+    
 
     setShowInitialPage(false);
     const datatest = chatlist.filter(
@@ -985,14 +1007,10 @@ const Chat = () => {
     );
 
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
-      console.log(
-        "save chat gets called in main content.tsx at displayChat at 914"
-      );
+     
       await saveChat();
     } else if (Array.isArray(chat) && chat.length >= 2) {
-      console.log(
-        "save chat gets called in main content.tsx at display chat at 917"
-      );
+     
       await saveChat();
     } else {
       //empty
@@ -1141,12 +1159,17 @@ const Chat = () => {
       };
     }
 
-    getData(
-      // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-      `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-        question
-      )}`
-    )
+    // getData(
+    //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
+    //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
+    //     question
+    //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ?studentDetail?.class?.name: studentDetail?.academic_history?.course_id)}`
+    // )
+    postData("https://prodllm.gyansetu.ai/ollama-chat", {
+      user_query: search,
+      student_id: userid,
+      class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
+    })
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);
@@ -1187,17 +1210,17 @@ const Chat = () => {
   //   : statredchat;
   const filteredChatsstarred = searchQuery
     ? chatlist
-        ?.filter((chat: { chat_title: string }) =>
-          chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
-        )
-        .sort((a: any, b: any) => b.flagged - a.flagged)
+      ?.filter((chat: { chat_title: string }) =>
+        chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
+      )
+      .sort((a: any, b: any) => b.flagged - a.flagged)
     : chatlist?.sort((a: any, b: any) => b.flagged - a.flagged);
   const filteredChats = searchQuerystarred
     ? chathistory?.filter((chat: { chat_title: string }) =>
-        chat?.chat_title
-          ?.toLowerCase()
-          ?.includes(searchQuerystarred?.toLowerCase())
-      )
+      chat?.chat_title
+        ?.toLowerCase()
+        ?.includes(searchQuerystarred?.toLowerCase())
+    )
     : chathistory;
 
   const extractTime = (chatDate: string) => {
@@ -1654,9 +1677,8 @@ const Chat = () => {
           >
             {Id ? (
               <div
-                className={`left-side-history ${
-                  showHistory ? "showhistory" : ""
-                }`}
+                className={`left-side-history ${showHistory ? "showhistory" : ""
+                  }`}
               >
                 <div className="d-lg-none mb-4 ms-auto d-flex">
                   <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
@@ -1688,17 +1710,17 @@ const Chat = () => {
                         (
                           chat: {
                             chat_title:
-                              | string
-                              | number
-                              | boolean
-                              | React.ReactElement<
-                                  any,
-                                  string | React.JSXElementConstructor<any>
-                                >
-                              | Iterable<React.ReactNode>
-                              | React.ReactPortal
-                              | null
-                              | undefined;
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                              any,
+                              string | React.JSXElementConstructor<any>
+                            >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
                             flagged: any;
                             id: number | undefined;
                             created_at: string;
@@ -1736,9 +1758,8 @@ const Chat = () => {
               </div>
             ) : (
               <div
-                className={`left-side-history ${
-                  showHistory ? "showhistory" : ""
-                }`}
+                className={`left-side-history ${showHistory ? "showhistory" : ""
+                  }`}
               >
                 <div className="d-lg-none mb-4 ms-auto d-flex">
                   <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
@@ -1768,17 +1789,17 @@ const Chat = () => {
                         (
                           chat: {
                             chat_title:
-                              | string
-                              | number
-                              | boolean
-                              | React.ReactElement<
-                                  any,
-                                  string | React.JSXElementConstructor<any>
-                                >
-                              | Iterable<React.ReactNode>
-                              | React.ReactPortal
-                              | null
-                              | undefined;
+                            | string
+                            | number
+                            | boolean
+                            | React.ReactElement<
+                              any,
+                              string | React.JSXElementConstructor<any>
+                            >
+                            | Iterable<React.ReactNode>
+                            | React.ReactPortal
+                            | null
+                            | undefined;
                             flagged: any;
                             id: number | undefined;
                             created_at: string;
@@ -1999,11 +2020,10 @@ const Chat = () => {
                   ) : (
                     <div className="welcome-box">
                       <img src={chatLogo} alt="" />
-                      <h3>{`${
-                        Id
+                      <h3>{`${Id
                           ? "Hi, How can I help you today?"
                           : "Please select conversation"
-                      }`}</h3>
+                        }`}</h3>
                     </div>
                   )}
                 </div>

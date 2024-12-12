@@ -158,7 +158,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       if (!box?.year) {
         errors.year = "Year is required"; // Field is empty
       } else if ((box.year).year() > currentYear) {
-        console.log(box?.year > currentYear,box?.year)
         errors.year = "You cannot enter future dates"; // Future date
       }else {
         errors.year = ""; // Clear the error when the input is valid
@@ -302,7 +301,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       });
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((data: any) => {
-        console.log(data);
         if (data?.status === 200) {
 
           if (data?.data?.[0]?.class_id) {
@@ -335,7 +333,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
-            console.log(boxes.length);
           });
         } else if (data?.status === 404) {
           setBoxes([
@@ -378,7 +375,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     // Validate each box and check for errors
     const updatedBoxes = boxes.map((box) => {
       const errors = validateFields(box);
-      console.log(errors)
       updatedErrors = { ...updatedErrors, ...errors };
 
       // If any field has errors, set hasErrors to true
@@ -426,10 +422,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
       if (editFlag && box.id === 0) {
 
-        console.log("/new_student_academic_history/add")
+       
         return postData("/new_student_academic_history/add", payload);
       } else {
-        console.log("/new_student_academic_history/edit")
+        
         return putData(`/new_student_academic_history/edit/${box.id}`, payload);
       }
 
@@ -515,11 +511,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
     // Check date validity
     const year = dayjs(newBoxes[index].year);
-    console.log(year);
+    
     // const endDate = dayjs(newBoxes[index].ending_date);
 
     const newEnddateInvalidList = [...enddateInvalidList];
-    console.log(year.isValid());
+   
 
     if (
       year.isValid()
@@ -530,7 +526,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     } else {
       newEnddateInvalidList[index] = false;
     }
-console.log(newEnddateInvalidList);
+
     setBoxes(newBoxes);
     setEnddateInvalidList(newEnddateInvalidList);
     if (field === "class_id") {
