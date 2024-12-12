@@ -1166,7 +1166,7 @@ const Chat = () => {
     //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ?studentDetail?.class?.name: studentDetail?.academic_history?.course_id)}`
     // )
     postData("https://prodllm.gyansetu.ai/ollama-chat", {
-      user_query: search,
+      user_query: question,
       student_id: userid,
       class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
     })
