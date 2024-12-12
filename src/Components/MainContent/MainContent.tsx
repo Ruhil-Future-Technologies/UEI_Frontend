@@ -101,7 +101,7 @@ function MainContent() {
   const [loader, setLoader] = useState(false);
   const [chatLoader, setChatLoader] = useState(false);
   const [selectedchat, setSelectedChat] = useState<any>([]);
-  const [chatsaved, setChatSaved] = useState<boolean>(false);
+  const [, setChatSaved] = useState<boolean>(false);
   const [chat, setchatData] = useState<any>([]);
   const [chatlist, setchatlistData] = useState<any>();
   // const [chathistory, setchathistory] = useState<any>([]);
@@ -120,6 +120,7 @@ function MainContent() {
   const usertype: any = localStorage.getItem("user_type");
   // const userdata = JSON.parse(localStorage?.getItem("userdata") || "/{/}/");
   const userdata = JSON.parse(localStorage?.getItem("userdata") || "{}");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const barChartOptions = {
     chart: {
@@ -514,15 +515,20 @@ function MainContent() {
       },
     ],
   };
-  const statsChatCountArray = Array?.isArray(statsChatCount) ? statsChatCount : [];
+  const statsChatCountArray = Array?.isArray(statsChatCount)
+    ? statsChatCount
+    : [];
 
-const top5Chats = statsChatCountArray
-  ?.sort((a: { chat_count: number }, b: { chat_count: number }) => b?.chat_count - a?.chat_count)
-  ?.slice(0, 5);
+  const top5Chats = statsChatCountArray
+    ?.sort(
+      (a: { chat_count: number }, b: { chat_count: number }) =>
+        b?.chat_count - a?.chat_count
+    )
+    ?.slice(0, 5);
 
-// Extract student names and chat counts for the top 5 entries
-const studentNames = top5Chats?.map((item: any) => item?.student_name);
-const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+  // Extract student names and chat counts for the top 5 entries
+  const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // // Sort statsChatCount by chat_count in descending order and take the top 5
   // const top5Chats = statsChatCount
   //   ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
@@ -1042,12 +1048,14 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         // });
         //  const chatstarred =
         //   chatHistory?.data?.filter((chat: any) => chat) || [];
+
         setStudent({
           // chatHistory: chatHistory?.data?.length || 0,
           chatHistory: (chatCount.data).length || 0,
           chatCount: (chatCount.data).length || 0,
         });
-        console.log( chatCount);
+         setchatlistData(chatCount?.data);
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -1396,9 +1404,35 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     // fetchstucount();
   }, []);
 
+  // useEffect(() => {
+  //   if (chat?.length) saveChat();
+  // }, [chat]);
+
   useEffect(() => {
-    if (chat?.length) saveChat();
-  }, [chat]);
+    if (!isExpanded && chat?.length > 0) {
+      localStorage.setItem(
+        "chatData",
+        JSON.stringify(chat?.length ? chat : [])
+      );
+    }
+  }, [chat, isExpanded]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      const chatDataString = localStorage?.getItem("chatData");
+      if (chatDataString) {
+        const chatData = JSON.parse(chatDataString);
+        if (chatData?.length > 0) {
+          console.log("Chat Data Dependency ======>>>>>>", chatData);
+          saveChat();
+        }
+      }
+    }
+
+    return () => {
+      setIsExpanded(false);
+    };
+  }, [isExpanded]);
 
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
@@ -2030,43 +2064,76 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       });
   };
 
+  const handleExpandChat = () => {
+    if (selectedchat?.length > 0) {
+      setIsExpanded(true);
+      localStorage.setItem("expandedChatData", JSON.stringify(selectedchat));
+      navigate("/main/Chat/recentChat");
+    }
+  };
+
+  useEffect(() => {
+    localStorage.removeItem("expandedChatData");
+
+    return () => {
+      localStorage.removeItem("expandedChatData");
+      setIsExpanded(false);
+    };
+  }, []);
+
   const saveChat = async () => {
-    // alert("called!!");
+    const chatDataString = localStorage?.getItem("chatData");
+    const chatflagged = localStorage?.getItem("chatsaved");
+    // console.log("chatData testing save",chatDataString);
+    const isChatFlagged = chatflagged === "true";
+    let chatData: any;
+
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+
     let datatest;
     if (chatlist !== undefined) {
       datatest = chatlist?.filter(
         (chatitem: { chat_title: any }) =>
-          chatitem?.chat_title === chat[0]?.question
+          chatitem?.chat_title === chatData?.[0]?.question
       );
     }
 
     let chat_payload;
-    if (datatest?.length !== 0 && Array.isArray(chat) && chat.length >= 2) {
-      chat?.shift();
+    if (
+      datatest?.length !== 0 &&
+      Array.isArray(chatData) &&
+      chatData.length >= 2
+    ) {
+      // chatData?.shift();
       chat_payload = {
-        student_id: userdata?.id,
-        chat_title: chat[0]?.question,
-        chat_conversation: JSON.stringify(chat),
-        flagged: chatsaved,
+        student_id: userdata.id,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata?.id,
-        chat_title: chat[0]?.question,
-        chat_conversation: JSON.stringify(chat),
-        flagged: chatsaved,
+        student_id: userdata.id,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
       };
     }
     await postData(`${chataddconversationurl}`, chat_payload)
       .then(() => {
-        setChatSaved(false);
+        // setChatSaved(false);
         // toast.success(chatdata?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
         // });
+        // callAPI();
+        fetchStudentData();
         localStorage.removeItem("chatData");
         localStorage.removeItem("chatsaved");
-        // callAPI();
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -2943,6 +3010,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                         <div className="chat-top-header-menu ms-auto">
                           <Link
                             to={"/main/Chat/recentChat"}
+                            onClick={handleExpandChat}
                             className="btn-outline-primary btn btn-circle rounded-circle d-flex gap-2 wh-32"
                           >
                             <OpenInFullOutlinedIcon sx={{ fontSize: "24px" }} />
