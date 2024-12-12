@@ -43,7 +43,15 @@ const Chat = () => {
   const [searcherr, setSearchErr] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const { Id } = useParams();
-  const [selectedchat, setSelectedChat] = useState<any>([]);
+  const expandedChat = localStorage.getItem("expandedChatData")
+    ? JSON.parse(localStorage.getItem("expandedChatData")!)
+    : [];
+  const [hasInitialExpandedChat, setHasInitialExpandedChat] = useState(false);
+  const [hasSavedLocal, setHasSavedLocal] = useState(false);
+  const [selectedchat, setSelectedChat] = useState<any>(expandedChat);
+  const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
+  console.log(savedExpandedChat);
+
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
@@ -87,16 +95,39 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    setSelectedChat([]);
+    const expandedChatData = localStorage.getItem("expandedChatData")
+      ? JSON.parse(localStorage.getItem("expandedChatData")!)
+      : [];
+    setSavedExpandedChat(expandedChatData);
+
+    if (expandedChatData.length > 0 && !hasInitialExpandedChat) {
+      setHasInitialExpandedChat(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (expandedChat.length > 0 && !hasInitialExpandedChat) {
+      setHasInitialExpandedChat(true);
+    }
+  }, [expandedChat]);
+
+  useEffect(() => {
+    if (!expandedChat.length) {
+      setSelectedChat([]);
+    }
     setTimeout(() => {
       if (Id !== undefined) {
         setShowInitialPage(true);
-        setSelectedChat([]);
+        if (!expandedChat.length) {
+          setSelectedChat([]);
+        }
         setSearchQuery("");
         setSearchQuerystarred("");
       } else {
         setShowInitialPage(false);
-        setSelectedChat([]);
+        if (!expandedChat.length) {
+          setSelectedChat([]);
+        }
         setSearchQuery("");
         setSearchQuerystarred("");
       }
@@ -104,7 +135,6 @@ const Chat = () => {
   }, [Id]);
 
   const handleUpIconClick = () => {
-    console.log(theme.palette);
     if (isDownIconClicked) {
       setIsDownIconClicked(false);
     }
@@ -169,8 +199,11 @@ const Chat = () => {
     const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
 
     return arr?.filter((item: any) => {
-      const itemDate = item.created_at.split(" ")[0]; // Extract 'YYYY-MM-DD' from 'created_at'
-      return itemDate === today;
+      if (item?.created_at && typeof item.created_at === "string") {
+        const itemDate = item.created_at.split(" ")[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+        return itemDate === today;
+      }
+      return false;
     });
   }
 
@@ -189,6 +222,7 @@ const Chat = () => {
         (a: { updated_at: any }, b: { updated_at: any }) =>
           b?.updated_at - a?.updated_at
       );
+
       const chatDataString: any = localStorage?.getItem("chatData");
       const chatmodify = JSON.parse(chatDataString);
 
@@ -201,6 +235,7 @@ const Chat = () => {
             answer: chatmodify[0]?.answer,
           },
         ];
+
         const newObject = {
           chat_conversation: JSON.stringify(column),
           chat_title: chatmodify[0]?.question,
@@ -693,33 +728,93 @@ const Chat = () => {
     if (dataflagged) {
       // setSelectedChat([intials]);
       setSelectedChat([]);
+      // if (!expandedChat.length) {
+      //   setSelectedChat([]);
+      // }
     }
   }, [dataflagged]);
 
+  // useEffect(() => {
+  //   if (chat?.length > 0) {
+  //     console.log({ displayChat });
+  //     console.log({ chat });
+  //     console.log("useEffect called at 717");
+  //     localStorage.setItem(
+  //       "chatData",
+  //       JSON.stringify(chat?.length ? chat : displayedChat)
+  //     );
+  //   }
+  // }, [chat]);
+
+  // let chatData: any;
+  // useEffect(() => {
+  //   const chatDataString = localStorage?.getItem("chatData");
+
+  //   if (chatDataString) {
+  //     chatData = JSON.parse(chatDataString);
+  //   } else {
+  //     chatData = null;
+  //   }
+
+  //   if (chatData?.length > 0 && !hasInitialExpandedChat) {
+  //     console.log("Chat Data Dependency ======>>>>>>", chatData);
+  //     console.log("save chat local gets called in chat index.tsx");
+  //     saveChatlocal();
+  //   }
+  // }, [chatData]);
   useEffect(() => {
     if (chat?.length > 0) {
-      localStorage.setItem(
-        "chatData",
-        JSON.stringify(chat?.length ? chat : displayedChat)
-      );
+      const existingChatData = localStorage.getItem("chatData");
+      const parsedExistingChat = existingChatData
+        ? JSON.parse(existingChatData)
+        : [];
+
+      let combinedChatData;
+      if (savedExpandedChat.length > 0) {
+        const newChatData = chat.filter(
+          (chatItem: any) =>
+            !savedExpandedChat.some(
+              (expandedItem: any) => expandedItem.question === chatItem.question
+            )
+        );
+        combinedChatData = [...savedExpandedChat, ...newChatData];
+      } else {
+        combinedChatData = [...parsedExistingChat, ...chat];
+      }
+
+      console.log({ displayChat });
+      console.log({ chat });
+      console.log("useEffect called at 717");
+      localStorage.setItem("chatData", JSON.stringify(combinedChatData));
     }
-  }, [chat]);
+  }, [chat, savedExpandedChat]);
 
   let chatData: any;
-  useEffect(() => {
-    const chatDataString = localStorage?.getItem("chatData");
 
-    if (chatDataString) {
-      chatData = JSON.parse(chatDataString);
-    } else {
-      chatData = null;
+  useEffect(() => {
+    console.log("svedExpandedChat in effect:", savedExpandedChat);
+
+    if (hasSavedLocal) {
+      return;
     }
+
+    const chatDataString = localStorage?.getItem("chatData");
+    const chatData = chatDataString ? JSON.parse(chatDataString) : null;
 
     if (chatData?.length > 0) {
-      console.log("Chat Data Dependency ======>>>>>>", chatData);
-      saveChatlocal();
+      if (savedExpandedChat.length > 0) {
+        setHasSavedLocal(true);
+        return;
+      }
+
+      if (!hasInitialExpandedChat) {
+        console.log("Chat Data Dependency ======>>>>>>", chatData);
+        console.log("save chat local gets called in chat index.tsx");
+        saveChatlocal();
+        setHasSavedLocal(true);
+      }
     }
-  }, [chatData]);
+  }, [chatData, savedExpandedChat, hasInitialExpandedChat, hasSavedLocal]);
 
   const saveChatlocal = async () => {
     const chatDataString = localStorage?.getItem("chatData");
@@ -890,8 +985,14 @@ const Chat = () => {
     );
 
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
+      console.log(
+        "save chat gets called in main content.tsx at displayChat at 914"
+      );
       await saveChat();
     } else if (Array.isArray(chat) && chat.length >= 2) {
+      console.log(
+        "save chat gets called in main content.tsx at display chat at 917"
+      );
       await saveChat();
     } else {
       //empty
@@ -899,7 +1000,9 @@ const Chat = () => {
     setchatData([]);
     const chatt = JSON.parse(chats?.chat_conversation);
     setDisplayedChat(chatt);
+
     setSelectedChat([]);
+
     const chatdataset: any[] = [];
     chatt.map((itemchat: any) => {
       // setTimeout(() => {
@@ -941,12 +1044,21 @@ const Chat = () => {
   const handleDelete = (id: number | undefined) => {
     deleteData(`${ChatDELETEURL}/${id}`)
       .then((data: { message: string }) => {
+        if (
+          chatlist?.find((chat: any) => chat.id === id)?.chat_title ===
+          selectedchat?.[0]?.question
+        ) {
+          localStorage.removeItem("expandedChatData");
+          setSelectedChat([]);
+        }
         toast.success(data?.message, {
           hideProgressBar: true,
           theme: "colored",
         });
         localStorage.removeItem("chatData");
+
         callAPI();
+
         setDataDelete(false);
       })
       .catch((e) => {
