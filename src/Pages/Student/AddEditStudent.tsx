@@ -126,6 +126,7 @@ const AddEditStudent = () => {
 
     } else if (name === 'mobile_no_call') {
       if (!/^\d{10}$/.test(value)) {
+        console.log(value);
         setMobileNoCall(true)
       } else {
         setMobileNoCall(false)
@@ -133,6 +134,7 @@ const AddEditStudent = () => {
 
     }  else if (name === 'first_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
+        console.log(value);
         setFname(true)
       } else {
         setFname(false)
@@ -140,6 +142,7 @@ const AddEditStudent = () => {
 
     } else if (name === 'last_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
+        console.log(value);
         setLname(true)
       } else {
         setLname(false)
@@ -147,6 +150,7 @@ const AddEditStudent = () => {
 
     } else if (name === 'gender') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
+        console.log(value);
         setGender(true)
       } else {
         setGender(false)
@@ -154,6 +158,7 @@ const AddEditStudent = () => {
 
     }  else if (name === 'father_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
+        console.log(value);
         setFathernm(true)
       } else {
         setFathernm(false)
@@ -161,6 +166,7 @@ const AddEditStudent = () => {
 
     } else if (name === 'mother_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
+        console.log(value);
         setMothernm(true)
       } else {
         setMothernm(false)
@@ -168,6 +174,7 @@ const AddEditStudent = () => {
 
     } else if (name === 'guardian_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
+        console.log(value);
         setGname(true)
       } else {
         setGname(false)
@@ -313,6 +320,7 @@ const AddEditStudent = () => {
       email_id:studentData?.email_id,
       mobile_no_call:studentData?.mobile_no_call
     }
+    console.log(payload);
     const datecheck: any = dayjs(payload?.dob)?.format("DD/MM/YYYY");
     if (datecheck === "Invalid Date") {
       setdobset_col(true);
@@ -320,11 +328,11 @@ const AddEditStudent = () => {
       setdobset_col(false);
     }
     // console.log("test stud p",payload,isBase64Image)
-    if(!aim && student?.aim !== ""&& !fname && student?.first_name !== "" && !lname && student?.last_name !== "" && !gender && student?.gender !== "" && !fathernm && student?.father_name !== "" && !mothernm && student?.mother_name !== "" && !gname && student?.guardian_name !== "" && student?.pic_path !== "" && error === null && datecheck !== "Invalid Date" ){
+    if(!aim && !fname && student?.first_name !== "" && !lname && student?.last_name !== "" && !gender && student?.gender !== "" && !fathernm && student?.father_name !== "" && !mothernm && student?.mother_name !== "" && !gname  && student?.pic_path !== "" && error === null && datecheck !== "Invalid Date" ){
 
       putData(`${EditStudentURL}${id ? `/${id}` : ''}`, payload)
         .then((data: any) => {
-          // console.log(data)
+           console.log(data)
           if (data?.status === 200) {
             navigator('/main/Student')
             toast.success(data?.message, {
@@ -338,6 +346,7 @@ const AddEditStudent = () => {
           //   hideProgressBar: true,
           //   theme: "colored",
           // });
+          
         }
         })
         .catch((e) => {
@@ -347,7 +356,7 @@ const AddEditStudent = () => {
           });
         });
     }
-    callAPI();
+    //callAPI();
   };
   return (
     <>
@@ -369,16 +378,14 @@ const AddEditStudent = () => {
                       value={student?.aim}
                       variant="outlined"
                       onChange={handleChange}
-                    required
+                    
                     // error={isNumberEntered}
                     />
                   </div>
                   <div> {aim && (
                         <p style={{ color: 'red' }}>Please enter a valid Aim Name only characters allowed.</p>
                     )}</div>
-                    <div> {student?.aim == "" && !loading &&  (
-                        <p style={{ color: 'red' }}>Please enter Aim name.</p>
-                    )}</div>
+                    
                 </div>
                 <div className="col-md-4">
                   <div className="form_field_wrapper">
@@ -535,9 +542,7 @@ const AddEditStudent = () => {
                   <div> {gname && (
                         <p style={{ color: 'red' }}>Please enter a valid Guardian Name only characters allowed.</p>
                     )}</div>
-                    <div> {student?.guardian_name == "" && !loading && (
-                        <p style={{ color: 'red' }}>Please enter Guardian name.</p>
-                    )}</div>
+                    
                 </div>
                 <div className="col-md-4">
                   <div className="form_field_wrapper">

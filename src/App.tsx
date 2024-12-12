@@ -77,6 +77,8 @@ import TeacherDash from './Pages/Teacher';
 import InstitutionDash from './Pages/Institution';
 
 import NameContext from './Pages/Context/NameContext';
+import IntitutionChat from './Pages/Institution/institutionchat';
+import InstitutionFeedback from './Pages/Institution/institutionfeedback';
 
 function App() {
   const navigate = useNavigate()
@@ -128,6 +130,12 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/profile-chat" element={<ProfileChat />} />
         <Route path="/feedback-chat" element={<Feedback />} />
+        <Route path="/institution-deshboard" element={<InstitutionDash/>}>
+        {/* <Route path="" element={<Protected Component={InstitutionDash} menuName="dashboard"/>}/> */}
+            
+        </Route>
+        <Route path="/institution-deshboard/chat" element={<IntitutionChat/>} />
+        <Route path='/institution-deshboard/feedback' element={<InstitutionFeedback/>}/>
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
         <Route path="/admin-feedback-view" element={<AdminFeedbackView/>} />
         <Route path="/signup" element={<Signup />} />
@@ -308,9 +316,6 @@ function App() {
           <Route path="/main/teacher-deshboard">
             <Route path="" element={<Protected Component={TeacherDash} menuName="pdflist" />} />
           </Route> 
-          <Route path="/main/institution-deshboard">
-            <Route path="" element={<Protected Component={InstitutionDash} menuName="pdflist" />} />
-          </Route>
           <Route path="/main/feedback">
             <Route path="" element={<Protected Component={AdminFeedback} menuName="feedback" />} />
             <Route path="add-feedback" element={<Protected Component={AddEditAdminFeedback} menuName="feedback" />} />

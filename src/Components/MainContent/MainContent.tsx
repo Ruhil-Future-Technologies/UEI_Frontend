@@ -1050,10 +1050,12 @@ function MainContent() {
         //   chatHistory?.data?.filter((chat: any) => chat) || [];
 
         setStudent({
-          chatHistory: chatCount?.data?.saved_chat_count || 0,
-          chatCount: chatCount?.data?.total_chat_count || 0,
+          // chatHistory: chatHistory?.data?.length || 0,
+          chatHistory: (chatCount.data).length || 0,
+          chatCount: (chatCount.data).length || 0,
         });
-        setchatlistData(chatCount?.data);
+         setchatlistData(chatCount?.data);
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }

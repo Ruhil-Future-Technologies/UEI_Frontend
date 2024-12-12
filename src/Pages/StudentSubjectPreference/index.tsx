@@ -120,12 +120,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const getacademic = async () => {
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((response: any) => {
+        console.log(response);
         if (response.status === 200) {
           setAcademic(
             response?.data[0]?.institution_type === "school" ? true : false
           );
           setBoxes((prevBoxes) =>
-            prevBoxes.map((box) => ({
+            prevBoxes.map((box) =>  ({
               ...box,
               class_id: response?.data[0]?.class_id,
               stream: response?.data[0]?.stream,
@@ -256,8 +257,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         });
     } else {
+      console.log("collage subject is calling");
       getData("college_subject/list")
         .then((response: any) => {
+          console.log(response);
           if (response.status === 200) {
             const filteredData = response?.data?.filter(
               (item: any) => item?.is_active === 1
@@ -268,6 +271,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 item?.course_id === boxes[0]?.course_id &&
                 item?.semester_id === boxes[0]?.sem_id
             );
+           // console.log(boxes[0]?.course_id);
+            console.log(filterData);
+            console.log(boxes);
+           // console.log(boxes[0]?.sem_id);
             setSubjects(filterData || []);
             setSubjectsAll(filteredData || []);
           }
@@ -690,12 +697,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       );
 
       if (allSuccessful) {
-        if (editFlag) {
-          // toast.success("Subject Preference saved successfully", {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          //   position: "top-center"
-          // });
+        if (editFlag ) {
+          if(isSubjectPrefTuch){
+          toast.success("Subject Preference saved successfully", {
+            hideProgressBar: true,
+            theme: "colored",
+            position: "top-center"
+          });
+        }
           await handleReset();
           navigate("/");
         } else {
@@ -732,6 +741,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
+  console.log(subjectsAll);
+  console.log(subjects);
   return (
     <div>
       <form>
