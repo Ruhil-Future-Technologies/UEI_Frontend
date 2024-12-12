@@ -1044,8 +1044,8 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         //   chatHistory?.data?.filter((chat: any) => chat) || [];
         setStudent({
           // chatHistory: chatHistory?.data?.length || 0,
-          chatHistory: (chatCount?.data).length || 0,
-          chatCount: (chatCount?.data).length || 0,
+          chatHistory: (chatCount.data).length || 0,
+          chatCount: (chatCount.data).length || 0,
         });
         console.log( chatCount);
       } catch (error) {

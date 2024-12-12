@@ -157,7 +157,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       if (!box?.learning_style) errors.learning_style = "Learning style is required";
       if (!box?.year) {
         errors.year = "Year is required"; // Field is empty
-      } else if ((box?.year).year() > currentYear) {
+      } else if ((box.year).year() > currentYear) {
         console.log(box?.year > currentYear,box?.year)
         errors.year = "You cannot enter future dates"; // Future date
       }else {
