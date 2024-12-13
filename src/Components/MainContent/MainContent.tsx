@@ -122,153 +122,152 @@ function MainContent() {
   const userdata = JSON.parse(localStorage?.getItem("userdata") || "{}");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const barChartOptions = {
-    chart: {
-      id: "chart5",
-      height: 295,
-      width: "100%",
-      toolbar: {
-        show: false,
-      },
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 5,
-        horizontal: false,
-        columnWidth: "50%",
-      },
-    },
-    xaxis: {
-      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    },
-    grid: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ["#00E396"], // Green border for the bars
-    },
-    colors: ["#00E396"],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        type: "vertical",
-        shadeIntensity: 0.5,
-        gradientToColors: ["#009FFD"],
-        inverseColors: true,
-        // opacityFrom: 0.85,
-        // opacityTo: 0.85,
-        stops: [50, 80],
-      },
-    },
-  };
+  // const barChartOptions = {
+  //   chart: {
+  //     id: "chart5",
+  //     height: 295,
+  //     width: "100%",
+  //     toolbar: {
+  //       show: false,
+  //     },
+  //   },
+  //   plotOptions: {
+  //     bar: {
+  //       borderRadius: 5,
+  //       horizontal: false,
+  //       columnWidth: "50%",
+  //     },
+  //   },
+  //   xaxis: {
+  //     categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  //   },
+  //   grid: {
+  //     show: false,
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     show: true,
+  //     width: 2,
+  //     colors: ["#00E396"], // Green border for the bars
+  //   },
+  //   colors: ["#00E396"],
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       type: "vertical",
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: ["#009FFD"],
+  //       inverseColors: true,
+  //       opacityFrom: 0.85,
+  //       opacityTo: 0.85,
+  //       stops: [50, 80],
+  //     },
+  //   },
+  // };
 
-  const barChartSeries = [
-    {
-      name: "Data",
-      data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
-    },
-  ];
+  // const barChartSeries = [
+  //   {
+  //     name: "Data",
+  //     data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
+  //   },
+  // ];
+  // const radialChartOptions = {
+  //   chart: {
+  //     id: "chart1",
+  //   },
+  //   plotOptions: {
+  //     radialBar: {
+  //       startAngle: -115, // Starts from the left
+  //       endAngle: 115, // Ends on the right (half-circle gauge)
+  //       hollow: {
+  //         size: "70%", // Creates the hollow center
+  //       },
+  //       dataLabels: {
+  //         name: {
+  //           show: false, // Hides the name label
+  //         },
+  //         value: {
+  //           fontSize: "22px",
+  //           show: true,
+  //           formatter: function (val: any) {
+  //             return val + "%"; // Display the percentage value in the center
+  //           },
+  //         },
+  //       },
+  //       track: {
+  //         background: "#e7e7e7", // Gray background for the unused portion
+  //         strokeWidth: "97%",
+  //         margin: 5, // Margin between the track and the bar
+  //       },
+  //     },
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "light",
+  //       type: "horizontal",
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: ["#FF0080"], // Gradient from yellow to red
+  //       inverseColors: false,
+  //       opacityFrom: 1,
+  //       opacityTo: 1,
+  //       stops: [0, 100],
+  //     },
+  //   },
+  //   stroke: {
+  //     lineCap: "round" as const,
+  //   },
+  //   labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
+  // };
 
-  const radialChartOptions = {
-    chart: {
-      id: "chart1",
-    },
-    plotOptions: {
-      radialBar: {
-        startAngle: -115, // Starts from the left
-        endAngle: 115, // Ends on the right (half-circle gauge)
-        hollow: {
-          size: "70%", // Creates the hollow center
-        },
-        dataLabels: {
-          name: {
-            show: false, // Hides the name label
-          },
-          value: {
-            fontSize: "22px",
-            show: true,
-            formatter: function (val: any) {
-              return val + "%"; // Display the percentage value in the center
-            },
-          },
-        },
-        track: {
-          background: "#e7e7e7", // Gray background for the unused portion
-          strokeWidth: "97%",
-          margin: 5, // Margin between the track and the bar
-        },
-      },
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        type: "horizontal",
-        shadeIntensity: 0.5,
-        gradientToColors: ["#FF0080"], // Gradient from yellow to red
-        inverseColors: false,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100],
-      },
-    },
-    stroke: {
-      lineCap: "round" as const,
-    },
-    labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
-  };
+  // const lineChartOptions = {
+  //   chart: {
+  //     id: "chart2",
+  //     sparkline: {
+  //       enabled: !0,
+  //     },
+  //     zoom: {
+  //       enabled: false,
+  //     },
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     width: 2,
+  //     curve: "smooth" as const,
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       gradientToColors: ["#02c27a"],
+  //       shadeIntensity: 1,
+  //       type: "vertical",
+  //       opacityFrom: 0.8,
+  //       opacityTo: 0.1,
+  //       stops: [0, 100, 100, 100],
+  //     },
+  //   },
 
-  const lineChartOptions = {
-    chart: {
-      id: "chart2",
-      sparkline: {
-        enabled: !0,
-      },
-      zoom: {
-        enabled: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      width: 2,
-      curve: "smooth" as const,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        gradientToColors: ["#02c27a"],
-        shadeIntensity: 1,
-        type: "vertical",
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
-
-    colors: ["#02c27a"],
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-    },
-  };
+  //   colors: ["#02c27a"],
+  //   xaxis: {
+  //     categories: [
+  //       "Jan",
+  //       "Feb",
+  //       "Mar",
+  //       "Apr",
+  //       "May",
+  //       "Jun",
+  //       "Jul",
+  //       "Aug",
+  //       "Sep",
+  //     ],
+  //   },
+  // };
 
   const secondLineChartOptions = {
     chart: {
@@ -867,8 +866,7 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(
-                  `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
+                  `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path
                   }`
                 )
                   .then((imgdata: any) => {
@@ -927,7 +925,7 @@ function MainContent() {
                           .replace("_", " ")
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace("_", " ").slice(1)
+                        response.data.class_name.replace("_", " ").slice(1)
                       )
                   );
                 }
@@ -1042,7 +1040,7 @@ function MainContent() {
           chatHistory: chatCount?.data?.saved_chat_count || 0,
           chatCount: chatCount?.data?.total_chat_count || 0,
         });
-         setchatlistData(chatCount?.data);
+        setchatlistData(chatCount?.data);
 
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -1108,14 +1106,13 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info)?.length > 0) {
               if (data?.data?.basic_info?.pic_path !== "") {
                 getData(
-                  `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
+                  `${"upload_file/get_image/" + data?.data?.basic_info?.pic_path
                   }`
                 )
                   .then((imgdata: any) => {
                     setprofileImage(imgdata?.data);
                   })
-                  .catch(() => {});
+                  .catch(() => { });
               }
 
               const totalcount = Object.keys(basic_info)?.length;
@@ -1446,15 +1443,15 @@ function MainContent() {
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -1564,7 +1561,7 @@ function MainContent() {
             //     profileDatas?.class?.name
             //   }`
             // )
-        
+
             postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", {
               user_query: search,
               student_id: StudentId,
@@ -1615,7 +1612,7 @@ function MainContent() {
                   postData("https://prodllm.gyansetu.ai/ollama-chat", {
                     user_query: search,
                     student_id: StudentId,
-                    class_or_course_selection: profileDatas?.class.name, 
+                    class_or_course_selection: profileDatas?.class.name,
                   })
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1647,7 +1644,7 @@ function MainContent() {
                 postData("https://prodllm.gyansetu.ai/ollama-chat", {
                   user_query: search,
                   student_id: StudentId,
-                  class_or_course_selection: profileDatas?.class.name, 
+                  class_or_course_selection: profileDatas?.class.name,
                 })
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1683,7 +1680,7 @@ function MainContent() {
               university_name,
 
             } = profileDatas?.academic_history || {};
-            const { subject_name , course_name, } = profileDatas?.subject_preference || {};
+            const { subject_name, course_name, } = profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
@@ -1701,14 +1698,14 @@ function MainContent() {
               ...(class_id && { class_selection: class_id }),
               ...(university_id && { university_selection: university_name }),
               ...(institute_id && { college_selection: institution_name }),
-              ...(course_id && { course_selection:  profileDatas?.course }),
+              ...(course_id && { course_selection: profileDatas?.course }),
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
             };
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             // )
-           return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
+            return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -1733,7 +1730,7 @@ function MainContent() {
                   postData("https://prodllm.gyansetu.ai/ollama-chat", {
                     user_query: search,
                     student_id: StudentId,
-                    class_or_course_selection: course_name, 
+                    class_or_course_selection: course_name,
                   })
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1766,7 +1763,7 @@ function MainContent() {
                 postData("https://prodllm.gyansetu.ai/ollama-chat", {
                   user_query: search,
                   student_id: StudentId,
-                  class_or_course_selection: course_name, 
+                  class_or_course_selection: course_name,
                 })
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1822,10 +1819,10 @@ function MainContent() {
           //     search
           //   )}`
           // );
-        return  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+          return postData("https://prodllm.gyansetu.ai/ollama-chat", {
             user_query: search,
             student_id: StudentId,
-            class_or_course_selection:  profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
+            class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name,
           })
         } else if (data) {
           handleError(data);
@@ -1992,7 +1989,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => {};
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2066,7 +2063,7 @@ function MainContent() {
     postData("https://prodllm.gyansetu.ai/ollama-chat", {
       user_query: search,
       student_id: StudentId,
-      class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
+      class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name,
     })
       .then((response) => {
         if (response?.status === 200) {
@@ -2794,8 +2791,8 @@ function MainContent() {
                                   ? profileImage
                                   : profileDatas?.basic_info?.gender.toLowerCase() ===
                                     "female"
-                                  ? femaleImage
-                                  : maleImage
+                                    ? femaleImage
+                                    : maleImage
                               }
                               className="rounded-circle img-fluid bg-grd-info p-1"
                               width="80"
@@ -2892,11 +2889,10 @@ function MainContent() {
                             Profile Completed
                           </h6>
                         </div>
-                        <div style={{ color: `#9943EC` }}>{`${
-                          stats1?.Student_Profile >= 90
+                        <div style={{ color: `#9943EC` }}>{`${stats1?.Student_Profile >= 90
                             ? 100
                             : stats1?.Student_Profile
-                        }%`}</div>
+                          }%`}</div>
                       </div>
 
                       {/* <div className="d-flex align-items-center gap-3 mb-3">
@@ -2957,7 +2953,7 @@ function MainContent() {
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                    ?.score_in_percentage
+                                  ?.score_in_percentage
                                 : ""}
                             </p>
                           </div>
@@ -3200,12 +3196,12 @@ function MainContent() {
                             <h6 className="mb-0">Study Chart</h6>
                           </div>
                           <div className="mt-4">
-                            <Chart
+                            {/* <Chart
                               options={barChartOptions}
                               series={barChartSeries}
                               type="bar"
                               height={"280px"}
-                            />
+                            /> */}
                           </div>
                           <p>Your Total Time Spend & Study Chart</p>
                           <div className="d-flex align-items-center gap-3 mt-4">
@@ -3262,12 +3258,12 @@ function MainContent() {
                             </div>
                           </div>
                           <div className="chart-container2">
-                            <Chart
+                            {/* <Chart
                               options={radialChartOptions}
                               series={[78]}
                               type="radialBar"
                               height={"200px"}
-                            />
+                            /> */}
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
@@ -3315,7 +3311,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div className="chart-container2">
-                            <Chart
+                            {/* <Chart
                               options={lineChartOptions}
                               series={[
                                 {
@@ -3324,7 +3320,7 @@ function MainContent() {
                               ]}
                               type="area"
                               height={"100%"}
-                            />
+                            /> */}
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
