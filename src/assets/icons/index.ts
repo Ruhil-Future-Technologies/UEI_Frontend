@@ -1,0 +1,9 @@
+export { ReactComponent as EditIcon } from "./edit.svg";
+export { ReactComponent as TrashIcon } from "./trash.svg";
+export { ReactComponent as VisibilityOn } from "./eye.svg";
+export { ReactComponent as VisibilityOff } from "./eye-off.svg";
+export { ReactComponent as BackArrowCircle } from "./arrow-back-circle.svg";
+export { ReactComponent as ArrowLeft } from "./arrow-left.svg";
+export { ReactComponent as BxArrowRight } from "./bx-right-arrow-alt.svg";
+export { ReactComponent as FacebookIcon } from "./facebook.svg";
+export { ReactComponent as GoogleIcon } from "./google.svg";
