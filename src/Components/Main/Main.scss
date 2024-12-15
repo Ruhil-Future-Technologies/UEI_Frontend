@@ -1,0 +1,36 @@
+// @import '../../assets/css/variable/variable';;
+
+.main_block {
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    .main_section {
+        margin-left: 260px;
+        width: 100%;
+        overflow: hidden;
+        transition: margin-left 0.2s linear;
+    }
+}
+
+.offcanvas-backdrop {
+    display: none;
+}
+
+
+@media screen and (max-width: $tablet) {
+    .main_block .sidebar_section {
+        width: auto;
+    }
+
+    .main_block .main_section {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+@media (min-width:992px){
+    .offcanvas.show:not(.hiding), .offcanvas.showing {
+        transform: translateX(-200%) !important;
+    }
+}

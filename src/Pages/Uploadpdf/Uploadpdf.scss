@@ -1,0 +1,49 @@
+// // @import '../../assets/css/variable/variable';;
+
+
+.button{
+    align-items: flex-end;
+    border-radius: 8px;
+}
+.containerbutton{
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 10px;
+}
+.button:hover {
+    background-color:#d7d7d7; 
+}
+.custom-button {
+    text-transform: none; /* Ensures text remains as defined */
+  }
+
+
+  .file-list-container {
+    overflow-y: auto;
+    // overflow-X: "scroll";
+    max-height: 200px; /* Adjust height as needed */
+    width: 40%;
+}
+.file-columns {
+    display: flex;
+    gap: 20px;
+}
+.file-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-X: "auto";
+    width: "20px";
+}
+.file-item {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    white-space: normal;
+    color: var(--tabletextcolor);
+}
+.pdfView{
+margin-top: 5%;
+}
+.custbutton{
+    height: 10px;
+}

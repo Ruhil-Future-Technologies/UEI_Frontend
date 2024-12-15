@@ -1,0 +1,234 @@
+/* src/components/MainContent.css
+.main-content {
+    flex: 1;
+    background-color: #ECF0F1;
+    padding: 20px;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 30px;
+  }
+  
+  .stat-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    width: 18%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .charts {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 30px;
+  }
+  
+  .chart {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 33%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  .pie{
+    overflow: hidden;
+  }
+  
+  .progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  
+  .progress-circle {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 20%;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(#3498DB 0% 45%, #ECF0F1 45% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  
+  .progress-info {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 75%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .progress-info p {
+    margin: 10px 0;
+  }
+  
+  .progress-info button {
+    background-color: #3498DB;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+   */
+   /* src/components/MainContent.css */
+.main-content {
+    flex: 1;
+    background-color: var(--cardbodycolor);
+    padding: 20px;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 30px;
+  }
+  .stats3 {
+    /* display: flex;
+    justify-content: space-evenly; */
+    margin-left: 30px;
+  }
+  .stats12 {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+    margin-left: 20px;
+    /* margin : 10px; */
+  }
+  
+  .stat-item {
+    /* background-color: #fff; */
+    background-color:var(--cardcolor);
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+ 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .charts {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  .piecharts {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+  }
+  
+  .chart {
+    background-color:var(--cardcolor) !important;
+    padding: 20px;
+    border-radius: 5px;
+    /* width: 48%; */
+    width: 33%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+.main-content {
+    padding: 20px;
+}
+
+.stats .stat-item {
+    /* background-color: #f8f9fa; */
+    background-color:var(--cardcolor);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item h2 {
+    font-size: 2rem;
+    margin-top: 10px;
+    /* color: #2c3e50; */
+    color: var(--cardvaluecolor);
+}
+
+.stat-item p {
+    font-size: 1.2rem;
+    /* color: #7f8c8d; */
+    color: var(--cardtextcolor);
+}
+
+.charts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.charts .chart {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1 1 calc(50% - 30px); /* 50% width minus the gap */
+    max-width: calc(50% - 30px); /* Ensure the width doesn't exceed 50% */
+}
+
+.charts .chart .card-body {
+    padding: 20px;
+}
+.chart .chart_content{
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  display: flex;
+  margin: 15px 0;
+}
+
+
+
+
+
+/* Responsive adjustments */
+@media (min-width: 1400px) {
+  .chart .chart_content{
+    position: absolute;
+    right: auto;
+    left: 250px;
+    top: 50%;
+    bottom: auto;
+  }
+}
+@media (max-width: 992px) {
+    .charts .chart {
+        flex: 1 1 calc(50% - 15px); /* Adjust for smaller screens */
+        max-width: calc(50% - 15px);
+    }
+}
+
+@media (max-width: 768px) {
+    .charts .chart {
+        flex: 1 1 100%; /* Full width for very small screens */
+        max-width: 100%;
+    }
+}
+
+
+
+
+
