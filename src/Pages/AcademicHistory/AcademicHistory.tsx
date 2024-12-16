@@ -23,9 +23,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { toast } from "react-toastify";
 import NameContext from "../Context/NameContext";
 import {
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
+  commonStyle,
+  // inputfield,
+  // inputfieldhover,
+  // inputfieldtext,
   // deepEqual,
 } from "../../utils/helpers";
 import { State, } from "country-state-city";
@@ -116,6 +117,25 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [updateBoxes, setUpdateBoxes] = useState(false);
   const currentYear = dayjs().year();
   const StudentId = localStorage.getItem("_id");
+  const menuItems = [
+    { value: "school", label: "School" },
+    { value: "college", label: "College" },
+  ];
+  const boardItems = [
+    { value: "cbse", label: "CBSE" },
+    { value: "icse", label: "ICSE" },
+    { value: "state_board", label: "State Board" },
+  ];
+  const stremItems = [
+    { value: "science", label: "Science" },
+    { value: "commerce", label: "Commerce" },
+    { value: "arts", label: "Arts" },
+  ];
+  const learningItems = [
+    { value: "online", label: "Online" },
+    { value: "offline", label: "Offline" },
+    { value: "any", label: "Any" },
+  ];
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
     const stateOptions = states.map((state) => ({
@@ -605,30 +625,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   }
                   label="Institute Type"
                 >
-                  <MenuItem
-                    value="school"
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    School
-                  </MenuItem>
-                  <MenuItem
-                    value="college"
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    College
-                  </MenuItem>
+                  {menuItems?.map((item) => (
+                    <MenuItem key={item.value} value={item.value} sx={commonStyle(namecolor)}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {/* {box.errors?.institute_type && (
                 <FormHelperText error>{box.errors.institute_type}</FormHelperText>
@@ -655,42 +656,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="Board"
                   >
-                    <MenuItem
-                      value="cbse"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      CBSE
-                    </MenuItem>
-                    <MenuItem
-                      value="icse"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      ICSE
-                    </MenuItem>
-                    <MenuItem
-                      value="state_board"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      State Board
-                    </MenuItem>
+                    {boardItems?.map((item) => (
+      <MenuItem key={item.value} value={item.value} sx={commonStyle(namecolor)}>
+        {item.label}
+      </MenuItem>
+    ))}
                   </Select>
                   {errors.board && !box?.board && (
                     <FormHelperText error>{errors.board}</FormHelperText>
@@ -724,30 +694,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       <MenuItem
                         key={state.value}
                         value={state.label.toLowerCase()}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
+                        sx={commonStyle(namecolor)}
                       >
                         {state.label}
                       </MenuItem>
                     ))}
-                    <MenuItem
-                      key={1}
-                      value={1}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      Others
-                    </MenuItem>
                   </Select>
                   {errors.state_for_stateboard && !box?.state_for_stateboard?.toLowerCase() && (
                     <FormHelperText error>{errors.state_for_stateboard}</FormHelperText>
@@ -777,13 +728,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       <MenuItem
                         key={item?.university_id}
                         value={item?.university_id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
+                        sx={commonStyle(namecolor)}
                       >
                         {item.university_name}
                       </MenuItem>
@@ -820,13 +765,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       <MenuItem
                         key={institute.id}
                         value={institute.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
+                     
+                        sx={commonStyle(namecolor)}
                       >
                         {institute.institution_name}
                       </MenuItem>
@@ -859,13 +799,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       <MenuItem
                         key={course.id}
                         value={course.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
+                      
+                        sx={commonStyle(namecolor)}
                       >
                         {course.course_name}
                       </MenuItem>
@@ -915,13 +850,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         <MenuItem
                           key={item?.semester_id}
                           value={item?.semester_id}
-                          sx={{
-                            backgroundColor: inputfield(namecolor),
-                            color: inputfieldtext(namecolor),
-                            '&:hover': {
-                              backgroundColor: inputfieldhover(namecolor),
-                            },
-                          }}
+                      
+                          sx={commonStyle(namecolor)}
                         >
                           Semester {item.semester_number}
                         </MenuItem>
@@ -958,13 +888,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                           <MenuItem
                             key={classes.id}
                             value={classes.id}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              "&:hover": {
-                                backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                              },
-                            }}
+                        
+                            sx={commonStyle(namecolor)}
+
                           >
                             {classes.class_name}
                           </MenuItem>
@@ -995,42 +921,17 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       }
                       label="Stream"
                     >
-                      <MenuItem
-                        value="science"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        Science
-                      </MenuItem>
-                      <MenuItem
-                        value="commerce"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        Commerce
-                      </MenuItem>
-                      <MenuItem
-                        value="arts"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        Arts
-                      </MenuItem>
+                    
+
+{stremItems?.map((item) => (
+        <MenuItem
+          key={item.value}
+          value={item.value}
+          sx={commonStyle(namecolor)} // Apply the commonStyle function
+        >
+          {item.label}
+        </MenuItem>
+      ))}
                     </Select>
                     {errors.stream && !box?.stream && (
                       <FormHelperText error>{errors.stream}</FormHelperText>
@@ -1079,42 +980,16 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                     label="Learning Style"
                   >
-                    <MenuItem
-                      value="online"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor),
-                        },
-                      }}
-                    >
-                      Online
-                    </MenuItem>
-                    <MenuItem
-                      value="offline"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor),
-                        },
-                      }}
-                    >
-                      Offline
-                    </MenuItem>
-                    <MenuItem
-                      value="any"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor),
-                        },
-                      }}
-                    >
-                      Any
-                    </MenuItem>
+                 
+                    {learningItems?.map((item) => (
+                      <MenuItem
+                        key={item.value}
+                        value={item.value}
+                        sx={commonStyle(namecolor)} 
+                      >
+                        {item.label}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {errors.learning_style && !box?.learning_style && (
                     <FormHelperText error>{errors.learning_style}</FormHelperText>

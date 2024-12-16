@@ -15,6 +15,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import {
+  commonStyle,
   inputfield,
   inputfieldhover,
   inputfieldtext,
@@ -47,6 +48,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     [key: number]: { language_error: boolean; proficiency_error: boolean };
   }>({});
   const [checkChanges, setCheckChanges] = useState(false);
+  const menuItems = ["read", "write", "both"];
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
@@ -278,6 +280,12 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         "&:hover": {
                           backgroundColor: inputfieldhover(namecolor),
                         },
+                        "&.Mui-selected": {
+                          backgroundColor: inputfield(namecolor),   
+                        },
+                        "&.Mui-selected, &:focus": {
+                          backgroundColor: inputfield(namecolor),
+                        },
                       }}
                     >
                       {lang.language_name}
@@ -299,6 +307,12 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         color: inputfieldtext(namecolor),
                         "&:hover": {
                           backgroundColor: inputfieldhover(namecolor),
+                        },
+                        "&.Mui-selected": {
+                          backgroundColor: inputfield(namecolor),   
+                        },
+                        "&.Mui-selected, &:focus": {
+                          backgroundColor: inputfield(namecolor),
                         },
                       }}
                     >
@@ -342,42 +356,14 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 }}
                 onBlur={() => validateFields(index, "proficiency")}
               >
-                <MenuItem
-                  value={"read"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  Read
-                </MenuItem>
-                <MenuItem
-                  value={"write"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  Write
-                </MenuItem>
-                <MenuItem
-                  value={"both"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  Both
-                </MenuItem>
+               
+                {menuItems.map((item) => (
+                  <MenuItem key={item} value={item}
+                  sx={commonStyle(namecolor)}
+                  >
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                  </MenuItem>
+                ))}
               </Select>
               {error[index]?.proficiency_error && box.proficiency == "" && (
                 <FormHelperText style={{ color: "red" }}>

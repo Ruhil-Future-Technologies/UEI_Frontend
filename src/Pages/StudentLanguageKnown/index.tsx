@@ -22,6 +22,7 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import StudentHobbies from "../StudentHobbies";
 import {
+  commonStyle,
   deepEqual,
   inputfield,
   inputfieldhover,
@@ -85,6 +86,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [isLanguageUpdated, setIsLanguageUpdated] = useState<boolean>(false);
   const [isHobbiesUpdated, setIsHobbiesUpdated] = useState<boolean>(false);
+  const menuItems = ["read", "write", "both"];
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
@@ -389,10 +391,20 @@ console.log(isSave);
                 key={lang.id}
                 value={lang.id}
                 disabled
+                
                 sx={{
                   backgroundColor: inputfield(namecolor),
                   color: inputfieldtext(namecolor),
                   fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: inputfieldhover(namecolor),
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: inputfield(namecolor),   
+                  },
+                  "&.Mui-selected, &:focus": {
+                    backgroundColor: inputfield(namecolor),
+                  },
                 }}
               >
                 {lang.language_name}
@@ -415,6 +427,12 @@ console.log(isSave);
                   color: inputfieldtext(namecolor),
                   "&:hover": {
                     backgroundColor: inputfieldhover(namecolor),
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: inputfield(namecolor),   
+                  },
+                  "&.Mui-selected, &:focus": {
+                    backgroundColor: inputfield(namecolor),
                   },
                 }}
               >
@@ -444,42 +462,14 @@ console.log(isSave);
                   MenuProps={MenuProps}
                   onBlur={() => validateFields(index, "proficiency")}
                 >
-                  <MenuItem
-                    value={"read"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Read
-                  </MenuItem>
-                  <MenuItem
-                    value={"write"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Write
-                  </MenuItem>
-                  <MenuItem
-                    value={"both"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Both
-                  </MenuItem>
+
+                  {menuItems.map((item) => (
+                    <MenuItem key={item} value={item}
+                      sx={commonStyle(namecolor)}
+                    >
+                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                    </MenuItem>
+                  ))}
                 </Select>
                   {error[index]?.proficiency_error &&  box.proficiency == "" && <FormHelperText style={{color: "red"}}>Proficiency is required</FormHelperText>}
               </FormControl>

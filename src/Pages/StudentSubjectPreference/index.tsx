@@ -19,6 +19,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import {
+  commonStyle,
   deepEqual,
   inputfield,
   inputfieldhover,
@@ -975,13 +976,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     <MenuItem
                       key={subject.subject_id}
                       value={subject.subject_id}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
+                      // sx={{
+                      //   backgroundColor: inputfield(namecolor),
+                      //   color: inputfieldtext(namecolor),
+                      //   "&:hover": {
+                      //     backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                      //   },
+                      // }}
+                      sx={commonStyle(namecolor)}
                     >
                       {subject.subject_name}
                     </MenuItem>

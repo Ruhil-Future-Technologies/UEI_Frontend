@@ -40,6 +40,7 @@ const Header = () => {
     setNamepro,
     proImage,
     setProImage,
+    setNamecolor,
     setProPercentage,
   }: any = context;
   // const [modalOpen, setModalOpen] = useState(false);
@@ -255,7 +256,7 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-   
+    setNamecolor(theme);   
     if (theme === "default") {
     
       document?.documentElement?.setAttribute("data-theme", theme);
