@@ -101,7 +101,7 @@ export const tabletools =(themes: any)=>{
 
 export const inputfield =(themes: any)=>{
   const tabletools:any = {
-    light:'#FFFFFF',dark:'#151E26',default:'#FFFFFF'
+    light:'#FFFFFF',dark:'#32363b',default:'#FFFFFF'
   }
   return tabletools[themes]
 }
@@ -113,7 +113,7 @@ export const inputfieldselect =(themes: any)=>{
 }
 export const inputfieldtext =(textcolor: any)=>{
   const inputtext:any = {
-    light:'#1C1C1C',dark:'#FFFFFF',default:'#1C1C1C'
+    light:'#1C1C1C',dark:'#dee2e6',default:'#1C1C1C'
   }
   return inputtext[textcolor]
 }
@@ -125,7 +125,7 @@ export const inputfieldtextselect =(textcolor: any)=>{
 }
 export const inputfieldhover =(textcolor: any)=>{
   const inputtext:any = {
-    light:'#edf4fb',dark:'#152533',default:'#edf4fb'
+    light:'#edf4fb',dark:'#99c8ff',default:'#edf4fb'
   }
   return inputtext[textcolor]
 }
@@ -172,4 +172,20 @@ export const chatcalandericon =(themes: any)=>{
   }
   return tabletools[themes]
 }
+export const commonStyle = (namecolor:any) => ({
+  backgroundColor: inputfield(namecolor),
+  color: inputfieldtext(namecolor),
+  "&:hover": {
+    backgroundColor: inputfieldhover(namecolor),
+    color: "black !important",
+  },
+  "&.Mui-selected": {
+    backgroundColor: inputfield(namecolor),
+    color: "black !important",
+  },
+  "&.Mui-selected, &:focus": {
+    backgroundColor: "#F7F0FE",
+    color: "black !important",
+  },
+});
     

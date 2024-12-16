@@ -27,7 +27,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 // import { styled } from "@mui/material/styles";
 
-import { deepEqual } from "../../utils/helpers";
+import { commonStyle, deepEqual } from "../../utils/helpers";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import NameContext from "../Context/NameContext";
@@ -55,7 +55,7 @@ interface AdminInformation {
 
 const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = React.useContext(NameContext);
-  const { setNamepro, setProImage }: any = context;
+  const { setNamepro, setProImage,namecolor }: any = context;
   const { getData, postData, putData, postFileData } = useApi();
   const [initialAdminState, setInitialAdminState] =
     useState<AdminInformation | null>(null);
@@ -745,7 +745,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             >
               {allDepartment.map((data) => (
                 <MenuItem className="drop-down-menu"
-                key={data.id} value={data.id}>
+                key={data.id} value={data.id}
+                sx={commonStyle(namecolor)}
+                >
                   {data.department_name}
                 </MenuItem>
               ))}

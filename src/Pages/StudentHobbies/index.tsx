@@ -290,8 +290,20 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
                   sx={{
                     backgroundColor: inputfield(namecolor),
                     color: inputfieldtext(namecolor),
+                    // "&:hover": {
+                    //   backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                    // },
                     "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                      backgroundColor: inputfieldhover(namecolor),
+                      color: "black !important",
+                    },
+                    "&.Mui-selected": {
+                      // backgroundColor: inputfield(namecolor),   
+                      color: "black",
+                    },
+                    "&.Mui-selected, &:focus": {
+                      backgroundColor: inputfield(namecolor),
+                      color:namecolor === "dark" ? "white" : "black",
                     },
                   }}
                 >

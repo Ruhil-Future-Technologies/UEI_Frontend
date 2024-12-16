@@ -2854,3 +2854,9 @@ a:focus {
   .radiobutton.Mui-checked {
     color:var(--buttonbgcolor) !important;
   }
+
+  .MuiPaper-root{
+    .MuiMenu-list {
+        padding: 0!important;
+    }
+  }

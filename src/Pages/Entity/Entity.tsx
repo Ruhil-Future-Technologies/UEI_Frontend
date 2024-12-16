@@ -22,8 +22,13 @@ const Entity = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
+  // const pathSegments = location?.pathname?.split("/").filter(Boolean);
+  // const lastSegment = pathSegments[pathSegments?.length - 1]?.toLowerCase();
+  const pathSegments = location?.pathname?.split("/").filter(Boolean) || []; // Fallback to an empty array if undefined or null
+
+const lastSegment = pathSegments?.length > 0
+  ? pathSegments[pathSegments?.length - 1]?.toLowerCase()
+  : ''; // Default value when pathSegments is empty
   const Menulist: any = localStorage.getItem("menulist1");
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const tabletools: any = {
@@ -43,7 +48,7 @@ const Entity = () => {
   const columns = Entity_COLUMNS;
   const navigate = useNavigate();
   const { getData, deleteData, loading } = useApi();
-  const [dataEntity, setDataInstitute] = useState<IEntity[]>([]);
+  const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
 
@@ -51,7 +56,7 @@ const Entity = () => {
     getData(`${EntityURL}`)
       .then((data: { data: IEntity[] }) => {
         if (data.data) {
-          setDataInstitute(data?.data);
+          setDataEntity(data?.data);
         }
       })
       .catch((e) => {
@@ -127,11 +132,12 @@ const Entity = () => {
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
-                      <div className="main_title"> Entity</div>
+                      <div className="main_title"  data-testid="Entity"> Entity</div>
                     </Typography>
                     {/* {filteredData?.[0]?.is_save === true && ( */}
                     {filteredData?.form_data?.is_save === true && (
                       <Button
+                      data-testid="Entitybtn"
                         className="mainbutton"
                         variant="contained"
                         component={NavLink}
