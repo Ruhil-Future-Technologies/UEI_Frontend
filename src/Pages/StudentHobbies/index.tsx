@@ -16,6 +16,7 @@ import useApi from "../../hooks/useAPI";
 import "react-toastify/dist/ReactToastify.css";
 import {
   deepEqual,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
@@ -262,6 +263,9 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
               data-testid="hobby_text"
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor), 
+                },
               }}
               value={selectedHobbies}
               onChange={handleChange}

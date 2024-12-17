@@ -27,7 +27,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 // import { styled } from "@mui/material/styles";
 
-import { commonStyle, deepEqual } from "../../utils/helpers";
+import { commonStyle, deepEqual, fieldIcon } from "../../utils/helpers";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import NameContext from "../Context/NameContext";
@@ -562,12 +562,22 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             >
               <FormControlLabel
                 value="male"
-                control={<Radio className="radiobutton" />}
+                control={<Radio className="radiobutton" sx={{
+                  color: fieldIcon(namecolor),
+                  '&.Mui-checked': {
+                    color: fieldIcon(namecolor),
+                  }
+                 }} />}
                 label="Male"
               />
               <FormControlLabel
                 value="female"
-                control={<Radio className="radiobutton" />}
+                control={<Radio className="radiobutton" sx={{
+                  color: fieldIcon(namecolor),
+                  '&.Mui-checked': {
+                    color: fieldIcon(namecolor),
+                  }
+                 }} />}
                 label="Female"
               />
             </RadioGroup>
@@ -723,6 +733,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               onChange={handleDepartmentChange}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
               }}
               renderValue={(selected) => {
                 const selectedDepartment = allDepartment.find(

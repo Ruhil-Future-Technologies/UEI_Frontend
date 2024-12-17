@@ -22,9 +22,9 @@ import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import {
+  commonStyle,
   deepEqual,
-  inputfield,
-  inputfieldhover,
+  fieldIcon,
   inputfieldtext,
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
@@ -57,6 +57,11 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     return emailPattern.test(email);
   };
   const [initialState, setInitialState] = useState<any | null>({});
+  const phoneCodes = [
+    { value: "+91", label: "+91" },
+    { value: "+971", label: "+971" },
+    { value: "+1", label: "+1" },
+  ];
   const handleChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -289,47 +294,23 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 id="demo-simple-select"
                 sx={{
                   backgroundColor: "#f5f5f5",
+                  "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                 }}
                 value={contcodePhone}
                 // label="Country code"
                 onChange={(event) => setContcodePhone(event.target.value)}
               >
-                <MenuItem
-                  value={"+91"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  +91
-                </MenuItem>
-                <MenuItem
-                  value={"+971"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  +971
-                </MenuItem>
-                <MenuItem
-                  value={"+1"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  +1
-                </MenuItem>
+                {phoneCodes?.map((item) => (
+                        <MenuItem
+                          key={item.value}
+                          value={item.value}
+                          sx={commonStyle(namecolor)} 
+                        >
+                          {item.label}
+                        </MenuItem>
+                      ))}
               </Select>
             </FormControl>
           </div>
@@ -377,46 +358,22 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 value={contcodeWtsap}
                 sx={{
                   backgroundColor: "#f5f5f5",
+                  "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                 }}
                 // label="Country code"
                 onChange={(event) => setContcodeWtsap(event.target.value)}
               >
-                <MenuItem
-                  value={"+91"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  +91
-                </MenuItem>
-                <MenuItem
-                  value={"+971"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  +971
-                </MenuItem>
-                <MenuItem
-                  value={"+1"}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  +1
-                </MenuItem>
+                {phoneCodes?.map((item) => (
+                        <MenuItem
+                          key={item.value}
+                          value={item.value}
+                          sx={commonStyle(namecolor)} 
+                        >
+                          {item.label}
+                        </MenuItem>
+                      ))}
               </Select>
             </FormControl>
           </div>

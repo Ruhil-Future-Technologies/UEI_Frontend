@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import passwordicon from "../../assets/img/password.svg";
+import passwordiconDark from "../../assets/img/passwords.svg";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import LockResetIcon from "@mui/icons-material/LockReset";
@@ -12,6 +13,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { QUERY_KEYS } from "../../utils/const";
 import { Formik, FormikHelpers, FormikProps, Form } from "formik";
 import * as Yup from "yup";
+import { fieldIcon } from "../../utils/helpers";
+import NameContext from "../Context/NameContext";
 interface changepasswordform {
   oldpassword: string;
   password: string;
@@ -19,6 +22,8 @@ interface changepasswordform {
 }
 
 const UserChangePassword = () => {
+  const context = useContext(NameContext);
+  const { namecolor }: any = context;
   const user_type = localStorage.getItem("user_type");
   const email = localStorage.getItem("userid");
   const { postData } = useApi();
@@ -254,7 +259,9 @@ const UserChangePassword = () => {
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
-                                    <img src={passwordicon} alt="oldpassword" />
+                                    <img 
+                                     src={namecolor === "dark" ?  passwordiconDark : passwordicon }
+                                     alt="oldpassword" />
                                   </InputAdornment>
                                 ),
                                 endAdornment: (
@@ -265,9 +272,13 @@ const UserChangePassword = () => {
                                       edge="end"
                                     >
                                       {showOldPassword ? (
-                                        <Visibility />
+                                        <Visibility  sx={{
+                                          color: fieldIcon(namecolor)
+                                         }}/>
                                       ) : (
-                                        <VisibilityOff />
+                                        <VisibilityOff  sx={{
+                                          color: fieldIcon(namecolor)
+                                         }} />
                                       )}
                                     </IconButton>
                                   </InputAdornment>
@@ -301,7 +312,9 @@ const UserChangePassword = () => {
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
-                                    <img src={passwordicon} alt="password" />
+                                    <img 
+                                     src={namecolor === "dark" ?  passwordiconDark : passwordicon }
+                                     alt="password" />
                                   </InputAdornment>
                                 ),
                                 endAdornment: (
@@ -312,9 +325,13 @@ const UserChangePassword = () => {
                                       edge="end"
                                     >
                                       {showPassword ? (
-                                        <Visibility />
+                                        <Visibility sx={{
+                                          color: fieldIcon(namecolor)
+                                         }} />
                                       ) : (
-                                        <VisibilityOff />
+                                        <VisibilityOff sx={{
+                                          color: fieldIcon(namecolor)
+                                         }} />
                                       )}
                                     </IconButton>
                                   </InputAdornment>
@@ -345,7 +362,8 @@ const UserChangePassword = () => {
                                 startAdornment: (
                                   <InputAdornment position="start">
                                     <img
-                                      src={passwordicon}
+                                      // src={passwordicon}
+                                      src={namecolor === "dark" ?  passwordiconDark : passwordicon }
                                       alt="confpassword"
                                     />
                                   </InputAdornment>
@@ -358,9 +376,13 @@ const UserChangePassword = () => {
                                       edge="end"
                                     >
                                       {showConfPassword ? (
-                                        <Visibility />
+                                        <Visibility sx={{
+                                          color: fieldIcon(namecolor)
+                                         }}/>
                                       ) : (
-                                        <VisibilityOff />
+                                        <VisibilityOff sx={{
+                                          color: fieldIcon(namecolor)
+                                         }} />
                                       )}
                                     </IconButton>
                                   </InputAdornment>

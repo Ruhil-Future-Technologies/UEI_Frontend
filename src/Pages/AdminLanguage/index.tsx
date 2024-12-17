@@ -16,10 +16,10 @@ import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
 import {
   commonStyle,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-  tabletools,
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
@@ -261,6 +261,9 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 label="Language *"
                 sx={{
                   backgroundColor: "#f5f5f5",
+                  "& .MuiSelect-icon": {
+                    color: fieldIcon(namecolor),
+                  },
                 }}
                 onChange={(e) => {
                   handleChange(e, index);
@@ -350,6 +353,9 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 label="Proficiency *"
                 sx={{
                   backgroundColor: "#f5f5f5",
+                  "& .MuiSelect-icon": {
+                    color: fieldIcon(namecolor),
+                  },
                 }}
                 onChange={(e) => {
                   handleChange1(e, index);
@@ -378,7 +384,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               sx={{
                 width: "35px",
                 height: "35px",
-                color: tabletools(namecolor),
+                color: fieldIcon(namecolor),
               }}
             >
               <AddCircleOutlinedIcon />
@@ -389,7 +395,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 sx={{
                   width: "35px",
                   height: "35px",
-                  color: tabletools(namecolor),
+                  color: fieldIcon(namecolor),
                 }}
               >
                 <DeleteOutlineOutlinedIcon />

@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 import NameContext from "../Context/NameContext";
 import {
   commonStyle,
+  fieldIcon,
   // inputfield,
   // inputfieldhover,
   // inputfieldtext,
@@ -619,6 +620,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   value={box.institute_type}
                   sx={{
                     backgroundColor: "#f5f5f5",
+                    "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                   }}
                   onChange={(e) =>
                     handleInputChange(index, "institute_type", e.target.value)
@@ -650,6 +654,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.board}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "board", e.target.value)
@@ -680,6 +687,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box?.state_for_stateboard?.toLowerCase()}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(
@@ -718,6 +728,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.university_id}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "university_id", e.target.value)
@@ -755,6 +768,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.institute_id}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "institute_id", e.target.value)
@@ -789,6 +805,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.course_id}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "course_id", e.target.value)
@@ -823,6 +842,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.sem_id}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "sem_id", e.target.value)
@@ -874,6 +896,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.class_id}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "class_id", e.target.value)
@@ -915,6 +940,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       value={box.stream}
                       sx={{
                         backgroundColor: "#f5f5f5",
+                        "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                       }}
                       onChange={(e) =>
                         handleInputChange(index, "stream", e.target.value)
@@ -974,6 +1002,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     value={box.learning_style}
                     sx={{
                       backgroundColor: "#f5f5f5",
+                      "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                     }}
                     onChange={(e) =>
                       handleInputChange(index, "learning_style", e.target.value)
