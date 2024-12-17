@@ -56,6 +56,8 @@ const Chat = () => {
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const ChatURL = QUERY_KEYS.CHATADD;
+  const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
+  const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const ChatStore = QUERY_KEYS.CHAT_STORE;
   const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
@@ -432,22 +434,17 @@ const Chat = () => {
 
     postData(`${ChatURL}`, payload)
       .then((data) => {
-        if (data.status === 200) {
-          handleResponse(data);
-        } else if (data.status === 404) {
-          // return postData(`${ChatURLAI}`, payload);
-          // return postData(`${ChatURLRAG}`, rag_payload);
-          setLoaderMsg("Searching result from knowledge base");
-          // return getData(
-          //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
-          // );
+        // if (data.status === 200) {
+        //   handleResponse(data);
+        // } else if (data.status === 404) {
+           if (data.status === 200 || data.status === 404) {
+          
+          // setLoaderMsg("Searching result from knowledge base");
+          setLoaderMsg("Searching result from Rag model");
+        
           if (studentDetail?.academic_history?.institution_type === "school") {
-            // return getData(
-            //   `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-            //     search
-            //   )}&student_id=${userid}&class_name=${studentDetail?.class?.name}`
-            // )
-            postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", {
+         
+            postData(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
               school_college_selection:
@@ -489,13 +486,8 @@ const Chat = () => {
                   handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
-                  // getData(
-                  //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                  //     search
-                  //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.class.name)}`
-                  // )
-                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                 
+                  postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: userid,
                     class_or_course_selection: studentDetail.class.name,
@@ -527,7 +519,7 @@ const Chat = () => {
                 //     search
                 //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.class.name)}`
                 // )
-                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: userid,
                   class_or_course_selection: studentDetail?.class.name,
@@ -591,7 +583,7 @@ const Chat = () => {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             // )
-            return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
+            return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -614,7 +606,7 @@ const Chat = () => {
                   //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
                   // )
               
-                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: userid,
                     class_or_course_selection: course_name,
@@ -647,7 +639,7 @@ const Chat = () => {
                 //     search
                 //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
                 // )
-                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: userid,
                   class_or_course_selection: course_name,
@@ -706,7 +698,7 @@ const Chat = () => {
           //     search
           //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.academic_history?.course_id)}`
           // );
-          return postData("https://prodllm.gyansetu.ai/ollama-chat", {
+          return postData(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: userid,
             class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
@@ -1165,7 +1157,7 @@ const Chat = () => {
     //     question
     //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ?studentDetail?.class?.name: studentDetail?.academic_history?.course_id)}`
     // )
-    postData("https://prodllm.gyansetu.ai/ollama-chat", {
+    postData(`${ChatOLLAMAURL}`, {
       user_query: question,
       student_id: userid,
       class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
