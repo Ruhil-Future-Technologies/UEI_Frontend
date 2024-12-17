@@ -6,7 +6,7 @@ import { QUERY_KEYS, QUERY_KEYS_COURSE, QUERY_KEYS_SEMESTER } from '../../utils/
 import useApi from '../../hooks/useAPI';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-import { inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
+import { fieldIcon, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 import * as Yup from 'yup';
 
@@ -175,7 +175,10 @@ const AddSemester = () => {
                                                             variant="outlined"
                                                             sx={{
                                                                 backgroundColor: inputfield(namecolor),
-                                                                color: inputfieldtext(namecolor)
+                                                                color: inputfieldtext(namecolor),
+                                                                "& .MuiSelect-icon": {
+                                                                    color: fieldIcon(namecolor),
+                                                                  },
                                                             }}
                                                             MenuProps={{
                                                                 PaperProps: {
@@ -224,7 +227,10 @@ const AddSemester = () => {
                                                             variant="outlined"
                                                             sx={{
                                                                 backgroundColor: inputfield(namecolor),
-                                                                color: inputfieldtext(namecolor)
+                                                                color: inputfieldtext(namecolor),
+                                                                "& .MuiSelect-icon": {
+                                                                    color: fieldIcon(namecolor),
+                                                                  },
                                                             }}
                                                             MenuProps={{
                                                                 PaperProps: {
@@ -285,7 +291,10 @@ const AddSemester = () => {
                                                             variant="outlined"
                                                             sx={{
                                                                 backgroundColor: inputfield(namecolor),
-                                                                color: inputfieldtext(namecolor)
+                                                                color: inputfieldtext(namecolor),
+                                                                "& .MuiSelect-icon": {
+                                                                    color: fieldIcon(namecolor),
+                                                                  },
                                                             }}
                                                             MenuProps={{
                                                                 PaperProps: {

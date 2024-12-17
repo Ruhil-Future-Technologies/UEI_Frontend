@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import { IEntity, InstituteRep0oDTO, IUniversity, MenuListinter } from '../../Components/Table/columns';
-import { dataaccess, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
+import { dataaccess, fieldIcon, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
 
@@ -541,7 +541,10 @@ const AddEditInstitute = () => {
                                                     variant="outlined"
                                                     sx={{
                                                         backgroundColor: inputfield(namecolor) , 
-                                                        color: inputfieldtext(namecolor) 
+                                                        color: inputfieldtext(namecolor) ,
+                                                        "& .MuiSelect-icon": {
+                                                            color: fieldIcon(namecolor),
+                                                          },
                                                     }}
                                                     MenuProps={{
                                                         PaperProps: {
@@ -583,7 +586,10 @@ const AddEditInstitute = () => {
                                                     variant="outlined"
                                                     sx={{
                                                         backgroundColor: inputfield(namecolor) , 
-                                                        color: inputfieldtext(namecolor) 
+                                                        color: inputfieldtext(namecolor),
+                                                        "& .MuiSelect-icon": {
+                                                            color: fieldIcon(namecolor),
+                                                          },
                                                     }}
                                                     MenuProps={{
                                                         PaperProps: {

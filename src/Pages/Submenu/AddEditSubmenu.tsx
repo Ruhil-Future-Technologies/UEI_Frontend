@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import { MenuListinter } from "../../Components/Table/columns";
 import {
   dataaccess,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
@@ -239,7 +240,7 @@ const AddEditSubmenu = () => {
                         <div className="form_field_wrapper">
                           <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">
-                              Menu name *
+                              Menu name *   
                             </InputLabel>
                             <Select
                               onChange={(e: SelectChangeEvent<string>) =>
@@ -252,6 +253,9 @@ const AddEditSubmenu = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
+                                "& .MuiSelect-icon": {
+                                  color: fieldIcon(namecolor),
+                                },
                               }}
                               MenuProps={{
                                 PaperProps: {
