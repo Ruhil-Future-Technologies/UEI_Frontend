@@ -48,7 +48,7 @@ import chatLogo from "../../assets/img/chat-logo.svg";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import robotImage from "../../assets/img/robot.png";
-import { hasSubMenu } from "../../utils/helpers";
+import { fieldIcon, hasSubMenu } from "../../utils/helpers";
 import FullScreenLoader from "../../Pages/Loader/FullScreenLoader";
 import NameContext from "../../Pages/Context/NameContext";
 import { ProfileDialog } from "../Dailog/ProfileComplation";
@@ -61,7 +61,7 @@ import Chatbot from "../../Pages/Chatbot";
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage }: any = context;
+  const { ProPercentage, setProPercentage , namecolor }: any = context;
   const [userName, setUserName] = useState("");
   const StudentId = localStorage.getItem("_id");
   const menuList = localStorage.getItem("menulist1");
@@ -2797,7 +2797,7 @@ function MainContent() {
                                   </small>
                                 </div>
                                 <IconButton href="/main/StudentProfile">
-                                  <CreateIcon />
+                                  <CreateIcon sx={{ color: fieldIcon(namecolor) }} />
                                 </IconButton>
                               </div>
 

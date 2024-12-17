@@ -21,10 +21,11 @@ import { toast } from "react-toastify";
 import {
   commonStyle,
   deepEqual,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-  tabletools,
+  
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 //import { ChildComponentProps } from "../StudentProfile";
@@ -862,6 +863,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                       value={box.class_id}
                       sx={{
                         backgroundColor: "#f5f5f5",
+                        "& .MuiSelect-icon": {
+                          color: fieldIcon(namecolor),
+                        },
                       }}
                       onChange={(e) =>
                         handleInputChange(index, "class_id", e.target.value)
@@ -908,6 +912,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                           value={box.stream}
                           sx={{
                             backgroundColor: "#f5f5f5",
+                            "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                           }}
                           onChange={(e) =>
                             handleInputChange(index, "stream", e.target.value)
@@ -965,6 +972,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   value={box.subject_id}
                   sx={{
                     backgroundColor: "#f5f5f5",
+                    "& .MuiSelect-icon": {
+                      color: fieldIcon(namecolor), 
+                    },
                   }}
                   onChange={(e) =>
                     handleInputChange(index, "subject_id", e.target.value)
@@ -1064,7 +1074,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 sx={{
                   width: "35px",
                   height: "35px",
-                  color: tabletools(namecolor),
+                  color: fieldIcon(namecolor),
                 }}
               >
                 <AddCircleOutlinedIcon />
@@ -1075,7 +1085,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   sx={{
                     width: "35px",
                     height: "35px",
-                    color: tabletools(namecolor),
+                    color: fieldIcon(namecolor),
                   }}
                 >
                   <DeleteOutlineOutlinedIcon />

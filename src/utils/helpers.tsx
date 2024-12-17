@@ -188,4 +188,10 @@ export const commonStyle = (namecolor:any) => ({
     color: "black !important",
   },
 });
+export const fieldIcon =(textcolor: any)=>{
+  const inputtext:any = {
+    light:'#707070',dark:'#D5D5D5',default:'#707070'
+  }
+  return inputtext[textcolor]
+}
     

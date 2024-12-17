@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import {
   commonStyle,
   deepEqual,
+  fieldIcon,
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 
@@ -249,6 +250,9 @@ const AdminProfession: React.FC<PropsItem> = ({
               value={selectInstitude}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
                
               }}
               onChange={handleInstiChange}
@@ -279,6 +283,9 @@ const AdminProfession: React.FC<PropsItem> = ({
               value={selectCourse}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
               }}
               onChange={handleCourseChange}
               label="Course"
@@ -316,6 +323,9 @@ const AdminProfession: React.FC<PropsItem> = ({
               value={selectSubject}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
               }}
               onChange={handleSubjectChange}
               label="Subject"

@@ -24,10 +24,11 @@ import StudentHobbies from "../StudentHobbies";
 import {
   commonStyle,
   deepEqual,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-  tabletools,
+  
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
@@ -378,6 +379,9 @@ console.log(isSave);
           label="Language *"
           sx={{
             backgroundColor: "#f5f5f5",
+            "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor), 
+                },
           }}
           onChange={(e) => handleChange(e, index)}
           MenuProps={MenuProps}
@@ -456,6 +460,9 @@ console.log(isSave);
                   value={box.proficiency}
                   sx={{
                     backgroundColor: "#f5f5f5",
+                    "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor), 
+                },
                   }}
                   label="Proficiency *"
                   onChange={(e) => handleChange1(e, index)}
@@ -480,7 +487,7 @@ console.log(isSave);
                 sx={{
                   width: "35px",
                   height: "35px",
-                  color: tabletools(namecolor),
+                  color: fieldIcon(namecolor),
                 }}
               >
                 <AddCircleOutlinedIcon />
@@ -491,7 +498,7 @@ console.log(isSave);
                   sx={{
                     width: "35px",
                     height: "35px",
-                    color: tabletools(namecolor),
+                    color: fieldIcon(namecolor),
                   }}
                 >
                   <DeleteOutlineOutlinedIcon />

@@ -35,7 +35,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { toast } from "react-toastify";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
-import { deepEqual } from "../../utils/helpers";
+import { deepEqual, fieldIcon } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
 
@@ -54,7 +54,7 @@ interface StudentBasicInformation {
 
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
-  const { setNamepro, setProImage }: any = context;
+  const { setNamepro, setProImage , namecolor }: any = context;
   const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, postFileData } = useApi();
  // const [gender, setGender] = useState("Male");
@@ -623,12 +623,23 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             >
               <FormControlLabel
                 value="male"
-                control={<Radio className="radiobutton" />}
+                control={<Radio className="radiobutton" sx={{
+                 color: fieldIcon(namecolor),
+                 '&.Mui-checked': {
+                    color: fieldIcon(namecolor),
+                  }
+                 
+                }} />}
                 label="Male"
               />
               <FormControlLabel
                 value="female"
-                control={<Radio className="radiobutton" />}
+                control={<Radio className="radiobutton" sx={{
+                  color: fieldIcon(namecolor),
+                  '&.Mui-checked': {
+                    color: fieldIcon(namecolor),
+                  }
+                 }}/>}
                 label="Female"
               />
             </RadioGroup>
