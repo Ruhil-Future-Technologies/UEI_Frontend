@@ -13,10 +13,9 @@ import { useEffect, useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import {
+  commonStyle,
   deepEqual,
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
+  fieldIcon,
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 
@@ -251,21 +250,21 @@ const AdminProfession: React.FC<PropsItem> = ({
               value={selectInstitude}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
+               
               }}
               onChange={handleInstiChange}
               label="Institute"
             >
               {institude?.map((institut) => (
+                
                 <MenuItem
                   key={institut?.id}
                   value={institut?.id}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
+                
+                  sx={commonStyle(namecolor)}
                 >
                   {institut?.institution_name}
                 </MenuItem>
@@ -284,6 +283,9 @@ const AdminProfession: React.FC<PropsItem> = ({
               value={selectCourse}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
               }}
               onChange={handleCourseChange}
               label="Course"
@@ -302,13 +304,7 @@ const AdminProfession: React.FC<PropsItem> = ({
                 <MenuItem
                   key={data?.id}
                   value={data?.id}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
+                  sx={commonStyle(namecolor)}
                 >
                   {data?.course_name}
                 </MenuItem>
@@ -327,25 +323,13 @@ const AdminProfession: React.FC<PropsItem> = ({
               value={selectSubject}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
               }}
               onChange={handleSubjectChange}
               label="Subject"
             >
-              {/* {subject?.map((data) => (
-                <MenuItem
-                  key={data?.id}
-                  value={data?.id}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    },
-                  }}
-                >
-                  {data?.subject_name}
-                </MenuItem>
-              ))} */}
             </Select>
           </FormControl>
           {/* <div> {!selectSubject && (

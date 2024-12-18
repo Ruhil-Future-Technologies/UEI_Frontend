@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
 import {
+  commonStyle,
   deepEqual,
-  inputfield,
-  inputfieldhover,
+  fieldIcon,
   inputfieldtext,
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
@@ -37,7 +37,11 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
- 
+  const phoneCodes = [
+    { value: "+91", label: "+91" },
+    { value: "+971", label: "+971" },
+    { value: "+1", label: "+1" },
+  ];
 
   const handleChange = (
     event: React.ChangeEvent<
@@ -277,12 +281,15 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                 id="demo-simple-select"
                 sx={{
                   backgroundColor: "#f5f5f5",
+                  "& .MuiSelect-icon": {
+                    color: fieldIcon(namecolor),
+                  },
                 }}
                 value={contcodePhone}
                 // label="Country code"
                 onChange={(event) => setContcodePhone(event.target.value)}
               >
-                <MenuItem
+                {/* <MenuItem
                   value={"+91"}
                   sx={{
                     backgroundColor: inputfield(namecolor),
@@ -317,7 +324,16 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   }}
                 >
                   +1
-                </MenuItem>
+                </MenuItem> */}
+                {phoneCodes?.map((item) => (
+                        <MenuItem
+                          key={item.value}
+                          value={item.value}
+                          sx={commonStyle(namecolor)} 
+                        >
+                          {item.label}
+                        </MenuItem>
+                      ))}
               </Select>
             </FormControl>
           </div>
@@ -358,11 +374,14 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                 value={contcodeWtsap}
                 sx={{
                   backgroundColor: "#f5f5f5",
+                  "& .MuiSelect-icon": {
+                    color: fieldIcon(namecolor),
+                  },
                 }}
                 // label="Country code"
                 onChange={(event) => setContcodeWtsap(event.target.value)}
               >
-                <MenuItem
+                {/* <MenuItem
                   value={"+91"}
                   sx={{
                     backgroundColor: inputfield(namecolor),
@@ -397,7 +416,16 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   }}
                 >
                   +1
-                </MenuItem>
+                </MenuItem> */}
+                 {phoneCodes?.map((item) => (
+                        <MenuItem
+                          key={item.value}
+                          value={item.value}
+                          sx={commonStyle(namecolor)} 
+                        >
+                          {item.label}
+                        </MenuItem>
+                      ))}
               </Select>
             </FormControl>
           </div>

@@ -9,7 +9,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import useApi from "../../hooks/useAPI";
 import { toast } from "react-toastify";
-import { deepEqual } from "../../utils/helpers";
+import { deepEqual, fieldIcon } from "../../utils/helpers";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { ChildComponentProps } from "../StudentProfile";
 import NameContext from "../Context/NameContext";
@@ -31,6 +31,8 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
   const {activeForm,setActiveForm }: any = context;
   const adminId = localStorage.getItem("_id");
+  const context = React.useContext(NameContext);
+  const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
     address_type: "current_address",
@@ -806,6 +808,9 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
                   onChange={handlePermanentAddressCheckbox}
                   name="sameAsCurrent"
                   checked={checked}
+                  sx={{
+                    color: fieldIcon(namecolor)
+                   }}
                 />
               }
               label="Same as Current Address"

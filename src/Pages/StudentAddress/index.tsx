@@ -4,7 +4,7 @@ import { Checkbox, FormControl, FormControlLabel } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
-import { deepEqual } from "../../utils/helpers";
+import { deepEqual, fieldIcon } from "../../utils/helpers";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { ChildComponentProps } from "../StudentProfile";
 import NameContext from "../Context/NameContext";
@@ -42,6 +42,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
   const { activeForm, setActiveForm }: any = context;
   const StudentId = localStorage.getItem("_id");
+  const context = useContext(NameContext);
+  const { namecolor }: any = context;
   console.log(StudentId);
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({
@@ -301,7 +303,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       }
       if (name === "address1") {
         // if (value === "") {
-        if (value === "" || !/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value)) {
+        if (value === "" || !/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
           setAdd_col(true);
         } else {
           setAdd_col(false);
@@ -845,6 +847,9 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
                   onChange={handlePermanentAddressCheckbox}
                   name="sameAsCurrent"
                   checked={checked}
+                  sx={{
+                    color: fieldIcon(namecolor)
+                   }}
                 />
               }
               label="Same as Current Address"

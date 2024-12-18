@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { Form, Formik, setNestedObjectValues } from 'formik';
 import * as Yup from 'yup';
 import { MenuListinter } from '../../Components/Table/columns';
-import { dataaccess, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
+import { dataaccess, fieldIcon, inputfield, inputfieldhover, inputfieldtext } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 interface IRolevsForm {
     role_master_id: string,
@@ -278,7 +278,10 @@ const AddEditRolevsForm = () => {
                                                         variant="outlined"
                                                         sx={{
                                                             backgroundColor: inputfield(namecolor) , 
-                                                            color: inputfieldtext(namecolor) 
+                                                            color: inputfieldtext(namecolor),
+                                                            "& .MuiSelect-icon": {
+                                                                color: fieldIcon(namecolor),
+                                                              },
                                                         }}
                                                         MenuProps={{
                                                             PaperProps: {
@@ -324,7 +327,10 @@ const AddEditRolevsForm = () => {
                                                         variant="outlined"
                                                         sx={{
                                                             backgroundColor: inputfield(namecolor) , 
-                                                            color: inputfieldtext(namecolor) 
+                                                            color: inputfieldtext(namecolor),
+                                                            "& .MuiSelect-icon": {
+                                                                color: fieldIcon(namecolor),
+                                                              },
                                                         }}
                                                         MenuProps={{
                                                             PaperProps: {
@@ -368,9 +374,19 @@ const AddEditRolevsForm = () => {
                                                     value={values.is_search}
                                                     onChange={handleChangemenuVisible}
                                                 >
-                                                    <FormControlLabel value={true} control={<Radio className='radiobutton' />} label="Yes" />
-                                                    <FormControlLabel value={false} control={<Radio className='radiobutton' />} label="No" />
-                                                </RadioGroup>
+                                                        <FormControlLabel value={true} control={<Radio className='radiobutton' sx={{
+                                                            color: fieldIcon(namecolor),
+                                                            '&.Mui-checked': {
+                                                                color: fieldIcon(namecolor),
+                                                            }
+                                                        }} />} label="Yes" />
+                                                        <FormControlLabel value={false} control={<Radio className='radiobutton' sx={{
+                                                            color: fieldIcon(namecolor),
+                                                            '&.Mui-checked': {
+                                                                color: fieldIcon(namecolor),
+                                                            }
+                                                        }} />} label="No" />
+                                                    </RadioGroup>
                                             </div>
                                             {errors.is_search  && touched.is_search ?
                                                 <p style={{ color: 'red' }}>{errors.is_search}</p>:<></>
@@ -385,9 +401,19 @@ const AddEditRolevsForm = () => {
                                                     value={values.is_save}
                                                     onChange={handleChangemenuVisible}
                                                 >
-                                                    <FormControlLabel value={true} control={<Radio className='radiobutton' />} label="Yes" />
-                                                    <FormControlLabel value={false} control={<Radio className='radiobutton'/>} label="No" />
-                                                </RadioGroup>
+                                                        <FormControlLabel value={true} control={<Radio className='radiobutton' sx={{
+                                                            color: fieldIcon(namecolor),
+                                                            '&.Mui-checked': {
+                                                                color: fieldIcon(namecolor),
+                                                            }
+                                                        }} />} label="Yes" />
+                                                        <FormControlLabel value={false} control={<Radio className='radiobutton' sx={{
+                                                            color: fieldIcon(namecolor),
+                                                            '&.Mui-checked': {
+                                                                color: fieldIcon(namecolor),
+                                                            }
+                                                        }} />} label="No" />
+                                                    </RadioGroup>
                                             </div>
                                             {errors.is_save  && touched.is_save ?
                                                 <p style={{ color: 'red' }}>{errors.is_save}</p>:<></>
@@ -402,9 +428,19 @@ const AddEditRolevsForm = () => {
                                                     value={values.is_update}
                                                     onChange={handleChangemenuVisible}
                                                 >
-                                                    <FormControlLabel value={true} control={<Radio className='radiobutton' />} label="Yes" />
-                                                    <FormControlLabel value={false} control={<Radio className='radiobutton' />} label="No" />
-                                                </RadioGroup>
+                                                        <FormControlLabel value={true} control={<Radio className='radiobutton' sx={{
+                                                            color: fieldIcon(namecolor),
+                                                            '&.Mui-checked': {
+                                                                color: fieldIcon(namecolor),
+                                                            }
+                                                        }} />} label="Yes" />
+                                                        <FormControlLabel value={false} control={<Radio className='radiobutton' sx={{
+                                                            color: fieldIcon(namecolor),
+                                                            '&.Mui-checked': {
+                                                                color: fieldIcon(namecolor),
+                                                            }
+                                                        }} />} label="No" />
+                                                    </RadioGroup>
                                             </div>
                                             {errors.is_update  && touched.is_update ?
                                                 <p style={{ color: 'red' }}>{errors.is_update}</p>:<></>

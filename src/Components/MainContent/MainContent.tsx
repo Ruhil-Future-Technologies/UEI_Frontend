@@ -48,7 +48,7 @@ import chatLogo from "../../assets/img/chat-logo.svg";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import robotImage from "../../assets/img/robot.png";
-import { hasSubMenu } from "../../utils/helpers";
+import { fieldIcon, hasSubMenu } from "../../utils/helpers";
 import FullScreenLoader from "../../Pages/Loader/FullScreenLoader";
 import NameContext from "../../Pages/Context/NameContext";
 import { ProfileDialog } from "../Dailog/ProfileComplation";
@@ -61,7 +61,7 @@ import Chatbot from "../../Pages/Chatbot";
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage }: any = context;
+  const { ProPercentage, setProPercentage , namecolor }: any = context;
   const [userName, setUserName] = useState("");
   const StudentId = localStorage.getItem("_id");
   const menuList = localStorage.getItem("menulist1");
@@ -73,22 +73,12 @@ function MainContent() {
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const ChatURL = QUERY_KEYS.CHATADD;
   const ChatStore = QUERY_KEYS.CHAT_STORE;
-  // const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
+  const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
+  const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const [profileDatas, setProfileDatas] = useState<any>({});
-  // const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0);
-  // const [addressPercentage, setaddressPercentage] = useState<number>(0);
-  // const [languagePercentage, setlanguagePercentage] = useState<number>(0);
-  // const [academichistoryPercentage, setacademichistoryPercentage] =
-  //   useState<number>(0);
-  // const [contactPercentage, setcontactPercentage] = useState<number>(0);
-  // // const [hobbyPercentage, sethobbyPercentage] = useState<number>(0);
-  // const [subjectPercentage, setsubjectPercentage] = useState<number>(0);
-  // const [overallProfilePercentage, setoverallProfilePercentage] =
-  //   useState<number>(0);
-  // const [desctiptionPercentage, setdesctiptionPercentage] = useState<number>(0);
   const [profileImage, setprofileImage] = useState<any>();
   const [dataCompleted, setDataCompleted] = useState(false);
   const [themeMode, setThemeMode] = useState("");
@@ -1544,25 +1534,19 @@ function MainContent() {
 
     postData(`${ChatURL}`, payload)
       .then((data) => {
-        if (data.status === 200) {
-          handleResponse(data);
-        } else if (data.status === 404) {
-          // return postData(`${ChatURLAI}`, payload);
-          // return postData(`${ChatURLRAG}`, rag_payload);
+        // if (data.status === 200) {
+        //   handleResponse(data);
+        // } else if (data.status === 404) {
+         if (data.status === 200 || data.status === 404) {
+         
           setLoaderMsg("Searching result from knowledge base");
-          // return getData(
-          //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
-          // );
+      
           if (profileDatas?.academic_history?.institution_type === "school") {
-            // return getData(
-            //   `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-            //     search
-            //   )}&student_id=${StudentId}&class_name=${
-            //     profileDatas?.class?.name
-            //   }`
-            // )
 
-            postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", {
+          
+        
+            postData(`${ChatRAGURL}`, {
+
               user_query: search,
               student_id: StudentId,
               school_college_selection:
@@ -1609,7 +1593,7 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
                     class_or_course_selection: profileDatas?.class.name,
@@ -1641,7 +1625,7 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
                   class_or_course_selection: profileDatas?.class.name,
@@ -1705,7 +1689,9 @@ function MainContent() {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             // )
-            return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
+
+           return postData(`${ChatRAGURL}`, queryParams)
+
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -1727,7 +1713,7 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
                     class_or_course_selection: course_name,
@@ -1760,7 +1746,7 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
                   class_or_course_selection: course_name,
@@ -1819,7 +1805,9 @@ function MainContent() {
           //     search
           //   )}`
           // );
-          return postData("https://prodllm.gyansetu.ai/ollama-chat", {
+
+        return  postData(`${ChatOLLAMAURL}`, {
+
             user_query: search,
             student_id: StudentId,
             class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name,
@@ -2060,7 +2048,7 @@ function MainContent() {
     //     search
     //   )}`
     // )
-    postData("https://prodllm.gyansetu.ai/ollama-chat", {
+    postData(`${ChatOLLAMAURL}`, {
       user_query: search,
       student_id: StudentId,
       class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name,
@@ -2812,7 +2800,7 @@ function MainContent() {
                                   </small>
                                 </div>
                                 <IconButton href="/main/StudentProfile">
-                                  <CreateIcon />
+                                  <CreateIcon sx={{ color: fieldIcon(namecolor) }} />
                                 </IconButton>
                               </div>
 

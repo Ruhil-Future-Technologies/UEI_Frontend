@@ -33,7 +33,7 @@ import "react-toastify/dist/ReactToastify.css";
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
-  toast.dismiss()
+  // toast.dismiss()
   const navigate = useNavigate();
   useEffect(() => {
     toast.dismiss()

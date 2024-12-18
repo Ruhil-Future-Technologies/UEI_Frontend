@@ -27,7 +27,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 // import { styled } from "@mui/material/styles";
 
-import { deepEqual } from "../../utils/helpers";
+import { commonStyle, deepEqual, fieldIcon } from "../../utils/helpers";
 import maleImage from "../../assets/img/avatars/male.png";
 import femaleImage from "../../assets/img/avatars/female.png";
 import NameContext from "../Context/NameContext";
@@ -56,7 +56,9 @@ interface AdminInformation {
 const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const context = React.useContext(NameContext);
 
+
   const { setNamepro, setProImage,activeForm,setActiveForm }: any = context;
+
   const { getData, postData, putData, postFileData } = useApi();
   const [initialAdminState, setInitialAdminState] =
     useState<AdminInformation | null>(null);
@@ -592,12 +594,22 @@ if(response?.status==200){
             >
               <FormControlLabel
                 value="male"
-                control={<Radio className="radiobutton" />}
+                control={<Radio className="radiobutton" sx={{
+                  color: fieldIcon(namecolor),
+                  '&.Mui-checked': {
+                    color: fieldIcon(namecolor),
+                  }
+                 }} />}
                 label="Male"
               />
               <FormControlLabel
                 value="female"
-                control={<Radio className="radiobutton" />}
+                control={<Radio className="radiobutton" sx={{
+                  color: fieldIcon(namecolor),
+                  '&.Mui-checked': {
+                    color: fieldIcon(namecolor),
+                  }
+                 }} />}
                 label="Female"
               />
             </RadioGroup>
@@ -756,6 +768,9 @@ if(response?.status==200){
               onChange={handleDepartmentChange}
               sx={{
                 backgroundColor: "#f5f5f5",
+                "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor),
+                },
               }}
               renderValue={(selected) => {
                 const selectedDepartment = allDepartment.find(
@@ -778,7 +793,9 @@ if(response?.status==200){
             >
               {allDepartment.map((data) => (
                 <MenuItem className="drop-down-menu"
-                key={data.id} value={data.id}>
+                key={data.id} value={data.id}
+                sx={commonStyle(namecolor)}
+                >
                   {data.department_name}
                 </MenuItem>
               ))}

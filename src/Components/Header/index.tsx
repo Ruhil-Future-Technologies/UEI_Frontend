@@ -40,6 +40,7 @@ const Header = () => {
     setNamepro,
     proImage,
     setProImage,
+    setNamecolor,
     setProPercentage,
     setActiveForm
   }: any = context;
@@ -256,7 +257,7 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-   
+    setNamecolor(theme);   
     if (theme === "default") {
     
       document?.documentElement?.setAttribute("data-theme", theme);

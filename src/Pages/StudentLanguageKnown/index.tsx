@@ -22,11 +22,13 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import StudentHobbies from "../StudentHobbies";
 import {
+  commonStyle,
   deepEqual,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-  tabletools,
+  
 } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
@@ -85,6 +87,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [isLanguageUpdated, setIsLanguageUpdated] = useState<boolean>(false);
   const [isHobbiesUpdated, setIsHobbiesUpdated] = useState<boolean>(false);
+  const menuItems = ["read", "write", "both"];
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
@@ -414,6 +417,9 @@ console.log(isSave);
           label="Language *"
           sx={{
             backgroundColor: "#f5f5f5",
+            "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor), 
+                },
           }}
           onChange={(e) => handleChange(e, index)}
           MenuProps={MenuProps}
@@ -427,10 +433,20 @@ console.log(isSave);
                 key={lang.id}
                 value={lang.id}
                 disabled
+                
                 sx={{
                   backgroundColor: inputfield(namecolor),
                   color: inputfieldtext(namecolor),
                   fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: inputfieldhover(namecolor),
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: inputfield(namecolor),   
+                  },
+                  "&.Mui-selected, &:focus": {
+                    backgroundColor: inputfield(namecolor),
+                  },
                 }}
               >
                 {lang.language_name}
@@ -454,6 +470,12 @@ console.log(isSave);
                   "&:hover": {
                     backgroundColor: inputfieldhover(namecolor),
                   },
+                  "&.Mui-selected": {
+                    backgroundColor: inputfield(namecolor),   
+                  },
+                  "&.Mui-selected, &:focus": {
+                    backgroundColor: inputfield(namecolor),
+                  },
                 }}
               >
                 {lang.language_name}
@@ -476,48 +498,23 @@ console.log(isSave);
                   value={box.proficiency}
                   sx={{
                     backgroundColor: "#f5f5f5",
+                    "& .MuiSelect-icon": {
+                  color: fieldIcon(namecolor), 
+                },
                   }}
                   label="Proficiency *"
                   onChange={(e) => handleChange1(e, index)}
                   MenuProps={MenuProps}
                   onBlur={() => validateFields(index, "proficiency")}
                 >
-                  <MenuItem
-                    value={"read"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Read
-                  </MenuItem>
-                  <MenuItem
-                    value={"write"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Write
-                  </MenuItem>
-                  <MenuItem
-                    value={"both"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Both
-                  </MenuItem>
+
+                  {menuItems.map((item) => (
+                    <MenuItem key={item} value={item}
+                      sx={commonStyle(namecolor)}
+                    >
+                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                    </MenuItem>
+                  ))}
                 </Select>
                   {error[index]?.proficiency_error &&  box.proficiency == "" && <FormHelperText style={{color: "red"}}>Proficiency is required</FormHelperText>}
               </FormControl>
@@ -528,7 +525,7 @@ console.log(isSave);
                 sx={{
                   width: "35px",
                   height: "35px",
-                  color: tabletools(namecolor),
+                  color: fieldIcon(namecolor),
                 }}
               >
                 <AddCircleOutlinedIcon />
@@ -539,7 +536,7 @@ console.log(isSave);
                   sx={{
                     width: "35px",
                     height: "35px",
-                    color: tabletools(namecolor),
+                    color: fieldIcon(namecolor),
                   }}
                 >
                   <DeleteOutlineOutlinedIcon />

@@ -20,9 +20,7 @@ import {  useNavigate } from "react-router-dom";
 import NameContext from "../Context/NameContext";
 import { State} from "country-state-city";
 import {
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
+  commonStyle,
 } from "../../utils/helpers";
 
 interface Classes {
@@ -137,8 +135,20 @@ const Uploadpdf = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
 
- // const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
- // const DeleteCourseURL = QUERY_KEYS_COURSE.COURSE_DELETE;
+  const menuItemsInstitute = [
+    { value: "school", label: "School" },
+    { value: "college", label: "College" },
+  ];
+  const boardItems = [
+    { value: "cbse", label: "CBSE" },
+    { value: "icse", label: "ICSE" },
+    { value: "state_board", label: "State Board" },
+  ];
+  const stremItems = [
+    { value: "science", label: "Science" },
+    { value: "commerce", label: "Commerce" },
+    { value: "arts", label: "Arts" },
+  ];
   const { getData, loading, postFileData } = useApi();
   useEffect(() => {
     const states = State.getStatesOfCountry("IN");
@@ -741,30 +751,13 @@ const Uploadpdf = () => {
                   }
                   label="Institute Type"
                 >
-                  <MenuItem
-                    value="school"
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    School
-                  </MenuItem>
-                  <MenuItem
-                    value="college"
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    College
-                  </MenuItem>
+                
+
+                  {menuItemsInstitute?.map((item) => (
+                    <MenuItem key={item.value} value={item.value} sx={commonStyle(namecolor)}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>
@@ -785,42 +778,13 @@ const Uploadpdf = () => {
                     }
                     label="Board"
                   >
-                    <MenuItem
-                      value="cbse"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      CBSE
-                    </MenuItem>
-                    <MenuItem
-                      value="icse"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      ICSE
-                    </MenuItem>
-                    <MenuItem
-                      value="state_board"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      State Board
-                    </MenuItem>
+                  
+
+                    {boardItems?.map((item) => (
+                      <MenuItem key={item.value} value={item.value} sx={commonStyle(namecolor)}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -851,18 +815,12 @@ const Uploadpdf = () => {
                       <MenuItem
                         key={state.value}
                         value={state.label.toLowerCase()}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
+                        sx={commonStyle(namecolor)}
                       >
                         {state.label}
                       </MenuItem>
                     ))}
-                    <MenuItem
+                    {/* <MenuItem
                       key={1}
                       value={1}
                       sx={{
@@ -874,7 +832,7 @@ const Uploadpdf = () => {
                       }}
                     >
                       Others
-                    </MenuItem>
+                    </MenuItem> */}
                   </Select>
                 </FormControl>
               </div>
@@ -901,13 +859,7 @@ const Uploadpdf = () => {
                       <MenuItem
                         key={item?.university_id}
                         value={item?.university_id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
+                        sx={commonStyle(namecolor)}
                       >
                         {item.university_name}
                       </MenuItem>
@@ -941,13 +893,7 @@ const Uploadpdf = () => {
                       <MenuItem
                         key={institute.id}
                         value={institute.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
+                       sx={commonStyle(namecolor)}
                       >
                         {institute.institution_name}
                       </MenuItem>
@@ -977,13 +923,7 @@ const Uploadpdf = () => {
                       <MenuItem
                         key={course.id}
                         value={course.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
+                        sx={commonStyle(namecolor)}
                       >
                         {course.course_name}
                       </MenuItem>
@@ -1030,13 +970,7 @@ const Uploadpdf = () => {
                                   <MenuItem
                                     key={item?.semester_id}
                                     value={item?.semester_id}
-                                    sx={{
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                      '&:hover': {
-                                        backgroundColor: inputfieldhover(namecolor),
-                                      },
-                                    }}
+                                    sx={commonStyle(namecolor)}
                                   >
                                     Semester {item.semester_number}
                                   </MenuItem>
@@ -1062,34 +996,14 @@ const Uploadpdf = () => {
                     }
                     label="Class"
                   >
-                    {/* {classes.map((classes) => (
-                      <MenuItem
-                        key={classes.id}
-                        value={classes.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          },
-                        }}
-                      >
-                        {classes.class_name}
-                      </MenuItem>
-                    ))} */}
+                   
                     {classes
   .sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sorts by class_name in ascending order
   .map((classes) => (
     <MenuItem
       key={classes.id}
       value={classes.id}
-      sx={{
-        backgroundColor: inputfield(namecolor),
-        color: inputfieldtext(namecolor),
-        "&:hover": {
-          backgroundColor: inputfieldhover(namecolor),
-        },
-      }}
+      sx={commonStyle(namecolor)}
     >
       {classes.class_name}
     </MenuItem>
@@ -1117,42 +1031,16 @@ const Uploadpdf = () => {
                       }
                       label="Stream"
                     >
+                     
+                    {stremItems?.map((item) => (
                       <MenuItem
-                        value="science"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
+                        key={item.value}
+                        value={item.value}
+                        sx={commonStyle(namecolor)} // Apply the commonStyle function
                       >
-                        Science
+                        {item.label}
                       </MenuItem>
-                      <MenuItem
-                        value="commerce"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        Commerce
-                      </MenuItem>
-                      <MenuItem
-                        value="arts"
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          "&:hover": {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        Arts
-                      </MenuItem>
+                    ))}
                     </Select>
                   </FormControl>
                 </div>
@@ -1177,13 +1065,7 @@ const Uploadpdf = () => {
                     <MenuItem
                       key={subject.subject_id}
                       value={subject.subject_id}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
+                      sx={commonStyle(namecolor)}
                     >
                       {subject.subject_name}
                     </MenuItem>

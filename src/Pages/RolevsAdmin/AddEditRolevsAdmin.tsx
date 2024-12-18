@@ -21,6 +21,7 @@ import * as Yup from "yup";
 import { MenuListinter } from "../../Components/Table/columns";
 import {
   dataaccess,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
@@ -269,6 +270,9 @@ const AddEditRoleVsAdmin = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
+                                "& .MuiSelect-icon": {
+                                  color: fieldIcon(namecolor),
+                                },
                               }}
                               MenuProps={{
                                 PaperProps: {
@@ -321,6 +325,9 @@ const AddEditRoleVsAdmin = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
+                                "& .MuiSelect-icon": {
+                                  color: fieldIcon(namecolor),
+                                },
                               }}
                               MenuProps={{
                                 PaperProps: {

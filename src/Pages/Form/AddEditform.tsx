@@ -26,6 +26,7 @@ import { MenuListinter } from "../../Components/Table/columns";
 import { routes } from "../NotFound/routesConfig";
 import {
   dataaccess,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
@@ -352,6 +353,9 @@ const AddEditForm = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
+                                "& .MuiSelect-icon": {
+                                  color: fieldIcon(namecolor),
+                                },
                               }}
                               MenuProps={{
                                 PaperProps: {
@@ -404,6 +408,9 @@ const AddEditForm = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
+                                "& .MuiSelect-icon": {
+                                  color: fieldIcon(namecolor),
+                                },
                               }}
                               MenuProps={{
                                 PaperProps: {
@@ -525,12 +532,22 @@ const AddEditForm = () => {
                           >
                             <FormControlLabel
                               value={true}
-                              control={<Radio className="radiobutton" />}
+                              control={<Radio className="radiobutton" sx={{
+                                color: fieldIcon(namecolor),
+                                '&.Mui-checked': {
+                                  color: fieldIcon(namecolor),
+                                }
+                               }}  />}
                               label="Yes"
                             />
                             <FormControlLabel
                               value={false}
-                              control={<Radio className="radiobutton" />}
+                              control={<Radio className="radiobutton" sx={{
+                                color: fieldIcon(namecolor),
+                                '&.Mui-checked': {
+                                  color: fieldIcon(namecolor),
+                                }
+                               }}  />}
                               label="No"
                             />
                           </RadioGroup>
