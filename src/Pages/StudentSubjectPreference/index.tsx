@@ -766,6 +766,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                         value={box.course_id}
                         sx={{
                           backgroundColor: "#f5f5f5",
+                          "& .MuiSelect-icon": {
+                            color: fieldIcon(namecolor),
+                          },
                         }}
                         onChange={(e) =>
                           handleInputChange(index, "course_id", e.target.value)
@@ -799,6 +802,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                         value={box.sem_id}
                         sx={{
                           backgroundColor: "#f5f5f5",
+                          "& .MuiSelect-icon": {
+                            color: fieldIcon(namecolor),
+                          },
                         }}
                         onChange={(e) =>
                           handleInputChange(index, "sem_id", e.target.value)
