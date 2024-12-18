@@ -265,7 +265,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
       if (name === "address1") {
         // if (value === "") {
-        if (value === "" || !/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value)) {
+        if (value === "" || !/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
           setAdd_col(true);
         } else {
           setAdd_col(false);

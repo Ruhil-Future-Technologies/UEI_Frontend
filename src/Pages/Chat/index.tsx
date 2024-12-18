@@ -4,7 +4,11 @@ import "../Chat/Chat.scss";
 import useApi from "../../hooks/useAPI";
 import { toast, ToastContentProps } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { QUERY_KEYS, QUERY_KEYS_STUDENT } from "../../utils/const";
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_STUDENT,
+  QUERY_KEYS_UNIVERSITY,
+} from "../../utils/const";
 import FullScreenLoader from "../Loader/FullScreenLoader";
 import Chatbot from "../Chatbot";
 import { useNavigate, useParams } from "react-router-dom";
@@ -63,6 +67,7 @@ const Chat = () => {
   const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const StudentGETURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const [chat, setchatData] = useState<any>([]);
   const [chatlist, setchatlistData] = useState<any>();
@@ -83,6 +88,7 @@ const Chat = () => {
   const [isUpIconClicked, setIsUpIconClicked] = useState(false);
   const [isDownIconClicked, setIsDownIconClicked] = useState(false);
   const theme = useTheme();
+  const [university_list_data, setUniversity_List_Data] = useState([]);
 
   synth.onvoiceschanged = () => {
     getVoices();
@@ -185,6 +191,18 @@ const Chat = () => {
           theme: "colored",
         });
       });
+    getData(`${university_list}`)
+      .then((data: any) => {
+        setUniversity_List_Data(data?.data);
+      })
+
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+
+          theme: "colored",
+        });
+      });
   };
 
   const getVoices = () => {
@@ -216,7 +234,6 @@ const Chat = () => {
           updated_at: new Date(chat?.updated_at),
         })
       );
-      
 
       // Sort the chat history by updated_at in descending order
       const sortedChatHistory = parsedChatHistory?.sort(
@@ -278,7 +295,7 @@ const Chat = () => {
     cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
 
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => { };
+    utterance.onerror = () => {};
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -333,15 +350,15 @@ const Chat = () => {
 
   const handleError = (e: {
     message:
-    | string
-    | number
-    | boolean
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | Iterable<React.ReactNode>
-    | React.ReactPortal
-    | ((props: ToastContentProps<unknown>) => React.ReactNode)
-    | null
-    | undefined;
+      | string
+      | number
+      | boolean
+      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+      | Iterable<React.ReactNode>
+      | React.ReactPortal
+      | ((props: ToastContentProps<unknown>) => React.ReactNode)
+      | null
+      | undefined;
   }) => {
     setLoading(false);
     toast.error(e?.message, {
@@ -437,13 +454,11 @@ const Chat = () => {
         // if (data.status === 200) {
         //   handleResponse(data);
         // } else if (data.status === 404) {
-           if (data.status === 200 || data.status === 404) {
-          
+        if (data.status === 200 || data.status === 404) {
           // setLoaderMsg("Searching result from knowledge base");
           setLoaderMsg("Searching result from Rag model");
-        
+
           if (studentDetail?.academic_history?.institution_type === "school") {
-         
             postData(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
@@ -486,7 +501,7 @@ const Chat = () => {
                   handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
-                 
+
                   postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: userid,
@@ -551,34 +566,31 @@ const Chat = () => {
               stream,
               class_id,
               university_id,
-              institute_id,
-              course_id,
               year,
               institution_name,
-              university_name
             } = studentDetail?.academic_history || {};
-            const { subject_name, course_name } = studentDetail?.subject_preference || {};
+            const { subject_name, course_name } =
+              studentDetail?.subject_preference || {};
 
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
             // )
+            const university: any = university_list_data.filter(
+              (university: any) => university.university_id == university_id
+            );
             const queryParams = {
               user_query: search,
               student_id: userid,
-              ...(institution_type && {
-                school_college_selection: institution_type,
-              }),
-              ...(board && { board_selection: board }),
-              ...(state_for_stateboard && {
-                state_board_selection: state_for_stateboard,
-              }),
-              ...(stream && { stream_selection: stream }),
-              ...(class_id && { class_selection: class_id }),
-              ...(university_id && { university_selection: university_name }),
-              ...(institute_id && { college_selection: institution_name }),
-              ...(course_id && { course_selection: studentDetail?.course }),
-              ...(year && { year: year }),
-              ...(subject_name && { subject: subject_name }),
+              school_college_selection: institution_type || null,
+              board_selection: board || null,
+              state_board_selection: state_for_stateboard || null,
+              stream_selection: stream || null,
+              class_selection: class_id || null,
+              university_selection: university[0].university_name || null,
+              college_selection: institution_name || null,
+              course_selection: studentDetail?.course || null,
+              year: year || null,
+              subject: subject_name || null,
             };
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
@@ -605,7 +617,7 @@ const Chat = () => {
                   //     search
                   //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
                   // )
-              
+
                   postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: userid,
@@ -701,8 +713,11 @@ const Chat = () => {
           return postData(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: userid,
-            class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
-          })
+            class_or_course_selection:
+              studentDetail?.academic_history?.institution_type === "school"
+                ? studentDetail?.class.name
+                : studentDetail?.subject_preference?.course_name,
+          });
         } else if (data) {
           handleError(data);
         }
@@ -801,7 +816,6 @@ const Chat = () => {
         combinedChatData = [...parsedExistingChat, ...chat];
       }
 
-      
       localStorage.setItem("chatData", JSON.stringify(combinedChatData));
     }
   }, [chat, savedExpandedChat]);
@@ -809,7 +823,6 @@ const Chat = () => {
   let chatData: any;
 
   useEffect(() => {
-
     if (hasSavedLocal) {
       return;
     }
@@ -990,8 +1003,6 @@ const Chat = () => {
     }
   };
   const displayChat = async (chats: any) => {
-    
-
     setShowInitialPage(false);
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
@@ -999,10 +1010,8 @@ const Chat = () => {
     );
 
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
-     
       await saveChat();
     } else if (Array.isArray(chat) && chat.length >= 2) {
-     
       await saveChat();
     } else {
       //empty
@@ -1160,7 +1169,10 @@ const Chat = () => {
     postData(`${ChatOLLAMAURL}`, {
       user_query: question,
       student_id: userid,
-      class_or_course_selection: studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.subject_preference?.course_name,
+      class_or_course_selection:
+        studentDetail?.academic_history?.institution_type === "school"
+          ? studentDetail?.class.name
+          : studentDetail?.subject_preference?.course_name,
     })
       .then((response) => {
         if (response?.status === 200) {
@@ -1202,17 +1214,17 @@ const Chat = () => {
   //   : statredchat;
   const filteredChatsstarred = searchQuery
     ? chatlist
-      ?.filter((chat: { chat_title: string }) =>
-        chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
-      )
-      .sort((a: any, b: any) => b.flagged - a.flagged)
+        ?.filter((chat: { chat_title: string }) =>
+          chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
+        )
+        .sort((a: any, b: any) => b.flagged - a.flagged)
     : chatlist?.sort((a: any, b: any) => b.flagged - a.flagged);
   const filteredChats = searchQuerystarred
     ? chathistory?.filter((chat: { chat_title: string }) =>
-      chat?.chat_title
-        ?.toLowerCase()
-        ?.includes(searchQuerystarred?.toLowerCase())
-    )
+        chat?.chat_title
+          ?.toLowerCase()
+          ?.includes(searchQuerystarred?.toLowerCase())
+      )
     : chathistory;
 
   const extractTime = (chatDate: string) => {
@@ -1669,8 +1681,9 @@ const Chat = () => {
           >
             {Id ? (
               <div
-                className={`left-side-history ${showHistory ? "showhistory" : ""
-                  }`}
+                className={`left-side-history ${
+                  showHistory ? "showhistory" : ""
+                }`}
               >
                 <div className="d-lg-none mb-4 ms-auto d-flex">
                   <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
@@ -1702,17 +1715,17 @@ const Chat = () => {
                         (
                           chat: {
                             chat_title:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                              any,
-                              string | React.JSXElementConstructor<any>
-                            >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
+                              | string
+                              | number
+                              | boolean
+                              | React.ReactElement<
+                                  any,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                              | Iterable<React.ReactNode>
+                              | React.ReactPortal
+                              | null
+                              | undefined;
                             flagged: any;
                             id: number | undefined;
                             created_at: string;
@@ -1750,8 +1763,9 @@ const Chat = () => {
               </div>
             ) : (
               <div
-                className={`left-side-history ${showHistory ? "showhistory" : ""
-                  }`}
+                className={`left-side-history ${
+                  showHistory ? "showhistory" : ""
+                }`}
               >
                 <div className="d-lg-none mb-4 ms-auto d-flex">
                   <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
@@ -1781,17 +1795,17 @@ const Chat = () => {
                         (
                           chat: {
                             chat_title:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                              any,
-                              string | React.JSXElementConstructor<any>
-                            >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
+                              | string
+                              | number
+                              | boolean
+                              | React.ReactElement<
+                                  any,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                              | Iterable<React.ReactNode>
+                              | React.ReactPortal
+                              | null
+                              | undefined;
                             flagged: any;
                             id: number | undefined;
                             created_at: string;
@@ -2012,10 +2026,11 @@ const Chat = () => {
                   ) : (
                     <div className="welcome-box">
                       <img src={chatLogo} alt="" />
-                      <h3>{`${Id
+                      <h3>{`${
+                        Id
                           ? "Hi, How can I help you today?"
                           : "Please select conversation"
-                        }`}</h3>
+                      }`}</h3>
                     </div>
                   )}
                 </div>
