@@ -75,14 +75,17 @@
 .MuiSelect-outlined, .MuiInputBase-input, .MuiInputBase-input{
   color: $headingColor!important;
 }
-.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
-  // -webkit-text-fill-color: black!important
+// .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
+//   .Mui-disabled{
+//   // -webkit-text-fill-color: black!important
+//   -webkit-text-fill-color:#D5D5D5 !important
+// }
+// .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
+  .Mui-disabled{
   -webkit-text-fill-color:#D5D5D5 !important
 }
-.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
-  -webkit-text-fill-color:#D5D5D5 !important
-}
-.css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root{
+// .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root{
+  .MuiIconButton-root{
   color: #D5D5D5 !important;
 }
 .addcomingsoon{
