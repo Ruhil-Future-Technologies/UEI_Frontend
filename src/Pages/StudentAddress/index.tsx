@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, FormControl, FormControlLabel } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useApi from "../../hooks/useAPI";
-import { deepEqual } from "../../utils/helpers";
+import { deepEqual, fieldIcon } from "../../utils/helpers";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { ChildComponentProps } from "../StudentProfile";
+import NameContext from "../Context/NameContext";
 
 interface StudentAddress {
   student_id?: string;
@@ -36,6 +37,8 @@ const showErrorToast = (message: string) => {
 
 const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const StudentId = localStorage.getItem("_id");
+  const context = useContext(NameContext);
+  const { namecolor }: any = context;
   console.log(StudentId);
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({
@@ -780,6 +783,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   onChange={handlePermanentAddressCheckbox}
                   name="sameAsCurrent"
                   checked={checked}
+                  sx={{
+                    color: fieldIcon(namecolor)
+                   }}
                 />
               }
               label="Same as Current Address"

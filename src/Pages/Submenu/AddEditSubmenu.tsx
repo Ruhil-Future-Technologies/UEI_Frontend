@@ -240,13 +240,13 @@ const AddEditSubmenu = () => {
                         <div className="form_field_wrapper">
                           <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">
-                              Menu name *   
+                              Menu name * 
                             </InputLabel>
                             <Select
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, "menu_master_id")
                               }
-                              label="Menu"
+                              label="Menu name *"
                               name="menu_master_id"
                               value={values?.menu_master_id}
                               variant="outlined"
