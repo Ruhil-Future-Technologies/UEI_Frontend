@@ -41,6 +41,7 @@ const Header = () => {
     proImage,
     setProImage,
     setProPercentage,
+    setActiveForm
   }: any = context;
   // const [modalOpen, setModalOpen] = useState(false);
   const StudentId = localStorage.getItem("_id");
@@ -334,6 +335,9 @@ const Header = () => {
   //     .getElementsByClassName("search-close")[0]
   //     .classList.remove("d-block");
   // };
+  const handelStateofProfile=()=>{
+    setActiveForm(0);
+  }
 
   return (
     <>
@@ -950,6 +954,7 @@ const Header = () => {
                       ? "/main/adminprofile"
                       : "/main/StudentProfile"
                   }
+                  onClick={handelStateofProfile}
                 >
                   <PersonOutlineOutlinedIcon />
                   Profile

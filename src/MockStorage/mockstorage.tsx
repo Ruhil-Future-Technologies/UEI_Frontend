@@ -72,6 +72,8 @@ export const contextValue = {
   ProPercentage: "",
   setNamecolor: jest.fn(),
   namecolor: "#ffffff",
+  activeForm: 0, // Assign a number value, e.g., 0
+  setActiveForm: jest.fn(), // Mock function remains unchanged
 };
 
 export const mockBoxes: Box[] = [

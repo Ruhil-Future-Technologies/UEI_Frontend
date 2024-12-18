@@ -29,7 +29,7 @@ interface Language {
   language_name: string;
 }
 
-const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
+const AdminLanguage: React.FC<ChildComponentProps> = () => {
   const AdminId = localStorage.getItem("_id");
   interface Box {
     id: number;
@@ -38,15 +38,18 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   }
 
   const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  const { namecolor,activeForm,setActiveForm }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
+  const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [error, setError] = useState<{
     [key: number]: { language_error: boolean; proficiency_error: boolean };
   }>({});
   const [checkChanges, setCheckChanges] = useState(false);
+  const[editable,setEditable]=useState(true);
+  
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
@@ -55,6 +58,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const deleterow = (id: any, indx: number) => {
+    console.log(id);
     if (id !== 0) {
       deleteData(`/admin_language_known/delete/${id}`)
         .then((data: any) => {
@@ -105,7 +109,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             }
           });
         } else if (data?.status === 404) {
-          setBoxes([{ id: 1, language_id: "", proficiency: "" }]);
+          setBoxes([{ id: 0, language_id: "", proficiency: "" }]);
           setEditFlag(true);
         } else {
           toast.error(data?.message, {
@@ -121,6 +125,42 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         });
       });
   }, []);
+  console.log(initialAdminState);
+  useEffect(()=>{
+    console.log("on call of active form");
+    getData(`${"admin_language_known/edit/" + AdminId}`)
+    .then((response: any) => {
+      console.log(response);
+      if(response?.status==200){
+        const newLanageage= response?.data?.filter((items:any)=>boxes.some((box:Box)=>box.id ===items.id || box.id ==0));
+         console.log(newLanageage);
+          const newBoxes:Box[]=newLanageage.map((item:any)=>(
+            {
+              id: item.id,
+              language_id: item.language_id,
+              proficiency: item.proficiency,
+            }
+          ))
+        console.log(boxes);
+        console.log(newBoxes);
+          if(newBoxes.length >0){
+            setBoxes((preBoxes:Box[])=>[...preBoxes.filter((box:Box)=>box.id !=0)
+              ,...newBoxes.filter(
+              (newbox:Box)=>!preBoxes.some((item:Box)=>item.id===newbox.id )
+            )])
+            setInitialState((prevBoxes: Box[]) => [
+              ...prevBoxes,
+              ...newBoxes.filter(
+                (newBox: Box) => !prevBoxes.some((box: Box) => box.id === newBox.id)
+              ),
+            ]);
+          }
+        setEditable(false);
+      }else if(response?.status==401){
+        setEditable(true);
+        console.log("fjhfdgsh");
+      }});
+  },[activeForm])
 
   const saveLanguage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -141,17 +181,21 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     });
     
     if (!valid) return; // Don't proceed if validation fails
-    setActiveForm((prev) => prev + 1);
+    setActiveForm((prev: number) => prev + 1);
+    console.log(boxes);
     const promises = boxes.map((box) => {
       const payload = {
         admin_id: AdminId,
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
+      console.log(checkChanges,editFalg,box);
       if (checkChanges) {
-        if (editFalg && box.id === 0) {
+        console.log(editable);
+        if (editable && box.id === 0) {
           return postData("admin_language_known/add", payload);
         } else {
+          console.log(payload);
           return putData("admin_language_known/edit/" + AdminId, payload);
         }
       } else {
@@ -159,12 +203,13 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       }
     });
     try {
+      console.log(promises);
       const results: any = await Promise.all(promises);
 
       const successfulResults = results.filter((res: { status: number }) => res.status === 200);
       if (successfulResults?.length > 0) {
         if (checkChanges) {
-          if (editFalg) {
+          if (editable) {
             toast.success("Language save successfully", {
               hideProgressBar: true,
               theme: "colored",
@@ -230,6 +275,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       },
     }));
   };
+  console.log(boxes);
   return (
     <form>
       <p className="font-weight-bold profiletext mt-4">
@@ -419,7 +465,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               type="button"
               className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
               onClick={() => {
-                setActiveForm((prev) => prev - 1);
+                setActiveForm((prev: number) => prev - 1);
               }}
             >
               Previous

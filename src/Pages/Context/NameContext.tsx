@@ -11,6 +11,8 @@ interface NameContextType {
     ProPercentage:any;
     setNamecolor:any;
     namecolor:string;
+    activeForm:number;
+    setActiveForm:any;
   }
   
   // Create the context with a default value
@@ -22,13 +24,14 @@ export const NameProvider = ({ children }: { children: ReactNode }) => {
   const [proImage, setProImage] = useState("");
   const [ProPercentage, setProPercentage] = useState();
   const [namecolor, setNamecolor] = useState(localStorage.getItem('theme') || "default");
+  const [activeForm,setActiveForm]=useState(0);
   const logoutpro = useCallback(() => {
     setNamepro({});
     setProImage("")
   }, []);
 
   return (
-    <NameContext.Provider value={{ namepro, setNamepro,logoutpro,setProImage,proImage ,setProPercentage,ProPercentage,setNamecolor,namecolor}}>
+    <NameContext.Provider value={{ namepro, setNamepro,logoutpro,setProImage,proImage ,setProPercentage,ProPercentage,setNamecolor,namecolor,activeForm,setActiveForm}}>
       {children}
     </NameContext.Provider>
   );

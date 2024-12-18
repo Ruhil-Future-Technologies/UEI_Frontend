@@ -69,9 +69,9 @@ interface Box {
   proficiency: any;
 }
 
-const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
+const StudentLanguage: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  const { namecolor ,activeForm,setActiveForm}: any = context;
   const StudentId = localStorage.getItem("_id");
   const { getData, postData, putData, deleteData } = useApi();
 
@@ -93,6 +93,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const deleterow = (id: any, indx: number) => {
+    console.log(id);
     if (id !== 0) {
       deleteData(`/student_language_knowndelete/${id}`)
         .then((data: any) => {
@@ -173,6 +174,43 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     getdatalanguage();
   }, []);
 
+  useEffect(()=>{
+    getData(`student_language_known/edit/${StudentId}`)
+    .then((data: any) => {
+      console.log(data);
+      if (data?.status === 200) {
+        
+     //   const lenduageIds = data.data.language_id;
+        //setSelectedLeng(lenduageIds);
+        console.log(boxes);
+        const newLanguages = data.data.filter(
+          (item: any) => !boxes.some((box: Box) => box.id === item.id || box.id==0)
+        );
+        const newBoxes: Box[] = newLanguages.map((item: any) => ({
+          id: item.id,
+          language_id: item.language_id,
+          proficiency: item.proficiency,
+        }));
+          if (newBoxes.length > 0) {
+            setBoxes((prevBoxes: Box[]) => [
+          ...prevBoxes,
+          ...newBoxes.filter(
+            (newBox: Box) => !prevBoxes.some((box: Box) => box.id === newBox.id )
+          ),
+        ]);
+        setInitialState((prevBoxes: Box[]) => [
+          ...prevBoxes,
+          ...newBoxes.filter(
+            (newBox: Box) => !prevBoxes.some((box: Box) => box.id === newBox.id)
+          ),
+        ]);
+          }
+       
+      }
+    })
+  },[activeForm])
+ 
+
   const saveLanguage = async () => {
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
@@ -191,7 +229,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     });
 
     if (!valid) return; // Don't proceed if validation fails
-    setActiveForm((prev) => prev + 1);
+    setActiveForm((prev: number) => prev + 1);
     setIsSave(true);
     // console.log("saving",initialAdminState,boxes)
     const eq = deepEqual(initialAdminState, boxes);
@@ -203,7 +241,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         proficiency: box.proficiency,
       };
       
-      console.log(editFlag,"what is the output of editflag");
+      console.log(payload,"what is the output of editflag");
       if(isLanguageUpdated){
       if (editFlag || box.id === 0) {
        
@@ -526,7 +564,7 @@ console.log(isSave);
                 type="button"
                 className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
                 onClick={() => {
-                  setActiveForm((prev) => prev - 1);
+                  setActiveForm((prev: number) => prev - 1);
                 }}
               >
                 Previous

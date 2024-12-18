@@ -706,7 +706,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         }
           await handleReset();
-          navigate("/");
+          await navigate("/");
         } else {
           if (!eq === true && isSubjectPrefTuch) {
             
@@ -717,7 +717,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             });
           }
 
-          navigate("/");
+          await navigate("/");
         }
         setInitialState(initial);
 
