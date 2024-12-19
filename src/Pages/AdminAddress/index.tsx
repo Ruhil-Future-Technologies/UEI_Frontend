@@ -31,7 +31,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
   const {activeForm,setActiveForm }: any = context;
   const adminId = localStorage.getItem("_id");
-  const context = React.useContext(NameContext);
+  
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({

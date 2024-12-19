@@ -57,7 +57,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const context = React.useContext(NameContext);
 
 
-  const { setNamepro, setProImage,activeForm,setActiveForm }: any = context;
+  const {namecolor, setNamepro, setProImage,activeForm,setActiveForm }: any = context;
 
   const { getData, postData, putData, postFileData } = useApi();
   const [initialAdminState, setInitialAdminState] =

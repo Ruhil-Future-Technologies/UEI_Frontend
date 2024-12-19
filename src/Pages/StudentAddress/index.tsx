@@ -42,7 +42,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
   const { activeForm, setActiveForm }: any = context;
   const StudentId = localStorage.getItem("_id");
-  const context = useContext(NameContext);
+  
   const { namecolor }: any = context;
   console.log(StudentId);
   const { getData, postData, putData } = useApi();

@@ -51,7 +51,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   const [checkChanges, setCheckChanges] = useState(false);
 
   const[editable,setEditable]=useState(true);
-  
+  const menuItems = ["read", "write", "both"];
 
   const addRow = () => {
     setBoxes((prevBoxes) => [
