@@ -186,17 +186,17 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
      //   const lenduageIds = data.data.language_id;
         //setSelectedLeng(lenduageIds);
         console.log(boxes);
-        const newLanguages = data.data.filter(
-          (item: any) => !boxes.some((box: Box) => box.id === item.id || box.id==0)
-        );
-        const newBoxes: Box[] = newLanguages.map((item: any) => ({
+        const newLanageage= data?.data?.filter((items:any)=>boxes.some((box:Box)=>box.id ===items.id || box.id ==0));
+        console.log(newLanageage);
+        const newBoxes: Box[] = newLanageage.map((item: any) => ({
           id: item.id,
           language_id: item.language_id,
           proficiency: item.proficiency,
         }));
+        console.log(newBoxes);
           if (newBoxes.length > 0) {
             setBoxes((prevBoxes: Box[]) => [
-          ...prevBoxes,
+          ...prevBoxes.filter((box:Box)=>box.id !=0),
           ...newBoxes.filter(
             (newBox: Box) => !prevBoxes.some((box: Box) => box.id === newBox.id )
           ),
@@ -208,6 +208,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
           ),
         ]);
           }
+          console.log(boxes);
        
       }
     })
@@ -384,6 +385,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
     }));
   };
 console.log(isSave);
+console.log(boxes);
   return (
     <>
       <div className="row">
