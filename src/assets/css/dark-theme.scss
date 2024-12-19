@@ -4,6 +4,8 @@
   $primary: #9943ec;
   $headingColor: #d5d5d5;
   $headerbg: #212529;
+  $date_text:#D5D5D5 !important;
+  $mui_date_bg:#32363b!important;
   .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card{
     background-color: #212529!important;
   }
@@ -75,18 +77,26 @@
 .MuiSelect-outlined, .MuiInputBase-input, .MuiInputBase-input{
   color: $headingColor!important;
 }
-// .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
-//   .Mui-disabled{
-//   // -webkit-text-fill-color: black!important
-//   -webkit-text-fill-color:#D5D5D5 !important
-// }
-// .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
   .Mui-disabled{
-  -webkit-text-fill-color:#D5D5D5 !important
+  -webkit-text-fill-color:$date_text;
 }
-// .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root{
   .MuiIconButton-root{
-  color: #D5D5D5 !important;
+  color:$date_text;
+}
+.MuiPickersPopper-paper{
+  background-color: $mui_date_bg;
+}
+.MuiPickersCalendarHeader-root{
+  color:$date_text;
+}
+.MuiDayCalendar-weekDayLabel{
+  color:$date_text;
+}
+.MuiPickersDay-root{
+  color:$date_text;
+}
+.MuiPickersYear-yearButton{
+  color:$date_text;
 }
 .addcomingsoon{
 
