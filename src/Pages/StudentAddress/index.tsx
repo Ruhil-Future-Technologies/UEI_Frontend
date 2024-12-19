@@ -516,8 +516,40 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
               ...addressPayload,
               pincode: addressPayload?.pincode || 0,
             });
-            // console.log(data);
+             console.log(data);
             if (data?.status === 200) {
+              toast.success(`${addressType} address updated successfully`, {
+                hideProgressBar: true,
+                theme: "colored",
+                position: "top-center",
+              });
+              listData();
+              setTuched(false);
+              
+                
+              
+             
+              
+              
+              if (tuchedPram && tuchedCurrent) {
+                // if (!eq && !permanentAddressEq) {
+                //   // block of code to write the address
+                // } else {
+                //   setActiveForm((prev: number) => prev + 1);
+                // }
+                console.log("1111111111")
+               await setTuchedCurrent(false);
+               await  setTuchedPram(false);
+                setActiveForm( 2);
+              } else if (tuchedPram && !tuchedCurrent) {
+                console.log("2222222222")
+                setActiveForm(2);
+              } else if (!tuchedPram && tuchedCurrent) {
+                console.log("3333333333")
+                setActiveForm(2);
+              }
+            } else if (data?.status === 201) {
+              console.log("4444444444444")
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: "colored",
@@ -529,21 +561,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
                 setTuchedCurrent(false);
               
                 setTuchedPram(false);
-              
-              
-              if (editablePerm && editableCurrent) {
-                // if (!eq && !permanentAddressEq) {
-                //   // block of code to write the address
-                // } else {
-                //   setActiveForm((prev: number) => prev + 1);
-                // }
                 setActiveForm((prev: number) => prev + 1);
-              } else if (editablePerm && !editableCurrent) {
-                setActiveForm((prev: number) => prev + 1);
-              } else if (!editablePerm && editableCurrent) {
-                setActiveForm((prev: number) => prev + 1);
-              }
-            } else if (data?.status === 201) setActiveForm((prev: number) => prev + 1);
+            }else setActiveForm((prev: number) => prev + 1);
             // else {
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
@@ -570,6 +589,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         if (StudentId !== null) {
           console.log("in side student comjbfvf")
           // Edit current address
+          console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
             console.log(tuchedCurrent);
@@ -577,11 +597,11 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             await editAddress("Current", currentAddressPayload);
             // Edit permanent address
             console.log((
-              permanentAddress?.address_type === "permanent" &&
-              editablePerm && !tuchedPram
+              permanentAddress?.address_type === "permanent" && tuchedPram
             ));
+          console.log(editablePerm);
             if (
-              permanentAddress?.address_type === "permanent" &&editablePerm && tuchedPram
+              permanentAddress?.address_type === "permanent"  && tuchedPram
             )await editAddress("Permanent", permanentAddressPayload);
           }
         } else {
@@ -615,6 +635,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       } else {
         return;
       }
+      setTuchedCurrent(true);
     } else {
       if (name === "country") {
         setPermanentAddress((prevState) => ({
@@ -633,8 +654,10 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       } else {
         return;
       }
+      setTuchedPram(true);
     }
     setTuched(true);
+    
   };
   return (
     <form>
