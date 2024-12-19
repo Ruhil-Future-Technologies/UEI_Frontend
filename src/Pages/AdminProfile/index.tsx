@@ -10,12 +10,15 @@ import AdminContactDetails from "../AdminContact";
 import { toast } from "react-toastify";
 import { QUERY_KEYS_ADMIN_BASIC_INFO } from "../../utils/const";
 import useApi from "../../hooks/useAPI";
+import NameContext from "../Context/NameContext";
 
 export default function AdminProfile() {
   const adminId = localStorage.getItem("_id");
   const [isProComplete, setIsProComplete] = React.useState(0);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
-  const [activeForm, setActiveForm] = React.useState(0);
+  const context = React.useContext(NameContext);
+  
+  const { activeForm, setActiveForm }: any = context;
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const { getData } = useApi();
   const [isMobile, setIsMobile] = React.useState(false);
@@ -397,21 +400,21 @@ export default function AdminProfile() {
                                   activeForm === 0 ? "active" : ""
                                 }`}
                               >
-                                <AdminBasicInfo setActiveForm={setActiveForm} />
+                                <AdminBasicInfo setActiveForm={setActiveForm}  activeForm={activeForm}/>
                               </div>
                               <div
                                 className={`form-step ${
                                   activeForm === 1 ? "active" : ""
                                 }`}
                               >
-                                <AdminAddress setActiveForm={setActiveForm} />
+                                <AdminAddress setActiveForm={setActiveForm} activeForm={activeForm}/>
                               </div>
                               <div
                                 className={`form-step ${
                                   activeForm === 2 ? "active" : ""
                                 }`}
                               >
-                                <AdminLanguage setActiveForm={setActiveForm} />
+                                <AdminLanguage activeForm={activeForm} setActiveForm={setActiveForm} />
                               </div>
                               <div
                                 className={`form-step ${
@@ -421,6 +424,7 @@ export default function AdminProfile() {
                                 <div>
                                   <div>
                                     <AdminDescription
+                                    activeForm={activeForm}
                                       setActiveForm={setActiveForm}
                                     />
                                   </div>
@@ -432,6 +436,7 @@ export default function AdminProfile() {
                                 }`}
                               >
                                 <AdminContactDetails
+                                activeForm={activeForm}
                                   setActiveForm={setActiveForm}
                                 />
                               </div>

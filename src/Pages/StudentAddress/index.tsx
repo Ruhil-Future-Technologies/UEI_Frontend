@@ -32,27 +32,32 @@ const showErrorToast = (message: string) => {
     onClose: () => {
       isToastActive = false;
     },
+    hideProgressBar: true,
+    theme: "colored",
+    position: "top-center"
   });
 };
 
-const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  const StudentId = localStorage.getItem("_id");
+const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
+  const { activeForm, setActiveForm }: any = context;
+  const StudentId = localStorage.getItem("_id");
+  
   const { namecolor }: any = context;
   console.log(StudentId);
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({
     address_type: "current",
   });
-  const [studentAddress1, setStudentAddress1] = useState<StudentAddress>({
-    address_type: "current",
-  });
+  // const [studentAddress1, setStudentAddress1] = useState<StudentAddress>({
+  //   address_type: "current",
+  // });
   const [permanentAddress, setPermanentAddress] = useState<StudentAddress>({
     address_type: "permanent",
   });
-  const [permanentAddress1, setPermanentAddress1] = useState<StudentAddress>({
-    address_type: "permanent",
-  });
+  // const [permanentAddress1, setPermanentAddress1] = useState<StudentAddress>({
+  //   address_type: "permanent",
+  // });
   const [editFlag, setEditFlag] = useState<boolean>(false);
   // const [pincode, setPincode] = useState("");
   const [contry_col, setcontry_col] = useState<boolean>(false);
@@ -68,7 +73,11 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
-
+  const [editableCurrent, setEditableCurrect] = useState<boolean>(false);
+  const [editablePerm, setEditableCurrectPerm] = useState<boolean>(false);
+  const [tuched, setTuched] = useState<boolean>(false);
+  const [tuchedPram, setTuchedPram] = useState<boolean>(false);
+  const [tuchedCurrent, setTuchedCurrent] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -149,11 +158,11 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           response?.data.forEach((address: any) => {
             if (address?.address_type === "permanent") {
               setPermanentAddress(address);
-              setPermanentAddress1(address);
+              // setPermanentAddress1(address);
               add1 = address;
             } else if (address?.address_type === "current") {
               setStudentAddress(address);
-              setStudentAddress1(address);
+              // setStudentAddress1(address);
               add2 = address;
             }
           });
@@ -211,11 +220,37 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     listData();
   }, []);
 
+  useEffect(() => {
+    getData(`${"student_address/edit/" + StudentId}`)
+      .then((response: any) => {
+        if (response?.status === 200) {
+          response?.data.forEach((address: any) => {
+            if (address?.address_type === "permanent") {
+              //setPermanentAddress(address);
+              //setPermanentAddress1(address);
+              setEditableCurrectPerm(true);
+              setTuchedPram(false);
+            } else if (address?.address_type === "current") {
+              // setStudentAddress(address);
+              // setStudentAddress1(address);
+              setEditableCurrect(true);
+              setTuchedCurrent(false);
+            } else {
+              setEditableCurrect(false);
+              setEditableCurrectPerm(false);
+
+            }
+          });
+
+
+        }
+      })
+  }, [activeForm])
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     addressType: string
   ) => {
-    //seteditaddress(true);
+    setTuched(true);
     const { name, value } = event.target;
     setChecked(false);
 
@@ -274,9 +309,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           setAdd_col(false);
         }
       }
-
+      setTuchedCurrent(true);
       setStudentAddress((prevState) => ({ ...prevState, [name]: value }));
     } else {
+      setTuchedPram(true);
       if (name === "state") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setstate_col1(true);
@@ -299,6 +335,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         }
       }
       if (name === "pincode") {
+        console.log(value === "", validatePincode(value))
         if (value === "" || validatePincode(value)) {
           setpincode_col1(false);
         } else {
@@ -321,6 +358,8 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   ) => {
     if (event.target.checked) {
       setChecked(true);
+      setTuched(true);
+      setTuchedPram(true);
       setPermanentAddress({ ...studentAddress, address_type: "permanent" });
       if (pincode_col) {
         setpincode_col1(true);
@@ -368,7 +407,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     ) {
       setpincode_col(true);
       // toast.error("Pincode is invalid");
-      showErrorToast("Pincode is invalid");
+      showErrorToast("Entered Pincode is invalid");
     } else {
       setpincode_col(false);
     }
@@ -379,16 +418,18 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setcontry_col(false);
     }
 
-    if (
-      !("pincode" in permanentAddress) ||
-      permanentAddress?.pincode === "" ||
-      !validatePincode(permanentAddress.pincode)
-    ) {
-      setpincode_col1(true);
-      showErrorToast("Pincode is invalid");
-    } else {
-      setpincode_col1(false);
-    }
+    // if (
+    //   !("pincode" in permanentAddress) ||
+    //   permanentAddress?.pincode === "" ||
+    //   !validatePincode(permanentAddress.pincode)
+    // ) {
+    //   console.log("Pincode is invalid");
+    //   console.log( !("pincode" in permanentAddress),permanentAddress?.pincode === "", !validatePincode(permanentAddress.pincode))
+    //   setpincode_col1(true);
+    //   //showErrorToast("Pincode is invalid");
+    // } else {
+    //   setpincode_col1(false);
+    // }
 
     const currentAddressPayload = {
       student_id: StudentId,
@@ -399,11 +440,11 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       student_id: StudentId,
       ...permanentAddress,
     };
-    const eq = deepEqual(studentAddress1, currentAddressPayload);
-    const permanentAddressEq = deepEqual(
-      permanentAddress1,
-      permanentAddressPayload
-    );
+    // const eq = deepEqual(studentAddress1, currentAddressPayload);
+    // const permanentAddressEq = deepEqual(
+    //   permanentAddress1,
+    //   permanentAddressPayload
+    // );
     if (
       studentAddress?.address1 &&
       studentAddress?.country &&
@@ -416,7 +457,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       !pincode_col &&
       !pincode_col1
     ) {
-      if (editFlag) {
+      if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
             const data = await postData("/student_address/add", addressPayload);
@@ -428,8 +469,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 position: "top-center",
               });
               if (addressType === "Current") {
-                setActiveForm((prev) => prev + 1);
+                setActiveForm((prev: number) => prev + 1);
               }
+              setTuched(false);
+              setEditFlag(false);
             } else {
               // toast.error(`Failed to add ${addressType} address`, {
               //   hideProgressBar: true,
@@ -462,10 +505,12 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           await addAddress("Permanent", permanentAddressPayload);
         }
       } else {
+        console.log("idufgvhuiv ughugh uhuig hturg  utytr");
         const editAddress = async (
           addressType: string,
           addressPayload: any
         ) => {
+          console.log(addressPayload?.pincode);
           try {
             const data = await putData("/student_address/edit/" + StudentId, {
               ...addressPayload,
@@ -479,15 +524,26 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 position: "top-center",
               });
               listData();
-
-              if (!eq || !permanentAddressEq) {
-                if (!eq && !permanentAddressEq) {
-                  // block of code to write the address
-                } else {
-                  setActiveForm((prev) => prev + 1);
-                }
+              setTuched(false);
+              
+                setTuchedCurrent(false);
+              
+                setTuchedPram(false);
+              
+              
+              if (editablePerm && editableCurrent) {
+                // if (!eq && !permanentAddressEq) {
+                //   // block of code to write the address
+                // } else {
+                //   setActiveForm((prev: number) => prev + 1);
+                // }
+                setActiveForm((prev: number) => prev + 1);
+              } else if (editablePerm && !editableCurrent) {
+                setActiveForm((prev: number) => prev + 1);
+              } else if (!editablePerm && editableCurrent) {
+                setActiveForm((prev: number) => prev + 1);
               }
-            } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
+            } else if (data?.status === 201) setActiveForm((prev: number) => prev + 1);
             // else {
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
@@ -512,17 +568,21 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         };
 
         if (StudentId !== null) {
+          console.log("in side student comjbfvf")
           // Edit current address
-          if (eq && permanentAddressEq) setActiveForm((prev) => prev + 1);
+          if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
-            if (studentAddress?.address_type === "current" && !eq)
-              await editAddress("Current", currentAddressPayload);
+            console.log(tuchedCurrent);
+            if (studentAddress?.address_type === "current" && editableCurrent && tuchedCurrent)
+            await editAddress("Current", currentAddressPayload);
             // Edit permanent address
-            if (
+            console.log((
               permanentAddress?.address_type === "permanent" &&
-              !permanentAddressEq
-            )
-              await editAddress("Permanent", permanentAddressPayload);
+              editablePerm && !tuchedPram
+            ));
+            if (
+              permanentAddress?.address_type === "permanent" &&editablePerm && tuchedPram
+            )await editAddress("Permanent", permanentAddressPayload);
           }
         } else {
           // Handle the case where StudentId is null
@@ -574,6 +634,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         return;
       }
     }
+    setTuched(true);
   };
   return (
     <form>
@@ -598,6 +659,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress.address1}
             onChange={(e) => handleInputChange(e, "current")}
             required
+            autoComplete="off"
           />
           <div>
             {" "}
@@ -615,16 +677,16 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress?.address2}
             onChange={(e) => handleInputChange(e, "current")}
             // required
+            autoComplete="off"
           />
         </div>
 
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label  ${
-              isFocusedstate || studentAddress?.country
+            className={`col-form-label  ${isFocusedstate || studentAddress?.country
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span>*</span>
@@ -646,11 +708,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label ${
-              isFocusedstate || studentAddress.state
+            className={`col-form-label ${isFocusedstate || studentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span>*</span>
@@ -686,6 +747,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress?.city}
             onChange={(e) => handleInputChange(e, "current")}
             required
+            autoComplete="off"
           />
           <div>
             {" "}
@@ -716,6 +778,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress?.district}
             onChange={(e) => handleInputChange(e, "current")}
             required
+            autoComplete="off"
           />
           <div>
             {" "}
@@ -747,8 +810,9 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={studentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "current")}
             required
-            // error={!!errors.currentpin}
-            // helperText={errors.currentpin}
+            autoComplete="off"
+          // error={!!errors.currentpin}
+          // helperText={errors.currentpin}
           />
           <div>
             {" "}
@@ -805,6 +869,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={permanentAddress.address1}
             onChange={(e) => handleInputChange(e, "permanent")}
             // required
+            autoComplete="off"
           />
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
@@ -820,15 +885,15 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={permanentAddress.address2}
             onChange={(e) => handleInputChange(e, "permanent")}
             // required
+            autoComplete="off"
           />
           {/* {error.address2 && <span style={{ color: 'red' }}>{error.address2}</span>} */}
         </div>
 
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
           <label
-            className={`col-form-label ${
-              isFocused || permanentAddress.country ? "focused" : "focusedempty"
-            }`}
+            className={`col-form-label ${isFocused || permanentAddress.country ? "focused" : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span></span>
@@ -844,11 +909,10 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
-            className={`col-form-label ${
-              isFocusedstate || permanentAddress.state
+            className={`col-form-label ${isFocusedstate || permanentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span></span>
@@ -884,6 +948,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={permanentAddress.city}
             onChange={(e) => handleInputChange(e, "permanent")}
             // required
+            autoComplete="off"
           />
           <div>
             {" "}
@@ -908,6 +973,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={permanentAddress.district}
             onChange={(e) => handleInputChange(e, "permanent")}
             // required
+            autoComplete="off"
           />
           <div>
             {" "}
@@ -932,6 +998,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             maxLength={6}
             value={permanentAddress.pincode || ""}
             onChange={(e) => handleInputChange(e, "permanent")}
+            autoComplete="off"
           />
           <div>
             {" "}
@@ -949,7 +1016,7 @@ const StudentAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               type="button"
               className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
               onClick={() => {
-                setActiveForm((prev) => prev - 1);
+                setActiveForm((prev: number) => prev - 1);
               }}
             >
               Previous

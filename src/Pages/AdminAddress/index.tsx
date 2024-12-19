@@ -26,9 +26,12 @@ interface AdminAddress {
   address_type?: string;
 }
 ////start
-const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  const adminId = localStorage.getItem("_id");
+const AdminAddress: React.FC<ChildComponentProps> = () => {
   const context = React.useContext(NameContext);
+
+  const {activeForm,setActiveForm }: any = context;
+  const adminId = localStorage.getItem("_id");
+  
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
@@ -63,7 +66,8 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
   const [add_col, setAdd_col] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
-
+  const[editable,setEditable]=useState(true);
+  const[editCheck,setEditCheck]=useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -132,7 +136,16 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     getAddressInfo();
   }, [adminId]);
-
+ 
+  useEffect(()=>{
+    getData(`${"admin_address/edit/" + adminId}`)
+      .then((response: any) => {
+        if (response?.status === 200) {
+          setEditable(false);
+        }else if(response?.status === 404){
+          setEditable(true);
+        }});
+  },[activeForm]);
   const getAddressInfo = async () => {
     getData(`${"admin_address/edit/" + adminId}`)
       .then((response: any) => {
@@ -201,7 +214,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   ) => {
     const { name, value } = event.target;
     setChecked(false)
-   
+    setEditCheck(true);
     if (addressType === "current_address") {
       if (name === "country") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -406,8 +419,10 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       permanentAddress1,
       permanentAddressPayload
     );
-    if (editFlag) {
+    console.log(editFlag);
+    if (editFlag && editable) {
       const addAddress = async (addressType: string, addressPayload: any) => {
+       
         try {
           const data = await postData("/admin_address/add", addressPayload);
           if (data?.status === 200) {
@@ -418,7 +433,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             });
             console.log(addressType);
             if (addressType === "Current") {
-              setActiveForm((prev) => prev + 1);
+              setActiveForm((prev: number) => prev + 1);
             }
           } else {
             // toast.error(`Failed to add ${addressType} address`, {
@@ -463,10 +478,10 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             });
             getAddressInfo();
             if (addressType === "Current") {
-              setActiveForm((prev) => prev + 1);
+              setActiveForm((prev: number) => prev + 1);
             }
             console.log(addressType);
-          } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
+          } else if (data?.status === 201) setActiveForm((prev: number) => prev + 1);
           else {
             
             // toast.error(`Failed to update ${addressType} address`, {
@@ -491,7 +506,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
       if (adminId !== null) {
         // Edit current address
-        if (eq && permanentAddressEq) setActiveForm((prev) => prev + 1);
+        if (eq && permanentAddressEq) setActiveForm((prev: number) => prev + 1);
         else {
           if (
             adminAddress?.address_type === "current_address" &&
@@ -511,8 +526,11 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             // {
             //   !eq && (await editAddress("Current", currentAddressPayload));
             // }
-            if (!eq) {
+            console.log(eq);
+            if (!eq && editCheck) {
               await editAddress("Current", currentAddressPayload);
+            }else{
+              setActiveForm((prev: number) => prev + 1);
             }
           }
           // Edit permanent address
@@ -537,6 +555,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             "pincode" in permanentAddress &&
             permanentAddress.pincode !== ""
           ) {
+            console.log(permanentAddressEq)
             if(!permanentAddressEq){
               await editAddress("Permanent", permanentAddressPayload);
             }
@@ -555,6 +574,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     addressType: string,
     name: string
   ) => {
+    setEditCheck(true);
     if (addressType === "current_address") {
       if (name === "country") {
         setadminAddress((prevState) => ({ ...prevState, ["country"]: value }));
@@ -610,6 +630,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={adminAddress.address1}
             onChange={(e) => handleInputChange(e, "current_address")}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -629,6 +650,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control mt-1"
             value={adminAddress.address2}
             onChange={(e) => handleInputChange(e, "current_address")}
+             autoComplete="off"
           />
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
@@ -693,6 +715,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={adminAddress.city}
             onChange={(e) => handleInputChange(e, "current_address")}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -721,6 +744,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={adminAddress.district}
             onChange={(e) => handleInputChange(e, "current_address")}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -749,6 +773,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={adminAddress.pincode}
             onChange={(e) => handleInputChange(e, "current_address")}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -803,6 +828,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.address1}
             onChange={(e) => handleInputChange(e, "permanent_address")}
+             autoComplete="off"
           />
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
@@ -816,6 +842,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.address2}
             onChange={(e) => handleInputChange(e, "permanent_address")}
+             autoComplete="off"
           />
         </div>
         <div className="col-6 pb-3 form_field_wrapper " ref={dropdownRef}>
@@ -874,6 +901,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.city}
             onChange={(e) => handleInputChange(e, "permanent_address")}
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -895,6 +923,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.district}
             onChange={(e) => handleInputChange(e, "permanent_address")}
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -917,6 +946,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={permanentAddress.pincode}
             onChange={(e) => handleInputChange(e, "permanent_address")}
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -933,7 +963,7 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               type="button"
               className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
               onClick={() => {
-                setActiveForm((prev) => prev - 1);
+                setActiveForm((prev: number) => prev - 1);
               }}
             >
               Previous

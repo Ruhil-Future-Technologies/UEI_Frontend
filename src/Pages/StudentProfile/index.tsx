@@ -29,10 +29,12 @@ import { useLocation } from "react-router-dom";
 //   inputfieldtext,
 // } from "../../utils/helpers";
 import AcademicHistory from "../AcademicHistory/AcademicHistory";
+import NameContext from "../Context/NameContext";
 // import "../../assets/css/main.min.css";
 // import "../../assets/css/newstyle.min.css";
 export interface ChildComponentProps {
   setActiveForm: React.Dispatch<React.SetStateAction<number>>;
+  activeForm:number
 }
 
 const StudentProfile = () => {
@@ -59,7 +61,9 @@ const StudentProfile = () => {
   //const [isEdit, setIsEdit] = useState(false);
   const [isProComplete, setIsProComplete] = useState(0);
   const [isProComplete1, setIsProComplete1] = useState(false);
-  const [activeForm, setActiveForm] = useState(0);
+  const context = React.useContext(NameContext);
+  
+  const { activeForm, setActiveForm }: any = context;
   const usertype: any = localStorage.getItem("user_type");
   const { getData } = useApi();
   const StudentId = localStorage.getItem("_id");
@@ -715,6 +719,7 @@ const StudentProfile = () => {
                               >
                                 <StudentBasicInfo
                                   setActiveForm={setActiveForm}
+                                  activeForm={activeForm}
                                 />
                               </div>
                               <div
@@ -722,7 +727,8 @@ const StudentProfile = () => {
                                   activeForm === 1 ? "active" : ""
                                 }`}
                               >
-                                <StudentAddress setActiveForm={setActiveForm} />
+                                <StudentAddress setActiveForm={setActiveForm}
+                                activeForm={activeForm} />
                               </div>
                               <div
                                 className={`form-step ${
@@ -731,6 +737,7 @@ const StudentProfile = () => {
                               >
                                 <StudentLanguageKnown
                                   setActiveForm={setActiveForm}
+                                  activeForm={activeForm}
                                 />
                               </div>
                               <div
@@ -742,6 +749,7 @@ const StudentProfile = () => {
                                   <div>
                                     <AcademicHistory
                                       setActiveForm={setActiveForm}
+                                      activeForm={activeForm}
                                     />
                                   </div>
                                 </div>
@@ -753,6 +761,7 @@ const StudentProfile = () => {
                               >
                                 <StudentContactDetails
                                   setActiveForm={setActiveForm}
+                                  activeForm={activeForm}
                                 />
                               </div>
                               <div

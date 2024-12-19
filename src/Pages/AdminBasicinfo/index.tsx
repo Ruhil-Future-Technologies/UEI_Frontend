@@ -53,9 +53,12 @@ interface AdminInformation {
   pic_path?: string;
 }
 
-const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
+const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const context = React.useContext(NameContext);
-  const { setNamepro, setProImage,namecolor }: any = context;
+
+
+  const {namecolor, setNamepro, setProImage,activeForm,setActiveForm }: any = context;
+
   const { getData, postData, putData, postFileData } = useApi();
   const [initialAdminState, setInitialAdminState] =
     useState<AdminInformation | null>(null);
@@ -74,6 +77,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState("");
   const adminId = localStorage.getItem("_id");
+  const[editable,setEditable]=useState(true);
+  const[editCheck,setEditCheck]=useState(false);
   const [admin, setadmin] = useState<AdminInformation>({
     first_name: "", 
     last_name: "",
@@ -102,6 +107,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     const { name, value } = event.target;
+    setEditCheck(true);
     if (name === "first_name") {
       setFname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
@@ -226,8 +232,23 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     getBasicInfo();
     getDepatment();
   }, [adminId]);
+  
+    useEffect( ()=>{
+      console.log(activeForm);
+      getData(`${"admin_basicinfo/edit/" + adminId}`).then((response)=>{
+if(response?.status==200){
+  setEditable(false);
+}else if(response?.status==404){
+  setEditable(true);
+}
+      })
+      
+
+    },[activeForm]);
+ 
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
+    setEditCheck(true);
     const value = event.target.value as string;
     setAdminDepartment(value);
   };
@@ -290,12 +311,14 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     }
   };
   const handleDateChange = (newDate: Dayjs | null) => {
+
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
       if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
         // setDob(newDate);
         setAdminDOB(newDate);
         setError(null); // Clear error
         setdobset_col(false);
+        setEditCheck(true);
       } else {
         // setDob(null);
         const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
@@ -361,8 +384,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       setdobset_col(false);
     }
     const eq = deepEqual(compare, initialAdminState);
+    console.log(eq);
     setEditFlag1(true);
-    if (editFalg) {
+    if (editable) {
       const seveData = async () => {
         try {
           const response = await postData("admin_basicinfo/add", paylod);
@@ -376,7 +400,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               last_name: paylod?.last_name,
               gender: paylod?.gender,
             });
-            setActiveForm((prev) => prev + 1);
+            setActiveForm((prev: number) => prev + 1);
             getData(
               `${"upload_file/get_image/"}${selectedFile ? selectedFile : adminFilePath
               }`
@@ -389,6 +413,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               .catch((e) => {
                 console.log("------------- e -------------", e);
               });
+              setEditCheck(false);
           } else {
             toast.error(response?.message, {
               hideProgressBar: true,
@@ -417,10 +442,14 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         error === null &&
         datecheck !== "Invalid Date"
       ) {
-        seveData();
+        if(editable){
+          console.log(editFalg);
+          seveData();
+        }
+       
       }
     }
-    if (!editFalg) {
+    if (!editable) {
       const editData = async () => {
         try {
           const response = await putData(
@@ -438,7 +467,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               last_name: paylod?.last_name,
               gender: paylod?.gender,
             });
-            setActiveForm((prev) => prev + 1);
+            setActiveForm((prev:number) => prev + 1);
             getData(
               `${"upload_file/get_image/"}${selectedFile ? selectedFile : adminFilePath
               }`
@@ -453,6 +482,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               });
             getBasicInfo();
             getDepatment();
+            setEditCheck(false);
           } else {
             toast.error("Request failed", {
               hideProgressBar: true,
@@ -482,8 +512,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       ) {
         // eslint-disable-next-line no-lone-blocks
         {
-          if (!eq) editData();
-          else setActiveForm((prev) => prev + 1);
+          if (!editable && editCheck) editData();
+          else setActiveForm((prev:number) => prev + 1);
         }
       }
     }
@@ -504,6 +534,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleInputChange}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -533,6 +564,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             value={admin.last_name}
             onChange={(e) => handleInputChange(e)}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -641,6 +673,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={admin.father_name}
             onChange={(e) => handleInputChange(e)}
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -671,6 +704,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={admin.mother_name}
             onChange={(e) => handleInputChange(e)}
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -698,6 +732,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             value={admin.guardian_name}
             onChange={(e) => handleInputChange(e)}
+             autoComplete="off"
           />
           <div>
             {" "}

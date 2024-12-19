@@ -559,6 +559,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleChange}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -597,6 +598,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleChange}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -743,6 +745,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleChange}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -781,6 +784,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleChange}
             required
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -818,6 +822,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             className="form-control"
             onChange={handleChange}
+             autoComplete="off"
           />
           <div>
             {" "}
@@ -849,6 +854,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             type="text"
             className="form-control"
             onChange={handleChange}
+             autoComplete="off"
           />
           <div>
             {" "}

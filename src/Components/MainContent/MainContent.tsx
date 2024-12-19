@@ -61,7 +61,7 @@ import Chatbot from "../../Pages/Chatbot";
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage , namecolor }: any = context;
+  const { ProPercentage, setProPercentage, namecolor }: any = context;
   const [userName, setUserName] = useState("");
   const StudentId = localStorage.getItem("_id");
   const menuList = localStorage.getItem("menulist1");
@@ -1032,8 +1032,7 @@ function MainContent() {
           chatHistory: chatCount?.data?.saved_chat_count || 0,
           chatCount: chatCount?.data?.total_chat_count || 0,
         });
-         setchatlistData(chatCount?.data);
-
+        setchatlistData(chatCount?.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -1540,13 +1539,10 @@ function MainContent() {
         // if (data.status === 200) {
         //   handleResponse(data);
         // } else if (data.status === 404) {
-         if (data.status === 200 || data.status === 404) {
-         
+        if (data.status === 200 || data.status === 404) {
           setLoaderMsg("Searching result from knowledge base");
-      
+
           if (profileDatas?.academic_history?.institution_type === "school") {
-          
-        
             postData(`${ChatRAGURL}`, {
               user_query: search,
               student_id: StudentId,
@@ -1597,7 +1593,7 @@ function MainContent() {
                   postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
-                    class_or_course_selection: profileDatas?.class.name, 
+                    class_or_course_selection: profileDatas?.class.name,
                   })
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1629,7 +1625,7 @@ function MainContent() {
                 postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
-                  class_or_course_selection: profileDatas?.class.name, 
+                  class_or_course_selection: profileDatas?.class.name,
                 })
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1663,9 +1659,9 @@ function MainContent() {
               year,
               institution_name,
               university_name,
-
             } = profileDatas?.academic_history || {};
-            const { subject_name , course_name, } = profileDatas?.subject_preference || {};
+            const { subject_name, course_name } =
+              profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
@@ -1683,14 +1679,14 @@ function MainContent() {
               ...(class_id && { class_selection: class_id }),
               ...(university_id && { university_selection: university_name }),
               ...(institute_id && { college_selection: institution_name }),
-              ...(course_id && { course_selection:  profileDatas?.course }),
+              ...(course_id && { course_selection: profileDatas?.course }),
               ...(year && { year: year }),
               ...(subject_name && { subject: subject_name }),
             };
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             // )
-           return postData(`${ChatRAGURL}`, queryParams)
+            return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   handleResponse(response);
@@ -1715,7 +1711,7 @@ function MainContent() {
                   postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
-                    class_or_course_selection: course_name, 
+                    class_or_course_selection: course_name,
                   })
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1748,7 +1744,7 @@ function MainContent() {
                 postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
-                  class_or_course_selection: course_name, 
+                  class_or_course_selection: course_name,
                 })
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1804,11 +1800,14 @@ function MainContent() {
           //     search
           //   )}`
           // );
-        return  postData(`${ChatOLLAMAURL}`, {
+          return postData(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: StudentId,
-            class_or_course_selection:  profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
-          })
+            class_or_course_selection:
+              profileDatas?.academic_history?.institution_type === "school"
+                ? profileDatas?.class.name
+                : profileDatas?.subject_preference?.course_name,
+          });
         } else if (data) {
           handleError(data);
         }
@@ -1887,7 +1886,9 @@ function MainContent() {
   // ]
   // Get the top 5 courses
   // const top5Courses = statsCourse.slice(0, 5);
-  const top5Courses = Array.isArray(statsCourse) ? statsCourse?.slice(0, 5) : [];
+  const top5Courses = Array.isArray(statsCourse)
+    ? statsCourse?.slice(0, 5)
+    : [];
   // const top5Courses = dataTest.slice(0, 5);
 
   // Truncate the label and add '...' if it's too long
@@ -2048,7 +2049,10 @@ function MainContent() {
     postData(`${ChatOLLAMAURL}`, {
       user_query: search,
       student_id: StudentId,
-      class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
+      class_or_course_selection:
+        profileDatas?.academic_history?.institution_type === "school"
+          ? profileDatas?.class.name
+          : profileDatas?.subject_preference?.course_name,
     })
       .then((response) => {
         if (response?.status === 200) {
@@ -2797,7 +2801,9 @@ function MainContent() {
                                   </small>
                                 </div>
                                 <IconButton href="/main/StudentProfile">
-                                  <CreateIcon sx={{ color: fieldIcon(namecolor) }} />
+                                  <CreateIcon
+                                    sx={{ color: fieldIcon(namecolor) }}
+                                  />
                                 </IconButton>
                               </div>
 

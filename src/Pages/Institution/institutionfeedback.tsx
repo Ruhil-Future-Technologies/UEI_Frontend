@@ -82,48 +82,52 @@ const InstitutionFeedback = () => {
             }
         }
     ];
- const handelAnswer=()=>{
-    
- }
+    const handelAnswer = () => {
+
+    }
     return (
         <>
-            <div className="feedback">
-                <h1>Give Your Valuable Feedback</h1>
+            <div className="main-wrapper">
+                <div className="main-content">
+                    <div className="feedback">
+                        <h1>Give Your Valuable Feedback</h1>
 
-                <div className="feedback-questions">
-                    {Questions.map(data =>
-                        <div className="question" key={data.id}>
-                            <label htmlFor="" className="top-label">{data.question}</label>
+                        <div className="feedback-questions">
+                            {Questions.map(data =>
+                                <div className="question" key={data.id}>
+                                    <label htmlFor="" className="top-label">{data.question}</label>
 
-                            <div className="row g-2">
-                                {Object.entries(data.options).map(([key, val]) => (
+                                    <div className="row g-2">
+                                        {Object.entries(data.options).map(([key, val]) => (
 
 
-                                    <div className="col-lg-6" key={key}>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                name={`flexRadioDefault-${data.id}`}
-                                                id={`flexRadioDefault1-${data.id}-${key}`}
-                                                value={key}
-                                                onChange={handelAnswer}
-                                            />
-                                            <label className="form-check-label" htmlFor={`flexRadioDefault1-${data.id}-${key}`}>
-                                               {val}
-                                            </label>
-                                        </div>
+                                            <div className="col-lg-6" key={key}>
+                                                <div className="form-check">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name={`flexRadioDefault-${data.id}`}
+                                                        id={`flexRadioDefault1-${data.id}-${key}`}
+                                                        value={key}
+                                                        onChange={handelAnswer}
+                                                    />
+                                                    <label className="form-check-label" htmlFor={`flexRadioDefault1-${data.id}-${key}`}>
+                                                        {val}
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                        ))}
+
+
                                     </div>
-
-                                ))}
-
-
-                            </div>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
 
-                <button className="btn btn-primary mt-4 mx-auto d-block rounded-pill px-4">Submit</button>
+                        <button className="btn btn-primary mt-4 mx-auto d-block rounded-pill px-4">Submit</button>
+                    </div>
+                </div>
             </div>
         </>
     );

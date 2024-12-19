@@ -14,16 +14,18 @@ interface IAdminDescription {
   description: string;
 }
 
-const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
+const AdminDescription: React.FC<ChildComponentProps> = () => {
   const initialState = {
     description: "",
   };
   const context = React.useContext(NameContext);
-  const { namecolor }: any = context;
+  const { namecolor,activeForm, setActiveForm }: any = context;
   const adminId = localStorage.getItem("_id");
   const { getData, postData, putData } = useApi();
   const [description, setDesctiption] = useState(initialState);
   const [editFalg, setEditFlag] = useState<boolean>(false);
+  const[editable,setEditable]=useState(true);
+  const[chaged,setChaged] = useState(false);
   const navigator = useNavigate();
   // const formRef = useRef() as any
   const formRef = useRef<FormikProps<IAdminDescription>>(null);
@@ -59,10 +61,26 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     getDescription();
   }, [adminId]);
+
+useEffect(()=>{
+  getData(
+    "admin_profile_description/edit/" + adminId
+  ).then((response)=>{
+  if (response && response?.status === 200) {
+    setEditable(false);
+    console.log(editable);
+  } else if (response && response?.status === 404) {
+    setEditable(true);
+  }
+})
+},[activeForm])
+
+
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string
   ) => {
+    setChaged(true);
     setDesctiption((prevMenu) => {
       return {
         ...prevMenu,
@@ -90,7 +108,10 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       admin_id: adminId,
       description: description1?.description,
     };
-    if (editFalg) {
+    console.log("aschgsdcchjgjfa fegeg erg rtg ");
+    console.log(editable,editFalg);
+    if (editFalg && editable) {
+      console.log(editable);
       const saveData = async () => {
         try {
           const response = await postData(
@@ -103,7 +124,8 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               hideProgressBar: true,
               theme: "colored",
             });
-            setActiveForm((prev) => prev + 1);
+            setChaged(false);
+            setActiveForm((prev: number) => prev + 1);
           }
         } catch (error: any) {
           if (error?.response?.status === 401) {
@@ -119,8 +141,14 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           }
         }
       };
-      saveData();
-    } else if (!editFalg) {
+      if(chaged){
+        saveData();
+      }else{
+ //code not here
+      }
+     
+    } else if (!editable ) {
+      console.log(editable);
       const editData = async () => {
         try {
           const response = await putData(
@@ -133,7 +161,7 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               hideProgressBar: true,
               theme: "colored",
             });
-            setActiveForm((prev) => prev + 1);
+            setActiveForm((prev: number) => prev + 1);
             getDescription();
           } else {
             toast.error("something want wrong ", {
@@ -158,8 +186,9 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       };
 
       // eslint-disable-next-line no-lone-blocks
-      if (!eq) editData();
-      else setActiveForm((prev) => prev + 1);
+      console.log(!eq)
+      if (!eq && chaged) editData();
+      else setActiveForm((prev: number) => prev + 1);
     }
   };
   const descriptionSchema = Yup.object().shape({
@@ -220,7 +249,7 @@ const AdminDescription: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   type="button"
                   className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
                   onClick={() => {
-                    setActiveForm((prev) => prev - 1);
+                    setActiveForm((prev: number) => prev - 1);
                   }}
                 >
                   Previous
