@@ -1531,7 +1531,7 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   let datecheck: any;
-  let hitcount = 1;
+  // let hitcount = 1;
 
   const handleclickdate = () => {
     // if (currentQuestionIndex === 13) {
@@ -1575,70 +1575,70 @@ export const ProfileDialog: FunctionComponent<{
       currentQuestionIndex === 18 ? "YYYY" : "DD/MM/YYYY"
     );
 
-    if (hitcount % 2 === 0) {
-      if (currentQuestionIndex === 11) {
-        if (datecheck > answers[10]) {
-          const updatedAnswers = [...answers];
-          updatedAnswers[currentQuestionIndex] = datecheck;
-          setAnswers(updatedAnswers);
-          const currentQuestions = initialQuestions[currentSection!];
-          const updatedMessages = [
-            ...messages,
-            { text: datecheck, type: "answer" as const },
-          ];
+    // if (hitcount % 2 === 0) {
+    //   if (currentQuestionIndex === 11) {
+    //     if (datecheck > answers[10]) {
+    //       const updatedAnswers = [...answers];
+    //       updatedAnswers[currentQuestionIndex] = datecheck;
+    //       setAnswers(updatedAnswers);
+    //       const currentQuestions = initialQuestions[currentSection!];
+    //       const updatedMessages = [
+    //         ...messages,
+    //         { text: datecheck, type: "answer" as const },
+    //       ];
 
-          if (currentQuestionIndex < currentQuestions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setMessages([
-              ...updatedMessages,
-              {
-                text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as const,
-              },
-            ]);
-          } else {
-            setMessages(updatedMessages);
-            proceedToNextSection(currentSection!);
-            setCurrentQuestionIndex(0);
-          }
-        } else {
-          // setErordate("The course completion date cannot be earlier than the date of joining.")
-          // toast.error(
-          //   "Date of joining should be less than to the starting date of academic course",
-          //   {
-          //     hideProgressBar: true,
-          //     theme: "colored",
-          //   }
-          // );
-        }
-      } else {
-        const updatedAnswers = [...answers];
-        updatedAnswers[currentQuestionIndex] = datecheck;
-        setAnswers(updatedAnswers);
-        const currentQuestions = initialQuestions[currentSection!];
-        const updatedMessages = [
-          ...messages,
-          { text: datecheck, type: "answer" as const },
-        ];
+    //       if (currentQuestionIndex < currentQuestions.length - 1) {
+    //         setCurrentQuestionIndex(currentQuestionIndex + 1);
+    //         setMessages([
+    //           ...updatedMessages,
+    //           {
+    //             text: currentQuestions[currentQuestionIndex + 1],
+    //             type: "question" as const,
+    //           },
+    //         ]);
+    //       } else {
+    //         setMessages(updatedMessages);
+    //         proceedToNextSection(currentSection!);
+    //         setCurrentQuestionIndex(0);
+    //       }
+    //     } else {
+    //       // setErordate("The course completion date cannot be earlier than the date of joining.")
+    //       // toast.error(
+    //       //   "Date of joining should be less than to the starting date of academic course",
+    //       //   {
+    //       //     hideProgressBar: true,
+    //       //     theme: "colored",
+    //       //   }
+    //       // );
+    //     }
+    //   } else {
+    //     const updatedAnswers = [...answers];
+    //     updatedAnswers[currentQuestionIndex] = datecheck;
+    //     setAnswers(updatedAnswers);
+    //     const currentQuestions = initialQuestions[currentSection!];
+    //     const updatedMessages = [
+    //       ...messages,
+    //       { text: datecheck, type: "answer" as const },
+    //     ];
 
-        if (currentQuestionIndex < currentQuestions.length - 1) {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-          setMessages([
-            ...updatedMessages,
-            {
-              text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as const,
-            },
-          ]);
-        } else {
-          setMessages(updatedMessages);
-          proceedToNextSection(currentSection!);
-          setCurrentQuestionIndex(0);
-        }
-      }
-    } else {
-      hitcount++;
-    }
+    //     if (currentQuestionIndex < currentQuestions.length - 1) {
+    //       setCurrentQuestionIndex(currentQuestionIndex + 1);
+    //       setMessages([
+    //         ...updatedMessages,
+    //         {
+    //           text: currentQuestions[currentQuestionIndex + 1],
+    //           type: "question" as const,
+    //         },
+    //       ]);
+    //     } else {
+    //       setMessages(updatedMessages);
+    //       proceedToNextSection(currentSection!);
+    //       setCurrentQuestionIndex(0);
+    //     }
+    //   }
+    // } else {
+    //   hitcount++;
+    // }
   };
 
   const answerSaveandGotoNextquestoin = (
