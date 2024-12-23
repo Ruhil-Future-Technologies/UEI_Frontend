@@ -637,7 +637,7 @@ const Uploadpdf = () => {
     )
       .then((data: any) => {
         console.log(data);
-        if (data?.status === 200) {
+        if (data?.status_code === 200) {
           toast.success("PDF Upload Queued Successfully", {
             hideProgressBar: true,
             theme: "colored",
