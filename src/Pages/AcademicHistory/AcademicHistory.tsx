@@ -93,7 +93,7 @@ interface Option {
   label: string;
 }
 
-const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
+const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm ,activeForm}) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
@@ -572,7 +572,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   useEffect(() => {
     const semesterCount = semester?.filter((items) => items.course_id === boxes[0]?.course_id)
     setTotalSemester(semesterCount)
-  }, [boxes[0]?.course_id])
+  }, [boxes[0]?.course_id, activeForm])
   useEffect(() => {
     if (boxes[0]?.institute_type === "college") {
       const filterDataInstitute = institutesAll.filter((item) => item.university_id === boxes[0].university_id)
@@ -582,7 +582,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       // const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
       // setTotalSemester(semesterCount)
     }
-  }, [boxes])
+  }, [boxes,activeForm])
 
   //  const maxSemester = totalSemester && totalSemester?.length > 0
   //     ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))

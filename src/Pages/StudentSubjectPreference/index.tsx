@@ -122,7 +122,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const getacademic = async () => {
     getData(`${"new_student_academic_history/get/" + StudentId}`)
       .then((response: any) => {
-        console.log(response);
         if (response.status === 200) {
           setAcademic(
             response?.data[0]?.institution_type === "school" ? true : false
@@ -259,10 +258,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         });
     } else {
-      console.log("collage subject is calling");
       getData("college_subject/list")
         .then((response: any) => {
-          console.log(response);
           if (response.status === 200) {
             const filteredData = response?.data?.filter(
               (item: any) => item?.is_active === 1
@@ -273,10 +270,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 item?.course_id === boxes[0]?.course_id &&
                 item?.semester_id === boxes[0]?.sem_id
             );
-           // console.log(boxes[0]?.course_id);
-            console.log(filterData);
-            console.log(boxes);
-           // console.log(boxes[0]?.sem_id);
             setSubjects(filterData || []);
             setSubjectsAll(filteredData || []);
           }
@@ -458,7 +451,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     field: string,
     value: string
   ) => {
-    // console.log("test academic 66666666data",academic)
     setIsSubjectPrefTuch(true);
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
@@ -609,19 +601,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       //   theme: "colored",
       //   position: "top-center"
       // });
-      // console.log("Data Deleted Successfully", boxes, indx);
       setBoxes(boxes.filter((_, index) => index !== indx));
     }
   };
 
   const handleSubmit = async () => {
-    // e: React.FormEvent
-    // e.preventDefault();
-
-    // const eqq = deepEqual(boxes11,boxes)
-    // console.log("test data11111",boxes11,boxes,eqq)
-    // if(!eqq === true)  {
-
     let valid = true;
     boxes.forEach((box, index) => {
       if (!box?.subject_id || !box?.preference || !box?.score_in_percentage) {
@@ -664,7 +648,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         eq = deepEqual(initialState, submissionData);
 
         if (editFlag) {
-          console.log("hallo add");
           return postData("/subject_preference/add", submissionData);
         } else {
           if (box.id === 0) {
@@ -743,8 +726,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
-  console.log(subjectsAll);
-  console.log(subjects);
   return (
     <div>
       <form>
