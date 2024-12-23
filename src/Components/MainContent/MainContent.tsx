@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 //import "./MainContent.css";
 import { Bar, Line } from "react-chartjs-2";
-import Chart from "react-apexcharts";
+// import Chart from "react-apexcharts";
 import "chart.js/auto";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { Chart as ChartJS, ChartOptions, ChartData } from "chart.js";
@@ -17,6 +17,7 @@ import {
   QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_STUDENT,
+  QUERY_KEYS_UNIVERSITY,
 } from "../../utils/const";
 import CreateIcon from "@mui/icons-material/Create";
 
@@ -55,6 +56,7 @@ import { ProfileDialog } from "../Dailog/ProfileComplation";
 import "../../../node_modules/react-perfect-scrollbar/dist/css/styles.css";
 import ThemeSidebar from "../ThemeSidebar/ThemeSidebar";
 import Chatbot from "../../Pages/Chatbot";
+import theme from "../../theme";
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
@@ -78,6 +80,7 @@ function MainContent() {
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const [profileDatas, setProfileDatas] = useState<any>({});
   const [profileImage, setprofileImage] = useState<any>();
   const [dataCompleted, setDataCompleted] = useState(false);
@@ -111,221 +114,295 @@ function MainContent() {
   // const userdata = JSON.parse(localStorage?.getItem("userdata") || "/{/}/");
   const userdata = JSON.parse(localStorage?.getItem("userdata") || "{}");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [university_list_data, setUniversity_List_Data] = useState([]);
+  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
 
-  const barChartOptions = {
-    chart: {
-      id: "chart5",
-      height: 295,
-      width: "100%",
-      toolbar: {
-        show: false,
-      },
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 5,
-        horizontal: false,
-        columnWidth: "50%",
-      },
-    },
-    xaxis: {
-      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    },
-    grid: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ["#00E396"], // Green border for the bars
-    },
-    colors: ["#00E396"],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        type: "vertical",
-        shadeIntensity: 0.5,
-        gradientToColors: ["#009FFD"],
-        inverseColors: true,
-        // opacityFrom: 0.85,
-        // opacityTo: 0.85,
-        stops: [50, 80],
-      },
-    },
+  const handleUpIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
+    }
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: "liked",
+    }));
+
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: true,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: true,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+    }
+  };
+  const handleDownIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
+    }
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: "disliked",
+    }));
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: false,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: false,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+    }
   };
 
-  const barChartSeries = [
-    {
-      name: "Data",
-      data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
-    },
-  ];
+  // const barChartOptions = {
+  //   chart: {
+  //     id: "chart5",
+  //     height: 295,
+  //     width: "100%",
+  //     toolbar: {
+  //       show: false,
+  //     },
+  //   },
+  //   plotOptions: {
+  //     bar: {
+  //       borderRadius: 5,
+  //       horizontal: false,
+  //       columnWidth: "50%",
+  //     },
+  //   },
+  //   xaxis: {
+  //     categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  //   },
+  //   grid: {
+  //     show: false,
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     show: true,
+  //     width: 2,
+  //     colors: ["#00E396"], // Green border for the bars
+  //   },
+  //   colors: ["#00E396"],
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       type: "vertical",
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: ["#009FFD"],
+  //       inverseColors: true,
+  //       // opacityFrom: 0.85,
+  //       // opacityTo: 0.85,
+  //       stops: [50, 80],
+  //     },
+  //   },
+  // };
 
-  const radialChartOptions = {
-    chart: {
-      id: "chart1",
-    },
-    plotOptions: {
-      radialBar: {
-        startAngle: -115, // Starts from the left
-        endAngle: 115, // Ends on the right (half-circle gauge)
-        hollow: {
-          size: "70%", // Creates the hollow center
-        },
-        dataLabels: {
-          name: {
-            show: false, // Hides the name label
-          },
-          value: {
-            fontSize: "22px",
-            show: true,
-            formatter: function (val: any) {
-              return val + "%"; // Display the percentage value in the center
-            },
-          },
-        },
-        track: {
-          background: "#e7e7e7", // Gray background for the unused portion
-          strokeWidth: "97%",
-          margin: 5, // Margin between the track and the bar
-        },
-      },
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        type: "horizontal",
-        shadeIntensity: 0.5,
-        gradientToColors: ["#FF0080"], // Gradient from yellow to red
-        inverseColors: false,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100],
-      },
-    },
-    stroke: {
-      lineCap: "round" as const,
-    },
-    labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
-  };
+  // const barChartSeries = [
+  //   {
+  //     name: "Data",
+  //     data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
+  //   },
+  // ];
 
-  const lineChartOptions = {
-    chart: {
-      id: "chart2",
-      sparkline: {
-        enabled: !0,
-      },
-      zoom: {
-        enabled: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      width: 2,
-      curve: "smooth" as const,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        gradientToColors: ["#02c27a"],
-        shadeIntensity: 1,
-        type: "vertical",
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
+  // const radialChartOptions = {
+  //   chart: {
+  //     id: "chart1",
+  //   },
+  //   plotOptions: {
+  //     radialBar: {
+  //       startAngle: -115, // Starts from the left
+  //       endAngle: 115, // Ends on the right (half-circle gauge)
+  //       hollow: {
+  //         size: "70%", // Creates the hollow center
+  //       },
+  //       dataLabels: {
+  //         name: {
+  //           show: false, // Hides the name label
+  //         },
+  //         value: {
+  //           fontSize: "22px",
+  //           show: true,
+  //           formatter: function (val: any) {
+  //             return val + "%"; // Display the percentage value in the center
+  //           },
+  //         },
+  //       },
+  //       track: {
+  //         background: "#e7e7e7", // Gray background for the unused portion
+  //         strokeWidth: "97%",
+  //         margin: 5, // Margin between the track and the bar
+  //       },
+  //     },
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "light",
+  //       type: "horizontal",
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: ["#FF0080"], // Gradient from yellow to red
+  //       inverseColors: false,
+  //       opacityFrom: 1,
+  //       opacityTo: 1,
+  //       stops: [0, 100],
+  //     },
+  //   },
+  //   stroke: {
+  //     lineCap: "round" as const,
+  //   },
+  //   labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
+  // };
 
-    colors: ["#02c27a"],
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-    },
-  };
+  // const lineChartOptions = {
+  //   chart: {
+  //     id: "chart2",
+  //     sparkline: {
+  //       enabled: !0,
+  //     },
+  //     zoom: {
+  //       enabled: false,
+  //     },
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     width: 2,
+  //     curve: "smooth" as const,
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       gradientToColors: ["#02c27a"],
+  //       shadeIntensity: 1,
+  //       type: "vertical",
+  //       opacityFrom: 0.8,
+  //       opacityTo: 0.1,
+  //       stops: [0, 100, 100, 100],
+  //     },
+  //   },
 
-  const secondLineChartOptions = {
-    chart: {
-      id: "chart8",
-      height: "100%",
-      width: "100%",
-      zoom: {
-        enabled: false, // Disables zoom functionality
-      },
-      sparkline: {
-        enabled: !0,
-      },
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        gradientToColors: ["#7DFF50"],
-        shadeIntensity: 1,
-        type: "vertical",
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
+  //   colors: ["#02c27a"],
+  //   xaxis: {
+  //     categories: [
+  //       "Jan",
+  //       "Feb",
+  //       "Mar",
+  //       "Apr",
+  //       "May",
+  //       "Jun",
+  //       "Jul",
+  //       "Aug",
+  //       "Sep",
+  //     ],
+  //   },
+  // };
 
-    colors: ["#7DFF50"],
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "straight" as const,
-      width: 2,
-      colors: ["#7DFF50"],
-    },
-    markers: {
-      size: 5,
-      colors: ["#7DFF50"],
-      strokeColors: "#fff",
-      strokeWidth: 2,
-      hover: {
-        size: 7,
-      },
-    },
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-      labels: {
-        show: false, // Hides the x-axis values
-      },
-    },
-    yaxis: {
-      show: false, // Hides the y-axis values
-    },
-    grid: {
-      show: false, // Hides grid lines
-    },
-  };
+  // const secondLineChartOptions = {
+  //   chart: {
+  //     id: "chart8",
+  //     height: "100%",
+  //     width: "100%",
+  //     zoom: {
+  //       enabled: false, // Disables zoom functionality
+  //     },
+  //     sparkline: {
+  //       enabled: !0,
+  //     },
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       gradientToColors: ["#7DFF50"],
+  //       shadeIntensity: 1,
+  //       type: "vertical",
+  //       opacityFrom: 0.8,
+  //       opacityTo: 0.1,
+  //       stops: [0, 100, 100, 100],
+  //     },
+  //   },
+
+  //   colors: ["#7DFF50"],
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     curve: "straight" as const,
+  //     width: 2,
+  //     colors: ["#7DFF50"],
+  //   },
+  //   markers: {
+  //     size: 5,
+  //     colors: ["#7DFF50"],
+  //     strokeColors: "#fff",
+  //     strokeWidth: 2,
+  //     hover: {
+  //       size: 7,
+  //     },
+  //   },
+  //   xaxis: {
+  //     categories: [
+  //       "Jan",
+  //       "Feb",
+  //       "Mar",
+  //       "Apr",
+  //       "May",
+  //       "Jun",
+  //       "Jul",
+  //       "Aug",
+  //       "Sep",
+  //     ],
+  //     labels: {
+  //       show: false, // Hides the x-axis values
+  //     },
+  //   },
+  //   yaxis: {
+  //     show: false, // Hides the y-axis values
+  //   },
+  //   grid: {
+  //     show: false, // Hides grid lines
+  //   },
+  // };
 
   useEffect(() => {
     if (usertype === "admin") {
@@ -1237,6 +1314,9 @@ function MainContent() {
             getData("/course/list"),
             getData("/school_subject/list"),
             getData("/college_subject/list"),
+            getData(`${university_list}`).then((data: any) => {
+              setUniversity_List_Data(data?.data);
+            }),
           ]);
           const institutionCount =
             institutionRes?.status === "fulfilled"
@@ -1414,7 +1494,22 @@ function MainContent() {
     const newData = data?.data ? data?.data : data;
 
     newData.speak = false;
-    setSelectedChat((prevState: any) => [...prevState, newData]);
+    newData.like_dislike = null;
+    // setSelectedChat((prevState: any) => [...prevState, newData]);
+    setSelectedChat((prevState: any) => {
+      const newState = [...prevState, newData];
+      const newIndex = newState.length - 1;
+      setLikedStates((prevStates) => ({
+        ...prevStates,
+        [newIndex]:
+          newData.like_dislike === true
+            ? "liked"
+            : newData.like_dislike === false
+            ? "disliked"
+            : "",
+      }));
+      return newState;
+    });
     setChatSaved(false);
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
@@ -1563,18 +1658,40 @@ function MainContent() {
             })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === "object" && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === "string" &&
+                              value.includes("\\frac") &&
+                              !value.includes("$")
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(""),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
                   const formattedResponse = {
                     data: {
                       question: response.question,
-                      answer: Array.isArray(response.answer)
-                        ? response.answer
-                        : [response.answer.toString()],
+                      answer: formatAnswer(response.answer),
                     },
                   };
                   const ChatStorepayload = {
                     student_id: StudentId,
                     chat_question: response.question,
-                    response: response?.answer,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
@@ -1654,34 +1771,30 @@ function MainContent() {
               stream,
               class_id,
               university_id,
-              institute_id,
-              course_id,
               year,
               institution_name,
-              university_name,
             } = profileDatas?.academic_history || {};
             const { subject_name, course_name } =
               profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
+            const university: any = university_list_data.filter(
+              (university: any) => university.university_id == university_id
+            );
             const queryParams = {
               user_query: search,
               student_id: StudentId,
-              ...(institution_type && {
-                school_college_selection: institution_type,
-              }),
-              ...(board && { board_selection: board }),
-              ...(state_for_stateboard && {
-                state_board_selection: state_for_stateboard,
-              }),
-              ...(stream && { stream_selection: stream }),
-              ...(class_id && { class_selection: class_id }),
-              ...(university_id && { university_selection: university_name }),
-              ...(institute_id && { college_selection: institution_name }),
-              ...(course_id && { course_selection: profileDatas?.course }),
-              ...(year && { year: year }),
-              ...(subject_name && { subject: subject_name }),
+              school_college_selection: institution_type || null,
+              board_selection: board || null,
+              state_board_selection: state_for_stateboard || null,
+              stream_selection: stream || null,
+              class_selection: class_id || null,
+              university_selection: university[0].university_name || null,
+              college_selection: institution_name || null,
+              course_selection: profileDatas?.course || null,
+              year: year || null,
+              subject: subject_name || null,
             };
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
@@ -3088,6 +3201,68 @@ function MainContent() {
                                         </p>
                                       </div>
                                       <ul className="ansfooter">
+                                        <ThumbUpAltOutlinedIcon
+                                          onClick={() =>
+                                            handleUpIconClick(index)
+                                          }
+                                          sx={{
+                                            fontSize: "14px",
+                                            color:
+                                              likedStates[index] === "liked" ||
+                                              chat.like_dislike === true
+                                                ? theme.palette.primary.main
+                                                : chat.like_dislike !== null
+                                                ? "#ccc"
+                                                : "",
+                                            cursor:
+                                              chat.like_dislike !== null
+                                                ? "default"
+                                                : "pointer",
+                                            transform:
+                                              likedStates[index] === "liked" ||
+                                              chat.like_dislike === true
+                                                ? "scale(1.3)"
+                                                : "scale(1)",
+                                            transition: "color 0.3s ease",
+                                            opacity:
+                                              chat.like_dislike !== null &&
+                                              chat.like_dislike !== true
+                                                ? 0.5
+                                                : 1,
+                                          }}
+                                        />
+                                        <ThumbDownOutlinedIcon
+                                          onClick={() =>
+                                            handleDownIconClick(index)
+                                          }
+                                          sx={{
+                                            fontSize: "14px",
+                                            color:
+                                              likedStates[index] ===
+                                                "disliked" ||
+                                              chat.like_dislike === false
+                                                ? theme.palette.primary.main
+                                                : chat.like_dislike !== null
+                                                ? "#ccc"
+                                                : "",
+                                            cursor:
+                                              chat.like_dislike !== null
+                                                ? "default"
+                                                : "pointer",
+                                            transform:
+                                              likedStates[index] ===
+                                                "disliked" ||
+                                              chat.like_dislike === false
+                                                ? "scale(1.3)"
+                                                : "scale(1)",
+                                            transition: "color 0.3s ease",
+                                            opacity:
+                                              chat.like_dislike !== null &&
+                                              chat.like_dislike !== false
+                                                ? 0.5
+                                                : 1,
+                                          }}
+                                        />
                                         <li onClick={regenerateChat}>
                                           <CachedOutlinedIcon
                                             sx={{ fontSize: "14px" }}
@@ -3122,16 +3297,6 @@ function MainContent() {
                                               ? "Copied"
                                               : "Copy"}
                                           </span>
-                                        </li>
-                                        <li>
-                                          <ThumbDownOutlinedIcon
-                                            sx={{ fontSize: "14px" }}
-                                          />
-                                        </li>
-                                        <li>
-                                          <ThumbUpAltOutlinedIcon
-                                            sx={{ fontSize: "14px" }}
-                                          />
                                         </li>
                                       </ul>
                                     </div>
@@ -3188,12 +3353,12 @@ function MainContent() {
                             <h6 className="mb-0">Study Chart</h6>
                           </div>
                           <div className="mt-4">
-                            <Chart
+                            {/* <Chart
                               options={barChartOptions}
                               series={barChartSeries}
                               type="bar"
                               height={"280px"}
-                            />
+                            /> */}
                           </div>
                           <p>Your Total Time Spend & Study Chart</p>
                           <div className="d-flex align-items-center gap-3 mt-4">
@@ -3250,12 +3415,12 @@ function MainContent() {
                             </div>
                           </div>
                           <div className="chart-container2">
-                            <Chart
+                            {/* <Chart
                               options={radialChartOptions}
                               series={[78]}
                               type="radialBar"
                               height={"200px"}
-                            />
+                            /> */}
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
@@ -3303,7 +3468,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div className="chart-container2">
-                            <Chart
+                            {/* <Chart
                               options={lineChartOptions}
                               series={[
                                 {
@@ -3312,7 +3477,7 @@ function MainContent() {
                               ]}
                               type="area"
                               height={"100%"}
-                            />
+                            /> */}
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
@@ -3330,7 +3495,7 @@ function MainContent() {
                 <div className="col-xl-6">
                   <div className="card w-100 rounded-4 desk-card addcomingsoon">
                     <div className="card-body">
-                      <Chart
+                      {/* <Chart
                         options={secondLineChartOptions}
                         series={[
                           {
@@ -3339,7 +3504,7 @@ function MainContent() {
                           },
                         ]}
                         type="area"
-                      />
+                      /> */}
                       <div className="d-flex align-items-center gap-3 mt-4">
                         <div className="">
                           <h1 className="mb-0">36.7%</h1>

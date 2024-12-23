@@ -85,10 +85,9 @@ const Chat = () => {
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [isUpIconClicked, setIsUpIconClicked] = useState(false);
-  const [isDownIconClicked, setIsDownIconClicked] = useState(false);
   const theme = useTheme();
   const [university_list_data, setUniversity_List_Data] = useState([]);
+  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
 
   synth.onvoiceschanged = () => {
     getVoices();
@@ -141,18 +140,109 @@ const Chat = () => {
     }, 500);
   }, [Id]);
 
-  const handleUpIconClick = () => {
-    if (isDownIconClicked) {
-      setIsDownIconClicked(false);
+  const handleUpIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
     }
-    setIsUpIconClicked(!isUpIconClicked);
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: "liked",
+    }));
+
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: true,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: true,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+      setDisplayedChat(updatedChatData);
+    }
   };
 
-  const handleDownIconClick = () => {
-    if (isUpIconClicked) {
-      setIsUpIconClicked(false);
+  const handleDownIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
     }
-    setIsDownIconClicked(!isDownIconClicked);
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: "disliked",
+    }));
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: false,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: false,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+      setDisplayedChat(updatedChatData);
+    }
+  };
+
+  const syncChatStates = (chatData: any) => {
+    if (selectedchat?.length > 0) {
+      const currentQuestion = selectedchat[0]?.question;
+      const matchingChat = chatData?.find((chat: any) => {
+        const conversation = JSON.parse(chat.chat_conversation);
+        return conversation[0]?.question === currentQuestion;
+      });
+
+      if (matchingChat) {
+        const conversation = JSON.parse(matchingChat.chat_conversation);
+        setSelectedChat(
+          conversation.map((item: any) => ({
+            ...item,
+            speak: false,
+          }))
+        );
+
+        const newLikedStates: { [key: string]: string } = {};
+        conversation.forEach((item: any, index: number) => {
+          if (item.like_dislike === true) {
+            newLikedStates[index] = "liked";
+          } else if (item.like_dislike === false) {
+            newLikedStates[index] = "disliked";
+          }
+        });
+        setLikedStates(newLikedStates);
+      }
+    }
   };
 
   const callAPI = async () => {
@@ -180,10 +270,45 @@ const Chat = () => {
       });
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
+        if (selectedchat?.length > 0) {
+          const currentChat = data?.data?.find((chat: any) => {
+            const conversation = JSON.parse(chat.chat_conversation);
+            return conversation[0]?.question === selectedchat[0]?.question;
+          });
+
+          if (currentChat) {
+            const conversation = JSON.parse(currentChat.chat_conversation);
+            setSelectedChat(
+              conversation?.map((item: any, index: number) => {
+                const existingChat = selectedchat[index];
+                return {
+                  ...item,
+                  speak: existingChat?.speak || false,
+                  like_dislike: item.like_dislike,
+                };
+              })
+            );
+            setLikedStates(
+              conversation?.reduce(
+                (acc: any, item: any, index: number) => ({
+                  ...acc,
+                  [index]:
+                    item.like_dislike === true
+                      ? "liked"
+                      : item.like_dislike === false
+                      ? "disliked"
+                      : "",
+                }),
+                {}
+              )
+            );
+          }
+        }
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
         setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
         setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+        syncChatStates(data?.data);
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -327,8 +452,23 @@ const Chat = () => {
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
     newData.speak = false;
+    newData.like_dislike = null;
     // setFilteredProducts(newData);
-    setSelectedChat((prevState: any) => [...prevState, newData]);
+    // setSelectedChat((prevState: any) => [...prevState, newData]);
+    setSelectedChat((prevState: any) => {
+      const newState = [...prevState, newData];
+      const newIndex = newState.length - 1;
+      setLikedStates((prevStates) => ({
+        ...prevStates,
+        [newIndex]:
+          newData.like_dislike === true
+            ? "liked"
+            : newData.like_dislike === false
+            ? "disliked"
+            : "",
+      }));
+      return newState;
+    });
     setChatSaved(false);
     setchatData((prevState: any) => [...prevState, newData]);
     setLoading(false);
@@ -480,18 +620,40 @@ const Chat = () => {
             })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === "object" && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === "string" &&
+                              value.includes("\\frac") &&
+                              !value.includes("$")
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(""),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
                   const formattedResponse = {
                     data: {
                       question: response.question,
-                      answer: Array.isArray(response.answer)
-                        ? response.answer
-                        : [response.answer.toString()],
+                      answer: formatAnswer(response.answer),
                     },
                   };
                   const ChatStorepayload = {
                     student_id: userid,
                     chat_question: response.question,
-                    response: response?.answer,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
@@ -802,21 +964,33 @@ const Chat = () => {
       const parsedExistingChat = existingChatData
         ? JSON.parse(existingChatData)
         : [];
+      const latestChatItem = chat[chat.length - 1];
+      const isAlreadyInExisting = parsedExistingChat.some(
+        (item: any) =>
+          item.question === latestChatItem.question &&
+          JSON.stringify(item.answer) === JSON.stringify(latestChatItem.answer)
+      );
 
-      let combinedChatData;
-      if (savedExpandedChat.length > 0) {
-        const newChatData = chat.filter(
-          (chatItem: any) =>
-            !savedExpandedChat.some(
-              (expandedItem: any) => expandedItem.question === chatItem.question
-            )
-        );
-        combinedChatData = [...savedExpandedChat, ...newChatData];
-      } else {
-        combinedChatData = [...parsedExistingChat, ...chat];
+      if (!isAlreadyInExisting) {
+        let updatedChatData;
+
+        if (savedExpandedChat.length > 0) {
+          const isInSavedExpanded = savedExpandedChat.some(
+            (item: any) =>
+              item.question === latestChatItem.question &&
+              JSON.stringify(item.answer) ===
+                JSON.stringify(latestChatItem.answer)
+          );
+
+          updatedChatData = isInSavedExpanded
+            ? [...savedExpandedChat]
+            : [...savedExpandedChat, latestChatItem];
+        } else {
+          updatedChatData = [...parsedExistingChat, latestChatItem];
+        }
+
+        localStorage.setItem("chatData", JSON.stringify(updatedChatData));
       }
-
-      localStorage.setItem("chatData", JSON.stringify(combinedChatData));
     }
   }, [chat, savedExpandedChat]);
 
@@ -1003,6 +1177,7 @@ const Chat = () => {
     }
   };
   const displayChat = async (chats: any) => {
+    const initialLikedStates: { [key: string]: string } = {};
     setShowInitialPage(false);
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
@@ -1023,7 +1198,7 @@ const Chat = () => {
     setSelectedChat([]);
 
     const chatdataset: any[] = [];
-    chatt.map((itemchat: any) => {
+    chatt.map((itemchat: any, index: number) => {
       // setTimeout(() => {
       const chatdata: any = {};
       chatdata.question = itemchat?.question;
@@ -1049,11 +1224,18 @@ const Chat = () => {
       }
       chatdata.answer = elements;
       chatdata.speak = false;
+      chatdata.like_dislike = itemchat?.like_dislike;
       chatdataset.push(chatdata);
 
+      if (itemchat?.like_dislike === true) {
+        initialLikedStates[index] = "liked";
+      } else if (itemchat?.like_dislike === false) {
+        initialLikedStates[index] = "disliked";
+      }
       // }, 500);
     });
     setSelectedChat(chatdataset);
+    setLikedStates(initialLikedStates);
   };
 
   const handleDeleteFiles = (id: number | undefined) => {
@@ -1706,10 +1888,7 @@ const Chat = () => {
                   </button>
                 </div>
                 <div className="history-label">Today&apos;s Search</div>
-                <ul
-                  className="history-list overflow-auto"
-                  style={{ maxHeight: "350px" }}
-                >
+                <PerfectScrollbar className="history-list">
                   <>
                     {filteredChats?.length > 0 &&
                       filteredChats?.map(
@@ -1760,7 +1939,7 @@ const Chat = () => {
                         )
                       )}
                   </>
-                </ul>
+                </PerfectScrollbar>
               </div>
             ) : (
               <div
@@ -1944,38 +2123,62 @@ const Chat = () => {
                                   </p>
                                 </div>
                                 <ul className="ansfooter">
-                                  <li>
-                                    <ThumbUpAltOutlinedIcon
-                                      onClick={handleUpIconClick}
-                                      sx={{
-                                        fontSize: "14px",
-                                        color: isUpIconClicked
+                                  <ThumbUpAltOutlinedIcon
+                                    onClick={() => handleUpIconClick(index)}
+                                    sx={{
+                                      fontSize: "14px",
+                                      color:
+                                        likedStates[index] === "liked" ||
+                                        chat.like_dislike === true
                                           ? theme.palette.primary.main
+                                          : chat.like_dislike !== null
+                                          ? "#ccc"
                                           : "",
-                                        cursor: "pointer",
-                                        transform: isUpIconClicked
+                                      cursor:
+                                        chat.like_dislike !== null
+                                          ? "default"
+                                          : "pointer",
+                                      transform:
+                                        likedStates[index] === "liked" ||
+                                        chat.like_dislike === true
                                           ? "scale(1.3)"
                                           : "scale(1)",
-                                        transition: "color 0.3s ease",
-                                      }}
-                                    />
-                                  </li>
-                                  <li>
-                                    <ThumbDownOutlinedIcon
-                                      onClick={handleDownIconClick}
-                                      sx={{
-                                        fontSize: "14px",
-                                        color: isDownIconClicked
+                                      transition: "color 0.3s ease",
+                                      opacity:
+                                        chat.like_dislike !== null &&
+                                        chat.like_dislike !== true
+                                          ? 0.5
+                                          : 1,
+                                    }}
+                                  />
+                                  <ThumbDownOutlinedIcon
+                                    onClick={() => handleDownIconClick(index)}
+                                    sx={{
+                                      fontSize: "14px",
+                                      color:
+                                        likedStates[index] === "disliked" ||
+                                        chat.like_dislike === false
                                           ? theme.palette.primary.main
+                                          : chat.like_dislike !== null
+                                          ? "#ccc"
                                           : "",
-                                        cursor: "pointer",
-                                        transform: isDownIconClicked
+                                      cursor:
+                                        chat.like_dislike !== null
+                                          ? "default"
+                                          : "pointer",
+                                      transform:
+                                        likedStates[index] === "disliked" ||
+                                        chat.like_dislike === false
                                           ? "scale(1.3)"
                                           : "scale(1)",
-                                        transition: "color 0.3s ease",
-                                      }}
-                                    />
-                                  </li>
+                                      transition: "color 0.3s ease",
+                                      opacity:
+                                        chat.like_dislike !== null &&
+                                        chat.like_dislike !== false
+                                          ? 0.5
+                                          : 1,
+                                    }}
+                                  />
                                   <li onClick={() => copyText(index)}>
                                     <ContentCopyOutlinedIcon
                                       sx={{ fontSize: "14px" }}
