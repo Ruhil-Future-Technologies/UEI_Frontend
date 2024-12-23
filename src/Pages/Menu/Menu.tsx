@@ -105,10 +105,14 @@ const Menu = () => {
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
-                      <div className="main_title"> Menu</div>
+                      <div className="main_title" data-testid="menu_text">
+                        {" "}
+                        Menu
+                      </div>
                     </Typography>
                     {filteredData?.form_data?.is_save === true && (
                       <Button
+                        data-testid="menu_btn"
                         className="mainbutton"
                         variant="contained"
                         component={NavLink}
