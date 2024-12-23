@@ -242,7 +242,7 @@ export const ProfileDialog: FunctionComponent<{
     "",
     "Please enter a valid mother name only characters allowed.",
     "Please enter a valid father name only characters allowed.",
-    "Please enter a valid guardian name only characters allowed.",
+    "",
     "",
     "",
     "",
@@ -260,7 +260,7 @@ export const ProfileDialog: FunctionComponent<{
     "",
     "",
     "Mobile number should be 10 digits",
-    "WhatsApp number should be 10 digits",
+    "",
     "",
     "",
     "",
@@ -272,7 +272,7 @@ export const ProfileDialog: FunctionComponent<{
     "Please enter a valid city name only characters allowed.",
     "Invalid Pincode. It must be 6 digits only.",
     "Please enter first address .",
-    "Please enter second address.",
+    "",
   ];
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
@@ -803,7 +803,8 @@ export const ProfileDialog: FunctionComponent<{
       dob: answeredData?.basic_info?.dob || formattedDate,
       father_name: answeredData?.basic_info?.father_name || answers[5],
       mother_name: answeredData?.basic_info?.mother_name || answers[4],
-      guardian_name: answeredData?.basic_info?.guardian_name || answers[6],
+      guardian_name:
+        answeredData?.basic_info?.guardian_name || answers[6] || "",
       aim: answeredData?.basic_info?.aim || answers[2],
       pic_path: answeredData?.basic_info?.pic_path || answers[7],
     };
@@ -876,7 +877,8 @@ export const ProfileDialog: FunctionComponent<{
       mobile_no_call: answeredData?.contact?.mobile_no_call || answer[23],
       mobile_isd_watsapp:
         answeredData?.contact?.mobile_isd_watsapp || answer[22],
-      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp || answer[24],
+      mobile_no_watsapp:
+        answeredData?.contact?.mobile_no_watsapp || answer[24] || "",
       email_id: answeredData?.contact?.email_id || email,
     };
 
@@ -909,7 +911,7 @@ export const ProfileDialog: FunctionComponent<{
     const payload = {
       student_id: StudentId,
       address1: answeredData?.address?.address1 || answers[35],
-      address2: answeredData?.address?.address2 || answers[36],
+      address2: answeredData?.address?.address2 || answers[36] || "",
       country: answeredData?.address?.country || answers[30],
       state: answeredData?.address?.state || answers[31],
       district: answeredData?.address?.district || answers[32],
@@ -1081,17 +1083,15 @@ export const ProfileDialog: FunctionComponent<{
     label: option.university_name,
   }));
 
-
   const semesterSelectOptions = semester?.map((option) => ({
     value: option.semester_id,
-    label:`Semester ${option?.semester_number}` ,
+    label: `Semester ${option?.semester_number}`,
   }));
-
 
   // const maxSemester = semester && semester?.length > 0
   //   ? Math.max(...semester?.map((item: { semester_number: any; }) => item?.semester_number))
   //   : 0;
-  
+
   // const semesterSelectOptions = [...Array(maxSemester)]?.map(
   //   (_, index) => ({
   //     value: index + 1, // Setting the value based on index
@@ -1099,17 +1099,24 @@ export const ProfileDialog: FunctionComponent<{
   //   })
   // );
 
-  const semlable =  semester?.filter(
-    (item) => item?.semester_id === selectSemester );
+  const semlable = semester?.filter(
+    (item) => item?.semester_id === selectSemester
+  );
   const semesterSelectOptionspre = selectSemester
-  ? [{
-    value: selectSemester,
-    label: `Semester ${semlable[0]?.semester_number}`,
-  }]
-  : semesterpre[0]?.semester_id ? [{
-    value: semesterpre[0]?.semester_id,
-    label: `Semester ${semesterpre[0]?.semester_number}`,
-  }] : [];
+    ? [
+        {
+          value: selectSemester,
+          label: `Semester ${semlable[0]?.semester_number}`,
+        },
+      ]
+    : semesterpre[0]?.semester_id
+    ? [
+        {
+          value: semesterpre[0]?.semester_id,
+          label: `Semester ${semesterpre[0]?.semester_number}`,
+        },
+      ]
+    : [];
 
   // const semesterSelectOptionspre = selectSemester
   //   ? [{
@@ -1120,8 +1127,6 @@ export const ProfileDialog: FunctionComponent<{
   //     value: semesterpre[0]?.semester_number,
   //     label: `Semester ${semesterpre[0]?.semester_number}`,
   //   }] : [];
-
-
 
   // const semesterSelectOptionspre = [
   //   ...Array(semesterpre[0]?.semester_number),
@@ -1246,10 +1251,10 @@ export const ProfileDialog: FunctionComponent<{
         //   theme: "colored",
         // });
       } else {
-        toast.error(response?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-        });
+        // toast.error(response?.message, {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
       }
     });
   };
@@ -1345,13 +1350,14 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 6) {
-      const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[6])) {
-        setgName(true);
-        return;
-      } else {
-        setgName(false);
-      }
+      // const nameRegex = /^[a-zA-Z\s]+$/;
+      // if (!nameRegex.test(updatedAnswers[6])) {
+      //   setgName(true);
+      //   return;
+      // } else {
+      //   setgName(false);
+      // }
+      setgName(false);
     }
     if (currentQuestionIndex === 23) {
       // Regular expression for exactly 10 digits
@@ -1367,8 +1373,9 @@ export const ProfileDialog: FunctionComponent<{
     if (currentQuestionIndex === 24) {
       // Regular expression for exactly 10 digits
       const phoneRegex = /^\d{10}$/;
-
-      if (!phoneRegex.test(updatedAnswers[24])) {
+      if (updatedAnswers[24] == "") {
+        setphnumber(false);
+      } else if (!phoneRegex.test(updatedAnswers[24])) {
         setphnumber(true);
         return;
       } else {
@@ -1447,11 +1454,12 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 36) {
-      if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
-        setSecondAddress(true);
-      } else {
-        setSecondAddress(false);
-      }
+      // if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
+      //   setSecondAddress(true);
+      // } else {
+      //   setSecondAddress(false);
+      // }
+      setSecondAddress(false);
     }
 
     // if (currentQuestionIndex === 28) {
@@ -1494,8 +1502,8 @@ export const ProfileDialog: FunctionComponent<{
       const file: any = e.target.files[0];
 
       // Check file size (3MB = 3 * 1024 * 1024 bytes)
-      if (file.size > 3 * 1024 * 1024) {
-        setError1("File size must be less than 3MB");
+      if (file.size > 1024 * 1024) {
+        setError1("File size must be less than 1MB");
         return;
       }
       if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
@@ -1762,16 +1770,17 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 6) {
-      if (
-        updatedAnswers[6] === "" ||
-        updatedAnswers[6] == null ||
-        !charecterRegex.test(updatedAnswers[6])
-      ) {
-        setgName(true);
-        return;
-      } else {
-        setgName(false);
-      }
+      // if (
+      //   updatedAnswers[6] === "" ||
+      //   updatedAnswers[6] == null ||
+      //   !charecterRegex.test(updatedAnswers[6])
+      // ) {
+      //   setgName(true);
+      //   return;
+      // } else {
+      //   setgName(false);
+      // }
+      setgName(false);
     }
     if (currentQuestionIndex === 23) {
       if (
@@ -1786,16 +1795,17 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (currentQuestionIndex === 24) {
-      if (
-        updatedAnswers[24] === "" ||
-        updatedAnswers[24] == null ||
-        !/^\d{10}$/.test(updatedAnswers[24])
-      ) {
-        setphnumber(true);
-        return;
-      } else {
-        setphnumber(false);
-      }
+      // if (
+      //   updatedAnswers[24] === "" ||
+      //   updatedAnswers[24] == null ||
+      //   !/^\d{10}$/.test(updatedAnswers[24])
+      // ) {
+      //   setphnumber(true);
+      //   return;
+      // } else {
+      //   setphnumber(false);
+      // }
+      setphnumber(false);
     }
     if (currentQuestionIndex === 28) {
       if (
@@ -1868,7 +1878,7 @@ export const ProfileDialog: FunctionComponent<{
         return; // Stop further execution if full name validation fails
       }
       e.preventDefault();
-      if (currentQuestionIndex === 23 || currentQuestionIndex === 24) {
+      if (currentQuestionIndex === 23) {
         if (answers[currentQuestionIndex]?.length === 10) {
           answerSaveandGotoNextquestoin(e);
         } else {
@@ -1896,12 +1906,14 @@ export const ProfileDialog: FunctionComponent<{
           answerSaveandGotoNextquestoin(e);
         }
       } else if (currentQuestionIndex === 36) {
-        if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
-          setSecondAddress(true);
-        } else {
-          setSecondAddress(false);
-          answerSaveandGotoNextquestoin(e);
-        }
+        // if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
+        //   setSecondAddress(true);
+        // } else {
+        //   setSecondAddress(false);
+        //   answerSaveandGotoNextquestoin(e);
+        // }
+        setSecondAddress(false);
+        answerSaveandGotoNextquestoin(e);
       } else {
         answerSaveandGotoNextquestoin(e);
       }
@@ -2273,15 +2285,17 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const handleDropdownChangecourse = (e: any) => {
-
     const filteredsem = semester.filter((item) => item.course_id === e.value);
     // const filteredsempre = semesterpre.filter(
     //   (item) => (item.course_id === e.value && (item.semester_number === answeredData?.academic_history?.sem_id || item.semester_number === answers[16])));
     const filteredsempre = semesterpre.filter(
-      (item) => (item.course_id === e.value && (item.semester_id === answeredData?.academic_history?.sem_id || item.semester_id === answers[16])));
+      (item) =>
+        item.course_id === e.value &&
+        (item.semester_id === answeredData?.academic_history?.sem_id ||
+          item.semester_id === answers[16])
+    );
 
     setSemester(filteredsem);
-    
 
     setSemesterpre(filteredsempre);
 
@@ -2368,10 +2382,13 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   const handleDropdownChangesemesterpre = (e: any) => {
-
     // const courses = courses.filter((item)=> item.course_name === answers[] )
     const filteredsubject = subjects.filter(
-      (item) => item.semester_id === e.value && (item.course_id === answeredData?.academic_history?.course_id || item.course_name === answers[15]));
+      (item) =>
+        item.semester_id === e.value &&
+        (item.course_id === answeredData?.academic_history?.course_id ||
+          item.course_name === answers[15])
+    );
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestionIndex] = e.value;
@@ -2464,7 +2481,6 @@ export const ProfileDialog: FunctionComponent<{
   }));
 
   const handleCountryChange = (selectedOption: any) => {
-
     setSelectedCountry(selectedOption);
     if (selectedOption) {
       const states = State.getStatesOfCountry(selectedOption.value);
@@ -2978,14 +2994,134 @@ export const ProfileDialog: FunctionComponent<{
                       </div>
                     </>
                   ) : currentQuestionIndex === 19 ? (
-                    <Select
-                      className="dropdown-wrapper"
-                      onChange={handleDropdownChangehobby}
-                      options={hobbyOptions}
-                      placeholder="Select an option"
-                      menuPlacement="top"
-                      value={selectedHobby}
-                    />
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                      }}
+                    >
+                      <Select
+                        className="dropdown-wrapper"
+                        onChange={handleDropdownChangehobby}
+                        options={hobbyOptions}
+                        placeholder="Select an option"
+                        menuPlacement="top"
+                        value={selectedHobby}
+                        styles={{
+                          container: (base) => ({ ...base, width: "90%" }),
+                        }}
+                      />
+                      <p
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          margin: 0,
+                        }}
+                        onClick={handleSkip}
+                      >
+                        Skip
+                      </p>
+                    </div>
+                  ) : currentQuestionIndex === 36 ? (
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                      }}
+                    >
+                      {" "}
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your answer and press enter"
+                        value={answers[currentQuestionIndex] || ""}
+                        onChange={handleAnswerChange}
+                        onKeyPress={handleKeyPress}
+                      />{" "}
+                      <p
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          margin: 0,
+                        }}
+                        onClick={handleSkip}
+                      >
+                        {" "}
+                        Skip{" "}
+                      </p>{" "}
+                    </div>
+                  ) : currentQuestionIndex === 24 ? (
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                      }}
+                    >
+                      {" "}
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your answer and press enter"
+                        value={answers[currentQuestionIndex] || ""}
+                        onChange={handleAnswerChange}
+                        onKeyPress={handleKeyPress}
+                      />{" "}
+                      <p
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          margin: 0,
+                        }}
+                        onClick={handleSkip}
+                      >
+                        {" "}
+                        Skip{" "}
+                      </p>{" "}
+                    </div>
+                  ) : currentQuestionIndex === 6 ? (
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                      }}
+                    >
+                      {" "}
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your answer and press enter"
+                        value={answers[currentQuestionIndex] || ""}
+                        onChange={handleAnswerChange}
+                        onKeyPress={handleKeyPress}
+                      />{" "}
+                      <p
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          margin: 0,
+                        }}
+                        onClick={handleSkip}
+                      >
+                        {" "}
+                        Skip{" "}
+                      </p>{" "}
+                    </div>
                   ) : currentQuestionIndex === 30 ? (
                     <Select
                       className="dropdown-wrapper"
