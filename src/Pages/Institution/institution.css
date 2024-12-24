@@ -9,7 +9,7 @@ background: rgba(153, 67, 236, 0.15);
 .crcard ul{list-style: none; padding: 0; margin: 0;}
 .crcard ul li{margin-bottom: 1rem;}
 .crcard ul li small{color: #BD68A5; text-transform: uppercase;}
-.crcard ul li h6{color: black;}
+/* .crcard ul li h6{color: black;} */
 .crcard img{
     border-radius: 10px;
 }

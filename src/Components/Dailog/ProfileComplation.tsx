@@ -38,6 +38,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ChatDialogClose } from "./ChatDialogClose";
 import { styled } from "@mui/material/styles";
 import Course from "../../Pages/Course/Course";
+//import { Initializable } from "@mui/x-charts/internals";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 50,
@@ -188,7 +189,7 @@ export const ProfileDialog: FunctionComponent<{
   const [answers, setAnswers] = useState<string[]>([]);
   const [messages, setMessages] = useState<
     { text: string; type: "question" | "answer" }[]
-  >([]);
+  >([{ text: "What is your name?", type: "question" }]);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
   const [university, setUniversity] = useState<University[]>([]);
@@ -233,8 +234,10 @@ export const ProfileDialog: FunctionComponent<{
   const [firstaddress, setFirstAddress] = useState(false);
   const [secondaddress, setSecondAddress] = useState(false);
   const [answeredData, setAnsweredData] = useState<any>();
-  // const [open, setOpen] = useState(true);
+  const [filterdQuestions1, setFilterdQuestions1] = useState<{ [key: string]: string[] }>({});
 
+  // const [open, setOpen] = useState(true);
+console.log(goal);
   const errordata = [
     "Please enter a valid full name only characters allowed.",
     "",
@@ -282,6 +285,7 @@ export const ProfileDialog: FunctionComponent<{
           if (data.status === 200) {
             //  navigate("/main/Dashboard");
             setAnsweredData(data.data);
+            console.log(data.data)
             if (data?.data?.academic_history?.institution_type === "school") {
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`
@@ -450,79 +454,79 @@ export const ProfileDialog: FunctionComponent<{
     "What is your second address?": ["36", "address", "address2"],
   };
 
-  const adjustQuestionsForInstitutionType = (institutionType: string) => {
-    let adjustedQuestions = [...initialQuestions[currentSection!]];
-    const adjustedMapping = { ...mapping };
-    const board = answeredData?.academic_history?.board;
+  // const adjustQuestionsForInstitutionType = (institutionType: string) => {
+  //   let adjustedQuestions = [...initialQuestions[currentSection!]];
+  //   const adjustedMapping = { ...mapping };
+  //   const board = answeredData?.academic_history?.board;
 
-    if (institutionType === "school") {
-      // Remove college-specific questions
-      if (board === "state_board") {
-        adjustedQuestions = adjustedQuestions.filter(
-          (question) =>
-            question !== "Please select your university" &&
-            question !== "Please select your institution" &&
-            question !== "Please select your course" &&
-            question !== "Please select your semester" &&
-            question !== "What is your learning style?" &&
-            question !== "Please select year" &&
-            question !==
-              "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
-            question !== "Please select your semester "
-        );
-      } else {
-        adjustedQuestions = adjustedQuestions.filter(
-          (question) =>
-            question !== "Please select your university" &&
-            question !== "Please select your institution" &&
-            question !== "Please select your course" &&
-            question !== "Please select your semester" &&
-            question !== "What is your learning style?" &&
-            question !== "Please select year" &&
-            question !== "Please select your state" &&
-            question !==
-              "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
-            question !== "Please select your semester "
-        );
-      }
+  //   if (institutionType === "school") {
+  //     // Remove college-specific questions
+  //     if (board === "state_board") {
+  //       adjustedQuestions = adjustedQuestions.filter(
+  //         (question) =>
+  //           question !== "Please select your university" &&
+  //           question !== "Please select your institution" &&
+  //           question !== "Please select your course" &&
+  //           question !== "Please select your semester" &&
+  //           question !== "What is your learning style?" &&
+  //           question !== "Please select year" &&
+  //           question !==
+  //           "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
+  //           question !== "Please select your semester "
+  //       );
+  //     } else {
+  //       adjustedQuestions = adjustedQuestions.filter(
+  //         (question) =>
+  //           question !== "Please select your university" &&
+  //           question !== "Please select your institution" &&
+  //           question !== "Please select your course" &&
+  //           question !== "Please select your semester" &&
+  //           question !== "What is your learning style?" &&
+  //           question !== "Please select year" &&
+  //           question !== "Please select your state" &&
+  //           question !==
+  //           "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
+  //           question !== "Please select your semester "
+  //       );
+  //     }
 
-      if (
-        selectedClass?.label !== "class_11" &&
-        selectedClass?.label !== "class_12"
-      ) {
-        adjustedQuestions = adjustedQuestions.filter(
-          (question) => question !== "Please select your stream"
-        );
-      }
+  //     if (
+  //       selectedClass?.label !== "class_11" &&
+  //       selectedClass?.label !== "class_12"
+  //     ) {
+  //       adjustedQuestions = adjustedQuestions.filter(
+  //         (question) => question !== "Please select your stream"
+  //       );
+  //     }
 
-      // Remove college-specific mappings
-      delete adjustedMapping["Please select your university"];
-      delete adjustedMapping["Please select your institution"];
-      delete adjustedMapping["Please select your course"];
-      delete adjustedMapping["Please select your semester"];
-      delete adjustedMapping["What is your learning style?"];
-      delete adjustedMapping["Please select year"];
-      delete adjustedMapping[
-        "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?"
-      ];
-      delete adjustedMapping["Please select your semester "];
-    } else if (institutionType === "college") {
-      // Remove school-specific questions
-      adjustedQuestions = adjustedQuestions.filter(
-        (question) =>
-          question !== "Please select your board" &&
-          question !== "Please select your class" &&
-          question !== "Please select your state" &&
-          question !== "Please select your stream"
-      );
+  //     // Remove college-specific mappings
+  //     delete adjustedMapping["Please select your university"];
+  //     delete adjustedMapping["Please select your institution"];
+  //     delete adjustedMapping["Please select your course"];
+  //     delete adjustedMapping["Please select your semester"];
+  //     delete adjustedMapping["What is your learning style?"];
+  //     delete adjustedMapping["Please select year"];
+  //     delete adjustedMapping[
+  //       "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?"
+  //     ];
+  //     delete adjustedMapping["Please select your semester "];
+  //   } else if (institutionType === "college") {
+  //     // Remove school-specific questions
+  //     adjustedQuestions = adjustedQuestions.filter(
+  //       (question) =>
+  //         question !== "Please select your board" &&
+  //         question !== "Please select your class" &&
+  //         question !== "Please select your state" &&
+  //         question !== "Please select your stream"
+  //     );
 
-      // Remove school-specific mappings
-      delete adjustedMapping["Please select your board"];
-      delete adjustedMapping["Please select your class"];
-    }
+  //     // Remove school-specific mappings
+  //     delete adjustedMapping["Please select your board"];
+  //     delete adjustedMapping["Please select your class"];
+  //   }
 
-    return { adjustedQuestions, adjustedMapping };
-  };
+  //   return { adjustedQuestions, adjustedMapping };
+  // };
 
   const getSubject = async () => {
     if (
@@ -565,54 +569,159 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   const chatBoxRef = useRef<HTMLDivElement>(null);
-
+  let filteredQuestions=initialQuestions;
   useEffect(() => {
+    console.log(currentSection,answeredData);
     if (currentSection) {
-      if (answeredData) {
-        const institutionType = answeredData.academic_history.institution_type;
-        const { adjustedQuestions } =
-          adjustQuestionsForInstitutionType(institutionType);
+      if (true) {
+        // const institutionType = answeredData.academic_history.institution_type;
+        // const { adjustedQuestions } =
+        //   adjustQuestionsForInstitutionType(institutionType);
 
-        let filteredQuestions;
+       
+        const fetchProfileData = async () => {
+          try {
+            const data = await getData(`${profileURL}/${StudentId}`);
+            if(data.status===200){
 
-        if (institutionType) {
-          filteredQuestions = adjustedQuestions.filter((question: string) => {
-            if (question !== "Upload your profile picture") {
-              const keys: any = mapping[question];
-              if (!keys) return true; // If no mapping exists, keep the question
+            console.log(data)
 
-              const [section, ...fields] = keys;
-              const sectionData = answeredData[section];
+            // Get the values from the fetched data
+            const guardianName = data?.data?.basic_info?.guardian_name || "";
+            const subjectPref = data?.data?.subject_preference?.score_in_percentage || "";
+            const contact = data?.data?.contact?.mobile_no_watsapp || "";
+            const language = data?.data?.language_known?.language_id || "";
+            const hobby = data?.data?.hobby?.hobby_id || "";
+            const instituteType = data?.data?.academic_history?.institution_type || "";
+            const address = data?.data?.address?.address1 || "";
+         
+            if (guardianName) {
+              filteredQuestions.basic = filteredQuestions.basic.filter((_, index) => index > 7);
 
-              return !fields.every(
-                (field: any) => sectionData && sectionData[field]
-              ); // Remove the question if all fields have values
             }
-          });
-        } else {
-          filteredQuestions = initialQuestions[currentSection].filter(
-            (question: string) => {
-              if (question !== "Upload your profile picture") {
-                const keys: any = mapping[question];
-                if (!keys) return true; // If no mapping exists, keep the question
+            console.log(instituteType,guardianName,subjectPref,contact,language,hobby,address);
+            if (instituteType) {
+              // Skip institution type-related questions
 
-                const [section, ...fields] = keys;
-                const sectionData = answeredData[section];
+              const questionsToRemove = [
+                "Hi! Please provide your academic information! What is your institute type?",
+                "Please select your board",
+                "Please select your state",
+                "Please select your class",
+                "Please select your stream",
+                "Please select your university",
+                "Please select your institution",
+                "Please select your course",
+                "Please select your semester",
+                "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
+                "What is your learning style?",
+                "Please select year"
+              ];
 
-                return !fields.every(
-                  (field: any) => sectionData && sectionData[field]
-                ); // Remove the question if all fields have values
-              }
+              filteredQuestions.basic = filteredQuestions.basic.filter((question) => !questionsToRemove.includes(question));
+
             }
-          );
-        }
-        setCurrentQuestionIndex(Number(mapping[filteredQuestions?.[0]]?.[0]));
-        setMessages([{ text: filteredQuestions[0], type: "question" }]);
-      } else {
-        setMessages([
-          { text: initialQuestions[currentSection][0], type: "question" },
-        ]);
-      }
+            if (hobby) {
+
+
+              filteredQuestions.basic = filteredQuestions.basic.filter((question) => question !== "Hi, Please choose your hobbies");
+
+
+            }
+            if (language) {
+
+              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                ![
+                  "Select your known language",
+                  "What is your proficiency in the selected language?"
+                ].includes(question)
+              );
+            }
+            if (contact) {
+           
+              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                ![
+                  "What is your WhatsApp number?",
+                  "What is your mobile number?",
+                  "Please select your mobile number country code"
+                ].includes(question)
+              );
+             
+            }
+            if (subjectPref) {
+              
+              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                ![
+                  "Add your score in percentage",
+                  "What is your preference?",
+                  "Select your subject name"].includes(question));
+            }
+            if (address){
+ console.log()
+              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                ![
+                  "Please select your current country of residence",
+                  "Which state do you currently reside in?",
+                  "Which district do you currently live in?",
+                  "Which city do you live in?",
+                  "What is your Pin code?",
+                  "What is your first address?",
+                  "What is your second address?"].includes(question));
+                 
+
+            }
+          }
+            console.log(filteredQuestions);
+            setFilterdQuestions1(filteredQuestions);
+            // Update state after filtering
+           // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
+            setCurrentQuestionIndex(0);
+            setMessages([{ text: filteredQuestions.basic[0], type: "question" }]);
+
+          } catch (error) {
+            console.error("Error fetching profile data:", error);
+          }
+        };
+
+        fetchProfileData();
+        // if (institutionType) {
+        //   filteredQuestions = adjustedQuestions.filter((question: string) => {
+        //     if (question !== "Upload your profile picture") {
+        //       const keys: any = mapping[question];
+        //       if (!keys) return true; // If no mapping exists, keep the question
+
+        //       const [_index,section, ...fields] = keys;
+        //       const sectionData = answeredData[section];
+
+        //       return !fields.every(
+        //         (field: any) => sectionData && sectionData[field]
+        //       ); // Remove the question if all fields have values
+        //     }
+        //   });
+        // } else {
+        //   filteredQuestions = initialQuestions[currentSection].filter(
+        //     (question: string) => {
+        //       if (question !== "Upload your profile picture") {
+        //         const keys: any = mapping[question];
+        //         if (!keys) return true; // If no mapping exists, keep the question
+
+        //         const [_index,section, ...fields] = keys;
+        //         const sectionData = answeredData[section];
+
+        //         return !fields.every(
+        //           (field: any) => sectionData && sectionData[field]
+        //         ); // Remove the question if all fields have values
+        //       }
+        //     }
+        //   );
+        // }
+        setCurrentQuestionIndex(Number(mapping[filteredQuestions.basic?.[0]]?.[0]));
+        setMessages([{ text: filteredQuestions.basic[0], type: "question" }]);
+       }// else {
+      //   setMessages([
+      //     { text: initialQuestions[currentSection][0], type: "question" },
+      //   ]);
+      // }
     }
 
     getData("/class/list")
@@ -729,7 +838,8 @@ export const ProfileDialog: FunctionComponent<{
       });
 
     getSubject();
-  }, [currentSection, answeredData]);
+    console.log("9999999999999999999999999999999999999")
+  }, [currentSection, answeredData,isOpen] );
 
   useEffect(() => {
     // Scroll to the bottom of the chat box whenever messages update
@@ -869,24 +979,25 @@ export const ProfileDialog: FunctionComponent<{
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(" ");
     const email = localStorage.getItem("userid");
-
+    const anslength=answer.length
     const payload = {
       student_id: StudentId,
-      mobile_isd_call: answeredData?.contact?.mobile_isd_call || answer[22],
-      mobile_no_call: answeredData?.contact?.mobile_no_call || answer[23],
+      mobile_isd_call: answeredData?.contact?.mobile_isd_call || answer[anslength-3],
+      mobile_no_call: answeredData?.contact?.mobile_no_call || answer[anslength-2],
       mobile_isd_watsapp:
-        answeredData?.contact?.mobile_isd_watsapp || answer[22],
-      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp || answer[24],
+        answeredData?.contact?.mobile_isd_watsapp || answer[anslength-3],
+      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp || answer[anslength-1],
       email_id: answeredData?.contact?.email_id || email,
     };
-
+    console.log(answer)
+    console.log(payload)
     postData(`${"student_contact/add"}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
-          // toast.success(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
+          toast.success(data?.message, {
+            hideProgressBar: true,
+            theme: "colored",
+          });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -933,6 +1044,7 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
+    const length=answers.length;
     const payload = {
       student_id: StudentId,
       institution_type:
@@ -940,91 +1052,95 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType,
       board:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "school"
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.board || selectedBoard
           : null,
       state_for_stateboard:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "school"
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.state_for_stateboard ||
-            selectedAcademicState?.toLowerCase()
+          selectedAcademicState?.toLowerCase()
           : null,
       institute_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.institute_id ||
-            selectedInstitute?.toString()
+          selectedInstitute?.toString()
           : null,
       course_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.course_id ||
-            selectCourse?.toString()
+          selectCourse?.toString()
           : null,
       learning_style:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.learning_style ||
-            selectedLearningStyle
+          selectedLearningStyle
           : null,
       class_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "school"
-          ? answeredData?.academic_history?.class_id || answers[11]?.toString()
+          selectedInstituteType?.toLowerCase() === "school"
+          ? answeredData?.academic_history?.class_id || answers[length-1]?.toString()
           : null,
       // year: answeredData?.academic_history?.year || answers[18] || "",
       year:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.year ||
-            (answers[18]
-              ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"])?.year()?.toString()
-              : "")
+          (answers[18]
+            ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"])?.year()?.toString()
+            : "")
           : "",
       stream:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "school"
+          selectedInstituteType?.toLowerCase() === "school"
           ? answeredData?.academic_history?.stream || answers[12]
           : null,
       university_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.university_id || answers[13]
           : null,
       sem_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === "college"
+          selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.sem_id || answers[16]
           : null,
     };
-
-    postData("/new_student_academic_history/add", payload).then((response) => {
-      if (response.status === 200) {
-        // toast.success("Academic hinstory information saved successfully", {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-      } else {
-        toast.error(response?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-        });
-      }
-    });
+console.log(payload.class_id,answers,messages);
+if(payload.class_id){
+  postData("/new_student_academic_history/add", payload).then((response) => {
+    if (response.status === 200) {
+      // toast.success("Academic hinstory information saved successfully", {
+      //   hideProgressBar: true,
+      //   theme: "colored",
+      // });
+    } else {
+      toast.error(response?.message, {
+        hideProgressBar: true,
+        theme: "colored",
+      });
+    }
+  });
+}
+   
   };
 
   const saveAnswerforsubjectpreference = (answers: string[]) => {
+    const length=answers.length;
     const payload = {
       student_id: StudentId,
       subject_id: answeredData?.subject_preference?.id || selectSubject,
-      preference: answeredData?.subject_preference?.preference || answers[28],
+      preference: answeredData?.subject_preference?.preference || answers[length-2],
       score_in_percentage:
-        answeredData?.subject_preference?.score_in_percentage || answers[29],
+        answeredData?.subject_preference?.score_in_percentage || answers[length-1],
       sem_id: answeredData?.subject_preference?.sem_id || answers[26],
       ...(answeredData?.academic_history?.institution_type === "school" &&
         answeredData?.academic_history?.stream && {
-          stream: answeredData?.academic_history?.stream || answers[12],
-        }),
+        stream: answeredData?.academic_history?.stream || answers[12],
+      }),
       ...((answeredData?.academic_history?.institution_type === "college" ||
         answers[8]?.toLowerCase() === "college") && {
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
@@ -1084,14 +1200,14 @@ export const ProfileDialog: FunctionComponent<{
 
   const semesterSelectOptions = semester?.map((option) => ({
     value: option.semester_id,
-    label:`Semester ${option?.semester_number}` ,
+    label: `Semester ${option?.semester_number}`,
   }));
 
 
   // const maxSemester = semester && semester?.length > 0
   //   ? Math.max(...semester?.map((item: { semester_number: any; }) => item?.semester_number))
   //   : 0;
-  
+
   // const semesterSelectOptions = [...Array(maxSemester)]?.map(
   //   (_, index) => ({
   //     value: index + 1, // Setting the value based on index
@@ -1099,17 +1215,17 @@ export const ProfileDialog: FunctionComponent<{
   //   })
   // );
 
-  const semlable =  semester?.filter(
-    (item) => item?.semester_id === selectSemester );
+  const semlable = semester?.filter(
+    (item) => item?.semester_id === selectSemester);
   const semesterSelectOptionspre = selectSemester
-  ? [{
-    value: selectSemester,
-    label: `Semester ${semlable[0]?.semester_number}`,
-  }]
-  : semesterpre[0]?.semester_id ? [{
-    value: semesterpre[0]?.semester_id,
-    label: `Semester ${semesterpre[0]?.semester_number}`,
-  }] : [];
+    ? [{
+      value: selectSemester,
+      label: `Semester ${semlable[0]?.semester_number}`,
+    }]
+    : semesterpre[0]?.semester_id ? [{
+      value: semesterpre[0]?.semester_id,
+      label: `Semester ${semesterpre[0]?.semester_number}`,
+    }] : [];
 
   // const semesterSelectOptionspre = selectSemester
   //   ? [{
@@ -1238,7 +1354,7 @@ export const ProfileDialog: FunctionComponent<{
       student_id: StudentId,
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
     };
-
+console.log("inside hobby api");
     postData("student_hobby/add", payload).then((response) => {
       if (response.status === 200) {
         // toast.success("Your hobbies saved successfully", {
@@ -1305,154 +1421,157 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>) => {
     const updatedAnswers = [...answers];
+    console.log(currentQuestionIndex);
     updatedAnswers[currentQuestionIndex] = e.target.value;
     setAnswers(updatedAnswers);
-    if (currentQuestionIndex === 0) {
-      const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
-      if (!fullNameRegex.test(updatedAnswers[0])) {
-        setFullName(true);
-        return;
-      } else {
-        setFullName(false);
-      }
-    }
-    if (currentQuestionIndex === 3) {
-      const gender = updatedAnswers[3].toLowerCase();
-      if (gender !== "male" && gender !== "female") {
-        // You can set an error state here if needed
-        setGenderError(true);
-        return;
-      } else {
-        setGenderError(false);
-      }
-    }
-    if (currentQuestionIndex === 4) {
-      const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[4])) {
-        setMotherNameError(true);
-        return;
-      } else {
-        setMotherNameError(false);
-      }
-    }
-    if (currentQuestionIndex === 5) {
-      const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[5])) {
-        setFName(true);
-        return;
-      } else {
-        setFName(false);
-      }
-    }
-    if (currentQuestionIndex === 6) {
-      const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[6])) {
-        setgName(true);
-        return;
-      } else {
-        setgName(false);
-      }
-    }
-    if (currentQuestionIndex === 23) {
-      // Regular expression for exactly 10 digits
-      const phoneRegex = /^\d{10}$/;
+    setpincode(false);
+    setGenderError(false);
+    // if (currentQuestionIndex === 0) {
+    //   const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    //   if (!fullNameRegex.test(updatedAnswers[0])) {
+    //     setFullName(true);
+    //     return;
+    //   } else {
+    //     setFullName(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 3) {
+    //   const gender = updatedAnswers[3].toLowerCase();
+    //   if (gender !== "male" && gender !== "female") {
+    //     // You can set an error state here if needed
+    //     setGenderError(true);
+    //     return;
+    //   } else {
+    //     setGenderError(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 4) {
+    //   const nameRegex = /^[a-zA-Z\s]+$/;
+    //   if (!nameRegex.test(updatedAnswers[4])) {
+    //     setMotherNameError(true);
+    //     return;
+    //   } else {
+    //     setMotherNameError(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 5) {
+    //   const nameRegex = /^[a-zA-Z\s]+$/;
+    //   if (!nameRegex.test(updatedAnswers[5])) {
+    //     setFName(true);
+    //     return;
+    //   } else {
+    //     setFName(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 6) {
+    //   const nameRegex = /^[a-zA-Z\s]+$/;
+    //   if (!nameRegex.test(updatedAnswers[6])) {
+    //     setgName(true);
+    //     return;
+    //   } else {
+    //     setgName(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 23) {
+    //   // Regular expression for exactly 10 digits
+    //   const phoneRegex = /^\d{10}$/;
 
-      if (!phoneRegex.test(updatedAnswers[23])) {
-        setphnumber(true);
-        return;
-      } else {
-        setphnumber(false);
-      }
-    }
-    if (currentQuestionIndex === 24) {
-      // Regular expression for exactly 10 digits
-      const phoneRegex = /^\d{10}$/;
+    //   if (!phoneRegex.test(updatedAnswers[23])) {
+    //     setphnumber(true);
+    //     return;
+    //   } else {
+    //     setphnumber(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 24) {
+    //   // Regular expression for exactly 10 digits
+    //   const phoneRegex = /^\d{10}$/;
 
-      if (!phoneRegex.test(updatedAnswers[24])) {
-        setphnumber(true);
-        return;
-      } else {
-        setphnumber(false);
-      }
-    }
-    if (currentQuestionIndex === 30) {
-      // Regular expression for exactly 10 digits
-      const disticRegex = /^[a-zA-Z\s]+$/;
+    //   if (!phoneRegex.test(updatedAnswers[24])) {
+    //     setphnumber(true);
+    //     return;
+    //   } else {
+    //     setphnumber(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 30) {
+    //   // Regular expression for exactly 10 digits
+    //   const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[30])) {
-        setdisct(true);
-        return;
-      } else {
-        setdisct(false);
-      }
-    }
-    if (currentQuestionIndex === 32) {
-      const disticRegex = /^[a-zA-Z\s]+$/;
+    //   if (!disticRegex.test(updatedAnswers[30])) {
+    //     setdisct(true);
+    //     return;
+    //   } else {
+    //     setdisct(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 32) {
+    //   const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[32])) {
-        setdisct(true);
-        return;
-      } else {
-        setdisct(false);
-      }
-    }
-    if (currentQuestionIndex === 33) {
-      const disticRegex = /^[a-zA-Z\s]+$/;
+    //   if (!disticRegex.test(updatedAnswers[32])) {
+    //     setdisct(true);
+    //     return;
+    //   } else {
+    //     setdisct(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 33) {
+    //   const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[33])) {
-        setcity(true);
-        return;
-      } else {
-        setcity(false);
-      }
-    }
-    if (currentQuestionIndex === 34) {
-      const pincodeRegex = /^\d{6}$/;
+    //   if (!disticRegex.test(updatedAnswers[33])) {
+    //     setcity(true);
+    //     return;
+    //   } else {
+    //     setcity(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 34) {
+    //   const pincodeRegex = /^\d{6}$/;
 
-      if (!pincodeRegex.test(updatedAnswers[34])) {
-        // setpincode(true);
-        setpincode(true);
-        setError1("");
-      } else {
-        // setpincode(false);
-        setpincode(false); // Clear the error if valid
-        setError1("");
-      }
-    }
-    if (currentQuestionIndex === 28) {
-      const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[28])) {
-        setpreferenceError(true);
-        return;
-      } else {
-        setpreferenceError(false);
-      }
-    }
-    if (currentQuestionIndex === 29) {
-      // Regular expression for exactly 6 digits (adjust the length as per your requirement)
-      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
+    //   if (!pincodeRegex.test(updatedAnswers[34])) {
+    //     // setpincode(true);
+    //     setpincode(true);
+    //     setError1("");
+    //   } else {
+    //     // setpincode(false);
+    //     setpincode(false); // Clear the error if valid
+    //     setError1("");
+    //   }
+    // }
+    // if (currentQuestionIndex === 28) {
+    //   const nameRegex = /^[a-zA-Z\s]+$/;
+    //   if (!nameRegex.test(updatedAnswers[28])) {
+    //     setpreferenceError(true);
+    //     return;
+    //   } else {
+    //     setpreferenceError(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 29) {
+    //   // Regular expression for exactly 6 digits (adjust the length as per your requirement)
+    //   const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
-      if (!regex.test(updatedAnswers[29])) {
-        setper(true);
-        return;
-      } else {
-        setper(false);
-      }
-    }
-    if (currentQuestionIndex === 35) {
-      if (updatedAnswers[35] === "" || updatedAnswers[35] == null) {
-        setFirstAddress(true);
-      } else {
-        setFirstAddress(false);
-      }
-    }
-    if (currentQuestionIndex === 36) {
-      if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
-        setSecondAddress(true);
-      } else {
-        setSecondAddress(false);
-      }
-    }
+    //   if (!regex.test(updatedAnswers[29])) {
+    //     setper(true);
+    //     return;
+    //   } else {
+    //     setper(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 35) {
+    //   if (updatedAnswers[35] === "" || updatedAnswers[35] == null) {
+    //     setFirstAddress(true);
+    //   } else {
+    //     setFirstAddress(false);
+    //   }
+    // }
+    // if (currentQuestionIndex === 36) {
+    //   if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
+    //     setSecondAddress(true);
+    //   } else {
+    //     setSecondAddress(false);
+    //   }
+    // }
 
     // if (currentQuestionIndex === 28) {
     //   // Regular expression for exactly 6 digits (adjust the length as per your requirement)
@@ -1468,7 +1587,7 @@ export const ProfileDialog: FunctionComponent<{
   };
   const handleSkip = () => {
     setError1("");
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: "", type: "answer" as const },
@@ -1505,10 +1624,10 @@ export const ProfileDialog: FunctionComponent<{
       setError1("");
       setUploadedFile(e.target.files[0]);
       const updatedAnswers = [...answers];
-      updatedAnswers[currentQuestionIndex] = e.target.files[0].name; // Store the file name as answer
+      updatedAnswers[answers.length] = e.target.files[0].name; // Store the file name as answer
 
       setAnswers(updatedAnswers);
-      const currentQuestions = initialQuestions[currentSection!];
+      const currentQuestions = filterdQuestions1["basic"];
       const updatedMessages = [
         ...messages,
         { text: e.target.files[0].name, type: "answer" as const },
@@ -1539,11 +1658,10 @@ export const ProfileDialog: FunctionComponent<{
     // }
     if (datecheck) {
       const updatedAnswers = [...answers];
-      updatedAnswers[currentQuestionIndex] = datecheck;
+      updatedAnswers[answers.length] = datecheck;
       setAnswers(updatedAnswers);
-      if (currentQuestionIndex === 18)
         saveAnswersforacadmichistory(updatedAnswers);
-      const currentQuestions = initialQuestions[currentSection!];
+      const currentQuestions = filterdQuestions1["basic"];
       const updatedMessages = [
         ...messages,
         { text: datecheck, type: "answer" as const },
@@ -1575,13 +1693,13 @@ export const ProfileDialog: FunctionComponent<{
       currentQuestionIndex === 18 ? "YYYY" : "DD/MM/YYYY"
     );
 
-    if (hitcount % 2 === 0) {
+    if (hitcount === ++hitcount) {
       if (currentQuestionIndex === 11) {
         if (datecheck > answers[10]) {
           const updatedAnswers = [...answers];
-          updatedAnswers[currentQuestionIndex] = datecheck;
+          updatedAnswers[answers.length] = datecheck;
           setAnswers(updatedAnswers);
-          const currentQuestions = initialQuestions[currentSection!];
+          const currentQuestions = filterdQuestions1["basic"];
           const updatedMessages = [
             ...messages,
             { text: datecheck, type: "answer" as const },
@@ -1598,7 +1716,7 @@ export const ProfileDialog: FunctionComponent<{
             ]);
           } else {
             setMessages(updatedMessages);
-            proceedToNextSection(currentSection!);
+            //proceedToNextSection(currentSection!);
             setCurrentQuestionIndex(0);
           }
         } else {
@@ -1613,9 +1731,9 @@ export const ProfileDialog: FunctionComponent<{
         }
       } else {
         const updatedAnswers = [...answers];
-        updatedAnswers[currentQuestionIndex] = datecheck;
+        updatedAnswers[answers.length] = datecheck;
         setAnswers(updatedAnswers);
-        const currentQuestions = initialQuestions[currentSection!];
+        const currentQuestions = filterdQuestions1['basic'];
         const updatedMessages = [
           ...messages,
           { text: datecheck, type: "answer" as const },
@@ -1644,7 +1762,9 @@ export const ProfileDialog: FunctionComponent<{
   const answerSaveandGotoNextquestoin = (
     e: KeyboardEvent<HTMLInputElement>
   ) => {
-    const currentQuestions = initialQuestions[currentSection!];
+    console.log(filterdQuestions1);
+    const currentQuestions = filterdQuestions1['basic'];
+    console.log(currentQuestions);
     if (answers[currentQuestionIndex]?.trim() !== "") {
       const updatedMessages = [
         ...messages,
@@ -1667,19 +1787,23 @@ export const ProfileDialog: FunctionComponent<{
             text:
               (answers[8]?.toLowerCase() === "school" ||
                 answeredData?.academic_history?.institution_type ===
-                  "school") &&
-              currentQuestionIndex === 24
+                "school") &&
+                currentQuestionIndex === 24
                 ? currentQuestions[27]
                 : currentQuestions[currentQuestionIndex + 1],
             type: "question" as const,
           },
         ]);
+console.log(whatsappnumbet)
 
-        if (currentQuestionIndex === 24)
+        if (whatsappnumbet){
+console.log("in side whatsappnumber");
           saveAnswersforContact([...answers, e.currentTarget.value]);
-        else if (currentQuestionIndex === 29)
+        }
+        
+        else if (persentegequestion)
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
-        else if (currentQuestionIndex === 36)
+        else if (verylastquestion)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
         if (answers.length === 10) {
@@ -1697,8 +1821,9 @@ export const ProfileDialog: FunctionComponent<{
           // saveAnswerForLanguage([...answers, e.currentTarget.value]);
         }
       } else {
+        console.log("Please select");
         setMessages(updatedMessages);
-        proceedToNextSection(currentSection!);
+        //proceedToNextSection(currentSection!);
         setCurrentQuestionIndex(0);
       }
     }
@@ -1725,7 +1850,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
 
-    if (currentQuestionIndex === 2) {
+    if (currentQuestionIndex === 42) {
       if (
         updatedAnswers[2] === "" ||
         updatedAnswers[2] == null ||
@@ -1749,7 +1874,7 @@ export const ProfileDialog: FunctionComponent<{
         setMotherNameError(false);
       }
     }
-    if (currentQuestionIndex === 5) {
+    if (currentQuestionIndex === 57) {
       if (
         updatedAnswers[5] === "" ||
         updatedAnswers[5] == null ||
@@ -1761,7 +1886,7 @@ export const ProfileDialog: FunctionComponent<{
         setFName(false);
       }
     }
-    if (currentQuestionIndex === 6) {
+    if (currentQuestionIndex === 76) {
       if (
         updatedAnswers[6] === "" ||
         updatedAnswers[6] == null ||
@@ -1846,13 +1971,13 @@ export const ProfileDialog: FunctionComponent<{
         setcity(false);
       }
     }
-
+     console.log(fName);
     if (e.key === "Enter") {
       if (
         fullName ||
         genderError ||
         motherNameError ||
-        fName ||
+        //fName ||
         gName ||
         phnumber ||
         distic ||
@@ -1861,22 +1986,23 @@ export const ProfileDialog: FunctionComponent<{
         per ||
         preferenceError ||
         // errordate ||
-        goal ||
+        // goal ||
         firstaddress ||
         secondaddress
       ) {
         return; // Stop further execution if full name validation fails
       }
       e.preventDefault();
-      if (currentQuestionIndex === 23 || currentQuestionIndex === 24) {
-        if (answers[currentQuestionIndex]?.length === 10) {
+      console.log(currentQuestionIndex);
+      if (currentQuestionIndex === 2 || currentQuestionIndex === 5) {
+        // if (answers[currentQuestionIndex]?.length === 10) {
           answerSaveandGotoNextquestoin(e);
-        } else {
-          toast.error("Please enter valid 10 digit mobile number", {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        }
+        // } else {
+        //   toast.error("Please enter valid 10 digit mobile number", {
+        //     hideProgressBar: true,
+        //     theme: "colored",
+        //   });
+        // }
       } else if (currentQuestionIndex === 34) {
         if (answers[currentQuestionIndex]?.length === 6) {
           answerSaveandGotoNextquestoin(e);
@@ -1903,6 +2029,7 @@ export const ProfileDialog: FunctionComponent<{
           answerSaveandGotoNextquestoin(e);
         }
       } else {
+        setCurrentQuestionIndex(currentQuestionIndex+1);
         answerSaveandGotoNextquestoin(e);
       }
     }
@@ -1911,9 +2038,9 @@ export const ProfileDialog: FunctionComponent<{
   const handlePhoneChange = (value: string) => {
     setPhone(value);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = "+" + value;
+    updatedAnswers[answers.length] = "+" + value;
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: "+" + value, type: "answer" as const },
@@ -1937,10 +2064,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangehobby = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedHobby(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -1964,10 +2091,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangelanguage = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedLanguage(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -1991,10 +2118,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeproficiency = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedproficiency(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2018,10 +2145,10 @@ export const ProfileDialog: FunctionComponent<{
   };
   const handleDropdownChangegender = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedgender(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2046,10 +2173,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeInstituteType = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedInstituteType(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2115,10 +2242,10 @@ export const ProfileDialog: FunctionComponent<{
   };
   const handleDropdownChangeBoard = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedBoard(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2127,19 +2254,20 @@ export const ProfileDialog: FunctionComponent<{
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.value === "state_board")
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      else setCurrentQuestionIndex(11);
+      else setCurrentQuestionIndex(currentQuestionIndex + 2);
+      console.log("select board");
       setMessages([
         ...updatedMessages,
         {
           text: currentQuestions[
-            e.value === "state_board" ? currentQuestionIndex + 1 : 11
+            e.value === "state_board" ? currentQuestionIndex + 1 : currentQuestionIndex + 2
           ],
           type: "question" as const,
         },
       ]);
     } else {
       setMessages(updatedMessages);
-      proceedToNextSection(currentSection!);
+      //proceedToNextSection(currentSection!);
       setCurrentQuestionIndex(0);
     }
   };
@@ -2153,11 +2281,11 @@ export const ProfileDialog: FunctionComponent<{
     );
     setSubjects(filterData);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.value;
+    updatedAnswers[answers.length] = e.value;
     setSelectedStream(e.value);
     setAnswers(updatedAnswers);
     saveAnswersforacadmichistory(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.value, type: "answer" as const },
@@ -2180,10 +2308,10 @@ export const ProfileDialog: FunctionComponent<{
   };
   const handleDropdownChangeAcademicState = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedAcademicState(e.label);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2205,8 +2333,9 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   const handleDropdownChangeClass = (e: any) => {
+    console.log(answers);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.value;
+    updatedAnswers[answers.length] = e.value;
     setSelectedClass(e);
     setAnswers(updatedAnswers);
     if (e.label !== "class_11" && e.label !== "class_12") {
@@ -2216,9 +2345,10 @@ export const ProfileDialog: FunctionComponent<{
           item.class_id === e.value
       );
       setSubjects(filterData);
+      console.log(updatedAnswers);
       saveAnswersforacadmichistory(updatedAnswers);
     }
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2227,30 +2357,32 @@ export const ProfileDialog: FunctionComponent<{
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.label === "class_11" || e.label === "class_12")
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      else setCurrentQuestionIndex(19);
+      else setCurrentQuestionIndex(currentQuestionIndex + 8);
+
+    
       setMessages([
         ...updatedMessages,
         {
           text: currentQuestions[
             e.label === "class_11" || e.label === "class_12"
               ? currentQuestionIndex + 1
-              : 19
+              : currentQuestionIndex + 8
           ],
           type: "question" as const,
         },
       ]);
     } else {
       setMessages(updatedMessages);
-      proceedToNextSection(currentSection!);
+     // proceedToNextSection(currentSection!);
       setCurrentQuestionIndex(0);
     }
   };
   const handleDropdownChangeLearningStyle = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedLearningStyle(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2281,15 +2413,15 @@ export const ProfileDialog: FunctionComponent<{
       (item) => (item.course_id === e.value && (item.semester_id === answeredData?.academic_history?.sem_id || item.semester_id === answers[16])));
 
     setSemester(filteredsem);
-    
+
 
     setSemesterpre(filteredsempre);
 
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedCourse(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2317,10 +2449,10 @@ export const ProfileDialog: FunctionComponent<{
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.value;
+    updatedAnswers[answers.length] = e.value;
     setSelectedUniversity(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2343,10 +2475,10 @@ export const ProfileDialog: FunctionComponent<{
   };
   const handleDropdownChangesemester = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.value;
+    updatedAnswers[answers.length] = e.value;
     setSelectedSemester(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2374,10 +2506,10 @@ export const ProfileDialog: FunctionComponent<{
       (item) => item.semester_id === e.value && (item.course_id === answeredData?.academic_history?.course_id || item.course_name === answers[15]));
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.value;
+    updatedAnswers[answers.length] = e.value;
     setSelectedSemesterpre(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2401,10 +2533,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangesubject = (e: any) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedSubject(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2433,10 +2565,10 @@ export const ProfileDialog: FunctionComponent<{
 
     setCourses(filteredcourse);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.label;
+    updatedAnswers[answers.length] = e.label;
     setSelectedInstitute(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2477,9 +2609,9 @@ export const ProfileDialog: FunctionComponent<{
       setStateOptions([]);
     }
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = selectedOption.label;
+    updatedAnswers[answers.length] = selectedOption.label;
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: selectedOption.label, type: "answer" as const },
@@ -2504,9 +2636,10 @@ export const ProfileDialog: FunctionComponent<{
   const handleStateChange = async (selectedOption: any) => {
     setSelectedState(selectedOption);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = selectedOption.label;
+    
+    updatedAnswers[answers.length] = selectedOption.label;
     setAnswers(updatedAnswers);
-    const currentQuestions = initialQuestions[currentSection!];
+    const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: selectedOption.label, type: "answer" as const },
@@ -2546,9 +2679,45 @@ export const ProfileDialog: FunctionComponent<{
   // const handleOpen = () => {
   //   // setOpen(true);
   // };
+  const getLastQuestion = () => {
+    // Find the last message of type "question"
+    const lastQuestion = [...messages]
+      .reverse() // Reverse to start searching from the end
+      .find((message) => message.type === "question");
+  
+    return lastQuestion?.text || ' '; // Return the text or null if no question found
+  };
+  const isLastQuestionCourseSelection = getLastQuestion() === "Please select your course" || getLastQuestion() ==="Hi, Please provide your subject preference information! what is your course name to which your subject belongs?";
+  console.log(isLastQuestionCourseSelection);
+  const questioncountrycode=getLastQuestion()==="Please select your mobile number country code";
+  const Dobcheck=getLastQuestion()=="What is your DOB?";
+  const gendercheck=getLastQuestion()=="What is your gender?";
+  const imagecheck=getLastQuestion()=="Upload your profile picture";
+  const insttypequestion=getLastQuestion()=="Hi! Please provide your academic information! What is your institute type?"
+  const boardcheck=getLastQuestion()=="Please select your board";
+  const statequestion=getLastQuestion()=="Please select your state";
+  const classquestion=getLastQuestion()=="Please select your class";
+  const stremquestion=getLastQuestion()=="Please select your stream";
+  const unversityquest=getLastQuestion()=="Please select your university";
+  const institutequestion=getLastQuestion()=="Please select your institution";
+  const semisterquestion=getLastQuestion()=="Please select your semester";
+  const stylequestion=getLastQuestion()=="What is your learning style?";
+  const yearquesiton=getLastQuestion()=="Please select year";
+  const hobbyquestion=getLastQuestion()=="Hi, Please choose your hobbies";
+  const languagequestion =getLastQuestion()=="Select your known language";
+  const languagepref=getLastQuestion()=="What is your proficiency in the selected language?";
+  const subjectquestion=getLastQuestion()=="Select your subject name";
+  const whatsappnumbet=getLastQuestion()=="What is your WhatsApp number?";
+  //const subjectpref =getLastQuestion()=="What is your preference?";
+  const countrylist=getLastQuestion()=="Please select your current country of residence";
+  const statelist=getLastQuestion()=="Which state do you currently reside in?"
+  const persentegequestion=getLastQuestion()=="Add your score in percentage";
+  const verylastquestion=getLastQuestion()=="Thanks for providing your personal information"
+
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
-
+console.log(filterdQuestions1);
+console.log(answers);
   return (
     <>
       <div
@@ -2589,16 +2758,14 @@ export const ProfileDialog: FunctionComponent<{
                   return (
                     <div
                       key={index}
-                      className={`message-wrapper d-flex mb-3 ${
-                        message.type === "question"
+                      className={`message-wrapper d-flex mb-3 ${message.type === "question"
                           ? "justify-content-start"
                           : "justify-content-end"
-                      }`}
+                        }`}
                     >
                       <div
-                        className={`message-bubble p-3 ${
-                          message.type === "question" ? "left" : "right"
-                        }`}
+                        className={`message-bubble p-3 ${message.type === "question" ? "left" : "right"
+                          }`}
                         style={{
                           maxWidth: "80%",
                           backgroundColor:
@@ -2628,7 +2795,7 @@ export const ProfileDialog: FunctionComponent<{
                   {(fullName ||
                     genderError ||
                     motherNameError ||
-                    fName ||
+                    //fName ||
                     gName ||
                     phnumber ||
                     distic ||
@@ -2637,13 +2804,13 @@ export const ProfileDialog: FunctionComponent<{
                     per ||
                     preferenceError ||
                     // errordate ||
-                    goal ||
+                    // goal ||
                     firstaddress ||
                     secondaddress) && (
-                    <p className="error-text">
-                      {errordata[currentQuestionIndex]}
-                    </p>
-                  )}
+                      <p className="error-text">
+                        {errordata[currentQuestionIndex]}
+                      </p>
+                    )}
                   {error1 && (
                     <p
                       style={{
@@ -2655,8 +2822,7 @@ export const ProfileDialog: FunctionComponent<{
                       {error1}
                     </p>
                   )}
-                  {currentQuestionIndex === 15 ||
-                  currentQuestionIndex === 25 ? (
+                  {isLastQuestionCourseSelection ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangecourse}
@@ -2665,7 +2831,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectCourse}
                     />
-                  ) : currentQuestionIndex === 8 ? (
+                  ) : insttypequestion ?(
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstituteType}
@@ -2674,7 +2840,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedInstituteType}
                     />
-                  ) : currentQuestionIndex === 22 ? (
+                  ) : questioncountrycode? (
                     <PhoneInput
                       country={""}
                       value={phone}
@@ -2694,7 +2860,7 @@ export const ProfileDialog: FunctionComponent<{
                       disableDropdown={false}
                       preferredCountries={["us", "in"]}
                     />
-                  ) : currentQuestionIndex === 7 ? (
+                  ) : imagecheck ? (
                     <>
                       <div
                         style={{
@@ -2724,7 +2890,7 @@ export const ProfileDialog: FunctionComponent<{
                         </p>
                       </div>
                     </>
-                  ) : currentQuestionIndex === 9 ? (
+                  ) : boardcheck ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeBoard}
@@ -2733,7 +2899,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedBoard}
                     />
-                  ) : currentQuestionIndex === 12 ? (
+                  ) : stremquestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangestream}
@@ -2742,7 +2908,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedStream}
                     />
-                  ) : currentQuestionIndex === 13 ? (
+                  ) : unversityquest ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeuniversity}
@@ -2751,7 +2917,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectUniversity}
                     />
-                  ) : currentQuestionIndex === 16 ? (
+                  ) : semisterquestion  ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangesemester}
@@ -2769,7 +2935,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSemesterpre}
                     />
-                  ) : currentQuestionIndex === 14 ? (
+                  ) : institutequestion  ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}
@@ -2778,7 +2944,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedInstitute}
                     />
-                  ) : currentQuestionIndex === 10 ? (
+                  ) : statequestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeAcademicState}
@@ -2787,7 +2953,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedAcademicState}
                     />
-                  ) : currentQuestionIndex === 11 ? (
+                  ) : classquestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeClass}
@@ -2796,7 +2962,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedClass?.value || ""}
                     />
-                  ) : currentQuestionIndex === 17 ? (
+                  ) : stylequestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeLearningStyle}
@@ -2805,7 +2971,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedLearningStyle}
                     />
-                  ) : currentQuestionIndex === 27 ? (
+                  ) : subjectquestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangesubject}
@@ -2814,7 +2980,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSubject}
                     />
-                  ) : currentQuestionIndex === 1 ? (
+                  ) : Dobcheck? (
                     <>
                       <div style={{ display: "flex" }}>
                         <div
@@ -2897,7 +3063,7 @@ export const ProfileDialog: FunctionComponent<{
                         </div>
                       </div>
                     </>
-                  ) : currentQuestionIndex === 18 ? (
+                  ) : yearquesiton? (
                     <>
                       <div style={{ display: "flex" }}>
                         <div
@@ -2977,7 +3143,7 @@ export const ProfileDialog: FunctionComponent<{
                         </div>
                       </div>
                     </>
-                  ) : currentQuestionIndex === 19 ? (
+                  ) : hobbyquestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangehobby}
@@ -2986,7 +3152,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedHobby}
                     />
-                  ) : currentQuestionIndex === 30 ? (
+                  ) : countrylist ? (
                     <Select
                       className="dropdown-wrapper"
                       options={countryOptions}
@@ -2995,7 +3161,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedCountry}
                     />
-                  ) : currentQuestionIndex === 31 &&
+                  ) : statelist &&
                     stateOptions?.length > 0 ? (
                     <Select
                       className="dropdown-wrapper"
@@ -3006,7 +3172,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedstate}
                     />
-                  ) : currentQuestionIndex === 20 ? (
+                  ) : languagequestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangelanguage}
@@ -3015,7 +3181,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedLanguage}
                     />
-                  ) : currentQuestionIndex === 21 ? (
+                  ) : languagepref ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeproficiency}
@@ -3024,7 +3190,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedproficiency}
                     />
-                  ) : currentQuestionIndex === 3 ? (
+                  ) : gendercheck ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangegender}
@@ -3033,8 +3199,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectedgender}
                     />
-                  ) : currentQuestionIndex + 1 ===
-                    initialQuestions.basic.length ? (
+                  ) : verylastquestion ? (
                     <Button
                       onClick={viewProfile}
                       style={{ display: "block", margin: "0 auto" }}

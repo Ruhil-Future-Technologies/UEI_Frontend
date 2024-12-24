@@ -323,7 +323,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
               position: "top-center"
             });
           }else {
-            toast.success("Hobbies update successfully", {
+            toast.success("Hobbies updated successfully", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center"

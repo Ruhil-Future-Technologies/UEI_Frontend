@@ -176,7 +176,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
             console.log("we will update here");
             setIshobbiestuch(false);
           } else {
-            toast.success("Hobbies update successfully", {
+            toast.success("Hobbies updated successfully", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center",

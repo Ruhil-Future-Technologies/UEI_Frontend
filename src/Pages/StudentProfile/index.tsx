@@ -343,6 +343,7 @@ const StudentProfile = () => {
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         });
     }

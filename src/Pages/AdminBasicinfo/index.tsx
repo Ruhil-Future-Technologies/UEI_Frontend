@@ -190,6 +190,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         toast.warning("Please add your information", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       } else {
         // empty
@@ -199,11 +200,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         toast.warning("Please login again", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       } else {
         toast.error("Request failed", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       }
     }
@@ -211,19 +214,22 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const getDepatment = async () => {
     try {
       const response = await getData(`${"department/list"}`);
+      console.log(response);
       if (response?.status === 200) {
-        setAllDepartment(response?.data);
+        setAllDepartment(response?.data?.filter((item:any)=> item.is_active===1));
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
         toast.warning("Please login again", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       } else {
         toast.error("Request failed", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       }
     }
@@ -289,16 +295,19 @@ if(response?.status==200){
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           } else if (data?.status === 404) {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           } else {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         })
@@ -306,6 +315,7 @@ if(response?.status==200){
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         });
     }
@@ -394,6 +404,7 @@ if(response?.status==200){
             toast.success("Admin basic information saved successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setNamepro({
               first_name: paylod?.first_name,
@@ -418,12 +429,14 @@ if(response?.status==200){
             toast.error(response?.message, {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         } catch (error: any) {
           toast.error(error?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         }
       };
@@ -461,6 +474,7 @@ if(response?.status==200){
             toast.success("Admin basic information updated successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setNamepro({
               first_name: paylod?.first_name,
@@ -487,12 +501,14 @@ if(response?.status==200){
             toast.error("Request failed", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         } catch {
           toast.error("Some issue are occuring.", {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         }
       };

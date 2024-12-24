@@ -366,7 +366,7 @@ function AdminBasicInfo() {
     postData("admin_basicinfo/add", paylod).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
-        toast.success("info save successfully", {
+        toast.success("info saved successfully", {
           hideProgressBar: true,
           theme: "colored",
         });

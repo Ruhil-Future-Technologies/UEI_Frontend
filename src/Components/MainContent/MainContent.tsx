@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 //import "./MainContent.css";
 import { Bar, Line } from "react-chartjs-2";
-import Chart from "react-apexcharts";
+//import Chart from "react-apexcharts";
 import "chart.js/auto";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { Chart as ChartJS, ChartOptions, ChartData } from "chart.js";
@@ -112,220 +112,220 @@ function MainContent() {
   const userdata = JSON.parse(localStorage?.getItem("userdata") || "{}");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const barChartOptions = {
-    chart: {
-      id: "chart5",
-      height: 295,
-      width: "100%",
-      toolbar: {
-        show: false,
-      },
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 5,
-        horizontal: false,
-        columnWidth: "50%",
-      },
-    },
-    xaxis: {
-      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    },
-    grid: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ["#00E396"], // Green border for the bars
-    },
-    colors: ["#00E396"],
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        type: "vertical",
-        shadeIntensity: 0.5,
-        gradientToColors: ["#009FFD"],
-        inverseColors: true,
-        // opacityFrom: 0.85,
-        // opacityTo: 0.85,
-        stops: [50, 80],
-      },
-    },
-  };
+  // const barChartOptions = {
+  //   chart: {
+  //     id: "chart5",
+  //     height: 295,
+  //     width: "100%",
+  //     toolbar: {
+  //       show: false,
+  //     },
+  //   },
+  //   plotOptions: {
+  //     bar: {
+  //       borderRadius: 5,
+  //       horizontal: false,
+  //       columnWidth: "50%",
+  //     },
+  //   },
+  //   xaxis: {
+  //     categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  //   },
+  //   grid: {
+  //     show: false,
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     show: true,
+  //     width: 2,
+  //     colors: ["#00E396"], // Green border for the bars
+  //   },
+  //   colors: ["#00E396"],
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       type: "vertical",
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: ["#009FFD"],
+  //       inverseColors: true,
+  //       // opacityFrom: 0.85,
+  //       // opacityTo: 0.85,
+  //       stops: [50, 80],
+  //     },
+  //   },
+  // };
 
-  const barChartSeries = [
-    {
-      name: "Data",
-      data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
-    },
-  ];
+  // const barChartSeries = [
+  //   {
+  //     name: "Data",
+  //     data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
+  //   },
+  // ];
 
-  const radialChartOptions = {
-    chart: {
-      id: "chart1",
-    },
-    plotOptions: {
-      radialBar: {
-        startAngle: -115, // Starts from the left
-        endAngle: 115, // Ends on the right (half-circle gauge)
-        hollow: {
-          size: "70%", // Creates the hollow center
-        },
-        dataLabels: {
-          name: {
-            show: false, // Hides the name label
-          },
-          value: {
-            fontSize: "22px",
-            show: true,
-            formatter: function (val: any) {
-              return val + "%"; // Display the percentage value in the center
-            },
-          },
-        },
-        track: {
-          background: "#e7e7e7", // Gray background for the unused portion
-          strokeWidth: "97%",
-          margin: 5, // Margin between the track and the bar
-        },
-      },
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "light",
-        type: "horizontal",
-        shadeIntensity: 0.5,
-        gradientToColors: ["#FF0080"], // Gradient from yellow to red
-        inverseColors: false,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100],
-      },
-    },
-    stroke: {
-      lineCap: "round" as const,
-    },
-    labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
-  };
+  // const radialChartOptions = {
+  //   chart: {
+  //     id: "chart1",
+  //   },
+  //   plotOptions: {
+  //     radialBar: {
+  //       startAngle: -115, // Starts from the left
+  //       endAngle: 115, // Ends on the right (half-circle gauge)
+  //       hollow: {
+  //         size: "70%", // Creates the hollow center
+  //       },
+  //       dataLabels: {
+  //         name: {
+  //           show: false, // Hides the name label
+  //         },
+  //         value: {
+  //           fontSize: "22px",
+  //           show: true,
+  //           formatter: function (val: any) {
+  //             return val + "%"; // Display the percentage value in the center
+  //           },
+  //         },
+  //       },
+  //       track: {
+  //         background: "#e7e7e7", // Gray background for the unused portion
+  //         strokeWidth: "97%",
+  //         margin: 5, // Margin between the track and the bar
+  //       },
+  //     },
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "light",
+  //       type: "horizontal",
+  //       shadeIntensity: 0.5,
+  //       gradientToColors: ["#FF0080"], // Gradient from yellow to red
+  //       inverseColors: false,
+  //       opacityFrom: 1,
+  //       opacityTo: 1,
+  //       stops: [0, 100],
+  //     },
+  //   },
+  //   stroke: {
+  //     lineCap: "round" as const,
+  //   },
+  //   labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
+  // };
 
-  const lineChartOptions = {
-    chart: {
-      id: "chart2",
-      sparkline: {
-        enabled: !0,
-      },
-      zoom: {
-        enabled: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      width: 2,
-      curve: "smooth" as const,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        gradientToColors: ["#02c27a"],
-        shadeIntensity: 1,
-        type: "vertical",
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
+  // const lineChartOptions = {
+  //   chart: {
+  //     id: "chart2",
+  //     sparkline: {
+  //       enabled: !0,
+  //     },
+  //     zoom: {
+  //       enabled: false,
+  //     },
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     width: 2,
+  //     curve: "smooth" as const,
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       gradientToColors: ["#02c27a"],
+  //       shadeIntensity: 1,
+  //       type: "vertical",
+  //       opacityFrom: 0.8,
+  //       opacityTo: 0.1,
+  //       stops: [0, 100, 100, 100],
+  //     },
+  //   },
 
-    colors: ["#02c27a"],
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-    },
-  };
+  //   colors: ["#02c27a"],
+  //   xaxis: {
+  //     categories: [
+  //       "Jan",
+  //       "Feb",
+  //       "Mar",
+  //       "Apr",
+  //       "May",
+  //       "Jun",
+  //       "Jul",
+  //       "Aug",
+  //       "Sep",
+  //     ],
+  //   },
+  // };
 
-  const secondLineChartOptions = {
-    chart: {
-      id: "chart8",
-      height: "100%",
-      width: "100%",
-      zoom: {
-        enabled: false, // Disables zoom functionality
-      },
-      sparkline: {
-        enabled: !0,
-      },
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        shade: "dark",
-        gradientToColors: ["#7DFF50"],
-        shadeIntensity: 1,
-        type: "vertical",
-        opacityFrom: 0.8,
-        opacityTo: 0.1,
-        stops: [0, 100, 100, 100],
-      },
-    },
+  // const secondLineChartOptions = {
+  //   chart: {
+  //     id: "chart8",
+  //     height: "100%",
+  //     width: "100%",
+  //     zoom: {
+  //       enabled: false, // Disables zoom functionality
+  //     },
+  //     sparkline: {
+  //       enabled: !0,
+  //     },
+  //   },
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shade: "dark",
+  //       gradientToColors: ["#7DFF50"],
+  //       shadeIntensity: 1,
+  //       type: "vertical",
+  //       opacityFrom: 0.8,
+  //       opacityTo: 0.1,
+  //       stops: [0, 100, 100, 100],
+  //     },
+  //   },
 
-    colors: ["#7DFF50"],
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "straight" as const,
-      width: 2,
-      colors: ["#7DFF50"],
-    },
-    markers: {
-      size: 5,
-      colors: ["#7DFF50"],
-      strokeColors: "#fff",
-      strokeWidth: 2,
-      hover: {
-        size: 7,
-      },
-    },
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-      ],
-      labels: {
-        show: false, // Hides the x-axis values
-      },
-    },
-    yaxis: {
-      show: false, // Hides the y-axis values
-    },
-    grid: {
-      show: false, // Hides grid lines
-    },
-  };
+  //   colors: ["#7DFF50"],
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   stroke: {
+  //     curve: "straight" as const,
+  //     width: 2,
+  //     colors: ["#7DFF50"],
+  //   },
+  //   markers: {
+  //     size: 5,
+  //     colors: ["#7DFF50"],
+  //     strokeColors: "#fff",
+  //     strokeWidth: 2,
+  //     hover: {
+  //       size: 7,
+  //     },
+  //   },
+  //   xaxis: {
+  //     categories: [
+  //       "Jan",
+  //       "Feb",
+  //       "Mar",
+  //       "Apr",
+  //       "May",
+  //       "Jun",
+  //       "Jul",
+  //       "Aug",
+  //       "Sep",
+  //     ],
+  //     labels: {
+  //       show: false, // Hides the x-axis values
+  //     },
+  //   },
+  //   yaxis: {
+  //     show: false, // Hides the y-axis values
+  //   },
+  //   grid: {
+  //     show: false, // Hides grid lines
+  //   },
+  // };
 
   useEffect(() => {
     if (usertype === "admin") {
@@ -3188,12 +3188,12 @@ function MainContent() {
                             <h6 className="mb-0">Study Chart</h6>
                           </div>
                           <div className="mt-4">
-                            <Chart
+                            {/* <Chart
                               options={barChartOptions}
                               series={barChartSeries}
                               type="bar"
                               height={"280px"}
-                            />
+                            /> */}
                           </div>
                           <p>Your Total Time Spend & Study Chart</p>
                           <div className="d-flex align-items-center gap-3 mt-4">
@@ -3250,12 +3250,12 @@ function MainContent() {
                             </div>
                           </div>
                           <div className="chart-container2">
-                            <Chart
+                            {/* <Chart
                               options={radialChartOptions}
                               series={[78]}
                               type="radialBar"
                               height={"200px"}
-                            />
+                            /> */}
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
@@ -3303,7 +3303,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div className="chart-container2">
-                            <Chart
+                            {/* <Chart
                               options={lineChartOptions}
                               series={[
                                 {
@@ -3312,7 +3312,7 @@ function MainContent() {
                               ]}
                               type="area"
                               height={"100%"}
-                            />
+                            /> */}
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
@@ -3330,7 +3330,7 @@ function MainContent() {
                 <div className="col-xl-6">
                   <div className="card w-100 rounded-4 desk-card addcomingsoon">
                     <div className="card-body">
-                      <Chart
+                      {/* <Chart
                         options={secondLineChartOptions}
                         series={[
                           {
@@ -3339,7 +3339,7 @@ function MainContent() {
                           },
                         ]}
                         type="area"
-                      />
+                      /> */}
                       <div className="d-flex align-items-center gap-3 mt-4">
                         <div className="">
                           <h1 className="mb-0">36.7%</h1>

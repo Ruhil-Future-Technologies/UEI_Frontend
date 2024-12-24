@@ -69,6 +69,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             toast.success("Language deleted successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         })
@@ -76,6 +77,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         });
     }
@@ -96,6 +98,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
     getData(`${"admin_language_known/edit/" + AdminId}`)
@@ -118,6 +121,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           toast.error(data?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         }
       })
@@ -125,6 +129,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
   }, []);
@@ -213,9 +218,10 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       if (successfulResults?.length > 0) {
         if (checkChanges) {
           if (editable) {
-            toast.success("Language save successfully", {
+            toast.success("Language saved successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setCheckChanges(false);
           } else {
@@ -223,6 +229,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             toast.success("Language updated successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         } else {

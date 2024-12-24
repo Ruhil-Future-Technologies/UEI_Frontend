@@ -134,6 +134,7 @@ const AddStudentFeedback = () => {
             toast.success("Feedback sent successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
           setMessage("");

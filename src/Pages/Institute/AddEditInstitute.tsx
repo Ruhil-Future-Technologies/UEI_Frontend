@@ -270,7 +270,7 @@ const AddEditInstitute = () => {
             postData(`${InstituteAddURL}`, instituteData).then((data: { status: number; message:string }) => {
                 if (data.status === 200) {
                     // navigator('/main/Institute')
-                    toast.success("Institute save successfully", {
+                    toast.success("Institute saved successfully", {
                         hideProgressBar: true,
                         theme: "colored",
                     });

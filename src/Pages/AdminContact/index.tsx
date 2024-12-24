@@ -119,11 +119,13 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
         toast.warning("Please login again", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       } else {
         toast.error("Request failed", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       }
     }
@@ -162,9 +164,10 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 
           if (response?.status === 200) {
             setEditFlag(false);
-            toast.success(response?.message, {
+            toast.success('Admin Contact details saved successfully', {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             getContact();
             setActiveForm((prev) => prev + 1);
@@ -174,6 +177,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             toast.warning("Please login again", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           } else {
             if (error?.response?.message === "Email Already exist") {
@@ -188,6 +192,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   toast.success(response?.message, {
                     hideProgressBar: true,
                     theme: "colored",
+                    position: "top-center",
                   });
                   setActiveForm((prev) => prev + 1);
                   getContact();
@@ -195,6 +200,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   toast.error("Something went wrong ", {
                     hideProgressBar: true,
                     theme: "colored",
+                    position: "top-center",
                   });
                 }
               } catch (error: any) {
@@ -202,11 +208,13 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   toast.warning("Please login again", {
                     hideProgressBar: true,
                     theme: "colored",
+                    position: "top-center",
                   });
                 } else {
                   toast.error("Request failed", {
                     hideProgressBar: true,
                     theme: "colored",
+                    position: "top-center",
                   });
                 }
               }
@@ -214,6 +222,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
               toast.error("Request Failed", {
                 hideProgressBar: true,
                 theme: "colored",
+                position: "top-center",
               });
             }
           }
@@ -232,6 +241,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             toast.success(response?.message, {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setActiveForm((prev) => prev + 1);
             getContact();
@@ -239,6 +249,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             toast.error("Something went wrong ", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         } catch (error: any) {
@@ -246,11 +257,13 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             toast.warning("Please login again", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           } else {
             toast.error("Request failed", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         }
