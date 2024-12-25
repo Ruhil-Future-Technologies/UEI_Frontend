@@ -345,7 +345,7 @@ console.log(goal);
       "What is your mobile number?",
       "What is your WhatsApp number?",
       "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
-      "Please select your semester",
+      "Please select your semester ?",
       "Select your subject name",
       "What is your preference?",
       "Add your score in percentage",
@@ -583,7 +583,7 @@ console.log(goal);
           try {
             const data = await getData(`${profileURL}/${StudentId}`);
             if(data.status===200){
-
+              setAnsweredData(data.data);
             console.log(data)
 
             // Get the values from the fetched data
@@ -1146,6 +1146,8 @@ if(payload.class_id){
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
       }),
     };
+    console.log(payload);
+    console.log(answers);
     postData("/subject_preference/add", payload).then((response) => {
       if (response.status === 200) {
         // toast.success("Subject Preference information saved successfully", {
@@ -1322,7 +1324,7 @@ if(payload.class_id){
     },
   ];
   useEffect(() => {
-    if (currentQuestionIndex === 25) {
+    if (courceforpref) {
       if (
         answers[8] === "school" ||
         answeredData?.academic_history?.institution_type === "school"
@@ -1424,166 +1426,166 @@ console.log("inside hobby api");
     console.log(currentQuestionIndex);
     updatedAnswers[currentQuestionIndex] = e.target.value;
     setAnswers(updatedAnswers);
-    setpincode(false);
-    setGenderError(false);
-    // if (currentQuestionIndex === 0) {
-    //   const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
-    //   if (!fullNameRegex.test(updatedAnswers[0])) {
-    //     setFullName(true);
-    //     return;
-    //   } else {
-    //     setFullName(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 3) {
-    //   const gender = updatedAnswers[3].toLowerCase();
-    //   if (gender !== "male" && gender !== "female") {
-    //     // You can set an error state here if needed
-    //     setGenderError(true);
-    //     return;
-    //   } else {
-    //     setGenderError(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 4) {
-    //   const nameRegex = /^[a-zA-Z\s]+$/;
-    //   if (!nameRegex.test(updatedAnswers[4])) {
-    //     setMotherNameError(true);
-    //     return;
-    //   } else {
-    //     setMotherNameError(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 5) {
-    //   const nameRegex = /^[a-zA-Z\s]+$/;
-    //   if (!nameRegex.test(updatedAnswers[5])) {
-    //     setFName(true);
-    //     return;
-    //   } else {
-    //     setFName(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 6) {
-    //   const nameRegex = /^[a-zA-Z\s]+$/;
-    //   if (!nameRegex.test(updatedAnswers[6])) {
-    //     setgName(true);
-    //     return;
-    //   } else {
-    //     setgName(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 23) {
-    //   // Regular expression for exactly 10 digits
-    //   const phoneRegex = /^\d{10}$/;
+    updatedAnswers[currentQuestionIndex] = e.target.value;
+    setAnswers(updatedAnswers);
+    if (fullnamequestion) {
+      const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
+      if (!fullNameRegex.test(updatedAnswers[answers.length-1])) {
+        setFullName(true);
+        return;
+      } else {
+        setFullName(false);
+      }
+    }
+    if (gendercheck) {
+      const gender = updatedAnswers[answers.length-1].toLowerCase();
+      if (gender !== "male" && gender !== "female") {
+        // You can set an error state here if needed
+        setGenderError(true);
+        return;
+      } else {
+        setGenderError(false);
+      }
+    }
+    if (maaname) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(updatedAnswers[answers.length-1])) {
+        setMotherNameError(true);
+        return;
+      } else {
+        setMotherNameError(false);
+      }
+    }
+    if (paaquestion) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(updatedAnswers[answers.length])) {
+        setFName(true);
+        return;
+      } else {
+        setFName(false);
+      }
+    }
+    if (guardianquestion) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(updatedAnswers[answers.length-1])) {
+        setgName(true);
+        return;
+      } else {
+        setgName(false);
+      }
+    }
+    if (mobilequestion) {
+      // Regular expression for exactly 10 digits
+      const phoneRegex = /^\d{10}$/;
 
-    //   if (!phoneRegex.test(updatedAnswers[23])) {
-    //     setphnumber(true);
-    //     return;
-    //   } else {
-    //     setphnumber(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 24) {
-    //   // Regular expression for exactly 10 digits
-    //   const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(updatedAnswers[answers.length-1])) {
+        setphnumber(true);
+        return;
+      } else {
+        setphnumber(false);
+      }
+    }
+    if (whatsappnumbet) {
+      // Regular expression for exactly 10 digits
+      const phoneRegex = /^\d{10}$/;
 
-    //   if (!phoneRegex.test(updatedAnswers[24])) {
-    //     setphnumber(true);
-    //     return;
-    //   } else {
-    //     setphnumber(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 30) {
-    //   // Regular expression for exactly 10 digits
-    //   const disticRegex = /^[a-zA-Z\s]+$/;
+      if (!phoneRegex.test(updatedAnswers[answers.length-1])) {
+        setphnumber(true);
+        return;
+      } else {
+        setphnumber(false);
+      }
+    }
+    if (districtquestion) {
+      // Regular expression for exactly 10 digits
+      const disticRegex = /^[a-zA-Z\s]+$/;
 
-    //   if (!disticRegex.test(updatedAnswers[30])) {
-    //     setdisct(true);
-    //     return;
-    //   } else {
-    //     setdisct(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 32) {
-    //   const disticRegex = /^[a-zA-Z\s]+$/;
+      if (!disticRegex.test(updatedAnswers[answers.length-1])) {
+        setdisct(true);
+        return;
+      } else {
+        setdisct(false);
+      }
+    }
+    if (districtquestion) {
+      const disticRegex = /^[a-zA-Z\s]+$/;
 
-    //   if (!disticRegex.test(updatedAnswers[32])) {
-    //     setdisct(true);
-    //     return;
-    //   } else {
-    //     setdisct(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 33) {
-    //   const disticRegex = /^[a-zA-Z\s]+$/;
+      if (!disticRegex.test(updatedAnswers[answers.length-1])) {
+        setdisct(true);
+        return;
+      } else {
+        setdisct(false);
+      }
+    }
+    if (cityquestion) {
+      const disticRegex = /^[a-zA-Z\s]+$/;
 
-    //   if (!disticRegex.test(updatedAnswers[33])) {
-    //     setcity(true);
-    //     return;
-    //   } else {
-    //     setcity(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 34) {
-    //   const pincodeRegex = /^\d{6}$/;
+      if (!disticRegex.test(updatedAnswers[answers.length-1])) {
+        setcity(true);
+        return;
+      } else {
+        setcity(false);
+      }
+    }
+    if (pincodequestion) {
+      const pincodeRegex = /^\d{6}$/;
 
-    //   if (!pincodeRegex.test(updatedAnswers[34])) {
-    //     // setpincode(true);
-    //     setpincode(true);
-    //     setError1("");
-    //   } else {
-    //     // setpincode(false);
-    //     setpincode(false); // Clear the error if valid
-    //     setError1("");
-    //   }
-    // }
-    // if (currentQuestionIndex === 28) {
-    //   const nameRegex = /^[a-zA-Z\s]+$/;
-    //   if (!nameRegex.test(updatedAnswers[28])) {
-    //     setpreferenceError(true);
-    //     return;
-    //   } else {
-    //     setpreferenceError(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 29) {
-    //   // Regular expression for exactly 6 digits (adjust the length as per your requirement)
-    //   const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
+      if (!pincodeRegex.test(updatedAnswers[answers.length-1])) {
+        // setpincode(true);
+        setpincode(true);
+        setError1("");
+      } else {
+        // setpincode(false);
+        setpincode(false); // Clear the error if valid
+        setError1("");
+      }
+    }
+    if (preferencequestion) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(updatedAnswers[answers.length-1])) {
+        setpreferenceError(true);
+        return;
+      } else {
+        setpreferenceError(false);
+      }
+    }
+    if (scorequestion) {
+      // Regular expression for exactly 6 digits (adjust the length as per your requirement)
+      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
-    //   if (!regex.test(updatedAnswers[29])) {
-    //     setper(true);
-    //     return;
-    //   } else {
-    //     setper(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 35) {
-    //   if (updatedAnswers[35] === "" || updatedAnswers[35] == null) {
-    //     setFirstAddress(true);
-    //   } else {
-    //     setFirstAddress(false);
-    //   }
-    // }
-    // if (currentQuestionIndex === 36) {
-    //   if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
-    //     setSecondAddress(true);
-    //   } else {
-    //     setSecondAddress(false);
-    //   }
-    // }
+      if (!regex.test(updatedAnswers[answers.length-1])) {
+        setper(true);
+        return;
+      } else {
+        setper(false);
+      }
+    }
+    if (firstaddressquestion) {
+      if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
+        setFirstAddress(true);
+      } else {
+        setFirstAddress(false);
+      }
+    }
+    if (secondaddressquestion) {
+      if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
+        setSecondAddress(true);
+      } else {
+        setSecondAddress(false);
+      }
+    }
 
-    // if (currentQuestionIndex === 28) {
-    //   // Regular expression for exactly 6 digits (adjust the length as per your requirement)
-    //   const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
+    if (scorequestion) {
+      // Regular expression for exactly 6 digits (adjust the length as per your requirement)
+      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
-    //   if (!regex.test(updatedAnswers[28])) {
-    //     setper(true);
-    //     return;
-    //   } else {
-    //     setper(false);
-    //   }
-    // }
+      if (!regex.test(updatedAnswers[answers.length-1])) {
+        setper(true);
+        return;
+      } else {
+        setper(false);
+      }
+    }
   };
   const handleSkip = () => {
     setError1("");
@@ -1690,7 +1692,7 @@ console.log("inside hobby api");
     // setErordate("")
 
     datecheck = dayjs(newDate).format(
-      currentQuestionIndex === 18 ? "YYYY" : "DD/MM/YYYY"
+      yearquesiton ? "YYYY" : "DD/MM/YYYY"
     );
 
     if (hitcount === ++hitcount) {
@@ -1772,28 +1774,37 @@ console.log("inside hobby api");
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
-        if (
-          (answers[8]?.toLowerCase() === "school" ||
-            answeredData?.academic_history?.institution_type === "school") &&
-          currentQuestionIndex === 24
-        ) {
-          setCurrentQuestionIndex(27);
-        } else {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-        }
+        // if (
+        //   (answers[8]?.toLowerCase() === "school" ||
+        //     answeredData?.academic_history?.institution_type === "school") &&
+        //   currentQuestionIndex === 24
+        // ) {
+        //   setCurrentQuestionIndex(27);
+        // } else {
+        //   setCurrentQuestionIndex(currentQuestionIndex + 1);
+        // }
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        // setMessages([
+        //   ...updatedMessages,
+        //   {
+        //     text:
+        //       (answers[8]?.toLowerCase() === "school" ||
+        //         answeredData?.academic_history?.institution_type ===
+        //         "school") &&
+        //         currentQuestionIndex === 24
+        //         ? currentQuestions[27]
+        //         : currentQuestions[currentQuestionIndex + 1],
+        //     type: "question" as const,
+        //   },
+        // ]);
         setMessages([
           ...updatedMessages,
           {
-            text:
-              (answers[8]?.toLowerCase() === "school" ||
-                answeredData?.academic_history?.institution_type ===
-                "school") &&
-                currentQuestionIndex === 24
-                ? currentQuestions[27]
-                : currentQuestions[currentQuestionIndex + 1],
+            text: currentQuestions[currentQuestionIndex + 1],
             type: "question" as const,
           },
         ]);
+
 console.log(whatsappnumbet)
 
         if (whatsappnumbet){
@@ -1840,9 +1851,9 @@ console.log("in side whatsappnumber");
     const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
     const updatedAnswers = [...answers];
-    if (currentQuestionIndex === 0) {
+    if (fullnamequestion) {
       const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
-      if (!fullNameRegex.test(updatedAnswers[0])) {
+      if (!fullNameRegex.test(updatedAnswers[answers.length-1])) {
         setFullName(true);
         return;
       } else {
@@ -1850,11 +1861,11 @@ console.log("in side whatsappnumber");
       }
     }
 
-    if (currentQuestionIndex === 42) {
+    if (aimquestoin) {
       if (
-        updatedAnswers[2] === "" ||
-        updatedAnswers[2] == null ||
-        !charecterRegex.test(updatedAnswers[2])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setGoal(true);
         return;
@@ -1862,11 +1873,11 @@ console.log("in side whatsappnumber");
         setGoal(false);
       }
     }
-    if (currentQuestionIndex === 4) {
+    if (maaname) {
       if (
-        updatedAnswers[4] === "" ||
-        updatedAnswers[4] == null ||
-        !charecterRegex.test(updatedAnswers[4])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setMotherNameError(true);
         return;
@@ -1874,11 +1885,11 @@ console.log("in side whatsappnumber");
         setMotherNameError(false);
       }
     }
-    if (currentQuestionIndex === 57) {
+    if (paaquestion) {
       if (
-        updatedAnswers[5] === "" ||
-        updatedAnswers[5] == null ||
-        !charecterRegex.test(updatedAnswers[5])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setFName(true);
         return;
@@ -1886,11 +1897,11 @@ console.log("in side whatsappnumber");
         setFName(false);
       }
     }
-    if (currentQuestionIndex === 76) {
+    if (gendercheck) {
       if (
-        updatedAnswers[6] === "" ||
-        updatedAnswers[6] == null ||
-        !charecterRegex.test(updatedAnswers[6])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setgName(true);
         return;
@@ -1898,11 +1909,11 @@ console.log("in side whatsappnumber");
         setgName(false);
       }
     }
-    if (currentQuestionIndex === 23) {
+    if (mobilequestion) {
       if (
-        updatedAnswers[23] === "" ||
-        updatedAnswers[23] == null ||
-        !/^\d{10}$/.test(updatedAnswers[23])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !/^\d{10}$/.test(updatedAnswers[answers.length-1])
       ) {
         setphnumber(true);
         return;
@@ -1910,11 +1921,11 @@ console.log("in side whatsappnumber");
         setphnumber(false);
       }
     }
-    if (currentQuestionIndex === 24) {
+    if (whatsappnumbet) {
       if (
-        updatedAnswers[24] === "" ||
-        updatedAnswers[24] == null ||
-        !/^\d{10}$/.test(updatedAnswers[24])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !/^\d{10}$/.test(updatedAnswers[answers.length-1])
       ) {
         setphnumber(true);
         return;
@@ -1922,11 +1933,11 @@ console.log("in side whatsappnumber");
         setphnumber(false);
       }
     }
-    if (currentQuestionIndex === 28) {
+    if (preferencequestion) {
       if (
-        updatedAnswers[28] === "" ||
-        updatedAnswers[28] == null ||
-        !charecterRegex.test(updatedAnswers[28])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setpreferenceError(true);
         return;
@@ -1935,11 +1946,11 @@ console.log("in side whatsappnumber");
       }
     }
 
-    if (currentQuestionIndex === 29) {
+    if (scorequestion) {
       if (
-        updatedAnswers[29] === "" ||
-        updatedAnswers[29] == null ||
-        !regex.test(updatedAnswers[29])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !regex.test(updatedAnswers[answers.length-1])
       ) {
         setper(true);
         return;
@@ -1947,11 +1958,11 @@ console.log("in side whatsappnumber");
         setper(false);
       }
     }
-    if (currentQuestionIndex === 32) {
+    if (districtquestion) {
       if (
-        updatedAnswers[32] === "" ||
-        updatedAnswers[32] == null ||
-        !charecterRegex.test(updatedAnswers[32])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setdisct(true);
         return;
@@ -1959,11 +1970,11 @@ console.log("in side whatsappnumber");
         setdisct(false);
       }
     }
-    if (currentQuestionIndex === 33) {
+    if (cityquestion) {
       if (
-        updatedAnswers[33] === "" ||
-        updatedAnswers[33] == null ||
-        !charecterRegex.test(updatedAnswers[33])
+        updatedAnswers[answers.length-1] === "" ||
+        updatedAnswers[answers.length-1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length-1])
       ) {
         setcity(true);
         return;
@@ -1977,7 +1988,7 @@ console.log("in side whatsappnumber");
         fullName ||
         genderError ||
         motherNameError ||
-        //fName ||
+        fName ||
         gName ||
         phnumber ||
         distic ||
@@ -1985,8 +1996,8 @@ console.log("in side whatsappnumber");
         pincode ||
         per ||
         preferenceError ||
-        // errordate ||
-        // goal ||
+         //errordate ||
+         goal ||
         firstaddress ||
         secondaddress
       ) {
@@ -1994,17 +2005,17 @@ console.log("in side whatsappnumber");
       }
       e.preventDefault();
       console.log(currentQuestionIndex);
-      if (currentQuestionIndex === 2 || currentQuestionIndex === 5) {
-        // if (answers[currentQuestionIndex]?.length === 10) {
+      if (mobilequestion || whatsappnumbet) {
+         if (answers[answers.length-1]?.length === 10) {
           answerSaveandGotoNextquestoin(e);
-        // } else {
-        //   toast.error("Please enter valid 10 digit mobile number", {
-        //     hideProgressBar: true,
-        //     theme: "colored",
-        //   });
-        // }
-      } else if (currentQuestionIndex === 34) {
-        if (answers[currentQuestionIndex]?.length === 6) {
+         } else {
+           toast.error("Please enter valid 10 digit mobile number", {
+             hideProgressBar: true,
+             theme: "colored",
+           });
+         }
+      } else if (pincodequestion) {
+        if (answers[answers.length-1]?.length === 6) {
           answerSaveandGotoNextquestoin(e);
           setError1("");
         } else {
@@ -2014,15 +2025,15 @@ console.log("in side whatsappnumber");
           //   theme: "colores",
           // });
         }
-      } else if (currentQuestionIndex === 35) {
-        if (updatedAnswers[35] === "" || updatedAnswers[35] == null) {
+      } else if (firstaddressquestion) {
+        if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
           setFirstAddress(true);
         } else {
           setFirstAddress(false);
           answerSaveandGotoNextquestoin(e);
         }
-      } else if (currentQuestionIndex === 36) {
-        if (updatedAnswers[36] === "" || updatedAnswers[36] == null) {
+      } else if (secondaddressquestion) {
+        if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
           setSecondAddress(true);
         } else {
           setSecondAddress(false);
@@ -2184,6 +2195,19 @@ console.log("in side whatsappnumber");
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.value === "school") {
+        const questionsToRemove = [
+          "Please select your stream",
+          "Please select your university",
+          "Please select your institution",
+          "Please select your course",
+          "Please select your semester",
+          "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
+          "What is your learning style?",
+          "Please select year"
+        ];
+
+        filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         getData("school_subject/list")
           .then((response: any) => {
@@ -2204,6 +2228,13 @@ console.log("in side whatsappnumber");
             });
           });
       } else {
+        const questionsToRemove = [
+          "Please select your board",
+          "Please select your state",
+          "Please select your class",
+          "Please select your stream",]
+          filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+
         getData("college_subject/list")
           .then((response: any) => {
             if (response.status === 200) {
@@ -2222,14 +2253,14 @@ console.log("in side whatsappnumber");
               position: "top-center",
             });
           });
-        setCurrentQuestionIndex(13);
+        setCurrentQuestionIndex(currentQuestionIndex+1);
       }
 
       setMessages([
         ...updatedMessages,
         {
           text: currentQuestions[
-            e.value === "school" ? currentQuestionIndex + 1 : 13
+            e.value === "school" ? currentQuestionIndex + 1 : currentQuestionIndex+1
           ],
           type: "question" as const,
         },
@@ -2254,7 +2285,12 @@ console.log("in side whatsappnumber");
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.value === "state_board")
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      else setCurrentQuestionIndex(currentQuestionIndex + 2);
+      else{
+        const questionsToRemove = [
+          "Please select your state"]
+          filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } 
       console.log("select board");
       setMessages([
         ...updatedMessages,
@@ -2292,11 +2328,11 @@ console.log("in side whatsappnumber");
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
-      setCurrentQuestionIndex(19);
+      setCurrentQuestionIndex(currentQuestionIndex+1);
       setMessages([
         ...updatedMessages,
         {
-          text: currentQuestions[19],
+          text: currentQuestions[currentQuestionIndex+1],
           type: "question" as const,
         },
       ]);
@@ -2357,7 +2393,13 @@ console.log("in side whatsappnumber");
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.label === "class_11" || e.label === "class_12")
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      else setCurrentQuestionIndex(currentQuestionIndex + 8);
+      else{
+        const questionsToRemove = [
+          "Please select your stream",
+        ]
+        filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } 
 
     
       setMessages([
@@ -2366,7 +2408,7 @@ console.log("in side whatsappnumber");
           text: currentQuestions[
             e.label === "class_11" || e.label === "class_12"
               ? currentQuestionIndex + 1
-              : currentQuestionIndex + 8
+              : currentQuestionIndex + 1
           ],
           type: "question" as const,
         },
@@ -2687,7 +2729,23 @@ console.log("in side whatsappnumber");
   
     return lastQuestion?.text || ' '; // Return the text or null if no question found
   };
-  const isLastQuestionCourseSelection = getLastQuestion() === "Please select your course" || getLastQuestion() ==="Hi, Please provide your subject preference information! what is your course name to which your subject belongs?";
+const fullnamequestion=getLastQuestion()==="What is your full name?";
+const maaname=getLastQuestion()=="What is your mother's name?";
+const aimquestoin=getLastQuestion()=="What is your main learning goal or interest for visiting our application?";
+const paaquestion=getLastQuestion()==="What is your father's name?";
+const guardianquestion = getLastQuestion() === "What is your guardian's name?";
+const mobilequestion = getLastQuestion() === "What is your mobile number?";
+const preferencequestion = getLastQuestion() === "What is your preference?";
+const scorequestion = getLastQuestion() === "Add your score in percentage";
+const districtquestion = getLastQuestion() === "Which district do you currently live in?";
+const cityquestion = getLastQuestion() === "Which city do you live in?";
+const pincodequestion = getLastQuestion() === "What is your Pin code?";
+const firstaddressquestion = getLastQuestion() === "What is your first address?";
+const secondaddressquestion = getLastQuestion() === "What is your second address?";
+
+
+  const isLastQuestionCourseSelection = getLastQuestion() === "Please select your course" 
+  const courceforpref= getLastQuestion() ==="Hi, Please provide your subject preference information! what is your course name to which your subject belongs?";
   console.log(isLastQuestionCourseSelection);
   const questioncountrycode=getLastQuestion()==="Please select your mobile number country code";
   const Dobcheck=getLastQuestion()=="What is your DOB?";
@@ -2700,7 +2758,9 @@ console.log("in side whatsappnumber");
   const stremquestion=getLastQuestion()=="Please select your stream";
   const unversityquest=getLastQuestion()=="Please select your university";
   const institutequestion=getLastQuestion()=="Please select your institution";
-  const semisterquestion=getLastQuestion()=="Please select your semester";
+  const semisterquestion=getLastQuestion()=="Please select your semester";  
+  const semisterprepquestion=getLastQuestion()=="Please select your semester ?";
+
   const stylequestion=getLastQuestion()=="What is your learning style?";
   const yearquesiton=getLastQuestion()=="Please select year";
   const hobbyquestion=getLastQuestion()=="Hi, Please choose your hobbies";
@@ -2713,11 +2773,15 @@ console.log("in side whatsappnumber");
   const statelist=getLastQuestion()=="Which state do you currently reside in?"
   const persentegequestion=getLastQuestion()=="Add your score in percentage";
   const verylastquestion=getLastQuestion()=="Thanks for providing your personal information"
-
+ 
+  // if(mobilequestion && whatsappnumbet){
+  //    setCurrentQuestionIndex(answers.length);
+  // }
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
 console.log(filterdQuestions1);
 console.log(answers);
+console.log(currentQuestionIndex);
   return (
     <>
       <div
@@ -2808,7 +2872,7 @@ console.log(answers);
                     firstaddress ||
                     secondaddress) && (
                       <p className="error-text">
-                        {errordata[currentQuestionIndex]}
+                        {errordata[answers.length]}
                       </p>
                     )}
                   {error1 && (
@@ -2926,7 +2990,7 @@ console.log(answers);
                       menuPlacement="top"
                       value={selectSemester}
                     />
-                  ) : currentQuestionIndex === 26 ? (
+                  ) : semisterprepquestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangesemesterpre}
