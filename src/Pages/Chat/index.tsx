@@ -1224,67 +1224,6 @@ const Chat = () => {
       chatRef?.current.scrollIntoView();
     }
   };
-  // const displayChat = async (chats: any) => {
-  //   const initialLikedStates: { [key: string]: string } = {};
-  //   setShowInitialPage(false);
-  //   const datatest = chatlist.filter(
-  //     (chatitem: { chat_title: any }) =>
-  //       chatitem.chat_title === chat[0]?.question
-  //   );
-
-  //   if (datatest.length === 0 && chat[0]?.question !== undefined) {
-  //     await saveChat();
-  //   } else if (Array.isArray(chat) && chat.length >= 2) {
-  //     await saveChat();
-  //   } else {
-  //     //empty
-  //   }
-  //   setchatData([]);
-  //   const chatt = JSON.parse(chats?.chat_conversation);
-  //   setDisplayedChat(chatt);
-
-  //   setSelectedChat([]);
-
-  //   const chatdataset: any[] = [];
-  //   chatt.map((itemchat: any, index: number) => {
-  //     // setTimeout(() => {
-  //     const chatdata: any = {};
-  //     chatdata.question = itemchat?.question;
-  //     // chatdata.answer = chat?.response
-  //     let elements: any = [];
-  //     try {
-  //       if (typeof itemchat?.answer === "string") {
-  //         elements = JSON.parse(itemchat?.answer);
-  //       } else {
-  //         elements = itemchat?.answer;
-  //       }
-  //     } catch {
-  //       const cleanString = itemchat?.answer
-  //         .replace(/\\"/g, '"')
-  //         .replace(/[{}]/g, "")
-  //         .replace(/\\'/g, "'")
-  //         .replace(/(^"|"$)/g, "");
-  //       // .replace(/(^"|"$)/g, "");
-  //       const stringArray = cleanString
-  //         .split(",")
-  //         .map((item: any) => item.trim());
-  //       elements = stringArray.map((item: any) => item.replace(/"/g, ""));
-  //     }
-  //     chatdata.answer = elements;
-  //     chatdata.speak = false;
-  //     chatdata.like_dislike = itemchat?.like_dislike;
-  //     chatdataset.push(chatdata);
-
-  //     if (itemchat?.like_dislike === true) {
-  //       initialLikedStates[index] = "liked";
-  //     } else if (itemchat?.like_dislike === false) {
-  //       initialLikedStates[index] = "disliked";
-  //     }
-  //     // }, 500);
-  //   });
-  //   setSelectedChat(chatdataset);
-  //   setLikedStates(initialLikedStates);
-  // };
 
   const displayChat = async (chats: any) => {
     const initialLikedStates: { [key: string]: string } = {};
