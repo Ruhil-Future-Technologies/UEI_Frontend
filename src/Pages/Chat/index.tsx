@@ -50,11 +50,14 @@ const Chat = () => {
   const expandedChat = localStorage.getItem("expandedChatData")
     ? JSON.parse(localStorage.getItem("expandedChatData")!)
     : [];
+
+  const [expandedChatData] = useState<any>(expandedChat);
+
   const [hasInitialExpandedChat, setHasInitialExpandedChat] = useState(false);
   const [hasSavedLocal, setHasSavedLocal] = useState(false);
-  const [selectedchat, setSelectedChat] = useState<any>(expandedChat);
+  const [selectedchat, setSelectedChat] = useState<any>(expandedChat.chats);
   const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
-
+  const [expandSearch, setExpandSearch] = useState(false);
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
@@ -101,15 +104,34 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const expandedChatData = localStorage.getItem("expandedChatData")
-      ? JSON.parse(localStorage.getItem("expandedChatData")!)
-      : [];
-    setSavedExpandedChat(expandedChatData);
+    if (expandedChatData.loading) {
+      setLoading(true);
+      setLoaderMsg(expandedChatData.loaderMessage);
+
+      setStudentData(expandedChatData.studentData);
+      setSearch(expandedChatData.pendingQuestion);
+      setExpandSearch(true);
+    } else {
+      setSavedExpandedChat(expandedChatData.chats);
+    }
 
     if (expandedChatData.length > 0 && !hasInitialExpandedChat) {
       setHasInitialExpandedChat(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!expandedChatData.loading) {
+      setShowInitialPage(false);
+    }
+  }, [expandedChat]);
+
+  useEffect(() => {
+    if (search) {
+      searchData();
+      setExpandSearch(false);
+    }
+  }, [expandSearch]);
 
   useEffect(() => {
     if (expandedChat.length > 0 && !hasInitialExpandedChat) {
@@ -306,8 +328,8 @@ const Chat = () => {
         }
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-        setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistory(data?.data);
+        setchathistoryrecent(data?.data);
         syncChatStates(data?.data);
       })
       .catch((e) => {
@@ -318,13 +340,11 @@ const Chat = () => {
       });
     getData(`${university_list}`)
       .then((data: any) => {
-        setUniversity_List_Data(data?.data);
+        setUniversity_List_Data(data?.data || "");
       })
-
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-
           theme: "colored",
         });
       });
@@ -473,12 +493,13 @@ const Chat = () => {
     setchatData((prevState: any) => [...prevState, newData]);
     setLoading(false);
     setSearch("");
+    setShowInitialPage(false);
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
-        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistory(data?.data);
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-        setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistoryrecent(data?.data);
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -509,7 +530,7 @@ const Chat = () => {
 
   const searchData = () => {
     setSearch("");
-    setShowInitialPage(false);
+
     if (search === "") {
       setSearchErr(true);
       return;
@@ -576,10 +597,8 @@ const Chat = () => {
         .then((data: any) => {
           setchatlistData(data?.data);
           // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-          setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-          setchathistoryrecent(
-            data?.data?.filter((chat: any) => !chat?.flagged)
-          );
+          setchathistory(data?.data);
+          setchathistoryrecent(data?.data);
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -610,10 +629,8 @@ const Chat = () => {
                 studentDetail.academic_history.state_for_stateboard,
               stream_selection: studentDetail.academic_history.stream,
               class_selection: studentDetail.class.name,
-              university_selection:
-                studentDetail.academic_history.university_name,
-              college_selection:
-                studentDetail.academic_history.institution_name,
+              university_selection: null,
+              college_selection: null,
               course_selection: studentDetail?.course,
               year: studentDetail.academic_history.year,
               subject: studentDetail.subject,
@@ -737,9 +754,10 @@ const Chat = () => {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
             // )
-            const university: any = university_list_data.filter(
-              (university: any) => university.university_id == university_id
-            );
+            const university: any =
+              university_list_data.filter(
+                (university: any) => university.university_id == university_id
+              ) || "";
             const queryParams = {
               user_query: search,
               student_id: userid,
@@ -760,17 +778,47 @@ const Chat = () => {
             return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === "object" && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === "string" &&
+                              value.includes("\\frac") &&
+                              !value.includes("$")
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(""),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: formatAnswer(response.answer),
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: userid,
-                    chat_question: search,
-                    response: response?.answer,
+                    chat_question: response.question,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   // getData(
@@ -974,7 +1022,7 @@ const Chat = () => {
       if (!isAlreadyInExisting) {
         let updatedChatData;
 
-        if (savedExpandedChat.length > 0) {
+        if (savedExpandedChat && savedExpandedChat.length > 0) {
           const isInSavedExpanded = savedExpandedChat.some(
             (item: any) =>
               item.question === latestChatItem.question &&
@@ -1176,52 +1224,108 @@ const Chat = () => {
       chatRef?.current.scrollIntoView();
     }
   };
+  // const displayChat = async (chats: any) => {
+  //   const initialLikedStates: { [key: string]: string } = {};
+  //   setShowInitialPage(false);
+  //   const datatest = chatlist.filter(
+  //     (chatitem: { chat_title: any }) =>
+  //       chatitem.chat_title === chat[0]?.question
+  //   );
+
+  //   if (datatest.length === 0 && chat[0]?.question !== undefined) {
+  //     await saveChat();
+  //   } else if (Array.isArray(chat) && chat.length >= 2) {
+  //     await saveChat();
+  //   } else {
+  //     //empty
+  //   }
+  //   setchatData([]);
+  //   const chatt = JSON.parse(chats?.chat_conversation);
+  //   setDisplayedChat(chatt);
+
+  //   setSelectedChat([]);
+
+  //   const chatdataset: any[] = [];
+  //   chatt.map((itemchat: any, index: number) => {
+  //     // setTimeout(() => {
+  //     const chatdata: any = {};
+  //     chatdata.question = itemchat?.question;
+  //     // chatdata.answer = chat?.response
+  //     let elements: any = [];
+  //     try {
+  //       if (typeof itemchat?.answer === "string") {
+  //         elements = JSON.parse(itemchat?.answer);
+  //       } else {
+  //         elements = itemchat?.answer;
+  //       }
+  //     } catch {
+  //       const cleanString = itemchat?.answer
+  //         .replace(/\\"/g, '"')
+  //         .replace(/[{}]/g, "")
+  //         .replace(/\\'/g, "'")
+  //         .replace(/(^"|"$)/g, "");
+  //       // .replace(/(^"|"$)/g, "");
+  //       const stringArray = cleanString
+  //         .split(",")
+  //         .map((item: any) => item.trim());
+  //       elements = stringArray.map((item: any) => item.replace(/"/g, ""));
+  //     }
+  //     chatdata.answer = elements;
+  //     chatdata.speak = false;
+  //     chatdata.like_dislike = itemchat?.like_dislike;
+  //     chatdataset.push(chatdata);
+
+  //     if (itemchat?.like_dislike === true) {
+  //       initialLikedStates[index] = "liked";
+  //     } else if (itemchat?.like_dislike === false) {
+  //       initialLikedStates[index] = "disliked";
+  //     }
+  //     // }, 500);
+  //   });
+  //   setSelectedChat(chatdataset);
+  //   setLikedStates(initialLikedStates);
+  // };
+
   const displayChat = async (chats: any) => {
     const initialLikedStates: { [key: string]: string } = {};
     setShowInitialPage(false);
+
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
         chatitem.chat_title === chat[0]?.question
     );
-
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
       await saveChat();
     } else if (Array.isArray(chat) && chat.length >= 2) {
       await saveChat();
     } else {
-      //empty
+      // empty
     }
+
     setchatData([]);
     const chatt = JSON.parse(chats?.chat_conversation);
     setDisplayedChat(chatt);
-
     setSelectedChat([]);
 
     const chatdataset: any[] = [];
+
     chatt.map((itemchat: any, index: number) => {
-      // setTimeout(() => {
       const chatdata: any = {};
       chatdata.question = itemchat?.question;
-      // chatdata.answer = chat?.response
-      let elements: any = [];
-      try {
-        if (typeof itemchat?.answer === "string") {
+
+      let elements: any;
+      if (Array.isArray(itemchat?.answer)) {
+        elements = [itemchat.answer.join(" ")];
+      } else if (typeof itemchat?.answer === "string") {
+        try {
           elements = JSON.parse(itemchat?.answer);
-        } else {
+        } catch {
           elements = itemchat?.answer;
         }
-      } catch {
-        const cleanString = itemchat?.answer
-          .replace(/\\"/g, '"')
-          .replace(/[{}]/g, "")
-          .replace(/\\'/g, "'")
-          .replace(/(^"|"$)/g, "");
-        // .replace(/(^"|"$)/g, "");
-        const stringArray = cleanString
-          .split(",")
-          .map((item: any) => item.trim());
-        elements = stringArray.map((item: any) => item.replace(/"/g, ""));
+      } else {
+        elements = itemchat?.answer;
       }
+
       chatdata.answer = elements;
       chatdata.speak = false;
       chatdata.like_dislike = itemchat?.like_dislike;
@@ -1232,8 +1336,8 @@ const Chat = () => {
       } else if (itemchat?.like_dislike === false) {
         initialLikedStates[index] = "disliked";
       }
-      // }, 500);
     });
+
     setSelectedChat(chatdataset);
     setLikedStates(initialLikedStates);
   };

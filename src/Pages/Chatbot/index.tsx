@@ -53,13 +53,9 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
   useEffect(() => {
     if (currentIndex < elements?.length) {
-      const timer = setTimeout(() => {
-        const newElement = parseElement(elements[currentIndex]);
-        setDisplayText((prev: any) => [...prev, newElement]);
-        setCurrentIndex(currentIndex + 1);
-      }, 100);
-
-      return () => clearTimeout(timer);
+      const newElement = parseElement(elements[currentIndex]);
+      setDisplayText((prev: any) => [...prev, newElement]);
+      setCurrentIndex(currentIndex + 1);
     }
   }, [currentIndex, elements]);
 
@@ -91,9 +87,18 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       return renderText(restoredPart);
     });
   };
+
   const processLatex = (latex: string): string => {
+    if (latex.match(/\\boxed.*\\frac/)) {
+      return latex.replace(/\\boxed\{(.*)\}/, "$1");
+    }
     latex = latex.replace(/\\(\[|\])/g, "$1");
     latex = latex.replace(/^\$\$|\$\$$/g, "");
+
+    const noneMatch = latex.match(/\\boxed(?:\{(None)\}|(None))/);
+    if (noneMatch) {
+      return "";
+    }
 
     if (
       latex.includes("\\begin{array}") &&
@@ -106,16 +111,10 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         return `${quotientMatch[1]} \\div ${divisionMatch[1]}`;
       }
     }
-
     if (latex.includes("\\begin{array}")) {
       return latex
-        .replace(/\\require{[^}]*}/g, "")
-        .replace(/\\phantom{[^}]*}/g, "")
-        .replace(/\\enclose{[^}]*}{[^}]*}/g, "")
-        .replace(/\\kern-[^\\]*/g, "")
-        .replace(/\\\\[-\d.pt]*/g, " ")
-        .replace(/\\underline{[^}]*}/g, "")
-        .replace(/\s+/g, " ")
+        .replace(/\\begin{array}{[^}]*}/, "\\begin{array}{r}")
+        .replace(/\\\\/g, "\\\\ ")
         .trim();
     }
 
@@ -138,10 +137,18 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     }
 
     return latex
-      .replace(/\\boxed{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)}/, "$1")
+      .replace(
+        /\\boxed(?:\{([^{}]*(?:\{[^{}]*\})*[^{}]*)\}|(\d+\.?\d*))/g,
+        "$1$2"
+      )
       .trim();
   };
+
   const renderText = (text: string): JSX.Element => {
+    text = text.replace(/\$(\d+(?:\.\d+)?)\$(?!\s*[a-zA-Z{}\\])/g, "$1");
+    if (text.includes("$\\boxed{None}$")) {
+      return <></>;
+    }
     if (text.includes("$") || text.includes("\\[")) {
       const displayMathRegex =
         /(\$\$.*?\\begin{aligned}[\s\S]*?\\end{aligned}.*?\$\$|\$\$[\s\S]*?\$\$|\\+\[[\s\S]*?\\+\]|\\begin{array}[\s\S]*?\\end{array})/g;
@@ -202,14 +209,8 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
     return processNonLatexText(text, currentIndex);
   };
+
   const processNonLatexText = (text: string, idx: number): JSX.Element => {
-    // console.log({ text });
-    text = text
-      .replace(/\t\*/g, "\n    ")
-      .replace(/\n {4}\*/g, "\n    •")
-      .replace(/\n\*/g, "\n•")
-      .replace(/\n\n\*/g, "\n\n•")
-      .replace(/^\*/g, "•");
     const parts = [];
     let lastIndex = 0;
 
@@ -220,6 +221,11 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       if (match.index > lastIndex) {
         const beforeText = text
           .slice(lastIndex, match.index)
+          .replace(/\t\*/g, "\n    ")
+          .replace(/\n {4}\*/g, "\n    •")
+          .replace(/\n\*/g, "\n•")
+          .replace(/\n\n\*/g, "\n\n•")
+          .replace(/^\*/g, "•")
           .replace(/(\d+)\s*\*\s*(\d+)/g, "$1 ⋆ $2")
           .replace(/\s\*\s/g, " ⋆ ")
           .replace(/(?<![*])\*(?![*])/g, "⋆")
@@ -245,6 +251,11 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     if (lastIndex < text.length) {
       const remainingText = text
         .slice(lastIndex)
+        .replace(/\t\*/g, "\n    ")
+        .replace(/\n {4}\*/g, "\n    •")
+        .replace(/\n\*/g, "\n•")
+        .replace(/\n\n\*/g, "\n\n•")
+        .replace(/^\*/g, "•")
         .replace(/(\d+)\s*\*\s*(\d+)/g, "$1 ⋆ $2")
         .replace(/\s\*\s/g, " ⋆ ")
         .replace(/(?<![*])\*(?![*])/g, "⋆")
@@ -252,19 +263,12 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       parts.push(<span key={`${idx}-${lastIndex}`}>{remainingText}</span>);
     }
 
-    if (parts.length === 0) {
-      const cleanedText = text
-        .replace(/(\d+)\s*\*\s*(\d+)/g, "$1 ⋆ $2")
-        .replace(/\s\*\s/g, " ⋆ ")
-        .replace(/(?<![*])\*(?![*])/g, "⋆")
-        .replace(/`{1,3}/g, "");
-
-      return <span key={idx}>{cleanedText}</span>;
-    }
-
-    return <span key={idx}>{parts}</span>;
+    return parts.length ? (
+      <span key={idx}>{parts}</span>
+    ) : (
+      <span key={idx}>{text}</span>
+    );
   };
-
   return (
     <div id={`answer-${index}`} style={style}>
       {displayText.map((element, index) => (
