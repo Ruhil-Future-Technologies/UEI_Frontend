@@ -57,6 +57,8 @@ import "../../../node_modules/react-perfect-scrollbar/dist/css/styles.css";
 import ThemeSidebar from "../ThemeSidebar/ThemeSidebar";
 import Chatbot from "../../Pages/Chatbot";
 import theme from "../../theme";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
+import FlagIcon from "@mui/icons-material/Flag";
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
@@ -116,6 +118,22 @@ function MainContent() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
+  const [flagged, setFlagged] = useState(false);
+
+  const handleFlag = () => {
+    setFlagged(!flagged);
+
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((chat: any) => ({
+        ...chat,
+        flagged: !flagged,
+      }));
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+    }
+    saveChat();
+  };
 
   const handleUpIconClick = (index: number) => {
     if (selectedchat[index].like_dislike !== null) {
@@ -1479,6 +1497,7 @@ function MainContent() {
       const chatDataString = localStorage?.getItem("chatData");
       if (chatDataString) {
         const chatData = JSON.parse(chatDataString);
+
         if (chatData?.length > 0) {
           saveChat();
         }
@@ -1549,7 +1568,7 @@ function MainContent() {
 
   const searchData = () => {
     // setRegenerateSearch(search);
-    setSearch("");
+    // setSearch("");
     // setShowInitialPage(false)
     if (search === "") {
       setSearchErr(true);
@@ -1650,7 +1669,7 @@ function MainContent() {
               stream_selection: profileDatas.academic_history.stream,
               class_selection: profileDatas.class.name,
               university_selection:
-                profileDatas.academic_history.university_name,
+                profileDatas.academic_history.university_name || "",
               college_selection: profileDatas.academic_history.institution_name,
               course_selection: profileDatas?.course,
               year: profileDatas.academic_history.year,
@@ -1802,17 +1821,47 @@ function MainContent() {
             return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === "object" && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === "string" &&
+                              value.includes("\\frac") &&
+                              !value.includes("$")
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(""),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: formatAnswer(response.answer),
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: StudentId,
-                    chat_question: search,
-                    response: response?.answer,
+                    chat_question: response.question,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   // getData(
@@ -2186,9 +2235,20 @@ function MainContent() {
   };
 
   const handleExpandChat = () => {
-    if (selectedchat?.length > 0) {
+    if (selectedchat?.length > 0 || chatLoader) {
       setIsExpanded(true);
-      localStorage.setItem("expandedChatData", JSON.stringify(selectedchat));
+
+      const expandedChatData = {
+        chats: selectedchat,
+        loading: chatLoader,
+        loaderMessage: loaderMsg,
+        pendingQuestion: search,
+        studentData: profileDatas,
+      };
+      localStorage.setItem(
+        "expandedChatData",
+        JSON.stringify(expandedChatData)
+      );
       navigate("/main/Chat/recentChat");
     }
   };
@@ -2204,9 +2264,9 @@ function MainContent() {
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem("chatData");
-    const chatflagged = localStorage?.getItem("chatsaved");
+    // const chatflagged = localStorage?.getItem("chatsaved");
     // console.log("chatData testing save",chatDataString);
-    const isChatFlagged = chatflagged === "true";
+
     let chatData: any;
 
     if (chatDataString) {
@@ -2214,6 +2274,9 @@ function MainContent() {
     } else {
       chatData = null;
     }
+
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem("chatsaved") === "true";
 
     let datatest;
     if (chatlist !== undefined) {
@@ -2244,6 +2307,7 @@ function MainContent() {
         flagged: isChatFlagged,
       };
     }
+
     await postData(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         // setChatSaved(false);
@@ -3129,6 +3193,32 @@ function MainContent() {
                       <div>
                         <img src={robotImage} className="chatroboimg" alt="" />
                       </div>
+
+                      {selectedchat?.length > 0 && (
+                        <div>
+                          {flagged ? (
+                            <FlagIcon
+                              onClick={handleFlag}
+                              sx={{
+                                color: "#9943ec",
+                                cursor: "pointer",
+                                transition: "color 0.3s ease",
+                                marginLeft: "120px",
+                              }}
+                            />
+                          ) : (
+                            <FlagOutlinedIcon
+                              onClick={handleFlag}
+                              sx={{
+                                cursor: "pointer",
+                                color: "inherit",
+                                transition: "color 0.3s ease",
+                                marginLeft: "120px",
+                              }}
+                            />
+                          )}
+                        </div>
+                      )}
                       {stats1?.Student_Profile === 100 && (
                         <div className="chat-top-header-menu ms-auto">
                           <Link
@@ -3323,7 +3413,7 @@ function MainContent() {
                               ref={chatRef}
                               placeholder="Type your question"
                               aria-label="Search"
-                              value={search}
+                              value={!chatLoader ? search : ""}
                               onChange={(e) => setSearch(e?.target?.value)}
                               onKeyDown={handleKeyDown}
                             />
