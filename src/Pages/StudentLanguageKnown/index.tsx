@@ -96,7 +96,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
   };
 
   const deleterow = (id: any, indx: number) => {
-    console.log(id);
+  
     if (id !== 0) {
       deleteData(`/student_language_knowndelete/${id}`)
         .then((data: any) => {
@@ -180,20 +180,20 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
   useEffect(()=>{
     getData(`student_language_known/edit/${StudentId}`)
     .then((data: any) => {
-      console.log(data);
+     
       if (data?.status === 200) {
         
      //   const lenduageIds = data.data.language_id;
         //setSelectedLeng(lenduageIds);
-        console.log(boxes);
+        
         const newLanageage= data?.data?.filter((items:any)=>boxes.some((box:Box)=>box.id ===items.id || box.id ==0));
-        console.log(newLanageage);
+        
         const newBoxes: Box[] = newLanageage.map((item: any) => ({
           id: item.id,
           language_id: item.language_id,
           proficiency: item.proficiency,
         }));
-        console.log(newBoxes);
+       
           if (newBoxes.length > 0) {
             setBoxes((prevBoxes: Box[]) => [
           ...prevBoxes.filter((box:Box)=>box.id !=0),
@@ -208,7 +208,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
           ),
         ]);
           }
-          console.log(boxes);
+         
        
       }
     })
@@ -245,7 +245,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
         proficiency: box.proficiency,
       };
       
-      console.log(payload,"what is the output of editflag");
+    
       if(isLanguageUpdated){
       if (editFlag || box.id === 0) {
        
@@ -280,7 +280,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
       );
 
       if (successfulResults?.length > 0) {
-        console.log(await isHobbiesUpdated,isLanguageUpdated);
+      ;
         if(isHobbiesUpdated &&isLanguageUpdated && editFlag){
           toast.success("Language And Hobbies saved successfully", {
             hideProgressBar: true,
@@ -323,7 +323,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
               position: "top-center"
             });
           }else {
-            toast.success("Hobbies update successfully", {
+            toast.success("Hobbies updated successfully", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center"
@@ -384,8 +384,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
       },
     }));
   };
-console.log(isSave);
-console.log(boxes);
+
   return (
     <>
       <div className="row">

@@ -44,7 +44,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   const StudentId = localStorage.getItem("_id");
   
   const { namecolor }: any = context;
-  console.log(StudentId);
+  
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({
     address_type: "current",
@@ -335,7 +335,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         }
       }
       if (name === "pincode") {
-        console.log(value === "", validatePincode(value))
+       
         if (value === "" || validatePincode(value)) {
           setpincode_col1(false);
         } else {
@@ -418,18 +418,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       setcontry_col(false);
     }
 
-    // if (
-    //   !("pincode" in permanentAddress) ||
-    //   permanentAddress?.pincode === "" ||
-    //   !validatePincode(permanentAddress.pincode)
-    // ) {
-    //   console.log("Pincode is invalid");
-    //   console.log( !("pincode" in permanentAddress),permanentAddress?.pincode === "", !validatePincode(permanentAddress.pincode))
-    //   setpincode_col1(true);
-    //   //showErrorToast("Pincode is invalid");
-    // } else {
-    //   setpincode_col1(false);
-    // }
+   
 
     const currentAddressPayload = {
       student_id: StudentId,
@@ -461,7 +450,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
             const data = await postData("/student_address/add", addressPayload);
-            console.log(data);
+          
             if (data?.status === 200) {
               toast.success(`${addressType} address saved successfully`, {
                 hideProgressBar: true,
@@ -505,18 +494,18 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           await addAddress("Permanent", permanentAddressPayload);
         }
       } else {
-        console.log("idufgvhuiv ughugh uhuig hturg  utytr");
+       
         const editAddress = async (
           addressType: string,
           addressPayload: any
         ) => {
-          console.log(addressPayload?.pincode);
+          
           try {
             const data = await putData("/student_address/edit/" + StudentId, {
               ...addressPayload,
               pincode: addressPayload?.pincode || 0,
             });
-             console.log(data);
+            
             if (data?.status === 200) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
@@ -537,19 +526,19 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
                 // } else {
                 //   setActiveForm((prev: number) => prev + 1);
                 // }
-                console.log("1111111111")
+              
                await setTuchedCurrent(false);
                await  setTuchedPram(false);
                 setActiveForm( 2);
               } else if (tuchedPram && !tuchedCurrent) {
-                console.log("2222222222")
+              
                 setActiveForm(2);
               } else if (!tuchedPram && tuchedCurrent) {
-                console.log("3333333333")
+              
                 setActiveForm(2);
               }
             } else if (data?.status === 201) {
-              console.log("4444444444444")
+             
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: "colored",
@@ -587,18 +576,15 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         };
 
         if (StudentId !== null) {
-          console.log("in side student comjbfvf")
+     
           // Edit current address
-          console.log(tuched);
+       
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
-            console.log(tuchedCurrent);
+           
             if (studentAddress?.address_type === "current" && editableCurrent && tuchedCurrent)
             await editAddress("Current", currentAddressPayload);
-            // Edit permanent address
-            console.log((
-              permanentAddress?.address_type === "permanent" && tuchedPram
-            ));
+          
           console.log(editablePerm);
             if (
               permanentAddress?.address_type === "permanent"  && tuchedPram

@@ -53,7 +53,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const StudentId = localStorage.getItem("_id");
 
   useEffect(() => {
-    console.log(save);
+ 
     if (save) {
       submitHandle();
     }
@@ -63,7 +63,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     const fetchData = async () => {
       try {
         const hobbyListData = await getData("hobby/list");
-        console.log(hobbyListData?.data);
+      
         if (hobbyListData?.status === 200) {
           const filteredData = hobbyListData?.data?.filter(
             (item: any) => item?.is_active === 1
@@ -74,7 +74,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         const studentHobbyData = await getData(
           "student_hobby/edit/" + StudentId
         );
-        console.log(studentHobbyData?.data);
+       
         if (studentHobbyData?.status === 200) {
           const hobbyIds = studentHobbyData.data.map(
             (selecthobby: any) => selecthobby.hobby_id
@@ -115,22 +115,22 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
-    console.log(selectedHobbies);
+   
     const payloadPromises = selectedHobbies.map((hobbyid) => {
       const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-      console.log(payload);
+   
       // return editFlag
       //   ? postData("student_hobby/add", payload)
       //   : putData("student_hobby/edit/" + StudentId, payload);
       if (ishobbiestuch) {
-        console.log(ishobbiestuch);
+      
         if (editFlag) {
           return postData("student_hobby/add", payload);
         } else if (!eq) {
-          console.log("edit hobby");
+         
           return putData("student_hobby/edit/" + StudentId, payload);
         } else {
           return Promise.resolve({ status: 204 }); // Skip update
@@ -160,12 +160,9 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     try {
       const results = await Promise.all(payloadPromises);
       const successfulResults = results.filter((res) => res.status === 200);
-      console.log(successfulResults);
-      console.log(results);
-      console.log(payloadPromises);
-      console.log(successfulResults);
+     
       if (successfulResults?.length > 0) {
-        console.log(successfulResults);
+     
         if (!isLanguageUpdated && ishobbiestuch) {
           if (editFlag) {
             toast.success("Hobbies saved successfully", {
@@ -173,10 +170,10 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
               theme: "colored",
               position: "top-center",
             });
-            console.log("we will update here");
+        
             setIshobbiestuch(false);
           } else {
-            toast.success("Hobbies update successfully", {
+            toast.success("Hobbies updated successfully", {
               hideProgressBar: true,
               theme: "colored",
               position: "top-center",
@@ -218,7 +215,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const hobbydelete = (id: any) => {
     deleteData("/student_hobby/delete/" + id)
       .then((data: any) => {
-        console.log(data);
+     
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
           // setAllHobbies(filteredData ||[]);
@@ -237,7 +234,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       });
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
-    console.log(event.target.checked);
+    
     if (!event.target.checked) {
       // Call your function when checkbox is unchecked
       hobbydelete(hobbyId);

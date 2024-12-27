@@ -85,7 +85,7 @@ const AddStudentFeedback = () => {
       [id]: "",
     }));
     // setSelectAnswer(value);
-    console.log("answer", selectAnswer);
+   
   };
 
 
@@ -111,18 +111,18 @@ const AddStudentFeedback = () => {
       ];
       setAnsweredQuestions(updatedAnswers);
 
-      // console.log(answeredQuestions, message);
+      
       alert("Form submitted successfully");
       // Handle submission logic here
-      console.log(updatedAnswers);
+      
       const payload = {
         student_id: StudentId,
         feedbacks: updatedAnswers,
       };
-      console.log("payload====>", payload);
+   
       postData("/feedback/student_feedback", payload)
         .then((response) => {
-          console.log("Feedback submitted successfully:", response);
+        
           if (response.status === 200) {
             toast.success("feedback sent successfully", {
               hideProgressBar: true,

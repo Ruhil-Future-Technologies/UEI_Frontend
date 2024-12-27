@@ -44,7 +44,7 @@ const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Menu List 1", menuList1);
+  
   }, [menuList1]);
 
   const callAPI = async () => {
@@ -67,7 +67,7 @@ const Sidebar = () => {
     if (basicinfo?.basic_info !== null) {
       getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
         .then((data: any) => {
-          console.log("Call API 1", data.data);
+         
 
           if (data.data) {
             setMenuList1(data.data);

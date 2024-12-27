@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import { Route,  Routes, useNavigate  } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import Login from './Pages/Login';
 import Signup from './Pages/SignUp';
@@ -74,16 +74,17 @@ import Semester from './Pages/Semester/Semester';
 import AddSemester from './Pages/Semester/AddSemester';
 import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
 import TeacherDash from './Pages/Teacher';
-import InstitutionDash from './Pages/Institution';
+import InstitutionDash from './Pages/Institution/InstituteDashboard';
 
 import NameContext from './Pages/Context/NameContext';
 import IntitutionChat from './Pages/Institution/institutionchat';
 import InstitutionFeedback from './Pages/Institution/institutionfeedback';
+import IntituteMain from './Pages/Institution';
 
 function App() {
   const navigate = useNavigate()
   const context = useContext(NameContext);
-  const {setProPercentage }: any = context;
+  const { setProPercentage }: any = context;
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const handlogout = () => {
     setProPercentage(0);
@@ -113,31 +114,31 @@ function App() {
     if (token && tokenExpiry) {
       const currentTime = Date.now();
       if (currentTime > parseInt(tokenExpiry)) {
-       
+
         handlogout()
         navigate('/');
       }
     } else {
       // navigate('/');
     }
-  }, [navigate]); 
+  }, [navigate]);
 
- 
+
 
   return (
     <div className="App">
-       <Routes>
+      <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/profile-chat" element={<ProfileChat />} />
         <Route path="/feedback-chat" element={<Feedback />} />
-        <Route path="/institution-deshboard" element={<InstitutionDash/>}>
-        {/* <Route path="" element={<Protected Component={InstitutionDash} menuName="dashboard"/>}/> */}
-            
+        <Route path="/institution-deshboard" element={<IntituteMain />}>
+          <Route path="" element={<Protected Component={InstitutionDash} menuName="dashboard" />} />
+          <Route path="/institution-deshboard/chat" element={<IntitutionChat />} />
+          <Route path='/institution-deshboard/feedback' element={<InstitutionFeedback />} />
         </Route>
-        <Route path="/institution-deshboard/chat" element={<IntitutionChat/>} />
-        <Route path='/institution-deshboard/feedback' element={<InstitutionFeedback/>}/>
+
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
-        <Route path="/admin-feedback-view" element={<AdminFeedbackView/>} />
+        <Route path="/admin-feedback-view" element={<AdminFeedbackView />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgotpassword" element={<Forgotpassword />} />
         <Route path="/changepassword" element={<ChangePassword />} />
@@ -155,31 +156,31 @@ function App() {
             <Route path="add-Institute" element={<Protected Component={AddEditInstitute} menuName="Institute" />} />
             <Route
               path="edit-Institute/:id"
-              element={<Protected Component={AddEditInstitute}  menuName="Institute" />}
+              element={<Protected Component={AddEditInstitute} menuName="Institute" />}
             />
           </Route>
           <Route path="/main/Entity" >
-            <Route path="" element={<Protected Component={Entity} menuName="Entity"/>} />
-            <Route path="add-Entity" element={<Protected Component={AddEditEntity} menuName="Entity"/>}  />
+            <Route path="" element={<Protected Component={Entity} menuName="Entity" />} />
+            <Route path="add-Entity" element={<Protected Component={AddEditEntity} menuName="Entity" />} />
             <Route
               path="edit-Entity/:id"
               element={<Protected Component={AddEditEntity} menuName="Entity" />}
             />
           </Route>
           <Route path="/main/Class" >
-            <Route path="" element={<Protected Component={Class} menuName="Class"/>} />
-            <Route path="add-Class" element={<Protected Component={AddEditClass} menuName="Class"/>}  />
+            <Route path="" element={<Protected Component={Class} menuName="Class" />} />
+            <Route path="add-Class" element={<Protected Component={AddEditClass} menuName="Class" />} />
             <Route
               path="edit-Class/:id"
               element={<Protected Component={AddEditClass} menuName="Class" />}
             />
-            </Route>
+          </Route>
           <Route path="/main/Student" >
-            <Route path="" element={<Protected Component={Student}   menuName="Student"/>} />
+            <Route path="" element={<Protected Component={Student} menuName="Student" />} />
             <Route path="add-Student" element={<Protected Component={AddEditStudent} menuName="Student" />} />
             <Route
               path="edit-Student/:id"
-              element={<Protected Component={AddEditStudent}  menuName="Student" />}
+              element={<Protected Component={AddEditStudent} menuName="Student" />}
             />
           </Route>
           <Route path="/main/Course">
@@ -219,25 +220,25 @@ function App() {
             <Route path="add-Subject" element={<Protected Component={AddEditSubject} menuName="Subject" />} />
             <Route
               path="edit-Subject/:id"
-              element={<Protected Component={AddEditSubject}  menuName="Subject" />}
+              element={<Protected Component={AddEditSubject} menuName="Subject" />}
             />
             <Route path="add-Subject-school" element={<Protected Component={AddEditSubjectSchool} menuName="Subject" />} />
             <Route
               path="edit-Subject-school/:id"
-              element={<Protected Component={AddEditSubjectSchool}  menuName="Subject" />}
+              element={<Protected Component={AddEditSubjectSchool} menuName="Subject" />}
             />
           </Route>
           <Route path="/main/Menu">
-            <Route path="" element={<Protected Component={Menu}  menuName="Menu"/>} />
-            <Route path="add-Menu" element={<Protected Component={AddEditMenu}  menuName="Menu"/>} />
+            <Route path="" element={<Protected Component={Menu} menuName="Menu" />} />
+            <Route path="add-Menu" element={<Protected Component={AddEditMenu} menuName="Menu" />} />
             <Route
               path="edit-Menu/:id"
-              element={<Protected Component={AddEditMenu}  menuName="Menu" />}
+              element={<Protected Component={AddEditMenu} menuName="Menu" />}
             />
           </Route>
           <Route path="/main/SubMenu"  >
             <Route path="" element={<Protected Component={Submenu} menuName="SubMenu" />} />
-            <Route path="add-SubMenu" element={<Protected Component={AddEditSubmenu} menuName="SubMenu"/>} />
+            <Route path="add-SubMenu" element={<Protected Component={AddEditSubmenu} menuName="SubMenu" />} />
             <Route
               path="edit-SubMenu/:id"
               element={<Protected Component={AddEditSubmenu} menuName="SubMenu" />}
@@ -252,16 +253,16 @@ function App() {
             />
           </Route>
           <Route path="/main/Form" >
-            <Route path="" element={<Protected Component={Form}  menuName="Form" />} />
-            <Route path="add-Form" element={<Protected Component={AddEditForm}  menuName="Form" />} />
+            <Route path="" element={<Protected Component={Form} menuName="Form" />} />
+            <Route path="add-Form" element={<Protected Component={AddEditForm} menuName="Form" />} />
             <Route
               path="edit-Form/:id"
-              element={<Protected Component={AddEditForm}  menuName="Form" />}
+              element={<Protected Component={AddEditForm} menuName="Form" />}
             />
-            <Route path="/main/Form/404" element={<Protected Component={NotFound}  menuName="Form"/>} />
+            <Route path="/main/Form/404" element={<Protected Component={NotFound} menuName="Form" />} />
           </Route>
           <Route path="/main/RoleVsForm">
-            <Route path="" element={<Protected Component={RolevsForm} menuName="RoleVsForm"/>} />
+            <Route path="" element={<Protected Component={RolevsForm} menuName="RoleVsForm" />} />
             <Route path="add-RoleVsForm" element={<Protected Component={AddEditRolevsForm} menuName="RoleVsForm" />} />
             <Route
               path="edit-RoleVsForm/:id"
@@ -269,11 +270,11 @@ function App() {
             />
           </Route>
           <Route path="/main/RoleVsUser">
-            <Route path="" element={<Protected Component={RoleVsAdmin}  menuName="RoleVsUser"/>} />
-            <Route path="add-RoleVsAdmin" element={<Protected Component={AddEditRoleVsAdmin}   menuName="RoleVsUser" />} />
+            <Route path="" element={<Protected Component={RoleVsAdmin} menuName="RoleVsUser" />} />
+            <Route path="add-RoleVsAdmin" element={<Protected Component={AddEditRoleVsAdmin} menuName="RoleVsUser" />} />
             <Route
               path="edit-RoleVsAdmin/:id"
-              element={<Protected Component={AddEditRoleVsAdmin}  menuName="RoleVsUser" />}
+              element={<Protected Component={AddEditRoleVsAdmin} menuName="RoleVsUser" />}
             />
           </Route>
           <Route path="/main/Language">
@@ -286,17 +287,17 @@ function App() {
           </Route>
           <Route path="/main/Hobby" >
             <Route path="" element={<Protected Component={Hobby} menuName="Hobby" />} />
-            <Route path="add-Hobby" element={<Protected Component={AddEditHobby}  menuName="Hobby"/>} />
+            <Route path="add-Hobby" element={<Protected Component={AddEditHobby} menuName="Hobby" />} />
             <Route
               path="edit-Hobby/:id"
               element={<Protected Component={AddEditHobby} menuName="Hobby" />}
             />
           </Route>
           <Route path="/main/StudentProfile">
-            <Route path="" element={ <Protected Component={StudentProfile}  menuName={"StudentProfile"}/>} />
+            <Route path="" element={<Protected Component={StudentProfile} menuName={"StudentProfile"} />} />
           </Route>
           <Route path="/main/adminProfile">
-            <Route path="" element={<Protected Component={AdminProfile}  menuName={"AdminProfile"}  />} />
+            <Route path="" element={<Protected Component={AdminProfile} menuName={"AdminProfile"} />} />
           </Route>
           <Route path="/main/ChatList">
             <Route path="" element={<Protected Component={ChatList} menuName="ChatList" />} />
@@ -305,7 +306,7 @@ function App() {
             <Route path="" element={<Protected Component={SuperAdmin} menuName="SuperAdmin" />} />
           </Route>
           <Route path="/main/ChangePassword">
-            <Route path="" element={< Protected Component={UserChangePassword} menuName="UserChangePassword"/>} />
+            <Route path="" element={< Protected Component={UserChangePassword} menuName="UserChangePassword" />} />
           </Route>
           <Route path="/main/uploadpdf">
             <Route path="" element={<Protected Component={Uploadpdf} menuName="uploadpdf" />} />
@@ -315,7 +316,7 @@ function App() {
           </Route>
           <Route path="/main/teacher-deshboard">
             <Route path="" element={<Protected Component={TeacherDash} menuName="pdflist" />} />
-          </Route> 
+          </Route>
           <Route path="/main/feedback">
             <Route path="" element={<Protected Component={AdminFeedback} menuName="feedback" />} />
             <Route path="add-feedback" element={<Protected Component={AddEditAdminFeedback} menuName="feedback" />} />
@@ -334,8 +335,8 @@ function App() {
         <Route path="searchdepartment" element={<StudentProfileManagement />} />
         <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
         {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}
-        <Route path="*" element={<NotFound/>}  />
-        
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
     </div>
   );

@@ -49,11 +49,13 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
         toast.warning("Please login again", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       } else {
         toast.error("Request failed", {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       }
     }
@@ -68,7 +70,7 @@ useEffect(()=>{
   ).then((response)=>{
   if (response && response?.status === 200) {
     setEditable(false);
-    console.log(editable);
+   
   } else if (response && response?.status === 404) {
     setEditable(true);
   }
@@ -108,10 +110,10 @@ useEffect(()=>{
       admin_id: adminId,
       description: description1?.description,
     };
-    console.log("aschgsdcchjgjfa fegeg erg rtg ");
-    console.log(editable,editFalg);
+   
+ 
     if (editFalg && editable) {
-      console.log(editable);
+     
       const saveData = async () => {
         try {
           const response = await postData(
@@ -123,6 +125,7 @@ useEffect(()=>{
             toast.success("Admin description saved successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setChaged(false);
             setActiveForm((prev: number) => prev + 1);
@@ -132,11 +135,13 @@ useEffect(()=>{
             toast.warning("Please login again", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           } else {
             toast.error("Request failed", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         }
@@ -148,7 +153,7 @@ useEffect(()=>{
       }
      
     } else if (!editable ) {
-      console.log(editable);
+
       const editData = async () => {
         try {
           const response = await putData(
@@ -160,6 +165,7 @@ useEffect(()=>{
             toast.success("Admin description updated successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setActiveForm((prev: number) => prev + 1);
             getDescription();
@@ -167,6 +173,7 @@ useEffect(()=>{
             toast.error("something want wrong ", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         } catch (error: any) {
@@ -175,18 +182,20 @@ useEffect(()=>{
             toast.warning("Please login again", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           } else {
             toast.error("Request failed", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         }
       };
 
       // eslint-disable-next-line no-lone-blocks
-      console.log(!eq)
+     
       if (!eq && chaged) editData();
       else setActiveForm((prev: number) => prev + 1);
     }

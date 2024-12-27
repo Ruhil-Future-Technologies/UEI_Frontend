@@ -61,7 +61,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   };
 
   const deleterow = (id: any, indx: number) => {
-    console.log(id);
+
     if (id !== 0) {
       deleteData(`/admin_language_known/delete/${id}`)
         .then((data: any) => {
@@ -69,6 +69,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             toast.success("Language deleted successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         })
@@ -76,6 +77,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         });
     }
@@ -96,6 +98,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
     getData(`${"admin_language_known/edit/" + AdminId}`)
@@ -118,6 +121,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           toast.error(data?.message, {
             hideProgressBar: true,
             theme: "colored",
+            position: "top-center",
           });
         }
       })
@@ -125,18 +129,19 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: "colored",
+          position: "top-center",
         });
       });
   }, []);
   console.log(initialAdminState);
   useEffect(()=>{
-    console.log("on call of active form");
+   
     getData(`${"admin_language_known/edit/" + AdminId}`)
     .then((response: any) => {
-      console.log(response);
+     
       if(response?.status==200){
         const newLanageage= response?.data?.filter((items:any)=>boxes.some((box:Box)=>box.id ===items.id || box.id ==0));
-         console.log(newLanageage);
+        
           const newBoxes:Box[]=newLanageage.map((item:any)=>(
             {
               id: item.id,
@@ -144,8 +149,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               proficiency: item.proficiency,
             }
           ))
-        console.log(boxes);
-        console.log(newBoxes);
+        
           if(newBoxes.length >0){
             setBoxes((preBoxes:Box[])=>[...preBoxes.filter((box:Box)=>box.id !=0)
               ,...newBoxes.filter(
@@ -161,7 +165,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         setEditable(false);
       }else if(response?.status==401){
         setEditable(true);
-        console.log("fjhfdgsh");
+       
       }});
   },[activeForm])
 
@@ -185,20 +189,20 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
     
     if (!valid) return; // Don't proceed if validation fails
     setActiveForm((prev: number) => prev + 1);
-    console.log(boxes);
+
     const promises = boxes.map((box) => {
       const payload = {
         admin_id: AdminId,
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      console.log(checkChanges,editFalg,box);
+      console.log(editFalg);
       if (checkChanges) {
-        console.log(editable);
+        
         if (editable && box.id === 0) {
           return postData("admin_language_known/add", payload);
         } else {
-          console.log(payload);
+          
           return putData("admin_language_known/edit/" + AdminId, payload);
         }
       } else {
@@ -206,16 +210,17 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       }
     });
     try {
-      console.log(promises);
+     
       const results: any = await Promise.all(promises);
 
       const successfulResults = results.filter((res: { status: number }) => res.status === 200);
       if (successfulResults?.length > 0) {
         if (checkChanges) {
           if (editable) {
-            toast.success("Language save successfully", {
+            toast.success("Language saved successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
             setCheckChanges(false);
           } else {
@@ -223,6 +228,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             toast.success("Language updated successfully", {
               hideProgressBar: true,
               theme: "colored",
+              position: "top-center",
             });
           }
         } else {
@@ -278,7 +284,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       },
     }));
   };
-  console.log(boxes);
+
   return (
     <form>
       <p className="font-weight-bold profiletext mt-4">

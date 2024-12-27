@@ -7,7 +7,7 @@ import courseImg from "../../assets/img/courses-1.png";
 import toperstudent from "../../assets/img/topper-image.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Link } from "react-router-dom";
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+//import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import InstituteGraphRepo from "./institutionGraphRepo";
 import OpenInFullOutlinedIcon from "@mui/icons-material/OpenInFullOutlined";
 import MicIcon from '@mui/icons-material/Mic';
@@ -82,7 +82,7 @@ const InstitutionDash = () => {
 
 
     return (
-        <>
+       
             <div className="main-wrapper">
 
                 <div className="main-content">
@@ -92,21 +92,15 @@ const InstitutionDash = () => {
                         <div className="ps-3">
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb mb-0 p-0">
-                                    <li className="breadcrumb-item"><Link to="/"><HomeOutlinedIcon sx={{fontSize:"16px",
-                                        color:"black"
-                                    }}/></Link>
+                                    <li className="breadcrumb-item"><HomeOutlinedIcon sx={{fontSize:"18px",
+                                        
+                                    }}/><Link to="/"></Link>
                                     </li>
                                     <li className="breadcrumb-item active" aria-current="page">Report</li>
                                 </ol>
                             </nav>
                         </div>
-                        <div className="ms-auto">
-                            <div className="btn-group">
-                                <button type="button" className="btn btn-outline-primary rounded-pill px-lg-4"
-                                    data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">Settings</button>
-
-                            </div>
-                        </div>
+                        
                     </div>
 
 
@@ -307,7 +301,7 @@ const InstitutionDash = () => {
                                 <div className="d-flex align-items-center gap-3">
                                     <div className="swiper-prev d-flex"><ArrowBackOutlinedIcon/></div>
                                     <div className="swiper-next d-flex"><ArrowForwardOutlinedIcon/></div>
-                                    <Link to="/" className="d-block text-dark btn btn-light rounded-3 btn-sm">See All</Link>
+                                    <Link to="/" className="d-block text-dark btn rounded-3 btn-sm">See All</Link>
                                 </div>
                             </div>
                             <div className="swiper studentslider">
@@ -474,7 +468,7 @@ const InstitutionDash = () => {
                 </div>
 
 
-                <div className="overlay btn-toggle"></div>
+                {/* <div className="overlay btn-toggle"></div>
 
                 <div
                     className="offcanvas offcanvas-end"
@@ -551,10 +545,10 @@ const InstitutionDash = () => {
 
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div >
 
-        </>
+        
     )
 }
 
