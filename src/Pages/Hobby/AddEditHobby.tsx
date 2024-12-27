@@ -31,8 +31,8 @@ const AddEditHobby = () => {
     const formRef = useRef<FormikProps<{ hobby_name: string | null }>>(null)
     const location = useLocation();
     const Menulist: any = localStorage.getItem('menulist1');
-    const pathSegments = location.pathname.split('/').filter(Boolean);    
-    const lastSegment =  id ? pathSegments[pathSegments.length - 3].toLowerCase(): pathSegments[pathSegments.length - 2].toLowerCase();
+    const pathSegments = location.pathname?.split('/').filter(Boolean);    
+    const lastSegment =  id ? pathSegments[pathSegments.length - 3]?.toLowerCase(): pathSegments[pathSegments.length - 2]?.toLowerCase();
     const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   
     useEffect(() => {
@@ -223,6 +223,7 @@ const AddEditHobby = () => {
                                         <div className='col-md-4'>
                                             <div className="form_field_wrapper mb-4">
                                                 <Field
+                                                inputProps={{ "data-testid": "hobby_name" }}
                                                     component={TextField}
                                                     type="text"
                                                     label="Hobby Name *"
@@ -236,7 +237,7 @@ const AddEditHobby = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <button className='btn btn-primary mainbutton'  >{id ? "Update" : "Save"}</button>
+                                    <button data-testid="save_btn" className='btn btn-primary mainbutton'  >{id ? "Update" : "Save"}</button>
                                 </Form>
                             )}
                         </Formik>

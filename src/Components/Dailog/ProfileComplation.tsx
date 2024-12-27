@@ -1708,7 +1708,9 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   let datecheck: any;
+
    let hitcount = 1;
+
 
   const handleclickdate = () => {
     if (yearquesiton) {

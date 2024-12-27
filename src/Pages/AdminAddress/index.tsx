@@ -21,6 +21,7 @@ interface AdminAddress {
   address_type?: string;
 }
 
+
 let isToastActive = false;
 
 const showErrorToast = (message: string) => {
@@ -40,8 +41,10 @@ const showErrorToast = (message: string) => {
 
 const AdminAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
+
   const { activeForm, setActiveForm }: any = context;
   const adminId = localStorage.getItem("_id");
+
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
