@@ -234,10 +234,11 @@ export const ProfileDialog: FunctionComponent<{
   const [firstaddress, setFirstAddress] = useState(false);
   const [secondaddress, setSecondAddress] = useState(false);
   const [answeredData, setAnsweredData] = useState<any>();
+
   const [filterdQuestions1, setFilterdQuestions1] = useState<{ [key: string]: string[] }>({});
 
   // const [open, setOpen] = useState(true);
-console.log(goal);
+  console.log(goal);
   const errordata = [
     "Please enter a valid full name only characters allowed.",
     "",
@@ -569,112 +570,136 @@ console.log(goal);
     }
   };
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  let filteredQuestions=initialQuestions;
+  const filteredQuestions = initialQuestions;
   useEffect(() => {
-    console.log(currentSection,answeredData);
+    console.log(currentSection, answeredData);
     if (currentSection) {
-      if (true) {
+     // if (true) {
         // const institutionType = answeredData.academic_history.institution_type;
         // const { adjustedQuestions } =
         //   adjustQuestionsForInstitutionType(institutionType);
 
-       
+
         const fetchProfileData = async () => {
           try {
             const data = await getData(`${profileURL}/${StudentId}`);
-            if(data.status===200){
+            if (data.status === 200) {
               setAnsweredData(data.data);
-            console.log(data)
+              console.log(data)
 
-            // Get the values from the fetched data
-            const guardianName = data?.data?.basic_info?.guardian_name || "";
-            const subjectPref = data?.data?.subject_preference?.score_in_percentage || "";
-            const contact = data?.data?.contact?.mobile_no_watsapp || "";
-            const language = data?.data?.language_known?.language_id || "";
-            const hobby = data?.data?.hobby?.hobby_id || "";
-            const instituteType = data?.data?.academic_history?.institution_type || "";
-            const address = data?.data?.address?.address1 || "";
-         
-            if (guardianName) {
-              filteredQuestions.basic = filteredQuestions.basic.filter((_, index) => index > 7);
+              // Get the values from the fetched data
+              const guardianName = data?.data?.basic_info?.aim || "";
+              const subjectPref = data?.data?.subject_preference?.score_in_percentage || "";
+              const contact = data?.data?.contact?.mobile_no_call || "";
+              const language = data?.data?.language_known?.language_id || "";
+              const hobby = data?.data?.hobby?.hobby_id || "";
+              const instituteType = data?.data?.academic_history?.institution_type || "";
+              const address = data?.data?.address?.address1 || "";
 
+              if (guardianName) {
+                filteredQuestions.basic = filteredQuestions.basic.filter((_, index) => index > 7);
+
+              }
+              console.log(instituteType, guardianName, subjectPref, contact, language, hobby, address);
+              if (instituteType) {
+                // Skip institution type-related questions
+                if (instituteType === "school") {
+                  const questionsToRemove = [
+                    "Hi! Please provide your academic information! What is your institute type?",
+                    "Please select your board",
+                    "Please select your state",
+                    "Please select your class",
+                    "Please select your stream",
+                    "Please select your university",
+                    "Please select your institution",
+                    "Please select your course",
+                    "Please select your semester",
+                    "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
+                    "What is your learning style?",
+                    "Please select year",
+                    "Please select your semester ?"
+                  ];
+                  filteredQuestions.basic = filteredQuestions.basic.filter((question) => !questionsToRemove.includes(question));
+
+                } else {
+                  const questionsToRemove = [
+                    "Hi! Please provide your academic information! What is your institute type?",
+                    "Please select your board",
+                    "Please select your state",
+                    "Please select your class",
+                    "Please select your stream",
+                    "Please select your university",
+                    "Please select your institution",
+                    "Please select your course",
+                    "Please select your semester",
+                    "What is your learning style?",
+                    "Please select year",
+                  ];
+                  filteredQuestions.basic = filteredQuestions.basic.filter((question) => !questionsToRemove.includes(question));
+
+
+                }
+
+
+
+              }
+              if (hobby) {
+
+
+                filteredQuestions.basic = filteredQuestions.basic.filter((question) => question !== "Hi, Please choose your hobbies");
+
+
+              }
+              if (language) {
+
+                filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                  ![
+                    "Select your known language",
+                    "What is your proficiency in the selected language?"
+                  ].includes(question)
+                );
+              }
+              if (contact) {
+
+                filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                  ![
+                    "What is your WhatsApp number?",
+                    "What is your mobile number?",
+                    "Please select your mobile number country code"
+                  ].includes(question)
+                );
+
+              }
+              if (subjectPref) {
+
+                filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                  ![
+                    "Add your score in percentage",
+                    "What is your preference?",
+                    "Select your subject name",
+                    "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
+                    "Please select your semester ?",
+                  ].includes(question));
+              }
+              if (address) {
+                console.log()
+                filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
+                  ![
+                    "Please select your current country of residence",
+                    "Which state do you currently reside in?",
+                    "Which district do you currently live in?",
+                    "Which city do you live in?",
+                    "What is your Pin code?",
+                    "What is your first address?",
+                    "What is your second address?"].includes(question));
+
+
+              }
             }
-            console.log(instituteType,guardianName,subjectPref,contact,language,hobby,address);
-            if (instituteType) {
-              // Skip institution type-related questions
-
-              const questionsToRemove = [
-                "Hi! Please provide your academic information! What is your institute type?",
-                "Please select your board",
-                "Please select your state",
-                "Please select your class",
-                "Please select your stream",
-                "Please select your university",
-                "Please select your institution",
-                "Please select your course",
-                "Please select your semester",
-                "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
-                "What is your learning style?",
-                "Please select year"
-              ];
-
-              filteredQuestions.basic = filteredQuestions.basic.filter((question) => !questionsToRemove.includes(question));
-
-            }
-            if (hobby) {
-
-
-              filteredQuestions.basic = filteredQuestions.basic.filter((question) => question !== "Hi, Please choose your hobbies");
-
-
-            }
-            if (language) {
-
-              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
-                ![
-                  "Select your known language",
-                  "What is your proficiency in the selected language?"
-                ].includes(question)
-              );
-            }
-            if (contact) {
-           
-              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
-                ![
-                  "What is your WhatsApp number?",
-                  "What is your mobile number?",
-                  "Please select your mobile number country code"
-                ].includes(question)
-              );
-             
-            }
-            if (subjectPref) {
-              
-              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
-                ![
-                  "Add your score in percentage",
-                  "What is your preference?",
-                  "Select your subject name"].includes(question));
-            }
-            if (address){
- console.log()
-              filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
-                ![
-                  "Please select your current country of residence",
-                  "Which state do you currently reside in?",
-                  "Which district do you currently live in?",
-                  "Which city do you live in?",
-                  "What is your Pin code?",
-                  "What is your first address?",
-                  "What is your second address?"].includes(question));
-                 
-
-            }
-          }
             console.log(filteredQuestions);
             setFilterdQuestions1(filteredQuestions);
             // Update state after filtering
-           // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
+            // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
             setCurrentQuestionIndex(0);
             setMessages([{ text: filteredQuestions.basic[0], type: "question" }]);
 
@@ -717,7 +742,7 @@ console.log(goal);
         // }
         setCurrentQuestionIndex(Number(mapping[filteredQuestions.basic?.[0]]?.[0]));
         setMessages([{ text: filteredQuestions.basic[0], type: "question" }]);
-       }// else {
+     // } else {
       //   setMessages([
       //     { text: initialQuestions[currentSection][0], type: "question" },
       //   ]);
@@ -839,7 +864,7 @@ console.log(goal);
 
     getSubject();
     console.log("9999999999999999999999999999999999999")
-  }, [currentSection, answeredData,isOpen] );
+  }, [currentSection, isOpen]);
 
   useEffect(() => {
     // Scroll to the bottom of the chat box whenever messages update
@@ -917,10 +942,14 @@ console.log(goal);
       aim: answeredData?.basic_info?.aim || answers[2],
       pic_path: answeredData?.basic_info?.pic_path || answers[7],
     };
-
+    console.log(payload);
     postData(`${"student/add"}`, payload)
       .then((data: any) => {
         if (data.status === 200) {
+          // toast.success(data?.message, {
+          //   hideProgressBar: true,
+          //   theme: "colored",
+          // });
           setNamepro(data?.first_name);
           const formData = new FormData();
           const nfile: any = uploadedFile;
@@ -979,14 +1008,14 @@ console.log(goal);
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(" ");
     const email = localStorage.getItem("userid");
-    const anslength=answer.length
+    const anslength = answer.length
     const payload = {
       student_id: StudentId,
-      mobile_isd_call: answeredData?.contact?.mobile_isd_call || answer[anslength-3],
-      mobile_no_call: answeredData?.contact?.mobile_no_call || answer[anslength-2],
+      mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
+      mobile_no_call: answeredData?.contact?.mobile_no_call || answer[anslength - 2] ,
       mobile_isd_watsapp:
-        answeredData?.contact?.mobile_isd_watsapp || answer[anslength-3],
-      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp || answer[anslength-1],
+        answeredData?.contact?.mobile_isd_watsapp || phone,
+      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp ||  answer[anslength - 1],
       email_id: answeredData?.contact?.email_id || email,
     };
     console.log(answer)
@@ -994,10 +1023,10 @@ console.log(goal);
     postData(`${"student_contact/add"}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
-          toast.success(data?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
+          // toast.success(data?.message, {
+          //   hideProgressBar: true,
+          //   theme: "colored",
+          // });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -1016,18 +1045,25 @@ console.log(goal);
   const saveAnswerforAddress = (answers: string[]) => {
     // const Address = answers[13];
     // let addressParts = Address?.split(",");
+    // let anlength=0;
+    // if(answers[answers.length - 1]===''){
+    //   anlength=answers.length
+    // }else{
 
+    // }
+    console.log(answers[answers.length-1],answers[answers.length-2],answers[answers.length-3],answers[answers.length-4],answers[answers.length-5],answers[answers.length-6],answers[answers.length-7])
     const payload = {
       student_id: StudentId,
-      address1: answeredData?.address?.address1 || answers[35],
-      address2: answeredData?.address?.address2 || answers[36],
-      country: answeredData?.address?.country || answers[30],
-      state: answeredData?.address?.state || answers[31],
-      district: answeredData?.address?.district || answers[32],
-      city: answeredData?.address?.city || answers[33],
-      pincode: answeredData?.address?.pincode || answers[34],
+      address1: answeredData?.address?.address1 || answers[answers.length - 1]===''?answers[answers.length - 2]:answers[answers.length - 3],
+      address2: answeredData?.address?.address2 || answers[answers.length - 1],
+      country: answeredData?.address?.country || answers[answers.length - 1]===''? answers[answers.length - 7]:answers[answers.length - 8],
+      state: answeredData?.address?.state || answers[answers.length - 1]===''?answers[answers.length - 6]:answers[answers.length - 7],
+      district: answeredData?.address?.district ||answers[answers.length - 1]===''? answers[answers.length - 5]:answers[answers.length - 6],
+      city: answeredData?.address?.city || answers[answers.length - 1]===''?answers[answers.length - 4]:answers[answers.length - 5],
+      pincode: answeredData?.address?.pincode || answers[answers.length - 1]===''?answers[answers.length - 3]:answers[answers.length - 4],
       address_type: "current",
     };
+    console.log(payload);
     postData("/student_address/add", payload).then((response) => {
       if (response.status === 200) {
         // toast.success("Address information saved successfully", {
@@ -1044,7 +1080,7 @@ console.log(goal);
   };
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
-    const length=answers.length;
+    const length = answers.length;
     const payload = {
       student_id: StudentId,
       institution_type:
@@ -1082,67 +1118,68 @@ console.log(goal);
       class_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
           selectedInstituteType?.toLowerCase() === "school"
-          ? answeredData?.academic_history?.class_id || answers[length-1]?.toString()
+          ? answeredData?.academic_history?.class_id || typeof answers[length - 2] === "number" ? answers[length - 2]?.toString() : answers[length - 1]?.toString()
           : null,
       // year: answeredData?.academic_history?.year || answers[18] || "",
       year:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
           selectedInstituteType?.toLowerCase() === "college"
           ? answeredData?.academic_history?.year ||
-          (answers[18]
-            ? dayjs(answers[18], ["DD/MM/YYYY", "YYYY"])?.year()?.toString()
+          (answers[length - 1]
+            ? dayjs(answers[length - 1], ["DD/MM/YYYY", "YYYY"])?.year()?.toString()
             : "")
           : "",
       stream:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
           selectedInstituteType?.toLowerCase() === "school"
-          ? answeredData?.academic_history?.stream || answers[12]
+          ? answeredData?.academic_history?.stream || typeof answers[length - 2] === "number" ? answers[length - 1] : null
           : null,
       university_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
           selectedInstituteType?.toLowerCase() === "college"
-          ? answeredData?.academic_history?.university_id || answers[13]
+          ? answeredData?.academic_history?.university_id || answers[answers.length - 6]
           : null,
       sem_id:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
           selectedInstituteType?.toLowerCase() === "college"
-          ? answeredData?.academic_history?.sem_id || answers[16]
+          ? answeredData?.academic_history?.sem_id || answers[length - 3]
           : null,
     };
-console.log(payload.class_id,answers,messages);
-if(payload.class_id){
-  postData("/new_student_academic_history/add", payload).then((response) => {
-    if (response.status === 200) {
-      // toast.success("Academic hinstory information saved successfully", {
-      //   hideProgressBar: true,
-      //   theme: "colored",
-      // });
-    } else {
-      toast.error(response?.message, {
-        hideProgressBar: true,
-        theme: "colored",
-      });
-    }
-  });
-}
-   
+    console.log(payload, selectedStream);
+
+    postData("/new_student_academic_history/add", payload).then((response) => {
+      if (response.status === 200) {
+        // toast.success("Academic hinstory information saved successfully", {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
+      } else {
+        toast.error(response?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+        });
+      }
+    });
+
+
   };
 
   const saveAnswerforsubjectpreference = (answers: string[]) => {
-    const length=answers.length;
+    const length = answers.length;
     const payload = {
       student_id: StudentId,
       subject_id: answeredData?.subject_preference?.id || selectSubject,
-      preference: answeredData?.subject_preference?.preference || answers[length-2],
+      preference: answeredData?.subject_preference?.preference || answers[length - 3],
       score_in_percentage:
-        answeredData?.subject_preference?.score_in_percentage || answers[length-1],
-      sem_id: answeredData?.subject_preference?.sem_id || answers[26],
+        answeredData?.subject_preference?.score_in_percentage || answers[length - 2],
+      sem_id: selectedInstituteType?.toLowerCase() === "college" ? answers[length - 4] : null,
+
       ...(answeredData?.academic_history?.institution_type === "school" &&
         answeredData?.academic_history?.stream && {
         stream: answeredData?.academic_history?.stream || answers[12],
       }),
       ...((answeredData?.academic_history?.institution_type === "college" ||
-        answers[8]?.toLowerCase() === "college") && {
+        selectedInstituteType?.toLowerCase() === "college") && {
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
       }),
     };
@@ -1356,7 +1393,8 @@ if(payload.class_id){
       student_id: StudentId,
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
     };
-console.log("inside hobby api");
+    console.log("inside hobby api");
+    if(selectedHobby){
     postData("student_hobby/add", payload).then((response) => {
       if (response.status === 200) {
         // toast.success("Your hobbies saved successfully", {
@@ -1370,6 +1408,7 @@ console.log("inside hobby api");
         });
       }
     });
+  }
   };
 
   const saveAnswerForLanguage = () => {
@@ -1430,7 +1469,7 @@ console.log("inside hobby api");
     setAnswers(updatedAnswers);
     if (fullnamequestion) {
       const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
-      if (!fullNameRegex.test(updatedAnswers[answers.length-1])) {
+      if (!fullNameRegex.test(updatedAnswers[answers.length - 1])) {
         setFullName(true);
         return;
       } else {
@@ -1438,7 +1477,7 @@ console.log("inside hobby api");
       }
     }
     if (gendercheck) {
-      const gender = updatedAnswers[answers.length-1].toLowerCase();
+      const gender = updatedAnswers[answers.length - 1].toLowerCase();
       if (gender !== "male" && gender !== "female") {
         // You can set an error state here if needed
         setGenderError(true);
@@ -1449,7 +1488,7 @@ console.log("inside hobby api");
     }
     if (maaname) {
       const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[answers.length-1])) {
+      if (!nameRegex.test(updatedAnswers[answers.length - 1])) {
         setMotherNameError(true);
         return;
       } else {
@@ -1458,7 +1497,7 @@ console.log("inside hobby api");
     }
     if (paaquestion) {
       const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[answers.length])) {
+      if (!nameRegex.test(updatedAnswers[answers.length - 1])) {
         setFName(true);
         return;
       } else {
@@ -1467,7 +1506,7 @@ console.log("inside hobby api");
     }
     if (guardianquestion) {
       const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[answers.length-1])) {
+      if (!nameRegex.test(updatedAnswers[answers.length - 1])) {
         setgName(true);
         return;
       } else {
@@ -1478,7 +1517,7 @@ console.log("inside hobby api");
       // Regular expression for exactly 10 digits
       const phoneRegex = /^\d{10}$/;
 
-      if (!phoneRegex.test(updatedAnswers[answers.length-1])) {
+      if (!phoneRegex.test(updatedAnswers[answers.length - 1])) {
         setphnumber(true);
         return;
       } else {
@@ -1489,7 +1528,7 @@ console.log("inside hobby api");
       // Regular expression for exactly 10 digits
       const phoneRegex = /^\d{10}$/;
 
-      if (!phoneRegex.test(updatedAnswers[answers.length-1])) {
+      if (!phoneRegex.test(updatedAnswers[answers.length - 1])) {
         setphnumber(true);
         return;
       } else {
@@ -1500,7 +1539,7 @@ console.log("inside hobby api");
       // Regular expression for exactly 10 digits
       const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[answers.length-1])) {
+      if (!disticRegex.test(updatedAnswers[answers.length - 1])) {
         setdisct(true);
         return;
       } else {
@@ -1510,7 +1549,7 @@ console.log("inside hobby api");
     if (districtquestion) {
       const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[answers.length-1])) {
+      if (!disticRegex.test(updatedAnswers[answers.length - 1])) {
         setdisct(true);
         return;
       } else {
@@ -1520,7 +1559,7 @@ console.log("inside hobby api");
     if (cityquestion) {
       const disticRegex = /^[a-zA-Z\s]+$/;
 
-      if (!disticRegex.test(updatedAnswers[answers.length-1])) {
+      if (!disticRegex.test(updatedAnswers[answers.length - 1])) {
         setcity(true);
         return;
       } else {
@@ -1530,7 +1569,7 @@ console.log("inside hobby api");
     if (pincodequestion) {
       const pincodeRegex = /^\d{6}$/;
 
-      if (!pincodeRegex.test(updatedAnswers[answers.length-1])) {
+      if (!pincodeRegex.test(updatedAnswers[answers.length - 1])) {
         // setpincode(true);
         setpincode(true);
         setError1("");
@@ -1542,7 +1581,7 @@ console.log("inside hobby api");
     }
     if (preferencequestion) {
       const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!nameRegex.test(updatedAnswers[answers.length-1])) {
+      if (!nameRegex.test(updatedAnswers[answers.length - 1])) {
         setpreferenceError(true);
         return;
       } else {
@@ -1553,7 +1592,7 @@ console.log("inside hobby api");
       // Regular expression for exactly 6 digits (adjust the length as per your requirement)
       const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
-      if (!regex.test(updatedAnswers[answers.length-1])) {
+      if (!regex.test(updatedAnswers[answers.length - 1])) {
         setper(true);
         return;
       } else {
@@ -1561,14 +1600,14 @@ console.log("inside hobby api");
       }
     }
     if (firstaddressquestion) {
-      if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
+      if (updatedAnswers[answers.length - 1] === "" || updatedAnswers[answers.length - 1] == null) {
         setFirstAddress(true);
       } else {
         setFirstAddress(false);
       }
     }
     if (secondaddressquestion) {
-      if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
+      if (updatedAnswers[answers.length - 1] === "" || updatedAnswers[answers.length - 1] == null) {
         setSecondAddress(true);
       } else {
         setSecondAddress(false);
@@ -1579,7 +1618,7 @@ console.log("inside hobby api");
       // Regular expression for exactly 6 digits (adjust the length as per your requirement)
       const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
-      if (!regex.test(updatedAnswers[answers.length-1])) {
+      if (!regex.test(updatedAnswers[answers.length - 1])) {
         setper(true);
         return;
       } else {
@@ -1594,7 +1633,18 @@ console.log("inside hobby api");
       ...messages,
       { text: "", type: "answer" as const },
     ];
+    if(imagecheck){
     saveAnswersforBasic([...answers]);
+    }
+    if (whatsappnumbet) {
+      console.log("in side whatsappnumber");
+      saveAnswersforContact([...answers,'']);
+    }
+    if (secondaddressquestion){
+      saveAnswerforAddress([...answers,'']);
+    }
+    const updatedAnswers = [...answers,''];
+      setAnswers(updatedAnswers)
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -1655,14 +1705,18 @@ console.log("inside hobby api");
   let hitcount = 1;
 
   const handleclickdate = () => {
-    // if (currentQuestionIndex === 13) {
-    //   datecheck = dayjs(datecheck).format("DD/MM/YYYY");
-    // }
+    if (yearquesiton) {
+      datecheck = dayjs(datecheck).format("DD/MM/YYYY");
+    }
+    console.log("inside year for acadmic date check", datecheck);
     if (datecheck) {
       const updatedAnswers = [...answers];
       updatedAnswers[answers.length] = datecheck;
       setAnswers(updatedAnswers);
+      if (yearquesiton) {
         saveAnswersforacadmichistory(updatedAnswers);
+      }
+
       const currentQuestions = filterdQuestions1["basic"];
       const updatedMessages = [
         ...messages,
@@ -1805,16 +1859,16 @@ console.log("inside hobby api");
           },
         ]);
 
-console.log(whatsappnumbet)
+        console.log(secondaddressquestion)
 
-        if (whatsappnumbet){
-console.log("in side whatsappnumber");
+        if (whatsappnumbet) {
+          console.log("in side whatsappnumber");
           saveAnswersforContact([...answers, e.currentTarget.value]);
         }
-        
+
         else if (persentegequestion)
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
-        else if (verylastquestion)
+        else if (secondaddressquestion)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
         if (answers.length === 10) {
@@ -1841,7 +1895,9 @@ console.log("in side whatsappnumber");
   };
   useEffect(() => {
     if (selectedproficiency !== "") {
-      saveanswerForHobbeis();
+      if(selectedHobby !==""){
+        saveanswerForHobbeis();
+      }
       saveAnswerForLanguage();
     }
   }, [selectedproficiency]);
@@ -1853,7 +1909,7 @@ console.log("in side whatsappnumber");
     const updatedAnswers = [...answers];
     if (fullnamequestion) {
       const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
-      if (!fullNameRegex.test(updatedAnswers[answers.length-1])) {
+      if (!fullNameRegex.test(updatedAnswers[answers.length - 1])) {
         setFullName(true);
         return;
       } else {
@@ -1863,9 +1919,9 @@ console.log("in side whatsappnumber");
 
     if (aimquestoin) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setGoal(true);
         return;
@@ -1875,9 +1931,9 @@ console.log("in side whatsappnumber");
     }
     if (maaname) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setMotherNameError(true);
         return;
@@ -1887,9 +1943,9 @@ console.log("in side whatsappnumber");
     }
     if (paaquestion) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setFName(true);
         return;
@@ -1899,9 +1955,9 @@ console.log("in side whatsappnumber");
     }
     if (gendercheck) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setgName(true);
         return;
@@ -1911,9 +1967,9 @@ console.log("in side whatsappnumber");
     }
     if (mobilequestion) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !/^\d{10}$/.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !/^\d{10}$/.test(updatedAnswers[answers.length - 1])
       ) {
         setphnumber(true);
         return;
@@ -1923,9 +1979,9 @@ console.log("in side whatsappnumber");
     }
     if (whatsappnumbet) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !/^\d{10}$/.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !/^\d{10}$/.test(updatedAnswers[answers.length - 1])
       ) {
         setphnumber(true);
         return;
@@ -1935,9 +1991,9 @@ console.log("in side whatsappnumber");
     }
     if (preferencequestion) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setpreferenceError(true);
         return;
@@ -1948,9 +2004,9 @@ console.log("in side whatsappnumber");
 
     if (scorequestion) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !regex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !regex.test(updatedAnswers[answers.length - 1])
       ) {
         setper(true);
         return;
@@ -1960,9 +2016,9 @@ console.log("in side whatsappnumber");
     }
     if (districtquestion) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setdisct(true);
         return;
@@ -1972,9 +2028,9 @@ console.log("in side whatsappnumber");
     }
     if (cityquestion) {
       if (
-        updatedAnswers[answers.length-1] === "" ||
-        updatedAnswers[answers.length-1] == null ||
-        !charecterRegex.test(updatedAnswers[answers.length-1])
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
         setcity(true);
         return;
@@ -1982,7 +2038,7 @@ console.log("in side whatsappnumber");
         setcity(false);
       }
     }
-     console.log(fName);
+    console.log(fName);
     if (e.key === "Enter") {
       if (
         fullName ||
@@ -1996,8 +2052,8 @@ console.log("in side whatsappnumber");
         pincode ||
         per ||
         preferenceError ||
-         //errordate ||
-         goal ||
+        //errordate ||
+        goal ||
         firstaddress ||
         secondaddress
       ) {
@@ -2006,16 +2062,16 @@ console.log("in side whatsappnumber");
       e.preventDefault();
       console.log(currentQuestionIndex);
       if (mobilequestion || whatsappnumbet) {
-         if (answers[answers.length-1]?.length === 10) {
+        if (answers[answers.length - 1]?.length === 10) {
           answerSaveandGotoNextquestoin(e);
-         } else {
-           toast.error("Please enter valid 10 digit mobile number", {
-             hideProgressBar: true,
-             theme: "colored",
-           });
-         }
+        } else {
+          toast.error("Please enter valid 10 digit mobile number", {
+            hideProgressBar: true,
+            theme: "colored",
+          });
+        }
       } else if (pincodequestion) {
-        if (answers[answers.length-1]?.length === 6) {
+        if (answers[answers.length - 1]?.length === 6) {
           answerSaveandGotoNextquestoin(e);
           setError1("");
         } else {
@@ -2026,30 +2082,30 @@ console.log("in side whatsappnumber");
           // });
         }
       } else if (firstaddressquestion) {
-        if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
+        if (updatedAnswers[answers.length - 1] === "" || updatedAnswers[answers.length - 1] == null) {
           setFirstAddress(true);
         } else {
           setFirstAddress(false);
           answerSaveandGotoNextquestoin(e);
         }
       } else if (secondaddressquestion) {
-        if (updatedAnswers[answers.length-1] === "" || updatedAnswers[answers.length-1] == null) {
+        if (updatedAnswers[answers.length - 1] === "" || updatedAnswers[answers.length - 1] == null) {
           setSecondAddress(true);
         } else {
           setSecondAddress(false);
           answerSaveandGotoNextquestoin(e);
         }
       } else {
-        setCurrentQuestionIndex(currentQuestionIndex+1);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
         answerSaveandGotoNextquestoin(e);
       }
     }
   };
 
   const handlePhoneChange = (value: string) => {
-    setPhone(value);
+    setPhone("+" + value);
     const updatedAnswers = [...answers];
-    updatedAnswers[answers.length] = "+" + value;
+    updatedAnswers[answers.length - 1] = "+" + value;
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
@@ -2187,7 +2243,7 @@ console.log("in side whatsappnumber");
     updatedAnswers[answers.length] = e.label;
     setSelectedInstituteType(e.value);
     setAnswers(updatedAnswers);
-    const currentQuestions = filterdQuestions1["basic"];
+    let currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
@@ -2196,11 +2252,12 @@ console.log("in side whatsappnumber");
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.value === "school") {
         const questionsToRemove = [
-          "Please select your stream",
+          //"Please select your stream",
           "Please select your university",
           "Please select your institution",
           "Please select your course",
           "Please select your semester",
+          "Please select your semester ?",
           "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?",
           "What is your learning style?",
           "Please select year"
@@ -2228,13 +2285,16 @@ console.log("in side whatsappnumber");
             });
           });
       } else {
+        console.log("handiling institute type for callege");
         const questionsToRemove = [
           "Please select your board",
           "Please select your state",
           "Please select your class",
+          "Select your subject name",
           "Please select your stream",]
-          filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
-
+        filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+        currentQuestions = currentQuestions.filter((question) => !questionsToRemove.includes(question));
+        console.log(filterdQuestions1["basic"]);
         getData("college_subject/list")
           .then((response: any) => {
             if (response.status === 200) {
@@ -2253,14 +2313,14 @@ console.log("in side whatsappnumber");
               position: "top-center",
             });
           });
-        setCurrentQuestionIndex(currentQuestionIndex+1);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
-
+      console.log(currentQuestions);
       setMessages([
         ...updatedMessages,
         {
           text: currentQuestions[
-            e.value === "school" ? currentQuestionIndex + 1 : currentQuestionIndex+1
+            e.value === "school" ? currentQuestionIndex + 1 : currentQuestionIndex + 1
           ],
           type: "question" as const,
         },
@@ -2285,12 +2345,12 @@ console.log("in side whatsappnumber");
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.value === "state_board")
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      else{
+      else {
         const questionsToRemove = [
           "Please select your state"]
-          filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } 
+        filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
       console.log("select board");
       setMessages([
         ...updatedMessages,
@@ -2318,6 +2378,7 @@ console.log("in side whatsappnumber");
     setSubjects(filterData);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
+    console.log()
     setSelectedStream(e.value);
     setAnswers(updatedAnswers);
     saveAnswersforacadmichistory(updatedAnswers);
@@ -2328,11 +2389,11 @@ console.log("in side whatsappnumber");
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex+1);
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
         ...updatedMessages,
         {
-          text: currentQuestions[currentQuestionIndex+1],
+          text: currentQuestions[currentQuestionIndex + 1],
           type: "question" as const,
         },
       ]);
@@ -2375,33 +2436,41 @@ console.log("in side whatsappnumber");
     setSelectedClass(e);
     setAnswers(updatedAnswers);
     if (e.label !== "class_11" && e.label !== "class_12") {
+      console.log(subjects);
       const filterData = subjects?.filter(
         (item: any) =>
           item.class_id === answeredData?.academic_history?.class_id ||
           item.class_id === e.value
       );
+      console.log(filterData);
       setSubjects(filterData);
       console.log(updatedAnswers);
-      saveAnswersforacadmichistory(updatedAnswers);
+      if (e.value != "class_11" || e.value != "class_12") {
+        saveAnswersforacadmichistory(updatedAnswers);
+      }
+
     }
-    const currentQuestions = filterdQuestions1["basic"];
+    let currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: "answer" as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
-      if (e.label === "class_11" || e.label === "class_12")
+      if (e.label === "class_11" || e.label === "class_12") {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      else{
+      }
+      else {
         const questionsToRemove = [
           "Please select your stream",
         ]
+        currentQuestions = currentQuestions.filter((question) => !questionsToRemove.includes(question));
         filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
+        console.log(filterdQuestions1["basic"]);
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } 
+      }
 
-    
+
       setMessages([
         ...updatedMessages,
         {
@@ -2415,7 +2484,7 @@ console.log("in side whatsappnumber");
       ]);
     } else {
       setMessages(updatedMessages);
-     // proceedToNextSection(currentSection!);
+      // proceedToNextSection(currentSection!);
       setCurrentQuestionIndex(0);
     }
   };
@@ -2678,7 +2747,7 @@ console.log("in side whatsappnumber");
   const handleStateChange = async (selectedOption: any) => {
     setSelectedState(selectedOption);
     const updatedAnswers = [...answers];
-    
+
     updatedAnswers[answers.length] = selectedOption.label;
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1["basic"];
@@ -2726,62 +2795,65 @@ console.log("in side whatsappnumber");
     const lastQuestion = [...messages]
       .reverse() // Reverse to start searching from the end
       .find((message) => message.type === "question");
-  
+
     return lastQuestion?.text || ' '; // Return the text or null if no question found
   };
-const fullnamequestion=getLastQuestion()==="What is your full name?";
-const maaname=getLastQuestion()=="What is your mother's name?";
-const aimquestoin=getLastQuestion()=="What is your main learning goal or interest for visiting our application?";
-const paaquestion=getLastQuestion()==="What is your father's name?";
-const guardianquestion = getLastQuestion() === "What is your guardian's name?";
-const mobilequestion = getLastQuestion() === "What is your mobile number?";
-const preferencequestion = getLastQuestion() === "What is your preference?";
-const scorequestion = getLastQuestion() === "Add your score in percentage";
-const districtquestion = getLastQuestion() === "Which district do you currently live in?";
-const cityquestion = getLastQuestion() === "Which city do you live in?";
-const pincodequestion = getLastQuestion() === "What is your Pin code?";
-const firstaddressquestion = getLastQuestion() === "What is your first address?";
-const secondaddressquestion = getLastQuestion() === "What is your second address?";
+  const fullnamequestion = getLastQuestion() === "What is your full name?";
+  const maaname = getLastQuestion() == "What is your mother's name?";
+  const aimquestoin = getLastQuestion() == "What is your main learning goal or interest for visiting our application?";
+  const paaquestion = getLastQuestion() === "What is your father's name?";
+  const guardianquestion = getLastQuestion() === "What is your guardian's name?";
+  const mobilequestion = getLastQuestion() === "What is your mobile number?";
+  const preferencequestion = getLastQuestion() === "What is your preference?";
+  const scorequestion = getLastQuestion() === "Add your score in percentage";
+  const districtquestion = getLastQuestion() === "Which district do you currently live in?";
+  const cityquestion = getLastQuestion() === "Which city do you live in?";
+  const pincodequestion = getLastQuestion() === "What is your Pin code?";
+  const firstaddressquestion = getLastQuestion() === "What is your first address?";
+  const secondaddressquestion = getLastQuestion() === "What is your second address?";
 
 
-  const isLastQuestionCourseSelection = getLastQuestion() === "Please select your course" 
-  const courceforpref= getLastQuestion() ==="Hi, Please provide your subject preference information! what is your course name to which your subject belongs?";
+  const isLastQuestionCourseSelection = getLastQuestion() === "Please select your course"
+  const courceforpref = getLastQuestion() === "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?";
   console.log(isLastQuestionCourseSelection);
-  const questioncountrycode=getLastQuestion()==="Please select your mobile number country code";
-  const Dobcheck=getLastQuestion()=="What is your DOB?";
-  const gendercheck=getLastQuestion()=="What is your gender?";
-  const imagecheck=getLastQuestion()=="Upload your profile picture";
-  const insttypequestion=getLastQuestion()=="Hi! Please provide your academic information! What is your institute type?"
-  const boardcheck=getLastQuestion()=="Please select your board";
-  const statequestion=getLastQuestion()=="Please select your state";
-  const classquestion=getLastQuestion()=="Please select your class";
-  const stremquestion=getLastQuestion()=="Please select your stream";
-  const unversityquest=getLastQuestion()=="Please select your university";
-  const institutequestion=getLastQuestion()=="Please select your institution";
-  const semisterquestion=getLastQuestion()=="Please select your semester";  
-  const semisterprepquestion=getLastQuestion()=="Please select your semester ?";
+  const questioncountrycode = getLastQuestion() === "Please select your mobile number country code";
+  const Dobcheck = getLastQuestion() == "What is your DOB?";
+  const gendercheck = getLastQuestion() == "What is your gender?";
+  const imagecheck = getLastQuestion() == "Upload your profile picture";
+  const insttypequestion = getLastQuestion() == "Hi! Please provide your academic information! What is your institute type?"
+  const boardcheck = getLastQuestion() == "Please select your board";
+  const statequestion = getLastQuestion() == "Please select your state";
+  const classquestion = getLastQuestion() == "Please select your class";
+  const stremquestion = getLastQuestion() == "Please select your stream";
+  const unversityquest = getLastQuestion() == "Please select your university";
+  const institutequestion = getLastQuestion() == "Please select your institution";
+  const semisterquestion = getLastQuestion() == "Please select your semester";
+  const semisterprepquestion = getLastQuestion() == "Please select your semester ?";
 
-  const stylequestion=getLastQuestion()=="What is your learning style?";
-  const yearquesiton=getLastQuestion()=="Please select year";
-  const hobbyquestion=getLastQuestion()=="Hi, Please choose your hobbies";
-  const languagequestion =getLastQuestion()=="Select your known language";
-  const languagepref=getLastQuestion()=="What is your proficiency in the selected language?";
-  const subjectquestion=getLastQuestion()=="Select your subject name";
-  const whatsappnumbet=getLastQuestion()=="What is your WhatsApp number?";
+  const stylequestion = getLastQuestion() == "What is your learning style?";
+  const yearquesiton = getLastQuestion() == "Please select year";
+  const hobbyquestion = getLastQuestion() == "Hi, Please choose your hobbies";
+  const languagequestion = getLastQuestion() == "Select your known language";
+  const languagepref = getLastQuestion() == "What is your proficiency in the selected language?";
+  const subjectquestion = getLastQuestion() == "Select your subject name";
+  const whatsappnumbet = getLastQuestion() == "What is your WhatsApp number?";
   //const subjectpref =getLastQuestion()=="What is your preference?";
-  const countrylist=getLastQuestion()=="Please select your current country of residence";
-  const statelist=getLastQuestion()=="Which state do you currently reside in?"
-  const persentegequestion=getLastQuestion()=="Add your score in percentage";
-  const verylastquestion=getLastQuestion()=="Thanks for providing your personal information"
- 
+  const countrylist = getLastQuestion() == "Please select your current country of residence";
+  const statelist = getLastQuestion() == "Which state do you currently reside in?"
+  const persentegequestion = getLastQuestion() == "Add your score in percentage";
+  const verylastquestion = getLastQuestion() == "Thanks for providing your personal information"
+
   // if(mobilequestion && whatsappnumbet){
   //    setCurrentQuestionIndex(answers.length);
   // }
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
-console.log(filterdQuestions1);
-console.log(answers);
-console.log(currentQuestionIndex);
+  console.log(filterdQuestions1);
+  console.log(answers);
+  console.log(currentQuestionIndex);
+
+  console.log(errordata[answers.length - 1]);
+  console.log((guardianquestion || hobbyquestion || whatsappnumbet || secondaddressquestion));
   return (
     <>
       <div
@@ -2823,8 +2895,8 @@ console.log(currentQuestionIndex);
                     <div
                       key={index}
                       className={`message-wrapper d-flex mb-3 ${message.type === "question"
-                          ? "justify-content-start"
-                          : "justify-content-end"
+                        ? "justify-content-start"
+                        : "justify-content-end"
                         }`}
                     >
                       <div
@@ -2854,27 +2926,81 @@ console.log(currentQuestionIndex);
             </div>
 
             {currentSection && (
-              <>
+              <div>
                 <div className="chatinput-body">
-                  {(fullName ||
-                    genderError ||
-                    motherNameError ||
-                    //fName ||
-                    gName ||
-                    phnumber ||
-                    distic ||
-                    city ||
-                    pincode ||
-                    per ||
-                    preferenceError ||
-                    // errordate ||
-                    // goal ||
-                    firstaddress ||
-                    secondaddress) && (
+                  {
+                    (fullName && fullnamequestion) && (
                       <p className="error-text">
-                        {errordata[answers.length]}
+                        {errordata[0]}
                       </p>
-                    )}
+                    ) ||
+                    (goal && aimquestoin) && (
+                      <p className="error-text">
+                        {errordata[2]}
+                      </p>
+                    ) ||
+                    (motherNameError && maaname) && (
+                      <p className="error-text">
+                        {errordata[4]}
+                      </p>
+                    ) ||
+                    (fName && paaquestion) && (
+                      <p className="error-text">
+                        {errordata[5]}
+                      </p>
+                    ) ||
+                    (gName && guardianquestion) && (
+                      <p className="error-text">
+                        {errordata[6]}
+                      </p>
+                    ) ||
+                    (phnumber && mobilequestion) && (
+                      <p className="error-text">
+                        {errordata[23]}
+                      </p>
+                    ) ||
+                    (whatsappnumbet && phnumber) && (
+                      <p className="error-text">
+                        {errordata[24]}
+                      </p>
+                    ) ||
+                    (preferenceError && preferencequestion) && (
+                      <p className="error-text">
+                        {errordata[28]}
+                      </p>
+                    ) ||
+                    (per && persentegequestion) && (
+                      <p className="error-text">
+                        {errordata[29]}
+                      </p>
+                    ) ||
+                    (distic && districtquestion) && (
+                      <p className="error-text">
+                        {errordata[32]}
+                      </p>
+                    ) ||
+                    (city && cityquestion) && (
+                      <p className="error-text">
+                        {errordata[33]}
+                      </p>
+                    ) ||
+                    (pincode && pincodequestion) && (
+                      <p className="error-text">
+                        {errordata[34]}
+                      </p>
+                    ) ||
+                    (firstaddress && firstaddressquestion) && (
+                      <p className="error-text">
+                        {errordata[35]}
+                      </p>
+                    ) ||
+                    (secondaddress && secondaddressquestion) && (
+                      <p className="error-text">
+                        {errordata[36]}
+                      </p>
+                    )
+                  }
+
                   {error1 && (
                     <p
                       style={{
@@ -2895,7 +3021,7 @@ console.log(currentQuestionIndex);
                       menuPlacement="top"
                       value={selectCourse}
                     />
-                  ) : insttypequestion ?(
+                  ) : insttypequestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstituteType}
@@ -2904,7 +3030,7 @@ console.log(currentQuestionIndex);
                       menuPlacement="top"
                       value={selectedInstituteType}
                     />
-                  ) : questioncountrycode? (
+                  ) : questioncountrycode ? (
                     <PhoneInput
                       country={""}
                       value={phone}
@@ -2981,7 +3107,7 @@ console.log(currentQuestionIndex);
                       menuPlacement="top"
                       value={selectUniversity}
                     />
-                  ) : semisterquestion  ? (
+                  ) : semisterquestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangesemester}
@@ -2999,7 +3125,7 @@ console.log(currentQuestionIndex);
                       menuPlacement="top"
                       value={selectSemesterpre}
                     />
-                  ) : institutequestion  ? (
+                  ) : institutequestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}
@@ -3035,7 +3161,7 @@ console.log(currentQuestionIndex);
                       menuPlacement="top"
                       value={selectedLearningStyle}
                     />
-                  ) : subjectquestion ? (
+                  ) : subjectquestion || courceforpref ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangesubject}
@@ -3044,7 +3170,7 @@ console.log(currentQuestionIndex);
                       menuPlacement="top"
                       value={selectSubject}
                     />
-                  ) : Dobcheck? (
+                  ) : Dobcheck ? (
                     <>
                       <div style={{ display: "flex" }}>
                         <div
@@ -3127,7 +3253,7 @@ console.log(currentQuestionIndex);
                         </div>
                       </div>
                     </>
-                  ) : yearquesiton? (
+                  ) : yearquesiton ? (
                     <>
                       <div style={{ display: "flex" }}>
                         <div
@@ -3208,14 +3334,38 @@ console.log(currentQuestionIndex);
                       </div>
                     </>
                   ) : hobbyquestion ? (
-                    <Select
-                      className="dropdown-wrapper"
-                      onChange={handleDropdownChangehobby}
-                      options={hobbyOptions}
-                      placeholder="Select an option"
-                      menuPlacement="top"
-                      value={selectedHobby}
-                    />
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                        width: "100%",
+                      }}
+                    >
+                      <Select
+                        className="dropdown-wrapper"
+                        onChange={handleDropdownChangehobby}
+                        options={hobbyOptions}
+                        placeholder="Select an option"
+                        menuPlacement="top"
+                        value={selectedHobby}
+                        styles={{
+                          container: (base) => ({ ...base, width: "90%" }),
+                        }}
+                      />
+                      <p
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          margin: 0,
+                        }}
+                        onClick={handleSkip}
+                      >
+                        Skip
+                      </p>
+                    </div>
                   ) : countrylist ? (
                     <Select
                       className="dropdown-wrapper"
@@ -3271,17 +3421,41 @@ console.log(currentQuestionIndex);
                       View Profile
                     </Button>
                   ) : (
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Type your answer and press enter"
-                      value={answers[currentQuestionIndex] || ""}
-                      onChange={handleAnswerChange}
-                      onKeyPress={handleKeyPress}
-                    />
+                    <div
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      width: "100%",
+                    }}
+                  >
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your answer and press enter"
+                        value={answers[currentQuestionIndex] || ""}
+                        onChange={handleAnswerChange}
+                        onKeyPress={handleKeyPress}
+                      />
+                      {(guardianquestion || whatsappnumbet || secondaddressquestion) && 
+                      <p
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px", // Adjust this value to move the button horizontally
+                          transform: "translateY(-50%)",
+                          cursor: "pointer",
+                          // color: chattextbgright(namecolor),
+                          margin: 0,
+                        }}
+                        onClick={handleSkip}
+                      >
+                        Skip
+                      </p>
+                      }
+                    </div>
                   )}
                 </div>
-              </>
+              </div>
             )}
             {/* <Button onClick={onCancel} autoFocus>
       Cancel
