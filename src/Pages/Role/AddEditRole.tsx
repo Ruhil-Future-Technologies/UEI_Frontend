@@ -31,10 +31,10 @@ const AddEditRole = () => {
 
   const location = useLocation();
   const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location.pathname?.split("/").filter(Boolean);
   const lastSegment = id
-    ? pathSegments[pathSegments.length - 3].toLowerCase()
-    : pathSegments[pathSegments.length - 2].toLowerCase();
+    ? pathSegments[pathSegments.length - 3]?.toLowerCase()
+    : pathSegments[pathSegments.length - 2]?.toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   useEffect(() => {
@@ -195,7 +195,8 @@ const AddEditRole = () => {
                     <div className="row gy-4 flex-column mt-0">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          <Field
+                          <Field  
+                            inputProps={{ "data-testid": "role_name" }}
                             component={TextField}
                             type="text"
                             label="Role Name *"
@@ -215,7 +216,7 @@ const AddEditRole = () => {
                         </div>
                       </div>
                       <div className="col-lg-4">
-                        <button className="btn btn-primary mainbutton">
+                        <button data-testid="save_btn" className="btn btn-primary mainbutton">
                           {id ? "Update" : "Save"}
                         </button>
                       </div>

@@ -50,11 +50,14 @@ const Chat = () => {
   const expandedChat = localStorage.getItem("expandedChatData")
     ? JSON.parse(localStorage.getItem("expandedChatData")!)
     : [];
+
+  const [expandedChatData] = useState<any>(expandedChat);
+
   const [hasInitialExpandedChat, setHasInitialExpandedChat] = useState(false);
   const [hasSavedLocal, setHasSavedLocal] = useState(false);
-  const [selectedchat, setSelectedChat] = useState<any>(expandedChat);
+  const [selectedchat, setSelectedChat] = useState<any>(expandedChat.chats);
   const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
-
+  const [expandSearch, setExpandSearch] = useState(false);
   const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
@@ -85,10 +88,9 @@ const Chat = () => {
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [isUpIconClicked, setIsUpIconClicked] = useState(false);
-  const [isDownIconClicked, setIsDownIconClicked] = useState(false);
   const theme = useTheme();
   const [university_list_data, setUniversity_List_Data] = useState([]);
+  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
 
   synth.onvoiceschanged = () => {
     getVoices();
@@ -102,15 +104,34 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const expandedChatData = localStorage.getItem("expandedChatData")
-      ? JSON.parse(localStorage.getItem("expandedChatData")!)
-      : [];
-    setSavedExpandedChat(expandedChatData);
+    if (expandedChatData.loading) {
+      setLoading(true);
+      setLoaderMsg(expandedChatData.loaderMessage);
+
+      setStudentData(expandedChatData.studentData);
+      setSearch(expandedChatData.pendingQuestion);
+      setExpandSearch(true);
+    } else {
+      setSavedExpandedChat(expandedChatData.chats);
+    }
 
     if (expandedChatData.length > 0 && !hasInitialExpandedChat) {
       setHasInitialExpandedChat(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!expandedChatData.loading) {
+      setShowInitialPage(false);
+    }
+  }, [expandedChat]);
+
+  useEffect(() => {
+    if (search) {
+      searchData();
+      setExpandSearch(false);
+    }
+  }, [expandSearch]);
 
   useEffect(() => {
     if (expandedChat.length > 0 && !hasInitialExpandedChat) {
@@ -141,18 +162,109 @@ const Chat = () => {
     }, 500);
   }, [Id]);
 
-  const handleUpIconClick = () => {
-    if (isDownIconClicked) {
-      setIsDownIconClicked(false);
+  const handleUpIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
     }
-    setIsUpIconClicked(!isUpIconClicked);
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: "liked",
+    }));
+
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: true,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: true,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+      setDisplayedChat(updatedChatData);
+    }
   };
 
-  const handleDownIconClick = () => {
-    if (isUpIconClicked) {
-      setIsUpIconClicked(false);
+  const handleDownIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
     }
-    setIsDownIconClicked(!isDownIconClicked);
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: "disliked",
+    }));
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: false,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem("chatData");
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: false,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+      setDisplayedChat(updatedChatData);
+    }
+  };
+
+  const syncChatStates = (chatData: any) => {
+    if (selectedchat?.length > 0) {
+      const currentQuestion = selectedchat[0]?.question;
+      const matchingChat = chatData?.find((chat: any) => {
+        const conversation = JSON.parse(chat.chat_conversation);
+        return conversation[0]?.question === currentQuestion;
+      });
+
+      if (matchingChat) {
+        const conversation = JSON.parse(matchingChat.chat_conversation);
+        setSelectedChat(
+          conversation.map((item: any) => ({
+            ...item,
+            speak: false,
+          }))
+        );
+
+        const newLikedStates: { [key: string]: string } = {};
+        conversation.forEach((item: any, index: number) => {
+          if (item.like_dislike === true) {
+            newLikedStates[index] = "liked";
+          } else if (item.like_dislike === false) {
+            newLikedStates[index] = "disliked";
+          }
+        });
+        setLikedStates(newLikedStates);
+      }
+    }
   };
 
   const callAPI = async () => {
@@ -180,10 +292,45 @@ const Chat = () => {
       });
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
+        if (selectedchat?.length > 0) {
+          const currentChat = data?.data?.find((chat: any) => {
+            const conversation = JSON.parse(chat.chat_conversation);
+            return conversation[0]?.question === selectedchat[0]?.question;
+          });
+
+          if (currentChat) {
+            const conversation = JSON.parse(currentChat.chat_conversation);
+            setSelectedChat(
+              conversation?.map((item: any, index: number) => {
+                const existingChat = selectedchat[index];
+                return {
+                  ...item,
+                  speak: existingChat?.speak || false,
+                  like_dislike: item.like_dislike,
+                };
+              })
+            );
+            setLikedStates(
+              conversation?.reduce(
+                (acc: any, item: any, index: number) => ({
+                  ...acc,
+                  [index]:
+                    item.like_dislike === true
+                      ? "liked"
+                      : item.like_dislike === false
+                      ? "disliked"
+                      : "",
+                }),
+                {}
+              )
+            );
+          }
+        }
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-        setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistory(data?.data);
+        setchathistoryrecent(data?.data);
+        syncChatStates(data?.data);
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -193,13 +340,11 @@ const Chat = () => {
       });
     getData(`${university_list}`)
       .then((data: any) => {
-        setUniversity_List_Data(data?.data);
+        setUniversity_List_Data(data?.data || "");
       })
-
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-
           theme: "colored",
         });
       });
@@ -327,18 +472,34 @@ const Chat = () => {
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
     newData.speak = false;
+    newData.like_dislike = null;
     // setFilteredProducts(newData);
-    setSelectedChat((prevState: any) => [...prevState, newData]);
+    // setSelectedChat((prevState: any) => [...prevState, newData]);
+    setSelectedChat((prevState: any) => {
+      const newState = [...prevState, newData];
+      const newIndex = newState.length - 1;
+      setLikedStates((prevStates) => ({
+        ...prevStates,
+        [newIndex]:
+          newData.like_dislike === true
+            ? "liked"
+            : newData.like_dislike === false
+            ? "disliked"
+            : "",
+      }));
+      return newState;
+    });
     setChatSaved(false);
     setchatData((prevState: any) => [...prevState, newData]);
     setLoading(false);
     setSearch("");
+    setShowInitialPage(false);
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
-        setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistory(data?.data);
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-        setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
+        setchathistoryrecent(data?.data);
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -369,7 +530,7 @@ const Chat = () => {
 
   const searchData = () => {
     setSearch("");
-    setShowInitialPage(false);
+
     if (search === "") {
       setSearchErr(true);
       return;
@@ -436,10 +597,8 @@ const Chat = () => {
         .then((data: any) => {
           setchatlistData(data?.data);
           // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
-          setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
-          setchathistoryrecent(
-            data?.data?.filter((chat: any) => !chat?.flagged)
-          );
+          setchathistory(data?.data);
+          setchathistoryrecent(data?.data);
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -470,28 +629,48 @@ const Chat = () => {
                 studentDetail.academic_history.state_for_stateboard,
               stream_selection: studentDetail.academic_history.stream,
               class_selection: studentDetail.class.name,
-              university_selection:
-                studentDetail.academic_history.university_name,
-              college_selection:
-                studentDetail.academic_history.institution_name,
+              university_selection: null,
+              college_selection: null,
               course_selection: studentDetail?.course,
               year: studentDetail.academic_history.year,
               subject: studentDetail.subject,
             })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === "object" && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === "string" &&
+                              value.includes("\\frac") &&
+                              !value.includes("$")
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(""),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
                   const formattedResponse = {
                     data: {
                       question: response.question,
-                      answer: Array.isArray(response.answer)
-                        ? response.answer
-                        : [response.answer.toString()],
+                      answer: formatAnswer(response.answer),
                     },
                   };
                   const ChatStorepayload = {
                     student_id: userid,
                     chat_question: response.question,
-                    response: response?.answer,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
@@ -575,9 +754,10 @@ const Chat = () => {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${userid}`
             // )
-            const university: any = university_list_data.filter(
-              (university: any) => university.university_id == university_id
-            );
+            const university: any =
+              university_list_data.filter(
+                (university: any) => university.university_id == university_id
+              ) || "";
             const queryParams = {
               user_query: search,
               student_id: userid,
@@ -598,17 +778,47 @@ const Chat = () => {
             return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === "object" && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === "string" &&
+                              value.includes("\\frac") &&
+                              !value.includes("$")
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(""),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: formatAnswer(response.answer),
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: userid,
-                    chat_question: search,
-                    response: response?.answer,
+                    chat_question: response.question,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg("Fetching Data from Ollama model.");
                   // getData(
@@ -802,21 +1012,33 @@ const Chat = () => {
       const parsedExistingChat = existingChatData
         ? JSON.parse(existingChatData)
         : [];
+      const latestChatItem = chat[chat.length - 1];
+      const isAlreadyInExisting = parsedExistingChat.some(
+        (item: any) =>
+          item.question === latestChatItem.question &&
+          JSON.stringify(item.answer) === JSON.stringify(latestChatItem.answer)
+      );
 
-      let combinedChatData;
-      if (savedExpandedChat.length > 0) {
-        const newChatData = chat.filter(
-          (chatItem: any) =>
-            !savedExpandedChat.some(
-              (expandedItem: any) => expandedItem.question === chatItem.question
-            )
-        );
-        combinedChatData = [...savedExpandedChat, ...newChatData];
-      } else {
-        combinedChatData = [...parsedExistingChat, ...chat];
+      if (!isAlreadyInExisting) {
+        let updatedChatData;
+
+        if (savedExpandedChat && savedExpandedChat.length > 0) {
+          const isInSavedExpanded = savedExpandedChat.some(
+            (item: any) =>
+              item.question === latestChatItem.question &&
+              JSON.stringify(item.answer) ===
+                JSON.stringify(latestChatItem.answer)
+          );
+
+          updatedChatData = isInSavedExpanded
+            ? [...savedExpandedChat]
+            : [...savedExpandedChat, latestChatItem];
+        } else {
+          updatedChatData = [...parsedExistingChat, latestChatItem];
+        }
+
+        localStorage.setItem("chatData", JSON.stringify(updatedChatData));
       }
-
-      localStorage.setItem("chatData", JSON.stringify(combinedChatData));
     }
   }, [chat, savedExpandedChat]);
 
@@ -1002,58 +1224,61 @@ const Chat = () => {
       chatRef?.current.scrollIntoView();
     }
   };
+
   const displayChat = async (chats: any) => {
+    const initialLikedStates: { [key: string]: string } = {};
     setShowInitialPage(false);
+
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
         chatitem.chat_title === chat[0]?.question
     );
-
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
       await saveChat();
     } else if (Array.isArray(chat) && chat.length >= 2) {
       await saveChat();
     } else {
-      //empty
+      // empty
     }
+
     setchatData([]);
     const chatt = JSON.parse(chats?.chat_conversation);
     setDisplayedChat(chatt);
-
     setSelectedChat([]);
 
     const chatdataset: any[] = [];
-    chatt.map((itemchat: any) => {
-      // setTimeout(() => {
+
+    chatt.map((itemchat: any, index: number) => {
       const chatdata: any = {};
       chatdata.question = itemchat?.question;
-      // chatdata.answer = chat?.response
-      let elements: any = [];
-      try {
-        if (typeof itemchat?.answer === "string") {
+
+      let elements: any;
+      if (Array.isArray(itemchat?.answer)) {
+        elements = [itemchat.answer.join(" ")];
+      } else if (typeof itemchat?.answer === "string") {
+        try {
           elements = JSON.parse(itemchat?.answer);
-        } else {
+        } catch {
           elements = itemchat?.answer;
         }
-      } catch {
-        const cleanString = itemchat?.answer
-          .replace(/\\"/g, '"')
-          .replace(/[{}]/g, "")
-          .replace(/\\'/g, "'")
-          .replace(/(^"|"$)/g, "");
-        // .replace(/(^"|"$)/g, "");
-        const stringArray = cleanString
-          .split(",")
-          .map((item: any) => item.trim());
-        elements = stringArray.map((item: any) => item.replace(/"/g, ""));
+      } else {
+        elements = itemchat?.answer;
       }
+
       chatdata.answer = elements;
       chatdata.speak = false;
+      chatdata.like_dislike = itemchat?.like_dislike;
       chatdataset.push(chatdata);
 
-      // }, 500);
+      if (itemchat?.like_dislike === true) {
+        initialLikedStates[index] = "liked";
+      } else if (itemchat?.like_dislike === false) {
+        initialLikedStates[index] = "disliked";
+      }
     });
+
     setSelectedChat(chatdataset);
+    setLikedStates(initialLikedStates);
   };
 
   const handleDeleteFiles = (id: number | undefined) => {
@@ -1232,7 +1457,8 @@ const Chat = () => {
 
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
-    const formattedTime = `${hours}:${minutes}`;
+    const formattedDate = date.toDateString();
+    const formattedTime = `${formattedDate}:${hours}:${minutes}`;
     return formattedTime;
   };
 
@@ -1705,10 +1931,7 @@ const Chat = () => {
                   </button>
                 </div>
                 <div className="history-label">Today&apos;s Search</div>
-                <ul
-                  className="history-list overflow-auto"
-                  style={{ maxHeight: "350px" }}
-                >
+                <PerfectScrollbar className="history-list">
                   <>
                     {filteredChats?.length > 0 &&
                       filteredChats?.map(
@@ -1759,7 +1982,7 @@ const Chat = () => {
                         )
                       )}
                   </>
-                </ul>
+                </PerfectScrollbar>
               </div>
             ) : (
               <div
@@ -1943,38 +2166,62 @@ const Chat = () => {
                                   </p>
                                 </div>
                                 <ul className="ansfooter">
-                                  <li>
-                                    <ThumbUpAltOutlinedIcon
-                                      onClick={handleUpIconClick}
-                                      sx={{
-                                        fontSize: "14px",
-                                        color: isUpIconClicked
+                                  <ThumbUpAltOutlinedIcon
+                                    onClick={() => handleUpIconClick(index)}
+                                    sx={{
+                                      fontSize: "14px",
+                                      color:
+                                        likedStates[index] === "liked" ||
+                                        chat.like_dislike === true
                                           ? theme.palette.primary.main
+                                          : chat.like_dislike !== null
+                                          ? "#ccc"
                                           : "",
-                                        cursor: "pointer",
-                                        transform: isUpIconClicked
+                                      cursor:
+                                        chat.like_dislike !== null
+                                          ? "default"
+                                          : "pointer",
+                                      transform:
+                                        likedStates[index] === "liked" ||
+                                        chat.like_dislike === true
                                           ? "scale(1.3)"
                                           : "scale(1)",
-                                        transition: "color 0.3s ease",
-                                      }}
-                                    />
-                                  </li>
-                                  <li>
-                                    <ThumbDownOutlinedIcon
-                                      onClick={handleDownIconClick}
-                                      sx={{
-                                        fontSize: "14px",
-                                        color: isDownIconClicked
+                                      transition: "color 0.3s ease",
+                                      opacity:
+                                        chat.like_dislike !== null &&
+                                        chat.like_dislike !== true
+                                          ? 0.5
+                                          : 1,
+                                    }}
+                                  />
+                                  <ThumbDownOutlinedIcon
+                                    onClick={() => handleDownIconClick(index)}
+                                    sx={{
+                                      fontSize: "14px",
+                                      color:
+                                        likedStates[index] === "disliked" ||
+                                        chat.like_dislike === false
                                           ? theme.palette.primary.main
+                                          : chat.like_dislike !== null
+                                          ? "#ccc"
                                           : "",
-                                        cursor: "pointer",
-                                        transform: isDownIconClicked
+                                      cursor:
+                                        chat.like_dislike !== null
+                                          ? "default"
+                                          : "pointer",
+                                      transform:
+                                        likedStates[index] === "disliked" ||
+                                        chat.like_dislike === false
                                           ? "scale(1.3)"
                                           : "scale(1)",
-                                        transition: "color 0.3s ease",
-                                      }}
-                                    />
-                                  </li>
+                                      transition: "color 0.3s ease",
+                                      opacity:
+                                        chat.like_dislike !== null &&
+                                        chat.like_dislike !== false
+                                          ? 0.5
+                                          : 1,
+                                    }}
+                                  />
                                   <li onClick={() => copyText(index)}>
                                     <ContentCopyOutlinedIcon
                                       sx={{ fontSize: "14px" }}
