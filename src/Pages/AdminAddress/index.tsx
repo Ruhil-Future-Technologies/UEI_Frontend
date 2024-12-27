@@ -481,7 +481,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
       !pincode_col &&
       !pincode_col1
     ) {
-      console.log(tuched,editFlag);
+      console.log(tuched, editFlag);
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
@@ -543,7 +543,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               "/admin_address/edit/" + adminId,
               addressPayload
             );
-             console.log(data);
+            console.log(data);
             if (data?.status === 200) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
@@ -552,12 +552,12 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               });
               listData();
               setTuched(false);
-              
-                
-              
-             
-              
-              
+
+
+
+
+
+
               if (tuchedPram && tuchedCurrent) {
                 // if (!eq && !permanentAddressEq) {
                 //   // block of code to write the address
@@ -565,9 +565,9 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
                 //   setActiveForm((prev: number) => prev + 1);
                 // }
                 console.log("1111111111")
-               await setTuchedCurrent(false);
-               await  setTuchedPram(false);
-                setActiveForm( 2);
+                await setTuchedCurrent(false);
+                await setTuchedPram(false);
+                setActiveForm(2);
               } else if (tuchedPram && !tuchedCurrent) {
                 console.log("2222222222")
                 setActiveForm(2);
@@ -584,12 +584,12 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               });
               listData();
               setTuched(false);
-              
-                setTuchedCurrent(false);
-              
-                setTuchedPram(false);
-                setActiveForm((prev: number) => prev + 1);
-            }else setActiveForm((prev: number) => prev + 1);
+
+              setTuchedCurrent(false);
+
+              setTuchedPram(false);
+              setActiveForm((prev: number) => prev + 1);
+            } else setActiveForm((prev: number) => prev + 1);
             // else {
 
             // toast.error(`Failed to update ${addressType} address`, {
@@ -621,17 +621,17 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
-            console.log(tuchedCurrent,editableCurrent);
+            console.log(tuchedCurrent, editableCurrent);
             if (adminAddress?.address_type === "current_address" && editableCurrent && tuchedCurrent)
-            await editAddress("Current", currentAddressPayload);
+              await editAddress("Current", currentAddressPayload);
             // Edit permanent address
             console.log((
               permanentAddress?.address_type === "permanent" && tuchedPram
             ));
-          console.log(editablePerm);
+            console.log(editablePerm);
             if (
-              permanentAddress?.address_type === "permanent_address"  && tuchedPram
-            )await editAddress("Permanent", permanentAddressPayload);
+              permanentAddress?.address_type === "permanent_address" && tuchedPram
+            ) await editAddress("Permanent", permanentAddressPayload);
 
           }
         } else {
@@ -689,7 +689,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
       setTuchedPram(true);
     }
     setTuched(true);
-    
+
   };
   return (
     <form>
@@ -745,9 +745,9 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
             className={`col-form-label  ${isFocusedstate || adminAddress?.country
 
-                ? "focused"
-                : "focusedempty"
-            }`}
+              ? "focused"
+              : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span>*</span>
@@ -772,8 +772,8 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           <label
 
             className={`col-form-label ${isFocusedstate || adminAddress.state
-                ? "focused"
-                : "focusedempty"
+              ? "focused"
+              : "focusedempty"
               }`}
 
             style={{ fontSize: "14px" }}
@@ -969,9 +969,8 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
           <label
-            className={`col-form-label ${
-              isFocused || permanentAddress.country ? "focused" : "focusedempty"
-            }`}
+            className={`col-form-label ${isFocused || permanentAddress.country ? "focused" : "focusedempty"
+              }`}
             style={{ fontSize: "14px" }}
           >
             Country <span></span>
@@ -988,18 +987,17 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
-            className={`col-form-label ${
-              isFocusedstate || permanentAddress.state
+            className={`col-form-label ${isFocusedstate || permanentAddress.state
                 ? "focused"
                 : "focusedempty"
-            }`}
+              }`}
             style={{ fontSize: "14px" }}
           >
             State <span></span>
           </label>
 
           <RegionDropdown
-            data-testid="perStateDropdown" 
+            data-testid="perStateDropdown"
             classes="form-select custom-dropdown"
             defaultOptionLabel={permanentAddress.state || ""}
             country={permanentAddress.country || ""}
@@ -1114,7 +1112,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               Previous
             </button>
             <button
-
+              data-testid="submitForm"
               type="button"
 
               className="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn px-4"
