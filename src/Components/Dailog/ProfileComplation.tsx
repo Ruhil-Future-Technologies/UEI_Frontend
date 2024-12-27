@@ -238,7 +238,7 @@ export const ProfileDialog: FunctionComponent<{
   const [filterdQuestions1, setFilterdQuestions1] = useState<{ [key: string]: string[] }>({});
 
   // const [open, setOpen] = useState(true);
-  console.log(goal);
+  
   const errordata = [
     "Please enter a valid full name only characters allowed.",
     "",
@@ -246,7 +246,7 @@ export const ProfileDialog: FunctionComponent<{
     "",
     "Please enter a valid mother name only characters allowed.",
     "Please enter a valid father name only characters allowed.",
-    "",
+    "Please enter a valid guardian's name only characters allowed.",
     "",
     "",
     "",
@@ -286,7 +286,7 @@ export const ProfileDialog: FunctionComponent<{
           if (data.status === 200) {
             //  navigate("/main/Dashboard");
             setAnsweredData(data.data);
-            console.log(data.data)
+        
             if (data?.data?.academic_history?.institution_type === "school") {
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`
@@ -455,80 +455,6 @@ export const ProfileDialog: FunctionComponent<{
     "What is your second address?": ["36", "address", "address2"],
   };
 
-  // const adjustQuestionsForInstitutionType = (institutionType: string) => {
-  //   let adjustedQuestions = [...initialQuestions[currentSection!]];
-  //   const adjustedMapping = { ...mapping };
-  //   const board = answeredData?.academic_history?.board;
-
-  //   if (institutionType === "school") {
-  //     // Remove college-specific questions
-  //     if (board === "state_board") {
-  //       adjustedQuestions = adjustedQuestions.filter(
-  //         (question) =>
-  //           question !== "Please select your university" &&
-  //           question !== "Please select your institution" &&
-  //           question !== "Please select your course" &&
-  //           question !== "Please select your semester" &&
-  //           question !== "What is your learning style?" &&
-  //           question !== "Please select year" &&
-  //           question !==
-  //           "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
-  //           question !== "Please select your semester "
-  //       );
-  //     } else {
-  //       adjustedQuestions = adjustedQuestions.filter(
-  //         (question) =>
-  //           question !== "Please select your university" &&
-  //           question !== "Please select your institution" &&
-  //           question !== "Please select your course" &&
-  //           question !== "Please select your semester" &&
-  //           question !== "What is your learning style?" &&
-  //           question !== "Please select year" &&
-  //           question !== "Please select your state" &&
-  //           question !==
-  //           "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?" &&
-  //           question !== "Please select your semester "
-  //       );
-  //     }
-
-  //     if (
-  //       selectedClass?.label !== "class_11" &&
-  //       selectedClass?.label !== "class_12"
-  //     ) {
-  //       adjustedQuestions = adjustedQuestions.filter(
-  //         (question) => question !== "Please select your stream"
-  //       );
-  //     }
-
-  //     // Remove college-specific mappings
-  //     delete adjustedMapping["Please select your university"];
-  //     delete adjustedMapping["Please select your institution"];
-  //     delete adjustedMapping["Please select your course"];
-  //     delete adjustedMapping["Please select your semester"];
-  //     delete adjustedMapping["What is your learning style?"];
-  //     delete adjustedMapping["Please select year"];
-  //     delete adjustedMapping[
-  //       "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?"
-  //     ];
-  //     delete adjustedMapping["Please select your semester "];
-  //   } else if (institutionType === "college") {
-  //     // Remove school-specific questions
-  //     adjustedQuestions = adjustedQuestions.filter(
-  //       (question) =>
-  //         question !== "Please select your board" &&
-  //         question !== "Please select your class" &&
-  //         question !== "Please select your state" &&
-  //         question !== "Please select your stream"
-  //     );
-
-  //     // Remove school-specific mappings
-  //     delete adjustedMapping["Please select your board"];
-  //     delete adjustedMapping["Please select your class"];
-  //   }
-
-  //   return { adjustedQuestions, adjustedMapping };
-  // };
-
   const getSubject = async () => {
     if (
       answeredData?.academic_history?.institution_type === "school" ||
@@ -537,10 +463,20 @@ export const ProfileDialog: FunctionComponent<{
       getData("school_subject/list")
         .then((response: any) => {
           if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1
-            );
-            setSubjects(filteredData || []);
+            if(answeredData?.academic_history?.class_id){
+              
+              const filteredData = response?.data?.filter(
+                (item: any) => item?.is_active === 1 &&
+                item?.class_id === answeredData?.academic_history?.class_id
+              );
+              setSubjects(filteredData || []);
+            }else{
+              const filteredData = response?.data?.filter(
+                (item: any) => item?.is_active === 1 
+              );
+              setSubjects(filteredData || []);
+            }
+            
           }
         })
         .catch((e) => {
@@ -572,20 +508,14 @@ export const ProfileDialog: FunctionComponent<{
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const filteredQuestions = initialQuestions;
   useEffect(() => {
-    console.log(currentSection, answeredData);
+   setAnswers([]);
     if (currentSection) {
-     // if (true) {
-        // const institutionType = answeredData.academic_history.institution_type;
-        // const { adjustedQuestions } =
-        //   adjustQuestionsForInstitutionType(institutionType);
-
-
         const fetchProfileData = async () => {
           try {
             const data = await getData(`${profileURL}/${StudentId}`);
             if (data.status === 200) {
               setAnsweredData(data.data);
-              console.log(data)
+              
 
               // Get the values from the fetched data
               const guardianName = data?.data?.basic_info?.aim || "";
@@ -600,7 +530,6 @@ export const ProfileDialog: FunctionComponent<{
                 filteredQuestions.basic = filteredQuestions.basic.filter((_, index) => index > 7);
 
               }
-              console.log(instituteType, guardianName, subjectPref, contact, language, hobby, address);
               if (instituteType) {
                 // Skip institution type-related questions
                 if (instituteType === "school") {
@@ -639,7 +568,6 @@ export const ProfileDialog: FunctionComponent<{
 
 
                 }
-
 
 
               }
@@ -682,7 +610,7 @@ export const ProfileDialog: FunctionComponent<{
                   ].includes(question));
               }
               if (address) {
-                console.log()
+              
                 filteredQuestions.basic = filteredQuestions.basic.filter((question) =>
                   ![
                     "Please select your current country of residence",
@@ -696,7 +624,7 @@ export const ProfileDialog: FunctionComponent<{
 
               }
             }
-            console.log(filteredQuestions);
+            
             setFilterdQuestions1(filteredQuestions);
             // Update state after filtering
             // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
@@ -709,44 +637,10 @@ export const ProfileDialog: FunctionComponent<{
         };
 
         fetchProfileData();
-        // if (institutionType) {
-        //   filteredQuestions = adjustedQuestions.filter((question: string) => {
-        //     if (question !== "Upload your profile picture") {
-        //       const keys: any = mapping[question];
-        //       if (!keys) return true; // If no mapping exists, keep the question
-
-        //       const [_index,section, ...fields] = keys;
-        //       const sectionData = answeredData[section];
-
-        //       return !fields.every(
-        //         (field: any) => sectionData && sectionData[field]
-        //       ); // Remove the question if all fields have values
-        //     }
-        //   });
-        // } else {
-        //   filteredQuestions = initialQuestions[currentSection].filter(
-        //     (question: string) => {
-        //       if (question !== "Upload your profile picture") {
-        //         const keys: any = mapping[question];
-        //         if (!keys) return true; // If no mapping exists, keep the question
-
-        //         const [_index,section, ...fields] = keys;
-        //         const sectionData = answeredData[section];
-
-        //         return !fields.every(
-        //           (field: any) => sectionData && sectionData[field]
-        //         ); // Remove the question if all fields have values
-        //       }
-        //     }
-        //   );
-        // }
+        
         setCurrentQuestionIndex(Number(mapping[filteredQuestions.basic?.[0]]?.[0]));
         setMessages([{ text: filteredQuestions.basic[0], type: "question" }]);
-     // } else {
-      //   setMessages([
-      //     { text: initialQuestions[currentSection][0], type: "question" },
-      //   ]);
-      // }
+     
     }
 
     getData("/class/list")
@@ -863,7 +757,7 @@ export const ProfileDialog: FunctionComponent<{
       });
 
     getSubject();
-    console.log("9999999999999999999999999999999999999")
+   
   }, [currentSection, isOpen]);
 
   useEffect(() => {
@@ -943,7 +837,7 @@ export const ProfileDialog: FunctionComponent<{
       aim: answeredData?.basic_info?.aim || answers[2],
       pic_path: answeredData?.basic_info?.pic_path || answers[7],
     };
-    console.log(payload);
+   
     postData(`${"student/add"}`, payload)
       .then((data: any) => {
         if (data.status === 200) {
@@ -1021,8 +915,7 @@ export const ProfileDialog: FunctionComponent<{
 
       email_id: answeredData?.contact?.email_id || email,
     };
-    console.log(answer)
-    console.log(payload)
+   
     postData(`${"student_contact/add"}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
@@ -1054,7 +947,6 @@ export const ProfileDialog: FunctionComponent<{
     // }else{
 
     // }
-    console.log(answers[answers.length-1],answers[answers.length-2],answers[answers.length-3],answers[answers.length-4],answers[answers.length-5],answers[answers.length-6],answers[answers.length-7])
     const payload = {
       student_id: StudentId,
 
@@ -1068,7 +960,7 @@ export const ProfileDialog: FunctionComponent<{
 
       address_type: "current",
     };
-    console.log(payload);
+ 
     postData("/student_address/add", payload).then((response) => {
       if (response.status === 200) {
         // toast.success("Address information saved successfully", {
@@ -1150,7 +1042,7 @@ export const ProfileDialog: FunctionComponent<{
           ? answeredData?.academic_history?.sem_id || answers[length - 3]
           : null,
     };
-    console.log(payload, selectedStream);
+   
 
     postData("/new_student_academic_history/add", payload).then((response) => {
       if (response.status === 200) {
@@ -1188,8 +1080,7 @@ export const ProfileDialog: FunctionComponent<{
         course_id: answeredData?.subject_preference?.course_id || selectCourse,
       }),
     };
-    console.log(payload);
-    console.log(answers);
+ 
     postData("/subject_preference/add", payload).then((response) => {
       if (response.status === 200) {
         // toast.success("Subject Preference information saved successfully", {
@@ -1246,16 +1137,7 @@ export const ProfileDialog: FunctionComponent<{
     label: `Semester ${option?.semester_number}`,
   }));
 
-  // const maxSemester = semester && semester?.length > 0
-  //   ? Math.max(...semester?.map((item: { semester_number: any; }) => item?.semester_number))
-  //   : 0;
-
-  // const semesterSelectOptions = [...Array(maxSemester)]?.map(
-  //   (_, index) => ({
-  //     value: index + 1, // Setting the value based on index
-  //     label: `Semester ${index + 1}`, // Displaying as "Semester {index + 1}"
-  //   })
-  // );
+ 
 
   const semlable = semester?.filter(
 
@@ -1271,22 +1153,7 @@ export const ProfileDialog: FunctionComponent<{
     }] : [];
 
 
-  // const semesterSelectOptionspre = selectSemester
-  //   ? [{
-  //     value: selectSemester,
-  //     label: `Semester ${selectSemester}`,
-  //   }]
-  //   : semesterpre[0]?.semester_number ? [{
-  //     value: semesterpre[0]?.semester_number,
-  //     label: `Semester ${semesterpre[0]?.semester_number}`,
-  //   }] : [];
 
-  // const semesterSelectOptionspre = [
-  //   ...Array(semesterpre[0]?.semester_number),
-  // ].map((_, index) => ({
-  //   value: index + 1,
-  //   label: `Semester ${index + 1}`,
-  // }));
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
     label: option.institution_name,
@@ -1396,7 +1263,7 @@ export const ProfileDialog: FunctionComponent<{
       student_id: StudentId,
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
     };
-    console.log("inside hobby api");
+
     if(selectedHobby){
     postData("student_hobby/add", payload).then((response) => {
       if (response.status === 200) {
@@ -1465,7 +1332,6 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>) => {
     const updatedAnswers = [...answers];
-    console.log(currentQuestionIndex);
     updatedAnswers[currentQuestionIndex] = e.target.value;
     setAnswers(updatedAnswers);
     updatedAnswers[currentQuestionIndex] = e.target.value;
@@ -1643,7 +1509,6 @@ export const ProfileDialog: FunctionComponent<{
     saveAnswersforBasic([...answers]);
     }
     if (whatsappnumbet) {
-      console.log("in side whatsappnumber");
       saveAnswersforContact([...answers,'']);
     }
     if (secondaddressquestion){
@@ -1716,7 +1581,6 @@ export const ProfileDialog: FunctionComponent<{
     if (yearquesiton) {
       datecheck = dayjs(datecheck).format("DD/MM/YYYY");
     }
-    console.log("inside year for acadmic date check", datecheck);
     if (datecheck) {
       const updatedAnswers = [...answers];
       updatedAnswers[answers.length] = datecheck;
@@ -1828,9 +1692,9 @@ export const ProfileDialog: FunctionComponent<{
   const answerSaveandGotoNextquestoin = (
     e: KeyboardEvent<HTMLInputElement>
   ) => {
-    console.log(filterdQuestions1);
+  
     const currentQuestions = filterdQuestions1['basic'];
-    console.log(currentQuestions);
+
     if (answers[currentQuestionIndex]?.trim() !== "") {
       const updatedMessages = [
         ...messages,
@@ -1869,10 +1733,10 @@ export const ProfileDialog: FunctionComponent<{
           },
         ]);
 
-        console.log(secondaddressquestion)
+        
 
         if (whatsappnumbet) {
-          console.log("in side whatsappnumber");
+          
           saveAnswersforContact([...answers, e.currentTarget.value]);
         }
 
@@ -1896,7 +1760,7 @@ export const ProfileDialog: FunctionComponent<{
           // saveAnswerForLanguage([...answers, e.currentTarget.value]);
         }
       } else {
-        console.log("Please select");
+  
         setMessages(updatedMessages);
         //proceedToNextSection(currentSection!);
         setCurrentQuestionIndex(0);
@@ -2052,7 +1916,7 @@ export const ProfileDialog: FunctionComponent<{
         setcity(false);
       }
     }
-    console.log(fName);
+    
     if (e.key === "Enter") {
       if (
         fullName ||
@@ -2075,7 +1939,7 @@ export const ProfileDialog: FunctionComponent<{
       }
       e.preventDefault();
 
-      console.log(currentQuestionIndex);
+    
       if (mobilequestion || whatsappnumbet) {
         if (answers[answers.length - 1]?.length === 10) {
 
@@ -2303,7 +2167,7 @@ export const ProfileDialog: FunctionComponent<{
             });
           });
       } else {
-        console.log("handiling institute type for callege");
+      
         const questionsToRemove = [
           "Please select your board",
           "Please select your state",
@@ -2312,7 +2176,7 @@ export const ProfileDialog: FunctionComponent<{
           "Please select your stream",]
         filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
         currentQuestions = currentQuestions.filter((question) => !questionsToRemove.includes(question));
-        console.log(filterdQuestions1["basic"]);
+
         getData("college_subject/list")
           .then((response: any) => {
             if (response.status === 200) {
@@ -2333,7 +2197,7 @@ export const ProfileDialog: FunctionComponent<{
           });
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
-      console.log(currentQuestions);
+
       setMessages([
         ...updatedMessages,
         {
@@ -2369,7 +2233,7 @@ export const ProfileDialog: FunctionComponent<{
         filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
-      console.log("select board");
+   
       setMessages([
         ...updatedMessages,
         {
@@ -2396,7 +2260,7 @@ export const ProfileDialog: FunctionComponent<{
     setSubjects(filterData);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
-    console.log()
+
     setSelectedStream(e.value);
     setAnswers(updatedAnswers);
     saveAnswersforacadmichistory(updatedAnswers);
@@ -2448,21 +2312,21 @@ export const ProfileDialog: FunctionComponent<{
     }
   };
   const handleDropdownChangeClass = (e: any) => {
-    console.log(answers);
+ 
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
     setSelectedClass(e);
     setAnswers(updatedAnswers);
     if (e.label !== "class_11" && e.label !== "class_12") {
-      console.log(subjects);
+    
       const filterData = subjects?.filter(
         (item: any) =>
           item.class_id === answeredData?.academic_history?.class_id ||
           item.class_id === e.value
       );
-      console.log(filterData);
+ 
       setSubjects(filterData);
-      console.log(updatedAnswers);
+ 
       if (e.value != "class_11" || e.value != "class_12") {
         saveAnswersforacadmichistory(updatedAnswers);
       }
@@ -2484,7 +2348,7 @@ export const ProfileDialog: FunctionComponent<{
         ]
         currentQuestions = currentQuestions.filter((question) => !questionsToRemove.includes(question));
         filterdQuestions1["basic"] = filterdQuestions1["basic"].filter((question) => !questionsToRemove.includes(question));
-        console.log(filterdQuestions1["basic"]);
+   
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
 
@@ -2838,7 +2702,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const isLastQuestionCourseSelection = getLastQuestion() === "Please select your course"
   const courceforpref = getLastQuestion() === "Hi, Please provide your subject preference information! what is your course name to which your subject belongs?";
-  console.log(isLastQuestionCourseSelection);
+ 
   const questioncountrycode = getLastQuestion() === "Please select your mobile number country code";
   const Dobcheck = getLastQuestion() == "What is your DOB?";
   const gendercheck = getLastQuestion() == "What is your gender?";
@@ -2871,12 +2735,8 @@ export const ProfileDialog: FunctionComponent<{
   // }
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
-  console.log(filterdQuestions1);
-  console.log(answers);
-  console.log(currentQuestionIndex);
-
-  console.log(errordata[answers.length - 1]);
-  console.log((guardianquestion || hobbyquestion || whatsappnumbet || secondaddressquestion));
+  
+ 
   return (
     <>
       <div

@@ -214,7 +214,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const getDepatment = async () => {
     try {
       const response = await getData(`${"department/list"}`);
-      console.log(response);
+     
       if (response?.status === 200) {
         setAllDepartment(response?.data?.filter((item:any)=> item.is_active===1));
       }
@@ -240,7 +240,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
   
     useEffect( ()=>{
-      console.log(activeForm);
+      
       getData(`${"admin_basicinfo/edit/" + adminId}`).then((response)=>{
 if(response?.status==200){
   setEditable(false);

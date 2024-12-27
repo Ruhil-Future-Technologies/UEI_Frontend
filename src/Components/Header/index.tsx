@@ -284,7 +284,7 @@ const Header = () => {
       // localStorage?.setItem('--TitleColor', '#495057');
     } else if (theme === "dark") {
       document?.documentElement?.setAttribute("data-bs-theme", theme);
-      console.log("It is changing or not");
+      
       // document?.documentElement?.style.setProperty('--bodybackground', '#1d2a35');
       // document?.documentElement?.style.setProperty('--bodycolor', ' #1d2a35');
       // document?.documentElement?.style.setProperty('--bghovercolor', '#2a3c49');

@@ -19,7 +19,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
   const adminId = localStorage.getItem("_id");
-  //   console.log(adminId);
+ 
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState("+91");
   const [whatsappNum, setWhatsappNum] = useState("");
@@ -154,7 +154,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       mobile_no_watsapp: whatsappNum,
       email_id: email,
     };
-    // console.log("Check",initialState,paylod)
+    
     const eq = deepEqual(initialState, paylod);
 
     if (editFlag) {
