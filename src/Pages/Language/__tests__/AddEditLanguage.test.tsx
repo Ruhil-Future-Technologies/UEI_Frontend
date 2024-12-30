@@ -35,12 +35,6 @@ jest.mock("../../../hooks/useAPI", () => ({
     putData: jest.fn(),
   }),
 }));
-jest.mock("react-toastify", () => ({
-  toast: {
-    success: jest.fn(),
-    error: jest.fn(),
-  },
-}));
 
 const mockedNavigate = jest.fn();
 const mockGetData = jest.fn();

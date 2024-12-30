@@ -154,25 +154,10 @@ const AddEditRoleVsAdmin = () => {
       };
     });
   };
-
-  //   const handleChangemenuVisible = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { name, value } = e.target;
-  //     const booleanValue = value === "true";
-  //     setRoleVsAdmin((prevUser) => {
-  //       return {
-  //         ...prevUser,
-  //         [name]: booleanValue,
-  //       };
-  //     });
-  //   };
   useEffect(() => {
     callAPI();
   }, []);
-  // const handleSubmit = async (rolevsadminData: { role_master_id?: string; admin_id?: string}) => {
-  // const handleSubmit = async (rolevsadminData: IRolevsAdmin) => {
   const handleSubmit = async (rolevsadminData: IRolevsAdmin) => {
-    // rolevsadminData.role_master_id = String(rolevsadminData.role_master_id);
-    // rolevsadminData.admin_id = String(rolevsadminData.admin_id);
     if (id) {
       putData(`${RolevsAdminEditURL}/${id}`, rolevsadminData)
         .then((data: any) => {
@@ -262,6 +247,7 @@ const AddEditRoleVsAdmin = () => {
                               Role Master *
                             </InputLabel>
                             <Select
+                              inputProps={{ "data-testid": "role_master_id" }}
                               onChange={handleChange}
                               label="Role Master"
                               name="role_master_id"
@@ -317,6 +303,7 @@ const AddEditRoleVsAdmin = () => {
                               Admin *
                             </InputLabel>
                             <Select
+                              inputProps={{ "data-testid": "admin_id" }}
                               onChange={handleChange}
                               label="Admin"
                               name="admin_id"
@@ -364,7 +351,7 @@ const AddEditRoleVsAdmin = () => {
                         )}
                       </div>
                       <div className="col-lg-12">
-                        <button className="btn btn-primary mainbutton">
+                        <button data-testid="save_btn" type="submit" className="btn btn-primary mainbutton">
                           {id ? "Update" : "Save"}
                         </button>
                       </div>
