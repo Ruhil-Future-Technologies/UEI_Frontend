@@ -152,6 +152,7 @@ const University = () => {
                           {/* {filteredData?.form_data?.is_update === true && ( */}
                           <Tooltip arrow placement="right" title="Edit">
                             <IconButton
+                            data-testid="edit_btn"
                               sx={{
                                 width: "35px",
                                 height: "35px",

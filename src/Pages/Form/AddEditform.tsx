@@ -345,6 +345,7 @@ const AddEditForm = () => {
                               Menu Master *
                             </InputLabel>
                             <Select
+                             inputProps={{ "data-testid": "menu_master_id" }}
                               onChange={handleChange}
                               label="Menu Master"
                               name="menu_master_id"
@@ -400,6 +401,7 @@ const AddEditForm = () => {
                               Sub Menu Master *
                             </InputLabel>
                             <Select
+                            inputProps={{ "data-testid": "sub_menu_master_id" }}
                               onChange={handleChange}
                               label="Sub Menu Master"
                               name="sub_menu_master_id"
@@ -452,6 +454,7 @@ const AddEditForm = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <TextField
+                           inputProps={{ "data-testid": "form_name" }}
                             type="text"
                             label="Form Name *"
                             name="form_name"
@@ -470,6 +473,7 @@ const AddEditForm = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <TextField
+                           inputProps={{ "data-testid": "form_url" }}
                             label="Form URL *"
                             name="form_url"
                             value={values.form_url}
@@ -501,6 +505,7 @@ const AddEditForm = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <TextField
+                           inputProps={{ "data-testid": "form_description" }}
                             label="Form Description"
                             name="form_description"
                             value={values.form_description}
@@ -525,6 +530,7 @@ const AddEditForm = () => {
                             Menu Visible
                           </Typography>
                           <RadioGroup
+                            data-testid= "is_menu_visible" 
                             row
                             name="is_menu_visible"
                             value={values.is_menu_visible}
@@ -554,7 +560,7 @@ const AddEditForm = () => {
                         </div>
                       </div>
                       <div className="col-lg-12">
-                        <button className="btn btn-primary mainbutton">
+                        <button data-testid="save_btn" className="btn btn-primary mainbutton">
                           {id ? "Update" : "Save"}
                         </button>
                         {/* <button className='btn btn-primary btn-xs' type="button" style={{marginLeft:"10px", marginTop:"10px"}}  onClick={privewurl} > Preivew</button> */}
