@@ -73,13 +73,18 @@ import University from './Pages/University/University';
 import Semester from './Pages/Semester/Semester';
 import AddSemester from './Pages/Semester/AddSemester';
 import AddEditSubjectSchool from './Pages/Subject/AddEditSubjectSchool';
-import TeacherDash from './Pages/Teacher';
-import InstitutionDash from './Pages/Institution/InstituteDashboard';
+import TeacherDash from './Pages/Teacher/TeacherDashboard';
+
 
 import NameContext from './Pages/Context/NameContext';
 import IntitutionChat from './Pages/Institution/institutionchat';
 import InstitutionFeedback from './Pages/Institution/institutionfeedback';
 import IntituteMain from './Pages/Institution';
+import TeacherMain from './Pages/Teacher';
+import TeacherChat from './Pages/Teacher/TeacherChat';
+import TeacherFeedback from './Pages/Teacher/TeacherFeedback';
+import InstitutionDash from './Pages/Institution/InstituteDashboard';
+
 
 function App() {
   const navigate = useNavigate()
@@ -132,9 +137,14 @@ function App() {
         <Route path="/profile-chat" element={<ProfileChat />} />
         <Route path="/feedback-chat" element={<Feedback />} />
         <Route path="/institution-deshboard" element={<IntituteMain />}>
-          <Route path="" element={<Protected Component={InstitutionDash} menuName="dashboard" />} />
+          <Route path="" element={<Protected Component={InstitutionDash} menuName="Dashboard" />} />
           <Route path="/institution-deshboard/chat" element={<IntitutionChat />} />
           <Route path='/institution-deshboard/feedback' element={<InstitutionFeedback />} />
+        </Route>
+        <Route path="/teacher-dashboard" element={<TeacherMain />}>
+          <Route path="" element={<Protected Component={TeacherDash} menuName="teacherdash"/>} />
+          <Route path="/teacher-dashboard/chat" element={<Protected Component={TeacherChat} />} />
+          <Route path='/teacher-dashboard/feedback' element={<TeacherFeedback />} />
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
