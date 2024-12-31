@@ -37,10 +37,10 @@ const AddEditMenu = () => {
   };
   const [menu, setMenu] = useState(initialState);
   const formRef = useRef<FormikProps<IMenuForm>>(null);
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location?.pathname?.split("/").filter(Boolean);
   const lastSegment = id
-    ? pathSegments[pathSegments.length - 3].toLowerCase()
-    : pathSegments[pathSegments.length - 2].toLowerCase();
+    ? pathSegments[pathSegments.length - 3]?.toLowerCase()
+    : pathSegments[pathSegments.length - 2]?.toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   const callAPI = async () => {
@@ -57,10 +57,7 @@ const AddEditMenu = () => {
         });
     }
   };
-
-
   useEffect(() => {
-    // GetDataList()
     setFilteredData(
       dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
     );
@@ -99,8 +96,6 @@ const AddEditMenu = () => {
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
-
-
   const handleSubmit = async (
     menuData: IMenuForm,
     { resetForm }: FormikHelpers<IMenuForm>
@@ -183,7 +178,6 @@ const AddEditMenu = () => {
                 )}
               </Typography>
               <Formik
-                // onSubmit={(formData) => handleSubmit(formData)}
                 onSubmit={(formData, formikHelpers) =>
                   handleSubmit(formData, formikHelpers)
                 }
@@ -195,21 +189,13 @@ const AddEditMenu = () => {
                 validationSchema={menuSchema}
                 innerRef={formRef}
               >
-                {/* <form onSubmit={(e) => handleSubmit(e, menu)}> */}
                 {({ errors, values, touched }) => (
                   <Form>
                     <div className="row gy-4 mt-0">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <TextField
-                                            label="Menu Name"
-                                            name="menu_name"
-                                            value={menu.menu_name}
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                     
-                                        /> */}
                           <Field
+                            data-testid="menu_name"
                             component={TextField}
                             type="text"
                             name="menu_name"
@@ -221,7 +207,6 @@ const AddEditMenu = () => {
                             InputProps={{
                               style: {
                                 backgroundColor: inputfield(namecolor),
-                                // backgroundColor:'red' ,
                               },
                             }}
                             InputLabelProps={{
@@ -236,20 +221,11 @@ const AddEditMenu = () => {
                             <></>
                           )}
                         </div>
-                        {/* {menu_namecol && (
-                                        <p style={{ color: 'red' }}>Please enter a valid Menu Name Only characters allowed.</p>
-                                    )} */}
                       </div>
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          {/* <TextField
-                                            label="Menu priority"
-                                            name="priority"
-                                            value={menu.priority}
-                                            variant="outlined"
-                                            onChange={handleChange}
-                                        /> */}
                           <Field
+                            data-testid="priority"
                             component={TextField}
                             type="text"
                             name="priority"
@@ -261,7 +237,6 @@ const AddEditMenu = () => {
                             InputProps={{
                               style: {
                                 backgroundColor: inputfield(namecolor),
-                                // backgroundColor:'red' ,
                               },
                             }}
                             InputLabelProps={{
@@ -276,9 +251,6 @@ const AddEditMenu = () => {
                             <></>
                           )}
                         </div>
-                        {/* {menu_namecol && (
-                                        <p style={{ color: 'red' }}>Please enter a valid Priority Only characters allowed.</p>
-                                    )} */}
                       </div>
                     </div>
                     <div className="row">
@@ -296,18 +268,14 @@ const AddEditMenu = () => {
                             <input
                               type="file"
                               accept=".pdf,.doc,.docx"
-                              // onChange={(event) => setSelectedFile(event.target.value)}
                               onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                               ) => handleChange(e, "menu_image")}
-                              // value={selectedFile}
                               style={{ color: inputfieldtext(namecolor) }}
                               id="file-upload"
                               name="menu_image"
+                              data-testid="file-upload"
                             />
-                            {/* {selectedFile && (
-                                                <Typography variant="body1">{selectedFile}</Typography>
-                                            )} */}
                           </Grid>
                         </div>
                       </div>
@@ -334,11 +302,10 @@ const AddEditMenu = () => {
                       </div>
                     </div>
                     <div className=" mt-3">
-                      <button className="btn btn-primary mainbutton">
+                      <button className="btn btn-primary mainbutton" data-testid="save_btn">
                         {id ? "Update" : "Save"}
                       </button>
                     </div>
-                    {/* </form> */}
                   </Form>
                 )}
               </Formik>
