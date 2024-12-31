@@ -234,6 +234,7 @@ export const ProfileDialog: FunctionComponent<{
   const [firstaddress, setFirstAddress] = useState(false);
   const [secondaddress, setSecondAddress] = useState(false);
   const [answeredData, setAnsweredData] = useState<any>();
+  const [checkChanges, setCheckChanges] = useState(false);
 
   const [filterdQuestions1, setFilterdQuestions1] = useState<{ [key: string]: string[] }>({});
 
@@ -264,7 +265,7 @@ export const ProfileDialog: FunctionComponent<{
     "",
     "",
     "Mobile number should be 10 digits",
-    "",
+    "WhatsApp number should be 10 digits",
     "",
     "",
     "",
@@ -457,18 +458,17 @@ export const ProfileDialog: FunctionComponent<{
 
   const getSubject = async () => {
     if (
-      answeredData?.academic_history?.institution_type === "school" ||
-      answers[8]?.toLowerCase() === "school"
+      answeredData?.academic_history?.institution_type === "school" 
     ) {
       getData("school_subject/list")
         .then((response: any) => {
           if (response.status === 200) {
             if(answeredData?.academic_history?.class_id){
-              
               const filteredData = response?.data?.filter(
                 (item: any) => item?.is_active === 1 &&
                 item?.class_id === answeredData?.academic_history?.class_id
               );
+
               setSubjects(filteredData || []);
             }else{
               const filteredData = response?.data?.filter(
@@ -491,7 +491,8 @@ export const ProfileDialog: FunctionComponent<{
         .then((response: any) => {
           if (response.status === 200) {
             const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1
+              (item: any) => item?.is_active === 1 && item.course_id ===answeredData?.academic_history?.course_id
+              && item.semester_id===answeredData?.academic_history?.sem_id
             );
             setSubjects(filteredData || []);
           }
@@ -563,6 +564,7 @@ export const ProfileDialog: FunctionComponent<{
                     "Please select your semester",
                     "What is your learning style?",
                     "Please select year",
+                    "Select your subject name",
                   ];
                   filteredQuestions.basic = filteredQuestions.basic.filter((question) => !questionsToRemove.includes(question));
 
@@ -839,62 +841,64 @@ export const ProfileDialog: FunctionComponent<{
     };
    
     postData(`${"student/add"}`, payload)
-      .then((data: any) => {
-        if (data.status === 200) {
-          // toast.success(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
-          setNamepro(data?.first_name);
-          const formData = new FormData();
-          const nfile: any = uploadedFile;
-          formData.append("file", nfile);
-
-          if (formData.has("file")) {
-            postFileData(`${"upload_file/upload"}`, formData)
-              .then((data: any) => {
-                if (data?.status === 200) {
-                  setProImage(data?.image_url);
-                  // toast.success(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: "colored",
-                  // });
-                } else if (data?.status === 404) {
-                  // toast.error(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: "colored",
-                  // });
-                } else {
-                  // toast.error(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: "colored",
-                  // });
-                }
-              })
-              .catch(() => {
-                // toast.error(e?.message, {
-                //   hideProgressBar: true,
-                //   theme: "colored",
-                // });
-              });
-          }
-          // toast.success("Basic information saved successfully", {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
-        } else {
-          toast.error(data?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
+    .then((data: any) => {
+      if (data.status === 200) {
+        toast.success(data?.message, {
           hideProgressBar: true,
           theme: "colored",
         });
+        setNamepro(data?.first_name);
+        const formData = new FormData();
+        const nfile: any = uploadedFile;
+        formData.append("file", nfile);
+
+        if (formData.has("file")) {
+          postFileData(`${"upload_file/upload"}`, formData)
+            .then((data: any) => {
+              if (data?.status === 200) {
+                setProImage(data?.image_url);
+                // toast.success(data?.message, {
+                //   hideProgressBar: true,
+                //   theme: "colored",
+                // });
+              } else if (data?.status === 404) {
+                // toast.error(data?.message, {
+                //   hideProgressBar: true,
+                //   theme: "colored",
+                // });
+              } else {
+                // toast.error(data?.message, {
+                //   hideProgressBar: true,
+                //   theme: "colored",
+                // });
+              }
+            })
+            .catch(() => {
+              // toast.error(e?.message, {
+              //   hideProgressBar: true,
+              //   theme: "colored",
+              // });
+            });
+        }
+        // toast.success("Basic information saved successfully", {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
+      } else {
+        toast.error(data?.message, {
+          hideProgressBar: true,
+          theme: "colored",
+        });
+      }
+    })
+    .catch((e) => {
+      toast.error(e?.message, {
+        hideProgressBar: true,
+        theme: "colored",
       });
+    });
+  
+    
   };
 
   const saveAnswersforContact = (answer: string[]) => {
@@ -903,26 +907,25 @@ export const ProfileDialog: FunctionComponent<{
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(" ");
     const email = localStorage.getItem("userid");
-    const anslength = answer.length
     const payload = {
       student_id: StudentId,
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call: answeredData?.contact?.mobile_no_call || answer[anslength - 2] ,
+      mobile_no_call: answeredData?.contact?.mobile_no_call || answer[answer.length - 1]===''?answer[answer.length - 2]:answer[answer.length - 3] ,
       mobile_isd_watsapp:
 
         answeredData?.contact?.mobile_isd_watsapp || phone,
-      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp ||  answer[anslength - 1],
+      mobile_no_watsapp: answeredData?.contact?.mobile_no_watsapp ||  answer[answer.length - 1]===''?answer[answer.length - 1]:answer[answer.length - 2],
 
       email_id: answeredData?.contact?.email_id || email,
     };
-   
+ 
     postData(`${"student_contact/add"}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
-          // toast.success(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: "colored",
-          // });
+          toast.success(data?.message, {
+            hideProgressBar: true,
+            theme: "colored",
+          });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -939,14 +942,7 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const saveAnswerforAddress = (answers: string[]) => {
-    // const Address = answers[13];
-    // let addressParts = Address?.split(",");
-    // let anlength=0;
-    // if(answers[answers.length - 1]===''){
-    //   anlength=answers.length
-    // }else{
-
-    // }
+   
     const payload = {
       student_id: StudentId,
 
@@ -960,13 +956,13 @@ export const ProfileDialog: FunctionComponent<{
 
       address_type: "current",
     };
- 
+
     postData("/student_address/add", payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Address information saved successfully", {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
+        toast.success("Address information saved successfully", {
+          hideProgressBar: true,
+          theme: "colored",
+        });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
@@ -1046,10 +1042,10 @@ export const ProfileDialog: FunctionComponent<{
 
     postData("/new_student_academic_history/add", payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Academic hinstory information saved successfully", {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
+        toast.success("Academic hinstory information saved successfully", {
+          hideProgressBar: true,
+          theme: "colored",
+        });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
@@ -1069,7 +1065,7 @@ export const ProfileDialog: FunctionComponent<{
       preference: answeredData?.subject_preference?.preference || answers[length - 3],
       score_in_percentage:
         answeredData?.subject_preference?.score_in_percentage || answers[length - 2],
-      sem_id: selectedInstituteType?.toLowerCase() === "college" ? answers[length - 4] : null,
+      sem_id: selectedInstituteType?.toLowerCase() === "college" || answeredData?.academic_history?.institution_type==="college"? answers[length - 4] : null,
 
       ...(answeredData?.academic_history?.institution_type === "school" &&
         answeredData?.academic_history?.stream && {
@@ -1077,16 +1073,15 @@ export const ProfileDialog: FunctionComponent<{
       }),
       ...((answeredData?.academic_history?.institution_type === "college" ||
         selectedInstituteType?.toLowerCase() === "college") && {
-        course_id: answeredData?.subject_preference?.course_id || selectCourse,
+        course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
     };
- 
     postData("/subject_preference/add", payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Subject Preference information saved successfully", {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
+        toast.success("Subject Preference information saved successfully", {
+          hideProgressBar: true,
+          theme: "colored",
+        });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
@@ -1331,11 +1326,21 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const handleAnswerChange = (e: ChangeEvent<HTMLInputElement>) => {
+    
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = e.target.value;
-    setAnswers(updatedAnswers);
-    updatedAnswers[currentQuestionIndex] = e.target.value;
-    setAnswers(updatedAnswers);
+    if (e.target.value === "") {
+      // Remove the value if it's empty
+      delete updatedAnswers[currentQuestionIndex];
+      setCheckChanges(false);
+    } else {
+      // Otherwise, save the value
+      updatedAnswers[currentQuestionIndex] = e.target.value;
+      setCheckChanges(true);
+    }
+    const filteredAnswers = updatedAnswers.filter((item) => item !== undefined);
+
+    
+    setAnswers(filteredAnswers);
     if (fullnamequestion) {
       const fullNameRegex = /^[a-zA-Z]+ [a-zA-Z]+$/;
       if (!fullNameRegex.test(updatedAnswers[answers.length - 1])) {
@@ -1505,17 +1510,31 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: "", type: "answer" as const },
     ];
+    if(checkChanges){
+      delete answers[currentQuestionIndex];
+      setphnumber(false);
+    }
+    if(whatsappnumbet){
+      setphnumber(false);
+    }
+    if(guardianquestion){
+      setgName(false);
+    }
+    
+    //console.log(checkChanges);
+    const updatedAnswers = [...answers,''];
+    const filteredAnswers = updatedAnswers.filter((item) => item !== undefined);
+      setAnswers(filteredAnswers)
     if(imagecheck){
     saveAnswersforBasic([...answers]);
     }
     if (whatsappnumbet) {
-      saveAnswersforContact([...answers,'']);
+      saveAnswersforContact([...filteredAnswers]);
     }
     if (secondaddressquestion){
-      saveAnswerforAddress([...answers,'']);
+      saveAnswerforAddress([...filteredAnswers]);
     }
-    const updatedAnswers = [...answers,''];
-      setAnswers(updatedAnswers)
+    
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -1579,7 +1598,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleclickdate = () => {
     if (yearquesiton) {
-      datecheck = dayjs(datecheck).format("DD/MM/YYYY");
+      datecheck = dayjs(datecheck).format("YYYY");
     }
     if (datecheck) {
       const updatedAnswers = [...answers];
@@ -1777,6 +1796,7 @@ export const ProfileDialog: FunctionComponent<{
   }, [selectedproficiency]);
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+   
     const charecterRegex = /^[a-zA-Z\s]+$/;
     const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
 
@@ -1804,10 +1824,12 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (maaname) {
+      
       if (
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setMotherNameError(true);
         return;
@@ -1820,11 +1842,25 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setFName(true);
         return;
       } else {
         setFName(false);
+      }
+    }
+    if (guardianquestion) {
+      if (
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
+      ) {
+        setgName(true);
+        return;
+      } else {
+        setgName(false);
       }
     }
 
@@ -1834,10 +1870,10 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] == null ||
         !charecterRegex.test(updatedAnswers[answers.length - 1])
       ) {
-        setgName(true);
+        setGenderError(true);
         return;
       } else {
-        setgName(false);
+        setGenderError(false);
       }
 
     }
@@ -1846,6 +1882,7 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !/^\d{10}$/.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setphnumber(true);
         return;
@@ -1859,6 +1896,7 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !/^\d{10}$/.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setphnumber(true);
         return;
@@ -1872,6 +1910,7 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setpreferenceError(true);
         return;
@@ -1885,6 +1924,7 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !regex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setper(true);
         return;
@@ -1897,6 +1937,7 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setdisct(true);
         return;
@@ -1909,11 +1950,36 @@ export const ProfileDialog: FunctionComponent<{
         updatedAnswers[answers.length - 1] === "" ||
         updatedAnswers[answers.length - 1] == null ||
         !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
       ) {
         setcity(true);
         return;
       } else {
         setcity(false);
+      }
+    }
+    if (secondaddressquestion) {
+      if (
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null 
+        ||!checkChanges
+      ) {
+        setSecondAddress(true);
+        return;
+      } else {
+        setSecondAddress(false);
+      }
+    }
+    if (firstaddressquestion) {
+      if (
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !checkChanges
+      ) {
+        setFirstAddress(true);
+        return;
+      } else {
+        setFirstAddress(false);
       }
     }
     
@@ -1982,12 +2048,13 @@ export const ProfileDialog: FunctionComponent<{
         answerSaveandGotoNextquestoin(e);
       }
     }
+    setCheckChanges(false);
   };
 
   const handlePhoneChange = (value: string) => {
     setPhone("+" + value);
     const updatedAnswers = [...answers];
-    updatedAnswers[answers.length - 1] = "+" + value;
+    updatedAnswers[answers.length] = "+" + value;
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1["basic"];
     const updatedMessages = [
@@ -2253,7 +2320,7 @@ export const ProfileDialog: FunctionComponent<{
     const filterData = subjects?.filter(
       (item: any) =>
         (item.class_id === answeredData?.academic_history?.class_id ||
-          item.class_id === answers[11]) &&
+          item.class_id === selectedClass.value) &&
         (item.stream === answeredData?.academic_history?.stream ||
           item.stream === e.value)
     );
@@ -2407,10 +2474,7 @@ export const ProfileDialog: FunctionComponent<{
         (item.semester_id === answeredData?.academic_history?.sem_id ||
           item.semester_id === answers[16])
     );
-
     setSemester(filteredsem);
-
-
     setSemesterpre(filteredsempre);
 
     const updatedAnswers = [...answers];
@@ -2479,7 +2543,17 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.label, type: "answer" as const },
     ];
+    const filterData = subjects?.filter(
+      (item: any) =>
+        (item.course_id === answeredData?.academic_history?.course_id  || selectCourse
+         &&
+         item.semester_id===e.value
+        ) 
+    );
+    
 
+
+    setSubjects(filterData);
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -2736,7 +2810,6 @@ export const ProfileDialog: FunctionComponent<{
   const sixYearsAgo = dayjs()?.subtract(6, "year");
   const maxSelectableDate = dayjs(sixYearsAgo);
   
- 
   return (
     <>
       <div

@@ -21,22 +21,22 @@ interface StudentAddress {
   address_type?: string;
 }
 
-let isToastActive = false;
+//let isToastActive = false;
 
-const showErrorToast = (message: string) => {
-  if (isToastActive) return;
+// const showErrorToast = (message: string) => {
+//   if (isToastActive) return;
 
-  isToastActive = true;
+//   isToastActive = true;
 
-  toast.error(message, {
-    onClose: () => {
-      isToastActive = false;
-    },
-    hideProgressBar: true,
-    theme: "colored",
-    position: "top-center"
-  });
-};
+//   toast.error(message, {
+//     onClose: () => {
+//       isToastActive = false;
+//     },
+//     hideProgressBar: true,
+//     theme: "colored",
+//     position: "top-center"
+//   });
+// };
 
 const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
@@ -62,6 +62,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   // const [pincode, setPincode] = useState("");
   const [contry_col, setcontry_col] = useState<boolean>(false);
   const [add_col, setAdd_col] = useState<boolean>(false);
+  const [add_col1, setAdd_col1] = useState<boolean>(false);
+
   const [city_colerror, setCity_colerror] = useState<boolean>(false);
   const [district_colerror, setDistrict_colerror] = useState<boolean>(false);
   const [state_col, setstate_col] = useState<boolean>(false);
@@ -70,6 +72,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   const [pincode_col, setpincode_col] = useState<boolean>(false);
   const [state_col1, setstate_col1] = useState<boolean>(false);
   const [city_col1, setcity_col1] = useState<boolean>(false);
+  const [contry_col1, setcontry_col1] = useState<boolean>(false);
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
@@ -312,7 +315,30 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       setTuchedCurrent(true);
       setStudentAddress((prevState) => ({ ...prevState, [name]: value }));
     } else {
+    
+    
+    if (name!=="address2" && value ==="") {
+      setAdd_col1(false);
+      setstate_col1(false);
+      setcity_col1(false);
+      setcontry_col1(false);
+      setdistrict_col1(false);
+      setpincode_col1(false);
+       if(!editablePerm){
+        setChecked(false);
+        setTuched(false);
+        setTuchedPram(false);
+       }
+    }else{
       setTuchedPram(true);
+      if (name === "address1") {
+        // if (value === "") {
+        if (!/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
+          setAdd_col1(true);
+        } else {
+          setAdd_col1(false);
+        }
+      }
       if (name === "state") {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setstate_col1(true);
@@ -325,6 +351,13 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           setcity_col1(true);
         } else {
           setcity_col1(false);
+        }
+      }
+      if (name === "country") {
+        if (!/^[a-zA-Z\s]*$/.test(value)) {
+          setcontry_col1(true);
+        } else {
+          setcontry_col1(false);
         }
       }
       if (name === "district") {
@@ -342,6 +375,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           setpincode_col1(true);
         }
       }
+    }
       // if(name==='pincode')
       //   {
       //         setErrors({
@@ -366,8 +400,11 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       } else {
         setpincode_col1(false);
       }
+      validatinforperm();
     } else {
       setChecked(false);
+      setTuched(false);
+      setTuchedPram(false);
       setPermanentAddress((prevPermanentAddress) => ({
         ...prevPermanentAddress,
         address1: "",
@@ -379,9 +416,64 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         pincode: "",
         address_type: "permanent",
       }));
+      validatinforperm();
     }
   };
+  let hasPermanentAddressFields = false;
+let validPermanentAddress = true;
+const validatinforperm=()=>{
 
+// Check if any permanent address field has a value
+if (
+  (permanentAddress.address1 && permanentAddress.address1 !== "") ||
+  (permanentAddress.address2 && permanentAddress.address2 !== "") ||
+  (permanentAddress.country && permanentAddress.country !== "") ||
+  (permanentAddress.state && permanentAddress.state !== "") ||
+  (permanentAddress.district && permanentAddress.district !== "") ||
+  (permanentAddress.city && permanentAddress.city !== "") ||
+  (permanentAddress.pincode && permanentAddress.pincode !== "")
+) {
+  hasPermanentAddressFields = true;
+
+  if (permanentAddress?.address1 === "" || !permanentAddress?.address1) {
+    setAdd_col1(true);
+    validPermanentAddress = false;
+  } else {
+    setAdd_col1(false);
+  }
+
+  if (permanentAddress?.country === "" || !permanentAddress?.country) {
+    setcontry_col1(true);
+    validPermanentAddress = false;
+  } else {
+    setcontry_col1(false);
+  }
+
+  if (permanentAddress?.city === "" || !permanentAddress?.city) {
+    setcity_col1(true);
+    validPermanentAddress = false;
+  } else {
+    setcity_col1(false);
+  }
+
+  if (permanentAddress?.district === "" || !permanentAddress?.district) {
+    setdistrict_col1(true);
+    validPermanentAddress = false;
+  } else {
+    setdistrict_col1(false);
+  }
+
+  if (
+    permanentAddress?.pincode === "" ||
+    !validatePincode(permanentAddress.pincode)
+  ) {
+    setpincode_col1(true);
+    validPermanentAddress = false;
+  } else {
+    setpincode_col1(false);
+  }
+}
+}
   const SubmitHandle = async () => {
     if (!("address1" in studentAddress) || studentAddress?.address1 === "") {
       setAdd_col(true);
@@ -407,7 +499,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
     ) {
       setpincode_col(true);
       // toast.error("Pincode is invalid");
-      showErrorToast("Entered Pincode is invalid");
+     // showErrorToast("Entered Pincode is invalid");
     } else {
       setpincode_col(false);
     }
@@ -418,8 +510,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       setcontry_col(false);
     }
 
-   
-
+    validatinforperm();
     const currentAddressPayload = {
       student_id: StudentId,
       ...studentAddress,
@@ -434,7 +525,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
     //   permanentAddress1,
     //   permanentAddressPayload
     // );
-    if (
+    if ( (!hasPermanentAddressFields || validPermanentAddress) &&
       studentAddress?.address1 &&
       studentAddress?.country &&
       studentAddress?.state &&
@@ -444,7 +535,11 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       !city_col &&
       !district_col &&
       !pincode_col &&
-      !pincode_col1
+      !pincode_col1&&
+      !add_col1 &&
+      !district_col1&&
+      !city_col1&&
+      !contry_col1
     ) {
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
@@ -458,7 +553,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
                 position: "top-center",
               });
               if (addressType === "Current") {
-                setActiveForm((prev: number) => prev + 1);
+                setActiveForm(2);
               }
               setTuched(false);
               setEditFlag(false);
@@ -550,8 +645,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
                 setTuchedCurrent(false);
               
                 setTuchedPram(false);
-                setActiveForm((prev: number) => prev + 1);
-            }else setActiveForm((prev: number) => prev + 1);
+                setActiveForm(2);
+            }else setActiveForm(2);
             // else {
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
@@ -578,7 +673,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         if (StudentId !== null) {
      
           // Edit current address
-       
+       console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
            
@@ -880,6 +975,12 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             // required
             autoComplete="off"
           />
+           <div>
+            {" "}
+            {(studentAddress?.address1 === "" || add_col1) && (
+              <p style={{ color: "red" }}>Please enter Address 1.</p>
+            )}
+          </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
@@ -915,6 +1016,12 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
               handleInputChangecountry(e, "permanent_address", "country")
             }
           />
+           <div>
+            {" "}
+            {contry_col1 && (
+              <p style={{ color: "red" }}>Please selete a country Name.</p>
+            )}
+          </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
