@@ -14,7 +14,7 @@ const Main = () => {
       <div className="main_block">
         <div className="header"></div>
 
-        <div className="main_section" id="main-content">
+        <div className="main_section" id="main-content" >
           <Header />
           <Sidebar />
           <Outlet />
