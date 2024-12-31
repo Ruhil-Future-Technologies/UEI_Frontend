@@ -843,10 +843,10 @@ export const ProfileDialog: FunctionComponent<{
     postData(`${"student/add"}`, payload)
     .then((data: any) => {
       if (data.status === 200) {
-        toast.success(data?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-        });
+        // toast.success(data?.message, {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
         setNamepro(data?.first_name);
         const formData = new FormData();
         const nfile: any = uploadedFile;
@@ -922,10 +922,10 @@ export const ProfileDialog: FunctionComponent<{
     postData(`${"student_contact/add"}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
-          toast.success(data?.message, {
-            hideProgressBar: true,
-            theme: "colored",
-          });
+          // toast.success(data?.message, {
+          //   hideProgressBar: true,
+          //   theme: "colored",
+          // });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -959,10 +959,10 @@ export const ProfileDialog: FunctionComponent<{
 
     postData("/student_address/add", payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Address information saved successfully", {
-          hideProgressBar: true,
-          theme: "colored",
-        });
+        // toast.success("Address information saved successfully", {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
@@ -1042,10 +1042,10 @@ export const ProfileDialog: FunctionComponent<{
 
     postData("/new_student_academic_history/add", payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Academic hinstory information saved successfully", {
-          hideProgressBar: true,
-          theme: "colored",
-        });
+        // toast.success("Academic hinstory information saved successfully", {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
@@ -1078,10 +1078,10 @@ export const ProfileDialog: FunctionComponent<{
     };
     postData("/subject_preference/add", payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Subject Preference information saved successfully", {
-          hideProgressBar: true,
-          theme: "colored",
-        });
+        // toast.success("Subject Preference information saved successfully", {
+        //   hideProgressBar: true,
+        //   theme: "colored",
+        // });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
