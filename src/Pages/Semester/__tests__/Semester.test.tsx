@@ -50,6 +50,18 @@ describe("Semester component", () => {
       putData: mockPutData,
     });
   });
+
+  it("renders correctly", () => {
+    const { asFragment } = render(
+      <NameContext.Provider value={contextValue}>
+        <MemoryRouter>
+          <Semester />
+        </MemoryRouter>
+      </NameContext.Provider>
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
   it("should render semester component correctly", async () => {
     render(
       <NameContext.Provider value={contextValue}>

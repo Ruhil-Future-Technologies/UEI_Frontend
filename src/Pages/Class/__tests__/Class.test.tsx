@@ -60,6 +60,12 @@ describe("Class Component", () => {
       </NameContext.Provider>
     );
   };
+
+  it("renders correctly", () => {
+    const { asFragment } = renderedComponent();
+    expect(asFragment()).toMatchSnapshot();
+  });
+  
   it("should render class component correctly", () => {
     const { getByText } = renderedComponent();
     expect(getByText("Class")).toBeInTheDocument();

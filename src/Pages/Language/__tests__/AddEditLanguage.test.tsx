@@ -11,8 +11,8 @@ import {
 } from "react-router-dom";
 import { contextValue } from "../../../MockStorage/mockstorage";
 import useApi from "../../../hooks/useAPI";
-import { toast } from 'react-toastify';
-jest.mock('react-toastify', () => ({
+import { toast } from "react-toastify";
+jest.mock("react-toastify", () => ({
   toast: {
     success: jest.fn(),
     error: jest.fn(),
@@ -49,7 +49,7 @@ beforeEach(() => {
   });
   mockGetData.mockReset();
   mockGetData.mockResolvedValue({
-    data: { hobby_name: 'Existing Hobby' },
+    data: { hobby_name: "Existing Hobby" },
   });
   (useParams as jest.Mock).mockReturnValue({ id: "" }); // Mock 'id' consistently
   (useNavigate as jest.Mock).mockReturnValue(mockedNavigate); // Mock navigate function
@@ -71,7 +71,7 @@ describe("Add Edit Language Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   const renderComponent = () =>
     render(
       <NameContext.Provider value={contextValue}>
@@ -80,6 +80,11 @@ describe("Add Edit Language Component", () => {
         </BrowserRouter>
       </NameContext.Provider>
     );
+
+  it("renders correctly", () => {
+    const { asFragment } = renderComponent();
+    expect(asFragment()).toMatchSnapshot();
+  });
 
   it("should render the add edit language component with all fields properly", () => {
     renderComponent();
@@ -110,20 +115,22 @@ describe("Add Edit Language Component", () => {
     ).toBeInTheDocument();
   });
 
-  it('displays success message on successful submit (Create)', async () => {
+  it("displays success message on successful submit (Create)", async () => {
     (useParams as jest.Mock).mockReturnValue({ id: "" });
     mockPostData.mockResolvedValue({
       status: 200,
-      message: 'Language created successfully',
+      message: "Language created successfully",
     });
     const { getByTestId } = renderComponent();
-    const roleField = getByTestId('language_name') as HTMLElement;
-    const saveButton = getByTestId('submitBtn') as HTMLElement;
-    fireEvent.change(roleField, { target: { value: 'New Language' } });
+    const roleField = getByTestId("language_name") as HTMLElement;
+    const saveButton = getByTestId("submitBtn") as HTMLElement;
+    fireEvent.change(roleField, { target: { value: "New Language" } });
     fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Language created successfully', expect.any(Object));
+      expect(toast.success).toHaveBeenCalledWith(
+        "Language created successfully",
+        expect.any(Object)
+      );
     });
   });
-  
 });

@@ -24,6 +24,11 @@ describe("Admin Basic info Component", () => {
     );
   };
 
+  it("renders correctly", () => {
+    const { asFragment } = renderedComponent();
+    expect(asFragment()).toMatchSnapshot();
+  });
+  
   it("should render admin info fields correctly", () => {
     const { getByTestId, getByLabelText } = renderedComponent();
     const datePicker = getByLabelText("datepicker_label") as HTMLInputElement;
