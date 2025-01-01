@@ -33,7 +33,6 @@ import femaleImage from "../../assets/img/avatars/female.png";
 import NameContext from "../Context/NameContext";
 import { ChildComponentProps } from "../StudentProfile";
 
-
 interface Department {
   id: number;
   department_name: string;
@@ -56,8 +55,8 @@ interface AdminInformation {
 const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const context = React.useContext(NameContext);
 
-
-  const {namecolor, setNamepro, setProImage,activeForm,setActiveForm }: any = context;
+  const { namecolor, setNamepro, setProImage, activeForm, setActiveForm }: any =
+    context;
 
   const { getData, postData, putData, postFileData } = useApi();
   const [initialAdminState, setInitialAdminState] =
@@ -77,10 +76,10 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState("");
   const adminId = localStorage.getItem("_id");
-  const[editable,setEditable]=useState(true);
-  const[editCheck,setEditCheck]=useState(false);
+  const [editable, setEditable] = useState(true);
+  const [editCheck, setEditCheck] = useState(false);
   const [admin, setadmin] = useState<AdminInformation>({
-    first_name: "", 
+    first_name: "",
     last_name: "",
     father_name: "",
     mother_name: "",
@@ -97,7 +96,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   // const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs().subtract(6, 'year');
+  const exactSixYearsAgo = dayjs().subtract(6, "year");
   const minSelectableDate = dayjs("01/01/1900");
   const [error, setError] = React.useState<string | null>(null);
   useEffect(() => {
@@ -183,7 +182,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             .then((imgdata: any) => {
               setFilePreview(imgdata.data);
             })
-            .catch(() => { });
+            .catch(() => {});
         }
       } else if (response?.status === 404) {
         setEditFlag(true);
@@ -214,9 +213,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const getDepatment = async () => {
     try {
       const response = await getData(`${"department/list"}`);
-     
+
       if (response?.status === 200) {
-        setAllDepartment(response?.data?.filter((item:any)=> item.is_active===1));
+        setAllDepartment(
+          response?.data?.filter((item: any) => item.is_active === 1)
+        );
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
@@ -238,20 +239,16 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     getBasicInfo();
     getDepatment();
   }, [adminId]);
-  
-    useEffect( ()=>{
-      
-      getData(`${"admin_basicinfo/edit/" + adminId}`).then((response)=>{
-if(response?.status==200){
-  setEditable(false);
-}else if(response?.status==404){
-  setEditable(true);
-}
-      })
-      
 
-    },[activeForm]);
- 
+  useEffect(() => {
+    getData(`${"admin_basicinfo/edit/" + adminId}`).then((response) => {
+      if (response?.status == 200) {
+        setEditable(false);
+      } else if (response?.status == 404) {
+        setEditable(true);
+      }
+    });
+  }, [activeForm]);
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
     setEditCheck(true);
@@ -321,9 +318,8 @@ if(response?.status==200){
     }
   };
   const handleDateChange = (newDate: Dayjs | null) => {
-
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+      if (newDate && newDate?.isBefore(exactSixYearsAgo, "day")) {
         // setDob(newDate);
         setAdminDOB(newDate);
         setError(null); // Clear error
@@ -338,15 +334,15 @@ if(response?.status==200){
         } else {
           setdobset_col(false);
           const currentDate = dayjs();
-          if (newDate?.isAfter(currentDate, 'day')) {
-            setError('Future dates are not allowed.');
+          if (newDate?.isAfter(currentDate, "day")) {
+            setError("Future dates are not allowed.");
           } else {
-            setError('You must be at least 6 years old.');
+            setError("You must be at least 6 years old.");
           }
         }
       }
     } else {
-      setError('Invalid date selected. Please choose a valid date.');
+      setError("Invalid date selected. Please choose a valid date.");
     }
 
     // setAdminDOB(newDate);
@@ -413,7 +409,8 @@ if(response?.status==200){
             });
             setActiveForm((prev: number) => prev + 1);
             getData(
-              `${"upload_file/get_image/"}${selectedFile ? selectedFile : adminFilePath
+              `${"upload_file/get_image/"}${
+                selectedFile ? selectedFile : adminFilePath
               }`
             )
               .then((data: any) => {
@@ -424,7 +421,7 @@ if(response?.status==200){
               .catch((e) => {
                 console.log("------------- e -------------", e);
               });
-              setEditCheck(false);
+            setEditCheck(false);
           } else {
             toast.error(response?.message, {
               hideProgressBar: true,
@@ -455,11 +452,10 @@ if(response?.status==200){
         error === null &&
         datecheck !== "Invalid Date"
       ) {
-        if(editable){
+        if (editable) {
           console.log(editFalg);
           seveData();
         }
-       
       }
     }
     if (!editable) {
@@ -481,9 +477,10 @@ if(response?.status==200){
               last_name: paylod?.last_name,
               gender: paylod?.gender,
             });
-            setActiveForm((prev:number) => prev + 1);
+            setActiveForm((prev: number) => prev + 1);
             getData(
-              `${"upload_file/get_image/"}${selectedFile ? selectedFile : adminFilePath
+              `${"upload_file/get_image/"}${
+                selectedFile ? selectedFile : adminFilePath
               }`
             )
               .then((data: any) => {
@@ -529,31 +526,29 @@ if(response?.status==200){
         // eslint-disable-next-line no-lone-blocks
         {
           if (!editable && editCheck) editData();
-          else setActiveForm((prev:number) => prev + 1);
+          else setActiveForm((prev: number) => prev + 1);
         }
       }
     }
   };
   return (
-
     <form>
       <div className="row d-flex">
-        <div className="col-md-6 pb-3form_field_wrapper">
+        <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
-            First Name <span>*</span>{" "}
+            First Name <span>*</span>
           </label>
           <input
+            data-testid="first_name"
             name="first_name"
             value={admin.first_name}
             type="text"
             className="form-control"
             onChange={handleInputChange}
             required
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
             {fname_col && admin?.first_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid First Name only characters allowed.
@@ -561,7 +556,6 @@ if(response?.status==200){
             )}
           </div>
           <div>
-            {" "}
             {admin?.first_name == "" && fname_col1 && (
               <p style={{ color: "red" }}>Please enter First name.</p>
             )}
@@ -570,20 +564,19 @@ if(response?.status==200){
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
-            Last Name <span>*</span>{" "}
+            Last Name <span>*</span>
           </label>
           <input
+            data-testid="last_name"
             type="text"
             name="last_name"
             className="form-control"
             value={admin.last_name}
             onChange={(e) => handleInputChange(e)}
             required
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
             {lname_col && admin.last_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Last Name only characters allowed.
@@ -591,16 +584,16 @@ if(response?.status==200){
             )}
           </div>
           <div>
-            {" "}
             {admin.last_name == "" && lname_col1 && (
               <p style={{ color: "red" }}>Please enter Last name.</p>
             )}
           </div>
         </div>
+
         <div className="col-md-6 pb-3 form_field_wrapper">
-          <FormControl>
+          <FormControl data-testid="gender">
             <FormLabel id="demo-row-radio-buttons-group-label">
-              Gender <span>*</span>{" "}
+              Gender <span>*</span>
             </FormLabel>
             <RadioGroup
               row
@@ -610,61 +603,63 @@ if(response?.status==200){
             >
               <FormControlLabel
                 value="male"
-                control={<Radio className="radiobutton" sx={{
-                  color: fieldIcon(namecolor),
-                  '&.Mui-checked': {
-                    color: fieldIcon(namecolor),
-                  }
-                 }} />}
+                control={
+                  <Radio
+                    className="radiobutton"
+                    sx={{
+                      color: fieldIcon(namecolor),
+                      "&.Mui-checked": {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                  />
+                }
                 label="Male"
               />
               <FormControlLabel
                 value="female"
-                control={<Radio className="radiobutton" sx={{
-                  color: fieldIcon(namecolor),
-                  '&.Mui-checked': {
-                    color: fieldIcon(namecolor),
-                  }
-                 }} />}
+                control={
+                  <Radio
+                    className="radiobutton"
+                    sx={{
+                      color: fieldIcon(namecolor),
+                      "&.Mui-checked": {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                  />
+                }
                 label="Female"
               />
             </RadioGroup>
           </FormControl>
         </div>
+
         <div className="col-md-6 pb-3 form_field_wrapper">
           <Typography className="profiletext" variant="body1">
             Date of Birth <span>*</span>
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {/* <DatePicker
-              value={dayjs(admin.dob)}
-              onChange={(date: any) => handleDateChange(date)}
-              format="DD/MM/YYYY"
-              disableFuture
-              sx={{
-                backgroundColor: "#f5f5f5",
-              }}
-              maxDate={maxSelectableDate}
-            /> */}
             <Box width={300}>
               <DatePicker
-                value={dayjs(admin?.dob)} // Bind the value to dob state
-                onChange={handleDateChange} // Handle the date change
+                label="datepicker_label"
+                value={dayjs(admin?.dob)}
+                onChange={handleDateChange}
                 format="DD/MM/YYYY"
-                disableFuture // Disable future dates (optional)
-                maxDate={exactSixYearsAgo} // Set max date to exactly 6 years ago
+                disableFuture
+                maxDate={exactSixYearsAgo}
                 minDate={minSelectableDate}
-                onError={() => { }} // Handle errors if needed
+                onError={() => {}}
                 sx={{
                   backgroundColor: "#f5f5f5",
                 }}
                 slotProps={{
                   textField: {
-                    variant: 'outlined',
-                    helperText: error, // Show the error message under the input field
-                    error: Boolean(error), // Show error styling when there's an error
+                    variant: "outlined",
+                    helperText: error,
+                    error: Boolean(error),
                     inputProps: {
-                      maxLength: 10, // Limit input length to 10 (DD/MM/YYYY)
+                      maxLength: 10,
                     },
                   },
                 }}
@@ -672,27 +667,26 @@ if(response?.status==200){
             </Box>
           </LocalizationProvider>
           <div>
-            {" "}
             {dobset_col && (
               <p style={{ color: "red" }}>Please enter Date of Birth.</p>
             )}
           </div>
         </div>
+
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
-            Father Name <span>*</span>{" "}
+            Father Name <span>*</span>
           </label>
           <input
+            data-testid="father_name"
             type="text"
             name="father_name"
             className="form-control"
             value={admin.father_name}
             onChange={(e) => handleInputChange(e)}
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
             {fathername_col && admin.father_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Father Name only characters allowed.
@@ -700,30 +694,26 @@ if(response?.status==200){
             )}
           </div>
           <div>
-            {" "}
             {admin.father_name == "" && fathername_col1 && (
               <p style={{ color: "red" }}>Please enter Father name.</p>
             )}
-            {" "}
-
           </div>
         </div>
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
-            Mother Name <span>*</span>{" "}
+            Mother Name <span>*</span>
           </label>
           <input
+            data-testid="mother_name"
             type="text"
             name="mother_name"
             className="form-control"
             value={admin.mother_name}
             onChange={(e) => handleInputChange(e)}
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
             {mothername_col && admin.mother_name !== "" && (
               <p style={{ color: "red" }}>
                 Please enter a valid Mother Name only characters allowed.
@@ -731,27 +721,24 @@ if(response?.status==200){
             )}
           </div>
           <div>
-            {" "}
             {admin.mother_name == "" && mothername_col1 && (
               <p style={{ color: "red" }}>Please enter Mother name.</p>
             )}
           </div>
         </div>
+
         <div className="col-md-6 pb-3 form_field_wrapper">
-          <label className="col-form-label">
-            {" "}
-            Guardian Name <span></span>{" "}
-          </label>
+          <label className="col-form-label">Guardian Name</label>
           <input
+            data-testid="guardian_name"
             type="text"
             name="guardian_name"
             className="form-control"
             value={admin.guardian_name}
             onChange={(e) => handleInputChange(e)}
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
             {gname_col && (
               <p style={{ color: "red" }}>
                 Please enter a valid Guardian Name only characters allowed.
@@ -777,6 +764,7 @@ if(response?.status==200){
               Department Name *{" "}
             </InputLabel>
             <Select
+              inputProps={{ "data-testid": "department_name" }}
               labelId="demo-select-small-label"
               id="demo-select-small"
               value={adminDepartment}
@@ -808,9 +796,11 @@ if(response?.status==200){
               }}
             >
               {allDepartment.map((data) => (
-                <MenuItem className="drop-down-menu"
-                key={data.id} value={data.id}
-                sx={commonStyle(namecolor)}
+                <MenuItem
+                  className="drop-down-menu"
+                  key={data.id}
+                  value={data.id}
+                  sx={commonStyle(namecolor)}
                 >
                   {data.department_name}
                 </MenuItem>
@@ -819,7 +809,6 @@ if(response?.status==200){
           </FormControl>
 
           <div>
-            {" "}
             {!adminDepartment && editFalg1 && (
               <p style={{ marginLeft: "10px", color: "red" }}>
                 Please select a Department name.
@@ -827,6 +816,7 @@ if(response?.status==200){
             )}
           </div>
         </div>
+
         <div className="col-lg-12">
           <div className="d-flex flex-wrap align-items-center gap-1">
             <div className="image-container">
@@ -864,12 +854,12 @@ if(response?.status==200){
               <div className="upload-profile-image" role="button">
                 <UploadOutlinedIcon />
                 <input
+                  data-testid="profile_image"
                   type="file"
                   id="file"
                   name="pic_path"
                   accept="image/*"
                   style={{ display: "none" }}
-                  // value={basicInfo.pic_path}
                   onChange={(e) => {
                     handleImageChange(e);
                   }}
@@ -879,8 +869,10 @@ if(response?.status==200){
             </label>
           </div>
         </div>
+
         <div className="col-lg-12">
           <button
+            data-testid="next_button"
             type="button"
             className="btn btn-dark px-lg-5 mt-3 ms-auto d-block rounded-pill next-btn px-4"
             onClick={(e: any) => adminBasicInfo(e)}

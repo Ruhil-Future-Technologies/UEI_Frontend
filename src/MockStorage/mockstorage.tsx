@@ -92,3 +92,20 @@ export const mockBoxes: Box[] = [
     sem_id: 1,
   },
 ];
+
+export const mockClassValue = {
+  data: [
+    {
+      class_name: "class_12",
+      created_at: "Thu, 12 Dec 2024 11:43:04 GMT",
+      created_by: "afasfsafsaf",
+      id: "5500819c-09e5-4543-8cf2-8f0d5cf6ffc3",
+      is_active: true,
+      is_deleted: false,
+      updated_at: "Thu, 12 Dec 2024 11:43:04 GMT",
+      updated_by: "Admin",
+    },
+  ],
+  status: 200,
+  message: "Class Found Successfully",
+};
