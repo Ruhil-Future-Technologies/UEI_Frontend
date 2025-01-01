@@ -1,35 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Class/Class.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Class/Class.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 import {
   Class_COLUMNS,
   IClass,
   MenuListinter,
-} from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_CLASS } from "../../utils/const";
-import { toast } from "react-toastify";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { QUERY_KEYS_CLASS } from '../../utils/const';
+import { toast } from 'react-toastify';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { dataaccess } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const Class = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
+  const Menulist: any = localStorage.getItem('menulist1');
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const tabletools: any = {
-    light: "#547476",
-    dark: "#00D1D9",
-    default: "#547476",
+    light: '#547476',
+    dark: '#00D1D9',
+    default: '#547476',
   };
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const DeleteClassURL = QUERY_KEYS_CLASS.CLASS_DELETE;
@@ -41,10 +41,10 @@ const Class = () => {
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist, lastSegment]);
-  
+
   const callAPI = async () => {
     getData(`${ClassURL}`)
       .then((data: { data: IClass[] }) => {
@@ -54,11 +54,11 @@ const Class = () => {
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -84,26 +84,26 @@ const Class = () => {
     deleteData(`${DeleteClassURL}/${id}`)
       .then((data: { message: string; status: any }) => {
         if (data.status === 200) {
-          toast.success("Class deleted successfully", {
+          toast.success('Class deleted successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           callAPI();
           setDataDelete(false);
         } else {
           toast.success(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -119,9 +119,9 @@ const Class = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -151,27 +151,27 @@ const Class = () => {
                       }}
                       enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={(row) => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         >
                           {filteredData?.form_data?.is_update === true && (
                             <Tooltip arrow placement="right" title="Edit">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools[namecolor],
                                 }}
                                 onClick={() => {
@@ -188,8 +188,8 @@ const Class = () => {
                             <IconButton
                               data-testid={`delete-button-${row?.row?.original?.id}`}
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools[namecolor],
                               }}
                               onClick={() => {

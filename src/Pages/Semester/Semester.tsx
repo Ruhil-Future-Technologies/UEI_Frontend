@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Course/Course.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Course/Course.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 import {
   SEMESTER_COLUMNS,
   SemesterRep0oDTO,
-} from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_SEMESTER } from "../../utils/const";
-import { toast } from "react-toastify";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { tabletools } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { QUERY_KEYS_SEMESTER } from '../../utils/const';
+import { toast } from 'react-toastify';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { tabletools } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const Semester = () => {
   const context = useContext(NameContext);
@@ -37,11 +37,11 @@ const Semester = () => {
       }
     } catch (e: any) {
       if (e?.response?.status === 401) {
-        navigate("/");
+        navigate('/');
       }
       toast.error(e?.message, {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
@@ -68,18 +68,18 @@ const Semester = () => {
       .then((data: { message: string }) => {
         toast.success(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
         callAPI();
         setDataDelete(false);
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -95,14 +95,14 @@ const Semester = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
                       <div className="main_title" data-testid="sem_label">
-                        {" "}
+                        {' '}
                         Semester
                       </div>
                     </Typography>
@@ -131,27 +131,27 @@ const Semester = () => {
                       }}
                       enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={(row) => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         >
                           {/* {filteredData?.form_data?.is_update === true && ( */}
                           <Tooltip arrow placement="right" title="Edit">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
@@ -166,14 +166,14 @@ const Semester = () => {
                           <Tooltip arrow placement="right" title="Delete">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools(namecolor),
                               }}
                               data-testid="delete_icon"
                               onClick={() => {
                                 handleDeleteFiles(
-                                  row?.row?.original?.semester_id
+                                  row?.row?.original?.semester_id,
                                 );
                               }}
                             >

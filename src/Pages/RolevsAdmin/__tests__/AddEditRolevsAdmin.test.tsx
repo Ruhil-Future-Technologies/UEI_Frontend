@@ -1,12 +1,15 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import { BrowserRouter as Router, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import AddEditRolevsAdmin from '../AddEditRolevsAdmin';
 import NameContext from '../../Context/NameContext';
-import { contextValue } from "../../../MockStorage/mockstorage";
+import { contextValue } from '../../../MockStorage/mockstorage';
 import useApi from '../../../hooks/useAPI';
-
-
 
 jest.mock('react-toastify', () => ({
   toast: {
@@ -21,16 +24,21 @@ jest.mock('../../../hooks/useAPI', () => ({
 }));
 
 const mockNavigate = jest.fn();
-const mockLocation = { pathname: 'main/RoleVsUser/add-RoleVsAdmin', search: '', hash: '', state: null };
+const mockLocation = {
+  pathname: 'main/RoleVsUser/add-RoleVsAdmin',
+  search: '',
+  hash: '',
+  state: null,
+};
 const mockGetData = jest.fn();
 const mockPostData = jest.fn();
 const mockPutData = jest.fn();
-jest.mock("../../../hooks/useAPI", () => ({
+jest.mock('../../../hooks/useAPI', () => ({
   __esModule: true,
   default: jest.fn().mockReturnValue({
     postData: jest.fn().mockResolvedValueOnce({
       status: 200,
-      message: "RolevsUser Data  created successfully",
+      message: 'RolevsUser Data  created successfully',
     }),
     getData: jest.fn(),
     putData: jest.fn(),
@@ -79,15 +87,15 @@ describe('AddEditRolevsAdmin', () => {
         <Router>
           <AddEditRolevsAdmin />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
   };
 
   it('should render the form correctly for adding a new role vs admin', async () => {
     const { getByText } = renderRoleComponent();
 
-    expect(getByText("Role Master *")).toBeInTheDocument();
-    expect(getByText("Admin *")).toBeInTheDocument();
+    expect(getByText('Role Master *')).toBeInTheDocument();
+    expect(getByText('Admin *')).toBeInTheDocument();
 
     // Check if the save button is rendered
     const saveButton = getByText('Save');
@@ -96,7 +104,7 @@ describe('AddEditRolevsAdmin', () => {
 
   it('should display error messages when form fields are not filled in', async () => {
     const { getByText, getByTestId } = renderRoleComponent();
-      fireEvent.click(getByTestId('save_btn'));
+    fireEvent.click(getByTestId('save_btn'));
     await waitFor(() => {
       expect(getByText('Please select Role matser')).toBeInTheDocument();
       expect(getByText('Please select Admin')).toBeInTheDocument();
@@ -105,23 +113,23 @@ describe('AddEditRolevsAdmin', () => {
 
   // it('should call the correct API method on form submit for add', async () => {
   //   const { getByTestId } = renderRoleComponent();
-  
+
   //   // Mock useParams to simulate add scenario (no ID provided)
   //   (useParams as jest.Mock).mockReturnValue({ id: "" });
-  
+
   //   // Mock the API call to simulate a successful response
   //   mockPostData.mockResolvedValue({
   //     status: 200,
   //     message: 'RolevsUser Data created successfully',
   //   });
-  
+
   //   // Simulate filling in the form fields
   //   fireEvent.change(getByTestId('role_master_id'), { target: { value: '1' } });
   //   fireEvent.change(getByTestId('admin_id'), { target: { value: '1' } });
-  
+
   //   // Simulate clicking the save button
   //   fireEvent.click(getByTestId('save_btn'));
-  
+
   //   // Wait for async operations to complete
   //   await waitFor(() => {
   //     expect(toast.success).toHaveBeenCalledWith(
@@ -129,14 +137,13 @@ describe('AddEditRolevsAdmin', () => {
   //       expect.any(Object)
   //     );
   //   });
-  
+
   //   // Ensure the API call was made with the correct data
   //   expect(mockPostData).toHaveBeenCalledWith({
   //     role_master_id: '1',
   //     admin_id: '1',
   //   });
   // });
-  
 
   // it('should call the correct API method on form submit for edit', async () => {
   //   // Mocking the params to simulate an edit scenario

@@ -1,7 +1,7 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
@@ -13,25 +13,25 @@ import {
   RadioGroup,
   Select,
   SelectChangeEvent,
-} from "@mui/material";
+} from '@mui/material';
 
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 //import DatePicker from 'react-datepicker';
 //import 'react-datepicker/dist/react-datepicker.css';
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import dayjs, { Dayjs } from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import dayjs, { Dayjs } from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers';
 // import { styled } from "@mui/material/styles";
 
-import { commonStyle, deepEqual, fieldIcon } from "../../utils/helpers";
-import maleImage from "../../assets/img/avatars/male.png";
-import femaleImage from "../../assets/img/avatars/female.png";
-import NameContext from "../Context/NameContext";
-import { ChildComponentProps } from "../StudentProfile";
+import { commonStyle, deepEqual, fieldIcon } from '../../utils/helpers';
+import maleImage from '../../assets/img/avatars/male.png';
+import femaleImage from '../../assets/img/avatars/female.png';
+import NameContext from '../Context/NameContext';
+import { ChildComponentProps } from '../StudentProfile';
 
 interface Department {
   id: number;
@@ -62,29 +62,29 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [initialAdminState, setInitialAdminState] =
     useState<AdminInformation | null>(null);
   const [adminDOB, setAdminDOB] = useState<Dayjs | null | undefined>(
-    dayjs("dd-mm-yyyy")
+    dayjs('dd-mm-yyyy'),
   );
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [editFalg1, setEditFlag1] = useState<boolean>(false);
   const [dobset_col, setdobset_col] = useState<boolean>(false);
   //const [adminPicPath,setAdminPicPath]=React.useState();
   const [allDepartment, setAllDepartment] = useState<Department[]>([
-    { id: 0, department_name: "" },
+    { id: 0, department_name: '' },
   ]);
-  const [adminDepartment, setAdminDepartment] = useState<string>("");
-  const [selectedFile, setSelectedFile] = React.useState("");
+  const [adminDepartment, setAdminDepartment] = useState<string>('');
+  const [selectedFile, setSelectedFile] = React.useState('');
   const [filePreview, setFilePreview] = useState(null);
-  const [adminFilePath, setAdminFilePath] = useState("");
-  const adminId = localStorage.getItem("_id");
+  const [adminFilePath, setAdminFilePath] = useState('');
+  const adminId = localStorage.getItem('_id');
   const [editable, setEditable] = useState(true);
   const [editCheck, setEditCheck] = useState(false);
   const [admin, setadmin] = useState<AdminInformation>({
-    first_name: "",
-    last_name: "",
-    father_name: "",
-    mother_name: "",
-    gender: "Male",
-    dob: dayjs("dd-mm-yyyy"),
+    first_name: '',
+    last_name: '',
+    father_name: '',
+    mother_name: '',
+    gender: 'Male',
+    dob: dayjs('dd-mm-yyyy'),
   });
   const [fname_col, setFname_col] = useState<boolean>(false);
   const [lname_col, setLname_col] = useState<boolean>(false);
@@ -96,18 +96,18 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   // const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs().subtract(6, "year");
-  const minSelectableDate = dayjs("01/01/1900");
+  const exactSixYearsAgo = dayjs().subtract(6, 'year');
+  const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
   useEffect(() => {
     setadmin((prevState) => ({ ...prevState, dob: adminDOB ?? null }));
   }, [adminDOB]);
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const { name, value } = event.target;
     setEditCheck(true);
-    if (name === "first_name") {
+    if (name === 'first_name') {
       setFname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -116,7 +116,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setFname_col(false);
       }
     }
-    if (name === "last_name") {
+    if (name === 'last_name') {
       setLname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -125,7 +125,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setLname_col(false);
       }
     }
-    if (name === "father_name") {
+    if (name === 'father_name') {
       setFathername_col1(true);
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setFathername_col(true);
@@ -133,7 +133,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setFathername_col(false);
       }
     }
-    if (name === "mother_name") {
+    if (name === 'mother_name') {
       setMothername_col1(true);
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setMothername_col(true);
@@ -141,7 +141,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setMothername_col(false);
       }
     }
-    if (name === "guardian_name") {
+    if (name === 'guardian_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
         setGname_col(true);
       } else {
@@ -152,7 +152,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   };
   const getBasicInfo = async () => {
     try {
-      const response = await getData(`${"admin_basicinfo/edit/" + adminId}`);
+      const response = await getData(`${'admin_basicinfo/edit/' + adminId}`);
       if (response?.status === 200) {
         setadmin((prevState) => ({
           ...prevState,
@@ -177,8 +177,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           department_id: response?.data.department_id,
           pic_path: response?.data.pic_path,
         });
-        if (response?.data?.pic_path !== "") {
-          getData(`${"upload_file/get_image/" + response?.data?.pic_path}`)
+        if (response?.data?.pic_path !== '') {
+          getData(`${'upload_file/get_image/' + response?.data?.pic_path}`)
             .then((imgdata: any) => {
               setFilePreview(imgdata.data);
             })
@@ -186,51 +186,51 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         }
       } else if (response?.status === 404) {
         setEditFlag(true);
-        toast.warning("Please add your information", {
+        toast.warning('Please add your information', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       } else {
         // empty
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        toast.warning("Please login again", {
+        toast.warning('Please login again', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       } else {
-        toast.error("Request failed", {
+        toast.error('Request failed', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       }
     }
   };
   const getDepatment = async () => {
     try {
-      const response = await getData(`${"department/list"}`);
+      const response = await getData(`${'department/list'}`);
 
       if (response?.status === 200) {
         setAllDepartment(
-          response?.data?.filter((item: any) => item.is_active === 1)
+          response?.data?.filter((item: any) => item.is_active === 1),
         );
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        toast.warning("Please login again", {
+        toast.warning('Please login again', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       } else {
-        toast.error("Request failed", {
+        toast.error('Request failed', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       }
     }
@@ -241,7 +241,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
 
   useEffect(() => {
-    getData(`${"admin_basicinfo/edit/" + adminId}`).then((response) => {
+    getData(`${'admin_basicinfo/edit/' + adminId}`).then((response) => {
       if (response?.status == 200) {
         setEditable(false);
       } else if (response?.status == 404) {
@@ -274,7 +274,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       // }
 
       // Check file type (only JPG and PNG allowed)
-      if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
+      if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
         //setError1("Only JPG and PNG files are allowed");
         return;
       }
@@ -285,41 +285,41 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setFilePreview(reader.result);
       };
       reader.readAsDataURL(file);
-      formData.append("file", file);
-      postFileData(`${"upload_file/upload"}`, formData)
+      formData.append('file', file);
+      postFileData(`${'upload_file/upload'}`, formData)
         .then((data: any) => {
           if (data?.status === 200) {
             toast.success(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           } else if (data?.status === 404) {
             toast.error(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           } else {
             toast.error(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         })
         .catch((e: any) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         });
     }
   };
   const handleDateChange = (newDate: Dayjs | null) => {
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, "day")) {
+      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
         // setDob(newDate);
         setAdminDOB(newDate);
         setError(null); // Clear error
@@ -327,22 +327,22 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setEditCheck(true);
       } else {
         // setDob(null);
-        const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
-        if (datecheck === "Invalid Date") {
+        const datecheck: any = dayjs(newDate)?.format('DD/MM/YYYY');
+        if (datecheck === 'Invalid Date') {
           setError(null);
           setdobset_col(true);
         } else {
           setdobset_col(false);
           const currentDate = dayjs();
-          if (newDate?.isAfter(currentDate, "day")) {
-            setError("Future dates are not allowed.");
+          if (newDate?.isAfter(currentDate, 'day')) {
+            setError('Future dates are not allowed.');
           } else {
-            setError("You must be at least 6 years old.");
+            setError('You must be at least 6 years old.');
           }
         }
       }
     } else {
-      setError("Invalid date selected. Please choose a valid date.");
+      setError('Invalid date selected. Please choose a valid date.');
     }
 
     // setAdminDOB(newDate);
@@ -368,7 +368,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       dob: admin?.dob || null,
       father_name: admin?.father_name,
       mother_name: admin?.mother_name,
-      guardian_name: admin?.guardian_name || "",
+      guardian_name: admin?.guardian_name || '',
       is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
@@ -380,11 +380,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       dob: admin?.dob,
       father_name: admin?.father_name,
       mother_name: admin?.mother_name,
-      guardian_name: admin?.guardian_name || "",
+      guardian_name: admin?.guardian_name || '',
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    const datecheck: any = dayjs(paylod?.dob).format("DD/MM/YYYY");
-    if (datecheck === "Invalid Date") {
+    const datecheck: any = dayjs(paylod?.dob).format('DD/MM/YYYY');
+    if (datecheck === 'Invalid Date') {
       setdobset_col(true);
     } else {
       setdobset_col(false);
@@ -395,12 +395,12 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     if (editable) {
       const seveData = async () => {
         try {
-          const response = await postData("admin_basicinfo/add", paylod);
+          const response = await postData('admin_basicinfo/add', paylod);
           if (response?.status === 200) {
-            toast.success("Admin basic information saved successfully", {
+            toast.success('Admin basic information saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
             setNamepro({
               first_name: paylod?.first_name,
@@ -409,9 +409,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             });
             setActiveForm((prev: number) => prev + 1);
             getData(
-              `${"upload_file/get_image/"}${
+              `${'upload_file/get_image/'}${
                 selectedFile ? selectedFile : adminFilePath
-              }`
+              }`,
             )
               .then((data: any) => {
                 if (data.status == 200) {
@@ -419,38 +419,38 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                 }
               })
               .catch((e) => {
-                console.log("------------- e -------------", e);
+                console.log('------------- e -------------', e);
               });
             setEditCheck(false);
           } else {
             toast.error(response?.message, {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         } catch (error: any) {
           toast.error(error?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         }
       };
       if (
         !fname_col &&
-        admin.first_name !== "" &&
+        admin.first_name !== '' &&
         !lname_col &&
-        admin.last_name !== "" &&
+        admin.last_name !== '' &&
         !fathername_col &&
-        admin.father_name !== "" &&
+        admin.father_name !== '' &&
         !mothername_col &&
-        admin.mother_name !== "" &&
+        admin.mother_name !== '' &&
         !gname_col &&
         adminDepartment &&
         !dobset_col &&
         error === null &&
-        datecheck !== "Invalid Date"
+        datecheck !== 'Invalid Date'
       ) {
         if (editable) {
           console.log(editFalg);
@@ -462,15 +462,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       const editData = async () => {
         try {
           const response = await putData(
-            "admin_basicinfo/edit/" + adminId,
-            paylod
+            'admin_basicinfo/edit/' + adminId,
+            paylod,
           );
 
           if (response?.status === 200) {
-            toast.success("Admin basic information updated successfully", {
+            toast.success('Admin basic information updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
             setNamepro({
               first_name: paylod?.first_name,
@@ -479,9 +479,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             });
             setActiveForm((prev: number) => prev + 1);
             getData(
-              `${"upload_file/get_image/"}${
+              `${'upload_file/get_image/'}${
                 selectedFile ? selectedFile : adminFilePath
-              }`
+              }`,
             )
               .then((data: any) => {
                 if (data.status == 200) {
@@ -489,39 +489,39 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                 }
               })
               .catch((e) => {
-                console.log("------------- e -------------", e);
+                console.log('------------- e -------------', e);
               });
             getBasicInfo();
             getDepatment();
             setEditCheck(false);
           } else {
-            toast.error("Request failed", {
+            toast.error('Request failed', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         } catch {
-          toast.error("Some issue are occuring.", {
+          toast.error('Some issue are occuring.', {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         }
       };
       if (
         !fname_col &&
-        admin.first_name !== "" &&
+        admin.first_name !== '' &&
         !lname_col &&
-        admin.last_name !== "" &&
+        admin.last_name !== '' &&
         !fathername_col &&
-        admin.father_name !== "" &&
+        admin.father_name !== '' &&
         !mothername_col &&
         !gname_col &&
-        admin.mother_name !== "" &&
+        admin.mother_name !== '' &&
         adminDepartment &&
         error === null &&
-        datecheck !== "Invalid Date"
+        datecheck !== 'Invalid Date'
       ) {
         // eslint-disable-next-line no-lone-blocks
         {
@@ -549,15 +549,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             autoComplete="off"
           />
           <div>
-            {fname_col && admin?.first_name !== "" && (
-              <p style={{ color: "red" }}>
+            {fname_col && admin?.first_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid First Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {admin?.first_name == "" && fname_col1 && (
-              <p style={{ color: "red" }}>Please enter First name.</p>
+            {admin?.first_name == '' && fname_col1 && (
+              <p style={{ color: 'red' }}>Please enter First name.</p>
             )}
           </div>
         </div>
@@ -577,15 +577,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             autoComplete="off"
           />
           <div>
-            {lname_col && admin.last_name !== "" && (
-              <p style={{ color: "red" }}>
+            {lname_col && admin.last_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Last Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {admin.last_name == "" && lname_col1 && (
-              <p style={{ color: "red" }}>Please enter Last name.</p>
+            {admin.last_name == '' && lname_col1 && (
+              <p style={{ color: 'red' }}>Please enter Last name.</p>
             )}
           </div>
         </div>
@@ -608,7 +608,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                     className="radiobutton"
                     sx={{
                       color: fieldIcon(namecolor),
-                      "&.Mui-checked": {
+                      '&.Mui-checked': {
                         color: fieldIcon(namecolor),
                       },
                     }}
@@ -623,7 +623,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                     className="radiobutton"
                     sx={{
                       color: fieldIcon(namecolor),
-                      "&.Mui-checked": {
+                      '&.Mui-checked': {
                         color: fieldIcon(namecolor),
                       },
                     }}
@@ -651,11 +651,11 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                 minDate={minSelectableDate}
                 onError={() => {}}
                 sx={{
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: '#f5f5f5',
                 }}
                 slotProps={{
                   textField: {
-                    variant: "outlined",
+                    variant: 'outlined',
                     helperText: error,
                     error: Boolean(error),
                     inputProps: {
@@ -668,7 +668,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           </LocalizationProvider>
           <div>
             {dobset_col && (
-              <p style={{ color: "red" }}>Please enter Date of Birth.</p>
+              <p style={{ color: 'red' }}>Please enter Date of Birth.</p>
             )}
           </div>
         </div>
@@ -687,15 +687,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             autoComplete="off"
           />
           <div>
-            {fathername_col && admin.father_name !== "" && (
-              <p style={{ color: "red" }}>
+            {fathername_col && admin.father_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Father Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {admin.father_name == "" && fathername_col1 && (
-              <p style={{ color: "red" }}>Please enter Father name.</p>
+            {admin.father_name == '' && fathername_col1 && (
+              <p style={{ color: 'red' }}>Please enter Father name.</p>
             )}
           </div>
         </div>
@@ -714,15 +714,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             autoComplete="off"
           />
           <div>
-            {mothername_col && admin.mother_name !== "" && (
-              <p style={{ color: "red" }}>
+            {mothername_col && admin.mother_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Mother Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {admin.mother_name == "" && mothername_col1 && (
-              <p style={{ color: "red" }}>Please enter Mother name.</p>
+            {admin.mother_name == '' && mothername_col1 && (
+              <p style={{ color: 'red' }}>Please enter Mother name.</p>
             )}
           </div>
         </div>
@@ -740,7 +740,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           />
           <div>
             {gname_col && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid Guardian Name only characters allowed.
               </p>
             )}
@@ -754,34 +754,34 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
               mt: 3,
               minWidth: 250,
               width: {
-                xs: "100%",
-                sm: "auto",
+                xs: '100%',
+                sm: 'auto',
               },
               marginLeft: 0,
             }}
           >
             <InputLabel id="demo-select-small-label">
-              Department Name *{" "}
+              Department Name *{' '}
             </InputLabel>
             <Select
-              inputProps={{ "data-testid": "department_name" }}
+              inputProps={{ 'data-testid': 'department_name' }}
               labelId="demo-select-small-label"
               id="demo-select-small"
               value={adminDepartment}
               label="Department name"
               onChange={handleDepartmentChange}
               sx={{
-                backgroundColor: "#f5f5f5",
-                "& .MuiSelect-icon": {
+                backgroundColor: '#f5f5f5',
+                '& .MuiSelect-icon': {
                   color: fieldIcon(namecolor),
                 },
               }}
               renderValue={(selected) => {
                 const selectedDepartment = allDepartment.find(
-                  (dept) => dept.id.toString() == selected
+                  (dept) => dept.id.toString() == selected,
                 );
                 const selectedDepartment1 = allDepartment.find(
-                  (dept) => dept.id.toString() == adminDepartment
+                  (dept) => dept.id.toString() == adminDepartment,
                 );
                 return selectedDepartment
                   ? selectedDepartment?.department_name
@@ -789,7 +789,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
               }}
               MenuProps={{
                 sx: {
-                  "& .MuiPaper-root": {
+                  '& .MuiPaper-root': {
                     mt: 1,
                   },
                 },
@@ -810,7 +810,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
 
           <div>
             {!adminDepartment && editFalg1 && (
-              <p style={{ marginLeft: "10px", color: "red" }}>
+              <p style={{ marginLeft: '10px', color: 'red' }}>
                 Please select a Department name.
               </p>
             )}
@@ -822,7 +822,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             <div className="image-container">
               {!filePreview ? (
                 <>
-                  {admin.gender?.toLowerCase() === "male" ? (
+                  {admin.gender?.toLowerCase() === 'male' ? (
                     <div className="image-box">
                       <input type="checkbox" className="image-checkbox" />
                       <img src={maleImage} alt="male" />
@@ -845,7 +845,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                   <img
                     src={filePreview}
                     alt="Uploaded Preview"
-                    style={{ marginTop: "10px" }}
+                    style={{ marginTop: '10px' }}
                   />
                 </div>
               )}
@@ -859,7 +859,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                   id="file"
                   name="pic_path"
                   accept="image/*"
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                   onChange={(e) => {
                     handleImageChange(e);
                   }}

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Uploadpdf/Uploadpdf.scss";
-import useApi from "../../hooks/useAPI";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Uploadpdf/Uploadpdf.scss';
+import useApi from '../../hooks/useAPI';
 import {
   Box,
   Button,
@@ -21,15 +21,15 @@ import {
   TableRow,
   //TextField,
   Typography,
-} from "@mui/material";
-import { QUERY_KEYS_SUBJECT } from "../../utils/const";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import NameContext from "../Context/NameContext";
-import { State } from "country-state-city";
-import { commonStyle } from "../../utils/helpers";
-import RefreshIcon from "@mui/icons-material/Refresh";
+} from '@mui/material';
+import { QUERY_KEYS_SUBJECT } from '../../utils/const';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import NameContext from '../Context/NameContext';
+import { State } from 'country-state-city';
+import { commonStyle } from '../../utils/helpers';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface Classes {
   id: number;
@@ -101,23 +101,23 @@ const Uploadpdf = () => {
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   //const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
   //const Menulist: any = localStorage.getItem("menulist1");
-  let AdminId: string | null = localStorage.getItem("_id");
+  let AdminId: string | null = localStorage.getItem('_id');
   if (AdminId) {
     AdminId = String(AdminId);
   }
   const initials = {
     id: 0,
-    institute_type: "",
-    board: "",
-    state_for_stateboard: "",
-    institute_id: "",
-    course_id: "",
-    learning_style: "",
-    class_id: "",
+    institute_type: '',
+    board: '',
+    state_for_stateboard: '',
+    institute_id: '',
+    course_id: '',
+    learning_style: '',
+    class_id: '',
     year: null,
-    stream: "",
-    university_id: "",
-    sem_id: "",
+    stream: '',
+    university_id: '',
+    sem_id: '',
   };
   // const Boxsetvalue = {
   //   id: 0,
@@ -136,7 +136,7 @@ const Uploadpdf = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [semester, setSemester] = useState<Semester[]>([]);
   const [totalSemester, setTotalSemester] = useState<any>([]);
-  const [particularClass, setParticularClass] = useState("");
+  const [particularClass, setParticularClass] = useState('');
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   const [university, setUniversity] = useState<University[]>([]);
   // const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
@@ -145,22 +145,22 @@ const Uploadpdf = () => {
   const [uploadTasks, setUploadTasks] = useState<any[]>([]);
 
   const menuItemsInstitute = [
-    { value: "school", label: "School" },
-    { value: "college", label: "College" },
+    { value: 'school', label: 'School' },
+    { value: 'college', label: 'College' },
   ];
   const boardItems = [
-    { value: "cbse", label: "CBSE" },
-    { value: "icse", label: "ICSE" },
-    { value: "state_board", label: "State Board" },
+    { value: 'cbse', label: 'CBSE' },
+    { value: 'icse', label: 'ICSE' },
+    { value: 'state_board', label: 'State Board' },
   ];
   const stremItems = [
-    { value: "science", label: "Science" },
-    { value: "commerce", label: "Commerce" },
-    { value: "arts", label: "Arts" },
+    { value: 'science', label: 'Science' },
+    { value: 'commerce', label: 'Commerce' },
+    { value: 'arts', label: 'Arts' },
   ];
   const { getData, loading, postFileData } = useApi();
   useEffect(() => {
-    const states = State.getStatesOfCountry("IN");
+    const states = State.getStatesOfCountry('IN');
     const stateOptions = states.map((state) => ({
       // value: state.isoCode,
       value: state.name,
@@ -179,21 +179,21 @@ const Uploadpdf = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
   useEffect(() => {
     callAPI();
 
-    getData("/class/list")
+    getData('/class/list')
       .then((response: any) => {
         if (response.status === 200) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
           const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
-              const updatedClassName = item.class_name.split("_").join(" ");
+              const updatedClassName = item.class_name.split('_').join(' ');
               item.new_class_name =
                 updatedClassName.charAt(0).toUpperCase() +
                 updatedClassName.slice(1);
@@ -208,17 +208,17 @@ const Uploadpdf = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   }, []);
   const listData = async () => {
     return new Promise((resolve) => {
-      getData("/institution/list")
+      getData('/institution/list')
         .then(async (response: any) => {
           if (response.status === 200) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1
+              (item: any) => item?.is_active === 1,
             );
             setInstitutes(filteredData || []);
             setInstitutesAll(filteredData || []);
@@ -232,8 +232,8 @@ const Uploadpdf = () => {
         .catch((error) => {
           toast.error(error?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
 
           resolve(false);
@@ -241,12 +241,12 @@ const Uploadpdf = () => {
     });
   };
   const getSubject = async () => {
-    if (boxes[0]?.institute_type?.toLowerCase() === "school") {
-      getData("school_subject/list")
+    if (boxes[0]?.institute_type?.toLowerCase() === 'school') {
+      getData('school_subject/list')
         .then((response: any) => {
           if (response.status === 200) {
             const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1
+              (item: any) => item?.is_active === 1,
             );
             setSubjects(filteredData || []);
             // setSubjects(response.data);
@@ -256,16 +256,16 @@ const Uploadpdf = () => {
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         });
     } else {
-      getData("college_subject/list")
+      getData('college_subject/list')
         .then((response: any) => {
           if (response.status === 200) {
             const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1
+              (item: any) => item?.is_active === 1,
             );
             setSubjects(filteredData || []);
             // setSubjects(response.data);
@@ -275,8 +275,8 @@ const Uploadpdf = () => {
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         });
     }
@@ -284,11 +284,11 @@ const Uploadpdf = () => {
 
   useEffect(() => {
     listData();
-    getData("university/list")
+    getData('university/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setUniversity(filteredData || []);
           // setCourses(response.data);
@@ -297,15 +297,15 @@ const Uploadpdf = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
-    getData("/semester/list")
+    getData('/semester/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -314,16 +314,16 @@ const Uploadpdf = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
 
-    getData("/course/list")
+    getData('/course/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -333,19 +333,19 @@ const Uploadpdf = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
-    getData("/class/list")
+    getData('/class/list')
       .then((response: any) => {
         if (response.status === 200) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === true
+            (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
-            return value?.replace("_", " ");
+            return value?.replace('_', ' ');
           };
           const newClassObject = filteredData.map((item: any) => {
             return {
@@ -361,8 +361,8 @@ const Uploadpdf = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
   }, []);
@@ -374,11 +374,11 @@ const Uploadpdf = () => {
     if (event.target.files) {
       const filesArray = Array.from(event.target.files);
       const pdfFiles = filesArray.filter(
-        (file) => file.type === "application/pdf"
+        (file) => file.type === 'application/pdf',
       );
 
       if (pdfFiles.length !== filesArray.length) {
-        toast.error("Only PDF files are allowed");
+        toast.error('Only PDF files are allowed');
       }
 
       setSelectedFiles(pdfFiles);
@@ -436,7 +436,7 @@ const Uploadpdf = () => {
   const refreshTaskStatus = async (task_id: string) => {
     try {
       const response = await getData(
-        `https://dbllm.gyansetu.ai/task-result/${task_id}`
+        `https://dbllm.gyansetu.ai/task-result/${task_id}`,
       );
       console.log(response);
       if (response?.combined_task_id) {
@@ -444,74 +444,74 @@ const Uploadpdf = () => {
           prev.map((task) =>
             task.task_id === response.combined_task_id
               ? { ...task, status: response.overall_status }
-              : task
-          )
+              : task,
+          ),
         );
         console.log(uploadTasks);
-        if (response.overall_status === "IN-PROGRESS") {
-          toast.info("Upload still in progress", {
+        if (response.overall_status === 'IN-PROGRESS') {
+          toast.info('Upload still in progress', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
-        } else if (response.overall_status === "COMPLETED") {
-          toast.success("Upload completed successfully", {
+        } else if (response.overall_status === 'COMPLETED') {
+          toast.success('Upload completed successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       }
     } catch (error: any) {
-      toast.error(error?.message || "Failed to refresh status", {
+      toast.error(error?.message || 'Failed to refresh status', {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
 
   const handleFileUpload = async () => {
     if (selectedFiles.length === 0) {
-      toast.error("No files selected");
+      toast.error('No files selected');
       return;
     }
-    if (boxes[0]?.institute_type?.toLowerCase() === "college") {
+    if (boxes[0]?.institute_type?.toLowerCase() === 'college') {
       const { institute_id, university_id, course_id, sem_id } = boxes[0];
       // Check if any of the fields are empty
       if (!institute_id || !university_id || !course_id || !sem_id) {
-        toast.error("Required fields are missing");
+        toast.error('Required fields are missing');
         return;
       }
     }
-    if (boxes[0]?.institute_type?.toLowerCase() === "school") {
+    if (boxes[0]?.institute_type?.toLowerCase() === 'school') {
       const { board, class_id, state_for_stateboard, stream } = boxes[0];
 
       // Check if any of the fields are empty
       if (!board || !class_id) {
-        toast.error("Required fields are missing");
+        toast.error('Required fields are missing');
         return;
       }
       // Additional check if the board is "state_board" and `state_for_stateboard` is required
-      if (board.toLowerCase() === "state_board" && !state_for_stateboard) {
-        toast.error("State for State Board is required");
+      if (board.toLowerCase() === 'state_board' && !state_for_stateboard) {
+        toast.error('State for State Board is required');
         return;
       }
 
       // Additional check if the class is "class_11" or "class_12" and `stream` is required
       if (
-        (particularClass === "class_11" || particularClass === "class_12") &&
+        (particularClass === 'class_11' || particularClass === 'class_12') &&
         !stream
       ) {
-        toast.error("Stream is required for Class 11 and Class 12");
+        toast.error('Stream is required for Class 11 and Class 12');
         return;
       }
     }
 
     const formData = new FormData();
     selectedFiles.forEach((file) => {
-      formData.append("pdf_file", file);
+      formData.append('pdf_file', file);
     });
     if (AdminId !== null) {
-      formData.append("teacher_id", String(AdminId));
-      if (boxes[0]?.institute_type?.toLowerCase() === "college") {
+      formData.append('teacher_id', String(AdminId));
+      if (boxes[0]?.institute_type?.toLowerCase() === 'college') {
         const {
           institute_id,
           university_id,
@@ -526,13 +526,13 @@ const Uploadpdf = () => {
         const filterInstitute = await institutesAll
           ?.filter(
             (item) =>
-              item.university_id === university_id && item?.id === institute_id
+              item.university_id === university_id && item?.id === institute_id,
           )
           ?.map((item) => item.institution_name);
         const filterCourse = await coursesAll
           .filter(
             (item) =>
-              item.institution_id === institute_id && item?.id === course_id
+              item.institution_id === institute_id && item?.id === course_id,
           )
           ?.map((item) => item.course_name);
         const filterSubject = await subjectsAll
@@ -541,24 +541,24 @@ const Uploadpdf = () => {
               item?.institution_id === institute_id &&
               item?.course_id === course_id &&
               item?.semester_id === sem_id &&
-              item?.subject_id === subject_id
+              item?.subject_id === subject_id,
           )
           ?.map((item) => item.subject_name);
 
         if (universityNames && universityNames.length > 0) {
-          formData.append("university_selection", universityNames.join(","));
+          formData.append('university_selection', universityNames.join(','));
         }
         if (filterInstitute && filterInstitute.length > 0) {
-          formData.append("college_selection", filterInstitute.join(","));
+          formData.append('college_selection', filterInstitute.join(','));
         }
         if (filterCourse && filterCourse.length > 0) {
-          formData.append("course_selection", filterCourse.join(","));
+          formData.append('course_selection', filterCourse.join(','));
         }
         if (filterSubject && filterSubject.length > 0) {
-          formData.append("subject", filterSubject.join(","));
+          formData.append('subject', filterSubject.join(','));
         }
         if (institute_type)
-          formData.append("school_college_selection", institute_type);
+          formData.append('school_college_selection', institute_type);
         // if (institute_id) formData.append("college_selection", institute_id);
         // if (university_id) formData.append("university_selection", university_id);
         // if (course_id) formData.append("course_selection", course_id);
@@ -568,23 +568,23 @@ const Uploadpdf = () => {
         //  const semIdNumber = Number(sem_id);
 
         const semnumber = totalSemester?.filter(
-          (item: any) => item?.semester_id === sem_id
+          (item: any) => item?.semester_id === sem_id,
         );
         const semIdNumber = Number(semnumber[0]?.semester_number);
 
         let year = null;
         if (semIdNumber === 1 || semIdNumber === 2) {
-          year = "1st";
+          year = '1st';
         } else if (semIdNumber === 3 || semIdNumber === 4) {
-          year = "2nd";
+          year = '2nd';
         } else if (semIdNumber === 5 || semIdNumber === 6) {
-          year = "3rd";
+          year = '3rd';
         } else if (semIdNumber === 7 || semIdNumber === 8) {
-          year = "4th";
+          year = '4th';
         }
-        if (year) formData.append("year", year);
+        if (year) formData.append('year', year);
       }
-      if (boxes[0]?.institute_type?.toLowerCase() === "school") {
+      if (boxes[0]?.institute_type?.toLowerCase() === 'school') {
         const {
           board,
           class_id,
@@ -608,14 +608,14 @@ const Uploadpdf = () => {
         // console.log("strem  null==>",filterSubject)
         //   }
         if (institute_type)
-          formData.append("school_college_selection", institute_type);
+          formData.append('school_college_selection', institute_type);
 
-        if (board) formData.append("board_selection", board?.toUpperCase());
+        if (board) formData.append('board_selection', board?.toUpperCase());
         if (class_id)
-          formData.append("class_selection", particularClass || class_id);
+          formData.append('class_selection', particularClass || class_id);
         if (state_for_stateboard)
-          formData.append("state_board_selection", state_for_stateboard);
-        if (stream) formData.append("stream_selection", stream);
+          formData.append('state_board_selection', state_for_stateboard);
+        if (stream) formData.append('stream_selection', stream);
 
         // if (filterSubject && filterSubject.length > 0) {
         //   formData.append("subject", filterSubject.join(','));
@@ -626,21 +626,21 @@ const Uploadpdf = () => {
       // formData.append("class_name", selectedClass);
       // formData.append('subject_id', selectedSubject);
     }
-    console.log("test log", formData);
+    console.log('test log', formData);
     // if(boxes[0]?.institute_type){
 
     // }
     await postFileData(
       // `${"https://uatllm.gyansetu.ai/upload-pdf-class"}`,
-      `${"https://dbllm.gyansetu.ai/upload-pdf-hierarchy"}`,
-      formData
+      `${'https://dbllm.gyansetu.ai/upload-pdf-hierarchy'}`,
+      formData,
     )
       .then((data: any) => {
         console.log(data);
         if (data?.status_code === 200) {
-          toast.success("PDF Upload Queued Successfully", {
+          toast.success('PDF Upload Queued Successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           const newTask = {
             task_id: data.combined_task_id,
@@ -653,21 +653,21 @@ const Uploadpdf = () => {
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
-  const usertype: any = localStorage.getItem("user_type");
+  const usertype: any = localStorage.getItem('user_type');
 
-  if (usertype !== "admin") {
-    navigator("/main/*");
+  if (usertype !== 'admin') {
+    navigator('/main/*');
   }
 
   // const handleChange = (event: any) => {
@@ -691,51 +691,51 @@ const Uploadpdf = () => {
   const handleInputChange = (
     index: number,
     field: keyof Box,
-    value: string | null
+    value: string | null,
   ) => {
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
-    if (field === "institute_type") {
-      if (value?.toLowerCase() === "school") {
-        newBoxes[index].institute_id = "";
-        newBoxes[index].university_id = "";
-        newBoxes[index].course_id = "";
-        newBoxes[index].sem_id = "";
-        newBoxes[index].subject_id = "";
+    if (field === 'institute_type') {
+      if (value?.toLowerCase() === 'school') {
+        newBoxes[index].institute_id = '';
+        newBoxes[index].university_id = '';
+        newBoxes[index].course_id = '';
+        newBoxes[index].sem_id = '';
+        newBoxes[index].subject_id = '';
       } else {
-        newBoxes[index].board = "";
-        newBoxes[index].state_for_stateboard = "";
-        newBoxes[index].class_id = "";
-        newBoxes[index].stream = "";
-        newBoxes[index].subject_id = "";
+        newBoxes[index].board = '';
+        newBoxes[index].state_for_stateboard = '';
+        newBoxes[index].class_id = '';
+        newBoxes[index].stream = '';
+        newBoxes[index].subject_id = '';
       }
     }
-    if (field === "board") {
-      newBoxes[index].state_for_stateboard = "";
+    if (field === 'board') {
+      newBoxes[index].state_for_stateboard = '';
     }
-    if (field === "university_id") {
-      newBoxes[index].institute_id = "";
-      newBoxes[index].course_id = "";
-      newBoxes[index].sem_id = "";
-      newBoxes[index].subject_id = "";
+    if (field === 'university_id') {
+      newBoxes[index].institute_id = '';
+      newBoxes[index].course_id = '';
+      newBoxes[index].sem_id = '';
+      newBoxes[index].subject_id = '';
       const filterDataInstitute = institutesAll.filter(
-        (item) => item.university_id === value
+        (item) => item.university_id === value,
       );
       setInstitutes(filterDataInstitute);
     }
-    if (field === "institute_id") {
-      newBoxes[index].course_id = "";
-      newBoxes[index].sem_id = "";
-      newBoxes[index].subject_id = "";
+    if (field === 'institute_id') {
+      newBoxes[index].course_id = '';
+      newBoxes[index].sem_id = '';
+      newBoxes[index].subject_id = '';
       const filterDataCourse = coursesAll.filter(
-        (item) => item.institution_id === value
+        (item) => item.institution_id === value,
       );
       setCourses(filterDataCourse);
     }
 
-    if (field === "course_id") {
-      newBoxes[index].sem_id = "";
-      newBoxes[index].subject_id = "";
+    if (field === 'course_id') {
+      newBoxes[index].sem_id = '';
+      newBoxes[index].subject_id = '';
       const semesterCount = semester.filter((item) => item.course_id === value);
 
       // const semesterCount = semester.reduce((acc: any, crr) => {
@@ -744,40 +744,40 @@ const Uploadpdf = () => {
       // }, 0)
       setTotalSemester(semesterCount);
     }
-    if (field === "sem_id") {
-      newBoxes[index].subject_id = "";
+    if (field === 'sem_id') {
+      newBoxes[index].subject_id = '';
       const filterData = subjectsAll?.filter(
         (item: any) =>
           item?.institution_id === boxes[0]?.institute_id &&
           item?.course_id === boxes[0]?.course_id &&
-          item?.semester_id === value
+          item?.semester_id === value,
       );
       setSubjects(filterData);
     }
 
-    if (field === "class_id") {
-      newBoxes[index].subject_id = "";
+    if (field === 'class_id') {
+      newBoxes[index].subject_id = '';
       const filterData = subjectsAll?.filter(
-        (item: any) => item?.class_id === value
+        (item: any) => item?.class_id === value,
       );
       setSubjects(filterData);
     }
-    if (field === "stream") {
-      if (boxes[0]?.stream !== "" || boxes[0]?.stream !== undefined) {
+    if (field === 'stream') {
+      if (boxes[0]?.stream !== '' || boxes[0]?.stream !== undefined) {
         const filterData = subjectsAll?.filter(
           (item: any) =>
-            item?.class_id === boxes[0]?.class_id && item?.stream === value
+            item?.class_id === boxes[0]?.class_id && item?.stream === value,
         );
         setSubjects(filterData);
       }
     }
 
     setBoxes(newBoxes);
-    if (field === "class_id") {
+    if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
         if (response.status === 200) {
           setParticularClass(response.data.class_name);
-        } else setParticularClass("");
+        } else setParticularClass('');
       });
     }
   };
@@ -804,9 +804,9 @@ const Uploadpdf = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -819,7 +819,7 @@ const Uploadpdf = () => {
                         <div
                           className="row align-items-center"
                           key={box.id}
-                          style={{ marginBottom: "5px" }}
+                          style={{ marginBottom: '5px' }}
                         >
                           <div className="col form_field_wrapper">
                             <FormControl
@@ -827,7 +827,7 @@ const Uploadpdf = () => {
                               sx={{
                                 m: 1,
                                 minWidth: 70,
-                                width: "100%",
+                                width: '100%',
                                 maxWidth: 200,
                               }}
                             >
@@ -835,13 +835,13 @@ const Uploadpdf = () => {
                               <Select
                                 value={box.institute_type}
                                 sx={{
-                                  backgroundColor: "#f5f5f5",
+                                  backgroundColor: '#f5f5f5',
                                 }}
                                 onChange={(e) =>
                                   handleInputChange(
                                     index,
-                                    "institute_type",
-                                    e.target.value
+                                    'institute_type',
+                                    e.target.value,
                                   )
                                 }
                                 label="Institute Type"
@@ -858,14 +858,14 @@ const Uploadpdf = () => {
                               </Select>
                             </FormControl>
                           </div>
-                          {box.institute_type == "school" && (
+                          {box.institute_type == 'school' && (
                             <div className="col form_field_wrapper">
                               <FormControl
                                 required
                                 sx={{
                                   m: 1,
                                   minWidth: 70,
-                                  width: "100%",
+                                  width: '100%',
                                   maxWidth: 200,
                                 }}
                               >
@@ -873,13 +873,13 @@ const Uploadpdf = () => {
                                 <Select
                                   value={box.board}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "board",
-                                      e.target.value
+                                      'board',
+                                      e.target.value,
                                     )
                                   }
                                   label="Board"
@@ -897,15 +897,15 @@ const Uploadpdf = () => {
                               </FormControl>
                             </div>
                           )}
-                          {box.board == "state_board" &&
-                            box.institute_type !== "college" && (
+                          {box.board == 'state_board' &&
+                            box.institute_type !== 'college' && (
                               <div className="col form_field_wrapper">
                                 <FormControl
                                   required
                                   sx={{
                                     m: 1,
                                     minWidth: 70,
-                                    width: "100%",
+                                    width: '100%',
                                     maxWidth: 200,
                                   }}
                                 >
@@ -914,13 +914,13 @@ const Uploadpdf = () => {
                                     name="state_for_stateboard"
                                     value={box.state_for_stateboard.toLowerCase()}
                                     sx={{
-                                      backgroundColor: "#f5f5f5",
+                                      backgroundColor: '#f5f5f5',
                                     }}
                                     onChange={(e) =>
                                       handleInputChange(
                                         index,
-                                        "state_for_stateboard",
-                                        e.target.value
+                                        'state_for_stateboard',
+                                        e.target.value,
                                       )
                                     }
                                     label="State"
@@ -952,23 +952,23 @@ const Uploadpdf = () => {
                               </div>
                             )}
 
-                          {box.institute_type == "college" && (
+                          {box.institute_type == 'college' && (
                             <div className="col form_field_wrapper">
                               <FormControl
                                 required
-                                sx={{ m: 1, minWidth: 220, width: "100%" }}
+                                sx={{ m: 1, minWidth: 220, width: '100%' }}
                               >
                                 <InputLabel>University name</InputLabel>
                                 <Select
                                   value={box.university_id}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "university_id",
-                                      e.target.value
+                                      'university_id',
+                                      e.target.value,
                                     )
                                   }
                                   label="University Name"
@@ -987,24 +987,24 @@ const Uploadpdf = () => {
                             </div>
                           )}
 
-                          {box.institute_type == "college" && (
+                          {box.institute_type == 'college' && (
                             <div className="col form_field_wrapper">
                               <FormControl
                                 required
-                                sx={{ m: 1, minWidth: 220, width: "100%" }}
+                                sx={{ m: 1, minWidth: 220, width: '100%' }}
                               >
                                 <InputLabel>Institute Name</InputLabel>
                                 <Select
                                   name="institute_id"
                                   value={box.institute_id}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "institute_id",
-                                      e.target.value
+                                      'institute_id',
+                                      e.target.value,
                                     )
                                   }
                                   label="Institute Name"
@@ -1022,23 +1022,23 @@ const Uploadpdf = () => {
                               </FormControl>
                             </div>
                           )}
-                          {box.institute_type == "college" && (
+                          {box.institute_type == 'college' && (
                             <div className="col form_field_wrapper">
                               <FormControl
                                 required
-                                sx={{ m: 1, minWidth: 220, width: "100%" }}
+                                sx={{ m: 1, minWidth: 220, width: '100%' }}
                               >
                                 <InputLabel>Course</InputLabel>
                                 <Select
                                   value={box.course_id}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "course_id",
-                                      e.target.value
+                                      'course_id',
+                                      e.target.value,
                                     )
                                   }
                                   label="Course"
@@ -1056,23 +1056,23 @@ const Uploadpdf = () => {
                               </FormControl>
                             </div>
                           )}
-                          {box.institute_type == "college" && (
+                          {box.institute_type == 'college' && (
                             <div className="col-lg-3 form_field_wrapper">
                               <FormControl
                                 required
-                                sx={{ m: 1, minWidth: 220, width: "100%" }}
+                                sx={{ m: 1, minWidth: 220, width: '100%' }}
                               >
                                 <InputLabel>Semester</InputLabel>
                                 <Select
                                   value={box.sem_id}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "sem_id",
-                                      e.target.value
+                                      'sem_id',
+                                      e.target.value,
                                     )
                                   }
                                   label="Semester"
@@ -1095,7 +1095,7 @@ const Uploadpdf = () => {
                                   {totalSemester
                                     ?.sort(
                                       (a: any, b: any) =>
-                                        a?.semester_number - b?.semester_number
+                                        a?.semester_number - b?.semester_number,
                                     )
                                     ?.map((item: any) => (
                                       <MenuItem
@@ -1110,30 +1110,30 @@ const Uploadpdf = () => {
                               </FormControl>
                             </div>
                           )}
-                          {box.institute_type == "school" && (
+                          {box.institute_type == 'school' && (
                             <div className="col form_field_wrapper">
                               <FormControl
                                 required
-                                sx={{ m: 1, minWidth: 220, width: "100%" }}
+                                sx={{ m: 1, minWidth: 220, width: '100%' }}
                               >
                                 <InputLabel>Class</InputLabel>
                                 <Select
                                   value={box.class_id}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "class_id",
-                                      e.target.value
+                                      'class_id',
+                                      e.target.value,
                                     )
                                   }
                                   label="Class"
                                 >
                                   {classes
                                     .sort((a, b) =>
-                                      a.class_name.localeCompare(b.class_name)
+                                      a.class_name.localeCompare(b.class_name),
                                     ) // Sorts by class_name in ascending order
                                     .map((classes) => (
                                       <MenuItem
@@ -1148,16 +1148,16 @@ const Uploadpdf = () => {
                               </FormControl>
                             </div>
                           )}
-                          {box.institute_type == "school" &&
-                            (particularClass === "class_11" ||
-                              particularClass === "class_12") && (
+                          {box.institute_type == 'school' &&
+                            (particularClass === 'class_11' ||
+                              particularClass === 'class_12') && (
                               <div className="col-lg-3 form_field_wrapper">
                                 <FormControl
                                   required
                                   sx={{
                                     m: 1,
                                     minWidth: 70,
-                                    width: "100%",
+                                    width: '100%',
                                     maxWidth: 200,
                                   }}
                                 >
@@ -1165,13 +1165,13 @@ const Uploadpdf = () => {
                                   <Select
                                     value={box.stream}
                                     sx={{
-                                      backgroundColor: "#f5f5f5",
+                                      backgroundColor: '#f5f5f5',
                                     }}
                                     onChange={(e) =>
                                       handleInputChange(
                                         index,
-                                        "stream",
-                                        e.target.value
+                                        'stream',
+                                        e.target.value,
                                       )
                                     }
                                     label="Stream"
@@ -1193,20 +1193,20 @@ const Uploadpdf = () => {
                             <div className="col form_field_wrapper">
                               <FormControl
                                 required
-                                sx={{ m: 1, minWidth: 220, width: "100%" }}
+                                sx={{ m: 1, minWidth: 220, width: '100%' }}
                               >
                                 <InputLabel>Subject</InputLabel>
                                 <Select
                                   name="subject_id"
                                   value={box.subject_id}
                                   sx={{
-                                    backgroundColor: "#f5f5f5",
+                                    backgroundColor: '#f5f5f5',
                                   }}
                                   onChange={(e) =>
                                     handleInputChange(
                                       index,
-                                      "subject_id",
-                                      e.target.value
+                                      'subject_id',
+                                      e.target.value,
                                     )
                                   }
                                   label="Subject"
@@ -1271,9 +1271,9 @@ const Uploadpdf = () => {
                   </div>
                   <div
                     style={{
-                      display: "flex",
-                      gap: "20px",
-                      marginBottom: "20px",
+                      display: 'flex',
+                      gap: '20px',
+                      marginBottom: '20px',
                     }}
                   >
                     {/* <FormControl sx={{ minWidth: 300 }}>
@@ -1342,26 +1342,26 @@ const Uploadpdf = () => {
                       component={Paper}
                       sx={{
                         marginTop: 3,
-                        "& .MuiTableCell-root": {
+                        '& .MuiTableCell-root': {
                           px: { xs: 1, sm: 2 },
                           py: { xs: 1, sm: 2 },
-                          fontSize: { xs: "0.8rem", sm: "1rem" },
+                          fontSize: { xs: '0.8rem', sm: '1rem' },
                         },
                       }}
                     >
-                      <Table sx={{ minWidth: { xs: "100%", sm: 650 } }}>
+                      <Table sx={{ minWidth: { xs: '100%', sm: 650 } }}>
                         <TableHead>
                           <TableRow>
                             <TableCell
-                              sx={{ minWidth: 200, fontWeight: "bold" }}
+                              sx={{ minWidth: 200, fontWeight: 'bold' }}
                             >
                               Task ID
                             </TableCell>
                             <TableCell
                               sx={{
                                 minWidth: 120,
-                                fontWeight: "bold",
-                                textAlign: "center",
+                                fontWeight: 'bold',
+                                textAlign: 'center',
                               }}
                             >
                               Status
@@ -1369,8 +1369,8 @@ const Uploadpdf = () => {
                             <TableCell
                               sx={{
                                 minWidth: 150,
-                                fontWeight: "bold",
-                                textAlign: "center",
+                                fontWeight: 'bold',
+                                textAlign: 'center',
                               }}
                             >
                               Created At
@@ -1378,8 +1378,8 @@ const Uploadpdf = () => {
                             <TableCell
                               sx={{
                                 minWidth: 100,
-                                fontWeight: "bold",
-                                textAlign: "center",
+                                fontWeight: 'bold',
+                                textAlign: 'center',
                               }}
                             >
                               Actions
@@ -1389,33 +1389,33 @@ const Uploadpdf = () => {
                         <TableBody>
                           {uploadTasks.map((task) => (
                             <TableRow key={task.task_id}>
-                              <TableCell sx={{ wordBreak: "break-all" }}>
+                              <TableCell sx={{ wordBreak: 'break-all' }}>
                                 {task.task_id}
                               </TableCell>
-                              <TableCell sx={{ textAlign: "center" }}>
+                              <TableCell sx={{ textAlign: 'center' }}>
                                 <Chip
                                   label={task.status}
                                   color={
-                                    task.status === "COMPLETED"
-                                      ? "success"
-                                      : "warning"
+                                    task.status === 'COMPLETED'
+                                      ? 'success'
+                                      : 'warning'
                                   }
                                   variant="outlined"
-                                  sx={{ maxWidth: "100%" }}
-                                />{" "}
+                                  sx={{ maxWidth: '100%' }}
+                                />{' '}
                               </TableCell>
-                              <TableCell sx={{ textAlign: "center" }}>
-                                {task.created_at}{" "}
+                              <TableCell sx={{ textAlign: 'center' }}>
+                                {task.created_at}{' '}
                               </TableCell>
-                              <TableCell sx={{ textAlign: "center" }}>
+                              <TableCell sx={{ textAlign: 'center' }}>
                                 <IconButton
                                   onClick={() =>
                                     refreshTaskStatus(task.task_id)
                                   }
                                   color="primary"
                                   size="small"
-                                  disabled={task.status === "COMPLETED"}
-                                  sx={{ "&.Mui-disabled": { opacity: 0.5 } }}
+                                  disabled={task.status === 'COMPLETED'}
+                                  sx={{ '&.Mui-disabled': { opacity: 0.5 } }}
                                 >
                                   <RefreshIcon />
                                 </IconButton>
@@ -1457,8 +1457,8 @@ const Uploadpdf = () => {
                   <Button
                     className={`${
                       selectedFiles.length === 0
-                        ? "disabled-mainbutton"
-                        : "mainbutton"
+                        ? 'disabled-mainbutton'
+                        : 'mainbutton'
                     }`}
                     sx={{ marginTop: 5 }}
                     variant="contained"

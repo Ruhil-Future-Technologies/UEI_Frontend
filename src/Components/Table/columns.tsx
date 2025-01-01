@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MRT_ColumnDef } from "material-react-table";
-import { MaybeNull } from "../../types";
-import { getDateFormat, isNullOrUndefined } from "../../utils/helpers";
-import profile from "../../assets/img/profile_img.svg";
+import { MRT_ColumnDef } from 'material-react-table';
+import { MaybeNull } from '../../types';
+import { getDateFormat, isNullOrUndefined } from '../../utils/helpers';
+import profile from '../../assets/img/profile_img.svg';
 import {
   Box,
   Button,
@@ -11,10 +11,10 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-} from "@mui/material";
-import { Switch } from "../Switch/switch";
-import useApi from "../../hooks/useAPI";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+} from '@mui/material';
+import { Switch } from '../Switch/switch';
+import useApi from '../../hooks/useAPI';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   QUERY_KEYS,
   // QUERY_KEYS_CLASS,
@@ -36,11 +36,11 @@ import {
   QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
-} from "../../utils/const";
-import { toast } from "react-toastify";
-import React, { useState } from "react";
+} from '../../utils/const';
+import { toast } from 'react-toastify';
+import React, { useState } from 'react';
 
-export const EMPTY_CELL_VALUE = "-";
+export const EMPTY_CELL_VALUE = '-';
 
 export interface SubMenu {
   created_at: string;
@@ -260,88 +260,88 @@ export interface IPDFList {
 export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "institution_name",
-    header: "Institute name ",
+    accessorKey: 'institution_name',
+    header: 'Institute name ',
     size: 150,
   },
   {
-    accessorKey: "university_name",
-    header: "University name ",
+    accessorKey: 'university_name',
+    header: 'University name ',
     size: 150,
   },
   {
-    accessorKey: "email_id",
-    header: "Email ",
+    accessorKey: 'email_id',
+    header: 'Email ',
     size: 150,
   },
   {
-    accessorKey: "address",
-    header: "Address",
+    accessorKey: 'address',
+    header: 'Address',
     size: 150,
   },
   {
-    accessorKey: "city",
-    header: "City ",
+    accessorKey: 'city',
+    header: 'City ',
     size: 150,
   },
   {
-    accessorKey: "country",
-    header: "Country",
+    accessorKey: 'country',
+    header: 'Country',
     size: 150,
   },
   {
-    accessorKey: "state",
-    header: "State ",
+    accessorKey: 'state',
+    header: 'State ',
     size: 150,
   },
   {
-    accessorKey: "district",
-    header: "District ",
+    accessorKey: 'district',
+    header: 'District ',
     size: 150,
   },
   {
-    accessorKey: "pincode",
-    header: "Pincode",
+    accessorKey: 'pincode',
+    header: 'Pincode',
     size: 150,
   },
   {
-    accessorKey: "entity_id",
-    header: "Entity ",
+    accessorKey: 'entity_id',
+    header: 'Entity ',
     size: 150,
   },
   {
-    accessorKey: "mobile_no",
-    header: "Mobile ",
+    accessorKey: 'mobile_no',
+    header: 'Mobile ',
     size: 150,
   },
   {
-    accessorKey: "website_url",
-    header: "URL ",
+    accessorKey: 'website_url',
+    header: 'URL ',
     size: 180,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated At",
+    accessorKey: 'updated_at',
+    header: 'Last Updated At',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuInstituteActive = QUERY_KEYS.GET_INSTITUTEACTIVE;
@@ -360,7 +360,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
         putData(
           `${
             valueset === 1 ? MenuInstituteDeactive : MenuInstituteActive
-          }/${id}`
+          }/${id}`,
         )
           .then((data: any) => {
             if (data.status === 200) {
@@ -372,7 +372,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -381,7 +381,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -407,33 +407,33 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
 export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "entity_type",
-    header: "Entity Type ",
+    accessorKey: 'entity_type',
+    header: 'Entity Type ',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated At",
+    accessorKey: 'updated_at',
+    header: 'Last Updated At',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuEntityActive = QUERY_KEYS_ENTITY.GET_ENTITYACTIVE;
@@ -450,7 +450,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
 
       const active = (id: number, valueset: any) => {
         putData(
-          `${valueset === 1 ? MenuEntityDeactive : MenuEntityActive}/${id}`
+          `${valueset === 1 ? MenuEntityDeactive : MenuEntityActive}/${id}`,
         )
           .then((data: any) => {
             if (data.status === 200) {
@@ -462,7 +462,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -471,7 +471,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -488,28 +488,28 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
 export const Class_COLUMNS: MRT_ColumnDef<IClass>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "class_name",
-    header: "Class name ",
+    accessorKey: 'class_name',
+    header: 'Class name ',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated At",
+    accessorKey: 'updated_at',
+    header: 'Last Updated At',
     size: 150,
   },
   // {
@@ -563,38 +563,38 @@ export const Class_COLUMNS: MRT_ColumnDef<IClass>[] = [
 export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "course_name",
-    header: "Course Name",
+    accessorKey: 'course_name',
+    header: 'Course Name',
     size: 150,
   },
   {
-    accessorKey: "institution_name",
-    header: "Institute Name",
+    accessorKey: 'institution_name',
+    header: 'Institute Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated At",
+    accessorKey: 'updated_at',
+    header: 'Last Updated At',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_COURSE.GET_COURSEACTIVE;
@@ -621,7 +621,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -630,7 +630,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -646,33 +646,33 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
 export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "university_name",
-    header: "University Name",
+    accessorKey: 'university_name',
+    header: 'University Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated At",
+    accessorKey: 'updated_at',
+    header: 'Last Updated At',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITYACTIVE;
@@ -696,7 +696,7 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -705,7 +705,7 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             onChange={() => {
               active(row?.original?.university_id, Showvalue);
             }}
@@ -719,43 +719,43 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
 export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "semester_number",
-    header: "Semester",
+    accessorKey: 'semester_number',
+    header: 'Semester',
     size: 150,
   },
   {
-    accessorKey: "institution_name",
-    header: "Institute",
+    accessorKey: 'institution_name',
+    header: 'Institute',
     size: 150,
   },
   {
-    accessorKey: "course_name",
-    header: "Course",
+    accessorKey: 'course_name',
+    header: 'Course',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated At",
+    accessorKey: 'updated_at',
+    header: 'Last Updated At',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SEMESTER.GET_SEMESTERACTIVE;
@@ -782,7 +782,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -791,7 +791,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.semester_id, Showvalue);
@@ -807,33 +807,33 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
 export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "department_name",
-    header: "Department Name ",
+    accessorKey: 'department_name',
+    header: 'Department Name ',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created at ",
+    accessorKey: 'created_at',
+    header: 'Created at ',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_DEPARTMENT.GET_DEPARTMENTACTIVE;
@@ -860,7 +860,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -869,7 +869,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -891,8 +891,8 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
   //     size: 150,
   // },
   {
-    accessorKey: "pic_path",
-    header: "Profile Image",
+    accessorKey: 'pic_path',
+    header: 'Profile Image',
     size: 150,
     Cell: ({ cell }: any) => {
       const value: any = cell?.getValue();
@@ -904,7 +904,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
       return (
         <div className="profile_img">
           <img
-            src={value !== "" ? value : profile}
+            src={value !== '' ? value : profile}
             alt="profile"
             height="50px"
             width="50px"
@@ -914,42 +914,42 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "first_name",
-    header: "First Name",
+    accessorKey: 'first_name',
+    header: 'First Name',
     size: 150,
   },
   {
-    accessorKey: "last_name",
-    header: "Last Name",
+    accessorKey: 'last_name',
+    header: 'Last Name',
     size: 150,
   },
   {
-    accessorKey: "email_id",
-    header: "Email",
+    accessorKey: 'email_id',
+    header: 'Email',
     size: 150,
   },
 
   {
-    accessorKey: "mobile_no_call",
-    header: "Mobile No",
+    accessorKey: 'mobile_no_call',
+    header: 'Mobile No',
     size: 150,
   },
   {
-    accessorKey: "gender",
-    header: "Gender",
+    accessorKey: 'gender',
+    header: 'Gender',
     size: 150,
     Cell: ({ cell }: any) => {
       const value = cell?.getValue() as string | undefined;
 
       const camelCaseValue = value?.replace(/\b(\w)/g, (match: string) =>
-        match?.toUpperCase()
+        match?.toUpperCase(),
       );
       return <div>{camelCaseValue}</div>;
     },
   },
   {
-    accessorKey: "dob",
-    header: "DOB",
+    accessorKey: 'dob',
+    header: 'DOB',
     size: 150,
     Cell: ({ cell }) => {
       const value = cell.getValue();
@@ -962,8 +962,8 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const StudentActive = QUERY_KEYS_STUDENT.GET_STUDENTACTIVE;
@@ -976,14 +976,14 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-    //  console.log(value);
+      //  console.log(value);
       const [Show, setShow] = useState(value === 1 ? true : false);
-     // console.log(Show,Showvalue);
+      // console.log(Show,Showvalue);
       const active = (id: number, valueset: any) => {
         putData(`${valueset === 1 ? StudentDeactive : StudentActive}/${id}`)
           .then((data: any) => {
             if (data.status === 200) {
-             //console.log(Show);
+              //console.log(Show);
               //console.log(Showvalue);
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue === 1 ? 0 : 1);
@@ -993,7 +993,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1002,7 +1002,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={value===1 ? "Active" : "Deactive"}
+            label={value === 1 ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, value);
@@ -1034,39 +1034,39 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
 export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "menu_name",
-    header: "Menu Name",
+    accessorKey: 'menu_name',
+    header: 'Menu Name',
     size: 150,
   },
   {
-    accessorKey: "priority",
-    header: "Menu Sequence",
+    accessorKey: 'priority',
+    header: 'Menu Sequence',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
 
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_MENU.GET_MENUACTIVE;
@@ -1093,7 +1093,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1102,7 +1102,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -1118,49 +1118,49 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
 
 export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
-    {
-      accessorKey: "institute_name",
-      header: "Institute Name",
-      size: 150,
-    },
-    {
-      accessorKey: "course_name",
-      header: "Course Name",
-      size: 150,
-    },
-    {
-      accessorKey: "semester_number",
-      header: "Semester Name",
-      size: 150,
-    },
   {
-    accessorKey: "subject_name",
-    header: "Subject Name",
+    accessorKey: 'institute_name',
+    header: 'Institute Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'course_name',
+    header: 'Course Name',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'semester_number',
+    header: 'Semester Name',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'subject_name',
+    header: 'Subject Name',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'created_at',
+    header: 'Created At',
+    size: 150,
+  },
+  {
+    accessorKey: 'updated_by',
+    header: 'Updated By',
+    size: 150,
+  },
+  {
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
+    size: 150,
+  },
+  {
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SUBJECT.GET_SUBJECTACTIVE;
@@ -1187,7 +1187,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1196,7 +1196,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
@@ -1212,43 +1212,43 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
 export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "class_name",
-    header: "Class Name",
+    accessorKey: 'class_name',
+    header: 'Class Name',
     size: 150,
   },
   {
-    accessorKey: "stream",
-    header: "Stream Name",
+    accessorKey: 'stream',
+    header: 'Stream Name',
     size: 150,
   },
   {
-    accessorKey: "subject_name",
-    header: "Subject Name",
+    accessorKey: 'subject_name',
+    header: 'Subject Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECTACTIVE;
@@ -1275,7 +1275,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1284,7 +1284,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
@@ -1300,33 +1300,33 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
 export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "language_name",
-    header: "Language Name",
+    accessorKey: 'language_name',
+    header: 'Language Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_LANGUAGE.GET_LANGUAGEACTIVE;
@@ -1353,7 +1353,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1362,7 +1362,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -1378,33 +1378,33 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
 export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "hobby_name",
-    header: "Hobby Name",
+    accessorKey: 'hobby_name',
+    header: 'Hobby Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_HOBBY.GET_HOBBYACTIVE;
@@ -1431,7 +1431,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1440,7 +1440,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -1456,13 +1456,13 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
 export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "question",
-    header: "Question",
+    accessorKey: 'question',
+    header: 'Question',
     size: 150,
   },
   {
-    accessorKey: "options",
-    header: "Options",
+    accessorKey: 'options',
+    header: 'Options',
     size: 150,
     Cell: ({ cell }: { cell: any }) => {
       const options = cell.getValue();
@@ -1478,23 +1478,23 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   // {
@@ -1552,13 +1552,13 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
   [
     // const columns: any[] = [
     {
-      accessorKey: "student_name",
-      header: "Student Name",
+      accessorKey: 'student_name',
+      header: 'Student Name',
       size: 150,
     },
     {
-      accessorKey: "responses",
-      header: "Responses",
+      accessorKey: 'responses',
+      header: 'Responses',
       size: 150,
       enableSorting: false,
       enableColumnActions: false,
@@ -1600,7 +1600,7 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
                   {selectedResponse &&
                     selectedResponse.map((question: any, qIndex: number) => (
                       <div key={question.id}>
-                        {" "}
+                        {' '}
                         <h4 className="message-bubble m-1">
                           Q.{qIndex + 1} {question.question}
                         </h4>
@@ -1628,8 +1628,8 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
     },
 
     {
-      accessorKey: "created_at",
-      header: "Created At",
+      accessorKey: 'created_at',
+      header: 'Created At',
       size: 150,
     },
   ];
@@ -1637,44 +1637,44 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
 export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "menu_name",
-    header: "Submenu Name",
+    accessorKey: 'menu_name',
+    header: 'Submenu Name',
     size: 150,
   },
   {
-    accessorKey: "menu_master_name",
-    header: "Menu Name",
+    accessorKey: 'menu_master_name',
+    header: 'Menu Name',
     size: 150,
   },
 
   {
-    accessorKey: "priority",
-    header: "Menu Sequence",
+    accessorKey: 'priority',
+    header: 'Menu Sequence',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_SUBMENU.GET_SUBMENUACTIVE;
@@ -1701,7 +1701,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1710,7 +1710,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -1727,33 +1727,33 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
 export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "role_name",
-    header: "Role Name",
+    accessorKey: 'role_name',
+    header: 'Role Name',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_ROLE.GET_ROLEACTIVE;
@@ -1780,7 +1780,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1789,7 +1789,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -1811,49 +1811,49 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
 export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "form_name",
-    header: "Form Name",
+    accessorKey: 'form_name',
+    header: 'Form Name',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "menu_master_name",
-    header: "Menu Master",
+    accessorKey: 'menu_master_name',
+    header: 'Menu Master',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "sub_menu_master_name",
-    header: "Submenu Master",
+    accessorKey: 'sub_menu_master_name',
+    header: 'Submenu Master',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "form_url",
-    header: "Form URL",
+    accessorKey: 'form_url',
+    header: 'Form URL',
     size: 150,
     minSize: 150,
     maxSize: 300,
     // enableColumnActions:true,
   },
   {
-    accessorKey: "form_description",
-    header: "Form Description",
+    accessorKey: 'form_description',
+    header: 'Form Description',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "is_menu_visible",
-    header: "Menu Visible",
+    accessorKey: 'is_menu_visible',
+    header: 'Menu Visible',
     size: 150,
     enableResizing: false,
     Cell: ({ cell }: any) => {
       const value = cell?.getValue();
-      let visible = "";
+      let visible = '';
       if (value === true) {
-        visible = "Yes";
+        visible = 'Yes';
       } else {
-        visible = "No";
+        visible = 'No';
       }
       if (isNullOrUndefined(value) || value === 0) {
         return EMPTY_CELL_VALUE;
@@ -1863,32 +1863,32 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
     enableResizing: false,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_FORM.GET_FORMACTIVE;
@@ -1915,7 +1915,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -1924,7 +1924,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -1942,26 +1942,26 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
 export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "role_name",
-    header: "Role Master",
+    accessorKey: 'role_name',
+    header: 'Role Master',
     size: 150,
   },
   {
-    accessorKey: "form_name",
-    header: "Form Master",
+    accessorKey: 'form_name',
+    header: 'Form Master',
     size: 150,
   },
   {
-    accessorKey: "is_search",
-    header: "Search",
+    accessorKey: 'is_search',
+    header: 'Search',
     size: 150,
     Cell: ({ cell }: any) => {
       const value = cell?.getValue();
-      let visible = "";
+      let visible = '';
       if (value === true) {
-        visible = "Yes";
+        visible = 'Yes';
       } else {
-        visible = "No";
+        visible = 'No';
       }
       if (isNullOrUndefined(value) || value === 0) {
         return EMPTY_CELL_VALUE;
@@ -1971,16 +1971,16 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "is_save",
-    header: "Save",
+    accessorKey: 'is_save',
+    header: 'Save',
     size: 150,
     Cell: ({ cell }: any) => {
       const value = cell?.getValue();
-      let visible = "";
+      let visible = '';
       if (value === true) {
-        visible = "Yes";
+        visible = 'Yes';
       } else {
-        visible = "No";
+        visible = 'No';
       }
       if (isNullOrUndefined(value) || value === 0) {
         return EMPTY_CELL_VALUE;
@@ -1990,16 +1990,16 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "is_update",
-    header: "Update",
+    accessorKey: 'is_update',
+    header: 'Update',
     size: 150,
     Cell: ({ cell }: any) => {
       const value = cell.getValue();
-      let visible = "";
+      let visible = '';
       if (value === true) {
-        visible = "Yes";
+        visible = 'Yes';
       } else {
-        visible = "No";
+        visible = 'No';
       }
       if (isNullOrUndefined(value) || value === 0) {
         return EMPTY_CELL_VALUE;
@@ -2009,28 +2009,28 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     },
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_ROLEVSFORM.GET_ROLEVSFORMACTIVE;
@@ -2057,7 +2057,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -2066,7 +2066,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -2082,38 +2082,38 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
 export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "role_name",
-    header: "Role",
+    accessorKey: 'role_name',
+    header: 'Role',
     size: 150,
   },
   {
-    accessorKey: "admin_name",
-    header: "Admin",
+    accessorKey: 'admin_name',
+    header: 'Admin',
     size: 150,
   },
   {
-    accessorKey: "created_by",
-    header: "Created By",
+    accessorKey: 'created_by',
+    header: 'Created By',
     size: 150,
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
   {
-    accessorKey: "updated_by",
-    header: "Updated By",
+    accessorKey: 'updated_by',
+    header: 'Updated By',
     size: 150,
   },
   {
-    accessorKey: "updated_at",
-    header: "Last Updated at",
+    accessorKey: 'updated_at',
+    header: 'Last Updated at',
     size: 150,
   },
   {
-    accessorKey: "is_active",
-    header: "Active/DeActive",
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
     Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_ROLEVSADMIN.GET_ROLEVSADMINACTIVE;
@@ -2140,7 +2140,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       };
@@ -2149,7 +2149,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={Show ? "Active" : "Deactive"}
+            label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
@@ -2166,15 +2166,15 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
 export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: "student_name",
-    header: "Student Name",
+    accessorKey: 'student_name',
+    header: 'Student Name',
     size: 150,
   },
 
   {
-    accessorKey: "chat_title",
+    accessorKey: 'chat_title',
     // accessorKey: "chat_question",
-    header: "Chat Question",
+    header: 'Chat Question',
     size: 150,
   },
   //  {
@@ -2211,8 +2211,8 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
 
   {
     // accessorKey: "response",
-    accessorKey: "chat_conversation",
-    header: "Response",
+    accessorKey: 'chat_conversation',
+    header: 'Response',
     size: 150,
     Cell: ({ cell }: any) => {
       const value = cell?.getValue();
@@ -2222,7 +2222,7 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
       try {
         parsedValue = JSON.parse(value);
       } catch (e) {
-        console.error("Failed to parse value", e);
+        console.error('Failed to parse value', e);
         return <div>&quot;&quot;</div>;
       }
 
@@ -2236,10 +2236,10 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
       // Handle cases where dataset contains improperly formatted strings
       flattenedAnswers = flattenedAnswers
         ?.map((item: any) => {
-          if (typeof item === "string") {
+          if (typeof item === 'string') {
             // Remove unnecessary characters and split the string if needed
-            item = item.replace(/[{}"]/g, "").trim();
-            return item.split(",").map((subItem: string) => subItem.trim());
+            item = item.replace(/[{}"]/g, '').trim();
+            return item.split(',').map((subItem: string) => subItem.trim());
           }
           return item;
         })
@@ -2247,116 +2247,116 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
 
       // Join the elements of the 'answer' array into a single coherent string
       const formattedMessage = flattenedAnswers
-        ?.filter((word: string) => word !== "") // Remove empty strings
-        .join(" ")
-        .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+        ?.filter((word: string) => word !== '') // Remove empty strings
+        .join(' ')
+        .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
         .trim();
 
-      return <div>{formattedMessage || "No answer available"}</div>;
+      return <div>{formattedMessage || 'No answer available'}</div>;
     },
   },
   {
-    accessorKey: "created_at",
-    header: "Created At",
+    accessorKey: 'created_at',
+    header: 'Created At',
     size: 150,
   },
 ];
 
 export const PDF_LIST_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   {
-    accessorKey: "pdf_file_name",
-    header: "File Name",
+    accessorKey: 'pdf_file_name',
+    header: 'File Name',
     size: 150,
   },
   {
-    accessorKey: "pdf_path",
-    header: "File Path",
+    accessorKey: 'pdf_path',
+    header: 'File Path',
     enableSorting: false,
     enableColumnActions: false,
     size: 150,
   },
   {
-    accessorKey: "upload_date_time",
-    header: "Uploaded At",
+    accessorKey: 'upload_date_time',
+    header: 'Uploaded At',
     size: 150,
   },
 ];
 export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   {
-    accessorKey: "pdf_file_name",
-    header: "File Name",
+    accessorKey: 'pdf_file_name',
+    header: 'File Name',
     size: 150,
   },
   {
-    accessorKey: "pdf_path",
-    header: "File Path",
+    accessorKey: 'pdf_path',
+    header: 'File Path',
     enableSorting: false,
-    enableColumnActions:false,
+    enableColumnActions: false,
     size: 150,
   },
   {
-    accessorKey: "upload_date_time",
-    header: "Uploaded At",
-    size: 150,
-  } ,
-  {
-    accessorKey: "board_name",
-    header: "Board Name",
+    accessorKey: 'upload_date_time',
+    header: 'Uploaded At',
     size: 150,
   },
-   {
-    accessorKey: "state_board_name",
-    header: "State Board Name",
-    size: 150,
-  } ,
   {
-    accessorKey: "stream_name",
-    header: "Stream Name",
+    accessorKey: 'board_name',
+    header: 'Board Name',
     size: 150,
-  } ,
+  },
   {
-    accessorKey: "class_name",
-    header: "Class Name",
+    accessorKey: 'state_board_name',
+    header: 'State Board Name',
     size: 150,
-  }
-]
+  },
+  {
+    accessorKey: 'stream_name',
+    header: 'Stream Name',
+    size: 150,
+  },
+  {
+    accessorKey: 'class_name',
+    header: 'Class Name',
+    size: 150,
+  },
+];
 
 export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   {
-    accessorKey: "pdf_file_name",
-    header: "File Name",
+    accessorKey: 'pdf_file_name',
+    header: 'File Name',
     size: 150,
   },
   {
-    accessorKey: "pdf_path",
-    header: "File Path",
+    accessorKey: 'pdf_path',
+    header: 'File Path',
     enableSorting: false,
-    enableColumnActions:false,
+    enableColumnActions: false,
     size: 150,
   },
   {
-    accessorKey: "upload_date_time",
-    header: "Uploaded At",
-    size: 150,
-  } ,
-  {
-    accessorKey: "university_name",
-    header: "University Name",
+    accessorKey: 'upload_date_time',
+    header: 'Uploaded At',
     size: 150,
   },
-   {
-    accessorKey: "college_name",
-    header: "Collage Name",
-    size: 150,
-  } ,
   {
-    accessorKey: "course_name",
-    header: "Courase Name",
+    accessorKey: 'university_name',
+    header: 'University Name',
     size: 150,
-  } ,
+  },
   {
-    accessorKey: "year",
-    header: "Year",
+    accessorKey: 'college_name',
+    header: 'Collage Name',
     size: 150,
-  }
-]
+  },
+  {
+    accessorKey: 'course_name',
+    header: 'Courase Name',
+    size: 150,
+  },
+  {
+    accessorKey: 'year',
+    header: 'Year',
+    size: 150,
+  },
+];

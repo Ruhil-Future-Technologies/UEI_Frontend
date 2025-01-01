@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TextField, Typography } from "@mui/material";
-import { Field, Form, Formik, FormikHelpers } from "formik";
-import React, { useEffect, useState } from "react";
-import { QUERY_KEYS_UNIVERSITY } from "../../utils/const";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
-import * as Yup from "yup";
+import { TextField, Typography } from '@mui/material';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { QUERY_KEYS_UNIVERSITY } from '../../utils/const';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
 
 const AddUniversity = () => {
   const UniversityAddURL = QUERY_KEYS_UNIVERSITY.UNIVERSITY_ADD;
@@ -18,20 +18,20 @@ const AddUniversity = () => {
 
   const initialState = {
     // id: 0,
-    university_name: "",
+    university_name: '',
   };
   const [univesity, setUnivesity] = useState<any>(initialState);
 
   const callAPI = async () => {
     if (id) {
-      getData(`${UniversityeditURL}${id ? `/${id}` : ""}`)
+      getData(`${UniversityeditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           setUnivesity(data?.data);
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -41,7 +41,7 @@ const AddUniversity = () => {
   }, []);
   const handleSubmit = async (
     universityData: any,
-    { resetForm }: FormikHelpers<any>
+    { resetForm }: FormikHelpers<any>,
   ) => {
     if (id) {
       putData(`${UniversityupdateURL}/${id}`, universityData)
@@ -49,22 +49,22 @@ const AddUniversity = () => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
           if (data.status === 200) {
-            navigator("/main/University");
+            navigator('/main/University');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -74,35 +74,35 @@ const AddUniversity = () => {
             // navigator('/main/Course')
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
-            setUnivesity({ university_name: "" });
+            setUnivesity({ university_name: '' });
             resetForm({ values: initialState });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const universitySchema = Yup.object().shape({
     university_name: Yup.string()
-      .required("Please enter university name")
+      .required('Please enter university name')
       .test(
-        "not-whitespace",
-        "Please enter a valid university name;not-whitespace only characters allowed.",
-        (value: any) => value && value?.trim().length > 0
+        'not-whitespace',
+        'Please enter a valid university name;not-whitespace only characters allowed.',
+        (value: any) => value && value?.trim().length > 0,
       ),
   });
   return (
@@ -113,7 +113,7 @@ const AddUniversity = () => {
             <div className="card-body">
               <Typography variant="h6" className="mb-3">
                 <div className="main_title">
-                  {id ? "Edit" : "Add"} University
+                  {id ? 'Edit' : 'Add'} University
                 </div>
               </Typography>
               <Formik
@@ -142,27 +142,26 @@ const AddUniversity = () => {
                                 label="University Name *"
                                 error={Boolean(
                                   form.errors.university_name &&
-                                    form.touched.university_name
+                                    form.touched.university_name,
                                 )}
                                 helperText={
                                   form.errors.university_name &&
                                   form.touched.university_name
                                     ? form.errors.university_name
-                                    : ""
+                                    : ''
                                 }
                                 onBlur={form.handleBlur}
                                 onChange={form.handleChange}
                               />
                             )}
                           />
-                         
                         </div>
                       </div>
                     </div>
 
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
-                        {" "}
+                        {' '}
                         Save
                       </button>
                     </div>

@@ -5,21 +5,20 @@ import React, {
   KeyboardEvent,
   useEffect,
   useRef,
-} from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./stylechat.css"; // Import your CSS file
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-import Select from "react-select";
-import { Country, State } from "country-state-city";
-
+} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './stylechat.css'; // Import your CSS file
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import Select from 'react-select';
+import { Country, State } from 'country-state-city';
 
 interface Institute {
   id: number;
@@ -57,74 +56,74 @@ interface Option {
 
 const NewModule: React.FC = () => {
   const { getData, postData, postFileData } = useApi();
-  const StudentId = localStorage.getItem("_id");
-  const [phone, setPhone] = useState("");
+  const StudentId = localStorage.getItem('_id');
+  const [phone, setPhone] = useState('');
   const navigate = useNavigate();
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [currentSection, setCurrentSection] = useState<string | null>("basic");
+  const [currentSection, setCurrentSection] = useState<string | null>('basic');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [messages, setMessages] = useState<
-    { text: string; type: "question" | "answer" }[]
+    { text: string; type: 'question' | 'answer' }[]
   >([]);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
 
-  const [selectedHobby, setSelectedHobby] = useState<string>("");
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [selectedInstitute, setSelectedInstitute] = useState<string>("");
-  const [selectCourse, setSelectedCourse] = useState<string>("");
-  const [selectSubject, setSelectedSubject] = useState<string>("");
+  const [selectedHobby, setSelectedHobby] = useState<string>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+  const [selectedInstitute, setSelectedInstitute] = useState<string>('');
+  const [selectCourse, setSelectedCourse] = useState<string>('');
+  const [selectSubject, setSelectedSubject] = useState<string>('');
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
 
   const initialQuestions: { [key: string]: string[] } = {
     basic: [
-      "What is your full name?",
-      "What is your gender?",
-      "What is your DOB?(Ex. MM/DD/YYYY)",
+      'What is your full name?',
+      'What is your gender?',
+      'What is your DOB?(Ex. MM/DD/YYYY)',
       "What are your mother's names?",
       "What are your father's names?",
       "What are your guardian's names?",
-      "What is your main learning goal or interest for visiting our application",
-      "Upload your profile picture?",
-      "please select your mobile number country code ?",
-      "What is your mobile number?",
-      "What is your WhatsApp number ?",
-      "Hi! Please provide your academic information !!! What is your course name?",
-      "What is your institute name?",
-      "When did you join this course? (Ex. DD/MM/YYYY)",
-      "When did you complete this course? (Ex. DD/MM/YYYY)",
-      "Which country are living ?",
-      "What is your state?",
-      "What is your district",
-      "What is your city?",
-      "what is your pincode",
-      "what is your first address ?",
-      "what is your second address",
-      "Hi! Please provide your subject preference information !!! what is your course name to which your subject belongs ?.",
-      "Select your prefrence Subject name",
-      "what is your prefrence",
-      "add your score in presentage",
-      "Hii !!! Please choose your hobbies",
-      "Select your known language",
-      "proficiency of your Selected language (Ex. witre ,read, both)",
-      "Thanks for providing your personal information",
+      'What is your main learning goal or interest for visiting our application',
+      'Upload your profile picture?',
+      'please select your mobile number country code ?',
+      'What is your mobile number?',
+      'What is your WhatsApp number ?',
+      'Hi! Please provide your academic information !!! What is your course name?',
+      'What is your institute name?',
+      'When did you join this course? (Ex. DD/MM/YYYY)',
+      'When did you complete this course? (Ex. DD/MM/YYYY)',
+      'Which country are living ?',
+      'What is your state?',
+      'What is your district',
+      'What is your city?',
+      'what is your pincode',
+      'what is your first address ?',
+      'what is your second address',
+      'Hi! Please provide your subject preference information !!! what is your course name to which your subject belongs ?.',
+      'Select your prefrence Subject name',
+      'what is your prefrence',
+      'add your score in presentage',
+      'Hii !!! Please choose your hobbies',
+      'Select your known language',
+      'proficiency of your Selected language (Ex. witre ,read, both)',
+      'Thanks for providing your personal information',
     ],
   };
 
-  const sectionOrder = ["basic"];
+  const sectionOrder = ['basic'];
 
   const getSubject = async () => {
-    getData("/subject/list")
+    getData('/subject/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setSubjects(filteredData || []);
         }
@@ -132,7 +131,7 @@ const NewModule: React.FC = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -141,15 +140,15 @@ const NewModule: React.FC = () => {
   useEffect(() => {
     if (currentSection) {
       setMessages([
-        { text: initialQuestions[currentSection][0], type: "question" },
+        { text: initialQuestions[currentSection][0], type: 'question' },
       ]);
     }
-    getData("/institution/list")
+    getData('/institution/list')
       .then(async (response: any) => {
         if (response.status === 200) {
           console.log(response);
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setInstitutes(filteredData || []);
         }
@@ -157,16 +156,16 @@ const NewModule: React.FC = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData("/course/list")
+    getData('/course/list')
       .then((response: any) => {
         if (response.status === 200) {
           console.log(response);
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setCourses(filteredData || []);
         }
@@ -174,15 +173,15 @@ const NewModule: React.FC = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData("hobby/list")
+    getData('hobby/list')
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllHobbies(filteredData || []);
           // setAllHobbies(data?.data);
@@ -191,15 +190,15 @@ const NewModule: React.FC = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData("language/list")
+    getData('language/list')
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
@@ -208,7 +207,7 @@ const NewModule: React.FC = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
@@ -224,7 +223,7 @@ const NewModule: React.FC = () => {
 
   const saveAnswersforBasic = (answers: string[]) => {
     const fullName = answers[0];
-    const nameParts: string[] = fullName.split(" ");
+    const nameParts: string[] = fullName.split(' ');
     const firstname = nameParts[0];
     const lastname = nameParts[1];
     const payload = {
@@ -239,54 +238,54 @@ const NewModule: React.FC = () => {
       pic_path: answers[7],
       aim: answers[6],
     };
-    postData(`${"student/add"}`, payload)
+    postData(`${'student/add'}`, payload)
       .then((data: any) => {
         if (data.status === 200) {
           const formData = new FormData();
           const nfile: any = uploadedFile;
-          formData.append("file", nfile);
+          formData.append('file', nfile);
 
-          postFileData(`${"upload_file/upload"}`, formData)
+          postFileData(`${'upload_file/upload'}`, formData)
             .then((data: any) => {
               if (data?.status === 200) {
                 toast.success(data?.message, {
                   hideProgressBar: true,
-                  theme: "colored",
+                  theme: 'colored',
                 });
               } else if (data?.status === 404) {
                 toast.error(data?.message, {
                   hideProgressBar: true,
-                  theme: "colored",
+                  theme: 'colored',
                 });
               } else {
                 toast.error(data?.message, {
                   hideProgressBar: true,
-                  theme: "colored",
+                  theme: 'colored',
                 });
               }
             })
             .catch((e) => {
               toast.error(e?.message, {
                 hideProgressBar: true,
-                theme: "colored",
+                theme: 'colored',
               });
             });
 
-          toast.success("Basic information saved successfully", {
+          toast.success('Basic information saved successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
@@ -298,7 +297,7 @@ const NewModule: React.FC = () => {
     // const phoneNum = contfullPhone.split(" ");
     // const contfullPhonewtsp = answer[9];
     // const phoneNumwtsp = contfullPhonewtsp.split(" ");
-    const email = localStorage.getItem("userid");
+    const email = localStorage.getItem('userid');
 
     const payload = {
       student_id: StudentId,
@@ -308,24 +307,24 @@ const NewModule: React.FC = () => {
       mobile_no_watsapp: answer[10],
       email_id: email,
     };
-    postData(`${"student_contact/add"}`, payload)
+    postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
           toast.success(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -343,19 +342,19 @@ const NewModule: React.FC = () => {
       city: answers[18],
       district: answers[17],
       pincode: answers[19],
-      address_type: "current",
+      address_type: 'current',
     };
     console.log(payload);
-    postData("/student_address/add", payload).then((response) => {
+    postData('/student_address/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Address information saved successfully", {
+        toast.success('Address information saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -370,19 +369,19 @@ const NewModule: React.FC = () => {
       course_id: selectCourse,
       starting_date: answers[13],
       ending_date: answers[14],
-      learning_style: "any",
+      learning_style: 'any',
     };
     console.log(payload);
-    postData("/student_academic_history/add", payload).then((response) => {
+    postData('/student_academic_history/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Academic hinstory information saved successfully", {
+        toast.success('Academic hinstory information saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -398,16 +397,16 @@ const NewModule: React.FC = () => {
       preference: answers[24],
       score_in_percentage: answers[25],
     };
-    postData("/subject_preference/add", payload).then((response) => {
+    postData('/subject_preference/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Subject Preference information saved successfully", {
+        toast.success('Subject Preference information saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -441,16 +440,16 @@ const NewModule: React.FC = () => {
       hobby_id: selectedHobby,
     };
 
-    postData("student_hobby/add", payload).then((response) => {
+    postData('student_hobby/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Your hobbies saved successfully", {
+        toast.success('Your hobbies saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -464,23 +463,23 @@ const NewModule: React.FC = () => {
       proficiency: answers[28],
     };
     console.log(payload);
-    postData("student_language_known/add", payload).then((response) => {
+    postData('student_language_known/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Your language saved successfully", {
+        toast.success('Your language saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
   };
 
   const viewProfile = () => {
-    navigate("/main/StudentProfile");
+    navigate('/main/StudentProfile');
   };
 
   const proceedToNextSection = (currentSection: string) => {
@@ -490,13 +489,13 @@ const NewModule: React.FC = () => {
         ...messages,
         {
           text: `Do you want to add ${nextSection} information?`,
-          type: "question",
+          type: 'question',
         },
       ]);
       setCurrentSection(null);
       setAnswers([]);
     } else {
-      alert("Thank you for completing the profile information!");
+      alert('Thank you for completing the profile information!');
     }
   };
 
@@ -516,7 +515,7 @@ const NewModule: React.FC = () => {
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: e.target.files[0].name, type: "answer" as const },
+        { text: e.target.files[0].name, type: 'answer' as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -525,7 +524,7 @@ const NewModule: React.FC = () => {
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as const,
+            type: 'question' as const,
           },
         ]);
       } else {
@@ -541,7 +540,7 @@ const NewModule: React.FC = () => {
   const handleDateChange = (newDate: Dayjs | null) => {
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
     console.log(currentQuestionIndex);
-    const datecheck: any = dayjs(newDate).format("DD/MM/YYYY");
+    const datecheck: any = dayjs(newDate).format('DD/MM/YYYY');
     if (hitcount % 2 === 0) {
       if (currentQuestionIndex == 14) {
         if (datecheck > answers[13]) {
@@ -551,7 +550,7 @@ const NewModule: React.FC = () => {
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as const },
+            { text: datecheck, type: 'answer' as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -560,7 +559,7 @@ const NewModule: React.FC = () => {
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as const,
+                type: 'question' as const,
               },
             ]);
           } else {
@@ -570,11 +569,11 @@ const NewModule: React.FC = () => {
           }
         } else {
           toast.error(
-            "Date of joining should be less than to the starting date of academic course",
+            'Date of joining should be less than to the starting date of academic course',
             {
               hideProgressBar: true,
-              theme: "colored",
-            }
+              theme: 'colored',
+            },
           );
         }
       } else {
@@ -584,7 +583,7 @@ const NewModule: React.FC = () => {
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as const },
+          { text: datecheck, type: 'answer' as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -593,7 +592,7 @@ const NewModule: React.FC = () => {
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as const,
+              type: 'question' as const,
             },
           ]);
         } else {
@@ -609,14 +608,14 @@ const NewModule: React.FC = () => {
   };
 
   const answerSaveandGotoNextquestoin = (
-    e: KeyboardEvent<HTMLInputElement>
+    e: KeyboardEvent<HTMLInputElement>,
   ) => {
     const currentQuestions = initialQuestions[currentSection!];
 
-    if (answers[currentQuestionIndex]?.trim() !== "") {
+    if (answers[currentQuestionIndex]?.trim() !== '') {
       const updatedMessages = [
         ...messages,
-        { text: answers[currentQuestionIndex], type: "answer" as const },
+        { text: answers[currentQuestionIndex], type: 'answer' as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -625,7 +624,7 @@ const NewModule: React.FC = () => {
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as const,
+            type: 'question' as const,
           },
         ]);
 
@@ -653,24 +652,24 @@ const NewModule: React.FC = () => {
   };
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       if (currentQuestionIndex == 10 || currentQuestionIndex == 9) {
         if (answers[currentQuestionIndex].length == 10) {
           answerSaveandGotoNextquestoin(e);
         } else {
-          toast.error("Please enter valid 10 digit mobile number", {
+          toast.error('Please enter valid 10 digit mobile number', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       } else if (currentQuestionIndex == 19) {
         if (answers[currentQuestionIndex].length == 6) {
           answerSaveandGotoNextquestoin(e);
         } else {
-          toast.error("Please enter valid 6 digit pincode", {
+          toast.error('Please enter valid 6 digit pincode', {
             hideProgressBar: true,
-            theme: "colores",
+            theme: 'colores',
           });
         }
       } else {
@@ -684,12 +683,12 @@ const NewModule: React.FC = () => {
     console.log(value);
     // Move to the next question
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = "+" + value;
+    updatedAnswers[currentQuestionIndex] = '+' + value;
     setAnswers(updatedAnswers);
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "+" + value, type: "answer" as const },
+      { text: '+' + value, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -698,7 +697,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -716,7 +715,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -725,7 +724,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -743,7 +742,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -752,7 +751,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -770,7 +769,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -779,7 +778,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -797,7 +796,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -806,7 +805,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -824,7 +823,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -833,7 +832,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -867,7 +866,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as const },
+      { text: selectedOption.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -876,7 +875,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -894,7 +893,7 @@ const NewModule: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as const },
+      { text: selectedOption.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -903,7 +902,7 @@ const NewModule: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -923,11 +922,11 @@ const NewModule: React.FC = () => {
         className="chat-box"
         ref={chatBoxRef}
         style={{
-          height: "400px",
-          float: "right",
-          position: "relative",
-          paddingBottom: "80px",
-          overflow: "auto",
+          height: '400px',
+          float: 'right',
+          position: 'relative',
+          paddingBottom: '80px',
+          overflow: 'auto',
         }}
       >
         {messages.map((message, index) => (
@@ -937,13 +936,13 @@ const NewModule: React.FC = () => {
           >
             <div
               className={`message-bubble p-3 ${
-                message.type === "question" ? "left" : "right"
+                message.type === 'question' ? 'left' : 'right'
               }`}
               style={{
-                maxWidth: "100%",
+                maxWidth: '100%',
                 backgroundColor:
-                  message.type === "question" ? "#f1f1f1" : "#cce5ff",
-                color: message.type === "question" ? "#000" : "#004085",
+                  message.type === 'question' ? '#f1f1f1' : '#cce5ff',
+                color: message.type === 'question' ? '#000' : '#004085',
               }}
             >
               {message.text}
@@ -964,17 +963,17 @@ const NewModule: React.FC = () => {
             />
           ) : currentQuestionIndex === 8 ? (
             <PhoneInput
-              country={"in"}
+              country={'in'}
               value={phone}
               onChange={handlePhoneChange}
               inputProps={{
-                name: "phone",
+                name: 'phone',
                 required: true,
                 autoFocus: true,
               }}
               enableSearch={true}
               disableDropdown={false}
-              preferredCountries={["us", "in"]}
+              preferredCountries={['us', 'in']}
             />
           ) : currentQuestionIndex === 7 ? (
             <input
@@ -1045,7 +1044,7 @@ const NewModule: React.FC = () => {
           ) : currentQuestionIndex + 1 === initialQuestions.basic.length ? (
             <Button
               onClick={viewProfile}
-              style={{ display: "block", margin: "0 auto" }}
+              style={{ display: 'block', margin: '0 auto' }}
             >
               View Profile
             </Button>
@@ -1054,7 +1053,7 @@ const NewModule: React.FC = () => {
               type="text"
               className="form-control"
               placeholder="Type your answer and press Enter"
-              value={answers[currentQuestionIndex] || ""}
+              value={answers[currentQuestionIndex] || ''}
               onChange={handleAnswerChange}
               onKeyPress={handleKeyPress}
             />

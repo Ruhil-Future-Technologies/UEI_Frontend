@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Department/Department.scss";
-import TextField from "@mui/material/TextField";
-import { Typography } from "@mui/material";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_DEPARTMENT } from "../../utils/const";
-import { toast } from "react-toastify";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Department/Department.scss';
+import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_DEPARTMENT } from '../../utils/const';
+import { toast } from 'react-toastify';
 import {
   DepartmentRep0oDTO,
   MenuListinter,
-} from "../../Components/Table/columns";
+} from '../../Components/Table/columns';
 import {
   Field,
   Form,
   Formik,
   FormikProps,
   setNestedObjectValues,
-} from "formik";
-import * as Yup from "yup";
-import { dataaccess, inputfield, inputfieldtext } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from 'formik';
+import * as Yup from 'yup';
+import { dataaccess, inputfield, inputfieldtext } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const AddEditDepartment = () => {
   const context = useContext(NameContext);
@@ -32,13 +32,13 @@ const AddEditDepartment = () => {
   const { id } = useParams();
   // const userdata = JSON?.parse(localStorage?.getItem('userdata') || '')
 
-  const parseruserdata = localStorage?.getItem("userdata");
+  const parseruserdata = localStorage?.getItem('userdata');
   const userdata = parseruserdata ? JSON.parse(parseruserdata) : null;
-  const [department, setDepartment] = useState<string | null>("");
+  const [department, setDepartment] = useState<string | null>('');
   const formRef = useRef<FormikProps<{ department_name: string | null }>>(null);
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
@@ -46,7 +46,7 @@ const AddEditDepartment = () => {
 
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -54,22 +54,22 @@ const AddEditDepartment = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/Department");
+    navigator('/main/Department');
   }
 
   const callAPI = async () => {
     if (id) {
-      getData(`${DepartmentEditURL}${id ? `/${id}` : ""}`)
+      getData(`${DepartmentEditURL}${id ? `/${id}` : ''}`)
         .then((data: { data: DepartmentRep0oDTO }) => {
           setDepartment(data?.data?.department_name);
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -81,7 +81,7 @@ const AddEditDepartment = () => {
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setDepartment(e.target.value);
-    formRef?.current?.setFieldValue("department_name", e.target.value);
+    formRef?.current?.setFieldValue('department_name', e.target.value);
     const err = await formRef?.current?.validateForm();
     if (err && Object.keys(err).length > 0) {
       formRef?.current?.setErrors(err);
@@ -98,25 +98,25 @@ const AddEditDepartment = () => {
       putData(`${DepartmentEditURL}/${id}`, payload)
         .then((data: { status: number; message: string }) => {
           if (data.status === 200) {
-            navigator("/main/Department");
+            navigator('/main/Department');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -126,23 +126,23 @@ const AddEditDepartment = () => {
             // navigator('/main/Department')
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
-            setDepartment("");
+            setDepartment('');
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -150,15 +150,15 @@ const AddEditDepartment = () => {
 
   const departmentSchema = Yup.object().shape({
     department_name: Yup.string()
-      .required("Please enter Department name")
+      .required('Please enter Department name')
       .test(
-        "not-whitespace",
-        "Please enter a valid Department name; whitespace is not allowed.",
-        (value: any) => value && value?.trim().length > 0
+        'not-whitespace',
+        'Please enter a valid Department name; whitespace is not allowed.',
+        (value: any) => value && value?.trim().length > 0,
       )
       .matches(
         /^[a-zA-Z\s]*$/,
-        "Please enter a valid Department name only characters allowed."
+        'Please enter a valid Department name only characters allowed.',
       ),
   });
 
@@ -168,7 +168,7 @@ const AddEditDepartment = () => {
         <div className="card p-lg-3">
           <div className="card-body">
             <Typography variant="h6" className="mb-3">
-              <div className="main_title">{id ? "Edit" : "Add"} Department</div>
+              <div className="main_title">{id ? 'Edit' : 'Add'} Department</div>
             </Typography>
             <Formik
               // onSubmit={(formData) => handleSubmit(formData)}
@@ -208,7 +208,7 @@ const AddEditDepartment = () => {
                           }}
                         />
                         {touched?.department_name && errors?.department_name ? (
-                          <p style={{ color: "red" }}>
+                          <p style={{ color: 'red' }}>
                             {errors?.department_name}
                           </p>
                         ) : (
@@ -218,7 +218,7 @@ const AddEditDepartment = () => {
                     </div>
                   </div>
                   <button className="btn btn-primary mainbutton">
-                    {id ? "Update" : "Save"}
+                    {id ? 'Update' : 'Save'}
                   </button>
                 </Form>
               )}

@@ -5,21 +5,21 @@ import React, {
   KeyboardEvent,
   useEffect,
   useRef,
-} from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./stylechat.css"; // Import your CSS file
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-import Select from "react-select";
-import { Country, State } from "country-state-city";
-import { QUERY_KEYS_STUDENT } from "../../utils/const";
+} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './stylechat.css'; // Import your CSS file
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import Select from 'react-select';
+import { Country, State } from 'country-state-city';
+import { QUERY_KEYS_STUDENT } from '../../utils/const';
 
 interface Institute {
   id: number;
@@ -56,29 +56,29 @@ interface Option {
 }
 
 const ProfileChat: React.FC = () => {
-  const StudentId = localStorage.getItem("_id");
-  const usertype = localStorage.getItem("user_type");
+  const StudentId = localStorage.getItem('_id');
+  const usertype = localStorage.getItem('user_type');
   const { getData, postData, postFileData } = useApi();
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState('');
   const navigate = useNavigate();
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [currentSection, setCurrentSection] = useState<string | null>("basic");
+  const [currentSection, setCurrentSection] = useState<string | null>('basic');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [messages, setMessages] = useState<
-    { text: string; type: "question" | "answer" }[]
+    { text: string; type: 'question' | 'answer' }[]
   >([]);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
-  const [selectedHobby, setSelectedHobby] = useState<any>("");
-  const [selectedLanguage, setSelectedLanguage] = useState<any>("");
-  const [selectedproficiency, setSelectedproficiency] = useState<any>("");
-  const [selectedInstitute, setSelectedInstitute] = useState<any>("");
-  const [selectCourse, setSelectedCourse] = useState<any>("");
-  const [selectSubject, setSelectedSubject] = useState<any>("");
+  const [selectedHobby, setSelectedHobby] = useState<any>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<any>('');
+  const [selectedproficiency, setSelectedproficiency] = useState<any>('');
+  const [selectedInstitute, setSelectedInstitute] = useState<any>('');
+  const [selectCourse, setSelectedCourse] = useState<any>('');
+  const [selectSubject, setSelectedSubject] = useState<any>('');
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedstate, setSelectedState] = useState(null);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
@@ -92,46 +92,46 @@ const ProfileChat: React.FC = () => {
   const [per, setper] = useState(false);
 
   const errordata = [
-    "Please enter a valid Full Name only characters allowed.",
-    "please enter valid gender",
-    "",
-    "Please enter a valid Mother Name only characters allowed.",
-    "Please enter a valid Father Name only characters allowed.",
-    "",
-    "",
-    "",
-    "",
-    "mobile number should be 10 digits",
-    "WhatsApp number should be 10 digits",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "Please enter a valid district Name only characters allowed.",
-    "Please enter a valid City Name only characters allowed.",
-    "Please enter a valid pincode only Number allowed.",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "Please enter a valid presentage.",
+    'Please enter a valid Full Name only characters allowed.',
+    'please enter valid gender',
+    '',
+    'Please enter a valid Mother Name only characters allowed.',
+    'Please enter a valid Father Name only characters allowed.',
+    '',
+    '',
+    '',
+    '',
+    'mobile number should be 10 digits',
+    'WhatsApp number should be 10 digits',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'Please enter a valid district Name only characters allowed.',
+    'Please enter a valid City Name only characters allowed.',
+    'Please enter a valid pincode only Number allowed.',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'Please enter a valid presentage.',
   ];
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
-    if (usertype === "student") {
+    if (usertype === 'student') {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.status === 200) {
-            navigate("/main/Dashboard");
+            navigate('/main/Dashboard');
           }
         })
         .catch((e: any) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -143,47 +143,47 @@ const ProfileChat: React.FC = () => {
 
   const initialQuestions: { [key: string]: string[] } = {
     basic: [
-      "What is your full name?",
-      "What is your gender?",
-      "What is your DOB?",
+      'What is your full name?',
+      'What is your gender?',
+      'What is your DOB?',
       "What is your mother's names?",
       "What is your father's names?",
       "What is your guardian's names?",
-      "What is your main learning goal or interest for visiting our application?",
-      "Upload your profile picture",
-      "Please select your mobile number country code",
-      "What is your mobile number?",
-      "What is your WhatsApp number?",
-      "Hi! Please provide your academic information ! What is your course name?",
-      "What is your institute name?",
-      "When did you join this course?",
-      "When did you complete this course?",
-      "Please select your current country of residence",
-      "Which state do you currently reside in?",
-      "Which district do you currently live in?",
-      "Which city do you live in?",
-      "what is your pincode?",
-      "what is your first address?",
-      "what is your second address?",
-      "Hi,Please provide your subject preference information ! what is your course name to which your subject belongs?.",
-      "Select your preference Subject name",
-      "what is your prefrence?",
-      "Add your score in precentage",
-      "Hi,Please choose your hobbies",
-      "Select your known language",
-      "Proficiency of your Selected language",
-      "Thanks for providing your personal information",
+      'What is your main learning goal or interest for visiting our application?',
+      'Upload your profile picture',
+      'Please select your mobile number country code',
+      'What is your mobile number?',
+      'What is your WhatsApp number?',
+      'Hi! Please provide your academic information ! What is your course name?',
+      'What is your institute name?',
+      'When did you join this course?',
+      'When did you complete this course?',
+      'Please select your current country of residence',
+      'Which state do you currently reside in?',
+      'Which district do you currently live in?',
+      'Which city do you live in?',
+      'what is your pincode?',
+      'what is your first address?',
+      'what is your second address?',
+      'Hi,Please provide your subject preference information ! what is your course name to which your subject belongs?.',
+      'Select your preference Subject name',
+      'what is your prefrence?',
+      'Add your score in precentage',
+      'Hi,Please choose your hobbies',
+      'Select your known language',
+      'Proficiency of your Selected language',
+      'Thanks for providing your personal information',
     ],
   };
 
-  const sectionOrder = ["basic"];
+  const sectionOrder = ['basic'];
 
   const getSubject = async () => {
-    getData("/subject/list")
+    getData('/subject/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setSubjects(filteredData || []);
         }
@@ -191,7 +191,7 @@ const ProfileChat: React.FC = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -200,14 +200,14 @@ const ProfileChat: React.FC = () => {
   useEffect(() => {
     if (currentSection) {
       setMessages([
-        { text: initialQuestions[currentSection][0], type: "question" },
+        { text: initialQuestions[currentSection][0], type: 'question' },
       ]);
     }
-    getData("/institution/list")
+    getData('/institution/list')
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setInstitutes(filteredData || []);
         }
@@ -215,15 +215,15 @@ const ProfileChat: React.FC = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData("/course/list")
+    getData('/course/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setCourses(filteredData || []);
         }
@@ -231,15 +231,15 @@ const ProfileChat: React.FC = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData("hobby/list")
+    getData('hobby/list')
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllHobbies(filteredData || []);
           // setAllHobbies(data?.data);
@@ -248,15 +248,15 @@ const ProfileChat: React.FC = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData("language/list")
+    getData('language/list')
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
@@ -265,7 +265,7 @@ const ProfileChat: React.FC = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
@@ -281,7 +281,7 @@ const ProfileChat: React.FC = () => {
 
   const saveAnswersforBasic = (answers: string[]) => {
     const fullName = answers[0];
-    const nameParts: string[] = fullName.split(" ");
+    const nameParts: string[] = fullName.split(' ');
     const firstname = nameParts[0];
     const lastname = nameParts[1];
     const payload = {
@@ -297,55 +297,55 @@ const ProfileChat: React.FC = () => {
       aim: answers[6],
     };
     // postData(`${"student/add"}`, payload)
-    postData(`${"student/add"}`, payload)
+    postData(`${'student/add'}`, payload)
       .then((data: any) => {
         if (data.status === 200) {
           const formData = new FormData();
           const nfile: any = uploadedFile;
-          formData.append("file", nfile);
+          formData.append('file', nfile);
 
-          if (formData.has("file")) {
-            postFileData(`${"upload_file/upload"}`, formData)
+          if (formData.has('file')) {
+            postFileData(`${'upload_file/upload'}`, formData)
               .then((data: any) => {
                 if (data?.status === 200) {
                   toast.success(data?.message, {
                     hideProgressBar: true,
-                    theme: "colored",
+                    theme: 'colored',
                   });
                 } else if (data?.status === 404) {
                   toast.error(data?.message, {
                     hideProgressBar: true,
-                    theme: "colored",
+                    theme: 'colored',
                   });
                 } else {
                   toast.error(data?.message, {
                     hideProgressBar: true,
-                    theme: "colored",
+                    theme: 'colored',
                   });
                 }
               })
               .catch((e) => {
                 toast.error(e?.message, {
                   hideProgressBar: true,
-                  theme: "colored",
+                  theme: 'colored',
                 });
               });
           }
-          toast.success("Basic information saved successfully", {
+          toast.success('Basic information saved successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -355,7 +355,7 @@ const ProfileChat: React.FC = () => {
     // const phoneNum = contfullPhone.split(" ");
     // const contfullPhonewtsp = answer[9];
     // const phoneNumwtsp = contfullPhonewtsp.split(" ");
-    const email = localStorage.getItem("userid");
+    const email = localStorage.getItem('userid');
 
     const payload = {
       student_id: StudentId,
@@ -365,24 +365,24 @@ const ProfileChat: React.FC = () => {
       mobile_no_watsapp: answer[10],
       email_id: email,
     };
-    postData(`${"student_contact/add"}`, payload)
+    postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
           toast.success(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -400,18 +400,18 @@ const ProfileChat: React.FC = () => {
       city: answers[18],
       district: answers[17],
       pincode: answers[19],
-      address_type: "current",
+      address_type: 'current',
     };
-    postData("/student_address/add", payload).then((response) => {
+    postData('/student_address/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Address information saved successfully", {
+        toast.success('Address information saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -424,18 +424,18 @@ const ProfileChat: React.FC = () => {
       course_id: selectCourse,
       starting_date: answers[13],
       ending_date: answers[14],
-      learning_style: "any",
+      learning_style: 'any',
     };
-    postData("/student_academic_history/add", payload).then((response) => {
+    postData('/student_academic_history/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Academic hinstory information saved successfully", {
+        toast.success('Academic hinstory information saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -449,32 +449,32 @@ const ProfileChat: React.FC = () => {
       preference: answers[24],
       score_in_percentage: answers[25],
     };
-    postData("/subject_preference/add", payload).then((response) => {
+    postData('/subject_preference/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Subject Preference information saved successfully", {
+        toast.success('Subject Preference information saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
   };
   const proficiency = [
     {
-      lable: "read",
-      value: "read",
+      lable: 'read',
+      value: 'read',
     },
     {
-      lable: "write",
-      value: "write",
+      lable: 'write',
+      value: 'write',
     },
     {
-      lable: "both",
-      value: "both",
+      lable: 'both',
+      value: 'both',
     },
   ];
   const hobbyOptions = allHobbies.map((option) => ({
@@ -508,16 +508,16 @@ const ProfileChat: React.FC = () => {
       hobby_id: selectedHobby,
     };
 
-    postData("student_hobby/add", payload).then((response) => {
+    postData('student_hobby/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Your hobbies saved successfully", {
+        toast.success('Your hobbies saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -529,23 +529,23 @@ const ProfileChat: React.FC = () => {
       language_id: selectedLanguage,
       proficiency: selectedproficiency,
     };
-    postData("student_language_known/add", payload).then((response) => {
+    postData('student_language_known/add', payload).then((response) => {
       if (response.status === 200) {
-        toast.success("Your language saved successfully", {
+        toast.success('Your language saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
         toast.error(response?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
   };
 
   const viewProfile = () => {
-    navigate("/main/StudentProfile");
+    navigate('/main/StudentProfile');
   };
 
   const proceedToNextSection = (currentSection: string) => {
@@ -555,13 +555,13 @@ const ProfileChat: React.FC = () => {
         ...messages,
         {
           text: `Do you want to add ${nextSection} information?`,
-          type: "question",
+          type: 'question',
         },
       ]);
       setCurrentSection(null);
       setAnswers([]);
     } else {
-      alert("Thank you for completing the profile information!");
+      alert('Thank you for completing the profile information!');
     }
   };
 
@@ -580,7 +580,7 @@ const ProfileChat: React.FC = () => {
     }
     if (currentQuestionIndex === 1) {
       const gender = updatedAnswers[1].toLowerCase();
-      if (gender !== "male" && gender !== "female") {
+      if (gender !== 'male' && gender !== 'female') {
         // You can set an error state here if needed
         setGenderError(true);
         return;
@@ -689,7 +689,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "", type: "answer" as const },
+      { text: '', type: 'answer' as const },
     ];
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -697,7 +697,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -716,7 +716,7 @@ const ProfileChat: React.FC = () => {
       const currentQuestions = initialQuestions[currentSection!];
       const updatedMessages = [
         ...messages,
-        { text: e.target.files[0].name, type: "answer" as const },
+        { text: e.target.files[0].name, type: 'answer' as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -725,7 +725,7 @@ const ProfileChat: React.FC = () => {
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as const,
+            type: 'question' as const,
           },
         ]);
       } else {
@@ -739,7 +739,7 @@ const ProfileChat: React.FC = () => {
   let hitcount = 1;
 
   const handleclickdate = () => {
-    console.log("test ss", datecheck);
+    console.log('test ss', datecheck);
     if (datecheck) {
       if (currentQuestionIndex == 14) {
         if (datecheck > answers[13]) {
@@ -749,7 +749,7 @@ const ProfileChat: React.FC = () => {
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as const },
+            { text: datecheck, type: 'answer' as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -758,7 +758,7 @@ const ProfileChat: React.FC = () => {
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as const,
+                type: 'question' as const,
               },
             ]);
           } else {
@@ -768,11 +768,11 @@ const ProfileChat: React.FC = () => {
           }
         } else {
           toast.error(
-            "Date of joining should be less than to the starting date of academic course",
+            'Date of joining should be less than to the starting date of academic course',
             {
               hideProgressBar: true,
-              theme: "colored",
-            }
+              theme: 'colored',
+            },
           );
         }
       } else {
@@ -782,7 +782,7 @@ const ProfileChat: React.FC = () => {
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as const },
+          { text: datecheck, type: 'answer' as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -791,7 +791,7 @@ const ProfileChat: React.FC = () => {
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as const,
+              type: 'question' as const,
             },
           ]);
         } else {
@@ -805,7 +805,7 @@ const ProfileChat: React.FC = () => {
 
   const handleDateChange = (newDate: Dayjs | null) => {
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
-    datecheck = dayjs(newDate).format("DD/MM/YYYY");
+    datecheck = dayjs(newDate).format('DD/MM/YYYY');
 
     if (hitcount % 2 === 0) {
       if (currentQuestionIndex == 14) {
@@ -816,7 +816,7 @@ const ProfileChat: React.FC = () => {
           const currentQuestions = initialQuestions[currentSection!];
           const updatedMessages = [
             ...messages,
-            { text: datecheck, type: "answer" as const },
+            { text: datecheck, type: 'answer' as const },
           ];
 
           if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -825,7 +825,7 @@ const ProfileChat: React.FC = () => {
               ...updatedMessages,
               {
                 text: currentQuestions[currentQuestionIndex + 1],
-                type: "question" as const,
+                type: 'question' as const,
               },
             ]);
           } else {
@@ -835,11 +835,11 @@ const ProfileChat: React.FC = () => {
           }
         } else {
           toast.error(
-            "Date of joining should be less than to the starting date of academic course",
+            'Date of joining should be less than to the starting date of academic course',
             {
               hideProgressBar: true,
-              theme: "colored",
-            }
+              theme: 'colored',
+            },
           );
         }
       } else {
@@ -849,7 +849,7 @@ const ProfileChat: React.FC = () => {
         const currentQuestions = initialQuestions[currentSection!];
         const updatedMessages = [
           ...messages,
-          { text: datecheck, type: "answer" as const },
+          { text: datecheck, type: 'answer' as const },
         ];
 
         if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -858,7 +858,7 @@ const ProfileChat: React.FC = () => {
             ...updatedMessages,
             {
               text: currentQuestions[currentQuestionIndex + 1],
-              type: "question" as const,
+              type: 'question' as const,
             },
           ]);
         } else {
@@ -873,13 +873,13 @@ const ProfileChat: React.FC = () => {
   };
 
   const answerSaveandGotoNextquestoin = (
-    e: KeyboardEvent<HTMLInputElement>
+    e: KeyboardEvent<HTMLInputElement>,
   ) => {
     const currentQuestions = initialQuestions[currentSection!];
-    if (answers[currentQuestionIndex]?.trim() !== "") {
+    if (answers[currentQuestionIndex]?.trim() !== '') {
       const updatedMessages = [
         ...messages,
-        { text: answers[currentQuestionIndex], type: "answer" as const },
+        { text: answers[currentQuestionIndex], type: 'answer' as const },
       ];
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -888,7 +888,7 @@ const ProfileChat: React.FC = () => {
           ...updatedMessages,
           {
             text: currentQuestions[currentQuestionIndex + 1],
-            type: "question" as const,
+            type: 'question' as const,
           },
         ]);
 
@@ -902,7 +902,7 @@ const ProfileChat: React.FC = () => {
           saveAnswerforAddress([...answers, e.currentTarget.value]);
         } else if (answers.length === 26) {
           saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
-        } else if (selectedproficiency !== "") {
+        } else if (selectedproficiency !== '') {
           saveanswerForHobbeis();
           saveAnswerForLanguage();
         }
@@ -914,13 +914,13 @@ const ProfileChat: React.FC = () => {
     }
   };
   useEffect(() => {
-    if (selectedproficiency !== "") {
+    if (selectedproficiency !== '') {
       saveanswerForHobbeis();
       saveAnswerForLanguage();
     }
   }, [selectedproficiency]);
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       if (
         fullName ||
         genderError ||
@@ -939,18 +939,18 @@ const ProfileChat: React.FC = () => {
         if (answers[currentQuestionIndex].length == 10) {
           answerSaveandGotoNextquestoin(e);
         } else {
-          toast.error("Please enter valid 10 digit mobile number", {
+          toast.error('Please enter valid 10 digit mobile number', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       } else if (currentQuestionIndex == 19) {
         if (answers[currentQuestionIndex].length == 6) {
           answerSaveandGotoNextquestoin(e);
         } else {
-          toast.error("Please enter valid 6 digit pincode", {
+          toast.error('Please enter valid 6 digit pincode', {
             hideProgressBar: true,
-            theme: "colores",
+            theme: 'colores',
           });
         }
       } else {
@@ -962,12 +962,12 @@ const ProfileChat: React.FC = () => {
   const handlePhoneChange = (value: string) => {
     setPhone(value);
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = "+" + value;
+    updatedAnswers[currentQuestionIndex] = '+' + value;
     setAnswers(updatedAnswers);
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: "+" + value, type: "answer" as const },
+      { text: '+' + value, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -976,7 +976,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -994,7 +994,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1003,7 +1003,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1021,7 +1021,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1030,7 +1030,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1048,7 +1048,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1057,7 +1057,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
       // answerSaveandGotoNextquestoin(e)
@@ -1076,7 +1076,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1085,7 +1085,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1103,7 +1103,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1112,7 +1112,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1130,7 +1130,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: e.label, type: "answer" as const },
+      { text: e.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1139,7 +1139,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1174,7 +1174,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as const },
+      { text: selectedOption.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1183,7 +1183,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1201,7 +1201,7 @@ const ProfileChat: React.FC = () => {
     const currentQuestions = initialQuestions[currentSection!];
     const updatedMessages = [
       ...messages,
-      { text: selectedOption.label, type: "answer" as const },
+      { text: selectedOption.label, type: 'answer' as const },
     ];
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
@@ -1210,7 +1210,7 @@ const ProfileChat: React.FC = () => {
         ...updatedMessages,
         {
           text: currentQuestions[currentQuestionIndex + 1],
-          type: "question" as const,
+          type: 'question' as const,
         },
       ]);
     } else {
@@ -1229,11 +1229,11 @@ const ProfileChat: React.FC = () => {
         className="chat-box"
         ref={chatBoxRef}
         style={{
-          height: "400px",
-          float: "right",
-          position: "relative",
-          paddingBottom: "80px",
-          overflow: "auto",
+          height: '400px',
+          float: 'right',
+          position: 'relative',
+          paddingBottom: '80px',
+          overflow: 'auto',
         }}
       >
         {messages.map((message, index) => (
@@ -1243,13 +1243,13 @@ const ProfileChat: React.FC = () => {
           >
             <div
               className={`message-bubble p-3 ${
-                message.type === "question" ? "left" : "right"
+                message.type === 'question' ? 'left' : 'right'
               }`}
               style={{
-                maxWidth: "100%",
+                maxWidth: '100%',
                 backgroundColor:
-                  message.type === "question" ? "#f1f1f1" : "#cce5ff",
-                color: message.type === "question" ? "#000" : "#004085",
+                  message.type === 'question' ? '#f1f1f1' : '#cce5ff',
+                color: message.type === 'question' ? '#000' : '#004085',
               }}
             >
               {message.text}
@@ -1269,7 +1269,7 @@ const ProfileChat: React.FC = () => {
               distic ||
               pincode ||
               per) && (
-              <p style={{ color: "red" }}>{errordata[currentQuestionIndex]}</p>
+              <p style={{ color: 'red' }}>{errordata[currentQuestionIndex]}</p>
             )}
             {currentQuestionIndex === 11 || currentQuestionIndex === 22 ? (
               <Select
@@ -1282,11 +1282,11 @@ const ProfileChat: React.FC = () => {
               />
             ) : currentQuestionIndex === 8 ? (
               <PhoneInput
-                country={""}
+                country={''}
                 value={phone}
                 onChange={handlePhoneChange}
                 inputProps={{
-                  name: "phone",
+                  name: 'phone',
                   required: true,
                   autoFocus: true,
                   readOnly: true,
@@ -1294,7 +1294,7 @@ const ProfileChat: React.FC = () => {
                 placeholder=""
                 enableSearch={true}
                 disableDropdown={false}
-                preferredCountries={["us", "in"]}
+                preferredCountries={['us', 'in']}
               />
             ) : currentQuestionIndex === 7 ? (
               <>
@@ -1303,7 +1303,7 @@ const ProfileChat: React.FC = () => {
                   className="form-control"
                   onChange={handleFileUpload}
                 />
-                <p style={{ cursor: "pointer" }} onClick={handleSkip}>
+                <p style={{ cursor: 'pointer' }} onClick={handleSkip}>
                   Skip
                 </p>
               </>
@@ -1329,16 +1329,16 @@ const ProfileChat: React.FC = () => {
               currentQuestionIndex === 13 ||
               currentQuestionIndex === 14 ? (
               <>
-                <div style={{ display: "flex" }}>
-                  <div style={{ width: "100%" }}>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '100%' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         label={
                           currentQuestionIndex === 13
-                            ? "Date of join"
+                            ? 'Date of join'
                             : currentQuestionIndex === 14
-                            ? "Date of complete"
-                            : "Date of Birth"
+                              ? 'Date of complete'
+                              : 'Date of Birth'
                         }
                         onChange={handleDateChange}
                         disableFuture
@@ -1403,7 +1403,7 @@ const ProfileChat: React.FC = () => {
             ) : currentQuestionIndex + 1 === initialQuestions.basic.length ? (
               <Button
                 onClick={viewProfile}
-                style={{ display: "block", margin: "0 auto" }}
+                style={{ display: 'block', margin: '0 auto' }}
               >
                 View Profile
               </Button>
@@ -1412,7 +1412,7 @@ const ProfileChat: React.FC = () => {
                 type="text"
                 className="form-control"
                 placeholder="Type your answer and press Enter"
-                value={answers[currentQuestionIndex] || ""}
+                value={answers[currentQuestionIndex] || ''}
                 onChange={handleAnswerChange}
                 onKeyPress={handleKeyPress}
               />

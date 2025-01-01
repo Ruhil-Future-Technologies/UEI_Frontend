@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import {
   Card,
   CardContent,
@@ -23,31 +23,28 @@ import {
   TextField,
   Theme,
   useTheme,
-} from "@mui/material";
-import {
-  LocalizationProvider,
-  DatePicker,
-} from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useState, useEffect } from "react";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
+} from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useState, useEffect } from 'react';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
 
 interface Department {
   id: number;
   department_name: string;
 }
 const steps = [
-  "Admin Basic Information",
-  "Admin Address",
-  "Language know",
-  "Admin Description",
-  "Admin Contact Dtails",
-  "Admin Profession",
+  'Admin Basic Information',
+  'Admin Address',
+  'Language know',
+  'Admin Description',
+  'Admin Contact Dtails',
+  'Admin Profession',
 ];
 
-const adminId = localStorage.getItem("_id");
+const adminId = localStorage.getItem('_id');
 console.log(adminId);
 export default function AdminProfileMgt() {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -75,7 +72,7 @@ export default function AdminProfileMgt() {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
@@ -94,14 +91,14 @@ export default function AdminProfileMgt() {
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
               color="inherit"
               disabled={activeStep === 0}
@@ -110,9 +107,9 @@ export default function AdminProfileMgt() {
             >
               Previous
             </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
+            <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
           <Typography sx={{ mt: 2, mb: 1 }}>
@@ -133,17 +130,17 @@ export default function AdminProfileMgt() {
 function AdminAddress() {
   const { getData, postData } = useApi();
 
-  const [address1, setAddress1] = useState("");
-  const [address2, setAddress2] = useState("");
-  const [addressType, setAddressType] = useState("current_address");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [district, setDistrict] = useState("");
-  const [city, setCity] = useState("");
-  const [pinNo, setPinNo] = useState("");
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [addressType, setAddressType] = useState('current_address');
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+  const [district, setDistrict] = useState('');
+  const [city, setCity] = useState('');
+  const [pinNo, setPinNo] = useState('');
 
   useEffect(() => {
-    getData("admin_address/edit/" + adminId).then((data: any) => {
+    getData('admin_address/edit/' + adminId).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setAddress1(data?.data.address1);
@@ -160,7 +157,7 @@ function AdminAddress() {
 
   const submitHandle = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("working");
+    console.log('working');
     const paylod = {
       admin_id: adminId,
       address1: address1,
@@ -173,12 +170,12 @@ function AdminAddress() {
       address_type: addressType,
     };
     //console.log(paylod)
-    postData("admin_address/add", paylod).then((data: any) => {
+    postData('admin_address/add', paylod).then((data: any) => {
       console.log(data);
       if (data?.state === 200) {
-        toast.success("address saved", {
+        toast.success('address saved', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -288,7 +285,7 @@ function AdminAddress() {
               onChange={(event) => setPinNo(event.target.value)}
             />
           </div>
-          <div className="col-1" style={{ marginTop: "28px" }}>
+          <div className="col-1" style={{ marginTop: '28px' }}>
             <button className="btn btn-primary">save</button>
           </div>
         </div>
@@ -300,23 +297,23 @@ function AdminAddress() {
 function AdminBasicInfo() {
   const { getData, postData } = useApi();
 
-  const [adminFName, setAdminFName] = useState("");
-  const [adminLName, setAdminLName] = useState("");
-  const [adminGender, setAdminGender] = useState("Male");
-//   const [adminDOB, setAdminDOB] = useState("");
-  const [adminFatherName, setAdminFatherName] = useState("");
-  const [adminMotherName, setAdminMotherName] = useState("");
-  const [adminGurdian, setAdminGurdian] = useState("");
+  const [adminFName, setAdminFName] = useState('');
+  const [adminLName, setAdminLName] = useState('');
+  const [adminGender, setAdminGender] = useState('Male');
+  //   const [adminDOB, setAdminDOB] = useState("");
+  const [adminFatherName, setAdminFatherName] = useState('');
+  const [adminMotherName, setAdminMotherName] = useState('');
+  const [adminGurdian, setAdminGurdian] = useState('');
   //const [adminPicPath,setAdminPicPath]=React.useState();
   const [allDepartment, setAllDepartment] = useState<Department[]>([
-    { id: 0, department_name: "" },
+    { id: 0, department_name: '' },
   ]);
-  const [adminDepartment, setAdminDepartment] = useState<string>("");
-  const adminId = localStorage.getItem("_id");
+  const [adminDepartment, setAdminDepartment] = useState<string>('');
+  const adminId = localStorage.getItem('_id');
   console.log(adminId);
 
   useEffect(() => {
-    getData(`${"admin_basicinfo/edit/" + adminId}`).then((data: any) => {
+    getData(`${'admin_basicinfo/edit/' + adminId}`).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setAdminFName(data?.data.first_name);
@@ -329,10 +326,10 @@ function AdminBasicInfo() {
         setAdminDepartment(data?.data.department_id);
         setSelectedFile(data?.data.pic_path);
       } else {
-        console.log("error comes from api");
+        console.log('error comes from api');
       }
     });
-    getData(`${"department/list"}`).then((data: any) => {
+    getData(`${'department/list'}`).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setAllDepartment(data?.data);
@@ -340,7 +337,7 @@ function AdminBasicInfo() {
       }
     });
   }, []);
-  const [selectedFile, setSelectedFile] = React.useState("");
+  const [selectedFile, setSelectedFile] = React.useState('');
 
   const handleDepartmentChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value as string;
@@ -356,19 +353,19 @@ function AdminBasicInfo() {
       first_name: adminFName,
       last_name: adminLName,
       gender: adminGender,
-      dob: "2024-05-13",
+      dob: '2024-05-13',
       father_name: adminFatherName,
       mother_name: adminMotherName,
       guardian_name: adminGurdian,
       is_kyc_verified: true,
       pic_path: selectedFile,
     };
-    postData("admin_basicinfo/add", paylod).then((data: any) => {
+    postData('admin_basicinfo/add', paylod).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
-        toast.success("info saved successfully", {
+        toast.success('info saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -422,7 +419,7 @@ function AdminBasicInfo() {
         </div>
         <div className="col-4">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
+            <DemoContainer components={['DatePicker']}>
               <DatePicker label="Basic date picker" />
             </DemoContainer>
           </LocalizationProvider>
@@ -535,16 +532,16 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 function AdminLenguage() {
   const lenaguage = [
-    "Hindi",
-    "English",
-    "Spanish",
-    "Bengali",
-    "Portuguese",
-    "Russian",
-    "Japanese",
-    "Marathi",
-    "Telugu",
-    "Tamil",
+    'Hindi',
+    'English',
+    'Spanish',
+    'Bengali',
+    'Portuguese',
+    'Russian',
+    'Japanese',
+    'Marathi',
+    'Telugu',
+    'Tamil',
   ];
 
   const theme = useTheme();
@@ -556,7 +553,7 @@ function AdminLenguage() {
     } = event;
     setPersonName(
       // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+      typeof value === 'string' ? value.split(',') : value,
     );
   };
 
@@ -574,10 +571,10 @@ function AdminLenguage() {
               return <em>Choose Language</em>;
             }
 
-            return selected.join(", ");
+            return selected.join(', ');
           }}
           MenuProps={MenuProps}
-          inputProps={{ "aria-label": "Without label" }}
+          inputProps={{ 'aria-label': 'Without label' }}
         >
           <MenuItem disabled value=""></MenuItem>
           {lenaguage.map((name) => (
@@ -597,10 +594,10 @@ function AdminLenguage() {
 
 function AdminDescription() {
   const { getData, postData } = useApi();
-  const [description, setDesctiption] = useState("");
+  const [description, setDesctiption] = useState('');
 
   useEffect(() => {
-    getData("admin_profile_description/edit/" + adminId).then((data: any) => {
+    getData('admin_profile_description/edit/' + adminId).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setDesctiption(data?.data.description);
@@ -614,12 +611,12 @@ function AdminDescription() {
       admin_id: adminId,
       description: description,
     };
-    postData("admin_profile_description/add", paylod).then((data: any) => {
+    postData('admin_profile_description/add', paylod).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
-        toast.success("description saved", {
+        toast.success('description saved', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -652,13 +649,13 @@ function AdminDescription() {
 
 function AdmincontactDtails() {
   const { getData, postData } = useApi();
-  const [contcodeWtsap, setContcodeWtsap] = useState("+91");
-  const [whatsappNum, setWhatsappNum] = useState("");
-  const [contcodePhone, setContcodePhone] = useState("+91");
-  const [phoneNum, setPhoneNum] = useState("");
-  const [email, setEmail] = useState("");
+  const [contcodeWtsap, setContcodeWtsap] = useState('+91');
+  const [whatsappNum, setWhatsappNum] = useState('');
+  const [contcodePhone, setContcodePhone] = useState('+91');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [email, setEmail] = useState('');
   useEffect(() => {
-    getData("admin_contact/edit/" + adminId).then((data: any) => {
+    getData('admin_contact/edit/' + adminId).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setContcodeWtsap(data?.data.mobile_isd_watsapp);
@@ -680,12 +677,12 @@ function AdmincontactDtails() {
       email_id: email,
     };
     console.log(paylod);
-    postData("admin_contact/add", paylod).then((data: any) => {
+    postData('admin_contact/add', paylod).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
-        toast.success("contact saved", {
+        toast.success('contact saved', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -706,9 +703,9 @@ function AdmincontactDtails() {
                 label="Country code"
                 onChange={(event) => setContcodeWtsap(event.target.value)}
               >
-                <MenuItem value={"+91"}>+91</MenuItem>
-                <MenuItem value={"+971"}>+971</MenuItem>
-                <MenuItem value={"+1"}>+1</MenuItem>
+                <MenuItem value={'+91'}>+91</MenuItem>
+                <MenuItem value={'+971'}>+971</MenuItem>
+                <MenuItem value={'+1'}>+1</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -722,7 +719,7 @@ function AdmincontactDtails() {
           </div>
         </div>
       </div>
-      <div className="d-flex justify-content-center" style={{ margin: "15px" }}>
+      <div className="d-flex justify-content-center" style={{ margin: '15px' }}>
         <div className="row">
           <div className="col">
             <FormControl fullWidth>
@@ -736,9 +733,9 @@ function AdmincontactDtails() {
                 label="Country code"
                 onChange={(event) => setContcodePhone(event.target.value)}
               >
-                <MenuItem value={"+91"}>+91</MenuItem>
-                <MenuItem value={"+971"}>+971</MenuItem>
-                <MenuItem value={"+1"}>+1</MenuItem>
+                <MenuItem value={'+91'}>+91</MenuItem>
+                <MenuItem value={'+971'}>+971</MenuItem>
+                <MenuItem value={'+1'}>+1</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -774,15 +771,15 @@ function AdminProfession() {
   const { getData, postData } = useApi();
   const [institude, setInstitude] = React.useState<
     [{ id: string; institution_name: string }]
-  >([{ id: "", institution_name: "" }]);
-  const [selectInstitude, setSelectInstitude] = React.useState("");
+  >([{ id: '', institution_name: '' }]);
+  const [selectInstitude, setSelectInstitude] = React.useState('');
   const [course, setCourse] = React.useState<
     [{ id: string; course_name: string }]
-  >([{ id: "", course_name: "" }]);
-  const [selectCourse, setSelectCourse] = React.useState("");
+  >([{ id: '', course_name: '' }]);
+  const [selectCourse, setSelectCourse] = React.useState('');
   const [subject, setSubject] =
     React.useState<[{ id: string; subject_name: string }]>();
-  const [selectSubject, setSelectSubject] = React.useState("");
+  const [selectSubject, setSelectSubject] = React.useState('');
   const handleInstiChange = (event: SelectChangeEvent<string>) => {
     setSelectInstitude(event.target.value);
   };
@@ -794,25 +791,25 @@ function AdminProfession() {
   };
 
   useEffect(() => {
-    getData("institution/list").then((data: any) => {
+    getData('institution/list').then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setInstitude(data?.data);
       }
     });
-    getData("course/list").then((data: any) => {
+    getData('course/list').then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setCourse(data?.data);
       }
     });
-    getData("subject/list").then((data: any) => {
+    getData('subject/list').then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setSubject(data?.data);
       }
     });
-    getData("admin_profession/edit/" + adminId).then((data: any) => {
+    getData('admin_profession/edit/' + adminId).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
         setSelectInstitude(data?.data.institution_id);
@@ -830,12 +827,12 @@ function AdminProfession() {
       subject_id: selectSubject,
     };
     console.log(paylod);
-    postData("admin_profession/add", paylod).then((data: any) => {
+    postData('admin_profession/add', paylod).then((data: any) => {
       console.log(data);
       if (data?.status === 200) {
-        toast.success("profession saved", {
+        toast.success('profession saved', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     });
@@ -905,7 +902,7 @@ function AdminProfession() {
           </FormControl>
         </div>
       </div>
-      <div className="row justify-content-center" style={{ marginTop: "50px" }}>
+      <div className="row justify-content-center" style={{ marginTop: '50px' }}>
         <div className="col-1">
           <button className="btn btn-primary">save</button>
         </div>

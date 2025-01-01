@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Form/Form.scss";
-import TextField from "@mui/material/TextField";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Form/Form.scss';
+import TextField from '@mui/material/TextField';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   QUERY_KEYS_FORM,
   QUERY_KEYS_MENU,
   QUERY_KEYS_SUBMENU,
-} from "../../utils/const";
+} from '../../utils/const';
 import {
   FormControl,
   FormControlLabel,
@@ -18,20 +18,20 @@ import {
   RadioGroup,
   Select,
   Typography,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import { Form, Formik, setNestedObjectValues } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
-import { routes } from "../NotFound/routesConfig";
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import { Form, Formik, setNestedObjectValues } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
+import { routes } from '../NotFound/routesConfig';
 import {
   dataaccess,
   fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface IForm {
   form_name: string;
@@ -56,11 +56,11 @@ const AddEditForm = () => {
   const FormNamePattern = /^[a-zA-Z\s]*$/;
 
   const initialState: any = {
-    form_name: "",
-    menu_master_id: "",
-    sub_menu_master_id: "",
-    form_url: "",
-    form_description: "",
+    form_name: '',
+    menu_master_id: '',
+    sub_menu_master_id: '',
+    form_url: '',
+    form_description: '',
     is_menu_visible: false,
   };
   const [form, setForm] = useState(initialState);
@@ -69,18 +69,17 @@ const AddEditForm = () => {
   const formRef = useRef() as any;
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const [dataUrl, setDataUrl] = useState(false);
 
-
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -88,46 +87,46 @@ const AddEditForm = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/Form");
+    navigator('/main/Form');
   }
 
   const callAPI = async () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
         const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setDataMenu(filteredData || []);
         // setDataMenu(data?.data||[])
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigator("/");
+          navigator('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     getData(`${SubMenuURL}`)
       .then((data: any) => {
         const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setDataSubMenu(filteredData || []);
         // setDataSubMenu(data?.data||[])
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigator("/");
+          navigator('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     if (id) {
-      getData(`${FormEditURL}${id ? `/${id}` : ""}`).then((data: any) => {
+      getData(`${FormEditURL}${id ? `/${id}` : ''}`).then((data: any) => {
         const datavalue = data?.data;
         setForm({
           form_name: datavalue?.form_name,
@@ -149,7 +148,7 @@ const AddEditForm = () => {
       formRef?.current?.setTouched(setNestedObjectValues(err, true));
       formRef?.current?.setFieldError(
         e.target.name,
-        formRef?.current?.errors?.[e.target.name as keyof IForm]
+        formRef?.current?.errors?.[e.target.name as keyof IForm],
       );
       formRef?.current?.setFieldTouched(e.target.name, true);
     }
@@ -162,10 +161,10 @@ const AddEditForm = () => {
   };
 
   const handleChangemenuVisible = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
-    const booleanValue = value === "true";
+    const booleanValue = value === 'true';
     formRef?.current?.setFieldValue(e.target.name, e.target.value);
     const err = await formRef?.current?.validateForm();
     if (err && Object.keys(err).length > 0) {
@@ -183,23 +182,21 @@ const AddEditForm = () => {
     callAPI();
   }, []);
 
-  const handleSubmit = async (
-    formData: {
-      form_name: string;
-      menu_master_id: string;
-      sub_menu_master_id: string;
-      form_url: string;
-      form_description: string;
-      is_menu_visible: boolean;
-    }
-  ) => {
+  const handleSubmit = async (formData: {
+    form_name: string;
+    menu_master_id: string;
+    sub_menu_master_id: string;
+    form_url: string;
+    form_description: string;
+    is_menu_visible: boolean;
+  }) => {
     formData.menu_master_id = String(formData.menu_master_id);
     formData.sub_menu_master_id = String(formData.sub_menu_master_id);
 
     const pathToCheck = form.form_url;
     const isPathAvailable = routes.some((route) => route.path === pathToCheck);
     let formdata1 = {};
-    if (formData.sub_menu_master_id === "") {
+    if (formData.sub_menu_master_id === '') {
       formdata1 = {
         form_name: formData.form_name,
         menu_master_id: formData.menu_master_id,
@@ -216,26 +213,26 @@ const AddEditForm = () => {
       putData(`${FormEditURL}/${id}`, formdata1)
         .then((data: any) => {
           if (data?.status === 200) {
-            navigator("/main/Form");
+            navigator('/main/Form');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             setDataUrl(false);
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -246,32 +243,32 @@ const AddEditForm = () => {
               // navigator('/main/Form')
               toast.success(data.message, {
                 hideProgressBar: true,
-                theme: "colored",
+                theme: 'colored',
               });
               // resetForm({ values: initialState });
               setForm({
-                form_name: "",
-                menu_master_id: "",
-                sub_menu_master_id: "",
-                form_url: "",
-                form_description: "",
+                form_name: '',
+                menu_master_id: '',
+                sub_menu_master_id: '',
+                form_url: '',
+                form_description: '',
                 is_menu_visible: false,
               });
               setDataUrl(false);
             } else {
-              toast.error(data.message || "Something went wrong!", {
+              toast.error(data.message || 'Something went wrong!', {
                 hideProgressBar: true,
-                theme: "colored",
+                theme: 'colored',
               });
             }
           })
           .catch((e) => {
             if (e?.response?.status === 401) {
-              navigator("/");
+              navigator('/');
             }
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           });
       } else {
@@ -281,14 +278,14 @@ const AddEditForm = () => {
   };
   const validationSchema = Yup.object().shape({
     form_name: Yup.string()
-      .required("Form name is required")
+      .required('Form name is required')
       .matches(
         FormNamePattern,
-        "Please enter a valid Form name only characters allowed."
+        'Please enter a valid Form name only characters allowed.',
       ),
-    menu_master_id: Yup.string().required("Menu master is required"),
+    menu_master_id: Yup.string().required('Menu master is required'),
     // sub_menu_master_id: Yup.string().required('Sub Menu Master is required'),
-    form_url: Yup.string().required("Form URL is required"),
+    form_url: Yup.string().required('Form URL is required'),
     form_description: Yup.string(),
     // .required('Form Description is required'),
   });
@@ -299,10 +296,10 @@ const AddEditForm = () => {
 
     if (isPathAvailable) {
       setDataUrl(false);
-      window.open(form.form_url, "_blank");
+      window.open(form.form_url, '_blank');
     } else {
       setDataUrl(true);
-      window.open("/main/Form/404", "_blank");
+      window.open('/main/Form/404', '_blank');
     }
   };
   return (
@@ -328,9 +325,7 @@ const AddEditForm = () => {
                   is_menu_visible: form.is_menu_visible,
                 }}
                 // onSubmit={(formData:any)=>handleSubmit(formData)}
-                onSubmit={(formData) =>
-                  handleSubmit(formData)
-                }
+                onSubmit={(formData) => handleSubmit(formData)}
                 enableReinitialize
                 validationSchema={validationSchema}
                 innerRef={formRef}
@@ -345,7 +340,7 @@ const AddEditForm = () => {
                               Menu Master *
                             </InputLabel>
                             <Select
-                             inputProps={{ "data-testid": "menu_master_id" }}
+                              inputProps={{ 'data-testid': 'menu_master_id' }}
                               onChange={handleChange}
                               label="Menu Master"
                               name="menu_master_id"
@@ -354,7 +349,7 @@ const AddEditForm = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -374,7 +369,7 @@ const AddEditForm = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor), // Change this to your desired hover background color
                                     },
@@ -387,7 +382,7 @@ const AddEditForm = () => {
                           </FormControl>
                         </div>
                         {errors.menu_master_id && touched.menu_master_id ? (
-                          <p style={{ color: "red" }}>
+                          <p style={{ color: 'red' }}>
                             {errors.menu_master_id}
                           </p>
                         ) : (
@@ -401,7 +396,9 @@ const AddEditForm = () => {
                               Sub Menu Master *
                             </InputLabel>
                             <Select
-                            inputProps={{ "data-testid": "sub_menu_master_id" }}
+                              inputProps={{
+                                'data-testid': 'sub_menu_master_id',
+                              }}
                               onChange={handleChange}
                               label="Sub Menu Master"
                               name="sub_menu_master_id"
@@ -410,7 +407,7 @@ const AddEditForm = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -430,7 +427,7 @@ const AddEditForm = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor), // Change this to your desired hover background color
                                     },
@@ -444,7 +441,7 @@ const AddEditForm = () => {
                         </div>
                         {errors.sub_menu_master_id &&
                         touched.sub_menu_master_id ? (
-                          <p style={{ color: "red" }}>
+                          <p style={{ color: 'red' }}>
                             {errors.sub_menu_master_id}
                           </p>
                         ) : (
@@ -454,7 +451,7 @@ const AddEditForm = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <TextField
-                           inputProps={{ "data-testid": "form_name" }}
+                            inputProps={{ 'data-testid': 'form_name' }}
                             type="text"
                             label="Form Name *"
                             name="form_name"
@@ -463,7 +460,7 @@ const AddEditForm = () => {
                             onChange={handleChange}
                           />
                           {errors.form_name && touched.form_name ? (
-                            <p style={{ color: "red" }}>{errors.form_name}</p>
+                            <p style={{ color: 'red' }}>{errors.form_name}</p>
                           ) : (
                             <></>
                           )}
@@ -473,7 +470,7 @@ const AddEditForm = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <TextField
-                           inputProps={{ "data-testid": "form_url" }}
+                            inputProps={{ 'data-testid': 'form_url' }}
                             label="Form URL *"
                             name="form_url"
                             value={values.form_url}
@@ -489,14 +486,14 @@ const AddEditForm = () => {
                           URL Example: <strong>/main/SubMenu</strong>
                         </Typography>
                         {errors.form_url && touched.form_url ? (
-                          <p style={{ color: "red" }}>{errors.form_url}</p>
+                          <p style={{ color: 'red' }}>{errors.form_url}</p>
                         ) : (
                           <></>
                         )}
                         <div>
-                          {" "}
+                          {' '}
                           {dataUrl && (
-                            <p style={{ color: "red" }}>
+                            <p style={{ color: 'red' }}>
                               Please enter a valid URL.
                             </p>
                           )}
@@ -505,7 +502,7 @@ const AddEditForm = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <TextField
-                           inputProps={{ "data-testid": "form_description" }}
+                            inputProps={{ 'data-testid': 'form_description' }}
                             label="Form Description"
                             name="form_description"
                             value={values.form_description}
@@ -521,16 +518,16 @@ const AddEditForm = () => {
                         <div className="form_field_wrapper">
                           <Typography
                             sx={{
-                              marginLeft: "15px",
-                              display: "flex",
-                              alignItems: "flex-start",
+                              marginLeft: '15px',
+                              display: 'flex',
+                              alignItems: 'flex-start',
                               color: inputfieldtext(namecolor),
                             }}
                           >
                             Menu Visible
                           </Typography>
                           <RadioGroup
-                            data-testid= "is_menu_visible" 
+                            data-testid="is_menu_visible"
                             row
                             name="is_menu_visible"
                             value={values.is_menu_visible}
@@ -538,30 +535,43 @@ const AddEditForm = () => {
                           >
                             <FormControlLabel
                               value={true}
-                              control={<Radio className="radiobutton" sx={{
-                                color: fieldIcon(namecolor),
-                                '&.Mui-checked': {
-                                  color: fieldIcon(namecolor),
-                                }
-                               }}  />}
+                              control={
+                                <Radio
+                                  className="radiobutton"
+                                  sx={{
+                                    color: fieldIcon(namecolor),
+                                    '&.Mui-checked': {
+                                      color: fieldIcon(namecolor),
+                                    },
+                                  }}
+                                />
+                              }
                               label="Yes"
                             />
                             <FormControlLabel
                               value={false}
-                              control={<Radio className="radiobutton" sx={{
-                                color: fieldIcon(namecolor),
-                                '&.Mui-checked': {
-                                  color: fieldIcon(namecolor),
-                                }
-                               }}  />}
+                              control={
+                                <Radio
+                                  className="radiobutton"
+                                  sx={{
+                                    color: fieldIcon(namecolor),
+                                    '&.Mui-checked': {
+                                      color: fieldIcon(namecolor),
+                                    },
+                                  }}
+                                />
+                              }
                               label="No"
                             />
                           </RadioGroup>
                         </div>
                       </div>
                       <div className="col-lg-12">
-                        <button data-testid="save_btn" className="btn btn-primary mainbutton">
-                          {id ? "Update" : "Save"}
+                        <button
+                          data-testid="save_btn"
+                          className="btn btn-primary mainbutton"
+                        >
+                          {id ? 'Update' : 'Save'}
                         </button>
                         {/* <button className='btn btn-primary btn-xs' type="button" style={{marginLeft:"10px", marginTop:"10px"}}  onClick={privewurl} > Preivew</button> */}
                         <button

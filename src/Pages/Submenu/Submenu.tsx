@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Submenu/Submenu.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
-import { MenuListinter, SUBMENU_COLUMNS } from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import { QUERY_KEYS_SUBMENU } from "../../utils/const";
-import { toast } from "react-toastify";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess, tabletools } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Submenu/Submenu.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
+import { MenuListinter, SUBMENU_COLUMNS } from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import { QUERY_KEYS_SUBMENU } from '../../utils/const';
+import { toast } from 'react-toastify';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { dataaccess, tabletools } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const Submenu = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
+  const Menulist: any = localStorage.getItem('menulist1');
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   useEffect(() => {
@@ -28,9 +28,9 @@ const Submenu = () => {
       dataaccess(
         Menulist,
         lastSegment,
-        { urlcheck: "sub menu" },
-        { datatest: "submenu" }
-      )
+        { urlcheck: 'sub menu' },
+        { datatest: 'submenu' },
+      ),
     );
   }, [Menulist, lastSegment]);
 
@@ -41,7 +41,7 @@ const Submenu = () => {
   const { getData, deleteData, loading } = useApi();
   const [dataSubmenu, setDataSubmenu] = useState([]);
   const [dataDelete, setDataDelete] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState("");
+  const [dataDeleteId, setDataDeleteId] = useState('');
   const callAPI = async () => {
     getData(`${SubmenuURL}`)
       .then((data: any) => {
@@ -54,7 +54,7 @@ const Submenu = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -76,7 +76,7 @@ const Submenu = () => {
       .then((data: any) => {
         toast.success(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
 
         callAPI();
@@ -85,11 +85,11 @@ const Submenu = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
- 
+
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -102,9 +102,9 @@ const Submenu = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -134,27 +134,27 @@ const Submenu = () => {
                       }}
                       enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={(row) => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         >
                           {filteredData?.form_data?.is_update === true && (
                             <Tooltip arrow placement="right" title="Edit">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {
@@ -169,8 +169,8 @@ const Submenu = () => {
                           <Tooltip arrow placement="right" title="Delete">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {

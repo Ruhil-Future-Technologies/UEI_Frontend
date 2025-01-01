@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from "react";
-import Header from "../../Components/Header";
-import { Outlet } from "react-router-dom";
-import Footer from "../../Components/Footer";
-import TeacherSideVar from "./TeacherSidevar";
+import React, { useEffect } from 'react';
+import Header from '../../Components/Header';
+import { Outlet } from 'react-router-dom';
+import Footer from '../../Components/Footer';
+import TeacherSideVar from './TeacherSidevar';
 const TeacherMain = () => {
-    const synth: SpeechSynthesis = window?.speechSynthesis;
+  const synth: SpeechSynthesis = window?.speechSynthesis;
   useEffect(() => {
     synth.cancel();
   });
@@ -29,7 +29,6 @@ const TeacherMain = () => {
       <Footer />
     </>
   );
-
-}
+};
 
 export default TeacherMain;

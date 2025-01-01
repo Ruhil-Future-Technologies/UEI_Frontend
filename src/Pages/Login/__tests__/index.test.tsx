@@ -6,7 +6,6 @@
 // import { MemoryRouter } from "react-router-dom"; // For handling routing in tests
 // import Login from "../index"; // Adjust this import to the path where your Login component is located
 
-
 // jest.mock('swiper/react', () => ({
 //   Swiper: 'Swiper',
 //   SwiperSlide: 'SwiperSlide',
@@ -19,7 +18,6 @@
 //     postData: jest.fn(),
 //   })),
 // }));
-
 
 // describe("Login Page", () => {
 //   let postDataMock: jest.Mock;

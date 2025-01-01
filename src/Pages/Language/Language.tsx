@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Language/Language.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Language/Language.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 import {
   LANGUAGE_COLUMNS,
   MenuListinter,
-} from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_LANGUAGE } from "../../utils/const";
-import { toast } from "react-toastify";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess, tabletools } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { QUERY_KEYS_LANGUAGE } from '../../utils/const';
+import { toast } from 'react-toastify';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { dataaccess, tabletools } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const Language = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
+  const Menulist: any = localStorage.getItem('menulist1');
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const LanguageURL = QUERY_KEYS_LANGUAGE.GET_LANGUAGE;
   const DeleteLanguageURL = QUERY_KEYS_LANGUAGE.LANGUAGE_DELETE;
@@ -32,10 +32,10 @@ const Language = () => {
   const { getData, deleteData, loading } = useApi();
   const [dataLanguage, setDataLanguage] = useState([]);
   const [dataDelete, setDataDelete] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState("");
+  const [dataDeleteId, setDataDeleteId] = useState('');
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist, lastSegment]);
   const callAPI = async () => {
@@ -47,11 +47,11 @@ const Language = () => {
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -73,18 +73,18 @@ const Language = () => {
       .then((data: any) => {
         toast.success(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
         callAPI();
         setDataDelete(false);
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -101,9 +101,9 @@ const Language = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -134,27 +134,27 @@ const Language = () => {
                       }}
                       enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={(row) => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         >
                           {filteredData?.form_data?.is_update === true && (
                             <Tooltip arrow placement="right" title="Edit">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {
@@ -168,8 +168,8 @@ const Language = () => {
                           <Tooltip arrow placement="right" title="Delete">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
