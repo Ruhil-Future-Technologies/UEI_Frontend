@@ -29,6 +29,7 @@ It’s recommended to ensure that every change you make is thoroughly tested. Ev
 -- Lines
 
 cmd : `npm run test`
+to update snapshots : `npm test -- -u`
 
 This will generate a coverage report that you can find in the coverage/ folder as well as in your terminal.
 Note: Every pull request should include updated or new test cases for the code changes.
