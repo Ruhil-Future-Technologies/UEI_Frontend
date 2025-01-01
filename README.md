@@ -34,6 +34,11 @@ to update snapshots : `npm test -- -u`
 This will generate a coverage report that you can find in the coverage/ folder as well as in your terminal.
 Note: Every pull request should include updated or new test cases for the code changes.
 
+### Code Formatting via Prettier 
+
+Fix : `npx prettier --write .`
+check : `npx prettier --check .`
+
 ## Available Scripts
 
 In the project directory, you can run:
