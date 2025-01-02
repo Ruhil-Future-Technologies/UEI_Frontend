@@ -198,9 +198,8 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      console.log(editFalg);
       if (checkChanges) {
-        if (editable && box.id === 0) {
+        if (box.id === 0) {
           return postData('admin_language_known/add', payload);
         } else {
           return putData('admin_language_known/edit/' + AdminId, payload);
