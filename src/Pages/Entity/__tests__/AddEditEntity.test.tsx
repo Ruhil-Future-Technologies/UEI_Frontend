@@ -88,7 +88,7 @@ describe('AddEditEntity Component', () => {
     await waitFor(() => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       expect(
-        getByText((content, _element) => {
+        getByText((content) => {
           return /Please enter a valid Entity type; whitespace is not allowed./i.test(
             content,
           );
