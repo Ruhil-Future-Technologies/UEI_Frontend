@@ -15,13 +15,15 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     }
 
     if (typeof input === 'string') {
-      return input
-        ?.replace(/[{}"]/g, '')
-        .split(',')
-        .map((item) => item?.trim())
-        .filter((item) => item);
+      if (input.includes('"') || input.startsWith('{')) {
+        return input
+          ?.replace(/[{}"]/g, '')
+          .split(',')
+          .map((item) => item?.trim())
+          .filter((item) => item);
+      }
+      return [input.trim()];
     }
-
     return [];
   };
 
@@ -214,7 +216,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     const parts = [];
     let lastIndex = 0;
 
-    const combinedRegex = /(##[^#\n]*|\*\*(?:[^*]|\*(?!\*))*\*\*)/g;
+    const combinedRegex = /(##[^#\n]*|\*\*[^*\n]+(?:\*\*)?)/g;
     let match;
 
     while ((match = combinedRegex.exec(text)) !== null) {
