@@ -51,11 +51,13 @@ const Chat = () => {
     ? JSON.parse(localStorage.getItem('expandedChatData')!)
     : [];
 
-  const [expandedChatData] = useState<any>(expandedChat);
+  const [expandedChatData, setExpandedChatData] = useState<any>(expandedChat);
 
   const [hasInitialExpandedChat, setHasInitialExpandedChat] = useState(false);
   const [hasSavedLocal, setHasSavedLocal] = useState(false);
-  const [selectedchat, setSelectedChat] = useState<any>(expandedChat.chats);
+  const [selectedchat, setSelectedChat] = useState<any>(
+    expandedChat.chats || [],
+  );
   const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
   const [expandSearch, setExpandSearch] = useState(false);
   const userdata = JSON.parse(localStorage.getItem('userdata') || '/{/}/');
@@ -140,22 +142,22 @@ const Chat = () => {
   }, [expandedChat]);
 
   useEffect(() => {
-    if (!expandedChat.length) {
-      setSelectedChat([]);
-    }
+    // if (!expandedChat.length) {
+    //   setSelectedChat([]);
+    // }
     setTimeout(() => {
       if (Id !== undefined) {
         setShowInitialPage(true);
-        if (!expandedChat.length) {
-          setSelectedChat([]);
-        }
+        // if (!expandedChat.length) {
+        //   setSelectedChat([]);
+        // }
         setSearchQuery('');
         setSearchQuerystarred('');
       } else {
         setShowInitialPage(false);
-        if (!expandedChat.length) {
-          setSelectedChat([]);
-        }
+        // if (!expandedChat.length) {
+        //   setSelectedChat([]);
+        // }
         setSearchQuery('');
         setSearchQuerystarred('');
       }
@@ -195,6 +197,36 @@ const Chat = () => {
         return item;
       });
 
+      setchatlistData((prevChatlist: any) => {
+        const newChatlist = prevChatlist.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
+
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+
+        return newChatlist;
+      });
+      setchathistory((prevHistory: any) => {
+        const newHistory = prevHistory.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
+
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+
+        return newHistory;
+      });
       localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       setDisplayedChat(updatedChatData);
     }
@@ -231,7 +263,34 @@ const Chat = () => {
         }
         return item;
       });
+      setchatlistData((prevChatlist: any) => {
+        const newChatlist = prevChatlist.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+        return newChatlist;
+      });
+      setchathistory((prevHistory: any) => {
+        const newHistory = prevHistory.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
 
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+
+        return newHistory;
+      });
       localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       setDisplayedChat(updatedChatData);
     }
@@ -1020,23 +1079,23 @@ const Chat = () => {
       );
 
       if (!isAlreadyInExisting) {
-        let updatedChatData;
+        // let updatedChatData;
+        const updatedChatData = [...parsedExistingChat, latestChatItem];
 
-        if (savedExpandedChat && savedExpandedChat.length > 0) {
-          const isInSavedExpanded = savedExpandedChat.some(
-            (item: any) =>
-              item.question === latestChatItem.question &&
-              JSON.stringify(item.answer) ===
-                JSON.stringify(latestChatItem.answer),
-          );
+        // if (savedExpandedChat && savedExpandedChat.length > 0) {
+        //   const isInSavedExpanded = savedExpandedChat.some(
+        //     (item: any) =>
+        //       item.question === latestChatItem.question &&
+        //       JSON.stringify(item.answer) ===
+        //         JSON.stringify(latestChatItem.answer),
+        //   );
 
-          updatedChatData = isInSavedExpanded
-            ? [...savedExpandedChat]
-            : [...savedExpandedChat, latestChatItem];
-        } else {
-          updatedChatData = [...parsedExistingChat, latestChatItem];
-        }
-
+        //   updatedChatData = isInSavedExpanded
+        //     ? [...savedExpandedChat]
+        //     : [...savedExpandedChat, latestChatItem];
+        // } else {
+        //   updatedChatData = [...parsedExistingChat, latestChatItem];
+        // }
         localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       }
     }
@@ -1053,14 +1112,18 @@ const Chat = () => {
     const chatData = chatDataString ? JSON.parse(chatDataString) : null;
 
     if (chatData?.length > 0) {
-      if (savedExpandedChat.length > 0) {
+      if (savedExpandedChat && savedExpandedChat.length > 0) {
         setHasSavedLocal(true);
+        setSelectedChat(chatData);
+        setExpandedChatData([]);
         return;
       }
 
       if (!hasInitialExpandedChat) {
-        saveChatlocal();
+        // saveChatlocal();
         setHasSavedLocal(true);
+        setSelectedChat(chatData);
+        setExpandedChatData([]);
       }
     }
   }, [chatData, savedExpandedChat, hasInitialExpandedChat, hasSavedLocal]);
@@ -1439,11 +1502,31 @@ const Chat = () => {
   //   : statredchat;
   const filteredChatsstarred = searchQuery
     ? chatlist
+        ?.map((chat: any) => ({
+          ...chat,
+          updated_at: new Date(chat.updated_at),
+        }))
         ?.filter((chat: { chat_title: string }) =>
           chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase()),
         )
-        .sort((a: any, b: any) => b.flagged - a.flagged)
-    : chatlist?.sort((a: any, b: any) => b.flagged - a.flagged);
+        ?.sort((a: any, b: any) => {
+          if (b.flagged !== a.flagged) {
+            return b.flagged - a.flagged;
+          }
+
+          return b.updated_at - a.updated_at;
+        })
+    : chatlist
+        ?.map((chat: any) => ({
+          ...chat,
+          updated_at: new Date(chat.updated_at),
+        }))
+        ?.sort((a: any, b: any) => {
+          if (b.flagged !== a.flagged) {
+            return b.flagged - a.flagged;
+          }
+          return b.updated_at - a.updated_at;
+        });
   const filteredChats = searchQuerystarred
     ? chathistory?.filter((chat: { chat_title: string }) =>
         chat?.chat_title

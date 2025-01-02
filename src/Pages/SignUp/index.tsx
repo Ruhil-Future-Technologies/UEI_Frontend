@@ -392,6 +392,9 @@ const Signup = () => {
                               ),
                             }}
                             sx={{
+                              '& input::-ms-reveal, & input::-ms-clear': {
+                                display: 'none',
+                              },
                               '& input:-webkit-autofill': {
                                 WebkitBoxShadow:
                                   '0 0 0 1000px white inset !important', // Set the background color you want
