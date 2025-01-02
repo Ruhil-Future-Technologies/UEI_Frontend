@@ -328,6 +328,7 @@ const Signup = () => {
                           Email/Phone
                         </label>
                         <TextField
+                          data-testid="emailphone"
                           id="emailphone"
                           value={emailphone}
                           onChange={handleChangeData}
@@ -366,6 +367,7 @@ const Signup = () => {
                         </label>
                         <div className="position-relative">
                           <TextField
+                            data-testid="Password"
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
                             value={password}
@@ -428,6 +430,7 @@ const Signup = () => {
 
                       <div className="form-check mb-3 fs-14">
                         <input
+                          data-testid="checkbox"
                           className="form-check-input"
                           type="checkbox"
                           value=""
