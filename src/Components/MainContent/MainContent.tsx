@@ -132,7 +132,7 @@ function MainContent() {
       }));
       localStorage.setItem('chatData', JSON.stringify(updatedChatData));
     }
-    saveChat();
+    // saveChat();
   };
 
   const handleUpIconClick = (index: number) => {
@@ -1113,6 +1113,9 @@ function MainContent() {
             theme: 'colored',
           });
         });
+      getData(`${university_list}`).then((data: any) => {
+        setUniversity_List_Data(data?.data);
+      });
     }
   };
 
@@ -1332,9 +1335,6 @@ function MainContent() {
             getData('/course/list'),
             getData('/school_subject/list'),
             getData('/college_subject/list'),
-            getData(`${university_list}`).then((data: any) => {
-              setUniversity_List_Data(data?.data);
-            }),
           ]);
           const institutionCount =
             institutionRes?.status === 'fulfilled'
@@ -1654,7 +1654,8 @@ function MainContent() {
         //   handleResponse(data);
         // } else if (data.status === 404) {
         if (data.status === 200 || data.status === 404) {
-          setLoaderMsg('Searching result from knowledge base');
+          // setLoaderMsg('Searching result from knowledge base');
+          setLoaderMsg('Searching result from Rag model');
 
           if (profileDatas?.academic_history?.institution_type === 'school') {
             postData(`${ChatRAGURL}`, {
@@ -1668,9 +1669,8 @@ function MainContent() {
                 profileDatas.academic_history.state_for_stateboard,
               stream_selection: profileDatas.academic_history.stream,
               class_selection: profileDatas.class.name,
-              university_selection:
-                profileDatas.academic_history.university_name || '',
-              college_selection: profileDatas.academic_history.institution_name,
+              university_selection: null,
+              college_selection: null,
               course_selection: profileDatas?.course,
               year: profileDatas.academic_history.year,
               subject: profileDatas.subject,
@@ -1798,9 +1798,10 @@ function MainContent() {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
-            const university: any = university_list_data.filter(
-              (university: any) => university.university_id == university_id,
-            );
+            const university: any =
+              university_list_data.filter(
+                (university: any) => university.university_id == university_id,
+              ) || null;
             const queryParams = {
               user_query: search,
               student_id: StudentId,
@@ -1809,7 +1810,7 @@ function MainContent() {
               state_board_selection: state_for_stateboard || null,
               stream_selection: stream || null,
               class_selection: class_id || null,
-              university_selection: university[0].university_name || null,
+              university_selection: university[0]?.university_name || null,
               college_selection: institution_name || null,
               course_selection: profileDatas?.course || null,
               year: year || null,
