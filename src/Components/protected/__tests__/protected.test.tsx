@@ -26,7 +26,7 @@ describe('Protected Component', () => {
     render(
       <MemoryRouter>
         <Protected Component={MockComponent} menuName="mockMenu" />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
@@ -36,8 +36,8 @@ describe('Protected Component', () => {
     render(
       <MemoryRouter>
         <Protected Component={MockComponent} menuName="mockMenu" />
-      </MemoryRouter>
-    )
+      </MemoryRouter>,
+    );
     expect(screen.getByText(/not found/i)).toBeInTheDocument();
   });
   it('renders the Component if user is allowed', () => {
@@ -46,10 +46,8 @@ describe('Protected Component', () => {
     render(
       <MemoryRouter>
         <Protected Component={MockComponent} menuName="mockMenu" />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText(/mock component/i)).toBeInTheDocument();
   });
-
- 
 });

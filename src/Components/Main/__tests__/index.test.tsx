@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import Main from '../index';
 import React from 'react';
 import NameContext from '../../../Pages/Context/NameContext';
-import { contextValue } from "../../../MockStorage/mockstorage";
+import { contextValue } from '../../../MockStorage/mockstorage';
 import { BrowserRouter as Router } from 'react-router-dom';
 describe('Main Component', () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('Main Component', () => {
         <Router>
           <Main />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     expect(global.speechSynthesis.cancel).toHaveBeenCalledTimes(1);
   });

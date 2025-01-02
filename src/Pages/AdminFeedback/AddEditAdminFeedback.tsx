@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_FEEDBACK } from "../../utils/const";
-import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { inputfield, inputfieldtext } from "../../utils/helpers";
-import * as Yup from "yup";
-import NameContext from "../Context/NameContext";
+import { useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_FEEDBACK } from '../../utils/const';
+import { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { inputfield, inputfieldtext } from '../../utils/helpers';
+import * as Yup from 'yup';
+import NameContext from '../Context/NameContext';
 import {
   ErrorMessage,
   FieldArray,
@@ -16,9 +16,9 @@ import {
   Formik,
   FormikHelpers,
   setNestedObjectValues,
-} from "formik";
-import TextField from "@mui/material/TextField";
-import React from "react";
+} from 'formik';
+import TextField from '@mui/material/TextField';
+import React from 'react';
 interface IFeedbackForm {
   question: string | null;
   options: any[];
@@ -36,8 +36,8 @@ const AddEditAdminFeedback = () => {
   const FeedbackEditURL = QUERY_KEYS_FEEDBACK.FEEDBACK_EDIT;
 
   const [initialValues, setInitialValues] = useState<any>({
-    question: "",
-    options: [{ option: "" }],
+    question: '',
+    options: [{ option: '' }],
   });
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const AddEditAdminFeedback = () => {
         const datavalue = data?.data;
 
         const getByIdFeedbackData = datavalue.filter(
-          (data: any) => data.id == id
+          (data: any) => data.id == id,
         );
         const optionStringify = getByIdFeedbackData[0].options;
         const optionData = optionStringify.map((str: any) => {
@@ -79,12 +79,12 @@ const AddEditAdminFeedback = () => {
     if (id) {
       putData(`${FeedbackEditURL}/${id}`, payload).then((response) => {
         if (response.status === 200) {
-          toast.success("question added successfully", {
+          toast.success('question added successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           resetForm();
-          navigate("/main/feedback");
+          navigate('/main/feedback');
           // setOptions([""]);
           // setQuestion("");
         }
@@ -92,12 +92,12 @@ const AddEditAdminFeedback = () => {
     } else {
       postData(`${FeedbackAddURL}`, payload).then((response) => {
         if (response.status === 200) {
-          toast.success("question added successfully", {
+          toast.success('question added successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           resetForm();
-          navigate("/main/feedback");
+          navigate('/main/feedback');
           // setOptions([""]);
           // setQuestion("");
         }
@@ -115,18 +115,18 @@ const AddEditAdminFeedback = () => {
       formRef?.current?.setTouched(setNestedObjectValues(err, true));
       formRef?.current?.setFieldError(
         e.target.name,
-        formRef?.current?.errors?.[e.target.name as keyof IFeedbackForm]
+        formRef?.current?.errors?.[e.target.name as keyof IFeedbackForm],
       );
       formRef?.current?.setFieldTouched(e.target.name, true);
     }
   };
 
   const validationSchema = Yup.object({
-    question: Yup.string().required("This field is required"),
+    question: Yup.string().required('This field is required'),
     options: Yup.array().of(
       Yup.object({
-        option: Yup.string().required("This field is required"),
-      })
+        option: Yup.string().required('This field is required'),
+      }),
     ),
   });
 
@@ -137,7 +137,7 @@ const AddEditAdminFeedback = () => {
           <div className="card-body">
             {/* <Typography variant="h6"> */}
             <div className="card-title">
-              {id ? "Edit" : "Add"} Feedback Questions
+              {id ? 'Edit' : 'Add'} Feedback Questions
             </div>
             <Formik
               onSubmit={(values, formikHelpers) =>
@@ -205,11 +205,11 @@ const AddEditAdminFeedback = () => {
                                         )}
                                         <AddIcon
                                           className="m-2"
-                                          onClick={() => push({ option: "" })}
+                                          onClick={() => push({ option: '' })}
                                         />
                                       </div>
                                     </div>
-                                  )
+                                  ),
                                 )}
                             </div>
                           )}
@@ -218,7 +218,7 @@ const AddEditAdminFeedback = () => {
                     </div>
                   </div>
                   <button className="btn btn-primary mainbutton" type="submit">
-                    {id ? "Update" : "Save"}
+                    {id ? 'Update' : 'Save'}
                   </button>
                 </Form>
               )}

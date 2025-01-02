@@ -1,12 +1,17 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AddEditRole from '../AddEditRole'; 
-import { BrowserRouter as Router, useLocation, useNavigate, useParams } from 'react-router-dom';
+import AddEditRole from '../AddEditRole';
+import {
+  BrowserRouter as Router,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useAPI';
-import { contextValue } from "../../../MockStorage/mockstorage";
+import { contextValue } from '../../../MockStorage/mockstorage';
 import React from 'react';
-import NameContext from '../../Context/NameContext'; 
+import NameContext from '../../Context/NameContext';
 
 jest.mock('react-toastify', () => ({
   toast: {
@@ -20,7 +25,12 @@ jest.mock('../../../hooks/useAPI', () => ({
 }));
 
 const mockNavigate = jest.fn();
-const mockLocation = { pathname: '/main/Role', search: '', hash: '', state: null };
+const mockLocation = {
+  pathname: '/main/Role',
+  search: '',
+  hash: '',
+  state: null,
+};
 const mockPostData = jest.fn();
 const mockPutData = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -44,12 +54,11 @@ describe('AddEditRole Component', () => {
     });
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     (useLocation as jest.Mock).mockReturnValue(mockLocation);
-    (useParams as jest.Mock).mockReturnValue({ id: '' });  
-   
+    (useParams as jest.Mock).mockReturnValue({ id: '' });
   });
   const mockGetData = jest.fn();
   it('displays error message when API call fails (GET)', async () => {
-    (useParams as jest.Mock).mockReturnValue({ id: '1' });  
+    (useParams as jest.Mock).mockReturnValue({ id: '1' });
     const mockErrorResponse = {
       message: 'Failed to load role',
     };
@@ -59,12 +68,12 @@ describe('AddEditRole Component', () => {
         <Router>
           <AddEditRole />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
         'Failed to load role',
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
@@ -74,14 +83,14 @@ describe('AddEditRole Component', () => {
         <Router>
           <AddEditRole />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     const roleField = getByTestId('role_name') as HTMLElement;
-    const save_btn = getByTestId('save_btn') as HTMLElement
-    fireEvent.click(save_btn)
-    fireEvent.change(roleField, { target: { value: "" } }); 
+    const save_btn = getByTestId('save_btn') as HTMLElement;
+    fireEvent.click(save_btn);
+    fireEvent.change(roleField, { target: { value: '' } });
     await waitFor(() => {
-      expect(getByText("Please enter Role name")).toBeInTheDocument();
+      expect(getByText('Please enter Role name')).toBeInTheDocument();
     });
   });
   it('displays success message on successful submit (Create)', async () => {
@@ -94,18 +103,21 @@ describe('AddEditRole Component', () => {
         <Router>
           <AddEditRole />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     const roleField = getByTestId('role_name') as HTMLElement;
     const saveButton = getByTestId('save_btn') as HTMLElement;
     fireEvent.change(roleField, { target: { value: 'New Role' } });
     fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Role created successfully', expect.any(Object));
+      expect(toast.success).toHaveBeenCalledWith(
+        'Role created successfully',
+        expect.any(Object),
+      );
     });
   });
   it('displays success message on successful submit (Update)', async () => {
-    (useParams as jest.Mock).mockReturnValue({ id: '1' });  
+    (useParams as jest.Mock).mockReturnValue({ id: '1' });
     mockPutData.mockResolvedValue({
       status: 200,
       message: 'Role updated successfully',
@@ -115,36 +127,42 @@ describe('AddEditRole Component', () => {
         <Router>
           <AddEditRole />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     const roleField = getByTestId('role_name') as HTMLElement;
     const saveButton = getByTestId('save_btn') as HTMLElement;
     fireEvent.change(roleField, { target: { value: 'Updated Role' } });
-    fireEvent.click(saveButton);  
+    fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Role updated successfully', expect.any(Object));
+      expect(toast.success).toHaveBeenCalledWith(
+        'Role updated successfully',
+        expect.any(Object),
+      );
     });
-    expect(mockNavigate).toHaveBeenCalledWith("/main/Role");
+    expect(mockNavigate).toHaveBeenCalledWith('/main/Role');
   });
   it('displays error message when role name already exists', async () => {
     mockPostData.mockResolvedValue({
       status: 400,
       message: 'Role name already exists',
     });
-  
-    const { getByTestId} = render(
+
+    const { getByTestId } = render(
       <NameContext.Provider value={contextValue}>
         <Router>
           <AddEditRole />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     const roleField = getByTestId('role_name') as HTMLElement;
     const saveButton = getByTestId('save_btn') as HTMLElement;
     fireEvent.change(roleField, { target: { value: 'Existing Role' } });
     fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Role name already exists', expect.any(Object));
+      expect(toast.error).toHaveBeenCalledWith(
+        'Role name already exists',
+        expect.any(Object),
+      );
     });
   });
 });

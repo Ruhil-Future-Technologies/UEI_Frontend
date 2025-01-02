@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -9,24 +9,24 @@ import {
   MenuItem,
   Select,
   TextField,
-} from "@mui/material";
+} from '@mui/material';
 
-import "react-toastify/dist/ReactToastify.css";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import useApi from "../../hooks/useAPI";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { toast } from "react-toastify";
-import NameContext from "../Context/NameContext";
+import 'react-toastify/dist/ReactToastify.css';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import useApi from '../../hooks/useAPI';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { toast } from 'react-toastify';
+import NameContext from '../Context/NameContext';
 import {
   inputfield,
   inputfieldhover,
   inputfieldtext,
   tabletools,
-} from "../../utils/helpers";
-import { ChildComponentProps } from "../StudentProfile";
+} from '../../utils/helpers';
+import { ChildComponentProps } from '../StudentProfile';
 
 interface Box {
   id: number;
@@ -60,7 +60,7 @@ interface Classes {
 
 const Boxsetvalue = {
   id: 0,
-  Institute_Name_Add: "",
+  Institute_Name_Add: '',
 };
 
 const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
@@ -77,16 +77,16 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
 
-  const StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem('_id');
   const addRow = () => {
     const newBox: Box = {
       id: 0,
-      institution_id: "",
-      course_id: "",
+      institution_id: '',
+      course_id: '',
       starting_date: null,
       ending_date: null,
-      learning_style: "",
-      class_id: "",
+      learning_style: '',
+      class_id: '',
     };
     setBoxes([...boxes, newBox]);
   };
@@ -96,16 +96,16 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       deleteData(`/student_academic_historydelete/${id}`)
         .then((data: any) => {
           if (data.status === 200) {
-            toast.success("Academic history deleted successfully", {
+            toast.success('Academic history deleted successfully', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -113,11 +113,11 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   };
   const listData = async () => {
     return new Promise((resolve) => {
-      getData("/institution/list")
+      getData('/institution/list')
         .then(async (response: any) => {
           if (response.status === 200) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1
+              (item: any) => item?.is_active === 1,
             );
             setInstitutes(filteredData || []);
             resolve(true);
@@ -128,7 +128,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
         .catch((error) => {
           toast.error(error?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
 
           resolve(false);
@@ -138,11 +138,11 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     listData();
 
-    getData("/course/list")
+    getData('/course/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setCourses(filteredData || []);
           // setCourses(response.data);
@@ -151,14 +151,14 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
-    getData("/class/list")
+    getData('/class/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === true
+            (item: any) => item?.is_active === true,
           );
           setClasses(filteredData || []);
         }
@@ -166,11 +166,11 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
 
-    getData(`${"student_academic_history/edit/" + StudentId}`)
+    getData(`${'student_academic_history/edit/' + StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
           data?.data?.forEach((item: any) => {
@@ -193,35 +193,35 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           setBoxes([
             {
               id: 0,
-              institution_id: "",
-              course_id: "",
+              institution_id: '',
+              course_id: '',
               starting_date: null,
               ending_date: null,
-              learning_style: "",
-              class_id: "",
+              learning_style: '',
+              class_id: '',
             },
           ]);
           setEditFlag(true);
         } else {
-          console.error("Unexpected response:", data);
+          console.error('Unexpected response:', data);
         }
       })
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   }, []);
 
   const saveAcademicHistory = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
     const validatePayload = (
-      payload: { [s: string]: unknown } | ArrayLike<unknown>
+      payload: { [s: string]: unknown } | ArrayLike<unknown>,
     ) => {
-      return Object.values(payload).every((value) => value !== "");
+      return Object.values(payload).every((value) => value !== '');
     };
 
     const isDateValid = (starting_date: string, ending_date: string) => {
@@ -247,9 +247,9 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           isDateValid(box.starting_date, box.ending_date)
         ) {
           if (editFlag || box.id === 0) {
-            return postData("/student_academic_history/add", payload);
+            return postData('/student_academic_history/add', payload);
           } else {
-            return putData("/student_academic_history/edit/" + box.id, payload);
+            return putData('/student_academic_history/edit/' + box.id, payload);
           }
         } else {
           return Promise.resolve(null); // If payload is invalid, return a resolved promise
@@ -260,13 +260,13 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     Promise.all(promises)
       .then((responses) => {
         const allSuccessful = responses.every(
-          (response) => response?.status === 200
+          (response) => response?.status === 200,
         );
 
         if (allSuccessful) {
-          toast.success("Academic history saved successfully", {
+          toast.success('Academic history saved successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         } else {
           // toast.error("An error occurred while saving", {
@@ -277,7 +277,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       })
       .catch((error) => {
         // Handle error
-        console.error("Error processing payloads:", error);
+        console.error('Error processing payloads:', error);
         // toast.error("An error occurred while saving", {
         //   hideProgressBar: true,
         //   theme: "colored",
@@ -288,9 +288,9 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const saveAcademi = async (index: number) => {
     try {
       const validatePayload = (
-        payload: { [s: string]: unknown } | ArrayLike<unknown>
+        payload: { [s: string]: unknown } | ArrayLike<unknown>,
       ) => {
-        return Object.values(payload).every((value) => value !== "");
+        return Object.values(payload).every((value) => value !== '');
       };
 
       const promises = boxes1
@@ -301,9 +301,9 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
           if (validatePayload(payload)) {
             if (editFlag || box.id === 0) {
-              return postData("/institution/add", payload);
+              return postData('/institution/add', payload);
             } else {
-              return postData("/institution/add", payload);
+              return postData('/institution/add', payload);
             }
           } else {
             return Promise.resolve(null);
@@ -314,43 +314,41 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       const responses = await Promise.all(promises);
 
       const allSuccessful = responses.every(
-        (response) => response?.status === 200
+        (response) => response?.status === 200,
       );
 
       if (allSuccessful) {
         const newBoxes: any = [...boxes];
-        newBoxes[index]["institution_id"] = responses[0].institution.id;
+        newBoxes[index]['institution_id'] = responses[0].institution.id;
         setBoxes(newBoxes);
         setBoxes1([
           {
             id: 0,
-            Institute_Name_Add: "",
+            Institute_Name_Add: '',
           },
         ]);
-        
 
-        console.log("response", responses[0].institution.id);
+        console.log('response', responses[0].institution.id);
         await listData();
-        toast.success("Institution name saved successfully", {
+        toast.success('Institution name saved successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
         // setDataInsitute(boxes1[0]?.Institute_Name_Add);
       }
     } catch (error) {
-      console.error("Error while saving academia:", error);
-      toast.error("Error while saving institution name", {
+      console.error('Error while saving academia:', error);
+      toast.error('Error while saving institution name', {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
 
- 
   const handleInputChange = (
     index: number,
     field: keyof Box,
-    value: string | dayjs.Dayjs | null
+    value: string | dayjs.Dayjs | null,
   ) => {
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
@@ -376,7 +374,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const handleInputChange1 = (
     index: number,
     field: keyof Boxset,
-    value: any
+    value: any,
   ) => {
     // setenddateInvalid(value)
     const newBoxes: any = [...boxes1];
@@ -391,19 +389,19 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           <div
             className="row align-items-center"
             key={box.id}
-            style={{ marginBottom: "5px" }}
+            style={{ marginBottom: '5px' }}
           >
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
+              <FormControl required sx={{ m: 1, minWidth: 220, width: '100%' }}>
                 <InputLabel>Institute Name</InputLabel>
                 <Select
                   name="institution_id"
                   value={box.institution_id}
                   sx={{
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: '#f5f5f5',
                   }}
                   onChange={(e) =>
-                    handleInputChange(index, "institution_id", e.target.value)
+                    handleInputChange(index, 'institution_id', e.target.value)
                   }
                   label="Institute Name"
                 >
@@ -414,7 +412,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
-                        "&:hover": {
+                        '&:hover': {
                           backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                         },
                       }}
@@ -428,7 +426,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                     sx={{
                       backgroundColor: inputfield(namecolor),
                       color: inputfieldtext(namecolor),
-                      "&:hover": {
+                      '&:hover': {
                         backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                       },
                     }}
@@ -440,9 +438,9 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                         <p style={{ marginLeft: "10px", color: 'red' }}>Please select a Department name.</p>
                     )}</div> */}
               </FormControl>
-              {box.institution_id == "1" && (
+              {box.institution_id == '1' && (
                 <>
-                  <FormControl sx={{ m: 1, minWidth: 180, width: "100%" }}>
+                  <FormControl sx={{ m: 1, minWidth: 180, width: '100%' }}>
                     {boxes1.map((box, index) => (
                       <TextField
                         key={box.id}
@@ -451,8 +449,8 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                         onChange={(e) =>
                           handleInputChange1(
                             index,
-                            "Institute_Name_Add",
-                            e.target.value
+                            'Institute_Name_Add',
+                            e.target.value,
                           )
                         }
                         label="Institute Name Add"
@@ -464,7 +462,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                       variant="contained"
                       color="primary"
                       onClick={() => saveAcademi(index)}
-                      style={{ marginTop: "25px" }}
+                      style={{ marginTop: '25px' }}
                     >
                       Save Institute Name
                     </Button>
@@ -473,15 +471,15 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               )}
             </div>
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
+              <FormControl required sx={{ m: 1, minWidth: 220, width: '100%' }}>
                 <InputLabel>Course</InputLabel>
                 <Select
                   value={box.course_id}
                   sx={{
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: '#f5f5f5',
                   }}
                   onChange={(e) =>
-                    handleInputChange(index, "course_id", e.target.value)
+                    handleInputChange(index, 'course_id', e.target.value)
                   }
                   label="Course"
                 >
@@ -492,7 +490,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
-                        "&:hover": {
+                        '&:hover': {
                           backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                         },
                       }}
@@ -504,15 +502,15 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               </FormControl>
             </div>
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 220, width: "100%" }}>
+              <FormControl required sx={{ m: 1, minWidth: 220, width: '100%' }}>
                 <InputLabel>Class</InputLabel>
                 <Select
                   sx={{
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: '#f5f5f5',
                   }}
                   value={box.class_id}
                   onChange={(e) =>
-                    handleInputChange(index, "class_id", e.target.value)
+                    handleInputChange(index, 'class_id', e.target.value)
                   }
                   label="Class"
                 >
@@ -523,7 +521,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
-                        "&:hover": {
+                        '&:hover': {
                           backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                         },
                       }}
@@ -535,34 +533,34 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               </FormControl>
             </div>
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 180, width: "100%" }}>
+              <FormControl required sx={{ m: 1, minWidth: 180, width: '100%' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     format="DD/MM/YYYY"
                     label="Starting Date *"
                     value={dayjs(box.starting_date)}
                     onChange={(date) =>
-                      handleInputChange(index, "starting_date", date)
+                      handleInputChange(index, 'starting_date', date)
                     }
                   />
                 </LocalizationProvider>
               </FormControl>
             </div>
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 180, width: "100%" }}>
+              <FormControl required sx={{ m: 1, minWidth: 180, width: '100%' }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     format="DD/MM/YYYY"
                     label="Completion Date *"
                     value={dayjs(box.ending_date)}
                     onChange={(date) =>
-                      handleInputChange(index, "ending_date", date)
+                      handleInputChange(index, 'ending_date', date)
                     }
                   />
                 </LocalizationProvider>
               </FormControl>
               {enddateInvalidList[index] && (
-                <p style={{ color: "red" }}>
+                <p style={{ color: 'red' }}>
                   Completion Date must be greater than Starting Date.
                 </p>
               )}
@@ -570,13 +568,13 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
             <div className="col form_field_wrapper">
               <FormControl
                 required
-                sx={{ m: 1, minWidth: 70, width: "100%", maxWidth: 200 }}
+                sx={{ m: 1, minWidth: 70, width: '100%', maxWidth: 200 }}
               >
                 <InputLabel>Learning Style</InputLabel>
                 <Select
                   value={box.learning_style}
                   onChange={(e) =>
-                    handleInputChange(index, "learning_style", e.target.value)
+                    handleInputChange(index, 'learning_style', e.target.value)
                   }
                   label="Learning Style"
                 >
@@ -585,7 +583,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                     sx={{
                       backgroundColor: inputfield(namecolor),
                       color: inputfieldtext(namecolor),
-                      "&:hover": {
+                      '&:hover': {
                         backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                       },
                     }}
@@ -597,7 +595,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                     sx={{
                       backgroundColor: inputfield(namecolor),
                       color: inputfieldtext(namecolor),
-                      "&:hover": {
+                      '&:hover': {
                         backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                       },
                     }}
@@ -609,7 +607,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                     sx={{
                       backgroundColor: inputfield(namecolor),
                       color: inputfieldtext(namecolor),
-                      "&:hover": {
+                      '&:hover': {
                         backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                       },
                     }}
@@ -623,8 +621,8 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               <IconButton
                 onClick={addRow}
                 sx={{
-                  width: "35px",
-                  height: "35px",
+                  width: '35px',
+                  height: '35px',
                   color: tabletools(namecolor),
                 }}
               >
@@ -634,8 +632,8 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
                 <IconButton
                   onClick={() => deleterow(box.id, index)}
                   sx={{
-                    width: "35px",
-                    height: "35px",
+                    width: '35px',
+                    height: '35px',
                     color: tabletools(namecolor),
                   }}
                 >
@@ -646,7 +644,6 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           </div>
         ))}
         <div className="row justify-content-center">
-        
           <div className="mt-3 d-flex align-items-center justify-content-between">
             <button
               type="button"

@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import "../Hobby/Hobby.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
+import '../Hobby/Hobby.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 import {
   IStudentFeedback,
   STUDENT_FEEDBACK_COLUMNS,
-} from "../../Components/Table/columns";
-import { useNavigate } from "react-router-dom";
-import { QUERY_KEYS_STUDENT_FEEDBACK } from "../../utils/const";
-import { toast } from "react-toastify";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-
+} from '../../Components/Table/columns';
+import { useNavigate } from 'react-router-dom';
+import { QUERY_KEYS_STUDENT_FEEDBACK } from '../../utils/const';
+import { toast } from 'react-toastify';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 
 const StudentFeedback = () => {
- 
   const FeedbackURL = QUERY_KEYS_STUDENT_FEEDBACK.GET_FEEDBACK;
   const columns = STUDENT_FEEDBACK_COLUMNS;
   const navigate = useNavigate();
   const { getData, loading } = useApi();
   const [dataFeedback, setDataStudent] = useState<IStudentFeedback[]>([]);
-
 
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
@@ -35,16 +32,15 @@ const StudentFeedback = () => {
 
           // Update your state with the sorted data
           setDataStudent(sortedData || []);
-          
         }
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -53,7 +49,6 @@ const StudentFeedback = () => {
     callAPI();
   }, []);
 
-  
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -66,9 +61,9 @@ const StudentFeedback = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -86,19 +81,19 @@ const StudentFeedback = () => {
                       }}
                       // enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={() => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         ></Box>
                       )}

@@ -1,29 +1,27 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
 
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
-const StudentId = localStorage.getItem("_id");
+const StudentId = localStorage.getItem('_id');
 console.log(StudentId);
 
-
 const steps = [
-  "Student Basic Information",
-  "Student Address",
-  "Language know",
-  "Student Academic History",
-  "Student Contact Dtails",
-  "Hobbies/Subject preference",
+  'Student Basic Information',
+  'Student Address',
+  'Language know',
+  'Student Academic History',
+  'Student Contact Dtails',
+  'Hobbies/Subject preference',
 ];
 
 export default function StudentProfileManagement() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
-
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
@@ -44,13 +42,12 @@ export default function StudentProfileManagement() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-
   const handleReset = () => {
     setActiveStep(0);
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
@@ -69,32 +66,28 @@ export default function StudentProfileManagement() {
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
-              className={`${activeStep === 0 ? "disabled-mainbutton" : ""}`}
+              className={`${activeStep === 0 ? 'disabled-mainbutton' : ''}`}
               disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
               Previous
             </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
+            <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            Step {activeStep + 1}
-           
-          </Typography>
-          
+          <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
         </React.Fragment>
       )}
     </Box>

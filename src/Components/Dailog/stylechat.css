@@ -30,7 +30,7 @@
   border-bottom: 25px solid var(--chatcolor) !important;
 } */
 .message-bubble.right::after {
-  content: "";
+  content: '';
   position: absolute;
   right: -15px;
   top: 63%;

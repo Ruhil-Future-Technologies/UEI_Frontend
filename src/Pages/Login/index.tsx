@@ -1,23 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import {
-  FormControlLabel,
-  IconButton,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
-import { Swiper, SwiperSlide } from "swiper/react";
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material';
+import { Swiper, SwiperSlide } from 'swiper/react';
 // import { jwtDecode, JwtPayload } from "jwt-decode";
-import { toast } from "react-toastify";
-import useApi from "../../hooks/useAPI";
-import { QUERY_KEYS} from "../../utils/const";
-import FullScreenLoader from "../../Pages/Loader/FullScreenLoader";
-import gLogo from "../../assets/img/logo-white.svg";
-import gyansetuLogo from "../../assets/img/gyansetu-logo.svg";
-import loginImage from "../../assets/img/login-image.png";
+import { toast } from 'react-toastify';
+import useApi from '../../hooks/useAPI';
+import { QUERY_KEYS } from '../../utils/const';
+import FullScreenLoader from '../../Pages/Loader/FullScreenLoader';
+import gLogo from '../../assets/img/logo-white.svg';
+import gyansetuLogo from '../../assets/img/gyansetu-logo.svg';
+import loginImage from '../../assets/img/login-image.png';
 import {
   ArrowLeft,
   BackArrowCircle,
@@ -25,39 +20,37 @@ import {
   GoogleIcon,
   VisibilityOn,
   VisibilityOff,
-} from "../../assets";
-import { Autoplay, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "react-toastify/dist/ReactToastify.css";
+} from '../../assets';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'react-toastify/dist/ReactToastify.css';
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
   // toast.dismiss()
   const navigate = useNavigate();
   useEffect(() => {
-    toast.dismiss()
-    const login_id = localStorage.getItem("_id");
+    toast.dismiss();
+    const login_id = localStorage.getItem('_id');
     if (login_id) {
-      navigate("/main/DashBoard");
+      navigate('/main/DashBoard');
     }
   }, []);
-
 
   const { postData } = useApi();
 
   const navigator = useNavigate();
-  const [password, setPassword] = useState("");
-  const [emailphone, setEmailphone] = useState("");
+  const [password, setPassword] = useState('');
+  const [emailphone, setEmailphone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const userId = "Email";
-  const [uservalue, setuserValue] = React.useState<any>("");
-  const [value, setValue] = React.useState("student");
+  const userId = 'Email';
+  const [uservalue, setuserValue] = React.useState<any>('');
+  const [value, setValue] = React.useState('student');
   const loginUrl = QUERY_KEYS.POST_LOGIN;
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -66,122 +59,116 @@ const Login = () => {
     setValue((event.target as HTMLInputElement).value);
   };
 
-
   useEffect(() => {
-    const theme = localStorage?.getItem("theme") || "";
-    if (theme === "light") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);      
-    } else if (theme === "dark") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-   
-    } else if (theme === "blue-theme")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else if (theme === "semi-dark")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else if (theme === "bordered-theme")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else
-    document?.documentElement?.setAttribute("data-bs-theme", theme);
+    const theme = localStorage?.getItem('theme') || '';
+    if (theme === 'light') {
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    } else if (theme === 'dark') {
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    } else if (theme === 'blue-theme')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else if (theme === 'semi-dark')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else if (theme === 'bordered-theme')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else document?.documentElement?.setAttribute('data-bs-theme', theme);
     // document.documentElement.setAttribute('data-theme', theme);
- }, []);
+  }, []);
 
   useEffect(() => {
     if (emailphone && password) {
-      setuserValue("");
+      setuserValue('');
     }
   }, [emailphone, password]);
-
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Assuming emailphone is the value being validated
     if (validateInput(emailphone)) {
-    
-      if(password){
+      if (password) {
         setLoading(true);
       }
       const UserSignUp = {
         userid:
-          userId === "Email" || userId === "Phone" ? String(emailphone) : "",
+          userId === 'Email' || userId === 'Phone' ? String(emailphone) : '',
         password: String(password),
         user_type: String(value),
       };
 
       // Find empty keys in UserSignUp
       const emptyKeys = Object.keys(UserSignUp).filter(
-        (key) => UserSignUp[key as keyof typeof UserSignUp] === ""
+        (key) => UserSignUp[key as keyof typeof UserSignUp] === '',
       );
 
       if (emptyKeys.length > 0) {
         setuserValue(emptyKeys[0]);
         return;
       } else {
-        setuserValue("");
+        setuserValue('');
       }
 
       try {
         const data = await postData(loginUrl, UserSignUp);
         if (data?.status === 200) {
           setLoading(false);
-          await localStorage.setItem("token", data?.token);
+          await localStorage.setItem('token', data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
         } else if (
           data?.status === 404 &&
-          data?.message === "Invalid userid or password"
+          data?.message === 'Invalid userid or password'
         ) {
           setLoading(false);
-          toast.error("Invalid userid or password", {
+          toast.error('Invalid userid or password', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         } else {
           setLoading(false);
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       } catch (error) {
         setLoading(false);
-console.error(error)
-        toast.error("Invalid userid or password", {
+        console.error(error);
+        toast.error('Invalid userid or password', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     }
   };
 
   const handleSuccessfulLogin = (data: any, password: string) => {
-    localStorage.setItem("token", data?.token);
-    localStorage.setItem("user_type", data?.data?.user_type);
-    localStorage.setItem("userid", data?.data?.userid);
-    localStorage.setItem("pd", password);
-    localStorage.setItem("userdata", JSON.stringify(data?.data));
-    localStorage.setItem("_id", data?.data?.id);
-    localStorage.setItem("lastRoute", window.location.pathname);    
+    localStorage.setItem('token', data?.token);
+    localStorage.setItem('user_type', data?.data?.user_type);
+    localStorage.setItem('userid', data?.data?.userid);
+    localStorage.setItem('pd', password);
+    localStorage.setItem('userdata', JSON.stringify(data?.data));
+    localStorage.setItem('_id', data?.data?.id);
+    localStorage.setItem('lastRoute', window.location.pathname);
 
     const tokenLifespan = 7100; // token lifespan in seconds (1 hour)
     // Calculate the expiry time
     const expiryTime = Date.now() + tokenLifespan * 1000;
-    localStorage.setItem("tokenExpiry", expiryTime.toString());
+    localStorage.setItem('tokenExpiry', expiryTime.toString());
 
-    toast.success("User logged in successfully", {
+    toast.success('User logged in successfully', {
       hideProgressBar: true,
-      theme: "colored",
+      theme: 'colored',
       autoClose: 500,
     });
- 
+
     const userType = data.data.user_type;
     // navigator(userType === "admin" ? "/profile-chat" : "/profile-chat");
-    navigator(userType === "admin" ? "/main/Dashboard" : "/main/Dashboard");
+    navigator(userType === 'admin' ? '/main/Dashboard' : '/main/Dashboard');
   };
-
 
   const validateInput = (value: string): boolean => {
     if (!value) {
-      setError("Please enter an email or phone number");
+      setError('Please enter an email or phone number');
       return false;
     }
 
@@ -189,10 +176,10 @@ console.error(error)
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (phoneRegex.test(value) || emailRegex.test(value)) {
-      setError("");
+      setError('');
       return true;
     } else {
-      setError("Invalid email or phone number format");
+      setError('Invalid email or phone number format');
       return false;
     }
   };
@@ -202,8 +189,6 @@ console.error(error)
     setEmailphone(value);
     validateInput(value);
   };
-
- 
 
   return (
     <>
@@ -236,7 +221,7 @@ console.error(error)
                   disableOnInteraction: false,
                 }}
                 pagination={{
-                  el: ".swiper-pagination",
+                  el: '.swiper-pagination',
                 }}
                 modules={[Autoplay, Pagination]}
                 className="mySwiper login-textslider"
@@ -294,7 +279,8 @@ console.error(error)
                         <img
                           src={gyansetuLogo}
                           className=" mx-auto my-0 d-block"
-                          alt="" width="120px"
+                          alt=""
+                          width="120px"
                         />
                       </div>
                       <div className="col-lg-12">
@@ -328,25 +314,25 @@ console.error(error)
                               helperText={error}
                               fullWidth
                               sx={{
-                                "& input:-webkit-autofill": {
+                                '& input:-webkit-autofill': {
                                   WebkitBoxShadow:
-                                    "0 0 0 1000px white inset !important", // Set the background color you want
-                                  WebkitTextFillColor: "black !important", // Set the text color you want
+                                    '0 0 0 1000px white inset !important', // Set the background color you want
+                                  WebkitTextFillColor: 'black !important', // Set the text color you want
                                 },
-                                "& input:-webkit-autofill:hover": {
+                                '& input:-webkit-autofill:hover': {
                                   WebkitBoxShadow:
-                                    "0 0 0 1000px white inset !important",
-                                  WebkitTextFillColor: "black !important",
+                                    '0 0 0 1000px white inset !important',
+                                  WebkitTextFillColor: 'black !important',
                                 },
-                                "& input:-webkit-autofill:focus": {
+                                '& input:-webkit-autofill:focus': {
                                   WebkitBoxShadow:
-                                    "0 0 0 1000px white inset !important",
-                                  WebkitTextFillColor: "black !important",
+                                    '0 0 0 1000px white inset !important',
+                                  WebkitTextFillColor: 'black !important',
                                 },
-                                "& input:-webkit-autofill:active": {
+                                '& input:-webkit-autofill:active': {
                                   WebkitBoxShadow:
-                                    "0 0 0 1000px white inset !important",
-                                  WebkitTextFillColor: "black !important",
+                                    '0 0 0 1000px white inset !important',
+                                  WebkitTextFillColor: 'black !important',
                                 },
                               }}
                             />
@@ -359,10 +345,9 @@ console.error(error)
                               Password
                             </label>
                             <div className="position-relative">
-                          
                               <TextField
                                 id="passwordInput"
-                                type={showPassword ? "text" : "password"}
+                                type={showPassword ? 'text' : 'password'}
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -385,31 +370,31 @@ console.error(error)
                                   ),
                                 }}
                                 sx={{
-                                  "& input:-webkit-autofill": {
+                                  '& input:-webkit-autofill': {
                                     WebkitBoxShadow:
-                                      "0 0 0 1000px white inset !important", // Set the background color you want
-                                    WebkitTextFillColor: "black !important", // Set the text color you want
+                                      '0 0 0 1000px white inset !important', // Set the background color you want
+                                    WebkitTextFillColor: 'black !important', // Set the text color you want
                                   },
-                                  "& input:-webkit-autofill:hover": {
+                                  '& input:-webkit-autofill:hover': {
                                     WebkitBoxShadow:
-                                      "0 0 0 1000px white inset !important",
-                                    WebkitTextFillColor: "black !important",
+                                      '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
                                   },
-                                  "& input:-webkit-autofill:focus": {
+                                  '& input:-webkit-autofill:focus': {
                                     WebkitBoxShadow:
-                                      "0 0 0 1000px white inset !important",
-                                    WebkitTextFillColor: "black !important",
+                                      '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
                                   },
-                                  "& input:-webkit-autofill:active": {
+                                  '& input:-webkit-autofill:active': {
                                     WebkitBoxShadow:
-                                      "0 0 0 1000px white inset !important",
-                                    WebkitTextFillColor: "black !important",
+                                      '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
                                   },
                                 }}
                                 fullWidth
                               />
                             </div>
-                            {uservalue === "password" && (
+                            {uservalue === 'password' && (
                               <small className="text-danger">
                                 Please Enter Password
                               </small>
@@ -452,13 +437,13 @@ console.error(error)
                             Sign in Now
                           </button>
                           <p className="text-center mt-2">
-                            New to Gyansetu?{" "}
+                            New to Gyansetu?{' '}
                             <Link
                               to="/signup"
                               className="fw-semibold"
-                              style={{ color: "#9943EC" }}
+                              style={{ color: '#9943EC' }}
                             >
-                              {" "}
+                              {' '}
                               Sign up here
                             </Link>
                           </p>
@@ -483,9 +468,9 @@ console.error(error)
                     <div className="row gy-4 flex-wrap-reverse flex-lg-wrap">
                       <div className="col-lg-12">
                         <p className="text-center d-lg-none">
-                          New to Gyansetu?{" "}
-                          <Link to={"/signup"} style={{ color: "#9943EC" }}>
-                            {" "}
+                          New to Gyansetu?{' '}
+                          <Link to={'/signup'} style={{ color: '#9943EC' }}>
+                            {' '}
                             Sign up here
                           </Link>
                         </p>

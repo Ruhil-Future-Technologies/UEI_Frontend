@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Menu/Menu.scss";
-import TextField from "@mui/material/TextField";
-import TextareaAutosize from "react-textarea-autosize";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_MENU } from "../../utils/const";
-import { Grid, InputLabel, SelectChangeEvent, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
-import { dataaccess, inputfield, inputfieldtext } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Menu/Menu.scss';
+import TextField from '@mui/material/TextField';
+import TextareaAutosize from 'react-textarea-autosize';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_MENU } from '../../utils/const';
+import { Grid, InputLabel, SelectChangeEvent, Typography } from '@mui/material';
+import { toast } from 'react-toastify';
+import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
+import { dataaccess, inputfield, inputfieldtext } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface IMenuForm {
   menu_name: string;
@@ -29,15 +29,15 @@ const AddEditMenu = () => {
   const { id } = useParams();
   const charPattern = /^[a-zA-Z\s]*$/;
   const numberPattern = /^\d+$/;
-  const Menulist: any = localStorage.getItem("menulist1");
+  const Menulist: any = localStorage.getItem('menulist1');
 
   const initialState = {
-    menu_name: "",
-    priority: "",
+    menu_name: '',
+    priority: '',
   };
   const [menu, setMenu] = useState(initialState);
   const formRef = useRef<FormikProps<IMenuForm>>(null);
-  const pathSegments = location?.pathname?.split("/").filter(Boolean);
+  const pathSegments = location?.pathname?.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3]?.toLowerCase()
     : pathSegments[pathSegments.length - 2]?.toLowerCase();
@@ -45,21 +45,21 @@ const AddEditMenu = () => {
 
   const callAPI = async () => {
     if (id) {
-      getData(`${MenuEditURL}${id ? `/${id}` : ""}`)
+      getData(`${MenuEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           setMenu(data?.data);
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -67,7 +67,7 @@ const AddEditMenu = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    Navigate("/main/Menu");
+    Navigate('/main/Menu');
   }
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const AddEditMenu = () => {
 
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
     setMenu((prevMenu) => {
       return {
@@ -91,35 +91,35 @@ const AddEditMenu = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof IMenuForm]
+        formRef?.current?.errors?.[fieldName as keyof IMenuForm],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
   const handleSubmit = async (
     menuData: IMenuForm,
-    { resetForm }: FormikHelpers<IMenuForm>
+    { resetForm }: FormikHelpers<IMenuForm>,
   ) => {
     if (id) {
       putData(`${MenuEditURL}/${id}`, menuData)
         .then((data: any) => {
           if (data.status === 200) {
-            Navigate("/main/Menu");
+            Navigate('/main/Menu');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -128,39 +128,39 @@ const AddEditMenu = () => {
           if (data.status === 200) {
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             resetForm({ values: initialState });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const menuSchema = Yup.object().shape({
     menu_name: Yup.string()
-      .required("Please enter Menu name")
+      .required('Please enter Menu name')
       .test(
-        "not-whitespace",
-        "Please enter a valid Menu name; whitespace is not allowed.",
-        (value: any) => value && value?.trim().length > 0
+        'not-whitespace',
+        'Please enter a valid Menu name; whitespace is not allowed.',
+        (value: any) => value && value?.trim().length > 0,
       )
       .matches(
         charPattern,
-        "Please enter a valid Menu name only characters allowed."
+        'Please enter a valid Menu name only characters allowed.',
       ),
     priority: Yup.string()
-      .required("Please enter valid Menu sequence number")
-      .matches(numberPattern, "Please enter a valid Menu sequence number."),
+      .required('Please enter valid Menu sequence number')
+      .matches(numberPattern, 'Please enter a valid Menu sequence number.'),
     menu_image: Yup.string(),
   });
 
@@ -202,8 +202,8 @@ const AddEditMenu = () => {
                             label="Menu name *"
                             value={values?.menu_name}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange(e, "menu_name")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'menu_name')}
                             InputProps={{
                               style: {
                                 backgroundColor: inputfield(namecolor),
@@ -216,7 +216,7 @@ const AddEditMenu = () => {
                             }}
                           />
                           {touched?.menu_name && errors?.menu_name ? (
-                            <p style={{ color: "red" }}>{errors?.menu_name}</p>
+                            <p style={{ color: 'red' }}>{errors?.menu_name}</p>
                           ) : (
                             <></>
                           )}
@@ -232,8 +232,8 @@ const AddEditMenu = () => {
                             label="Menu sequence *"
                             value={values?.priority}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange(e, "priority")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'priority')}
                             InputProps={{
                               style: {
                                 backgroundColor: inputfield(namecolor),
@@ -246,7 +246,7 @@ const AddEditMenu = () => {
                             }}
                           />
                           {touched?.priority && errors?.priority ? (
-                            <p style={{ color: "red" }}>{errors?.priority}</p>
+                            <p style={{ color: 'red' }}>{errors?.priority}</p>
                           ) : (
                             <></>
                           )}
@@ -269,8 +269,8 @@ const AddEditMenu = () => {
                               type="file"
                               accept=".pdf,.doc,.docx"
                               onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => handleChange(e, "menu_image")}
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'menu_image')}
                               style={{ color: inputfieldtext(namecolor) }}
                               id="file-upload"
                               name="menu_image"
@@ -292,8 +292,8 @@ const AddEditMenu = () => {
                           aria-label="empty textarea"
                           minRows={5}
                           style={{
-                            width: "100%",
-                            fontSize: "1rem",
+                            width: '100%',
+                            fontSize: '1rem',
                             backgroundColor: inputfield(namecolor),
                             color: inputfieldtext(namecolor),
                           }}
@@ -302,8 +302,11 @@ const AddEditMenu = () => {
                       </div>
                     </div>
                     <div className=" mt-3">
-                      <button className="btn btn-primary mainbutton" data-testid="save_btn">
-                        {id ? "Update" : "Save"}
+                      <button
+                        className="btn btn-primary mainbutton"
+                        data-testid="save_btn"
+                      >
+                        {id ? 'Update' : 'Save'}
                       </button>
                     </div>
                   </Form>

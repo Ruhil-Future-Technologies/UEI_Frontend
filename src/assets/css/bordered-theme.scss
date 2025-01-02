@@ -1,26 +1,25 @@
-[data-bs-theme=bodered-theme] body { 
+[data-bs-theme='bodered-theme'] body {
+  background-color: rgb(255, 255, 255);
 
-    background-color: rgb(255, 255, 255);
-
-    .top-header { 
-        .navbar {
-             border-bottom: 1px solid #dee2e6;
-             box-shadow: none;
-        }
+  .top-header {
+    .navbar {
+      border-bottom: 1px solid #dee2e6;
+      box-shadow: none;
     }
+  }
 
-    .chat-wrapper{
-        box-shadow: none!important;
-        border: 1px solid #dee2e6;
-    }
+  .chat-wrapper {
+    box-shadow: none !important;
+    border: 1px solid #dee2e6;
+  }
 
-    .sidebar-wrapper {
-        border-right: 1px solid #dee2e6;
-        box-shadow: none;
-    }
+  .sidebar-wrapper {
+    border-right: 1px solid #dee2e6;
+    box-shadow: none;
+  }
 
-    .card {
-        box-shadow: none;
-        border: 1px solid #dee2e6;
-    }
+  .card {
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+  }
 }

@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-
-import InstituteSidevar from "./instituteSidevar";
+import InstituteSidevar from './instituteSidevar';
 // import "../Main/Main.scss";
-import { Outlet } from "react-router-dom";
-import Header from "../../Components/Header";
-import Footer from "../../Components/Footer";
+import { Outlet } from 'react-router-dom';
+import Header from '../../Components/Header';
+import Footer from '../../Components/Footer';
 // import "../../assets/css/main.min.css";
 // import "../../assets/css/newstyle.min.css";
 // import "../../assets/css/newstyle.scss";

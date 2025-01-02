@@ -1,32 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../RolevsAdmin/RolevsAdmin.scss";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../RolevsAdmin/RolevsAdmin.scss';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_ROLE,
   QUERY_KEYS_ROLEVSADMIN,
-} from "../../utils/const";
+} from '../../utils/const';
 import {
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Typography,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import { Form, Formik, setNestedObjectValues } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import { Form, Formik, setNestedObjectValues } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
 import {
   dataaccess,
   fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 interface IRolevsAdmin {
   role_master_id: string;
   admin_id: string;
@@ -45,8 +45,8 @@ const AddEditRoleVsAdmin = () => {
   const formRef = useRef() as any;
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
@@ -57,9 +57,9 @@ const AddEditRoleVsAdmin = () => {
       dataaccess(
         Menulist,
         lastSegment,
-        { urlcheck: "role vs user" },
-        { datatest: "rolevsuser" }
-      )
+        { urlcheck: 'role vs user' },
+        { datatest: 'rolevsuser' },
+      ),
     );
   }, [Menulist]);
 
@@ -67,12 +67,12 @@ const AddEditRoleVsAdmin = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/RoleVsUser");
+    navigator('/main/RoleVsUser');
   }
 
   const initialState = {
-    role_master_id: "",
-    admin_id: "",
+    role_master_id: '',
+    admin_id: '',
   };
   const [rolevsadmin, setRoleVsAdmin] = useState(initialState);
   const [dataRole, setDataRole] = useState<any>([]);
@@ -82,39 +82,39 @@ const AddEditRoleVsAdmin = () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
         const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setDataRole(filteredData || []);
         // setDataRole(data?.data||[])
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigator("/");
+          navigator('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     getData(`${AdminURL}`)
       .then((data: any) => {
         const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setDataAdmin(filteredData || []);
         // setDataAdmin(data?.data||[])
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigator("/");
+          navigator('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     if (id) {
-      getData(`${RolevsAdminEditURL}${id ? `/${id}` : ""}`)
+      getData(`${RolevsAdminEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           const datavalue = data?.data;
           setRoleVsAdmin({
@@ -124,11 +124,11 @@ const AddEditRoleVsAdmin = () => {
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -143,7 +143,7 @@ const AddEditRoleVsAdmin = () => {
       formRef?.current?.setTouched(setNestedObjectValues(err, true));
       formRef?.current?.setFieldError(
         name,
-        formRef?.current?.errors?.[name as keyof IRolevsAdmin]
+        formRef?.current?.errors?.[name as keyof IRolevsAdmin],
       );
       formRef?.current?.setFieldTouched(name, true);
     }
@@ -162,22 +162,22 @@ const AddEditRoleVsAdmin = () => {
       putData(`${RolevsAdminEditURL}/${id}`, rolevsadminData)
         .then((data: any) => {
           if (data?.status === 200) {
-            navigator("/main/RoleVsUser");
+            navigator('/main/RoleVsUser');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -187,30 +187,30 @@ const AddEditRoleVsAdmin = () => {
             // navigator('/main/RoleVsUser')
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             setRoleVsAdmin({
-              role_master_id: "",
-              admin_id: "",
+              role_master_id: '',
+              admin_id: '',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const rolevsadminSchema = Yup.object().shape({
-    role_master_id: Yup.string().required("Please select Role matser"),
-    admin_id: Yup.string().required("Please select Admin"),
+    role_master_id: Yup.string().required('Please select Role matser'),
+    admin_id: Yup.string().required('Please select Admin'),
   });
   return (
     <>
@@ -247,7 +247,7 @@ const AddEditRoleVsAdmin = () => {
                               Role Master *
                             </InputLabel>
                             <Select
-                              inputProps={{ "data-testid": "role_master_id" }}
+                              inputProps={{ 'data-testid': 'role_master_id' }}
                               onChange={handleChange}
                               label="Role Master"
                               name="role_master_id"
@@ -256,7 +256,7 @@ const AddEditRoleVsAdmin = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -276,7 +276,7 @@ const AddEditRoleVsAdmin = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor), // Change this to your desired hover background color
                                     },
@@ -289,7 +289,7 @@ const AddEditRoleVsAdmin = () => {
                           </FormControl>
                         </div>
                         {errors.role_master_id && touched.role_master_id ? (
-                          <p style={{ color: "red" }}>
+                          <p style={{ color: 'red' }}>
                             {errors.role_master_id}
                           </p>
                         ) : (
@@ -303,7 +303,7 @@ const AddEditRoleVsAdmin = () => {
                               Admin *
                             </InputLabel>
                             <Select
-                              inputProps={{ "data-testid": "admin_id" }}
+                              inputProps={{ 'data-testid': 'admin_id' }}
                               onChange={handleChange}
                               label="Admin"
                               name="admin_id"
@@ -312,7 +312,7 @@ const AddEditRoleVsAdmin = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -332,7 +332,7 @@ const AddEditRoleVsAdmin = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor), // Change this to your desired hover background color
                                     },
@@ -345,14 +345,18 @@ const AddEditRoleVsAdmin = () => {
                           </FormControl>
                         </div>
                         {errors.admin_id && touched.admin_id ? (
-                          <p style={{ color: "red" }}>{errors.admin_id}</p>
+                          <p style={{ color: 'red' }}>{errors.admin_id}</p>
                         ) : (
                           <></>
                         )}
                       </div>
                       <div className="col-lg-12">
-                        <button data-testid="save_btn" type="submit" className="btn btn-primary mainbutton">
-                          {id ? "Update" : "Save"}
+                        <button
+                          data-testid="save_btn"
+                          type="submit"
+                          className="btn btn-primary mainbutton"
+                        >
+                          {id ? 'Update' : 'Save'}
                         </button>
                       </div>
                     </div>

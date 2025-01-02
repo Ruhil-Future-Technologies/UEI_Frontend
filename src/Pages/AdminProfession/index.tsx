@@ -1,23 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-} from "@mui/material";
+} from '@mui/material';
 
-import { useEffect, useState } from "react";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import {
-  commonStyle,
-  deepEqual,
-  fieldIcon,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+import { useEffect, useState } from 'react';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { commonStyle, deepEqual, fieldIcon } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface PropsItem {
   setActiveForm: React.Dispatch<React.SetStateAction<number>>;
@@ -31,20 +27,20 @@ const AdminProfession: React.FC<PropsItem> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  const adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem('_id');
   const { getData, postData, putData } = useApi();
   const [institude, setInstitude] = React.useState<
     [{ id: string; institution_name: string }]
-  >([{ id: "", institution_name: "" }]);
-  const [selectInstitude, setSelectInstitude] = React.useState("");
+  >([{ id: '', institution_name: '' }]);
+  const [selectInstitude, setSelectInstitude] = React.useState('');
   const [course, setCourse] = React.useState<
     [{ id: string; course_name: string }]
-  >([{ id: "", course_name: "" }]);
-  const [selectCourse, setSelectCourse] = React.useState("");
-  const [selectSubject, setSelectSubject] = React.useState("");
+  >([{ id: '', course_name: '' }]);
+  const [selectCourse, setSelectCourse] = React.useState('');
+  const [selectSubject, setSelectSubject] = React.useState('');
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [initialState, setInitialState] = useState<any | null>({});
-  const profilePercentage = localStorage.getItem("Profile_completion");
+  const profilePercentage = localStorage.getItem('Profile_completion');
   const navigate = useNavigate();
 
   const handleInstiChange = (event: SelectChangeEvent<string>) => {
@@ -59,25 +55,25 @@ const AdminProfession: React.FC<PropsItem> = ({
 
   const getinstitutes = async () => {
     try {
-      const response = await getData("institution/list");
+      const response = await getData('institution/list');
 
       if (response?.status === 200) {
         const filteredData = response?.data?.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setInstitude(filteredData || []);
       }
     } catch (error: any) {
-      console.error("error comes :", error?.response?.status);
+      console.error('error comes :', error?.response?.status);
       if (error?.response?.status === 401) {
-        toast.warning("Please login again", {
+        toast.warning('Please login again', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
-        toast.error("Request failed", {
+        toast.error('Request failed', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     }
@@ -85,33 +81,31 @@ const AdminProfession: React.FC<PropsItem> = ({
 
   const getCourse = async () => {
     try {
-      const response = await getData("course/list");
+      const response = await getData('course/list');
       if (response?.status === 200) {
         const filteredData = response?.data?.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setCourse(filteredData || []);
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        toast.warning("Please login again ", {
+        toast.warning('Please login again ', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
-        toast.error("Request failed", {
+        toast.error('Request failed', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     }
   };
 
-  
-
   const getProfation = async () => {
     try {
-      const response = await getData("admin_profession/edit/" + adminId);
+      const response = await getData('admin_profession/edit/' + adminId);
 
       if (response?.status === 200) {
         setSelectInstitude(response?.data?.institution_id);
@@ -126,18 +120,18 @@ const AdminProfession: React.FC<PropsItem> = ({
       } else if (response?.status === 404) {
         setEditFlag(true);
       } else {
-        console.error("Unexpected response:", response);
+        console.error('Unexpected response:', response);
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        toast.warning("Please login again", {
+        toast.warning('Please login again', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       } else {
-        toast.error("Request failed", {
+        toast.error('Request failed', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     }
@@ -159,31 +153,31 @@ const AdminProfession: React.FC<PropsItem> = ({
     };
     // console.log(paylod);
 
-    const eq = deepEqual(initialState, payload);    
+    const eq = deepEqual(initialState, payload);
 
     if (editFlag) {
       const saveData = async () => {
         try {
-          const response = await postData("admin_profession/add", payload);
+          const response = await postData('admin_profession/add', payload);
 
           if (response?.status === 200) {
-            toast.success("Admin profession saved successfully", {
+            toast.success('Admin profession saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             handleReset();
-            navigate("/");
+            navigate('/');
           }
         } catch (error: any) {
           if (error?.response?.status === 401) {
-            toast.warning("Please login again", {
+            toast.warning('Please login again', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
-            toast.error("Request failed", {
+            toast.error('Request failed', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         }
@@ -193,34 +187,34 @@ const AdminProfession: React.FC<PropsItem> = ({
       const editData = async () => {
         try {
           const response = await putData(
-            "admin_profession/edit/" + adminId,
-            payload
+            'admin_profession/edit/' + adminId,
+            payload,
           );
 
           if (response?.status === 200) {
-            toast.success("Admin profession updated successfully", {
+            toast.success('Admin profession updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             getProfation();
-            if (profilePercentage !== "100") handleReset();
-            navigate("/");
+            if (profilePercentage !== '100') handleReset();
+            navigate('/');
           } else {
-            toast.error("somthing want wrong", {
+            toast.error('somthing want wrong', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         } catch (error: any) {
           if (error?.response?.status === 401) {
-            toast.warning("Please login again", {
+            toast.warning('Please login again', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
-            toast.error("Request failed", {
+            toast.error('Request failed', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         }
@@ -228,16 +222,15 @@ const AdminProfession: React.FC<PropsItem> = ({
       // eslint-disable-next-line no-lone-blocks
 
       if (!eq) editData();
-      else navigate("/");
+      else navigate('/');
     }
   };
-  
 
   return (
     <form>
       <div
         className="row d-flex justify-content-center"
-        style={{ marginBottom: "5px" }}
+        style={{ marginBottom: '5px' }}
       >
         <div className="col form_field_wrapper">
           <FormControl required sx={{ m: 1, minWidth: 220 }}>
@@ -249,21 +242,18 @@ const AdminProfession: React.FC<PropsItem> = ({
               id="demo-simple-select-standard"
               value={selectInstitude}
               sx={{
-                backgroundColor: "#f5f5f5",
-                "& .MuiSelect-icon": {
+                backgroundColor: '#f5f5f5',
+                '& .MuiSelect-icon': {
                   color: fieldIcon(namecolor),
                 },
-               
               }}
               onChange={handleInstiChange}
               label="Institute"
             >
               {institude?.map((institut) => (
-                
                 <MenuItem
                   key={institut?.id}
                   value={institut?.id}
-                
                   sx={commonStyle(namecolor)}
                 >
                   {institut?.institution_name}
@@ -282,8 +272,8 @@ const AdminProfession: React.FC<PropsItem> = ({
               id="demo-simple-select-standard"
               value={selectCourse}
               sx={{
-                backgroundColor: "#f5f5f5",
-                "& .MuiSelect-icon": {
+                backgroundColor: '#f5f5f5',
+                '& .MuiSelect-icon': {
                   color: fieldIcon(namecolor),
                 },
               }}
@@ -291,12 +281,12 @@ const AdminProfession: React.FC<PropsItem> = ({
               label="Course"
               MenuProps={{
                 anchorOrigin: {
-                  vertical: "bottom",
-                  horizontal: "left",
+                  vertical: 'bottom',
+                  horizontal: 'left',
                 },
                 transformOrigin: {
-                  vertical: "top",
-                  horizontal: "left",
+                  vertical: 'top',
+                  horizontal: 'left',
                 },
               }}
             >
@@ -322,22 +312,21 @@ const AdminProfession: React.FC<PropsItem> = ({
               id="demo-simple-select-standard"
               value={selectSubject}
               sx={{
-                backgroundColor: "#f5f5f5",
-                "& .MuiSelect-icon": {
+                backgroundColor: '#f5f5f5',
+                '& .MuiSelect-icon': {
                   color: fieldIcon(namecolor),
                 },
               }}
               onChange={handleSubjectChange}
               label="Subject"
-            >
-            </Select>
+            ></Select>
           </FormControl>
           {/* <div> {!selectSubject && (
             <p style={{marginLeft:"10px", color: 'red' }}>Please select a Subject.</p>
           )}</div> */}
         </div>
       </div>
-      <div className="row justify-content-center" style={{ marginTop: "50px" }}>
+      <div className="row justify-content-center" style={{ marginTop: '50px' }}>
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button
             type="button"

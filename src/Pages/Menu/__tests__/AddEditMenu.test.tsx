@@ -1,11 +1,16 @@
-import React from "react";
+import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import AddEditMenu from '../AddEditMenu';
-import { BrowserRouter as Router, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useAPI';
-import { contextValue } from "../../../MockStorage/mockstorage";
+import { contextValue } from '../../../MockStorage/mockstorage';
 import NameContext from '../../Context/NameContext';
 
 jest.mock('react-toastify', () => ({
@@ -15,17 +20,22 @@ jest.mock('react-toastify', () => ({
   },
 }));
 jest.mock('../../../hooks/useAPI', () => ({
-    __esModule: true,
-    default: jest.fn(() => ({
-      getData: jest.fn(),
-      postData: jest.fn(),
-      putData: jest.fn(),
-    })),
-  }));
-  
+  __esModule: true,
+  default: jest.fn(() => ({
+    getData: jest.fn(),
+    postData: jest.fn(),
+    putData: jest.fn(),
+  })),
+}));
+
 const mockGetData = jest.fn();
 const mockNavigate = jest.fn();
-const mockLocation = { pathname: '/main/Menu', search: '', hash: '', state: null };
+const mockLocation = {
+  pathname: '/main/Menu',
+  search: '',
+  hash: '',
+  state: null,
+};
 const mockPostData = jest.fn();
 const mockPutData = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -35,10 +45,10 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
 }));
 (useApi as jest.Mock).mockReturnValue({
-    getData: mockGetData,
-    postData: mockPostData,
-    putData: mockPutData,
-  });
+  getData: mockGetData,
+  postData: mockPostData,
+  putData: mockPutData,
+});
 
 describe('AddEditMenu Component', () => {
   beforeEach(() => {
@@ -59,7 +69,7 @@ describe('AddEditMenu Component', () => {
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     expect(getByText('Add Menu')).toBeInTheDocument();
   });
@@ -76,7 +86,7 @@ describe('AddEditMenu Component', () => {
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
 
     await waitFor(() => {
@@ -92,7 +102,7 @@ describe('AddEditMenu Component', () => {
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
 
     const saveButton = getByTestId('save_btn');
@@ -100,7 +110,9 @@ describe('AddEditMenu Component', () => {
 
     await waitFor(() => {
       expect(getByText('Please enter Menu name')).toBeInTheDocument();
-      expect(getByText('Please enter valid Menu sequence number')).toBeInTheDocument();
+      expect(
+        getByText('Please enter valid Menu sequence number'),
+      ).toBeInTheDocument();
     });
   });
   it('displays success message on successful submit (Create)', async () => {
@@ -114,7 +126,7 @@ describe('AddEditMenu Component', () => {
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
 
     const menuNameField = getByLabelText('Menu name *');
@@ -126,33 +138,36 @@ describe('AddEditMenu Component', () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Menu created successfully', expect.any(Object));
+      expect(toast.success).toHaveBeenCalledWith(
+        'Menu created successfully',
+        expect.any(Object),
+      );
     });
   });
   it('displays success message on successful submit (Update)', async () => {
     (useParams as jest.Mock).mockReturnValue({ id: '123' });
     mockGetData.mockResolvedValue({
       data: {
-        created_at: "Mon, 04 Nov 2024 10:39:15 GMT",
+        created_at: 'Mon, 04 Nov 2024 10:39:15 GMT',
         id: '123',
         is_active: '1',
         is_deleted: false,
-        menu_name: "Feedback",
+        menu_name: 'Feedback',
         priority: '1',
-        updated_at: "Fri, 20 Dec 2024 10:15:40 GMT",
+        updated_at: 'Fri, 20 Dec 2024 10:15:40 GMT',
       },
-      message: "Menu found Successfully",
+      message: 'Menu found Successfully',
       status: 200,
     });
 
     (useApi as jest.Mock).mockReturnValue({ getData: mockGetData });
 
-    const { getByTestId} = render(
+    const { getByTestId } = render(
       <NameContext.Provider value={contextValue}>
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
 
     // Wait for API call to resolve
@@ -167,7 +182,7 @@ describe('AddEditMenu Component', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/main/Menu');
     });
   });
-  
+
   it('displays error message when API call fails (Create)', async () => {
     mockPostData.mockRejectedValue({
       message: 'Failed to create menu',
@@ -178,7 +193,7 @@ describe('AddEditMenu Component', () => {
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     const menuNameField = getByLabelText('Menu name *');
     const priorityField = getByLabelText('Menu sequence *');
@@ -189,7 +204,10 @@ describe('AddEditMenu Component', () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Failed to create menu', expect.any(Object));
+      expect(toast.error).toHaveBeenCalledWith(
+        'Failed to create menu',
+        expect.any(Object),
+      );
     });
   });
   it('handles file upload', async () => {
@@ -198,7 +216,7 @@ describe('AddEditMenu Component', () => {
         <Router>
           <AddEditMenu />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
     const fileInput = getByTestId('file-upload') as HTMLInputElement;
     const file = new File(['file content'], 'menu.jpg', { type: 'image/jpeg' });

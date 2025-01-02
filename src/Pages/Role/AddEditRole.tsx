@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from "react";
-import "../Role/Role.scss";
+import React, { useEffect, useRef, useState } from 'react';
+import '../Role/Role.scss';
 // import TextField from '@mui/material/TextField';
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_ROLE } from "../../utils/const";
-import { SelectChangeEvent, TextField, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { Field, Form, Formik, FormikHelpers } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
-import { dataaccess } from "../../utils/helpers";
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_ROLE } from '../../utils/const';
+import { SelectChangeEvent, TextField, Typography } from '@mui/material';
+import { toast } from 'react-toastify';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
+import { dataaccess } from '../../utils/helpers';
 interface IRoleForm {
   role_name: string;
 }
@@ -24,14 +24,14 @@ const AddEditRole = () => {
   const RoleNamePattern = /^[a-zA-Z\s]*$/;
 
   const initialState: any = {
-    role_name: "",
+    role_name: '',
   };
   const [role, setRole] = useState(initialState);
   const formRef = useRef() as any;
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname?.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname?.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3]?.toLowerCase()
     : pathSegments[pathSegments.length - 2]?.toLowerCase();
@@ -39,7 +39,7 @@ const AddEditRole = () => {
 
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -47,12 +47,12 @@ const AddEditRole = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/Role");
+    navigator('/main/Role');
   }
 
   const callAPI = async () => {
     if (id) {
-      getData(`${RoleEditURL}${id ? `/${id}` : ""}`)
+      getData(`${RoleEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           const datavalue = data?.data;
           setRole({
@@ -62,7 +62,7 @@ const AddEditRole = () => {
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -70,10 +70,10 @@ const AddEditRole = () => {
   useEffect(() => {
     callAPI();
   }, []);
- 
+
   const handleChange11 = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
     setRole((prevMenu: any) => {
       return {
@@ -88,49 +88,49 @@ const AddEditRole = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof IRoleForm]
+        formRef?.current?.errors?.[fieldName as keyof IRoleForm],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
   const roleSchema = Yup.object().shape({
     role_name: Yup.string()
-      .required("Please enter Role name")
+      .required('Please enter Role name')
       .matches(
         RoleNamePattern,
-        "Please enter a valid Role name only characters allowed."
+        'Please enter a valid Role name only characters allowed.',
       ),
   });
-  
+
   const handleSubmit = async (
     roleData: IRoleForm,
-    { resetForm }: FormikHelpers<IRoleForm>
+    { resetForm }: FormikHelpers<IRoleForm>,
   ) => {
     if (id) {
       putData(`${RoleEditURL}/${id}`, roleData)
         .then((data: any) => {
           if (data.status === 200) {
-            navigator("/main/Role");
+            navigator('/main/Role');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else if (data.status === 400) {
-            toast.error("Role name already exists", {
+            toast.error('Role name already exists', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -140,26 +140,26 @@ const AddEditRole = () => {
             // navigator('/main/Role')
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             resetForm({ values: initialState });
             // setRole({ role_name: ""})
           } else if (data.status === 400) {
-            toast.error("Role name already exists", {
+            toast.error('Role name already exists', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -195,8 +195,8 @@ const AddEditRole = () => {
                     <div className="row gy-4 flex-column mt-0">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          <Field  
-                            inputProps={{ "data-testid": "role_name" }}
+                          <Field
+                            inputProps={{ 'data-testid': 'role_name' }}
                             component={TextField}
                             type="text"
                             label="Role Name *"
@@ -205,19 +205,22 @@ const AddEditRole = () => {
                             variant="outlined"
                             // onChange={handleChange}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange11(e, "role_name")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange11(e, 'role_name')}
                           />
                           {touched?.role_name && errors?.role_name ? (
-                            <p style={{ color: "red" }}>{errors?.role_name}</p>
+                            <p style={{ color: 'red' }}>{errors?.role_name}</p>
                           ) : (
                             <></>
                           )}
                         </div>
                       </div>
                       <div className="col-lg-4">
-                        <button data-testid="save_btn" className="btn btn-primary mainbutton">
-                          {id ? "Update" : "Save"}
+                        <button
+                          data-testid="save_btn"
+                          className="btn btn-primary mainbutton"
+                        >
+                          {id ? 'Update' : 'Save'}
                         </button>
                       </div>
                     </div>

@@ -21,35 +21,42 @@ import theme from './theme'; // Path to your theme.ts
 // import 'bootstrap/dist/css/bootstrap.css';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 const token = localStorage.getItem('token');
 const tokenExpiry = localStorage.getItem('tokenExpiry');
 const isTokenExpired = () => {
-if (token && tokenExpiry) {
-  const currentTime = Date.now();
-  // console.log("test expire time in",currentTime,tokenExpiry)
-  if (currentTime > parseInt(tokenExpiry)) {
-    return true
+  if (token && tokenExpiry) {
+    const currentTime = Date.now();
+    // console.log("test expire time in",currentTime,tokenExpiry)
+    if (currentTime > parseInt(tokenExpiry)) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
   }
-  else{
-    return false
-  }
-} else {
-  return false
-}
 };
-
 
 root.render(
   <ThemeProvider theme={theme}>
-  <NameProvider> 
-     <BrowserRouter>
-  { isTokenExpired() ? "" :<ToastContainer closeOnClick={false} closeButton={false} autoClose={3000} style={{width:"auto"}}/>}
-    <App />
-  </BrowserRouter>
-  </NameProvider>
-  </ThemeProvider>
+    <NameProvider>
+      <BrowserRouter>
+        {isTokenExpired() ? (
+          ''
+        ) : (
+          <ToastContainer
+            closeOnClick={false}
+            closeButton={false}
+            autoClose={3000}
+            style={{ width: 'auto' }}
+          />
+        )}
+        <App />
+      </BrowserRouter>
+    </NameProvider>
+  </ThemeProvider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

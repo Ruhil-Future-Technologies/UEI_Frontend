@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from "react";
-import "../Entity/Entity.scss";
-import TextField from "@mui/material/TextField";
-import { Typography } from "@mui/material";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_ENTITY } from "../../utils/const";
-import { toast } from "react-toastify";
+import React, { useEffect, useRef, useState } from 'react';
+import '../Entity/Entity.scss';
+import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_ENTITY } from '../../utils/const';
+import { toast } from 'react-toastify';
 import {
   Field,
   Form,
   Formik,
   FormikProps,
   setNestedObjectValues,
-} from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
-import { dataaccess } from "../../utils/helpers";
+} from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
+import { dataaccess } from '../../utils/helpers';
 
 const AddEditEntity = () => {
   const EntityAddURL = QUERY_KEYS_ENTITY.ENTITY_ADD;
@@ -25,21 +25,20 @@ const AddEditEntity = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const [entity, setEntity] = useState("");
+  const [entity, setEntity] = useState('');
   const formRef = useRef<FormikProps<{ entity_type: string }>>(null);
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location?.pathname?.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location?.pathname?.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3]?.toLowerCase()
     : pathSegments[pathSegments.length - 2]?.toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
-
   useEffect(() => {
     // GetDataList()
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -47,22 +46,22 @@ const AddEditEntity = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/entity");
+    navigator('/main/entity');
   }
 
   const callAPI = async () => {
     if (id) {
-      getData(`${EntityEditURL}${id ? `/${id}` : ""}`)
+      getData(`${EntityEditURL}${id ? `/${id}` : ''}`)
         .then((data: { data: { entity_type: string } }) => {
           setEntity(data?.data?.entity_type);
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -74,7 +73,7 @@ const AddEditEntity = () => {
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setEntity(e.target.value);
-    formRef?.current?.setFieldValue("entity_type", e.target.value);
+    formRef?.current?.setFieldValue('entity_type', e.target.value);
     const err = await formRef?.current?.validateForm();
     if (err && Object.keys(err).length > 0) {
       formRef?.current?.setErrors(err);
@@ -88,25 +87,25 @@ const AddEditEntity = () => {
       putData(`${EntityEditURL}/${id}`, formData)
         .then((data: { status: number; message: string }) => {
           if (data.status === 200) {
-            navigator("/main/Entity");
+            navigator('/main/Entity');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -116,25 +115,25 @@ const AddEditEntity = () => {
             // navigator('/main/Entity')
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
 
             // resetForm({ values:{ entity_type:""} });
-            setEntity("");
+            setEntity('');
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
-            navigator("/");
+            navigator('/');
           }
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -142,15 +141,15 @@ const AddEditEntity = () => {
 
   const entitySchema = Yup.object().shape({
     entity_type: Yup.string()
-      .required("Please enter Entity type")
+      .required('Please enter Entity type')
       .test(
-        "not-whitespace",
-        "Please enter a valid Entity type; whitespace is not allowed.",
-        (value: any) => value && value?.trim().length > 0
+        'not-whitespace',
+        'Please enter a valid Entity type; whitespace is not allowed.',
+        (value: any) => value && value?.trim().length > 0,
       )
       .matches(
         EntityNamePattern,
-        "Please enter a valid Entity Type only characters allowed."
+        'Please enter a valid Entity Type only characters allowed.',
       ),
   });
 
@@ -175,14 +174,14 @@ const AddEditEntity = () => {
                     <div className="col-lg-3">
                       <Typography variant="h6">
                         <div className="main_title">
-                          {id ? "Edit" : "Add"} Entity
+                          {id ? 'Edit' : 'Add'} Entity
                         </div>
                       </Typography>
                     </div>
                     <div className="col-md-3">
                       <div className="form_field_wrapper">
                         <Field
-                        data-testid="entity_type"
+                          data-testid="entity_type"
                           className="w-100"
                           component={TextField}
                           type="text"
@@ -198,7 +197,7 @@ const AddEditEntity = () => {
                           //   helperText={touched.entity_type && errors.entity_type}
                         />
                         {touched?.entity_type && errors?.entity_type ? (
-                          <p style={{ color: "red" }}>{errors?.entity_type}</p>
+                          <p style={{ color: 'red' }}>{errors?.entity_type}</p>
                         ) : (
                           <></>
                         )}
@@ -206,7 +205,7 @@ const AddEditEntity = () => {
                     </div>
                     <div className="col-lg-3">
                       <button className="btn btn-primary w-100 mh-56 mainbutton">
-                        {id ? "Update" : "Save"}
+                        {id ? 'Update' : 'Save'}
                       </button>
                     </div>
                   </div>

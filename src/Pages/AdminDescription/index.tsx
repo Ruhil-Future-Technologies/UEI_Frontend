@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from "react";
-import { SelectChangeEvent, TextField } from "@mui/material";
-import { useState, useEffect, useRef } from "react";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { Field, Form, Formik, FormikProps } from "formik";
-import * as Yup from "yup";
-import { deepEqual, inputfieldtext } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-import { ChildComponentProps } from "../StudentProfile";
+import * as React from 'react';
+import { SelectChangeEvent, TextField } from '@mui/material';
+import { useState, useEffect, useRef } from 'react';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { Field, Form, Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
+import { deepEqual, inputfieldtext } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
+import { ChildComponentProps } from '../StudentProfile';
 interface IAdminDescription {
   description: string;
 }
 
 const AdminDescription: React.FC<ChildComponentProps> = () => {
   const initialState = {
-    description: "",
+    description: '',
   };
   const context = React.useContext(NameContext);
-  const { namecolor,activeForm, setActiveForm }: any = context;
-  const adminId = localStorage.getItem("_id");
+  const { namecolor, activeForm, setActiveForm }: any = context;
+  const adminId = localStorage.getItem('_id');
   const { getData, postData, putData } = useApi();
   const [description, setDesctiption] = useState(initialState);
   const [editFalg, setEditFlag] = useState<boolean>(false);
-  const[editable,setEditable]=useState(true);
-  const[chaged,setChaged] = useState(false);
+  const [editable, setEditable] = useState(true);
+  const [chaged, setChaged] = useState(false);
   const navigator = useNavigate();
   // const formRef = useRef() as any
   const formRef = useRef<FormikProps<IAdminDescription>>(null);
@@ -33,7 +33,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   const getDescription = async () => {
     try {
       const response = await getData(
-        "admin_profile_description/edit/" + adminId
+        'admin_profile_description/edit/' + adminId,
       );
 
       if (response && response?.status === 200) {
@@ -41,21 +41,21 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
       } else if (response && response?.status === 404) {
         setEditFlag(true);
       } else {
-        console.error("Unexpected response:", response);
+        console.error('Unexpected response:', response);
       }
     } catch (error: any) {
       if (error?.response && error?.response?.status === 401) {
-        navigator("/");
-        toast.warning("Please login again", {
+        navigator('/');
+        toast.warning('Please login again', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       } else {
-        toast.error("Request failed", {
+        toast.error('Request failed', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       }
     }
@@ -64,23 +64,19 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
     getDescription();
   }, [adminId]);
 
-useEffect(()=>{
-  getData(
-    "admin_profile_description/edit/" + adminId
-  ).then((response)=>{
-  if (response && response?.status === 200) {
-    setEditable(false);
-   
-  } else if (response && response?.status === 404) {
-    setEditable(true);
-  }
-})
-},[activeForm])
-
+  useEffect(() => {
+    getData('admin_profile_description/edit/' + adminId).then((response) => {
+      if (response && response?.status === 200) {
+        setEditable(false);
+      } else if (response && response?.status === 404) {
+        setEditable(true);
+      }
+    });
+  }, [activeForm]);
 
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
     setChaged(true);
     setDesctiption((prevMenu) => {
@@ -97,7 +93,7 @@ useEffect(()=>{
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof IAdminDescription]
+        formRef?.current?.errors?.[fieldName as keyof IAdminDescription],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
@@ -110,98 +106,94 @@ useEffect(()=>{
       admin_id: adminId,
       description: description1?.description,
     };
-   
- 
+
     if (editFalg && editable) {
-     
       const saveData = async () => {
         try {
           const response = await postData(
-            "admin_profile_description/add",
-            paylod
+            'admin_profile_description/add',
+            paylod,
           );
 
           if (response?.status === 200) {
-            toast.success("Admin description saved successfully", {
+            toast.success('Admin description saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
             setChaged(false);
             setActiveForm((prev: number) => prev + 1);
           }
         } catch (error: any) {
           if (error?.response?.status === 401) {
-            toast.warning("Please login again", {
+            toast.warning('Please login again', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           } else {
-            toast.error("Request failed", {
+            toast.error('Request failed', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         }
       };
-      if(chaged){
+      if (chaged) {
         saveData();
-      }else{
- //code not here
+      } else {
+        //code not here
       }
-     
-    } else if (!editable ) {
-
+    } else if (!editable) {
       const editData = async () => {
         try {
           const response = await putData(
-            "admin_profile_description/edit/" + adminId,
-            paylod
+            'admin_profile_description/edit/' + adminId,
+            paylod,
           );
 
           if (response?.status === 200) {
-            toast.success("Admin description updated successfully", {
+            toast.success('Admin description updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
             setActiveForm((prev: number) => prev + 1);
             getDescription();
           } else {
-            toast.error("something want wrong ", {
+            toast.error('something want wrong ', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         } catch (error: any) {
           if (error?.response?.status === 401) {
-            navigator("/");
-            toast.warning("Please login again", {
+            navigator('/');
+            toast.warning('Please login again', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           } else {
-            toast.error("Request failed", {
+            toast.error('Request failed', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         }
       };
 
       // eslint-disable-next-line no-lone-blocks
-     
+
       if (!eq && chaged) editData();
       else setActiveForm((prev: number) => prev + 1);
     }
   };
   const descriptionSchema = Yup.object().shape({
-    description: Yup.string().required("Please enter Description"),
+    description: Yup.string().required('Please enter Description'),
   });
   return (
     <Formik
@@ -215,7 +207,6 @@ useEffect(()=>{
     >
       {({ errors, values, touched, handleSubmit }: any) => (
         <Form>
-
           <Field
             id="description"
             label="Description *"
@@ -228,7 +219,7 @@ useEffect(()=>{
             margin="normal"
             value={values?.description}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleChange(e, "description")
+              handleChange(e, 'description')
             }
             InputProps={{
               style: {
@@ -242,7 +233,7 @@ useEffect(()=>{
             }}
           />
           {touched?.description && errors?.description ? (
-            <p style={{ color: "red" }}>{errors?.description}</p>
+            <p style={{ color: 'red' }}>{errors?.description}</p>
           ) : (
             <></>
           )}
@@ -250,7 +241,7 @@ useEffect(()=>{
           </Card> */}
           <div
             className="row justify-content-center"
-            style={{ margin: "10px" }}
+            style={{ margin: '10px' }}
           >
             <div className="col-lg-12">
               <div className="mt-3 d-flex align-items-center justify-content-between">

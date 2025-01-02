@@ -1,29 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import useApi from "../../hooks/useAPI";
-import { QUERY_KEYS_ADMIN_BASIC_INFO } from "../../utils/const";
-import { toast } from "react-toastify";
+import React, { useContext, useEffect, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
+import { QUERY_KEYS_ADMIN_BASIC_INFO } from '../../utils/const';
+import { toast } from 'react-toastify';
 
-import images_man from "../../assets/img/images_man.png";
-import images_female from "../../assets/img/images_female.png";
-import AvatarModal from "../../Components/AvatarModal/AvatarModal";
-import maleAvatars from "../../assets/avatar/images_man.png";
-import femaleAvatar from "../../assets/avatar/images_female.png";
-import femaleAvatar1 from "../../assets/avatar/images_female1.png";
-import femaleAvatar2 from "../../assets/avatar/images_female2.png";
-import femaleAvatar3 from "../../assets/avatar/images_female3.png";
-import femaleAvatar4 from "../../assets/avatar/images_female4.png";
-import femaleAvatar5 from "../../assets/avatar/images_female5.png";
-import maleAvatar1 from "../../assets/avatar/images_man1.png";
-import maleAvatar2 from "../../assets/avatar/images_man2.png";
-import maleAvatar3 from "../../assets/avatar/images_man3.png";
-import maleAvatar4 from "../../assets/avatar/images_man4.png";
-import maleAvatar5 from "../../assets/avatar/images_man5.png";
-import maleAvatar6 from "../../assets/avatar/images_man6.png";
-import NameContext from "../Context/NameContext";
+import images_man from '../../assets/img/images_man.png';
+import images_female from '../../assets/img/images_female.png';
+import AvatarModal from '../../Components/AvatarModal/AvatarModal';
+import maleAvatars from '../../assets/avatar/images_man.png';
+import femaleAvatar from '../../assets/avatar/images_female.png';
+import femaleAvatar1 from '../../assets/avatar/images_female1.png';
+import femaleAvatar2 from '../../assets/avatar/images_female2.png';
+import femaleAvatar3 from '../../assets/avatar/images_female3.png';
+import femaleAvatar4 from '../../assets/avatar/images_female4.png';
+import femaleAvatar5 from '../../assets/avatar/images_female5.png';
+import maleAvatar1 from '../../assets/avatar/images_man1.png';
+import maleAvatar2 from '../../assets/avatar/images_man2.png';
+import maleAvatar3 from '../../assets/avatar/images_man3.png';
+import maleAvatar4 from '../../assets/avatar/images_man4.png';
+import maleAvatar5 from '../../assets/avatar/images_man5.png';
+import maleAvatar6 from '../../assets/avatar/images_man6.png';
+import NameContext from '../Context/NameContext';
 
-import { inputfieldtext } from "../../utils/helpers";
+import { inputfieldtext } from '../../utils/helpers';
 
 interface PreviewAdminProfileProps {
   editProfile: () => void;
@@ -49,11 +49,10 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
   isEdit1,
   isEditfun,
 }) => {
-  
   const context = useContext(NameContext);
   const { setProImage, namecolor }: any = context;
-  const AdminId = localStorage.getItem("_id");
-  const userId = localStorage.getItem("userid");
+  const AdminId = localStorage.getItem('_id');
+  const userId = localStorage.getItem('userid');
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const [profileData, setProfileData] = useState<any>({});
   const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0);
@@ -70,7 +69,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
 
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
-      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
+      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== '',
     ).length;
   };
   const callAPI = async () => {
@@ -101,8 +100,8 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
           const profession = data?.data?.profession;
           const hobby = data?.data?.hobby;
           if (basic_info && Object.keys(basic_info)?.length > 0) {
-            if (data?.data?.pic_path !== "") {
-              getData(`${"upload_file/get_image/" + data?.data?.pic_path}`)
+            if (data?.data?.pic_path !== '') {
+              getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
                 .then((imgdata: any) => {
                   setprofileImage(imgdata?.data);
                 })
@@ -156,7 +155,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -180,32 +179,31 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
   if (isEdit1 && per) {
     // console.log("isEdit",isEdit1,initialStateper)
     const isProfileComplete = Object.values(initialStateper).every(
-      (value) => value === 100
+      (value) => value === 100,
     );
 
     if (!isProfileComplete) {
       isEditfun();
       setper(false);
     } else {
-    
       isEditfun();
       setper(false);
     }
   }
   const handleMouseEnter = (event: any) => {
     event.target.style.color = inputfieldtext(namecolor); // Example hover style
-    event.target.style.fontSize = ".90rem";
+    event.target.style.fontSize = '.90rem';
   };
 
   const handleMouseLeave = (event: any) => {
     event.target.style.color = inputfieldtext(namecolor); // Reset to initial style
-    event.target.style.fontSize = ".77rem";
+    event.target.style.fontSize = '.77rem';
   };
   const getDefaultImage = (gender: string) => {
-    if (gender === "Male" || gender === "male") {
+    if (gender === 'Male' || gender === 'male') {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
       return images_man;
-    } else if (gender === "Female" || gender === "female") {
+    } else if (gender === 'Female' || gender === 'female') {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp";
       return images_female;
     } else {
@@ -221,35 +219,35 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
     setModalOpen(false);
   };
   const handleAvatarSelect = async (
-    avatarUrl: string | URL | Request | any
+    avatarUrl: string | URL | Request | any,
   ) => {
     try {
       const response = await fetch(avatarUrl);
       const blob = await response.blob();
-      let filename = ""; // Initialize filename variable
+      let filename = ''; // Initialize filename variable
 
       // Extract the original filename from the URL
-      if (avatarUrl.startsWith("data:image")) {
+      if (avatarUrl.startsWith('data:image')) {
         // If avatarUrl is a data URL
-        const contentType = avatarUrl.split(";")[0].split(":")[1];
-        const extension = contentType.split("/")[1];
+        const contentType = avatarUrl.split(';')[0].split(':')[1];
+        const extension = contentType.split('/')[1];
         filename = `avatar_${Date.now()}.${extension}`;
       } else {
-        const urlSegments = avatarUrl.split("/");
+        const urlSegments = avatarUrl.split('/');
         filename = urlSegments[urlSegments.length - 1];
       }
 
       const file = new File([blob], filename, { type: blob.type });
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', file);
 
-      const data = await postFileData("upload_file/upload", formData);
+      const data = await postFileData('upload_file/upload', formData);
 
       if (data?.status === 200) {
         const dataadmin: any = await getData(
-          `${"admin_basicinfo/edit/" + AdminId}`,
-          AdminId
+          `${'admin_basicinfo/edit/' + AdminId}`,
+          AdminId,
         );
 
         const payload = {
@@ -257,7 +255,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
           pic_path: filename,
         };
         if (dataadmin?.status === 404) {
-          const dataadd = await postData(`${"admin_basicinfo/add"}`, payload);
+          const dataadd = await postData(`${'admin_basicinfo/add'}`, payload);
           if (dataadd?.status === 200) {
             await callAPI();
             setprofileImage(avatarUrl);
@@ -276,8 +274,8 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
             department_id: dataadmin?.data?.department_id,
           };
           const dataadd = await putData(
-            `${"admin_basicinfo/edit/"}${AdminId}`,
-            payload
+            `${'admin_basicinfo/edit/'}${AdminId}`,
+            payload,
           );
           if (dataadd?.status === 200) {
             await callAPI();
@@ -291,13 +289,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
       } else {
         toast.error(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     } catch (e: any) {
       toast.error(e?.message, {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
@@ -336,7 +334,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
     ],
   };
 
-  const gender: string = profileData?.gender?.toString() || "default";
+  const gender: string = profileData?.gender?.toString() || 'default';
   const avatars = avatarsMap[gender];
 
   return (
@@ -354,14 +352,14 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                           <span
                             className="profilebody"
                             style={{
-                              display: "flex",
-                              justifyContent: "flex-end",
-                              padding: "10px",
+                              display: 'flex',
+                              justifyContent: 'flex-end',
+                              padding: '10px',
                             }}
                           >
                             <p
                               style={{
-                                cursor: "pointer",
+                                cursor: 'pointer',
                                 color: isHovered
                                   ? inputfieldtext(namecolor)
                                   : inputfieldtext(namecolor),
@@ -377,10 +375,10 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             <img
                               src={
                                 loading
-                                  ? ""
+                                  ? ''
                                   : profileImage
-                                  ? profileImage
-                                  : getDefaultImage(profileData?.gender)
+                                    ? profileImage
+                                    : getDefaultImage(profileData?.gender)
                               }
                               // alt="avatar"
                               className="rounded-circle img"
@@ -407,12 +405,12 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                               )}
 
                             <p className="mb-4">
-                              <span className="text-primary font-italic me-1"></span>{" "}
+                              <span className="text-primary font-italic me-1"></span>{' '}
                               Profile Completion Status
                             </p>
                             <p
                               className="mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(0)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -421,7 +419,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -434,13 +432,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(basicinfoPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(1)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -449,7 +447,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -462,13 +460,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(addressPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(2)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -477,7 +475,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -490,13 +488,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(languagePercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(3)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -505,7 +503,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -518,13 +516,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(desctiptionPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(4)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -533,7 +531,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded mb-2"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -546,13 +544,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(contactPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(5)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -561,7 +559,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded mb-2"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -574,8 +572,8 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(professionPercentage)}%`}</span>
                           </div>
@@ -590,7 +588,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0 profileinnertext">
-                                  {profileData?.first_name}{" "}
+                                  {profileData?.first_name}{' '}
                                   {profileData?.last_name}
                                 </p>
                               </div>
@@ -604,13 +602,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                                 <p className="text-muted mb-0 profileinnertext">
                                   {profileData?.contact?.email_id !== undefined
                                     ? profileData?.contact?.email_id?.includes(
-                                        "@"
+                                        '@',
                                       )
                                       ? profileData?.contact?.email_id
-                                      : ""
-                                    : userId && userId?.includes("@")
-                                    ? userId
-                                    : ""}
+                                      : ''
+                                    : userId && userId?.includes('@')
+                                      ? userId
+                                      : ''}
                                   {/* {profileData?.contact?.email_id !== undefined ? profileData?.contact?.email_id : userId} */}
                                 </p>
                               </div>
@@ -625,11 +623,11 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                                   {profileData?.contact?.mobile_no_call !==
                                   undefined
                                     ? profileData?.contact?.mobile_isd_call +
-                                      " " +
+                                      ' ' +
                                       profileData?.contact?.mobile_no_call
-                                    : userId && !userId?.includes("@")
-                                    ? userId
-                                    : ""}
+                                    : userId && !userId?.includes('@')
+                                      ? userId
+                                      : ''}
                                   {/* {profileData?.contact?.mobile_isd_call} {profileData?.contact?.mobile_no_call} */}
                                 </p>
                               </div>
@@ -644,13 +642,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
                                   {profileData?.contact?.mobile_no_watsapp !==
                                   undefined
                                     ? profileData?.contact
-                                        ?.mobile_no_watsapp !== ""
+                                        ?.mobile_no_watsapp !== ''
                                       ? profileData?.contact
                                           ?.mobile_isd_watsapp +
-                                        " " +
+                                        ' ' +
                                         profileData?.contact?.mobile_no_watsapp
-                                      : ""
-                                    : ""}
+                                      : ''
+                                    : ''}
                                   {/* {profileData?.contact?.mobile_isd_watsapp} {profileData?.contact?.mobile_no_watsapp} */}
                                 </p>
                               </div>
