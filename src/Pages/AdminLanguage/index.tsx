@@ -42,7 +42,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   const { namecolor, activeForm, setActiveForm }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
-  const [editFalg, setEditFlag] = useState<boolean>(false);
+  // const [editFalg, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [error, setError] = useState<{
@@ -115,7 +115,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           });
         } else if (data?.status === 404) {
           setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
-          setEditFlag(true);
+          // setEditFlag(true);
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
