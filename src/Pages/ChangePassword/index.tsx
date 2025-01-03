@@ -1,22 +1,22 @@
-import React, { useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { IconButton, SelectChangeEvent } from "@mui/material";
-import { Formik, FormikProps, Form } from "formik";
-import * as Yup from "yup";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import gLogo from "../../assets/img/logo-white.svg";
-import loginImage from "../../assets/img/login-image.png";
-import { Autoplay, Pagination } from "swiper/modules";
-import { VisibilityOn, VisibilityOff } from "../../assets";
-import "swiper/css";
-import "swiper/css/pagination";
+import React, { useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { IconButton, SelectChangeEvent } from '@mui/material';
+import { Formik, FormikProps, Form } from 'formik';
+import * as Yup from 'yup';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import gLogo from '../../assets/img/logo-white.svg';
+import loginImage from '../../assets/img/login-image.png';
+import { Autoplay, Pagination } from 'swiper/modules';
+import { VisibilityOn, VisibilityOff } from '../../assets';
+import 'swiper/css';
+import 'swiper/css/pagination';
 // import "../../assets/css/main.min.css";
-import "react-toastify/dist/ReactToastify.css";
-import { QUERY_KEYS } from "../../utils/const";
+import 'react-toastify/dist/ReactToastify.css';
+import { QUERY_KEYS } from '../../utils/const';
 interface changepasswordform {
   newpassword: string;
   confpassword: string;
@@ -24,12 +24,12 @@ interface changepasswordform {
 const ChangePassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
-  const confpassword = "";
-  const newpassword = "";
+  const confpassword = '';
+  const newpassword = '';
   const [searchParams] = useSearchParams();
   // const [changepassword, setChangePassword] = useState(initialState);
-  const email = searchParams?.get("email");
-  const user_type = searchParams?.get("user_type");
+  const email = searchParams?.get('email');
+  const user_type = searchParams?.get('user_type');
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
   const changepassUrl = QUERY_KEYS.RESET_PASSWORD;
@@ -57,7 +57,7 @@ const ChangePassword = () => {
     const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
       if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
-        if (UserSignUp[key as keyof typeof UserSignUp] === "") {
+        if (UserSignUp[key as keyof typeof UserSignUp] === '') {
           emptyKeys.push(key);
           break;
         }
@@ -69,37 +69,37 @@ const ChangePassword = () => {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
           if (data?.status === 200) {
-            navigate("/");
+            navigate('/');
             toast.success(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else if (
             data?.status === 404 &&
-            data?.message === "Invalid userid or password"
+            data?.message === 'Invalid userid or password'
           ) {
-            toast.error("Invalid userid or password", {
+            toast.error('Invalid userid or password', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
     // setChangePassword((prevValue) => {
     //   return {
@@ -115,58 +115,58 @@ const ChangePassword = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof changepasswordform]
+        formRef?.current?.errors?.[fieldName as keyof changepasswordform],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
   const changePasswordSchema = Yup.object().shape({
     newpassword: Yup.string()
-      .required("Please enter a password")
+      .required('Please enter a password')
       .min(
         8,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         uppercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         lowercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         numberRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         specialCharRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       ),
 
     confpassword: Yup.string()
-      .required("Please enter a password")
+      .required('Please enter a password')
       .min(
         8,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         uppercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         lowercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         numberRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         specialCharRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
-      .oneOf([Yup.ref("newpassword")], "Password did not match."),
+      .oneOf([Yup.ref('newpassword')], 'Password did not match.'),
   });
 
   return (
@@ -176,7 +176,7 @@ const ChangePassword = () => {
           <div className="row align-items-center">
             <div className="col-6">
               <div className="logoui">
-                <img onClick={() => navigate("/")} src={gLogo} alt="" />
+                <img onClick={() => navigate('/')} src={gLogo} alt="" />
                 <span>Gyansetu</span>
               </div>
             </div>
@@ -192,7 +192,7 @@ const ChangePassword = () => {
                   disableOnInteraction: false,
                 }}
                 pagination={{
-                  el: ".swiper-pagination",
+                  el: '.swiper-pagination',
                 }}
                 modules={[Autoplay, Pagination]}
                 className="mySwiper login-textslider"
@@ -255,20 +255,23 @@ const ChangePassword = () => {
                         <Form>
                           <div className="login_form_inner">
                             <div className="form_field_wrapper">
-                              <label htmlFor="newpassword" className="form-label">
+                              <label
+                                htmlFor="newpassword"
+                                className="form-label"
+                              >
                                 New Password
                               </label>
                               <TextField
                                 data-testid="new_password"
                                 className="mb-4"
-                                type={showOldPassword ? "text" : "password"}
+                                type={showOldPassword ? 'text' : 'password'}
                                 placeholder="New Password"
                                 id="newpassword"
                                 name="newpassword"
                                 value={values?.newpassword}
                                 onChange={(
-                                  e: React.ChangeEvent<HTMLInputElement>
-                                ) => handleChange(e, "newpassword")}
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                                ) => handleChange(e, 'newpassword')}
                                 required={true}
                                 InputProps={{
                                   endAdornment: (
@@ -290,7 +293,7 @@ const ChangePassword = () => {
                                 fullWidth
                               />
                               {touched?.newpassword && errors?.newpassword ? (
-                                <p style={{ color: "red" }}>
+                                <p style={{ color: 'red' }}>
                                   {errors?.newpassword}
                                 </p>
                               ) : (
@@ -298,20 +301,23 @@ const ChangePassword = () => {
                               )}
                             </div>
                             <div className="form_field_wrapper">
-                              <label htmlFor="confpassword" className="form-label">
+                              <label
+                                htmlFor="confpassword"
+                                className="form-label"
+                              >
                                 Confirm Password
                               </label>
                               <TextField
-                               data-testid="confirm_password"
+                                data-testid="confirm_password"
                                 className="mb-4"
-                                type={showPassword ? "text" : "password"}
+                                type={showPassword ? 'text' : 'password'}
                                 placeholder="Confirm password"
                                 value={values?.confpassword}
                                 id="confpassword"
                                 name="confpassword"
                                 onChange={(
-                                  e: React.ChangeEvent<HTMLInputElement>
-                                ) => handleChange(e, "confpassword")}
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                                ) => handleChange(e, 'confpassword')}
                                 required={true}
                                 InputProps={{
                                   endAdornment: (
@@ -333,7 +339,7 @@ const ChangePassword = () => {
                                 fullWidth
                               />
                               {touched?.confpassword && errors?.confpassword ? (
-                                <p style={{ color: "red" }}>
+                                <p style={{ color: 'red' }}>
                                   {errors?.confpassword}
                                 </p>
                               ) : (
@@ -345,7 +351,7 @@ const ChangePassword = () => {
                               className="btn btn-primary w-100"
                               data-testid="reset_btn"
                             >
-                              {" "}
+                              {' '}
                               Reset Password
                             </button>
                           </div>

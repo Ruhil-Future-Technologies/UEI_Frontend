@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import ThemeSidebar from "../ThemeSidebar/ThemeSidebar";
+import React, { useState, useEffect } from 'react';
+import ThemeSidebar from '../ThemeSidebar/ThemeSidebar';
 
 const FAQ = () => {
-  const [themeMode, setThemeMode] = useState<string>("");
+  const [themeMode, setThemeMode] = useState<string>('');
   useEffect(() => {
-    const newTheme = localStorage.getItem("theme");
-    setThemeMode(newTheme || "light");
+    const newTheme = localStorage.getItem('theme');
+    setThemeMode(newTheme || 'light');
   }, []);
 
   return (
@@ -46,14 +46,14 @@ const FAQ = () => {
                     <div className="accordion-body">
                       <p>
                         Yes, if you make it look like an electrical fire. When
-                        you do things right, people won&apos;t be sure you&apos;ve done
-                        anything at all. I was having the most wonderful dream.
-                        Except you were there, and you were there, and you were
-                        there! No argument here. Goodbye, cruel world. Goodbye,
-                        cruel lamp. Goodbye, cruel velvet drapes, lined with
-                        what would appear to be some sort of cruel muslin and
-                        the cute little pom-pom curtain pull cords. Cruel though
-                        they may be.
+                        you do things right, people won&apos;t be sure
+                        you&apos;ve done anything at all. I was having the most
+                        wonderful dream. Except you were there, and you were
+                        there, and you were there! No argument here. Goodbye,
+                        cruel world. Goodbye, cruel lamp. Goodbye, cruel velvet
+                        drapes, lined with what would appear to be some sort of
+                        cruel muslin and the cute little pom-pom curtain pull
+                        cords. Cruel though they may be.
                       </p>
                       <p>
                         <strong>Example: </strong>Shut up and get to the point!
@@ -82,10 +82,10 @@ const FAQ = () => {
                   >
                     <div className="accordion-body">
                       <p>
-                        That&apos;s so cute. Can we have Bender Burgers again? Is the
-                        Space Pope reptilian!? I wish! It&apos;s a nickel. Bender!
-                        Ship! Stop bickering or I&apos;m going to come back there and
-                        change your opinions manually!
+                        That&apos;s so cute. Can we have Bender Burgers again?
+                        Is the Space Pope reptilian!? I wish! It&apos;s a
+                        nickel. Bender! Ship! Stop bickering or I&apos;m going
+                        to come back there and change your opinions manually!
                       </p>
                       <p>
                         <strong>Example: </strong>Okay, I like a challenge. Is
@@ -115,16 +115,17 @@ const FAQ = () => {
                   >
                     <div className="accordion-body">
                       <p>
-                        As I have explained in my book &apos;Earth in the Balance&apos;,
-                        and the much more popular &apos;Harry Potter and the Balance
-                        of Earth&apos;, we need to defend our planet against
-                        pollution. Also dark wizards. Fry, you can&apos;t just sit
-                        here in the dark listening to classical music.
+                        As I have explained in my book &apos;Earth in the
+                        Balance&apos;, and the much more popular &apos;Harry
+                        Potter and the Balance of Earth&apos;, we need to defend
+                        our planet against pollution. Also dark wizards. Fry,
+                        you can&apos;t just sit here in the dark listening to
+                        classical music.
                       </p>
                       <p>
-                        <strong>Example: </strong>Actually, that&apos;s still true.
-                        Well, let&apos;s just dump it in the sewer and say we
-                        delivered it.
+                        <strong>Example: </strong>Actually, that&apos;s still
+                        true. Well, let&apos;s just dump it in the sewer and say
+                        we delivered it.
                       </p>
                     </div>
                   </div>
@@ -151,12 +152,12 @@ const FAQ = () => {
                     <div className="accordion-body">
                       <p>
                         Morbo can&apos;t understand his teleprompter because he
-                        forgot how you say that letter that&apos;s shaped like a man
-                        wearing a hat. Also Zoidberg. Can we have Bender Burgers
-                        again? Goodbye, cruel world. Goodbye, cruel lamp.
-                        Goodbye, cruel velvet drapes, lined with what would
-                        appear to be some sort of cruel muslin and the cute
-                        little pom-pom curtain pull cords.
+                        forgot how you say that letter that&apos;s shaped like a
+                        man wearing a hat. Also Zoidberg. Can we have Bender
+                        Burgers again? Goodbye, cruel world. Goodbye, cruel
+                        lamp. Goodbye, cruel velvet drapes, lined with what
+                        would appear to be some sort of cruel muslin and the
+                        cute little pom-pom curtain pull cords.
                       </p>
                       <p>
                         <strong>Example: </strong>Cruel though they may be...

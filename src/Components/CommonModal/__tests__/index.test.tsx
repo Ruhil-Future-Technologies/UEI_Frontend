@@ -1,4 +1,4 @@
-import { render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import CommonModal from '../index';
 import '@testing-library/jest-dom';
 import React from 'react';
@@ -13,7 +13,7 @@ describe('CommonModal Component', () => {
 
   it('should render the modal when "isOpen" is true', () => {
     render(
-      <CommonModal message={message} isOpen={true} setIsOpen={mockSetIsOpen} />
+      <CommonModal message={message} isOpen={true} setIsOpen={mockSetIsOpen} />,
     );
 
     // Check if modal content is rendered
@@ -22,7 +22,11 @@ describe('CommonModal Component', () => {
 
   it('should not render the modal when "isOpen" is false', () => {
     render(
-      <CommonModal message={message} isOpen={false} setIsOpen={mockSetIsOpen} />
+      <CommonModal
+        message={message}
+        isOpen={false}
+        setIsOpen={mockSetIsOpen}
+      />,
     );
 
     // Ensure modal content is NOT rendered when isOpen is false
@@ -31,10 +35,10 @@ describe('CommonModal Component', () => {
 
   // it("should close the dialog when Cancel is triggered", () => {
   //   render(
-  //     <CommonModal 
-  //       message={message} 
-  //       isOpen={true} 
-  //       setIsOpen={mockSetIsOpen} 
+  //     <CommonModal
+  //       message={message}
+  //       isOpen={true}
+  //       setIsOpen={mockSetIsOpen}
   //     />
   //   );
 

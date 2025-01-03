@@ -1,10 +1,10 @@
-import React from "react";
-import ContactlessOutlinedIcon from "@mui/icons-material/ContactlessOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import ContrastOutlinedIcon from "@mui/icons-material/ContrastOutlined";
-import BorderStyleOutlinedIcon from "@mui/icons-material/BorderStyleOutlined";
+import React from 'react';
+import ContactlessOutlinedIcon from '@mui/icons-material/ContactlessOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import ContrastOutlinedIcon from '@mui/icons-material/ContrastOutlined';
+import BorderStyleOutlinedIcon from '@mui/icons-material/BorderStyleOutlined';
 export interface ThemeSidebarProps {
   themeMode: string;
   setThemeMode: React.Dispatch<React.SetStateAction<string>>;
@@ -16,7 +16,7 @@ const ThemeSidebar: React.FC<ThemeSidebarProps> = ({
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const onThemeChange = (e: any) => {
     setThemeMode(e.target.value);
-    document?.documentElement?.setAttribute("data-bs-theme", e.target.value);
+    document?.documentElement?.setAttribute('data-bs-theme', e.target.value);
   };
 
   return (
@@ -43,11 +43,11 @@ const ThemeSidebar: React.FC<ThemeSidebarProps> = ({
             <div className="col-12 col-xl-6">
               <input
                 type="radio"
-                value={"blue-theme"}
+                value={'blue-theme'}
                 className="btn-check"
                 name="theme-options"
                 id="BlueTheme"
-                checked={themeMode === "blue-theme"}
+                checked={themeMode === 'blue-theme'}
                 onChange={(e) => onThemeChange(e)}
               />
               <label
@@ -63,11 +63,11 @@ const ThemeSidebar: React.FC<ThemeSidebarProps> = ({
             <div className="col-12 col-xl-6">
               <input
                 type="radio"
-                value={"light"}
+                value={'light'}
                 className="btn-check"
                 name="theme-options"
                 id="LightTheme"
-                checked={themeMode === "light"}
+                checked={themeMode === 'light'}
                 onChange={(e) => onThemeChange(e)}
               />
               <label
@@ -83,11 +83,11 @@ const ThemeSidebar: React.FC<ThemeSidebarProps> = ({
             <div className="col-12 col-xl-6">
               <input
                 type="radio"
-                value={"dark"}
+                value={'dark'}
                 className="btn-check"
                 name="theme-options"
                 id="DarkTheme"
-                checked={themeMode === "dark"}
+                checked={themeMode === 'dark'}
                 onChange={(e) => onThemeChange(e)}
               />
               <label
@@ -103,11 +103,11 @@ const ThemeSidebar: React.FC<ThemeSidebarProps> = ({
             <div className="col-12 col-xl-6">
               <input
                 type="radio"
-                value={"semi-dark"}
+                value={'semi-dark'}
                 className="btn-check"
                 name="theme-options"
                 id="SemiDarkTheme"
-                checked={themeMode === "semi-dark"}
+                checked={themeMode === 'semi-dark'}
                 onChange={(e) => onThemeChange(e)}
               />
               <label
@@ -123,11 +123,11 @@ const ThemeSidebar: React.FC<ThemeSidebarProps> = ({
             <div className="col-12 col-xl-6">
               <input
                 type="radio"
-                value={"bordered-theme"}
+                value={'bordered-theme'}
                 className="btn-check"
                 name="theme-options"
                 id="BoderedTheme"
-                checked={themeMode === "bordered-theme"}
+                checked={themeMode === 'bordered-theme'}
                 onChange={(e) => onThemeChange(e)}
               />
               <label

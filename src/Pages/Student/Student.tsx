@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Institute/Institute.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, IconButton, Tooltip, Tabs, Tab } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
-import { MenuListinter, STUDENT_COLUMNS } from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { useLocation, useNavigate } from "react-router-dom";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import { QUERY_KEYS_STUDENT } from "../../utils/const";
-import { toast } from "react-toastify";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess, tabletools } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Institute/Institute.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, IconButton, Tooltip, Tabs, Tab } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
+import { MenuListinter, STUDENT_COLUMNS } from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import { QUERY_KEYS_STUDENT } from '../../utils/const';
+import { toast } from 'react-toastify';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { dataaccess, tabletools } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface Student {
   id: number; // Assuming id is a number based on the API
@@ -33,16 +33,16 @@ const Student = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
+  const Menulist: any = localStorage.getItem('menulist1');
   const [filteredDataAcess, setFilteredDataAcess] = useState<
     MenuListinter | any
   >([]);
 
   useEffect(() => {
     setFilteredDataAcess(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist, lastSegment]);
   const StudentURL = QUERY_KEYS_STUDENT.GET_STUDENT; // Assuming this is "/student/list"
@@ -66,7 +66,7 @@ const Student = () => {
     } catch (e: any) {
       toast.error(e.message, {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
@@ -93,14 +93,14 @@ const Student = () => {
       const response = await deleteData(`${DeleteStudentURL}/${id}`);
       toast.success(response.message, {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
       callAPI();
       setDataDelete(false);
     } catch (e: any) {
       toast.error(e.message, {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
@@ -110,9 +110,9 @@ const Student = () => {
   };
 
   const filteredData = dataStudent.filter((student) =>
-    activeTab === 0 ? student.is_active : !student.is_active
+    activeTab === 0 ? student.is_active : !student.is_active,
   );
-  
+
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -135,7 +135,6 @@ const Student = () => {
                             ? filteredData
                             : []
                         }
-                        
                         enableRowVirtualization
                         positionActionsColumn="first"
                         muiTablePaperProps={{
@@ -143,19 +142,19 @@ const Student = () => {
                         }}
                         enableRowActions
                         displayColumnDefOptions={{
-                          "mrt-row-actions": {
-                            header: "Actions",
+                          'mrt-row-actions': {
+                            header: 'Actions',
                             size: 150,
                           },
                         }}
                         renderRowActions={(row) => (
                           <Box
                             sx={{
-                              display: "flex",
-                              flexWrap: "nowrap",
-                              gap: "0.5",
-                              marginLeft: "-5px",
-                              width: "140px",
+                              display: 'flex',
+                              flexWrap: 'nowrap',
+                              gap: '0.5',
+                              marginLeft: '-5px',
+                              width: '140px',
                             }}
                           >
                             {filteredDataAcess?.form_data?.is_update ===
@@ -163,8 +162,8 @@ const Student = () => {
                               <Tooltip arrow placement="right" title="Edit">
                                 <IconButton
                                   sx={{
-                                    width: "35px",
-                                    height: "35px",
+                                    width: '35px',
+                                    height: '35px',
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
@@ -178,8 +177,8 @@ const Student = () => {
                             <Tooltip arrow placement="right" title="Delete">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {

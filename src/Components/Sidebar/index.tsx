@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import LocalLibraryOutlinedIcon from "@mui/icons-material/LocalLibraryOutlined";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import MetisMenu from "@metismenu/react";
-import useApi from "../../hooks/useAPI";
-import gyansetuLogo from "../../assets/img/logo-white.svg";
-import { QUERY_KEYS_MENU } from "../../utils/const";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import "react-perfect-scrollbar/dist/css/styles.css";
-import "../../../node_modules/metismenujs/dist/metismenujs.css";
-import "simplebar-react/dist/simplebar.min.css";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import MetisMenu from '@metismenu/react';
+import useApi from '../../hooks/useAPI';
+import gyansetuLogo from '../../assets/img/logo-white.svg';
+import { QUERY_KEYS_MENU } from '../../utils/const';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import '../../../node_modules/metismenujs/dist/metismenujs.css';
+import 'simplebar-react/dist/simplebar.min.css';
 
 const Sidebar = () => {
   const [menuList1, setMenuList1] = useState<any>([]);
@@ -25,15 +25,15 @@ const Sidebar = () => {
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
 
   // const [masterCollapsible, setMasterCollapsible] = useState(false);
-  const user_type = localStorage.getItem("user_type");
+  const user_type = localStorage.getItem('user_type');
   const [profileCompletion, setProfileCompletion] = useState(
-    localStorage.getItem("Profile_completion") || "0"
+    localStorage.getItem('Profile_completion') || '0',
   );
   const MenuListURL = QUERY_KEYS_MENU.GET_MENU;
   const MenuListURL1 = QUERY_KEYS_MENU.GET_MENULIST;
 
   const { getData } = useApi();
-  const profileData: any = sessionStorage.getItem("profileData");
+  const profileData: any = sessionStorage.getItem('profileData');
   let basicinfo: any = {};
   if (profileData !== null) {
     basicinfo = JSON.parse(profileData);
@@ -43,22 +43,20 @@ const Sidebar = () => {
     callAPI();
   }, []);
 
-  useEffect(() => {
-  
-  }, [menuList1]);
+  useEffect(() => {}, [menuList1]);
 
   const callAPI = async () => {
     getData(`${MenuListURL}/${user_type}`)
       .then((data: any) => {
         if (data.data) {
           // setMenuList(data.data);
-          localStorage.setItem("menulist", JSON.stringify(data?.data));
+          localStorage.setItem('menulist', JSON.stringify(data?.data));
         }
       })
       .catch((e: any) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -67,17 +65,15 @@ const Sidebar = () => {
     if (basicinfo?.basic_info !== null) {
       getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
         .then((data: any) => {
-         
-
           if (data.data) {
             setMenuList1(data.data);
-            localStorage.setItem("menulist1", JSON.stringify(data?.data));
+            localStorage.setItem('menulist1', JSON.stringify(data?.data));
           }
         })
         .catch((e: any) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -91,7 +87,7 @@ const Sidebar = () => {
   useEffect(() => {
     const handleProfileCompletionChange = () => {
       const newProfileCompletion =
-        localStorage.getItem("Profile_completion") || "0";
+        localStorage.getItem('Profile_completion') || '0';
       setProfileCompletion(newProfileCompletion);
     };
 
@@ -103,17 +99,17 @@ const Sidebar = () => {
   }, []);
 
   const handleMouseEnter = () => {
-    document.body.classList.add("sidebar-hovered");
+    document.body.classList.add('sidebar-hovered');
   };
 
   const handleMouseLeave = () => {
-    document.body.classList.remove("sidebar-hovered");
+    document.body.classList.remove('sidebar-hovered');
   };
   function removeMobileToggle() {
     if (window.innerWidth <= 1024) {
-      document.querySelector("body")?.classList.remove("toggled");
+      document.querySelector('body')?.classList.remove('toggled');
     } else {
-      document.querySelector("body")?.classList.remove("toggled");
+      document.querySelector('body')?.classList.remove('toggled');
     }
   }
 
@@ -150,7 +146,7 @@ const Sidebar = () => {
                   <div className="menu-title">Dashboard</div>
                 </Link>
               </li>
-              {user_type === "student" ? (
+              {user_type === 'student' ? (
                 <>
                   {Number(profileCompletion) === 100 ? (
                     <>
@@ -175,12 +171,12 @@ const Sidebar = () => {
                       </li>
                     </>
                   ) : (
-                    ""
+                    ''
                   )}
                 </>
               ) : (
                 <>
-                  {menuList1 && user_type !== "student" ? (
+                  {menuList1 && user_type !== 'student' ? (
                     menuList1.map((menu: any) => {
                       return (
                         <li key={menu.id}>
@@ -192,47 +188,47 @@ const Sidebar = () => {
                                 onClick={() => toggleMenu(menu.id)}
                                 aria-expanded={openMenu === menu.id}
                               >
-                                {" "}
+                                {' '}
                                 <div className="parent-icon">
                                   <AdminPanelSettingsOutlinedIcon />
                                 </div>
                                 <div className="menu-title">
-                                  {menu.menu_name}{" "}
-                                </div>{" "}
+                                  {menu.menu_name}{' '}
+                                </div>{' '}
                               </a>
                               <ul
                                 id={menu.id}
                                 className={`mm-collapse ${
-                                  openMenu === menu.id ? "mm-show" : ""
+                                  openMenu === menu.id ? 'mm-show' : ''
                                 }`}
                               >
                                 {menu?.submenus?.map(
                                   (submenu: any, index: number) => {
                                     const menulist =
-                                      submenu.menu_name === "Sub Menu"
-                                        ? "SubMenu"
-                                        : submenu.menu_name === "Role Vs Form"
-                                        ? "RoleVsForm"
-                                        : submenu.menu_name ===
-                                            "Role Vs User" ||
-                                          submenu.menu_name === "RoleVsUser"
-                                        ? "RoleVsUser "
-                                        : submenu.menu_name === "Hobbies"
-                                        ? "Hobby"
-                                        : submenu.menu_name ===
-                                            "Student Feedback" ||
-                                          submenu.menu_name ===
-                                            "StudentFeedback"
-                                        ? "StudentFeedback"
-                                        : submenu.menu_name;
+                                      submenu.menu_name === 'Sub Menu'
+                                        ? 'SubMenu'
+                                        : submenu.menu_name === 'Role Vs Form'
+                                          ? 'RoleVsForm'
+                                          : submenu.menu_name ===
+                                                'Role Vs User' ||
+                                              submenu.menu_name === 'RoleVsUser'
+                                            ? 'RoleVsUser '
+                                            : submenu.menu_name === 'Hobbies'
+                                              ? 'Hobby'
+                                              : submenu.menu_name ===
+                                                    'Student Feedback' ||
+                                                  submenu.menu_name ===
+                                                    'StudentFeedback'
+                                                ? 'StudentFeedback'
+                                                : submenu.menu_name;
                                     if (
                                       submenu.menu_name.toLowerCase() ===
-                                      "institute"
+                                      'institute'
                                     ) {
                                       return (
                                         <li
                                           className={`${
-                                            openSubMenu ? "mm-active" : ""
+                                            openSubMenu ? 'mm-active' : ''
                                           }`}
                                           key={index}
                                         >
@@ -247,40 +243,40 @@ const Sidebar = () => {
                                           </a>
                                           <ul
                                             className={`mm-collapse ${
-                                              openSubMenu ? "mm-show" : ""
+                                              openSubMenu ? 'mm-show' : ''
                                             }`}
                                           >
                                             <li>
                                               <Link to="/main/University">
-                                                {" "}
+                                                {' '}
                                                 <ArrowRightIcon />
                                                 University
                                               </Link>
                                             </li>
                                             <li>
                                               <Link to="/main/Institute">
-                                                {" "}
+                                                {' '}
                                                 <ArrowRightIcon />
                                                 Institute
                                               </Link>
                                             </li>
                                             <li>
                                               <Link to="/main/Course">
-                                                {" "}
+                                                {' '}
                                                 <ArrowRightIcon />
                                                 Course
                                               </Link>
                                             </li>
                                             <li>
                                               <Link to="/main/Semester">
-                                                {" "}
+                                                {' '}
                                                 <ArrowRightIcon />
                                                 Semester
                                               </Link>
                                             </li>
                                             <li>
                                               <Link to="/main/Subject">
-                                                {" "}
+                                                {' '}
                                                 <ArrowRightIcon />
                                                 Subject
                                               </Link>
@@ -289,8 +285,8 @@ const Sidebar = () => {
                                         </li>
                                       );
                                     } else if (
-                                      submenu.menu_name !== "Course" &&
-                                      submenu.menu_name !== "Subject"
+                                      submenu.menu_name !== 'Course' &&
+                                      submenu.menu_name !== 'Subject'
                                     ) {
                                       // Render only if it's not "Course" or "Subject"
                                       return (
@@ -305,7 +301,7 @@ const Sidebar = () => {
                                       // Return null for "Course" and "Subject" to skip rendering
                                       return null;
                                     }
-                                  }
+                                  },
                                 )}
                               </ul>
                             </>
@@ -329,7 +325,7 @@ const Sidebar = () => {
               {/* </ul> */}
             </MetisMenu>
           </div>
-          {user_type === "student" && (
+          {user_type === 'student' && (
             <div className="sidebar-footer">
               <div className="sidebar-nav">
                 <ul className="metismenu">

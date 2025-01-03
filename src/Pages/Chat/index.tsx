@@ -1,64 +1,66 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "../Chat/Chat.scss";
-import useApi from "../../hooks/useAPI";
-import { toast, ToastContentProps } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import '../Chat/Chat.scss';
+import useApi from '../../hooks/useAPI';
+import { toast, ToastContentProps } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   QUERY_KEYS,
   QUERY_KEYS_STUDENT,
   QUERY_KEYS_UNIVERSITY,
-} from "../../utils/const";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import Chatbot from "../Chatbot";
-import { useNavigate, useParams } from "react-router-dom";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
-import VolumeOffOutlinedIcon from "@mui/icons-material/VolumeOffOutlined";
-import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined";
-import SyncAltOutlinedIcon from "@mui/icons-material/SyncAltOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import FlagIcon from "@mui/icons-material/Flag";
-import searchWhite from "../../assets/icons/search-white.svg";
-import primaryLogo from "../../assets/icons/logo-primary.png";
-import chatLogo from "../../assets/img/chat-logo.svg";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import "../../assets/css/newstyle.scss";
-import "../../assets/css/main.scss";
-import "react-perfect-scrollbar/dist/css/styles.css";
-import { useTheme } from "@mui/material/styles";
+} from '../../utils/const';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import Chatbot from '../Chatbot';
+import { useNavigate, useParams } from 'react-router-dom';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
+import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
+import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+import SyncAltOutlinedIcon from '@mui/icons-material/SyncAltOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import FlagIcon from '@mui/icons-material/Flag';
+import searchWhite from '../../assets/icons/search-white.svg';
+import primaryLogo from '../../assets/icons/logo-primary.png';
+import chatLogo from '../../assets/img/chat-logo.svg';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import '../../assets/css/newstyle.scss';
+import '../../assets/css/main.scss';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import { useTheme } from '@mui/material/styles';
 
 const Chat = () => {
-  const userid = localStorage.getItem("_id") || "";
+  const userid = localStorage.getItem('_id') || '';
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [studentDetail, setStudentData] = useState<any>();
   const [studentCourse, setStudentCourse] = useState<any>();
   const [searcherr, setSearchErr] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const { Id } = useParams();
-  const expandedChat = localStorage.getItem("expandedChatData")
-    ? JSON.parse(localStorage.getItem("expandedChatData")!)
+  const expandedChat = localStorage.getItem('expandedChatData')
+    ? JSON.parse(localStorage.getItem('expandedChatData')!)
     : [];
 
-  const [expandedChatData] = useState<any>(expandedChat);
+  const [expandedChatData, setExpandedChatData] = useState<any>(expandedChat);
 
   const [hasInitialExpandedChat, setHasInitialExpandedChat] = useState(false);
   const [hasSavedLocal, setHasSavedLocal] = useState(false);
-  const [selectedchat, setSelectedChat] = useState<any>(expandedChat.chats);
+  const [selectedchat, setSelectedChat] = useState<any>(
+    expandedChat.chats || [],
+  );
   const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
   const [expandSearch, setExpandSearch] = useState(false);
-  const userdata = JSON.parse(localStorage.getItem("userdata") || "/{/}/");
+  const userdata = JSON.parse(localStorage.getItem('userdata') || '/{/}/');
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
@@ -80,11 +82,11 @@ const Chat = () => {
   const [displayedChat, setDisplayedChat] = useState<any>([]);
   const { postData, getData, deleteData } = useApi();
   const navigate = useNavigate();
-  const profileCompletion = localStorage.getItem("Profile_completion") || "0";
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchQuerystarred, setSearchQuerystarred] = useState("");
+  const profileCompletion = localStorage.getItem('Profile_completion') || '0';
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuerystarred, setSearchQuerystarred] = useState('');
   const [showInitialPage, setShowInitialPage] = useState(true);
-  const [loaderMsg, setLoaderMsg] = useState("");
+  const [loaderMsg, setLoaderMsg] = useState('');
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -95,8 +97,8 @@ const Chat = () => {
   synth.onvoiceschanged = () => {
     getVoices();
   };
-  if (profileCompletion !== "100") {
-    navigate("/*");
+  if (profileCompletion !== '100') {
+    navigate('/*');
   }
   const chatRef = useRef<HTMLInputElement>(null);
   const handlecancel = () => {
@@ -140,24 +142,24 @@ const Chat = () => {
   }, [expandedChat]);
 
   useEffect(() => {
-    if (!expandedChat.length) {
-      setSelectedChat([]);
-    }
+    // if (!expandedChat.length) {
+    //   setSelectedChat([]);
+    // }
     setTimeout(() => {
       if (Id !== undefined) {
         setShowInitialPage(true);
-        if (!expandedChat.length) {
-          setSelectedChat([]);
-        }
-        setSearchQuery("");
-        setSearchQuerystarred("");
+        // if (!expandedChat.length) {
+        //   setSelectedChat([]);
+        // }
+        setSearchQuery('');
+        setSearchQuerystarred('');
       } else {
         setShowInitialPage(false);
-        if (!expandedChat.length) {
-          setSelectedChat([]);
-        }
-        setSearchQuery("");
-        setSearchQuerystarred("");
+        // if (!expandedChat.length) {
+        //   setSelectedChat([]);
+        // }
+        setSearchQuery('');
+        setSearchQuerystarred('');
       }
     }, 500);
   }, [Id]);
@@ -168,7 +170,7 @@ const Chat = () => {
     }
     setLikedStates((prevStates) => ({
       ...prevStates,
-      [index]: "liked",
+      [index]: 'liked',
     }));
 
     const updatedChat = [...selectedchat];
@@ -177,7 +179,7 @@ const Chat = () => {
       like_dislike: true,
     };
     setSelectedChat(updatedChat);
-    const chatDataString = localStorage.getItem("chatData");
+    const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
       const updatedChatData = chatData.map((item: any) => {
@@ -195,7 +197,37 @@ const Chat = () => {
         return item;
       });
 
-      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+      setchatlistData((prevChatlist: any) => {
+        const newChatlist = prevChatlist.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
+
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+
+        return newChatlist;
+      });
+      setchathistory((prevHistory: any) => {
+        const newHistory = prevHistory.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
+
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+
+        return newHistory;
+      });
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       setDisplayedChat(updatedChatData);
     }
   };
@@ -206,7 +238,7 @@ const Chat = () => {
     }
     setLikedStates((prevStates) => ({
       ...prevStates,
-      [index]: "disliked",
+      [index]: 'disliked',
     }));
     const updatedChat = [...selectedchat];
     updatedChat[index] = {
@@ -214,7 +246,7 @@ const Chat = () => {
       like_dislike: false,
     };
     setSelectedChat(updatedChat);
-    const chatDataString = localStorage.getItem("chatData");
+    const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
       const updatedChatData = chatData.map((item: any) => {
@@ -231,8 +263,35 @@ const Chat = () => {
         }
         return item;
       });
+      setchatlistData((prevChatlist: any) => {
+        const newChatlist = prevChatlist.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+        return newChatlist;
+      });
+      setchathistory((prevHistory: any) => {
+        const newHistory = prevHistory.map((chat: any) => {
+          const isMatching = chat.created_at === updatedChat[index].created_at;
 
-      localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+          if (isMatching) {
+            return {
+              ...chat,
+              like_dislike: false,
+            };
+          }
+          return chat;
+        });
+
+        return newHistory;
+      });
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       setDisplayedChat(updatedChatData);
     }
   };
@@ -251,15 +310,15 @@ const Chat = () => {
           conversation.map((item: any) => ({
             ...item,
             speak: false,
-          }))
+          })),
         );
 
         const newLikedStates: { [key: string]: string } = {};
         conversation.forEach((item: any, index: number) => {
           if (item.like_dislike === true) {
-            newLikedStates[index] = "liked";
+            newLikedStates[index] = 'liked';
           } else if (item.like_dislike === false) {
-            newLikedStates[index] = "disliked";
+            newLikedStates[index] = 'disliked';
           }
         });
         setLikedStates(newLikedStates);
@@ -268,16 +327,16 @@ const Chat = () => {
   };
 
   const callAPI = async () => {
-    getData(`${StudentGETURL}${userdata ? `/${userdata?.id}` : ""}`)
+    getData(`${StudentGETURL}${userdata ? `/${userdata?.id}` : ''}`)
       .then((data: any) => {
         setStudentData(data?.data);
         if (
           data?.data?.academic_history &&
           Object.keys(data?.data?.academic_history).length > 0
         ) {
-          if (data?.data?.academic_history?.institution_type === "college") {
+          if (data?.data?.academic_history?.institution_type === 'college') {
             getData(
-              `course/edit/${data?.data?.academic_history?.course_id}`
+              `course/edit/${data?.data?.academic_history?.course_id}`,
             ).then((response) => {
               setStudentCourse(response.data.course_name);
             });
@@ -287,7 +346,7 @@ const Chat = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     getData(`${chatlisturl}/${userdata?.id}`)
@@ -308,7 +367,7 @@ const Chat = () => {
                   speak: existingChat?.speak || false,
                   like_dislike: item.like_dislike,
                 };
-              })
+              }),
             );
             setLikedStates(
               conversation?.reduce(
@@ -316,13 +375,13 @@ const Chat = () => {
                   ...acc,
                   [index]:
                     item.like_dislike === true
-                      ? "liked"
+                      ? 'liked'
                       : item.like_dislike === false
-                      ? "disliked"
-                      : "",
+                        ? 'disliked'
+                        : '',
                 }),
-                {}
-              )
+                {},
+              ),
             );
           }
         }
@@ -335,17 +394,17 @@ const Chat = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     getData(`${university_list}`)
       .then((data: any) => {
-        setUniversity_List_Data(data?.data || "");
+        setUniversity_List_Data(data?.data || '');
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -360,11 +419,11 @@ const Chat = () => {
   }, []);
 
   function getTodaysData(arr: any) {
-    const today = new Date().toISOString().split("T")[0]; // Get today's date in 'YYYY-MM-DD' format
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
 
     return arr?.filter((item: any) => {
-      if (item?.created_at && typeof item.created_at === "string") {
-        const itemDate = item.created_at.split(" ")[0]; // Extract 'YYYY-MM-DD' from 'created_at'
+      if (item?.created_at && typeof item.created_at === 'string') {
+        const itemDate = item.created_at.split(' ')[0]; // Extract 'YYYY-MM-DD' from 'created_at'
         return itemDate === today;
       }
       return false;
@@ -372,24 +431,24 @@ const Chat = () => {
   }
 
   const filterdataCall = async () => {
-    if (Id === "recentChat") {
+    if (Id === 'recentChat') {
       const parsedChatHistory = await chathistory?.map(
         (chat: { updated_at: string | number | Date }) => ({
           ...chat,
           updated_at: new Date(chat?.updated_at),
-        })
+        }),
       );
 
       // Sort the chat history by updated_at in descending order
       const sortedChatHistory = parsedChatHistory?.sort(
         (a: { updated_at: any }, b: { updated_at: any }) =>
-          b?.updated_at - a?.updated_at
+          b?.updated_at - a?.updated_at,
       );
 
-      const chatDataString: any = localStorage?.getItem("chatData");
+      const chatDataString: any = localStorage?.getItem('chatData');
       const chatmodify = JSON.parse(chatDataString);
 
-      if (chatmodify && chatmodify[0].question !== "") {
+      if (chatmodify && chatmodify[0].question !== '') {
         const tadaysChat = getTodaysData(sortedChatHistory);
         const newArray = [...tadaysChat];
         const column = [
@@ -417,7 +476,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (Id === "recentChat") {
+    if (Id === 'recentChat') {
       filterdataCall();
     } else {
       setShowInitialPage(false);
@@ -429,9 +488,9 @@ const Chat = () => {
     const textArray = Array.isArray(text) ? text : [text];
 
     // Join the array into a single string
-    let cleanedText = textArray.join(" ");
+    let cleanedText = textArray.join(' ');
     // Replace multiple spaces with a single space
-    cleanedText = cleanedText.replace(/\s+/g, " ");
+    cleanedText = cleanedText.replace(/\s+/g, ' ');
 
     // Trim any leading or trailing spaces
     cleanedText = cleanedText.trim();
@@ -450,7 +509,7 @@ const Chat = () => {
 
     // console.log("ssssss",cleanedText,voices);
     const voice = voices.find(
-      (voice) => voice.name === "Microsoft Mark - English (United States)"
+      (voice) => voice.name === 'Microsoft Mark - English (United States)',
     ) as SpeechSynthesisVoice;
     utterance.rate = 0.9;
     utterance.voice = voice;
@@ -482,17 +541,17 @@ const Chat = () => {
         ...prevStates,
         [newIndex]:
           newData.like_dislike === true
-            ? "liked"
+            ? 'liked'
             : newData.like_dislike === false
-            ? "disliked"
-            : "",
+              ? 'disliked'
+              : '',
       }));
       return newState;
     });
     setChatSaved(false);
     setchatData((prevState: any) => [...prevState, newData]);
     setLoading(false);
-    setSearch("");
+    setSearch('');
     setShowInitialPage(false);
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
@@ -504,7 +563,7 @@ const Chat = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -524,26 +583,26 @@ const Chat = () => {
     setLoading(false);
     toast.error(e?.message, {
       hideProgressBar: true,
-      theme: "colored",
+      theme: 'colored',
     });
   };
 
   const searchData = () => {
-    setSearch("");
+    setSearch('');
 
-    if (search === "") {
+    if (search === '') {
       setSearchErr(true);
       return;
     }
 
     setLoading(true);
-    setLoaderMsg("Searching result from knowledge base");
+    setLoaderMsg('Searching result from knowledge base');
     setSearchErr(false);
 
-    const prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
     let payload = {};
     // let rag_payload = {};
-    if (selectedchat?.question !== "") {
+    if (selectedchat?.question !== '') {
       payload = {
         student_id: userid,
         question: search,
@@ -551,14 +610,14 @@ const Chat = () => {
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
         // course: "class_10",
         course:
-          studentDetail?.academic_history?.institution_type === "school"
+          studentDetail?.academic_history?.institution_type === 'school'
             ? studentDetail?.class?.name
             : studentCourse,
         stream: studentDetail?.subject,
         chat_hostory: [
-          { role: "user", content: selectedchat?.question },
+          { role: 'user', content: selectedchat?.question },
           {
-            role: "assistant",
+            role: 'assistant',
             content: selectedchat?.answer,
           },
         ],
@@ -573,7 +632,7 @@ const Chat = () => {
         question: search,
         prompt: prompt,
         course:
-          studentDetail?.academic_history?.institution_type === "school"
+          studentDetail?.academic_history?.institution_type === 'school'
             ? studentDetail?.class?.name
             : studentCourse,
         stream: studentDetail?.subject,
@@ -592,7 +651,7 @@ const Chat = () => {
       setChatSaved(false);
       setchatData((prevState: any) => [...prevState, newData]);
       setLoading(false);
-      setSearch("");
+      setSearch('');
       getData(`${chatlisturl}/${userdata?.id}`)
         .then((data: any) => {
           setchatlistData(data?.data);
@@ -603,7 +662,7 @@ const Chat = () => {
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     };
@@ -615,9 +674,9 @@ const Chat = () => {
         // } else if (data.status === 404) {
         if (data.status === 200 || data.status === 404) {
           // setLoaderMsg("Searching result from knowledge base");
-          setLoaderMsg("Searching result from Rag model");
+          setLoaderMsg('Searching result from Rag model');
 
-          if (studentDetail?.academic_history?.institution_type === "school") {
+          if (studentDetail?.academic_history?.institution_type === 'school') {
             postData(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
@@ -641,22 +700,22 @@ const Chat = () => {
                     if (Array.isArray(answer)) {
                       return answer;
                     }
-                    if (typeof answer === "object" && answer !== null) {
+                    if (typeof answer === 'object' && answer !== null) {
                       const entries = Object.entries(answer);
                       return [
                         entries
                           .map(([key, value]) => {
                             if (
-                              typeof value === "string" &&
-                              value.includes("\\frac") &&
-                              !value.includes("$")
+                              typeof value === 'string' &&
+                              value.includes('\\frac') &&
+                              !value.includes('$')
                             ) {
                               const latexValue = `$${value}$`;
                               return `${key}) ${latexValue}\n`;
                             }
                             return `${key}) ${value}\n`;
                           })
-                          .join(""),
+                          .join(''),
                       ];
                     }
                     return [answer.toString()];
@@ -674,12 +733,12 @@ const Chat = () => {
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
-                      handleError
+                      handleError,
                     );
                   }
                   handleResponse(formattedResponse);
                 } else {
-                  setLoaderMsg("Fetching Data from Ollama model.");
+                  setLoaderMsg('Fetching Data from Ollama model.');
 
                   postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
@@ -695,7 +754,7 @@ const Chat = () => {
                           response: response?.answer,
                         };
                         postData(`${ChatStore}`, ChatStorepayload).catch(
-                          handleError
+                          handleError,
                         );
                       }
                     })
@@ -727,7 +786,7 @@ const Chat = () => {
                         response: response?.answer,
                       };
                       postData(`${ChatStore}`, ChatStorepayload).catch(
-                        handleError
+                        handleError,
                       );
                     }
                   })
@@ -735,7 +794,7 @@ const Chat = () => {
                     postData(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
-                  })
+                  }),
               );
           } else {
             const {
@@ -756,8 +815,8 @@ const Chat = () => {
             // )
             const university: any =
               university_list_data.filter(
-                (university: any) => university.university_id == university_id
-              ) || "";
+                (university: any) => university.university_id == university_id,
+              ) || '';
             const queryParams = {
               user_query: search,
               student_id: userid,
@@ -782,22 +841,22 @@ const Chat = () => {
                     if (Array.isArray(answer)) {
                       return answer;
                     }
-                    if (typeof answer === "object" && answer !== null) {
+                    if (typeof answer === 'object' && answer !== null) {
                       const entries = Object.entries(answer);
                       return [
                         entries
                           .map(([key, value]) => {
                             if (
-                              typeof value === "string" &&
-                              value.includes("\\frac") &&
-                              !value.includes("$")
+                              typeof value === 'string' &&
+                              value.includes('\\frac') &&
+                              !value.includes('$')
                             ) {
                               const latexValue = `$${value}$`;
                               return `${key}) ${latexValue}\n`;
                             }
                             return `${key}) ${value}\n`;
                           })
-                          .join(""),
+                          .join(''),
                       ];
                     }
                     return [answer.toString()];
@@ -815,12 +874,12 @@ const Chat = () => {
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
-                      handleError
+                      handleError,
                     );
                   }
                   handleResponse(formattedResponse);
                 } else {
-                  setLoaderMsg("Fetching Data from Ollama model.");
+                  setLoaderMsg('Fetching Data from Ollama model.');
                   // getData(
                   //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                   //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
@@ -842,7 +901,7 @@ const Chat = () => {
                           response: response?.answer,
                         };
                         postData(`${ChatStore}`, ChatStorepayload).catch(
-                          handleError
+                          handleError,
                         );
                       }
                     })
@@ -854,7 +913,7 @@ const Chat = () => {
                 }
               })
               .catch(() => {
-                setLoaderMsg("Fetching Data from Ollama model.");
+                setLoaderMsg('Fetching Data from Ollama model.');
                 // getData(
                 //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                 //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
@@ -875,7 +934,7 @@ const Chat = () => {
                         response: response?.answer,
                       };
                       postData(`${ChatStore}`, ChatStorepayload).catch(
-                        handleError
+                        handleError,
                       );
                     }
                   })
@@ -914,7 +973,7 @@ const Chat = () => {
           //   user_query: search,
           // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
-          setLoaderMsg("Fetching Data from Ollama model.");
+          setLoaderMsg('Fetching Data from Ollama model.');
           // return getData(
           //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
           //     search
@@ -924,7 +983,7 @@ const Chat = () => {
             user_query: search,
             student_id: userid,
             class_or_course_selection:
-              studentDetail?.academic_history?.institution_type === "school"
+              studentDetail?.academic_history?.institution_type === 'school'
                 ? studentDetail?.class.name
                 : studentDetail?.subject_preference?.course_name,
           });
@@ -952,7 +1011,7 @@ const Chat = () => {
             .catch(handleError);
           handleResponsereg(data);
         } else if (data?.status === 404) {
-          setLoaderMsg("Fetching data from Chat-GPT API.");
+          setLoaderMsg('Fetching data from Chat-GPT API.');
           return postData(`${ChatURLAI}`, payload);
         } else if (data) {
           handleError(data);
@@ -1008,7 +1067,7 @@ const Chat = () => {
   // }, [chatData]);
   useEffect(() => {
     if (chat?.length > 0) {
-      const existingChatData = localStorage.getItem("chatData");
+      const existingChatData = localStorage.getItem('chatData');
       const parsedExistingChat = existingChatData
         ? JSON.parse(existingChatData)
         : [];
@@ -1016,28 +1075,28 @@ const Chat = () => {
       const isAlreadyInExisting = parsedExistingChat.some(
         (item: any) =>
           item.question === latestChatItem.question &&
-          JSON.stringify(item.answer) === JSON.stringify(latestChatItem.answer)
+          JSON.stringify(item.answer) === JSON.stringify(latestChatItem.answer),
       );
 
       if (!isAlreadyInExisting) {
-        let updatedChatData;
+        // let updatedChatData;
+        const updatedChatData = [...parsedExistingChat, latestChatItem];
 
-        if (savedExpandedChat && savedExpandedChat.length > 0) {
-          const isInSavedExpanded = savedExpandedChat.some(
-            (item: any) =>
-              item.question === latestChatItem.question &&
-              JSON.stringify(item.answer) ===
-                JSON.stringify(latestChatItem.answer)
-          );
+        // if (savedExpandedChat && savedExpandedChat.length > 0) {
+        //   const isInSavedExpanded = savedExpandedChat.some(
+        //     (item: any) =>
+        //       item.question === latestChatItem.question &&
+        //       JSON.stringify(item.answer) ===
+        //         JSON.stringify(latestChatItem.answer),
+        //   );
 
-          updatedChatData = isInSavedExpanded
-            ? [...savedExpandedChat]
-            : [...savedExpandedChat, latestChatItem];
-        } else {
-          updatedChatData = [...parsedExistingChat, latestChatItem];
-        }
-
-        localStorage.setItem("chatData", JSON.stringify(updatedChatData));
+        //   updatedChatData = isInSavedExpanded
+        //     ? [...savedExpandedChat]
+        //     : [...savedExpandedChat, latestChatItem];
+        // } else {
+        //   updatedChatData = [...parsedExistingChat, latestChatItem];
+        // }
+        localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       }
     }
   }, [chat, savedExpandedChat]);
@@ -1049,27 +1108,31 @@ const Chat = () => {
       return;
     }
 
-    const chatDataString = localStorage?.getItem("chatData");
+    const chatDataString = localStorage?.getItem('chatData');
     const chatData = chatDataString ? JSON.parse(chatDataString) : null;
 
     if (chatData?.length > 0) {
-      if (savedExpandedChat.length > 0) {
+      if (savedExpandedChat && savedExpandedChat.length > 0) {
         setHasSavedLocal(true);
+        setSelectedChat(chatData);
+        setExpandedChatData([]);
         return;
       }
 
       if (!hasInitialExpandedChat) {
-        saveChatlocal();
+        // saveChatlocal();
         setHasSavedLocal(true);
+        setSelectedChat(chatData);
+        setExpandedChatData([]);
       }
     }
   }, [chatData, savedExpandedChat, hasInitialExpandedChat, hasSavedLocal]);
 
   const saveChatlocal = async () => {
-    const chatDataString = localStorage?.getItem("chatData");
-    const chatflagged = localStorage?.getItem("chatsaved");
+    const chatDataString = localStorage?.getItem('chatData');
+    const chatflagged = localStorage?.getItem('chatsaved');
     // console.log("chatData testing save",chatDataString);
-    const isChatFlagged = chatflagged === "true";
+    const isChatFlagged = chatflagged === 'true';
     let chatData: any;
 
     if (chatDataString) {
@@ -1084,7 +1147,7 @@ const Chat = () => {
     if (chatlist !== undefined) {
       datatest = chatlist?.filter(
         (chatitem: { chat_title: any }) =>
-          chatitem?.chat_title === chatData?.[0]?.question
+          chatitem?.chat_title === chatData?.[0]?.question,
       );
     }
 
@@ -1118,8 +1181,8 @@ const Chat = () => {
         //   theme: "colored",
         // });
         callAPI();
-        localStorage.removeItem("chatData");
-        localStorage.removeItem("chatsaved");
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
       })
       .catch(() => {
         // toast.error(e?.message, {
@@ -1135,7 +1198,7 @@ const Chat = () => {
     if (chatlist !== undefined) {
       datatest = chatlist?.filter(
         (chatitem: { chat_title: any }) =>
-          chatitem?.chat_title === chat[0]?.question
+          chatitem?.chat_title === chat[0]?.question,
       );
     }
 
@@ -1162,16 +1225,16 @@ const Chat = () => {
         setChatSaved(false);
         toast.success(chatdata?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
-        localStorage.removeItem("chatData");
-        localStorage.removeItem("chatsaved");
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
         callAPI();
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -1181,7 +1244,7 @@ const Chat = () => {
   // }, []);
 
   const handleKeyDown = (e: { key: string }) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       searchData();
     }
   };
@@ -1216,7 +1279,7 @@ const Chat = () => {
     }, 100);
     setchatData([]);
     setChatSaved(false);
-    setSearch("");
+    setSearch('');
     setSearchErr(false);
     synth.cancel();
     if (chatRef?.current) {
@@ -1231,7 +1294,7 @@ const Chat = () => {
 
     const datatest = chatlist.filter(
       (chatitem: { chat_title: any }) =>
-        chatitem.chat_title === chat[0]?.question
+        chatitem.chat_title === chat[0]?.question,
     );
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
       await saveChat();
@@ -1254,8 +1317,8 @@ const Chat = () => {
 
       let elements: any;
       if (Array.isArray(itemchat?.answer)) {
-        elements = [itemchat.answer.join(" ")];
-      } else if (typeof itemchat?.answer === "string") {
+        elements = [itemchat.answer.join(' ')];
+      } else if (typeof itemchat?.answer === 'string') {
         try {
           elements = JSON.parse(itemchat?.answer);
         } catch {
@@ -1271,9 +1334,9 @@ const Chat = () => {
       chatdataset.push(chatdata);
 
       if (itemchat?.like_dislike === true) {
-        initialLikedStates[index] = "liked";
+        initialLikedStates[index] = 'liked';
       } else if (itemchat?.like_dislike === false) {
-        initialLikedStates[index] = "disliked";
+        initialLikedStates[index] = 'disliked';
       }
     });
 
@@ -1292,14 +1355,14 @@ const Chat = () => {
           chatlist?.find((chat: any) => chat.id === id)?.chat_title ===
           selectedchat?.[0]?.question
         ) {
-          localStorage.removeItem("expandedChatData");
+          localStorage.removeItem('expandedChatData');
           setSelectedChat([]);
         }
         toast.success(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
-        localStorage.removeItem("chatData");
+        localStorage.removeItem('chatData');
 
         callAPI();
 
@@ -1307,18 +1370,18 @@ const Chat = () => {
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
 
   const saveChatstar = () => {
     setChatSaved(!chatsaved);
-    localStorage.setItem("chatsaved", JSON.stringify(!chatsaved));
+    localStorage.setItem('chatsaved', JSON.stringify(!chatsaved));
     saveChatlocal();
   };
 
@@ -1351,27 +1414,27 @@ const Chat = () => {
 
   const regenerateChat = (question: any) => {
     setLoading(true);
-    setLoaderMsg("Fetching Data from Ollama model.");
+    setLoaderMsg('Fetching Data from Ollama model.');
     setSearchErr(false);
 
-    const prompt = studentDetail?.prompt?.replace("**question**", "answer");
+    const prompt = studentDetail?.prompt?.replace('**question**', 'answer');
     let payload = {};
 
-    if (selectedchat?.question !== "") {
+    if (selectedchat?.question !== '') {
       payload = {
         question: question,
         prompt: prompt,
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
         // course: "class_10",
         course:
-          studentDetail?.academic_history?.institution_type === "school"
+          studentDetail?.academic_history?.institution_type === 'school'
             ? studentDetail?.class?.name
             : studentCourse,
         stream: studentDetail?.subject,
         chat_hostory: [
-          { role: "user", content: selectedchat?.question },
+          { role: 'user', content: selectedchat?.question },
           {
-            role: "assistant",
+            role: 'assistant',
             content: selectedchat?.answer,
           },
         ],
@@ -1380,7 +1443,7 @@ const Chat = () => {
       payload = {
         question: question,
         prompt: prompt,
-        course: studentDetail?.course === null ? "" : studentDetail?.course,
+        course: studentDetail?.course === null ? '' : studentDetail?.course,
         stream: studentDetail?.subject,
       };
     }
@@ -1395,7 +1458,7 @@ const Chat = () => {
       user_query: question,
       student_id: userid,
       class_or_course_selection:
-        studentDetail?.academic_history?.institution_type === "school"
+        studentDetail?.academic_history?.institution_type === 'school'
           ? studentDetail?.class.name
           : studentDetail?.subject_preference?.course_name,
     })
@@ -1439,24 +1502,44 @@ const Chat = () => {
   //   : statredchat;
   const filteredChatsstarred = searchQuery
     ? chatlist
+        ?.map((chat: any) => ({
+          ...chat,
+          updated_at: new Date(chat.updated_at),
+        }))
         ?.filter((chat: { chat_title: string }) =>
-          chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
+          chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase()),
         )
-        .sort((a: any, b: any) => b.flagged - a.flagged)
-    : chatlist?.sort((a: any, b: any) => b.flagged - a.flagged);
+        ?.sort((a: any, b: any) => {
+          if (b.flagged !== a.flagged) {
+            return b.flagged - a.flagged;
+          }
+
+          return b.updated_at - a.updated_at;
+        })
+    : chatlist
+        ?.map((chat: any) => ({
+          ...chat,
+          updated_at: new Date(chat.updated_at),
+        }))
+        ?.sort((a: any, b: any) => {
+          if (b.flagged !== a.flagged) {
+            return b.flagged - a.flagged;
+          }
+          return b.updated_at - a.updated_at;
+        });
   const filteredChats = searchQuerystarred
     ? chathistory?.filter((chat: { chat_title: string }) =>
         chat?.chat_title
           ?.toLowerCase()
-          ?.includes(searchQuerystarred?.toLowerCase())
+          ?.includes(searchQuerystarred?.toLowerCase()),
       )
     : chathistory;
 
   const extractTime = (chatDate: string) => {
-    const date = chatDate ? new Date(chatDate + "z") : new Date();
+    const date = chatDate ? new Date(chatDate + 'z') : new Date();
 
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
     const formattedDate = date.toDateString();
     const formattedTime = `${formattedDate}:${hours}:${minutes}`;
     return formattedTime;
@@ -1479,7 +1562,7 @@ const Chat = () => {
         setIsTextCopied(updatedState);
       })
       .catch((err) => {
-        console.error("Error copying text: ", err);
+        console.error('Error copying text: ', err);
       });
   };
 
@@ -1903,12 +1986,12 @@ const Chat = () => {
       <main className="main-wrapper">
         <div className="main-content">
           <div
-            className={`chat-panel ${!(filteredChats?.length > 0) ? "" : ""}`}
+            className={`chat-panel ${!(filteredChats?.length > 0) ? '' : ''}`}
           >
             {Id ? (
               <div
                 className={`left-side-history ${
-                  showHistory ? "showhistory" : ""
+                  showHistory ? 'showhistory' : ''
                 }`}
               >
                 <div className="d-lg-none mb-4 ms-auto d-flex">
@@ -1953,7 +2036,7 @@ const Chat = () => {
                             id: number | undefined;
                             created_at: string;
                           },
-                          index: React.Key | null | undefined
+                          index: React.Key | null | undefined,
                         ) => (
                           <li
                             onClick={() => displayChat(chat)}
@@ -1974,12 +2057,12 @@ const Chat = () => {
                                 }}
                               >
                                 <DeleteOutlineOutlinedIcon
-                                  sx={{ fontSize: "18px" }}
+                                  sx={{ fontSize: '18px' }}
                                 />
                               </li>
                             </ul>
                           </li>
-                        )
+                        ),
                       )}
                   </>
                 </PerfectScrollbar>
@@ -1987,7 +2070,7 @@ const Chat = () => {
             ) : (
               <div
                 className={`left-side-history ${
-                  showHistory ? "showhistory" : ""
+                  showHistory ? 'showhistory' : ''
                 }`}
               >
                 <div className="d-lg-none mb-4 ms-auto d-flex">
@@ -2033,7 +2116,7 @@ const Chat = () => {
                             id: number | undefined;
                             created_at: string;
                           },
-                          index: React.Key | null | undefined
+                          index: React.Key | null | undefined,
                         ) => (
                           <li
                             onClick={() => displayChat(chat)}
@@ -2052,22 +2135,22 @@ const Chat = () => {
                                     e.stopPropagation();
                                     handleDeleteFiles(chat?.id);
                                   }}
-                                  sx={{ fontSize: "18px" }}
+                                  sx={{ fontSize: '18px' }}
                                 />
                               </li>
                               {chat?.flagged && (
                                 <li
-                                  className={`${chat?.flagged ? "active" : ""}`}
+                                  className={`${chat?.flagged ? 'active' : ''}`}
                                   role="button"
                                 >
                                   <BookmarkIcon
-                                    sx={{ fontSize: "18px", color: "#9943ec" }}
+                                    sx={{ fontSize: '18px', color: '#9943ec' }}
                                   />
                                 </li>
                               )}
                             </ul>
                           </li>
-                        )
+                        ),
                       )}
                   </>
                 </PerfectScrollbar>
@@ -2096,10 +2179,10 @@ const Chat = () => {
                     )}
                     {!showInitialPage ? (
                       chatsaved ? (
-                        <FlagIcon style={{ color: "#9943ec" }} />
+                        <FlagIcon style={{ color: '#9943ec' }} />
                       ) : (
                         <FlagOutlinedIcon
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: 'pointer' }}
                           onClick={saveChatstar}
                         />
                       )
@@ -2113,7 +2196,7 @@ const Chat = () => {
                 {/* <div className="chat-result"> */}
                 <div className="chat-result">
                   {loading && (
-                    <FullScreenLoader msg={loaderMsg} flag={"chat"} />
+                    <FullScreenLoader msg={loaderMsg} flag={'chat'} />
                   )}
                   {selectedchat?.length && selectedchat?.length > 0 ? (
                     <ul>
@@ -2128,8 +2211,8 @@ const Chat = () => {
                                 <div className="chat-card-header">
                                   <span className="anstext">
                                     <SearchOutlinedIcon
-                                      sx={{ fontSize: "14px" }}
-                                    />{" "}
+                                      sx={{ fontSize: '14px' }}
+                                    />{' '}
                                     Question
                                   </span>
                                 </div>
@@ -2151,8 +2234,8 @@ const Chat = () => {
                                 <div className="chat-card-header">
                                   <span className="anstext">
                                     <DescriptionOutlinedIcon
-                                      sx={{ fontSize: "14px" }}
-                                    />{" "}
+                                      sx={{ fontSize: '14px' }}
+                                    />{' '}
                                     Answer
                                   </span>
                                 </div>
@@ -2169,24 +2252,24 @@ const Chat = () => {
                                   <ThumbUpAltOutlinedIcon
                                     onClick={() => handleUpIconClick(index)}
                                     sx={{
-                                      fontSize: "14px",
+                                      fontSize: '14px',
                                       color:
-                                        likedStates[index] === "liked" ||
+                                        likedStates[index] === 'liked' ||
                                         chat.like_dislike === true
                                           ? theme.palette.primary.main
                                           : chat.like_dislike !== null
-                                          ? "#ccc"
-                                          : "",
+                                            ? '#ccc'
+                                            : '',
                                       cursor:
                                         chat.like_dislike !== null
-                                          ? "default"
-                                          : "pointer",
+                                          ? 'default'
+                                          : 'pointer',
                                       transform:
-                                        likedStates[index] === "liked" ||
+                                        likedStates[index] === 'liked' ||
                                         chat.like_dislike === true
-                                          ? "scale(1.3)"
-                                          : "scale(1)",
-                                      transition: "color 0.3s ease",
+                                          ? 'scale(1.3)'
+                                          : 'scale(1)',
+                                      transition: 'color 0.3s ease',
                                       opacity:
                                         chat.like_dislike !== null &&
                                         chat.like_dislike !== true
@@ -2197,24 +2280,24 @@ const Chat = () => {
                                   <ThumbDownOutlinedIcon
                                     onClick={() => handleDownIconClick(index)}
                                     sx={{
-                                      fontSize: "14px",
+                                      fontSize: '14px',
                                       color:
-                                        likedStates[index] === "disliked" ||
+                                        likedStates[index] === 'disliked' ||
                                         chat.like_dislike === false
                                           ? theme.palette.primary.main
                                           : chat.like_dislike !== null
-                                          ? "#ccc"
-                                          : "",
+                                            ? '#ccc'
+                                            : '',
                                       cursor:
                                         chat.like_dislike !== null
-                                          ? "default"
-                                          : "pointer",
+                                          ? 'default'
+                                          : 'pointer',
                                       transform:
-                                        likedStates[index] === "disliked" ||
+                                        likedStates[index] === 'disliked' ||
                                         chat.like_dislike === false
-                                          ? "scale(1.3)"
-                                          : "scale(1)",
-                                      transition: "color 0.3s ease",
+                                          ? 'scale(1.3)'
+                                          : 'scale(1)',
+                                      transition: 'color 0.3s ease',
                                       opacity:
                                         chat.like_dislike !== null &&
                                         chat.like_dislike !== false
@@ -2224,12 +2307,12 @@ const Chat = () => {
                                   />
                                   <li onClick={() => copyText(index)}>
                                     <ContentCopyOutlinedIcon
-                                      sx={{ fontSize: "14px" }}
+                                      sx={{ fontSize: '14px' }}
                                     />
                                     <span>
                                       {isTextCopied[`answer-${index}`]
-                                        ? "Copied"
-                                        : "Copy"}
+                                        ? 'Copied'
+                                        : 'Copy'}
                                     </span>
                                   </li>
                                   {!chat?.speak ? (
@@ -2239,15 +2322,15 @@ const Chat = () => {
                                       }
                                     >
                                       <VolumeUpOutlinedIcon
-                                        sx={{ fontSize: "14px" }}
-                                      />{" "}
+                                        sx={{ fontSize: '14px' }}
+                                      />{' '}
                                       <span>Read</span>
                                     </li>
                                   ) : (
                                     <li onClick={() => stop(index)}>
                                       <VolumeOffOutlinedIcon
-                                        sx={{ fontSize: "14px" }}
-                                      />{" "}
+                                        sx={{ fontSize: '14px' }}
+                                      />{' '}
                                       <span>Stop</span>
                                     </li>
                                   )}
@@ -2257,8 +2340,8 @@ const Chat = () => {
                                     }
                                   >
                                     <CachedOutlinedIcon
-                                      sx={{ fontSize: "14px" }}
-                                    />{" "}
+                                      sx={{ fontSize: '14px' }}
+                                    />{' '}
                                     <span>Regenerate</span>
                                   </li>
                                 </ul>
@@ -2269,14 +2352,14 @@ const Chat = () => {
                       ))}
                     </ul>
                   ) : loading ? (
-                    <FullScreenLoader msg={loaderMsg} flag={"chat"} />
+                    <FullScreenLoader msg={loaderMsg} flag={'chat'} />
                   ) : (
                     <div className="welcome-box">
                       <img src={chatLogo} alt="" />
                       <h3>{`${
                         Id
-                          ? "Hi, How can I help you today?"
-                          : "Please select conversation"
+                          ? 'Hi, How can I help you today?'
+                          : 'Please select conversation'
                       }`}</h3>
                     </div>
                   )}

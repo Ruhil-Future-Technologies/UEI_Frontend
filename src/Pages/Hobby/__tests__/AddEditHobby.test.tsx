@@ -1,12 +1,17 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AddEditHobby from '../AddEditHobby'; 
-import { BrowserRouter as Router, useLocation, useNavigate, useParams } from 'react-router-dom';
+import AddEditHobby from '../AddEditHobby';
+import {
+  BrowserRouter as Router,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useAPI';
-import { contextValue } from "../../../MockStorage/mockstorage";
+import { contextValue } from '../../../MockStorage/mockstorage';
 import React from 'react';
-import NameContext from '../../Context/NameContext'; 
+import NameContext from '../../Context/NameContext';
 
 jest.mock('react-toastify', () => ({
   toast: {
@@ -20,7 +25,12 @@ jest.mock('../../../hooks/useAPI', () => ({
 }));
 
 const mockNavigate = jest.fn();
-const mockLocation = { pathname: '/main/Hobby', search: '', hash: '', state: null };
+const mockLocation = {
+  pathname: '/main/Hobby',
+  search: '',
+  hash: '',
+  state: null,
+};
 const mockPostData = jest.fn();
 const mockPutData = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -44,21 +54,20 @@ describe('AddEditHobby Component', () => {
     });
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     (useLocation as jest.Mock).mockReturnValue(mockLocation);
-    (useParams as jest.Mock).mockReturnValue({ id: '' });  
-   
+    (useParams as jest.Mock).mockReturnValue({ id: '' });
   });
   const mockGetData = jest.fn();
-    const renderRoleComponent = () => {
+  const renderRoleComponent = () => {
     return render(
       <NameContext.Provider value={contextValue}>
         <Router>
-        <AddEditHobby />
+          <AddEditHobby />
         </Router>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
   };
   it('displays error message when API call fails (GET)', async () => {
-    (useParams as jest.Mock).mockReturnValue({ id: '1' });  
+    (useParams as jest.Mock).mockReturnValue({ id: '1' });
     const mockErrorResponse = {
       message: 'Failed to load hobby',
     };
@@ -67,18 +76,18 @@ describe('AddEditHobby Component', () => {
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
         'Failed to load hobby',
-        expect.any(Object)
+        expect.any(Object),
       );
     });
   });
   it('validates hobby_name input correctly', async () => {
     const { getByText, getByTestId } = renderRoleComponent();
     const roleField = getByTestId('hobby_name') as HTMLElement;
-    const save_btn = getByTestId('save_btn') as HTMLElement
-    fireEvent.click(save_btn)
-    fireEvent.change(roleField, { target: { value: "" } }); 
+    const save_btn = getByTestId('save_btn') as HTMLElement;
+    fireEvent.click(save_btn);
+    fireEvent.change(roleField, { target: { value: '' } });
     await waitFor(() => {
-      expect(getByText("Please enter Hobby name")).toBeInTheDocument();
+      expect(getByText('Please enter Hobby name')).toBeInTheDocument();
     });
   });
   it('displays success message on successful submit (Create)', async () => {
@@ -92,11 +101,14 @@ describe('AddEditHobby Component', () => {
     fireEvent.change(roleField, { target: { value: 'New Role' } });
     fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Hobby created successfully', expect.any(Object));
+      expect(toast.success).toHaveBeenCalledWith(
+        'Hobby created successfully',
+        expect.any(Object),
+      );
     });
   });
   it('displays success message on successful submit (Update)', async () => {
-    (useParams as jest.Mock).mockReturnValue({ id: '1' });  
+    (useParams as jest.Mock).mockReturnValue({ id: '1' });
     mockPutData.mockResolvedValue({
       status: 200,
       message: 'Hobby updated successfully',
@@ -105,25 +117,31 @@ describe('AddEditHobby Component', () => {
     const roleField = getByTestId('hobby_name') as HTMLElement;
     const saveButton = getByTestId('save_btn') as HTMLElement;
     fireEvent.change(roleField, { target: { value: 'Updated Hobby' } });
-    fireEvent.click(saveButton);  
+    fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Hobby updated successfully', expect.any(Object));
+      expect(toast.success).toHaveBeenCalledWith(
+        'Hobby updated successfully',
+        expect.any(Object),
+      );
     });
-    expect(mockNavigate).toHaveBeenCalledWith("/main/Hobby");
+    expect(mockNavigate).toHaveBeenCalledWith('/main/Hobby');
   });
   it('displays error message when hobby name already exists', async () => {
     mockPostData.mockResolvedValue({
       status: 400,
       message: 'Hobby name already exists',
     });
-  
+
     const { getByTestId } = renderRoleComponent();
     const roleField = getByTestId('hobby_name') as HTMLElement;
     const saveButton = getByTestId('save_btn') as HTMLElement;
     fireEvent.change(roleField, { target: { value: 'Existing Hobby' } });
     fireEvent.click(saveButton);
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Hobby name already exists', expect.any(Object));
+      expect(toast.error).toHaveBeenCalledWith(
+        'Hobby name already exists',
+        expect.any(Object),
+      );
     });
   });
 });

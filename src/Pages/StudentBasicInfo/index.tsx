@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import Stepper from "@mui/material/Stepper";
 // import Step from "@mui/material/Step";
@@ -17,27 +17,27 @@ import {
   // Select,
   //TextField,
   Typography,
-} from "@mui/material";
-import "react-toastify/dist/ReactToastify.css";
-import useApi from "../../hooks/useAPI";
+} from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
 import {
   LocalizationProvider,
   //DateTimePicker,
   DatePicker,
-} from "@mui/x-date-pickers";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
+} from '@mui/x-date-pickers';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 //import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 //import { QUERY_KEYS_STUDENT } from "../../utils/const";
 //import { useNavigate, useParams } from "react-router-dom";
-import dayjs, { Dayjs } from "dayjs";
-import { toast } from "react-toastify";
-import maleImage from "../../assets/img/avatars/male.png";
-import femaleImage from "../../assets/img/avatars/female.png";
-import { deepEqual, fieldIcon } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-import { ChildComponentProps } from "../StudentProfile";
+import dayjs, { Dayjs } from 'dayjs';
+import { toast } from 'react-toastify';
+import maleImage from '../../assets/img/avatars/male.png';
+import femaleImage from '../../assets/img/avatars/female.png';
+import { deepEqual, fieldIcon } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
+import { ChildComponentProps } from '../StudentProfile';
 
 interface StudentBasicInformation {
   student_id?: number;
@@ -55,7 +55,7 @@ interface StudentBasicInformation {
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { setNamepro, setProImage, namecolor }: any = context;
-  const StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem('_id');
   const { getData, postData, putData, postFileData } = useApi();
   // const [gender, setGender] = useState("Male");
   // const [name, setName] = useState();
@@ -79,36 +79,36 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [editBasicInfo, setEditBasicInfo] = useState(false);
   //const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs()?.subtract(6, "year");
-  const minSelectableDate = dayjs("01/01/1900");
+  const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
+  const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem("proFalg", proFalg ? "true" : "false");
+    localStorage.setItem('proFalg', proFalg ? 'true' : 'false');
   }, [proFalg]);
 
   const [basicInfo, setBasicInfo] = useState<StudentBasicInformation>({
     student_id: 0,
-    first_name: "",
-    last_name: "",
-    gender: "male",
-    dob: dayjs("dd-mm-yyyy"),
-    father_name: "",
-    mother_name: "",
-    guardian_name: "",
-    pic_path: "",
-    aim: "",
+    first_name: '',
+    last_name: '',
+    gender: 'male',
+    dob: dayjs('dd-mm-yyyy'),
+    father_name: '',
+    mother_name: '',
+    guardian_name: '',
+    pic_path: '',
+    aim: '',
   });
   const [initialAdminState, setInitialState] = useState<any | null>({});
 
   const getStudentBasicInfo = async () => {
-    getData(`${"student/get/" + StudentId}`, StudentId)
+    getData(`${'student/get/' + StudentId}`, StudentId)
       .then((data: any) => {
         if (data?.status === 200) {
           // console.log(data);
           // setBasicInfo(data);
-          if (data?.data?.pic_path !== "") {
-            getData(`${"upload_file/get_image/" + data?.data?.pic_path}`)
+          if (data?.data?.pic_path !== '') {
+            getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
               .then((imgdata: any) => {
                 setFilePreview(imgdata.data);
               })
@@ -132,10 +132,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           // console.log(typeof data?.data?.gender);
         } else if (data?.status === 404) {
           setEditFlag(true);
-          toast.warning("Please add your information", {
+          toast.warning('Please add your information', {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         } else {
           // console.log("error comes from api");
@@ -144,8 +144,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
   };
@@ -164,7 +164,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const { name } = event.target;
     let { value } = event.target;
     setEditBasicInfo(true);
-    if (name === "first_name") {
+    if (name === 'first_name') {
       setFname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -173,7 +173,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setFname_col(false);
       }
     }
-    if (name === "last_name") {
+    if (name === 'last_name') {
       setLname_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -182,7 +182,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setLname_col(false);
       }
     }
-    if (name === "father_name") {
+    if (name === 'father_name') {
       setFathername_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -191,7 +191,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setFathername_col(false);
       }
     }
-    if (name === "mother_name") {
+    if (name === 'mother_name') {
       setMothername_col1(true);
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -200,7 +200,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setMothername_col(false);
       }
     }
-    if (name === "guardian_name") {
+    if (name === 'guardian_name') {
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setGname_col(true);
@@ -208,7 +208,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setGname_col(false);
       }
     }
-    if (name === "aim") {
+    if (name === 'aim') {
       // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setaim_col(true);
@@ -216,7 +216,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         setaim_col(false);
       }
     }
-    if (name === "pic_path") {
+    if (name === 'pic_path') {
       const formData = new FormData();
       const { files } = event.target;
 
@@ -226,10 +226,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         // Check file size (1MB = 1024 * 1024 bytes)
         if (file.size > 1024 * 1024) {
           // setError1("File size must be less than 3MB");
-          toast.error("File size must be less than 1MB", {
+          toast.error('File size must be less than 1MB', {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
           return;
         }
@@ -241,7 +241,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         // }
 
         // Check file type (only JPG and PNG allowed)
-        if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
+        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
           // setError1("Only JPG and PNG files are allowed");
           return;
         }
@@ -253,35 +253,35 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           setFilePreview(reader.result);
         };
         reader.readAsDataURL(file);
-        formData.append("file", file);
+        formData.append('file', file);
         value = file.name;
-        postFileData(`${"upload_file/upload"}`, formData)
+        postFileData(`${'upload_file/upload'}`, formData)
           .then((data: any) => {
             if (data?.status === 200) {
               toast.success(data?.message, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             } else if (data?.status === 404) {
               toast.error(data?.message, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             } else {
               toast.error(data?.message, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             }
           })
           .catch((e) => {
             toast.error(e?.message, {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           });
       }
@@ -304,28 +304,28 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const handleDateChange = (newDate: Dayjs | null) => {
     setEditBasicInfo(true);
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, "day")) {
+      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
         setBasicInfo((values) => ({ ...values, dob: newDate }));
         setError(null);
         setdobset_col(false);
       } else {
         // setDob(null);
-        const datecheck: any = dayjs(newDate)?.format("DD/MM/YYYY");
-        if (datecheck === "Invalid Date") {
+        const datecheck: any = dayjs(newDate)?.format('DD/MM/YYYY');
+        if (datecheck === 'Invalid Date') {
           setError(null);
           setdobset_col(true);
         } else {
           setdobset_col(false);
           const currentDate = dayjs();
-          if (newDate?.isAfter(currentDate, "day")) {
-            setError("Future dates are not allowed.");
+          if (newDate?.isAfter(currentDate, 'day')) {
+            setError('Future dates are not allowed.');
           } else {
-            setError("You must be at least 6 years old.");
+            setError('You must be at least 6 years old.');
           }
         }
       }
     } else {
-      setError("Invalid date selected. Please choose a valid date.");
+      setError('Invalid date selected. Please choose a valid date.');
     }
 
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
@@ -339,15 +339,15 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   };
 
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    gender: "",
-    dob: "",
-    father_name: "",
-    mother_name: "",
-    guardian_name: "",
-    pic_path: "",
-    aim: "",
+    first_name: '',
+    last_name: '',
+    gender: '',
+    dob: '',
+    father_name: '',
+    mother_name: '',
+    guardian_name: '',
+    pic_path: '',
+    aim: '',
   });
 
   // const validate = () => {
@@ -418,8 +418,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       aim: basicInfo?.aim,
     };
 
-    const datecheck: any = dayjs(payload?.dob).format("DD/MM/YYYY");
-    if (datecheck === "Invalid Date") {
+    const datecheck: any = dayjs(payload?.dob).format('DD/MM/YYYY');
+    if (datecheck === 'Invalid Date') {
       setdobset_col(true);
     } else {
       setdobset_col(false);
@@ -437,17 +437,17 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       !fathername_col &&
       !mothername_col &&
       error === null &&
-      datecheck !== "Invalid Date"
+      datecheck !== 'Invalid Date'
     ) {
       if (editBasicInfo) {
         if (editFalg) {
-          postData(`${"student/add"}`, payload)
+          postData(`${'student/add'}`, payload)
             .then((data: any) => {
               if (data.status == 200) {
-                toast.success("Basic information saved successfully", {
+                toast.success('Basic information saved successfully', {
                   hideProgressBar: true,
-                  theme: "colored",
-                  position: "top-center",
+                  theme: 'colored',
+                  position: 'top-center',
                 });
                 setActiveForm((prev) => prev + 1);
                 setNamepro({
@@ -456,9 +456,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   gender: basicInfo?.gender,
                 });
                 getData(
-                  `${"upload_file/get_image/"}${
+                  `${'upload_file/get_image/'}${
                     selectedFile ? selectedFile : basicInfo?.pic_path
-                  }`
+                  }`,
                 )
                   .then((data: any) => {
                     // setprofileImage(imgdata.data)
@@ -467,33 +467,33 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     }
                   })
                   .catch((e) => {
-                    console.log("------------- e -------------", e);
+                    console.log('------------- e -------------', e);
                   });
               } else {
                 toast.error(data?.message, {
                   hideProgressBar: true,
-                  theme: "colored",
-                  position: "top-center",
+                  theme: 'colored',
+                  position: 'top-center',
                 });
               }
             })
             .catch((e) => {
               toast.error(e?.message, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             });
         } else {
           const editData = async () => {
-            putData(`${"student/edit/"}${StudentId}`, payload)
+            putData(`${'student/edit/'}${StudentId}`, payload)
               .then((data: any) => {
                 // console.log("----- res ----", data);
                 if (data.status == 200) {
-                  toast.success("Basic information updated successfully", {
+                  toast.success('Basic information updated successfully', {
                     hideProgressBar: true,
-                    theme: "colored",
-                    position: "top-center",
+                    theme: 'colored',
+                    position: 'top-center',
                   });
                   setActiveForm((prev) => prev + 1);
                   // getStudentBasicInfo()
@@ -504,9 +504,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   });
                   if (selectedFile ? selectedFile : basicInfo?.pic_path) {
                     getData(
-                      `${"upload_file/get_image/"}${
+                      `${'upload_file/get_image/'}${
                         selectedFile ? selectedFile : basicInfo?.pic_path
-                      }`
+                      }`,
                     )
                       .then((data: any) => {
                         // setprofileImage(imgdata.data)
@@ -515,19 +515,19 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                         }
                       })
                       .catch((e) => {
-                        console.log("------------- e -------------", e);
+                        console.log('------------- e -------------', e);
                       });
                   }
                 } else {
                   toast.error(data?.message, {
                     hideProgressBar: true,
-                    theme: "colored",
-                    position: "top-center",
+                    theme: 'colored',
+                    position: 'top-center',
                   });
                 }
               })
               .catch((e: any) => {
-                console.log("--------- e --------", e);
+                console.log('--------- e --------', e);
               });
           };
           // eslint-disable-next-line no-lone-blocks
@@ -549,7 +549,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       <div className="row d-flex">
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             First Name <span>*</span>
           </label>
           <input
@@ -559,20 +559,20 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleChange}
             required
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {fname_col && basicInfo?.first_name !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {fname_col && basicInfo?.first_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid First Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {basicInfo?.first_name == "" && fname_col1 && (
-              <p style={{ color: "red" }}>Please enter First name.</p>
+            {' '}
+            {basicInfo?.first_name == '' && fname_col1 && (
+              <p style={{ color: 'red' }}>Please enter First name.</p>
             )}
           </div>
           {/* {error.first_name && <span style={{ color: 'red' }}>{error.first_name}</span>} */}
@@ -580,7 +580,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Last Name <span>*</span>
           </label>
           {/* <TextField
@@ -593,25 +593,25 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           /> */}
           <input
             name="last_name"
-            value={basicInfo.last_name || ""}
+            value={basicInfo.last_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
             required
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {lname_col && basicInfo?.last_name !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {lname_col && basicInfo?.last_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Last Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {basicInfo?.last_name == "" && lname_col1 && (
-              <p style={{ color: "red" }}>Please enter Last name.</p>
+            {' '}
+            {basicInfo?.last_name == '' && lname_col1 && (
+              <p style={{ color: 'red' }}>Please enter Last name.</p>
             )}
           </div>
           {/* {error.last_name && <span style={{ color: 'red' }}>{error.last_name}</span>} */}
@@ -635,7 +635,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     className="radiobutton"
                     sx={{
                       color: fieldIcon(namecolor),
-                      "&.Mui-checked": {
+                      '&.Mui-checked': {
                         color: fieldIcon(namecolor),
                       },
                     }}
@@ -650,7 +650,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     className="radiobutton"
                     sx={{
                       color: fieldIcon(namecolor),
-                      "&.Mui-checked": {
+                      '&.Mui-checked': {
                         color: fieldIcon(namecolor),
                       },
                     }}
@@ -693,11 +693,11 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 minDate={minSelectableDate}
                 onError={() => {}}
                 sx={{
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: '#f5f5f5',
                 }}
                 slotProps={{
                   textField: {
-                    variant: "outlined",
+                    variant: 'outlined',
                     helperText: error,
                     error: Boolean(error),
                     inputProps: {
@@ -717,9 +717,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             format="DD/MM/YYYY"
           /> */}
           <div>
-            {" "}
+            {' '}
             {dobset_col && (
-              <p style={{ color: "red" }}>Please enter Date of Birth.</p>
+              <p style={{ color: 'red' }}>Please enter Date of Birth.</p>
             )}
           </div>
           {/* <div>{error.dob && <span style={{ color: 'red' }}>{error.dob}</span>}</div> */}
@@ -727,7 +727,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Father Name <span>*</span>
           </label>
           {/* <TextField
@@ -745,20 +745,20 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             className="form-control"
             onChange={handleChange}
             required
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {fathername_col && basicInfo?.father_name !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {fathername_col && basicInfo?.father_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Father Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {basicInfo?.father_name == "" && fathername_col1 && (
-              <p style={{ color: "red" }}>Please enter Father name.</p>
+            {' '}
+            {basicInfo?.father_name == '' && fathername_col1 && (
+              <p style={{ color: 'red' }}>Please enter Father name.</p>
             )}
           </div>
           {/* {error.father_name && <span style={{ color: 'red' }}>{error.father_name}</span>} */}
@@ -766,7 +766,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Mother Name <span>*</span>
           </label>
           {/* <TextField
@@ -779,25 +779,25 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           /> */}
           <input
             name="mother_name"
-            value={basicInfo.mother_name || ""}
+            value={basicInfo.mother_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
             required
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {mothername_col && basicInfo?.mother_name !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {mothername_col && basicInfo?.mother_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Mother Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {basicInfo?.mother_name == "" && mothername_col1 && (
-              <p style={{ color: "red" }}>Please enter Mother name.</p>
+            {' '}
+            {basicInfo?.mother_name == '' && mothername_col1 && (
+              <p style={{ color: 'red' }}>Please enter Mother name.</p>
             )}
           </div>
           {/* {error.mother_name && <span style={{ color: 'red' }}>{error.mother_name}</span>} */}
@@ -805,7 +805,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Guardian Name <span></span>
           </label>
           {/* <TextField
@@ -818,16 +818,16 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           /> */}
           <input
             name="guardian_name"
-            value={basicInfo?.guardian_name || ""}
+            value={basicInfo?.guardian_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {gname_col && basicInfo?.guardian_name !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {gname_col && basicInfo?.guardian_name !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Guardian Name only characters allowed.
               </p>
             )}
@@ -837,7 +837,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Aim <span></span>
           </label>
           {/* <TextField
@@ -850,16 +850,16 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           /> */}
           <input
             name="aim"
-            value={basicInfo.aim || ""}
+            value={basicInfo.aim || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
-             autoComplete="off"
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {aim_col && basicInfo.aim !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {aim_col && basicInfo.aim !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid Aim Name only characters allowed.
               </p>
             )}
@@ -872,7 +872,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             <div className="image-container">
               {!filePreview ? (
                 <>
-                  {basicInfo.gender?.toLowerCase() === "male" ? (
+                  {basicInfo.gender?.toLowerCase() === 'male' ? (
                     <div className="image-box">
                       <input type="checkbox" className="image-checkbox" />
                       <img src={maleImage} alt="male" />
@@ -895,7 +895,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   <img
                     src={filePreview}
                     alt="Uploaded Preview"
-                    style={{ marginTop: "10px" }}
+                    style={{ marginTop: '10px' }}
                   />
                 </div>
               )}
@@ -908,7 +908,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   id="file"
                   name="pic_path"
                   accept="image/*"
-                  style={{ display: "none" }}
+                  style={{ display: 'none' }}
                   // value={basicInfo.pic_path}
                   onChange={(e) => {
                     handleChange(e);

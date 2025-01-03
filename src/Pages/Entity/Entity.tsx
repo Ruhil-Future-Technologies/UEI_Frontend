@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Entity/Entity.scss";
-import useApi from "../../hooks/useAPI";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Entity/Entity.scss';
+import useApi from '../../hooks/useAPI';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 import {
   Entity_COLUMNS,
   IEntity,
   MenuListinter,
-} from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { QUERY_KEYS_ENTITY } from "../../utils/const";
-import { toast } from "react-toastify";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { QUERY_KEYS_ENTITY } from '../../utils/const';
+import { toast } from 'react-toastify';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { dataaccess } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const Entity = () => {
   const context = useContext(NameContext);
@@ -24,22 +24,23 @@ const Entity = () => {
   const location = useLocation();
   // const pathSegments = location?.pathname?.split("/").filter(Boolean);
   // const lastSegment = pathSegments[pathSegments?.length - 1]?.toLowerCase();
-  const pathSegments = location?.pathname?.split("/").filter(Boolean) || []; // Fallback to an empty array if undefined or null
+  const pathSegments = location?.pathname?.split('/').filter(Boolean) || []; // Fallback to an empty array if undefined or null
 
-const lastSegment = pathSegments?.length > 0
-  ? pathSegments[pathSegments?.length - 1]?.toLowerCase()
-  : ''; // Default value when pathSegments is empty
-  const Menulist: any = localStorage.getItem("menulist1");
+  const lastSegment =
+    pathSegments?.length > 0
+      ? pathSegments[pathSegments?.length - 1]?.toLowerCase()
+      : ''; // Default value when pathSegments is empty
+  const Menulist: any = localStorage.getItem('menulist1');
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const tabletools: any = {
-    light: "#547476",
-    dark: "#00D1D9",
-    default: "#547476",
+    light: '#547476',
+    dark: '#00D1D9',
+    default: '#547476',
   };
- 
+
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist, lastSegment]);
 
@@ -61,11 +62,11 @@ const lastSegment = pathSegments?.length > 0
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -91,26 +92,26 @@ const lastSegment = pathSegments?.length > 0
     deleteData(`${DeleteEntityURL}/${id}`)
       .then((data: { message: string; status: any }) => {
         if (data.status === 200) {
-          toast.success("Entity deleted successfully", {
+          toast.success('Entity deleted successfully', {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           callAPI();
           setDataDelete(false);
         } else {
           toast.success(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -126,18 +127,21 @@ const lastSegment = pathSegments?.length > 0
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
-                      <div className="main_title"  data-testid="Entity"> Entity</div>
+                      <div className="main_title" data-testid="Entity">
+                        {' '}
+                        Entity
+                      </div>
                     </Typography>
                     {/* {filteredData?.[0]?.is_save === true && ( */}
                     {filteredData?.form_data?.is_save === true && (
                       <Button
-                      data-testid="Entitybtn"
+                        data-testid="Entitybtn"
                         className="mainbutton"
                         variant="contained"
                         component={NavLink}
@@ -162,19 +166,19 @@ const lastSegment = pathSegments?.length > 0
                       }}
                       enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={(row) => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         >
                           {/* {filteredData?.[0]?.is_update === true && ( */}
@@ -182,8 +186,8 @@ const lastSegment = pathSegments?.length > 0
                             <Tooltip arrow placement="right" title="Edit">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools[namecolor],
                                 }}
                                 onClick={() => {
@@ -198,8 +202,8 @@ const lastSegment = pathSegments?.length > 0
                           <Tooltip arrow placement="right" title="Delete">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools[namecolor],
                               }}
                               onClick={() => {

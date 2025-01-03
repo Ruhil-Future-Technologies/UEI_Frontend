@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Checkbox, FormControl, FormControlLabel } from "@mui/material";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import useApi from "../../hooks/useAPI";
-import { deepEqual, fieldIcon } from "../../utils/helpers";
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { ChildComponentProps } from "../StudentProfile";
-import NameContext from "../Context/NameContext";
+import { Checkbox, FormControl, FormControlLabel } from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
+import { deepEqual, fieldIcon } from '../../utils/helpers';
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
+import { ChildComponentProps } from '../StudentProfile';
+import NameContext from '../Context/NameContext';
 
 interface StudentAddress {
   student_id?: string;
@@ -41,19 +41,19 @@ interface StudentAddress {
 const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
   const { activeForm, setActiveForm }: any = context;
-  const StudentId = localStorage.getItem("_id");
-  
+  const StudentId = localStorage.getItem('_id');
+
   const { namecolor }: any = context;
-  
+
   const { getData, postData, putData } = useApi();
   const [studentAddress, setStudentAddress] = useState<StudentAddress>({
-    address_type: "current",
+    address_type: 'current',
   });
   // const [studentAddress1, setStudentAddress1] = useState<StudentAddress>({
   //   address_type: "current",
   // });
   const [permanentAddress, setPermanentAddress] = useState<StudentAddress>({
-    address_type: "permanent",
+    address_type: 'permanent',
   });
   // const [permanentAddress1, setPermanentAddress1] = useState<StudentAddress>({
   //   address_type: "permanent",
@@ -108,40 +108,40 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
 
     const currentDropdown = dropdownRef.current;
     if (currentDropdown) {
-      currentDropdown.addEventListener("focus", handleFocus as EventListener);
-      currentDropdown.addEventListener("blur", handleBlur as EventListener);
+      currentDropdown.addEventListener('focus', handleFocus as EventListener);
+      currentDropdown.addEventListener('blur', handleBlur as EventListener);
     }
     const currentDropdownstate = dropdownstateRef.current;
     if (currentDropdownstate) {
       currentDropdownstate.addEventListener(
-        "focus",
-        handleFocusstate as EventListener
+        'focus',
+        handleFocusstate as EventListener,
       );
       currentDropdownstate.addEventListener(
-        "blur",
-        handleBlurstate as EventListener
+        'blur',
+        handleBlurstate as EventListener,
       );
     }
 
     return () => {
       if (currentDropdown) {
         currentDropdown.removeEventListener(
-          "focus",
-          handleFocus as EventListener
+          'focus',
+          handleFocus as EventListener,
         );
         currentDropdown.removeEventListener(
-          "blur",
-          handleBlur as EventListener
+          'blur',
+          handleBlur as EventListener,
         );
       }
       if (currentDropdownstate) {
         currentDropdownstate.removeEventListener(
-          "focus",
-          handleFocusstate as EventListener
+          'focus',
+          handleFocusstate as EventListener,
         );
         currentDropdownstate.removeEventListener(
-          "blur",
-          handleBlurstate as EventListener
+          'blur',
+          handleBlurstate as EventListener,
         );
       }
     };
@@ -153,17 +153,17 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   };
 
   const listData = async () => {
-    getData(`${"student_address/edit/" + StudentId}`)
+    getData(`${'student_address/edit/' + StudentId}`)
       .then((response: any) => {
         if (response?.status === 200) {
           let add1: any;
           let add2: any;
           response?.data.forEach((address: any) => {
-            if (address?.address_type === "permanent") {
+            if (address?.address_type === 'permanent') {
               setPermanentAddress(address);
               // setPermanentAddress1(address);
               add1 = address;
-            } else if (address?.address_type === "current") {
+            } else if (address?.address_type === 'current') {
               setStudentAddress(address);
               // setStudentAddress1(address);
               add2 = address;
@@ -171,13 +171,13 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           });
           // Filter out unwanted fields from both add1 and add2
           const fieldsToCompare = [
-            "address1",
-            "address2",
-            "city",
-            "country",
-            "district",
-            "pincode",
-            "state",
+            'address1',
+            'address2',
+            'city',
+            'country',
+            'district',
+            'pincode',
+            'state',
           ];
 
           const filteredAdd1: any = {};
@@ -206,16 +206,16 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         } else {
           toast.error(response?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
   };
@@ -224,56 +224,52 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   }, []);
 
   useEffect(() => {
-    getData(`${"student_address/edit/" + StudentId}`)
-      .then((response: any) => {
-        if (response?.status === 200) {
-          response?.data.forEach((address: any) => {
-            if (address?.address_type === "permanent") {
-              //setPermanentAddress(address);
-              //setPermanentAddress1(address);
-              setEditableCurrectPerm(true);
-              setTuchedPram(false);
-            } else if (address?.address_type === "current") {
-              // setStudentAddress(address);
-              // setStudentAddress1(address);
-              setEditableCurrect(true);
-              setTuchedCurrent(false);
-            } else {
-              setEditableCurrect(false);
-              setEditableCurrectPerm(false);
-
-            }
-          });
-
-
-        }
-      })
-  }, [activeForm])
+    getData(`${'student_address/edit/' + StudentId}`).then((response: any) => {
+      if (response?.status === 200) {
+        response?.data.forEach((address: any) => {
+          if (address?.address_type === 'permanent') {
+            //setPermanentAddress(address);
+            //setPermanentAddress1(address);
+            setEditableCurrectPerm(true);
+            setTuchedPram(false);
+          } else if (address?.address_type === 'current') {
+            // setStudentAddress(address);
+            // setStudentAddress1(address);
+            setEditableCurrect(true);
+            setTuchedCurrent(false);
+          } else {
+            setEditableCurrect(false);
+            setEditableCurrectPerm(false);
+          }
+        });
+      }
+    });
+  }, [activeForm]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    addressType: string
+    addressType: string,
   ) => {
     setTuched(true);
     const { name, value } = event.target;
     setChecked(false);
 
-    if (addressType === "current") {
-      if (name === "country") {
+    if (addressType === 'current') {
+      if (name === 'country') {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setcontry_col(true);
         } else {
           setcontry_col(false);
         }
       }
-      if (name === "state") {
+      if (name === 'state') {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setstate_col(true);
         } else {
           setstate_col(false);
         }
       }
-      if (name === "city") {
-        if (value === "") {
+      if (name === 'city') {
+        if (value === '') {
           setCity_colerror(true);
         } else {
           setCity_colerror(false);
@@ -285,8 +281,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           setcity_col(false);
         }
       }
-      if (name === "district") {
-        if (value === "") {
+      if (name === 'district') {
+        if (value === '') {
           setDistrict_colerror(true);
         } else {
           setDistrict_colerror(false);
@@ -297,16 +293,16 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           setdistrict_col(false);
         }
       }
-      if (name === "pincode") {
-        if (value === "" || validatePincode(value)) {
+      if (name === 'pincode') {
+        if (value === '' || validatePincode(value)) {
           setpincode_col(false);
         } else {
           setpincode_col(true);
         }
       }
-      if (name === "address1") {
+      if (name === 'address1') {
         // if (value === "") {
-        if (value === "" || !/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
+        if (value === '' || !/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
           setAdd_col(true);
         } else {
           setAdd_col(false);
@@ -315,67 +311,64 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       setTuchedCurrent(true);
       setStudentAddress((prevState) => ({ ...prevState, [name]: value }));
     } else {
-    
-    
-    if (name!=="address2" && value ==="") {
-      setAdd_col1(false);
-      setstate_col1(false);
-      setcity_col1(false);
-      setcontry_col1(false);
-      setdistrict_col1(false);
-      setpincode_col1(false);
-       if(!editablePerm){
-        setChecked(false);
-        setTuched(false);
-        setTuchedPram(false);
-       }
-    }else{
-      setTuchedPram(true);
-      if (name === "address1") {
-        // if (value === "") {
-        if (!/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
-          setAdd_col1(true);
-        } else {
-          setAdd_col1(false);
+      if (name !== 'address2' && value === '') {
+        setAdd_col1(false);
+        setstate_col1(false);
+        setcity_col1(false);
+        setcontry_col1(false);
+        setdistrict_col1(false);
+        setpincode_col1(false);
+        if (!editablePerm) {
+          setChecked(false);
+          setTuched(false);
+          setTuchedPram(false);
+        }
+      } else {
+        setTuchedPram(true);
+        if (name === 'address1') {
+          // if (value === "") {
+          if (!/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
+            setAdd_col1(true);
+          } else {
+            setAdd_col1(false);
+          }
+        }
+        if (name === 'state') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
+            setstate_col1(true);
+          } else {
+            setstate_col1(false);
+          }
+        }
+        if (name === 'city') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
+            setcity_col1(true);
+          } else {
+            setcity_col1(false);
+          }
+        }
+        if (name === 'country') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
+            setcontry_col1(true);
+          } else {
+            setcontry_col1(false);
+          }
+        }
+        if (name === 'district') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
+            setdistrict_col1(true);
+          } else {
+            setdistrict_col1(false);
+          }
+        }
+        if (name === 'pincode') {
+          if (value === '' || validatePincode(value)) {
+            setpincode_col1(false);
+          } else {
+            setpincode_col1(true);
+          }
         }
       }
-      if (name === "state") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setstate_col1(true);
-        } else {
-          setstate_col1(false);
-        }
-      }
-      if (name === "city") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setcity_col1(true);
-        } else {
-          setcity_col1(false);
-        }
-      }
-      if (name === "country") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setcontry_col1(true);
-        } else {
-          setcontry_col1(false);
-        }
-      }
-      if (name === "district") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setdistrict_col1(true);
-        } else {
-          setdistrict_col1(false);
-        }
-      }
-      if (name === "pincode") {
-       
-        if (value === "" || validatePincode(value)) {
-          setpincode_col1(false);
-        } else {
-          setpincode_col1(true);
-        }
-      }
-    }
       // if(name==='pincode')
       //   {
       //         setErrors({
@@ -388,13 +381,13 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   };
 
   const handlePermanentAddressCheckbox = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (event.target.checked) {
       setChecked(true);
       setTuched(true);
       setTuchedPram(true);
-      setPermanentAddress({ ...studentAddress, address_type: "permanent" });
+      setPermanentAddress({ ...studentAddress, address_type: 'permanent' });
       if (pincode_col) {
         setpincode_col1(true);
       } else {
@@ -407,104 +400,103 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       setTuchedPram(false);
       setPermanentAddress((prevPermanentAddress) => ({
         ...prevPermanentAddress,
-        address1: "",
-        address2: "",
-        country: "",
-        state: "",
-        city: "",
-        district: "",
-        pincode: "",
-        address_type: "permanent",
+        address1: '',
+        address2: '',
+        country: '',
+        state: '',
+        city: '',
+        district: '',
+        pincode: '',
+        address_type: 'permanent',
       }));
       validatinforperm();
     }
   };
   let hasPermanentAddressFields = false;
-let validPermanentAddress = true;
-const validatinforperm=()=>{
+  let validPermanentAddress = true;
+  const validatinforperm = () => {
+    // Check if any permanent address field has a value
+    if (
+      (permanentAddress.address1 && permanentAddress.address1 !== '') ||
+      (permanentAddress.address2 && permanentAddress.address2 !== '') ||
+      (permanentAddress.country && permanentAddress.country !== '') ||
+      (permanentAddress.state && permanentAddress.state !== '') ||
+      (permanentAddress.district && permanentAddress.district !== '') ||
+      (permanentAddress.city && permanentAddress.city !== '') ||
+      (permanentAddress.pincode && permanentAddress.pincode !== '')
+    ) {
+      hasPermanentAddressFields = true;
 
-// Check if any permanent address field has a value
-if (
-  (permanentAddress.address1 && permanentAddress.address1 !== "") ||
-  (permanentAddress.address2 && permanentAddress.address2 !== "") ||
-  (permanentAddress.country && permanentAddress.country !== "") ||
-  (permanentAddress.state && permanentAddress.state !== "") ||
-  (permanentAddress.district && permanentAddress.district !== "") ||
-  (permanentAddress.city && permanentAddress.city !== "") ||
-  (permanentAddress.pincode && permanentAddress.pincode !== "")
-) {
-  hasPermanentAddressFields = true;
+      if (permanentAddress?.address1 === '' || !permanentAddress?.address1) {
+        setAdd_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setAdd_col1(false);
+      }
 
-  if (permanentAddress?.address1 === "" || !permanentAddress?.address1) {
-    setAdd_col1(true);
-    validPermanentAddress = false;
-  } else {
-    setAdd_col1(false);
-  }
+      if (permanentAddress?.country === '' || !permanentAddress?.country) {
+        setcontry_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setcontry_col1(false);
+      }
 
-  if (permanentAddress?.country === "" || !permanentAddress?.country) {
-    setcontry_col1(true);
-    validPermanentAddress = false;
-  } else {
-    setcontry_col1(false);
-  }
+      if (permanentAddress?.city === '' || !permanentAddress?.city) {
+        setcity_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setcity_col1(false);
+      }
 
-  if (permanentAddress?.city === "" || !permanentAddress?.city) {
-    setcity_col1(true);
-    validPermanentAddress = false;
-  } else {
-    setcity_col1(false);
-  }
+      if (permanentAddress?.district === '' || !permanentAddress?.district) {
+        setdistrict_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setdistrict_col1(false);
+      }
 
-  if (permanentAddress?.district === "" || !permanentAddress?.district) {
-    setdistrict_col1(true);
-    validPermanentAddress = false;
-  } else {
-    setdistrict_col1(false);
-  }
-
-  if (
-    permanentAddress?.pincode === "" ||
-    !validatePincode(permanentAddress.pincode)
-  ) {
-    setpincode_col1(true);
-    validPermanentAddress = false;
-  } else {
-    setpincode_col1(false);
-  }
-}
-}
+      if (
+        permanentAddress?.pincode === '' ||
+        !validatePincode(permanentAddress.pincode)
+      ) {
+        setpincode_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setpincode_col1(false);
+      }
+    }
+  };
   const SubmitHandle = async () => {
-    if (!("address1" in studentAddress) || studentAddress?.address1 === "") {
+    if (!('address1' in studentAddress) || studentAddress?.address1 === '') {
       setAdd_col(true);
     } else {
       setAdd_col(false);
     }
 
-    if (!("city" in studentAddress) || studentAddress?.city === "") {
+    if (!('city' in studentAddress) || studentAddress?.city === '') {
       setCity_colerror(true);
     } else {
       setCity_colerror(false);
     }
-    if (!("district" in studentAddress) || studentAddress?.district === "") {
+    if (!('district' in studentAddress) || studentAddress?.district === '') {
       setDistrict_colerror(true);
     } else {
       setDistrict_colerror(false);
     }
 
     if (
-      !("pincode" in studentAddress) ||
-      studentAddress?.pincode === "" ||
+      !('pincode' in studentAddress) ||
+      studentAddress?.pincode === '' ||
       !validatePincode(studentAddress.pincode)
     ) {
       setpincode_col(true);
       // toast.error("Pincode is invalid");
-     // showErrorToast("Entered Pincode is invalid");
+      // showErrorToast("Entered Pincode is invalid");
     } else {
       setpincode_col(false);
     }
 
-    if (!("country" in studentAddress) || studentAddress?.country === "") {
+    if (!('country' in studentAddress) || studentAddress?.country === '') {
       setcontry_col(true);
     } else {
       setcontry_col(false);
@@ -525,7 +517,8 @@ if (
     //   permanentAddress1,
     //   permanentAddressPayload
     // );
-    if ( (!hasPermanentAddressFields || validPermanentAddress) &&
+    if (
+      (!hasPermanentAddressFields || validPermanentAddress) &&
       studentAddress?.address1 &&
       studentAddress?.country &&
       studentAddress?.state &&
@@ -535,24 +528,24 @@ if (
       !city_col &&
       !district_col &&
       !pincode_col &&
-      !pincode_col1&&
+      !pincode_col1 &&
       !add_col1 &&
-      !district_col1&&
-      !city_col1&&
+      !district_col1 &&
+      !city_col1 &&
       !contry_col1
     ) {
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
-            const data = await postData("/student_address/add", addressPayload);
-          
+            const data = await postData('/student_address/add', addressPayload);
+
             if (data?.status === 200) {
               toast.success(`${addressType} address saved successfully`, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
-              if (addressType === "Current") {
+              if (addressType === 'Current') {
                 setActiveForm(2);
               }
               setTuched(false);
@@ -567,86 +560,76 @@ if (
             if (error instanceof Error) {
               toast.error(error?.message, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             } else {
-              toast.error("An unexpected error occurred", {
+              toast.error('An unexpected error occurred', {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             }
           }
         };
 
         // Add current address
-        if (studentAddress?.address_type === "current") {
-          await addAddress("Current", currentAddressPayload);
+        if (studentAddress?.address_type === 'current') {
+          await addAddress('Current', currentAddressPayload);
         }
         // Add permanent address
-        if (permanentAddress?.address_type === "permanent") {
-          await addAddress("Permanent", permanentAddressPayload);
+        if (permanentAddress?.address_type === 'permanent') {
+          await addAddress('Permanent', permanentAddressPayload);
         }
       } else {
-       
         const editAddress = async (
           addressType: string,
-          addressPayload: any
+          addressPayload: any,
         ) => {
-          
           try {
-            const data = await putData("/student_address/edit/" + StudentId, {
+            const data = await putData('/student_address/edit/' + StudentId, {
               ...addressPayload,
               pincode: addressPayload?.pincode || 0,
             });
-            
+
             if (data?.status === 200) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
               listData();
               setTuched(false);
-              
-                
-              
-             
-              
-              
+
               if (tuchedPram && tuchedCurrent) {
                 // if (!eq && !permanentAddressEq) {
                 //   // block of code to write the address
                 // } else {
                 //   setActiveForm((prev: number) => prev + 1);
                 // }
-              
-               await setTuchedCurrent(false);
-               await  setTuchedPram(false);
-                setActiveForm( 2);
+
+                await setTuchedCurrent(false);
+                await setTuchedPram(false);
+                setActiveForm(2);
               } else if (tuchedPram && !tuchedCurrent) {
-              
                 setActiveForm(2);
               } else if (!tuchedPram && tuchedCurrent) {
-              
                 setActiveForm(2);
               }
             } else if (data?.status === 201) {
-             
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
               listData();
               setTuched(false);
-              
-                setTuchedCurrent(false);
-              
-                setTuchedPram(false);
-                setActiveForm(2);
-            }else setActiveForm(2);
+
+              setTuchedCurrent(false);
+
+              setTuchedPram(false);
+              setActiveForm(2);
+            } else setActiveForm(2);
             // else {
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
@@ -657,37 +640,38 @@ if (
             if (error instanceof Error) {
               toast.error(error?.message, {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             } else {
-              toast.error("An unexpected error occurred", {
+              toast.error('An unexpected error occurred', {
                 hideProgressBar: true,
-                theme: "colored",
-                position: "top-center",
+                theme: 'colored',
+                position: 'top-center',
               });
             }
           }
         };
 
         if (StudentId !== null) {
-     
           // Edit current address
-       console.log(tuched);
+          console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
-           
-            if (studentAddress?.address_type === "current" && editableCurrent && tuchedCurrent)
-            await editAddress("Current", currentAddressPayload);
-          
-          console.log(editablePerm);
             if (
-              permanentAddress?.address_type === "permanent"  && tuchedPram
-            )await editAddress("Permanent", permanentAddressPayload);
+              studentAddress?.address_type === 'current' &&
+              editableCurrent &&
+              tuchedCurrent
+            )
+              await editAddress('Current', currentAddressPayload);
+
+            console.log(editablePerm);
+            if (permanentAddress?.address_type === 'permanent' && tuchedPram)
+              await editAddress('Permanent', permanentAddressPayload);
           }
         } else {
           // Handle the case where StudentId is null
-          console.error("StudentId is null. Unable to edit addresses.");
+          console.error('StudentId is null. Unable to edit addresses.');
         }
       }
     }
@@ -696,40 +680,40 @@ if (
   const handleInputChangecountry = (
     value: string,
     addressType: string,
-    name: string
+    name: string,
   ) => {
-    if (addressType === "current_address") {
-      if (name === "country") {
+    if (addressType === 'current_address') {
+      if (name === 'country') {
         setStudentAddress((prevState) => ({
           ...prevState,
-          ["country"]: value,
+          ['country']: value,
         }));
-        setStudentAddress((prevState) => ({ ...prevState, ["state"]: "" }));
+        setStudentAddress((prevState) => ({ ...prevState, ['state']: '' }));
         setstate_col(true);
         setcontry_col(false);
         // if(adminAddress1.country === value && adminAddress1.state === adminAddress.state ){
         //   setstate_col(false)
         // }
-      } else if (name === "state") {
-        setStudentAddress((prevState) => ({ ...prevState, ["state"]: value }));
+      } else if (name === 'state') {
+        setStudentAddress((prevState) => ({ ...prevState, ['state']: value }));
         setstate_col(false);
       } else {
         return;
       }
       setTuchedCurrent(true);
     } else {
-      if (name === "country") {
+      if (name === 'country') {
         setPermanentAddress((prevState) => ({
           ...prevState,
-          ["country"]: value,
+          ['country']: value,
         }));
-        setPermanentAddress((prevState) => ({ ...prevState, ["state"]: "" }));
+        setPermanentAddress((prevState) => ({ ...prevState, ['state']: '' }));
         setstate_col1(true);
         // setcontry_col1(false);
-      } else if (name === "state") {
+      } else if (name === 'state') {
         setPermanentAddress((prevState) => ({
           ...prevState,
-          ["state"]: value,
+          ['state']: value,
         }));
         setstate_col1(false);
       } else {
@@ -738,14 +722,13 @@ if (
       setTuchedPram(true);
     }
     setTuched(true);
-    
   };
   return (
     <form>
       <div className="row form_field_wrapper">
         <div className="col-12">
           <h5 className="font-weight-bold profiletext">
-            {" "}
+            {' '}
             <b>Current Address</b>
           </h5>
         </div>
@@ -753,7 +736,7 @@ if (
       <div className="row">
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Address 1 <span>*</span>
           </label>
           <input
@@ -761,14 +744,14 @@ if (
             name="address1"
             className="form-control"
             value={studentAddress.address1}
-            onChange={(e) => handleInputChange(e, "current")}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
             autoComplete="off"
           />
           <div>
-            {" "}
-            {(studentAddress?.address1 === "" || add_col) && (
-              <p style={{ color: "red" }}>Please enter Address 1.</p>
+            {' '}
+            {(studentAddress?.address1 === '' || add_col) && (
+              <p style={{ color: 'red' }}>Please enter Address 1.</p>
             )}
           </div>
         </div>
@@ -779,7 +762,7 @@ if (
             name="address2"
             className="form-control"
             value={studentAddress?.address2}
-            onChange={(e) => handleInputChange(e, "current")}
+            onChange={(e) => handleInputChange(e, 'current')}
             // required
             autoComplete="off"
           />
@@ -787,36 +770,38 @@ if (
 
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label  ${isFocusedstate || studentAddress?.country
-                ? "focused"
-                : "focusedempty"
-              }`}
-            style={{ fontSize: "14px" }}
+            className={`col-form-label  ${
+              isFocusedstate || studentAddress?.country
+                ? 'focused'
+                : 'focusedempty'
+            }`}
+            style={{ fontSize: '14px' }}
           >
             Country <span>*</span>
           </label>
           <CountryDropdown
             classes="form-select custom-dropdown"
             defaultOptionLabel={studentAddress.country}
-            value={studentAddress.country || ""}
+            value={studentAddress.country || ''}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "current_address", "country")
+              handleInputChangecountry(e, 'current_address', 'country')
             }
           />
           <div>
-            {" "}
+            {' '}
             {contry_col && (
-              <p style={{ color: "red" }}>Please select Country Name.</p>
+              <p style={{ color: 'red' }}>Please select Country Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
-            className={`col-form-label ${isFocusedstate || studentAddress.state
-                ? "focused"
-                : "focusedempty"
-              }`}
-            style={{ fontSize: "14px" }}
+            className={`col-form-label ${
+              isFocusedstate || studentAddress.state
+                ? 'focused'
+                : 'focusedempty'
+            }`}
+            style={{ fontSize: '14px' }}
           >
             State <span>*</span>
           </label>
@@ -824,23 +809,23 @@ if (
           <RegionDropdown
             classes="form-select custom-dropdown"
             defaultOptionLabel={studentAddress.state}
-            country={studentAddress.country || ""}
-            value={studentAddress.state || ""}
+            country={studentAddress.country || ''}
+            value={studentAddress.state || ''}
             // onChange={(val) => setRegion(val)}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "current_address", "state")
+              handleInputChangecountry(e, 'current_address', 'state')
             }
           />
           <div>
-            {" "}
+            {' '}
             {state_col && (
-              <p style={{ color: "red" }}>Please select a valid state Name.</p>
+              <p style={{ color: 'red' }}>Please select a valid state Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             City <span>*</span>
           </label>
 
@@ -849,29 +834,29 @@ if (
             name="city"
             className="form-control"
             value={studentAddress?.city}
-            onChange={(e) => handleInputChange(e, "current")}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
             autoComplete="off"
           />
           <div>
-            {" "}
-            {city_col && studentAddress?.city !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {city_col && studentAddress?.city !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid City Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {(studentAddress?.city == "" || city_colerror) && (
-              <p style={{ color: "red" }}>Please enter City name.</p>
+            {' '}
+            {(studentAddress?.city == '' || city_colerror) && (
+              <p style={{ color: 'red' }}>Please enter City name.</p>
             )}
           </div>
           {/* {error.city && <span style={{ color: 'red' }}>{error.city}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             District <span>*</span>
           </label>
 
@@ -880,29 +865,29 @@ if (
             name="district"
             className="form-control"
             value={studentAddress?.district}
-            onChange={(e) => handleInputChange(e, "current")}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
             autoComplete="off"
           />
           <div>
-            {" "}
-            {district_col && studentAddress?.district !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {district_col && studentAddress?.district !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid District Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {(studentAddress?.district == "" || district_colerror) && (
-              <p style={{ color: "red" }}>Please enter District name.</p>
+            {' '}
+            {(studentAddress?.district == '' || district_colerror) && (
+              <p style={{ color: 'red' }}>Please enter District name.</p>
             )}
           </div>
           {/* {error.district && <span style={{ color: 'red' }}>{error.district}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Pincode <span>*</span>
           </label>
 
@@ -911,25 +896,25 @@ if (
             name="pincode"
             className="form-control"
             maxLength={6}
-            value={studentAddress.pincode || ""}
-            onChange={(e) => handleInputChange(e, "current")}
+            value={studentAddress.pincode || ''}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
             autoComplete="off"
-          // error={!!errors.currentpin}
-          // helperText={errors.currentpin}
+            // error={!!errors.currentpin}
+            // helperText={errors.currentpin}
           />
           <div>
-            {" "}
+            {' '}
             {pincode_col && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid 6-digit Pincode (numbers only).
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {studentAddress.pincode === "" && (
-              <p style={{ color: "red" }}>Please enter Pincode.</p>
+            {' '}
+            {studentAddress.pincode === '' && (
+              <p style={{ color: 'red' }}>Please enter Pincode.</p>
             )}
           </div>
         </div>
@@ -937,7 +922,7 @@ if (
       <div className="row mt-4">
         <div className="col-12 ">
           <h5 className="font-weight-bold profiletext">
-            {" "}
+            {' '}
             <b>Permanent Address</b>
           </h5>
         </div>
@@ -952,8 +937,8 @@ if (
                   name="sameAsCurrent"
                   checked={checked}
                   sx={{
-                    color: fieldIcon(namecolor)
-                   }}
+                    color: fieldIcon(namecolor),
+                  }}
                 />
               }
               label="Same as Current Address"
@@ -962,7 +947,7 @@ if (
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Address 1 <span></span>
           </label>
 
@@ -971,20 +956,20 @@ if (
             name="address1"
             className="form-control"
             value={permanentAddress.address1}
-            onChange={(e) => handleInputChange(e, "permanent")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
             // required
             autoComplete="off"
           />
-           <div>
-            {" "}
-            {(studentAddress?.address1 === "" || add_col1) && (
-              <p style={{ color: "red" }}>Please enter Address 1.</p>
+          <div>
+            {' '}
+            {(studentAddress?.address1 === '' || add_col1) && (
+              <p style={{ color: 'red' }}>Please enter Address 1.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Address 2 <span></span>
           </label>
 
@@ -993,7 +978,7 @@ if (
             name="address2"
             className="form-control"
             value={permanentAddress.address2}
-            onChange={(e) => handleInputChange(e, "permanent")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
             // required
             autoComplete="off"
           />
@@ -1002,58 +987,60 @@ if (
 
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
           <label
-            className={`col-form-label ${isFocused || permanentAddress.country ? "focused" : "focusedempty"
-              }`}
-            style={{ fontSize: "14px" }}
+            className={`col-form-label ${
+              isFocused || permanentAddress.country ? 'focused' : 'focusedempty'
+            }`}
+            style={{ fontSize: '14px' }}
           >
             Country <span></span>
           </label>
           <CountryDropdown
             classes="form-select custom-dropdown"
-            defaultOptionLabel={permanentAddress.country || ""}
-            value={permanentAddress.country || ""}
+            defaultOptionLabel={permanentAddress.country || ''}
+            value={permanentAddress.country || ''}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "permanent_address", "country")
+              handleInputChangecountry(e, 'permanent_address', 'country')
             }
           />
-           <div>
-            {" "}
+          <div>
+            {' '}
             {contry_col1 && (
-              <p style={{ color: "red" }}>Please selete a country Name.</p>
+              <p style={{ color: 'red' }}>Please selete a country Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
-            className={`col-form-label ${isFocusedstate || permanentAddress.state
-                ? "focused"
-                : "focusedempty"
-              }`}
-            style={{ fontSize: "14px" }}
+            className={`col-form-label ${
+              isFocusedstate || permanentAddress.state
+                ? 'focused'
+                : 'focusedempty'
+            }`}
+            style={{ fontSize: '14px' }}
           >
             State <span></span>
           </label>
 
           <RegionDropdown
             classes="form-select custom-dropdown"
-            defaultOptionLabel={permanentAddress.state || ""}
-            country={permanentAddress.country || ""}
-            value={permanentAddress.state || ""}
+            defaultOptionLabel={permanentAddress.state || ''}
+            country={permanentAddress.country || ''}
+            value={permanentAddress.state || ''}
             // onChange={(val) => setRegion(val)}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "permanent_address", "state")
+              handleInputChangecountry(e, 'permanent_address', 'state')
             }
           />
           <div>
-            {" "}
+            {' '}
             {state_col1 && (
-              <p style={{ color: "red" }}>Please enter a valid state Name.</p>
+              <p style={{ color: 'red' }}>Please enter a valid state Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             City <span></span>
           </label>
 
@@ -1062,14 +1049,14 @@ if (
             name="city"
             className="form-control"
             value={permanentAddress.city}
-            onChange={(e) => handleInputChange(e, "permanent")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
             // required
             autoComplete="off"
           />
           <div>
-            {" "}
+            {' '}
             {city_col1 && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid City Name only characters allowed.
               </p>
             )}
@@ -1078,7 +1065,7 @@ if (
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             District <span></span>
           </label>
 
@@ -1087,14 +1074,14 @@ if (
             name="district"
             className="form-control"
             value={permanentAddress.district}
-            onChange={(e) => handleInputChange(e, "permanent")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
             // required
             autoComplete="off"
           />
           <div>
-            {" "}
+            {' '}
             {district_col1 && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid District Name only characters allowed.
               </p>
             )}
@@ -1103,7 +1090,7 @@ if (
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Pincode <span></span>
           </label>
 
@@ -1112,14 +1099,14 @@ if (
             name="pincode"
             className="form-control"
             maxLength={6}
-            value={permanentAddress.pincode || ""}
-            onChange={(e) => handleInputChange(e, "permanent")}
+            value={permanentAddress.pincode || ''}
+            onChange={(e) => handleInputChange(e, 'permanent')}
             autoComplete="off"
           />
           <div>
-            {" "}
+            {' '}
             {pincode_col1 && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid 6-digit Pincode (numbers only).
               </p>
             )}
