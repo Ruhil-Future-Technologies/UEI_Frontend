@@ -65,7 +65,7 @@ const InstitutionDash = () => {
                 console.log(response);
             });
         } catch (error) {
-
+            console.log(error);
         }
     }
     const getStudentsCount = () => {
@@ -79,7 +79,7 @@ const InstitutionDash = () => {
                 console.log(response);
             })
         } catch (error) {
-
+            console.log(error);
         }
 
     }
