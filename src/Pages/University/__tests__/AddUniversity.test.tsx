@@ -1,15 +1,15 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { toast } from "react-toastify";
-import useApi from "../../../hooks/useAPI";
-import React from "react";
-import AddUniversity from "../AddUniversity";
-import { QUERY_KEYS_UNIVERSITY } from "../../../utils/const";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import useApi from '../../../hooks/useAPI';
+import React from 'react';
+import AddUniversity from '../AddUniversity';
+import { QUERY_KEYS_UNIVERSITY } from '../../../utils/const';
 
-jest.mock("../../../hooks/useAPI");
-jest.mock("react-toastify");
+jest.mock('../../../hooks/useAPI');
+jest.mock('react-toastify');
 
-describe("AddUniversity Component", () => {
+describe('AddUniversity Component', () => {
   const mockPostData = jest.fn();
   const mockGetData = jest.fn();
   const mockPutData = jest.fn();
@@ -25,159 +25,159 @@ describe("AddUniversity Component", () => {
     mockPutData.mockClear();
   });
 
-  it("renders correctly in Add mode", () => {
+  it('renders correctly in Add mode', () => {
     render(
-      <MemoryRouter initialEntries={["/main/University/add"]}>
+      <MemoryRouter initialEntries={['/main/University/add']}>
         <Routes>
           <Route path="/main/University/add" element={<AddUniversity />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText(/Add University/i)).toBeInTheDocument();
   });
 
-//   it("renders correctly in Edit mode", () => {
-//     const mockUniversity = { university_name: "University A" };
-//     mockGetData.mockResolvedValue({ data: mockUniversity });
+  //   it("renders correctly in Edit mode", () => {
+  //     const mockUniversity = { university_name: "University A" };
+  //     mockGetData.mockResolvedValue({ data: mockUniversity });
 
-//     render(
-//       <MemoryRouter initialEntries={["/main/University/edit/1"]}>
-//         <Routes>
-//           <Route path="/main/University/edit/:id" element={<AddUniversity />} />
-//         </Routes>
-//       </MemoryRouter>
-//     );
+  //     render(
+  //       <MemoryRouter initialEntries={["/main/University/edit/1"]}>
+  //         <Routes>
+  //           <Route path="/main/University/edit/:id" element={<AddUniversity />} />
+  //         </Routes>
+  //       </MemoryRouter>
+  //     );
 
-//     expect(screen.getByText(/Edit University/i)).toBeInTheDocument();
-//     expect(screen.getByDisplayValue("University A")).toBeInTheDocument();
-//   });
+  //     expect(screen.getByText(/Edit University/i)).toBeInTheDocument();
+  //     expect(screen.getByDisplayValue("University A")).toBeInTheDocument();
+  //   });
 
-  it("displays validation errors for university name", async () => {
+  it('displays validation errors for university name', async () => {
     render(
-      <MemoryRouter initialEntries={["/main/University/add"]}>
+      <MemoryRouter initialEntries={['/main/University/add']}>
         <Routes>
           <Route path="/main/University/add" element={<AddUniversity />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     fireEvent.click(screen.getByText(/Save/i));
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Please enter university name/i)
+        screen.getByText(/Please enter university name/i),
       ).toBeInTheDocument();
     });
   });
 
-  it("submits the form and shows success toast for Add", async () => {
+  it('submits the form and shows success toast for Add', async () => {
     mockPostData.mockResolvedValue({
       status: 201,
-      message: "University added successfully!",
+      message: 'University added successfully!',
     });
     render(
-      <MemoryRouter initialEntries={["/main/University/add"]}>
+      <MemoryRouter initialEntries={['/main/University/add']}>
         <Routes>
           <Route path="/main/University/add" element={<AddUniversity />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     fireEvent.change(screen.getByLabelText(/University Name/i), {
-      target: { value: "University A" },
+      target: { value: 'University A' },
     });
     fireEvent.click(screen.getByText(/Save/i));
 
     await waitFor(() => {
       expect(mockPostData).toHaveBeenCalledWith(
         QUERY_KEYS_UNIVERSITY.UNIVERSITY_ADD,
-        { university_name: "University A" }
+        { university_name: 'University A' },
       );
       expect(toast.success).toHaveBeenCalledWith(
-        "University added successfully!",
-        expect.any(Object)
+        'University added successfully!',
+        expect.any(Object),
       );
     });
   });
 
-  it("submits the form and shows success toast for Edit", async () => {
-    const mockUniversity = { university_name: "University A" };
+  it('submits the form and shows success toast for Edit', async () => {
+    const mockUniversity = { university_name: 'University A' };
     mockGetData.mockResolvedValue({ data: mockUniversity });
     mockPutData.mockResolvedValue({
       status: 200,
-      message: "University updated successfully!",
+      message: 'University updated successfully!',
     });
 
     render(
-      <MemoryRouter initialEntries={["/main/University/edit/1"]}>
+      <MemoryRouter initialEntries={['/main/University/edit/1']}>
         <Routes>
           <Route path="/main/University/edit/:id" element={<AddUniversity />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     fireEvent.change(screen.getByLabelText(/University Name/i), {
-      target: { value: "University A Updated" },
+      target: { value: 'University A Updated' },
     });
     fireEvent.click(screen.getByText(/Save/i));
 
     await waitFor(() => {
       expect(mockPutData).toHaveBeenCalledWith(
         `${QUERY_KEYS_UNIVERSITY.UNIVERSITY_UPDATE}/1`,
-        { university_name: "University A Updated" }
+        { university_name: 'University A Updated' },
       );
       expect(toast.success).toHaveBeenCalledWith(
-        "University updated successfully!",
-        expect.any(Object)
+        'University updated successfully!',
+        expect.any(Object),
       );
     });
   });
 
-  it("shows error toast when API call fails", async () => {
-    mockPostData.mockRejectedValue({ message: "Error occurred!" });
+  it('shows error toast when API call fails', async () => {
+    mockPostData.mockRejectedValue({ message: 'Error occurred!' });
 
     render(
-      <MemoryRouter initialEntries={["/main/University/add"]}>
+      <MemoryRouter initialEntries={['/main/University/add']}>
         <Routes>
           <Route path="/main/University/add" element={<AddUniversity />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     fireEvent.change(screen.getByLabelText(/University Name/i), {
-      target: { value: "University A" },
+      target: { value: 'University A' },
     });
     fireEvent.click(screen.getByText(/Save/i));
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        "Error occurred!",
-        expect.any(Object)
+        'Error occurred!',
+        expect.any(Object),
       );
     });
   });
 
-//   it("navigates after successful form submission", async () => {
-//     const mockNavigate = jest.fn();
-//     mockPostData.mockResolvedValue({
-//       status: 201,
-//       message: "University added successfully!",
-//     });
+  //   it("navigates after successful form submission", async () => {
+  //     const mockNavigate = jest.fn();
+  //     mockPostData.mockResolvedValue({
+  //       status: 201,
+  //       message: "University added successfully!",
+  //     });
 
-//     render(
-//       <MemoryRouter initialEntries={["/main/University/add"]}>
-//         <Routes>
-//           <Route path="/main/University/add" element={<AddUniversity />} />
-//         </Routes>
-//       </MemoryRouter>
-//     );
+  //     render(
+  //       <MemoryRouter initialEntries={["/main/University/add"]}>
+  //         <Routes>
+  //           <Route path="/main/University/add" element={<AddUniversity />} />
+  //         </Routes>
+  //       </MemoryRouter>
+  //     );
 
-//     fireEvent.change(screen.getByLabelText(/University Name/i), {
-//       target: { value: "University A" },
-//     });
-//     fireEvent.click(screen.getByText(/Save/i));
+  //     fireEvent.change(screen.getByLabelText(/University Name/i), {
+  //       target: { value: "University A" },
+  //     });
+  //     fireEvent.click(screen.getByText(/Save/i));
 
-//     await waitFor(() => {
-//       expect(mockNavigate).toHaveBeenCalledWith("/main/University");
-//     });
-//   });
+  //     await waitFor(() => {
+  //       expect(mockNavigate).toHaveBeenCalledWith("/main/University");
+  //     });
+  //   });
 });

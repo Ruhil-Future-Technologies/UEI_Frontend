@@ -1,13 +1,13 @@
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { httpClient } from "../../utils/http-client";
-import useApi from "../useAPI";
-import NameContext from "../../Pages/Context/NameContext";
-import React from "react";
-import { contextValue } from "../../MockStorage/mockstorage";
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { httpClient } from '../../utils/http-client';
+import useApi from '../useAPI';
+import NameContext from '../../Pages/Context/NameContext';
+import React from 'react';
+import { contextValue } from '../../MockStorage/mockstorage';
 
 // // Mock the httpClient and useNavigate
-jest.mock("../../utils/http-client", () => ({
+jest.mock('../../utils/http-client', () => ({
   httpClient: {
     get: jest.fn(),
     post: jest.fn(),
@@ -19,13 +19,13 @@ jest.mock("../../utils/http-client", () => ({
 
 const mockNavigate = jest.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
 
-describe("useApi getData Hook", () => {
-  it("should return data correctly from getData", async () => {
+describe('useApi getData Hook', () => {
+  it('should return data correctly from getData', async () => {
     const mockSetProPercentage = jest.fn();
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -38,30 +38,30 @@ describe("useApi getData Hook", () => {
 
     const { result } = renderHook(() => useApi(), { wrapper });
 
-    const mockData = { id: 1, name: "Test Item" };
+    const mockData = { id: 1, name: 'Test Item' };
     (httpClient.get as jest.Mock).mockResolvedValueOnce({
       data: mockData,
     });
 
     let data;
     await act(async () => {
-      data = await result.current.getData("https://example.com/api", 1);
+      data = await result.current.getData('https://example.com/api', 1);
     });
 
     expect(httpClient.get).toHaveBeenCalledWith(
-      "https://example.com/api?id=1",
+      'https://example.com/api?id=1',
       {
-        headers: { Authorization: "null" },
-      }
+        headers: { Authorization: 'null' },
+      },
     );
     expect(data).toEqual(mockData);
     expect(mockSetProPercentage).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it("should throw error from getData", async () => {
+  it('should throw error from getData', async () => {
     // Arrange: Mock the API to throw an error
-    const mockError = new Error("Something went wrong");
+    const mockError = new Error('Something went wrong');
     (httpClient.get as jest.Mock).mockRejectedValue(mockError);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -77,7 +77,7 @@ describe("useApi getData Hook", () => {
     // Act: Wrap async getData call in act()
     await act(async () => {
       try {
-        await result.current.getData("https://api.example.com/menu");
+        await result.current.getData('https://api.example.com/menu');
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error: unknown) {
         // Catch the error to check that it's being thrown and handled
@@ -96,10 +96,10 @@ describe("useApi getData Hook", () => {
   });
 });
 
-describe("useApi postData Hook", () => {
-  it("should call postData hook correctly", async () => {
+describe('useApi postData Hook', () => {
+  it('should call postData hook correctly', async () => {
     // Arrange: Mock the API response with mock data for a successful post
-    const mockData = { id: 1, name: "Test Menu" };
+    const mockData = { id: 1, name: 'Test Menu' };
     (httpClient.post as jest.Mock).mockResolvedValue({ data: mockData });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -115,8 +115,8 @@ describe("useApi postData Hook", () => {
     // Act: Call postData with test data
     await act(async () => {
       const response = await result.current.postData(
-        "https://api.example.com/menu",
-        { name: "Test Menu" }
+        'https://api.example.com/menu',
+        { name: 'Test Menu' },
       );
       // Assert: Check if the response matches the mock data after awaiting the promise
       expect(response).toEqual(mockData); // Assert that the returned data matches the mock data
@@ -128,17 +128,17 @@ describe("useApi postData Hook", () => {
     // Assert: Ensure that the post request was called with correct parameters
     expect(httpClient.post).toHaveBeenCalledTimes(1); // Ensure postData was called once
     expect(httpClient.post).toHaveBeenCalledWith(
-      "https://api.example.com/menu",
-      { name: "Test Menu" },
-      { headers: expect.any(Object) }
+      'https://api.example.com/menu',
+      { name: 'Test Menu' },
+      { headers: expect.any(Object) },
     ); // Ensure correct data and headers were passed
     expect(result.current.error).toBe(null); // Ensure there was no error
     expect(result.current.loading).toBe(false); // Ensure loading is false after the request
   });
 
-  it("should throw error from postData", async () => {
+  it('should throw error from postData', async () => {
     // Arrange: Mock the API to throw an error
-    const mockError = new Error("Something went wrong");
+    const mockError = new Error('Something went wrong');
     (httpClient.post as jest.Mock).mockRejectedValue(mockError);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -154,7 +154,7 @@ describe("useApi postData Hook", () => {
     // Act: Wrap async getData call in act()
     await act(async () => {
       try {
-        await result.current.postData("https://api.example.com/menu");
+        await result.current.postData('https://api.example.com/menu');
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Catch the error to check that it's being thrown and handled
@@ -173,10 +173,10 @@ describe("useApi postData Hook", () => {
   });
 });
 
-describe("useApi putData Hook", () => {
-  it("should call putData hook correctly", async () => {
+describe('useApi putData Hook', () => {
+  it('should call putData hook correctly', async () => {
     // Arrange: Mock the API response with mock data for a successful PUT request
-    const mockData = { id: 1, name: "Test Menu" };
+    const mockData = { id: 1, name: 'Test Menu' };
     (httpClient.put as jest.Mock).mockResolvedValue({ data: mockData });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -192,8 +192,8 @@ describe("useApi putData Hook", () => {
     // Act: Call putData with test data
     await act(async () => {
       const response = await result.current.putData(
-        "https://api.example.com/menu",
-        { name: "Test Menu" }
+        'https://api.example.com/menu',
+        { name: 'Test Menu' },
       );
       // Assert: Check if the response matches the mock data after awaiting the promise
       expect(response).toEqual(mockData); // Assert that the returned data matches the mock data
@@ -205,9 +205,9 @@ describe("useApi putData Hook", () => {
     // Assert: Ensure that the PUT request was called with correct parameters
     expect(httpClient.put).toHaveBeenCalledTimes(1); // Ensure putData was called once
     expect(httpClient.put).toHaveBeenCalledWith(
-      "https://api.example.com/menu",
+      'https://api.example.com/menu',
       '{"name":"Test Menu"}', // Expect stringified data here
-      { headers: expect.any(Object) } // Ensure correct headers were passed
+      { headers: expect.any(Object) }, // Ensure correct headers were passed
     );
 
     // Assert: Ensure there was no error
@@ -215,9 +215,9 @@ describe("useApi putData Hook", () => {
     expect(result.current.loading).toBe(false); // Ensure loading is false after the request
   });
 
-  it("should throw error from putData", async () => {
+  it('should throw error from putData', async () => {
     // Arrange: Mock the API to throw an error
-    const mockError = new Error("Something went wrong");
+    const mockError = new Error('Something went wrong');
     (httpClient.put as jest.Mock).mockRejectedValue(mockError);
 
     // Render the hook
@@ -234,7 +234,7 @@ describe("useApi putData Hook", () => {
     // Act: Wrap async getData call in act()
     await act(async () => {
       try {
-        await result.current.putData("https://api.example.com/menu");
+        await result.current.putData('https://api.example.com/menu');
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Catch the error to check that it's being thrown and handled
@@ -254,9 +254,9 @@ describe("useApi putData Hook", () => {
 });
 //
 
-describe("useApi deleteData Hook", () => {
-  it("should call deleteData hook correctly", async () => {
-    const mockData = { id: 1, name: "Test Menu" };
+describe('useApi deleteData Hook', () => {
+  it('should call deleteData hook correctly', async () => {
+    const mockData = { id: 1, name: 'Test Menu' };
     (httpClient.delete as jest.Mock).mockResolvedValue({ data: mockData });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -271,7 +271,7 @@ describe("useApi deleteData Hook", () => {
 
     await act(async () => {
       const response = await result.current.deleteData(
-        `https://api.example.com/menu/${1}`
+        `https://api.example.com/menu/${1}`,
       );
 
       // Assert that the response is correct
@@ -282,15 +282,15 @@ describe("useApi deleteData Hook", () => {
     expect(httpClient.delete).toHaveBeenCalledTimes(1);
     expect(httpClient.delete).toHaveBeenCalledWith(
       `https://api.example.com/menu/${1}`,
-      { headers: expect.any(Object) }
+      { headers: expect.any(Object) },
     );
     expect(result.current.error).toBe(null);
     expect(result.current.loading).toBe(false);
   });
 
-  it("should throw error from deleteData", async () => {
+  it('should throw error from deleteData', async () => {
     // Arrange: Mock the API to throw an error
-    const mockError = new Error("Something went wrong");
+    const mockError = new Error('Something went wrong');
     (httpClient.delete as jest.Mock).mockRejectedValue(mockError);
 
     // Render the hook
@@ -326,10 +326,10 @@ describe("useApi deleteData Hook", () => {
   });
 });
 
-describe("useApi postFileData Hook", () => {
-  it("should call postFileData hook correctly", async () => {
+describe('useApi postFileData Hook', () => {
+  it('should call postFileData hook correctly', async () => {
     // Arrange: Mock the API response with mock data for a successful post
-    const mockData = { id: 1, name: "Test Menu" };
+    const mockData = { id: 1, name: 'Test Menu' };
     (httpClient.post as jest.Mock).mockResolvedValue({ data: mockData });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -345,8 +345,8 @@ describe("useApi postFileData Hook", () => {
     // Act: Call postData with test data
     await act(async () => {
       const response = await result.current.postFileData(
-        "https://api.example.com/menu",
-        { name: "Test Menu" }
+        'https://api.example.com/menu',
+        { name: 'Test Menu' },
       );
       // Assert: Check if the response matches the mock data after awaiting the promise
       expect(response).toEqual(mockData); // Assert that the returned data matches the mock data
@@ -358,17 +358,17 @@ describe("useApi postFileData Hook", () => {
     // Assert: Ensure that the post request was called with correct parameters
     expect(httpClient.post).toHaveBeenCalledTimes(1); // Ensure postData was called once
     expect(httpClient.post).toHaveBeenCalledWith(
-      "https://api.example.com/menu",
-      { name: "Test Menu" },
-      { headers: expect.any(Object) }
+      'https://api.example.com/menu',
+      { name: 'Test Menu' },
+      { headers: expect.any(Object) },
     ); // Ensure correct data and headers were passed
     expect(result.current.error).toBe(null); // Ensure there was no error
     expect(result.current.loading).toBe(false); // Ensure loading is false after the request
   });
 
-  it("should throw error from postFileData", async () => {
+  it('should throw error from postFileData', async () => {
     // Arrange: Mock the API to throw an error
-    const mockError = new Error("Something went wrong");
+    const mockError = new Error('Something went wrong');
     (httpClient.post as jest.Mock).mockRejectedValue(mockError);
 
     // Render the hook
@@ -385,7 +385,7 @@ describe("useApi postFileData Hook", () => {
     // Act: Wrap async getData call in act()
     await act(async () => {
       try {
-        await result.current.postFileData("https://api.example.com/menu");
+        await result.current.postFileData('https://api.example.com/menu');
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Catch the error to check that it's being thrown and handled
@@ -404,10 +404,10 @@ describe("useApi postFileData Hook", () => {
   });
 });
 
-describe("useApi deleteFileData Hook", () => {
-  it("should call deleteFileData hook correctly", async () => {
+describe('useApi deleteFileData Hook', () => {
+  it('should call deleteFileData hook correctly', async () => {
     // Arrange: Mock the API response with mock data for a successful post
-    const mockData = { id: 1, name: "Test Menu" };
+    const mockData = { id: 1, name: 'Test Menu' };
     (httpClient.delete as jest.Mock).mockResolvedValue({ data: mockData });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -424,7 +424,7 @@ describe("useApi deleteFileData Hook", () => {
     await act(async () => {
       const response = await result.current.deleteFileData(
         `https://api.example.com/menu/${1}`,
-        { name: "Test Menu" }
+        { name: 'Test Menu' },
       );
       // Assert: Check if the response matches the mock data after awaiting the promise
       expect(response).toEqual(mockData); // Assert that the returned data matches the mock data
@@ -438,19 +438,19 @@ describe("useApi deleteFileData Hook", () => {
     expect(httpClient.delete).toHaveBeenCalledWith(
       `https://api.example.com/menu/${1}`,
       {
-        data: JSON.stringify({ name: "Test Menu" }),
+        data: JSON.stringify({ name: 'Test Menu' }),
         headers: expect.objectContaining({
-          Authorization: "null", // Explicitly checking for Authorization being null
+          Authorization: 'null', // Explicitly checking for Authorization being null
         }),
-      }
+      },
     );
     expect(result.current.error).toBe(null); // Ensure there was no error
     expect(result.current.loading).toBe(false); // Ensure loading is false after the request
   });
 
-  it("should throw error from postFileData", async () => {
+  it('should throw error from postFileData', async () => {
     // Arrange: Mock the API to throw an error
-    const mockError = new Error("Something went wrong");
+    const mockError = new Error('Something went wrong');
     (httpClient.delete as jest.Mock).mockRejectedValue(mockError);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -465,7 +465,7 @@ describe("useApi deleteFileData Hook", () => {
     // Act: Wrap async getData call in act()
     await act(async () => {
       try {
-        await result.current.deleteFileData("https://api.example.com/menu");
+        await result.current.deleteFileData('https://api.example.com/menu');
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Catch the error to check that it's being thrown and handled

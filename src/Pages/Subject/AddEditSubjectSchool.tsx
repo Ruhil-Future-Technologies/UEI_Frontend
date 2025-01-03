@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Subject/Subject.scss";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { Grid, InputLabel, Typography } from "@mui/material";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_SUBJECT_SCHOOL } from "../../utils/const";
-import { toast } from "react-toastify";
-import { Field, Form, Formik, FormikProps } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Subject/Subject.scss';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { Grid, InputLabel, Typography } from '@mui/material';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_SUBJECT_SCHOOL } from '../../utils/const';
+import { toast } from 'react-toastify';
+import { Field, Form, Formik, FormikProps } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
 import {
   dataaccess,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface ISubjectForm {
   menu_image: string;
@@ -45,16 +45,16 @@ const AddEditSubjectSchool = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem("userdata") || "");
+  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
   const charPattern = /^[a-zA-Z\s]*$/;
 
   const initialState = {
-    subject_name: "",
+    subject_name: '',
     created_by: userdata?.id,
-    class_id: "",
-    stream: "",
-    menu_image: "",
-    pdf_content: "",
+    class_id: '',
+    stream: '',
+    menu_image: '',
+    pdf_content: '',
   };
   const [subject, setSubject] = useState<any>(initialState);
   const [classes, setClasses] = useState<Classes[]>([]);
@@ -63,22 +63,20 @@ const AddEditSubjectSchool = () => {
   const formRef = useRef<FormikProps<ISubjectForm>>(null);
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   const [semester, setSemester] = useState<any>([]);
-  const [particularClass, setParticularClass] = useState("");
-
- 
+  const [particularClass, setParticularClass] = useState('');
 
   useEffect(() => {
     // GetDataList()
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -86,19 +84,18 @@ const AddEditSubjectSchool = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/Subject");
+    navigator('/main/Subject');
   }
 
   const callAPI = async () => {
-  
-    getData("/class/list")
+    getData('/class/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === true
+            (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
-            return value?.replace("_", " ");
+            return value?.replace('_', ' ');
           };
           const newClassObject = filteredData
             .map((item: any) => {
@@ -109,7 +106,7 @@ const AddEditSubjectSchool = () => {
               };
             })
             .sort((a: { class_name: string }, b: { class_name: any }) =>
-              a.class_name.localeCompare(b.class_name)
+              a.class_name.localeCompare(b.class_name),
             );
           setClasses(newClassObject || []);
           // setCourses(response.data);
@@ -118,15 +115,15 @@ const AddEditSubjectSchool = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
-    getData("/semester/list")
+    getData('/semester/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -135,26 +132,26 @@ const AddEditSubjectSchool = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
     if (id) {
-      getData(`${SubjectEditgetURL}${id ? `/${id}` : ""}`)
+      getData(`${SubjectEditgetURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           setSubject(data?.data);
           getData(`/class/get/${data?.data?.class_id}`).then(
             (response: any) => {
               if (response.status === 200) {
                 setParticularClass(response.data.class_name);
-              } else setParticularClass("");
-            }
+              } else setParticularClass('');
+            },
           );
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -164,25 +161,24 @@ const AddEditSubjectSchool = () => {
   }, []);
   useEffect(() => {
     if (id) {
-    //   const semesterCount = semester.filter(
-    //     (item: any) => item.course_id === subject.course_id
-    //   );
-    //   setTotalSemester(semesterCount);
+      //   const semesterCount = semester.filter(
+      //     (item: any) => item.course_id === subject.course_id
+      //   );
+      //   setTotalSemester(semesterCount);
     }
   }, [id, semester]);
-  
+
   const handleChange = async (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
-  
-    if (fieldName === "class_id") {
+    if (fieldName === 'class_id') {
       getData(`/class/get/${e.target.value}`).then((response: any) => {
         if (response.status === 200) {
           setParticularClass(response.data.class_name);
-        } else setParticularClass("");
+        } else setParticularClass('');
       });
     }
     setSubject((prevMenu: any) => {
@@ -198,82 +194,32 @@ const AddEditSubjectSchool = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof ISubjectForm]
+        formRef?.current?.errors?.[fieldName as keyof ISubjectForm],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
 
-    // const handleSubmit = async (
-    //   e: React.FormEvent<HTMLFormElement>,
-    //   subjectData: { subject_name: string }
-    // ) => {
-    // const handleSubmit = async (subjectData: ISubjectForm) => {
-    const handleSubmit1 = () => {
-
-        const submitData = {
-            subject_name: subject[""] as string || subject?.subject_name,
-            pdf_content: subject?.pdf_content || "",
-            class_id: subject.class_id,
-            stream: (particularClass === "class_11" || particularClass === "class_12") ? subject.stream || "" : ""
-        }
-        if (!submitData.subject_name || !submitData.class_id) {
-            return;
-        }
-        if (
-            (particularClass === "class_11" || particularClass === "class_12") &&
-            !submitData.stream
-        ) {
-            return;
-        }
-        if (id) {
-            putData(`${SubjectEditURL}/${id}`, submitData)
-                .then((data: any) => {
-                    // const linesInfo = data || [];
-                    // dispatch(setLine(linesInfo))
-                    if (data.status === 200) {
-                        navigator("/main/Subject");
-                        toast.success(data.message, {
-                            hideProgressBar: true,
-                            theme: "colored",
-                        });
-                    } else {
-                        toast.error(data.message, {
-                            hideProgressBar: true,
-                            theme: "colored",
-                        });
-
-                    }
-                })
-                .catch((e) => {
-                    toast.error(e?.message, {
-                        hideProgressBar: true,
-                        theme: "colored",
-                    });
-                });
-        }
-    }
-    const handleSubmit123 =()=>{
-
-    }
-    const handleSubmit = async (
-
-    ) => {
-        // e.preventDefault();
-        // e.target.reset()
-
+  // const handleSubmit = async (
+  //   e: React.FormEvent<HTMLFormElement>,
+  //   subjectData: { subject_name: string }
+  // ) => {
+  // const handleSubmit = async (subjectData: ISubjectForm) => {
+  const handleSubmit1 = () => {
     const submitData = {
-     
-      subject_name: subject[""] as string,
-      pdf_content: subject?.menu_image || "",
+      subject_name: (subject[''] as string) || subject?.subject_name,
+      pdf_content: subject?.pdf_content || '',
       class_id: subject.class_id,
-      stream: subject.stream || "",
+      stream:
+        particularClass === 'class_11' || particularClass === 'class_12'
+          ? subject.stream || ''
+          : '',
     };
     if (!submitData.subject_name || !submitData.class_id) {
       return;
     }
     if (
-      (particularClass === "class_11" || particularClass === "class_12") &&
+      (particularClass === 'class_11' || particularClass === 'class_12') &&
       !submitData.stream
     ) {
       return;
@@ -281,69 +227,112 @@ const AddEditSubjectSchool = () => {
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
-         
+          // const linesInfo = data || [];
+          // dispatch(setLine(linesInfo))
           if (data.status === 200) {
-            navigator("/main/Subject");
+            navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
+          });
+        });
+    }
+  };
+  const handleSubmit123 = () => {};
+  const handleSubmit = async () => {
+    // e.preventDefault();
+    // e.target.reset()
+
+    const submitData = {
+      subject_name: subject[''] as string,
+      pdf_content: subject?.menu_image || '',
+      class_id: subject.class_id,
+      stream: subject.stream || '',
+    };
+    if (!submitData.subject_name || !submitData.class_id) {
+      return;
+    }
+    if (
+      (particularClass === 'class_11' || particularClass === 'class_12') &&
+      !submitData.stream
+    ) {
+      return;
+    }
+    if (id) {
+      putData(`${SubjectEditURL}/${id}`, submitData)
+        .then((data: any) => {
+          if (data.status === 200) {
+            navigator('/main/Subject');
+            toast.success(data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          } else {
+            toast.error(data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          }
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
           });
         });
     } else {
       postData(`${SubjectAddURL}`, submitData)
         .then((data: any) => {
-         
           if (data.status === 200) {
             toast.success(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
 
-           
             setSubject(initialState);
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const menuSchema = Yup.object().shape({
     subject_name: Yup.string()
-      .required("Please enter Subject name")
+      .required('Please enter Subject name')
       .test(
-        "not-whitespace",
-        "Please enter a valid Subject name;not-whitespace only characters allowed.",
-        (value: any) => value && value?.trim().length > 0
+        'not-whitespace',
+        'Please enter a valid Subject name;not-whitespace only characters allowed.',
+        (value: any) => value && value?.trim().length > 0,
       )
       .matches(
         charPattern,
-        "Please enter a valid Subject name only characters allowed."
+        'Please enter a valid Subject name only characters allowed.',
       ),
     description: Yup.string(),
     menu_image: Yup.string(),
-    class_id: Yup.string().required("Please select Class name"),
-    stream: Yup.string().required("Please select Stream"),
+    class_id: Yup.string().required('Please select Class name'),
+    stream: Yup.string().required('Please select Stream'),
   });
 
   return (
@@ -378,17 +367,17 @@ const AddEditSubjectSchool = () => {
                         <div className="form_field_wrapper">
                           <FormControl
                             //   required
-                            sx={{ m: 0, minWidth: 220, width: "100%" }}
+                            sx={{ m: 0, minWidth: 220, width: '100%' }}
                           >
                             <InputLabel>Class</InputLabel>
                             <Select
                               name="class_id"
                               value={values.class_id}
                               sx={{
-                                backgroundColor: "#f5f5f5",
+                                backgroundColor: '#f5f5f5',
                               }}
                               onChange={(e: SelectChangeEvent<string>) =>
-                                handleChange(e, "class_id")
+                                handleChange(e, 'class_id')
                               }
                               label="Class"
                               onBlur={handleBlur}
@@ -400,7 +389,7 @@ const AddEditSubjectSchool = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor), // Change this to your desired hover background color
                                     },
@@ -411,22 +400,22 @@ const AddEditSubjectSchool = () => {
                               ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.class_id === "string" &&
+                              {typeof errors?.class_id === 'string' &&
                                 errors.class_id}
                             </Typography>
                           </FormControl>
                         </div>
                       </div>
 
-                      {(particularClass === "class_11" ||
-                        particularClass === "class_12") && (
+                      {(particularClass === 'class_11' ||
+                        particularClass === 'class_12') && (
                         <div className="col-lg-2 form_field_wrapper">
                           <FormControl
                             // required
                             sx={{
                               m: 0,
                               minWidth: 70,
-                              width: "100%",
+                              width: '100%',
                               maxWidth: 250,
                             }}
                           >
@@ -435,10 +424,10 @@ const AddEditSubjectSchool = () => {
                               name="stream"
                               value={values.stream}
                               sx={{
-                                backgroundColor: "#f5f5f5",
+                                backgroundColor: '#f5f5f5',
                               }}
                               onChange={(e: SelectChangeEvent<string>) =>
-                                handleChange(e, "stream")
+                                handleChange(e, 'stream')
                               }
                               label="Stream"
                               onBlur={handleBlur}
@@ -448,7 +437,7 @@ const AddEditSubjectSchool = () => {
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
                                   color: inputfieldtext(namecolor),
-                                  "&:hover": {
+                                  '&:hover': {
                                     backgroundColor: inputfieldhover(namecolor),
                                   },
                                 }}
@@ -460,7 +449,7 @@ const AddEditSubjectSchool = () => {
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
                                   color: inputfieldtext(namecolor),
-                                  "&:hover": {
+                                  '&:hover': {
                                     backgroundColor: inputfieldhover(namecolor),
                                   },
                                 }}
@@ -472,7 +461,7 @@ const AddEditSubjectSchool = () => {
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
                                   color: inputfieldtext(namecolor),
-                                  "&:hover": {
+                                  '&:hover': {
                                     backgroundColor: inputfieldhover(namecolor),
                                   },
                                 }}
@@ -481,7 +470,7 @@ const AddEditSubjectSchool = () => {
                               </MenuItem>
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.stream === "string" &&
+                              {typeof errors?.stream === 'string' &&
                                 errors.stream}
                             </Typography>
                           </FormControl>
@@ -497,8 +486,8 @@ const AddEditSubjectSchool = () => {
                             label="Subject Name *"
                             value={values?.subject_name}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange(e, "subject_name")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'subject_name')}
                           />
                           {touched?.subject_name && errors?.subject_name ? (
                             <Typography variant="body2" color="error">
@@ -529,8 +518,8 @@ const AddEditSubjectSchool = () => {
                               //   setSelectedFile(event.target.value)
                               // }
                               onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => handleChange(e, "menu_image")}
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'menu_image')}
                               id="file-upload"
                               name="menu_image"
                               style={{ color: inputfieldtext(namecolor) }}
@@ -547,7 +536,7 @@ const AddEditSubjectSchool = () => {
                           type="submit"
                           onClick={() => handleSubmit()}
                         >
-                          {id ? "Update" : "Save"}
+                          {id ? 'Update' : 'Save'}
                         </button>
                       ) : (
                         <button

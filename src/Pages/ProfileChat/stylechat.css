@@ -48,6 +48,7 @@
 }
 .css-z3c6am-MuiFormControl-root-MuiTextField-root {
   width: 100% !important;
- 
 }
-.react-tel-input .form-control {width:100% !important}
+.react-tel-input .form-control {
+  width: 100% !important;
+}

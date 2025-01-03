@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from "react";
-import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
-import AdminBasicInfo from "../AdminBasicinfo";
-import AdminAddress from "../AdminAddress";
-import AdminDescription from "../AdminDescription";
-import AdminLanguage from "../AdminLanguage";
-import AdminProfession from "../AdminProfession";
-import AdminContactDetails from "../AdminContact";
-import { toast } from "react-toastify";
-import { QUERY_KEYS_ADMIN_BASIC_INFO } from "../../utils/const";
-import useApi from "../../hooks/useAPI";
-import NameContext from "../Context/NameContext";
+import * as React from 'react';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import AdminBasicInfo from '../AdminBasicinfo';
+import AdminAddress from '../AdminAddress';
+import AdminDescription from '../AdminDescription';
+import AdminLanguage from '../AdminLanguage';
+import AdminProfession from '../AdminProfession';
+import AdminContactDetails from '../AdminContact';
+import { toast } from 'react-toastify';
+import { QUERY_KEYS_ADMIN_BASIC_INFO } from '../../utils/const';
+import useApi from '../../hooks/useAPI';
+import NameContext from '../Context/NameContext';
 
 export default function AdminProfile() {
-  const adminId = localStorage.getItem("_id");
+  const adminId = localStorage.getItem('_id');
   const [isProComplete, setIsProComplete] = React.useState(0);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const context = React.useContext(NameContext);
-  
+
   const { activeForm, setActiveForm }: any = context;
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const { getData } = useApi();
@@ -29,46 +29,45 @@ export default function AdminProfile() {
 
   React.useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
+      setIsMobile(window.matchMedia('(max-width: 1024px)').matches);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize(); // Initial check on component mount
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   const handleReset = async () => {
     if ((await isProComplete) !== 100 && (await isProComplete1)) {
       toast.success(
-        "Your profile is incomplete. Please complete your profile.",
+        'Your profile is incomplete. Please complete your profile.',
         {
           hideProgressBar: true,
-          theme: "colored",
-        }
+          theme: 'colored',
+        },
       );
     } else if ((await isProComplete) === 100 && (await isProComplete1)) {
-      toast.success("You have completed your profile", {
+      toast.success('You have completed your profile', {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     } else {
       toast.success(
-        "Your profile is incomplete. Please complete your profile.",
+        'Your profile is incomplete. Please complete your profile.',
         {
           hideProgressBar: true,
-          theme: "colored",
-        }
+          theme: 'colored',
+        },
       );
     }
-
   };
 
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
-      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
+      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== '',
     ).length;
   };
   const adminAPI = async () => {
@@ -101,8 +100,8 @@ export default function AdminProfile() {
           let sectionCount = 0;
 
           if (basic_info && Object.keys(basic_info)?.length > 0) {
-            if (data?.data?.pic_path !== "") {
-              getData(`${"upload_file/get_image/" + data?.data?.pic_path}`)
+            if (data?.data?.pic_path !== '') {
+              getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
                 .then(() => {
                   // setprofileImage(imgdata.data)
                 })
@@ -183,7 +182,7 @@ export default function AdminProfile() {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -206,8 +205,8 @@ export default function AdminProfile() {
         progressLineRef.current.style.width = `${
           ((activeForm + 1) / totalSteps) * 100
         }%`;
-        progressLineRef.current.style.height = "2px";
-        progressLineRef.current.style.top = "auto";
+        progressLineRef.current.style.height = '2px';
+        progressLineRef.current.style.top = 'auto';
       } else {
         // Vertical progress for desktop
         progressRef.current.style.width = `${
@@ -216,7 +215,7 @@ export default function AdminProfile() {
 
         const stepHeight = stepsRef.current[activeForm]?.offsetHeight || 0;
         const computedStyle = window.getComputedStyle(
-          stepsRef.current[activeForm]
+          stepsRef.current[activeForm],
         );
 
         // Extract margin-top and margin-bottom
@@ -231,8 +230,8 @@ export default function AdminProfile() {
         const currentHeight = totalHeight * (activeForm + 1);
 
         progressLineRef.current.style.height = `${currentHeight - 62}px`;
-        progressLineRef.current.style.width = "2px";
-        progressLineRef.current.style.top = "0px";
+        progressLineRef.current.style.width = '2px';
+        progressLineRef.current.style.top = '0px';
       }
     }
   };
@@ -246,14 +245,14 @@ export default function AdminProfile() {
               <div className="col-lg-6 px-0">
                 {isProComplete1 ? (
                   <h4 className="fs-1 fw-bold">
-                    My <span style={{ color: "#9943EC" }}> Profile </span>
+                    My <span style={{ color: '#9943EC' }}> Profile </span>
                   </h4>
                 ) : (
                   <>
-                    {" "}
+                    {' '}
                     <h4 className="fs-1 fw-bold d-xxl-block">
-                      Complete Your{" "}
-                      <span style={{ color: "#9943EC" }}> Account </span>
+                      Complete Your{' '}
+                      <span style={{ color: '#9943EC' }}> Account </span>
                     </h4>
                   </>
                 )}
@@ -270,7 +269,7 @@ export default function AdminProfile() {
               <div className="col-lg-12 px-0">
                 <div
                   className="card rounded-5 mt-3 bg-transparent-mb"
-                  style={{ border: "0" }}
+                  style={{ border: '0' }}
                 >
                   <div className="card-body p-0">
                     <div className="row">
@@ -286,14 +285,14 @@ export default function AdminProfile() {
                               <div
                                 ref={(el) => (stepsRef.current[0] = el!)}
                                 className={`step ${
-                                  activeForm === 0 ? "active" : ""
+                                  activeForm === 0 ? 'active' : ''
                                 }`}
                                 onClick={() => setActiveForm(0)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: 'pointer' }}
                               >
                                 <div
                                   className={`step-circle ${
-                                    activeForm >= 0 ? "filled" : ""
+                                    activeForm >= 0 ? 'filled' : ''
                                   }`}
                                 >
                                   <CheckOutlinedIcon />
@@ -305,14 +304,14 @@ export default function AdminProfile() {
                               <div
                                 ref={(el) => (stepsRef.current[1] = el!)}
                                 className={`step ${
-                                  activeForm === 1 ? "active" : ""
+                                  activeForm === 1 ? 'active' : ''
                                 }`}
                                 onClick={() => setActiveForm(1)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: 'pointer' }}
                               >
                                 <div
                                   className={`step-circle ${
-                                    activeForm >= 1 ? "filled" : ""
+                                    activeForm >= 1 ? 'filled' : ''
                                   }`}
                                 >
                                   <CheckOutlinedIcon />
@@ -322,14 +321,14 @@ export default function AdminProfile() {
                               <div
                                 ref={(el) => (stepsRef.current[2] = el!)}
                                 className={`step ${
-                                  activeForm === 2 ? "active" : ""
+                                  activeForm === 2 ? 'active' : ''
                                 }`}
                                 onClick={() => setActiveForm(2)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: 'pointer' }}
                               >
                                 <div
                                   className={`step-circle ${
-                                    activeForm >= 2 ? "filled" : ""
+                                    activeForm >= 2 ? 'filled' : ''
                                   }`}
                                 >
                                   <CheckOutlinedIcon />
@@ -339,14 +338,14 @@ export default function AdminProfile() {
                               <div
                                 ref={(el) => (stepsRef.current[3] = el!)}
                                 className={`step ${
-                                  activeForm === 3 ? "active" : ""
+                                  activeForm === 3 ? 'active' : ''
                                 }`}
                                 onClick={() => setActiveForm(3)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: 'pointer' }}
                               >
                                 <div
                                   className={`step-circle ${
-                                    activeForm >= 3 ? "filled" : ""
+                                    activeForm >= 3 ? 'filled' : ''
                                   }`}
                                 >
                                   <CheckOutlinedIcon />
@@ -357,14 +356,14 @@ export default function AdminProfile() {
                               <div
                                 ref={(el) => (stepsRef.current[4] = el!)}
                                 className={`step ${
-                                  activeForm === 4 ? "active" : ""
+                                  activeForm === 4 ? 'active' : ''
                                 }`}
                                 onClick={() => setActiveForm(4)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: 'pointer' }}
                               >
                                 <div
                                   className={`step-circle ${
-                                    activeForm >= 4 ? "filled" : ""
+                                    activeForm >= 4 ? 'filled' : ''
                                   }`}
                                 >
                                   <CheckOutlinedIcon />
@@ -377,14 +376,14 @@ export default function AdminProfile() {
                               <div
                                 ref={(el) => (stepsRef.current[5] = el!)}
                                 className={`step ${
-                                  activeForm === 5 ? "active" : ""
+                                  activeForm === 5 ? 'active' : ''
                                 }`}
                                 onClick={() => setActiveForm(5)}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: 'pointer' }}
                               >
                                 <div
                                   className={`step-circle ${
-                                    activeForm >= 5 ? "filled" : ""
+                                    activeForm >= 5 ? 'filled' : ''
                                   }`}
                                 >
                                   <CheckOutlinedIcon />
@@ -397,34 +396,43 @@ export default function AdminProfile() {
                             <form id="wizard-form">
                               <div
                                 className={`form-step ${
-                                  activeForm === 0 ? "active" : ""
+                                  activeForm === 0 ? 'active' : ''
                                 }`}
                               >
-                                <AdminBasicInfo setActiveForm={setActiveForm}  activeForm={activeForm}/>
+                                <AdminBasicInfo
+                                  setActiveForm={setActiveForm}
+                                  activeForm={activeForm}
+                                />
                               </div>
                               <div
                                 className={`form-step ${
-                                  activeForm === 1 ? "active" : ""
+                                  activeForm === 1 ? 'active' : ''
                                 }`}
                               >
-                                <AdminAddress setActiveForm={setActiveForm} activeForm={activeForm}/>
+                                <AdminAddress
+                                  setActiveForm={setActiveForm}
+                                  activeForm={activeForm}
+                                />
                               </div>
                               <div
                                 className={`form-step ${
-                                  activeForm === 2 ? "active" : ""
+                                  activeForm === 2 ? 'active' : ''
                                 }`}
                               >
-                                <AdminLanguage activeForm={activeForm} setActiveForm={setActiveForm} />
+                                <AdminLanguage
+                                  activeForm={activeForm}
+                                  setActiveForm={setActiveForm}
+                                />
                               </div>
                               <div
                                 className={`form-step ${
-                                  activeForm === 3 ? "active" : ""
+                                  activeForm === 3 ? 'active' : ''
                                 }`}
                               >
                                 <div>
                                   <div>
                                     <AdminDescription
-                                    activeForm={activeForm}
+                                      activeForm={activeForm}
                                       setActiveForm={setActiveForm}
                                     />
                                   </div>
@@ -432,17 +440,17 @@ export default function AdminProfile() {
                               </div>
                               <div
                                 className={`form-step ${
-                                  activeForm === 4 ? "active" : ""
+                                  activeForm === 4 ? 'active' : ''
                                 }`}
                               >
                                 <AdminContactDetails
-                                activeForm={activeForm}
+                                  activeForm={activeForm}
                                   setActiveForm={setActiveForm}
                                 />
                               </div>
                               <div
                                 className={`form-step ${
-                                  activeForm === 5 ? "active" : ""
+                                  activeForm === 5 ? 'active' : ''
                                 }`}
                               >
                                 <div>

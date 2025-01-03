@@ -1,28 +1,28 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
-import React from "react";
-import AdminAddress from "..";
-import NameContext from "../../Context/NameContext";
-import { contextValue } from "../../../MockStorage/mockstorage";
-import { MemoryRouter } from "react-router-dom";
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import React from 'react';
+import AdminAddress from '..';
+import NameContext from '../../Context/NameContext';
+import { contextValue } from '../../../MockStorage/mockstorage';
+import { MemoryRouter } from 'react-router-dom';
 
-describe("Admin Address Component", () => {
+describe('Admin Address Component', () => {
   const setMockActiveForm = jest.fn();
   const MockActiveForm = 1;
   const testInputs = [
-    { testId: "address1", newValue: "New Current Address" },
-    { testId: "address2", newValue: "New Current Address 2" },
-    { testId: "cityid", newValue: "Mumbai" },
-    { testId: "districtid", newValue: "Mumbai" },
-    { testId: "pincodeid", newValue: "000111" },
-    { testId: "per_address1", newValue: "New Current Address" },
-    { testId: "per_address2", newValue: "New Current Address 2" },
-    { testId: "per_city", newValue: "Mumbai" },
-    { testId: "per_district", newValue: "Mumbai" },
-    { testId: "per_pincode", newValue: "000111" },
-    { testId: "countryDropdown", newValue: "India" },
-    { testId: "stateDropdown", newValue: "Gujarat" },
-    { testId: "perCountryDropdown", newValue: "India" },
-    { testId: "perStateDropdown", newValue: "Gujarat" },
+    { testId: 'address1', newValue: 'New Current Address' },
+    { testId: 'address2', newValue: 'New Current Address 2' },
+    { testId: 'cityid', newValue: 'Mumbai' },
+    { testId: 'districtid', newValue: 'Mumbai' },
+    { testId: 'pincodeid', newValue: '000111' },
+    { testId: 'per_address1', newValue: 'New Current Address' },
+    { testId: 'per_address2', newValue: 'New Current Address 2' },
+    { testId: 'per_city', newValue: 'Mumbai' },
+    { testId: 'per_district', newValue: 'Mumbai' },
+    { testId: 'per_pincode', newValue: '000111' },
+    { testId: 'countryDropdown', newValue: 'India' },
+    { testId: 'stateDropdown', newValue: 'Gujarat' },
+    { testId: 'perCountryDropdown', newValue: 'India' },
+    { testId: 'perStateDropdown', newValue: 'Gujarat' },
   ];
   const renderComponent = () => {
     return render(
@@ -33,11 +33,11 @@ describe("Admin Address Component", () => {
             activeForm={MockActiveForm}
           />
         </MemoryRouter>
-      </NameContext.Provider>
+      </NameContext.Provider>,
     );
   };
 
-  it("should render admin adress component correctly", () => {
+  it('should render admin adress component correctly', () => {
     const { getByTestId } = renderComponent();
     testInputs.forEach(({ testId }) => {
       const input = getByTestId(testId) as HTMLInputElement;
@@ -45,7 +45,7 @@ describe("Admin Address Component", () => {
     });
   });
 
-  it("should handleInputChange function correctly", () => {
+  it('should handleInputChange function correctly', () => {
     const { getByTestId } = renderComponent();
 
     testInputs.forEach(({ testId, newValue }) => {
@@ -55,10 +55,10 @@ describe("Admin Address Component", () => {
     });
   });
 
-  it("should handle checking and unchecking the checkbox and update states", () => {
+  it('should handle checking and unchecking the checkbox and update states', () => {
     const { getByTestId } = renderComponent();
 
-    const checkbox = getByTestId("checkboxAddress") as HTMLInputElement;
+    const checkbox = getByTestId('checkboxAddress') as HTMLInputElement;
 
     // Simulate checking the checkbox
     fireEvent.change(checkbox, { target: { checked: true } });
@@ -79,39 +79,39 @@ describe("Admin Address Component", () => {
     expect(checkbox.checked).toBe(false);
     testInputs.forEach(({ testId }) => {
       const input = getByTestId(testId) as HTMLInputElement;
-      fireEvent.change(input, { target: { value: "" } });
-      expect(input.value).toBe("");
+      fireEvent.change(input, { target: { value: '' } });
+      expect(input.value).toBe('');
     });
   });
 
-  it("should handle dropdown changes when handleInputChangecountry is triggered", () => {
+  it('should handle dropdown changes when handleInputChangecountry is triggered', () => {
     const { getByTestId } = renderComponent();
     // Simulate selecting a country
-    const countryDropdown = getByTestId("countryDropdown") as HTMLInputElement;
-    const stateDropdown = getByTestId("stateDropdown") as HTMLInputElement;
-    fireEvent.change(countryDropdown, { target: { value: "India" } });
-    fireEvent.change(stateDropdown, { target: { value: "Gujarat" } });
-    expect(countryDropdown.value).toBe("India");
-    expect(stateDropdown.value).toBe("Gujarat");
+    const countryDropdown = getByTestId('countryDropdown') as HTMLInputElement;
+    const stateDropdown = getByTestId('stateDropdown') as HTMLInputElement;
+    fireEvent.change(countryDropdown, { target: { value: 'India' } });
+    fireEvent.change(stateDropdown, { target: { value: 'Gujarat' } });
+    expect(countryDropdown.value).toBe('India');
+    expect(stateDropdown.value).toBe('Gujarat');
   });
 
-  it("should call SubmitHandle function when submit button is clicked", async () => {
+  it('should call SubmitHandle function when submit button is clicked', async () => {
     const mockSubmitHandle = jest.fn(); // Mock the SubmitHandle function
-    
+
     const { getByTestId } = renderComponent();
-  
+
     // Get the submit button by its test ID
-    const submitForm = getByTestId("submitForm") as HTMLButtonElement;
-  
+    const submitForm = getByTestId('submitForm') as HTMLButtonElement;
+
     // Mock the onClick handler if it's passed directly to the button
     submitForm.onclick = mockSubmitHandle;
-  
+
     // Simulate clicking the submit button
     fireEvent.click(submitForm);
-  
+
     // Wait for the mock function to be called
     await waitFor(() => {
       expect(mockSubmitHandle).toHaveBeenCalledTimes(1);
     });
-  });  
+  });
 });

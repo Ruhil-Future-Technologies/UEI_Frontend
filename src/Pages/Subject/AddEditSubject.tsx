@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Subject/Subject.scss";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { Grid, InputLabel, Typography } from "@mui/material";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Subject/Subject.scss';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { Grid, InputLabel, Typography } from '@mui/material';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   QUERY_KEYS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_SUBJECT,
-} from "../../utils/const";
-import { toast } from "react-toastify";
-import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
+} from '../../utils/const';
+import { toast } from 'react-toastify';
+import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
 import {
   dataaccess,
   fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface ISubjectForm {
   menu_image: string;
@@ -47,17 +47,17 @@ const AddEditSubject = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem("userdata") || "");
+  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
   const charPattern = /^[a-zA-Z\s]*$/;
 
   const initialState = {
-    subject_name: "",
-    institution_id: "",
+    subject_name: '',
+    institution_id: '',
     created_by: userdata?.id,
-    semester_id: "",
-    course_id: "",
-    menu_image: "",
-    pdf_content: "",
+    semester_id: '',
+    course_id: '',
+    menu_image: '',
+    pdf_content: '',
   };
   const [subject, setSubject] = useState<any>(initialState);
   // const [subject_namecol, setSubjectNamevalid] = useState<boolean>(false);
@@ -65,8 +65,8 @@ const AddEditSubject = () => {
   const formRef = useRef<FormikProps<ISubjectForm>>(null);
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
@@ -77,10 +77,9 @@ const AddEditSubject = () => {
   const [semester, setSemester] = useState<any>([]);
   const [instituteList, setinstituteList] = useState<any[]>([]);
 
-
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -88,7 +87,7 @@ const AddEditSubject = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/Subject");
+    navigator('/main/Subject');
   }
 
   const callAPI = async () => {
@@ -96,15 +95,14 @@ const AddEditSubject = () => {
       .then((data: { data: any[] }) => {
         const filteredData = data?.data.filter((item) => item.is_active === 1);
         setinstituteList(filteredData);
-        
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigator("/");
+          navigator('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     getData(`${CourseListURL}`)
@@ -115,18 +113,18 @@ const AddEditSubject = () => {
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigator("/");
+          navigator('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
-    getData("/semester/list")
+    getData('/semester/list')
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -135,19 +133,19 @@ const AddEditSubject = () => {
       .catch((error) => {
         toast.error(error?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
     if (id) {
-      getData(`${SubjectGETURL}${id ? `/${id}` : ""}`)
+      getData(`${SubjectGETURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           setSubject(data?.data);
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -157,39 +155,52 @@ const AddEditSubject = () => {
   }, []);
   useEffect(() => {
     if (id) {
-      const semesterCount = semester?.filter((item: any) => item.course_id === subject.course_id)
-      setTotalSemester(semesterCount)
+      const semesterCount = semester?.filter(
+        (item: any) => item.course_id === subject.course_id,
+      );
+      setTotalSemester(semesterCount);
     }
-  }, [id, semester,subject?.course_id]);
+  }, [id, semester, subject?.course_id]);
   useEffect(() => {
     if (id) {
-      const courses = courseListAll.filter((item: any) => item.institution_id === subject?.institution_id)
-      setCourseList(courses)
+      const courses = courseListAll.filter(
+        (item: any) => item.institution_id === subject?.institution_id,
+      );
+      setCourseList(courses);
     }
-  }, [id,courseListAll,subject?.institution_id]);
+  }, [id, courseListAll, subject?.institution_id]);
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>, fieldName: string) => {
+  const handleChange = async (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>,
+    fieldName: string,
+  ) => {
     if (fieldName === 'institution_id') {
-      const courses = courseListAll.filter((item: any) => item.institution_id === e.target.value)
-      setCourseList(courses)
-     
-       setSubject((prevMenu:any) => {
-      return {
-        ...prevMenu,
-        ["course_id"]: "",
-        ["semester_id"]: "",
-      };
-    });
+      const courses = courseListAll.filter(
+        (item: any) => item.institution_id === e.target.value,
+      );
+      setCourseList(courses);
+
+      setSubject((prevMenu: any) => {
+        return {
+          ...prevMenu,
+          ['course_id']: '',
+          ['semester_id']: '',
+        };
+      });
     }
     if (fieldName === 'course_id') {
-      const semesterCount = semester?.filter((item: any) => item?.course_id === e.target.value)
-      setTotalSemester(semesterCount)
-       setSubject((prevMenu:any) => {
-      return {
-        ...prevMenu,
-        ["semester_id"]: "",
-      };
-    });
+      const semesterCount = semester?.filter(
+        (item: any) => item?.course_id === e.target.value,
+      );
+      setTotalSemester(semesterCount);
+      setSubject((prevMenu: any) => {
+        return {
+          ...prevMenu,
+          ['semester_id']: '',
+        };
+      });
     }
     setSubject((prevMenu: any) => {
       return {
@@ -204,17 +215,16 @@ const AddEditSubject = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof ISubjectForm]
+        formRef?.current?.errors?.[fieldName as keyof ISubjectForm],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
 
- 
   const handleSubmit1 = () => {
     const submitData = {
-      subject_name: (subject[""] as string) || subject?.subject_name,
-      pdf_content: subject?.pdf_content || "",
+      subject_name: (subject[''] as string) || subject?.subject_name,
+      pdf_content: subject?.pdf_content || '',
       semester_id: subject.semester_id,
       course_id: subject.course_id,
       institution_id: subject.institution_id,
@@ -225,34 +235,33 @@ const AddEditSubject = () => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
           if (data.status === 200) {
-            navigator("/main/Subject");
+            navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const handleSubmit = async (
     subjectData: ISubjectForm,
-    { resetForm }: FormikHelpers<ISubjectForm>
+    { resetForm }: FormikHelpers<ISubjectForm>,
   ) => {
-   
     const submitData = {
       subject_name: subjectData.subject_name,
-      pdf_content: subjectData?.menu_image || "",
+      pdf_content: subjectData?.menu_image || '',
       semester_id: subjectData.semester_id,
       course_id: subjectData.course_id,
       institution_id: subjectData.institution_id,
@@ -260,70 +269,68 @@ const AddEditSubject = () => {
     if (id) {
       putData(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
-         
           if (data.status === 200) {
-            navigator("/main/Subject");
+            navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
       postData(`${SubjectAddURL}`, submitData)
         .then((data: any) => {
-          
           if (data.status === 200) {
             toast.success(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
-            
+
             resetForm({ values: initialState });
             setSubject(initialState);
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const menuSchema = Yup.object().shape({
     subject_name: Yup.string()
-      .required("Please enter Subject name")
+      .required('Please enter Subject name')
       .test(
-        "not-whitespace",
-        "Please enter a valid Subject name;not-whitespace only characters allowed.",
-        (value: any) => value && value?.trim().length > 0
+        'not-whitespace',
+        'Please enter a valid Subject name;not-whitespace only characters allowed.',
+        (value: any) => value && value?.trim().length > 0,
       )
       .matches(
         charPattern,
-        "Please enter a valid Subject name only characters allowed."
+        'Please enter a valid Subject name only characters allowed.',
       ),
     description: Yup.string(),
     menu_image: Yup.string(),
-    semester_id: Yup.string().required("Please select Semester name"),
-    course_id: Yup.string().required("Please select Course name"),
-    institution_id: Yup.string().required("Please select institute name"),
+    semester_id: Yup.string().required('Please select Semester name'),
+    course_id: Yup.string().required('Please select Course name'),
+    institution_id: Yup.string().required('Please select institute name'),
   });
 
   // const maxSemester = totalSemester && totalSemester?.length > 0
@@ -370,7 +377,7 @@ const AddEditSubject = () => {
                             </InputLabel>
                             <Select
                               onChange={(e: SelectChangeEvent<string>) =>
-                                handleChange(e, "institution_id")
+                                handleChange(e, 'institution_id')
                               }
                               label="institute"
                               name="institution_id"
@@ -380,7 +387,7 @@ const AddEditSubject = () => {
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -400,7 +407,7 @@ const AddEditSubject = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor),
                                     },
@@ -411,7 +418,7 @@ const AddEditSubject = () => {
                               ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.institution_id === "string" &&
+                              {typeof errors?.institution_id === 'string' &&
                                 errors.institution_id}
                             </Typography>
                           </FormControl>
@@ -425,20 +432,20 @@ const AddEditSubject = () => {
                             </InputLabel>
                             <Select
                               onChange={(e: SelectChangeEvent<string>) =>
-                                handleChange(e, "course_id")
+                                handleChange(e, 'course_id')
                               }
                               label="course"
                               name="course_id"
                               onBlur={handleBlur}
                               value={values.course_id}
                               error={Boolean(
-                                errors.course_name && touched.course_id
+                                errors.course_name && touched.course_id,
                               )}
                               variant="outlined"
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -458,7 +465,7 @@ const AddEditSubject = () => {
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
-                                    "&:hover": {
+                                    '&:hover': {
                                       backgroundColor:
                                         inputfieldhover(namecolor),
                                     },
@@ -469,7 +476,7 @@ const AddEditSubject = () => {
                               ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.course_id === "string" &&
+                              {typeof errors?.course_id === 'string' &&
                                 errors.course_id}
                             </Typography>
                           </FormControl>
@@ -483,20 +490,20 @@ const AddEditSubject = () => {
                             </InputLabel>
                             <Select
                               onChange={(e: SelectChangeEvent<string>) =>
-                                handleChange(e, "semester_id")
+                                handleChange(e, 'semester_id')
                               }
                               onBlur={handleBlur}
                               label="Semester"
                               name="semester_id"
                               value={values.semester_id}
                               error={Boolean(
-                                errors.semester_name && touched.semester_id
+                                errors.semester_name && touched.semester_id,
                               )}
                               variant="outlined"
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                "& .MuiSelect-icon": {
+                                '& .MuiSelect-icon': {
                                   color: fieldIcon(namecolor),
                                 },
                               }}
@@ -509,8 +516,7 @@ const AddEditSubject = () => {
                                 },
                               }}
                             >
-                              
-                            {/* {  [...Array(maxSemester)]?.map((_, index) => (
+                              {/* {  [...Array(maxSemester)]?.map((_, index) => (
                                 <MenuItem
                                   key={`${index + 1}`}
                                   value={index + 1}
@@ -527,7 +533,10 @@ const AddEditSubject = () => {
                                 </MenuItem>
                               ))} */}
                               {totalSemester
-                                ?.sort((a: any, b: any) => a?.semester_number - b?.semester_number)
+                                ?.sort(
+                                  (a: any, b: any) =>
+                                    a?.semester_number - b?.semester_number,
+                                )
                                 ?.map((item: any) => (
                                   <MenuItem
                                     key={item?.semester_id}
@@ -536,7 +545,8 @@ const AddEditSubject = () => {
                                       backgroundColor: inputfield(namecolor),
                                       color: inputfieldtext(namecolor),
                                       '&:hover': {
-                                        backgroundColor: inputfieldhover(namecolor),
+                                        backgroundColor:
+                                          inputfieldhover(namecolor),
                                       },
                                     }}
                                   >
@@ -545,7 +555,8 @@ const AddEditSubject = () => {
                                 ))}
                             </Select>
                             <Typography variant="body2" color="error">
-                              {typeof errors?.semester_id === "string" && errors?.semester_id}
+                              {typeof errors?.semester_id === 'string' &&
+                                errors?.semester_id}
                             </Typography>
                           </FormControl>
                         </div>
@@ -559,11 +570,11 @@ const AddEditSubject = () => {
                             label="Subject Name *"
                             value={values?.subject_name}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange(e, "subject_name")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'subject_name')}
                           />
                           {touched?.subject_name && errors?.subject_name ? (
-                            <p style={{ color: "red" }}>
+                            <p style={{ color: 'red' }}>
                               {errors?.subject_name}
                             </p>
                           ) : (
@@ -591,8 +602,8 @@ const AddEditSubject = () => {
                               //   setSelectedFile(event.target.value)
                               // }
                               onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => handleChange(e, "menu_image")}
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'menu_image')}
                               id="file-upload"
                               name="menu_image"
                               style={{ color: inputfieldtext(namecolor) }}
@@ -605,7 +616,7 @@ const AddEditSubject = () => {
                     <div className=" mt-3">
                       {!id ? (
                         <button className="btn btn-primary mainbutton">
-                          {id ? "Update" : "Save"}
+                          {id ? 'Update' : 'Save'}
                         </button>
                       ) : (
                         <button

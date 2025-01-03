@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
@@ -10,18 +10,18 @@ import {
   OutlinedInput,
   SelectChangeEvent,
   // useTheme,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import useApi from "../../hooks/useAPI";
-import "react-toastify/dist/ReactToastify.css";
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import useApi from '../../hooks/useAPI';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   deepEqual,
   fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface Hobby {
   hobby_name: string;
@@ -50,10 +50,9 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
-  const StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem('_id');
 
   useEffect(() => {
- 
     if (save) {
       submitHandle();
     }
@@ -62,22 +61,22 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const hobbyListData = await getData("hobby/list");
-      
+        const hobbyListData = await getData('hobby/list');
+
         if (hobbyListData?.status === 200) {
           const filteredData = hobbyListData?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllHobbies(filteredData || []);
         }
 
         const studentHobbyData = await getData(
-          "student_hobby/edit/" + StudentId
+          'student_hobby/edit/' + StudentId,
         );
-       
+
         if (studentHobbyData?.status === 200) {
           const hobbyIds = studentHobbyData.data.map(
-            (selecthobby: any) => selecthobby.hobby_id
+            (selecthobby: any) => selecthobby.hobby_id,
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
@@ -85,10 +84,10 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           setEditFlag(true);
         }
       } catch (e: any) {
-        toast.error(e?.message || "An error occurred", {
+        toast.error(e?.message || 'An error occurred', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       }
     };
@@ -115,23 +114,21 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
-   
+
     const payloadPromises = selectedHobbies.map((hobbyid) => {
       const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-   
+
       // return editFlag
       //   ? postData("student_hobby/add", payload)
       //   : putData("student_hobby/edit/" + StudentId, payload);
       if (ishobbiestuch) {
-      
         if (editFlag) {
-          return postData("student_hobby/add", payload);
+          return postData('student_hobby/add', payload);
         } else if (!eq) {
-         
-          return putData("student_hobby/edit/" + StudentId, payload);
+          return putData('student_hobby/edit/' + StudentId, payload);
         } else {
           return Promise.resolve({ status: 204 }); // Skip update
         }
@@ -160,23 +157,22 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     try {
       const results = await Promise.all(payloadPromises);
       const successfulResults = results.filter((res) => res.status === 200);
-     
+
       if (successfulResults?.length > 0) {
-     
         if (!isLanguageUpdated && ishobbiestuch) {
           if (editFlag) {
-            toast.success("Hobbies saved successfully", {
+            toast.success('Hobbies saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
-        
+
             setIshobbiestuch(false);
           } else {
-            toast.success("Hobbies updated successfully", {
+            toast.success('Hobbies updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
             setIshobbiestuch(false);
           }
@@ -192,10 +188,10 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         //empty
       }
     } catch {
-      toast.error("An error occurred while saving hobbies", {
+      toast.error('An error occurred while saving hobbies', {
         hideProgressBar: true,
-        theme: "colored",
-        position: "top-center",
+        theme: 'colored',
+        position: 'top-center',
       });
     }
     setSave(false);
@@ -213,9 +209,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     },
   };
   const hobbydelete = (id: any) => {
-    deleteData("/student_hobby/delete/" + id)
+    deleteData('/student_hobby/delete/' + id)
       .then((data: any) => {
-     
         if (data?.status === 200) {
           // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
           // setAllHobbies(filteredData ||[]);
@@ -234,7 +229,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       });
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
-    
     if (!event.target.checked) {
       // Call your function when checkbox is unchecked
       hobbydelete(hobbyId);
@@ -248,8 +242,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         <div className="col-12 justify-content-start form_field_wrapper">
           <FormControl
             sx={{
-              maxWidth: "300px",
-              width: "100%",
+              maxWidth: '300px',
+              width: '100%',
             }}
           >
             <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
@@ -259,9 +253,9 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
               multiple
               data-testid="hobby_text"
               sx={{
-                backgroundColor: "#f5f5f5",
-                "& .MuiSelect-icon": {
-                  color: fieldIcon(namecolor), 
+                backgroundColor: '#f5f5f5',
+                '& .MuiSelect-icon': {
+                  color: fieldIcon(namecolor),
                 },
               }}
               value={selectedHobbies}
@@ -272,14 +266,14 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
                 (selected as string[])
                   .map((id) => {
                     const hobby = allHobbies.find(
-                      (hobby: any) => hobby.id === id
+                      (hobby: any) => hobby.id === id,
                     );
-                    return hobby ? hobby.hobby_name : "";
+                    return hobby ? hobby.hobby_name : '';
                   })
                   // .join(", ")
                   .reduce(
-                    (prev, curr) => (prev === "" ? curr : `${prev}, ${curr}`),
-                    ""
+                    (prev, curr) => (prev === '' ? curr : `${prev}, ${curr}`),
+                    '',
                   )
               }
               MenuProps={MenuProps}
@@ -294,17 +288,17 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
                     // "&:hover": {
                     //   backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
                     // },
-                    "&:hover": {
+                    '&:hover': {
                       backgroundColor: inputfieldhover(namecolor),
-                      color: "black !important",
+                      color: 'black !important',
                     },
-                    "&.Mui-selected": {
-                      // backgroundColor: inputfield(namecolor),   
-                      color: "black",
+                    '&.Mui-selected': {
+                      // backgroundColor: inputfield(namecolor),
+                      color: 'black',
                     },
-                    "&.Mui-selected, &:focus": {
+                    '&.Mui-selected, &:focus': {
                       backgroundColor: inputfield(namecolor),
-                      color:namecolor === "dark" ? "white" : "black",
+                      color: namecolor === 'dark' ? 'white' : 'black',
                     },
                   }}
                 >

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   FormControl,
   FormHelperText,
@@ -8,21 +8,21 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import "react-toastify/dist/ReactToastify.css";
-import useApi from "../../hooks/useAPI";
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
 import {
   commonStyle,
   fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-import { ChildComponentProps } from "../StudentProfile";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
+import { ChildComponentProps } from '../StudentProfile';
 
 interface Language {
   id: string;
@@ -31,7 +31,7 @@ interface Language {
 }
 
 const AdminLanguage: React.FC<ChildComponentProps> = () => {
-  const AdminId = localStorage.getItem("_id");
+  const AdminId = localStorage.getItem('_id');
   interface Box {
     id: number;
     language_id: any;
@@ -39,10 +39,10 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   }
 
   const context = useContext(NameContext);
-  const { namecolor,activeForm,setActiveForm }: any = context;
+  const { namecolor, activeForm, setActiveForm }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
-  const [editFalg, setEditFlag] = useState<boolean>(false);
+  // const [editFalg, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [error, setError] = useState<{
@@ -50,34 +50,33 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   }>({});
   const [checkChanges, setCheckChanges] = useState(false);
 
-  const[editable,setEditable]=useState(true);
-  const menuItems = ["read", "write", "both"];
+  const [editable, setEditable] = useState(true);
+  const menuItems = ['read', 'write', 'both'];
 
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
-      { id: 0, language_id: "", proficiency: "" },
+      { id: 0, language_id: '', proficiency: '' },
     ]);
   };
 
   const deleterow = (id: any, indx: number) => {
-
     if (id !== 0) {
       deleteData(`/admin_language_known/delete/${id}`)
         .then((data: any) => {
           if (data.status === 200) {
-            toast.success("Language deleted successfully", {
+            toast.success('Language deleted successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         });
     }
@@ -85,11 +84,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   };
 
   useEffect(() => {
-    getData(`${"language/list"}`)
+    getData(`${'language/list'}`)
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllLanguage(filteredData || []);
         }
@@ -97,11 +96,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
-    getData(`${"admin_language_known/edit/" + AdminId}`)
+    getData(`${'admin_language_known/edit/' + AdminId}`)
       .then((data: any) => {
         if (data?.status === 200) {
           data.data.map((item: any) => {
@@ -115,59 +114,62 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             }
           });
         } else if (data?.status === 404) {
-          setBoxes([{ id: 0, language_id: "", proficiency: "" }]);
-          setEditFlag(true);
+          setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
+          // setEditFlag(true);
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center",
+            theme: 'colored',
+            position: 'top-center',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
   }, []);
   console.log(initialAdminState);
-  useEffect(()=>{
-   
-    getData(`${"admin_language_known/edit/" + AdminId}`)
-    .then((response: any) => {
-     
-      if(response?.status==200){
-        const newLanageage= response?.data?.filter((items:any)=>boxes.some((box:Box)=>box.id ===items.id || box.id ==0));
-        
-          const newBoxes:Box[]=newLanageage.map((item:any)=>(
-            {
-              id: item.id,
-              language_id: item.language_id,
-              proficiency: item.proficiency,
-            }
-          ))
-        
-          if(newBoxes.length >0){
-            setBoxes((preBoxes:Box[])=>[...preBoxes.filter((box:Box)=>box.id !=0)
-              ,...newBoxes.filter(
-              (newbox:Box)=>!preBoxes.some((item:Box)=>item.id===newbox.id )
-            )])
+  useEffect(() => {
+    getData(`${'admin_language_known/edit/' + AdminId}`).then(
+      (response: any) => {
+        if (response?.status == 200) {
+          const newLanageage = response?.data?.filter((items: any) =>
+            boxes.some((box: Box) => box.id === items.id || box.id == 0),
+          );
+
+          const newBoxes: Box[] = newLanageage.map((item: any) => ({
+            id: item.id,
+            language_id: item.language_id,
+            proficiency: item.proficiency,
+          }));
+
+          if (newBoxes.length > 0) {
+            setBoxes((preBoxes: Box[]) => [
+              ...preBoxes.filter((box: Box) => box.id != 0),
+              ...newBoxes.filter(
+                (newbox: Box) =>
+                  !preBoxes.some((item: Box) => item.id === newbox.id),
+              ),
+            ]);
             setInitialState((prevBoxes: Box[]) => [
               ...prevBoxes,
               ...newBoxes.filter(
-                (newBox: Box) => !prevBoxes.some((box: Box) => box.id === newBox.id)
+                (newBox: Box) =>
+                  !prevBoxes.some((box: Box) => box.id === newBox.id),
               ),
             ]);
           }
-        setEditable(false);
-      }else if(response?.status==401){
-        setEditable(true);
-       
-      }});
-  },[activeForm])
+          setEditable(false);
+        } else if (response?.status == 401) {
+          setEditable(true);
+        }
+      },
+    );
+  }, [activeForm]);
 
   const saveLanguage = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -186,7 +188,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         }));
       }
     });
-    
+
     if (!valid) return; // Don't proceed if validation fails
     setActiveForm((prev: number) => prev + 1);
 
@@ -196,66 +198,60 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      console.log(editFalg);
       if (checkChanges) {
-        
-        if (editable && box.id === 0) {
-          return postData("admin_language_known/add", payload);
+        if (box.id === 0) {
+          return postData('admin_language_known/add', payload);
         } else {
-          
-          return putData("admin_language_known/edit/" + AdminId, payload);
+          return putData('admin_language_known/edit/' + AdminId, payload);
         }
       } else {
         return Promise.resolve({ status: 204 });
       }
     });
     try {
-     
       const results: any = await Promise.all(promises);
 
-      const successfulResults = results.filter((res: { status: number }) => res.status === 200);
+      const successfulResults = results.filter(
+        (res: { status: number }) => res.status === 200,
+      );
       if (successfulResults?.length > 0) {
         if (checkChanges) {
           if (editable) {
-            toast.success("Language saved successfully", {
+            toast.success('Language saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
             setCheckChanges(false);
           } else {
             setCheckChanges(false);
-            toast.success("Language updated successfully", {
+            toast.success('Language updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center",
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         } else {
           //else
         }
-
       }
     } catch (e: any) {
       toast.error(e?.message, {
         hideProgressBar: true,
-        theme: "colored",
-        position: "top-center"
+        theme: 'colored',
+        position: 'top-center',
       });
     }
-
-
-   
   };
 
   const handleChange = (event: SelectChangeEvent<string>, index: number) => {
     const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
-        i === index ? { ...box, language_id: value } : box
-      )
+        i === index ? { ...box, language_id: value } : box,
+      ),
     );
-    validateFields(index, "language");
+    validateFields(index, 'language');
     setCheckChanges(true);
   };
 
@@ -263,10 +259,10 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
     const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
-        i === index ? { ...box, proficiency: value } : box
-      )
+        i === index ? { ...box, proficiency: value } : box,
+      ),
     );
-    validateFields(index, "proficiency");
+    validateFields(index, 'proficiency');
     setCheckChanges(true);
   };
 
@@ -275,10 +271,10 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       ...prevError,
       [index]: {
         ...prevError[index],
-        ...(field === "language" && {
+        ...(field === 'language' && {
           language_error: !boxes[index].language_id,
         }),
-        ...(field === "proficiency" && {
+        ...(field === 'proficiency' && {
           proficiency_error: !boxes[index].proficiency,
         }),
       },
@@ -301,7 +297,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               sx={{
                 m: 1,
                 mt:
-                  error[index]?.language_error && box.language_id == "" ? 4 : 1,
+                  error[index]?.language_error && box.language_id == '' ? 4 : 1,
               }}
               fullWidth
             >
@@ -313,15 +309,15 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
                 value={box.language_id}
                 label="Language *"
                 sx={{
-                  backgroundColor: "#f5f5f5",
-                  "& .MuiSelect-icon": {
+                  backgroundColor: '#f5f5f5',
+                  '& .MuiSelect-icon': {
                     color: fieldIcon(namecolor),
                   },
                 }}
                 onChange={(e) => {
                   handleChange(e, index);
                 }}
-                onBlur={() => validateFields(index, "language")}
+                onBlur={() => validateFields(index, 'language')}
               >
                 {alllanguage
                   .filter((lang) => lang.id === box.language_id)
@@ -333,13 +329,13 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
-                        "&:hover": {
+                        '&:hover': {
                           backgroundColor: inputfieldhover(namecolor),
                         },
-                        "&.Mui-selected": {
-                          backgroundColor: inputfield(namecolor),   
+                        '&.Mui-selected': {
+                          backgroundColor: inputfield(namecolor),
                         },
-                        "&.Mui-selected, &:focus": {
+                        '&.Mui-selected, &:focus': {
                           backgroundColor: inputfield(namecolor),
                         },
                       }}
@@ -352,7 +348,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
                   .filter(
                     (lang) =>
                       lang.id !== box.language_id &&
-                      !boxes.some((b) => b.language_id === lang.id)
+                      !boxes.some((b) => b.language_id === lang.id),
                   )
                   .map((lang) => (
                     <MenuItem
@@ -361,13 +357,13 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
-                        "&:hover": {
+                        '&:hover': {
                           backgroundColor: inputfieldhover(namecolor),
                         },
-                        "&.Mui-selected": {
-                          backgroundColor: inputfield(namecolor),   
+                        '&.Mui-selected': {
+                          backgroundColor: inputfield(namecolor),
                         },
-                        "&.Mui-selected, &:focus": {
+                        '&.Mui-selected, &:focus': {
                           backgroundColor: inputfield(namecolor),
                         },
                       }}
@@ -376,8 +372,8 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
                     </MenuItem>
                   ))}
               </Select>
-              {error[index]?.language_error && box.language_id == "" && (
-                <FormHelperText style={{ color: "red" }}>
+              {error[index]?.language_error && box.language_id == '' && (
+                <FormHelperText style={{ color: 'red' }}>
                   Language is required
                 </FormHelperText>
               )}
@@ -389,7 +385,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               sx={{
                 m: 1,
                 mt:
-                  error[index]?.proficiency_error && box.proficiency == ""
+                  error[index]?.proficiency_error && box.proficiency == ''
                     ? 4
                     : 1,
               }}
@@ -405,27 +401,24 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
                 value={box.proficiency}
                 label="Proficiency *"
                 sx={{
-                  backgroundColor: "#f5f5f5",
-                  "& .MuiSelect-icon": {
+                  backgroundColor: '#f5f5f5',
+                  '& .MuiSelect-icon': {
                     color: fieldIcon(namecolor),
                   },
                 }}
                 onChange={(e) => {
                   handleChange1(e, index);
                 }}
-                onBlur={() => validateFields(index, "proficiency")}
+                onBlur={() => validateFields(index, 'proficiency')}
               >
-               
                 {menuItems.map((item) => (
-                  <MenuItem key={item} value={item}
-                  sx={commonStyle(namecolor)}
-                  >
+                  <MenuItem key={item} value={item} sx={commonStyle(namecolor)}>
                     {item.charAt(0).toUpperCase() + item.slice(1)}
                   </MenuItem>
                 ))}
               </Select>
-              {error[index]?.proficiency_error && box.proficiency == "" && (
-                <FormHelperText style={{ color: "red" }}>
+              {error[index]?.proficiency_error && box.proficiency == '' && (
+                <FormHelperText style={{ color: 'red' }}>
                   Proficiency is required
                 </FormHelperText>
               )}
@@ -435,8 +428,8 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             <IconButton
               onClick={addRow}
               sx={{
-                width: "35px",
-                height: "35px",
+                width: '35px',
+                height: '35px',
                 color: fieldIcon(namecolor),
               }}
             >
@@ -446,8 +439,8 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               <IconButton
                 onClick={() => deleterow(box.id, index)}
                 sx={{
-                  width: "35px",
-                  height: "35px",
+                  width: '35px',
+                  height: '35px',
                   color: fieldIcon(namecolor),
                 }}
               >

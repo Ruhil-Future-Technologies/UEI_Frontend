@@ -1,15 +1,15 @@
-import React, { useState, ChangeEvent } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import useApi from "../../hooks/useAPI";
+import React, { useState, ChangeEvent } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import useApi from '../../hooks/useAPI';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 const AdminFeedback: React.FC = () => {
   // let StudentId = localStorage.getItem("_id");
   const { postData } = useApi();
-  const [question, setQuestion] = useState<string>("");
-  const [options, setOptions] = useState<string[]>([""]);
+  const [question, setQuestion] = useState<string>('');
+  const [options, setOptions] = useState<string[]>(['']);
 
   const handleQuestionChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuestion(e.target.value);
@@ -17,7 +17,7 @@ const AdminFeedback: React.FC = () => {
 
   const handleOptionChange = (
     index: number,
-    e: ChangeEvent<HTMLInputElement>
+    e: ChangeEvent<HTMLInputElement>,
   ) => {
     const newOptions = [...options];
     newOptions[index] = e.target.value;
@@ -25,7 +25,7 @@ const AdminFeedback: React.FC = () => {
   };
 
   const handleAddOption = () => {
-    setOptions([...options, ""]);
+    setOptions([...options, '']);
   };
 
   const handleDeleteOption = (index: number) => {
@@ -40,15 +40,15 @@ const AdminFeedback: React.FC = () => {
       options: options,
     };
 
-    postData("/feedback/add", payload).then((response) => {
+    postData('/feedback/add', payload).then((response) => {
       console.log(response);
       if (response.status === 200) {
-        toast.success("question added successfully", {
+        toast.success('question added successfully', {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
-        setOptions([""]);
-        setQuestion("");
+        setOptions(['']);
+        setQuestion('');
       }
     });
   };

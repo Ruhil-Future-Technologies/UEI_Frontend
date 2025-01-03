@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeEvent, useEffect, useState } from "react";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
+import { ChangeEvent, useEffect, useState } from 'react';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
 // import { QUERY_KEYS_STUDENT_FEEDBACK } from "../../utils/const";
-import { TextField } from "@mui/material";
-import React from "react";
+import { TextField } from '@mui/material';
+import React from 'react';
 
 interface Question {
   id: string;
@@ -13,22 +13,22 @@ interface Question {
   answer?: string;
 }
 const AddStudentFeedback = () => {
-  const StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem('_id');
   const { getData, postData } = useApi();
   const [question, setQuestion] = useState<Question>({
-    id: "",
-    question: "",
-    options: "",
+    id: '',
+    question: '',
+    options: '',
   });
   // const [options, setOptions] = useState<any>([""]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>('');
   const [answeredQuestions, setAnsweredQuestions] = useState<
     { question: string; answer: string }[]
   >([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [selectAnswer, setSelectAnswer] = useState<string>("");
+  const [selectAnswer, setSelectAnswer] = useState<string>('');
   const [studentFlag, setStudentFlag] = useState<boolean>(true);
   const [errors, setErrors] = useState<any>({});
 
@@ -36,7 +36,7 @@ const AddStudentFeedback = () => {
   const [final_list, setFinalList] = useState<any>([]);
 
   useEffect(() => {
-    getData(`${"/feedback/list"}`).then((data) => {
+    getData(`${'/feedback/list'}`).then((data) => {
       if (data.status === 200) {
         setQuestions(data.data);
         setQuestion(data.data[0]);
@@ -44,7 +44,7 @@ const AddStudentFeedback = () => {
         // .replace(/{|}/g, '').split(',')
       }
     });
-    getData(`${"/feedback/student_feedback"}/${StudentId}`).then((data) => {
+    getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
       if (data.status === 200) {
         if (data.data.length > 0) {
           setAnsweredQuestions(data.data);
@@ -82,19 +82,17 @@ const AddStudentFeedback = () => {
     // Clear the error for this question if a value is selected
     setErrors((prevErrors: any) => ({
       ...prevErrors,
-      [id]: "",
+      [id]: '',
     }));
     // setSelectAnswer(value);
-   
   };
-
 
   // Validation function
   const validateForm = () => {
     const newErrors: any = {};
     questions.forEach((question: any) => {
       if (!selectAnswer[question.id]) {
-        newErrors[question.id] = "This question is required.";
+        newErrors[question.id] = 'This question is required.';
       }
     });
     setErrors(newErrors);
@@ -106,38 +104,36 @@ const AddStudentFeedback = () => {
       const updatedAnswers = [
         ...answeredQuestions,
         // .slice(0, currentQuestionIndex)
-        { question: "comment", answer: message },
+        { question: 'comment', answer: message },
         // ...answeredQuestions.slice(currentQuestionIndex + 1),
       ];
       setAnsweredQuestions(updatedAnswers);
 
-      
-      alert("Form submitted successfully");
+      alert('Form submitted successfully');
       // Handle submission logic here
-      
+
       const payload = {
         student_id: StudentId,
         feedbacks: updatedAnswers,
       };
-   
-      postData("/feedback/student_feedback", payload)
+
+      postData('/feedback/student_feedback', payload)
         .then((response) => {
-        
           if (response.status === 200) {
-            toast.success("feedback sent successfully", {
+            toast.success('feedback sent successfully', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
-          setMessage("");
+          setMessage('');
           setAnsweredQuestions([]);
           setCurrentQuestionIndex(0);
           setQuestion(questions[0]);
           setStudentFlag(false);
         })
         .catch((error) => {
-          console.error("Error while submitting feedback:", error);
-          alert("Error while submitting feedback. Please try again later.");
+          console.error('Error while submitting feedback:', error);
+          alert('Error while submitting feedback. Please try again later.');
         });
     }
   };
@@ -153,16 +149,16 @@ const AddStudentFeedback = () => {
           <h3 className="text-center m-3 fst-italic">Welcome to feedback</h3>
           {currentQuestionIndex < questions.length ? (
             <div>
-              <div style={{ marginTop: "40px" }}>
+              <div style={{ marginTop: '40px' }}>
                 <div
                   key={question.id}
                   className="card"
-                  style={{ background: "#d3d3d3" }}
+                  style={{ background: '#d3d3d3' }}
                 >
                   <div className="p-4">
                     {questions.map((question: any, qIndex: any) => (
                       <div key={question.id}>
-                        {" "}
+                        {' '}
                         <h4 className="message-bubble m-1">
                           Q.{qIndex + 1} {question.question}
                         </h4>
@@ -188,7 +184,7 @@ const AddStudentFeedback = () => {
                                         handleSelectedOption(
                                           question.id,
                                           option,
-                                          question.question
+                                          question.question,
                                         )
                                       }
                                     />
@@ -202,7 +198,7 @@ const AddStudentFeedback = () => {
                                     </label>
                                   </div>
                                 </div>
-                              )
+                              ),
                             )
                           ) : (
                             <div>
@@ -215,14 +211,14 @@ const AddStudentFeedback = () => {
                                   handleSelectedOption(
                                     question.id,
                                     e.target.value,
-                                    question.question
+                                    question.question,
                                   )
                                 }
                               />
                             </div>
                           )}
                           {errors[question.id] && (
-                            <span style={{ color: "red" }}>
+                            <span style={{ color: 'red' }}>
                               {errors[question.id]}
                             </span>
                           )}
@@ -237,10 +233,10 @@ const AddStudentFeedback = () => {
             <div>
               <textarea
                 style={{
-                  width: "70%",
-                  display: "block",
-                  margin: "0 auto",
-                  background: "#d3d3d3",
+                  width: '70%',
+                  display: 'block',
+                  margin: '0 auto',
+                  background: '#d3d3d3',
                 }}
                 value={message}
                 rows={10}
@@ -261,7 +257,7 @@ const AddStudentFeedback = () => {
           <h1>You have Already filled feedback.</h1>
           {final_list.map((question: any, qIndex: number) => (
             <div key={question.id}>
-              {" "}
+              {' '}
               <h4 className="message-bubble m-1">
                 Q.{qIndex + 1} {question.question}
               </h4>

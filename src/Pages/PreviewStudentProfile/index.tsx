@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import useApi from "../../hooks/useAPI";
-import { QUERY_KEYS_STUDENT } from "../../utils/const";
-import { toast } from "react-toastify";
-import images_man from "../../assets/img/images_man.png";
-import images_female from "../../assets/img/images_female.png";
-import AvatarModal from "../../Components/AvatarModal/AvatarModal";
-import maleAvatar from "../../assets/avatar/images_man.png";
-import femaleAvatar from "../../assets/avatar/images_female.png";
-import femaleAvatar1 from "../../assets/avatar/images_female1.png";
-import femaleAvatar2 from "../../assets/avatar/images_female2.png";
-import femaleAvatar3 from "../../assets/avatar/images_female3.png";
-import femaleAvatar4 from "../../assets/avatar/images_female4.png";
-import femaleAvatar5 from "../../assets/avatar/images_female5.png";
-import maleAvatar1 from "../../assets/avatar/images_man1.png";
-import maleAvatar2 from "../../assets/avatar/images_man2.png";
-import maleAvatar3 from "../../assets/avatar/images_man3.png";
-import maleAvatar4 from "../../assets/avatar/images_man4.png";
-import maleAvatar5 from "../../assets/avatar/images_man5.png";
-import maleAvatar6 from "../../assets/avatar/images_man6.png";
-import NameContext from "../Context/NameContext";
-import { inputfieldtext } from "../../utils/helpers";
+import React, { useContext, useEffect, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
+import { QUERY_KEYS_STUDENT } from '../../utils/const';
+import { toast } from 'react-toastify';
+import images_man from '../../assets/img/images_man.png';
+import images_female from '../../assets/img/images_female.png';
+import AvatarModal from '../../Components/AvatarModal/AvatarModal';
+import maleAvatar from '../../assets/avatar/images_man.png';
+import femaleAvatar from '../../assets/avatar/images_female.png';
+import femaleAvatar1 from '../../assets/avatar/images_female1.png';
+import femaleAvatar2 from '../../assets/avatar/images_female2.png';
+import femaleAvatar3 from '../../assets/avatar/images_female3.png';
+import femaleAvatar4 from '../../assets/avatar/images_female4.png';
+import femaleAvatar5 from '../../assets/avatar/images_female5.png';
+import maleAvatar1 from '../../assets/avatar/images_man1.png';
+import maleAvatar2 from '../../assets/avatar/images_man2.png';
+import maleAvatar3 from '../../assets/avatar/images_man3.png';
+import maleAvatar4 from '../../assets/avatar/images_man4.png';
+import maleAvatar5 from '../../assets/avatar/images_man5.png';
+import maleAvatar6 from '../../assets/avatar/images_man6.png';
+import NameContext from '../Context/NameContext';
+import { inputfieldtext } from '../../utils/helpers';
 
 // import { QUERY_STUDENT_PROFILE_KEYS } from '../../utils/const';
 interface PreviewStudentProfileProps {
@@ -46,7 +46,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   handleStep,
 }) => {
   const context = useContext(NameContext);
-  const StudentId = localStorage.getItem("_id");
+  const StudentId = localStorage.getItem('_id');
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const { setProImage, namecolor }: any = context;
   const [profileData, setProfileData] = useState<any>({});
@@ -62,7 +62,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
-      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
+      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== '',
     ).length;
   };
 
@@ -97,10 +97,10 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
           if (basic_info && Object.keys(basic_info)?.length > 0) {
             // console.log("test pp",Object.keys(basic_info)?.length > 0 ,data?.data?.pic_path)
             if (
-              data?.data?.pic_path !== "" &&
+              data?.data?.pic_path !== '' &&
               data?.data?.pic_path !== undefined
             ) {
-              getData(`${"upload_file/get_image/" + data?.data?.pic_path}`)
+              getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
                 .then((imgdata: any) => {
                   setprofileImage(imgdata?.data);
                 })
@@ -131,14 +131,14 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
             setlanguagePercentage(percentage);
           }
           if (academic_history && Object.keys(academic_history).length > 0) {
-            if (academic_history?.institution_type === "school") {
+            if (academic_history?.institution_type === 'school') {
               delete academic_history?.course_id;
               delete academic_history?.institute_id;
               delete academic_history?.institution_name;
               delete academic_history?.learning_style;
               delete academic_history?.university_name;
               delete academic_history?.year;
-              if (academic_history?.board !== "state_board") {
+              if (academic_history?.board !== 'state_board') {
                 delete academic_history?.state_for_stateboard;
               }
             } else {
@@ -171,7 +171,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -186,16 +186,16 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
     editProfile();
   };
   // console.log("testing",profileData?.contact?.email_id)
-  const userId = localStorage.getItem("userid");
+  const userId = localStorage.getItem('userid');
 
   const handleMouseEnter = (event: any) => {
-    event.target.style.color = "blue"; // Example hover style
-    event.target.style.fontSize = ".90rem";
+    event.target.style.color = 'blue'; // Example hover style
+    event.target.style.fontSize = '.90rem';
   };
 
   const handleMouseLeave = (event: any) => {
-    event.target.style.color = "initial"; // Reset to initial style
-    event.target.style.fontSize = ".77rem";
+    event.target.style.color = 'initial'; // Reset to initial style
+    event.target.style.fontSize = '.77rem';
   };
   function toCamelCase(str: string) {
     return str.toLowerCase().replace(/(?:^|\s)\w/g, function (match: string) {
@@ -204,12 +204,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   }
   const genderCamelCase = profileData?.basic_info?.gender
     ? toCamelCase(profileData?.basic_info?.gender)
-    : "";
+    : '';
   const getDefaultImage = (gender: string) => {
-    if (gender === "Male" || gender === "male") {
+    if (gender === 'Male' || gender === 'male') {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
       return images_man;
-    } else if (gender === "Female" || gender === "female") {
+    } else if (gender === 'Female' || gender === 'female') {
       // return "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp";
       return images_female;
     } else {
@@ -228,37 +228,37 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   const handleCloseModal = () => {
     setModalOpen(false);
   };
- 
+
   const handleAvatarSelect = async (
-    avatarUrl: string | URL | Request | any
+    avatarUrl: string | URL | Request | any,
   ) => {
     try {
       const response = await fetch(avatarUrl);
       const blob = await response.blob();
-      let filename = ""; // Initialize filename variable
+      let filename = ''; // Initialize filename variable
 
       // Extract the original filename from the URL
-      if (avatarUrl.startsWith("data:image")) {
+      if (avatarUrl.startsWith('data:image')) {
         // If avatarUrl is a data URL
-        const contentType = avatarUrl.split(";")[0].split(":")[1];
-        const extension = contentType.split("/")[1];
+        const contentType = avatarUrl.split(';')[0].split(':')[1];
+        const extension = contentType.split('/')[1];
         filename = `avatar_${Date.now()}.${extension}`;
       } else {
-        const urlSegments = avatarUrl.split("/");
+        const urlSegments = avatarUrl.split('/');
         filename = urlSegments[urlSegments.length - 1];
       }
 
       const file = new File([blob], filename, { type: blob.type });
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append('file', file);
 
-      const data = await postFileData("upload_file/upload", formData);
+      const data = await postFileData('upload_file/upload', formData);
 
       if (data?.status === 200) {
         const datastudent: any = await getData(
-          `${"student/get/" + StudentId}`,
-          StudentId
+          `${'student/get/' + StudentId}`,
+          StudentId,
         );
 
         const payload = {
@@ -266,7 +266,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
           pic_path: filename,
         };
         if (datastudent?.status === 404) {
-          const dataadd = await postData(`${"student/add"}`, payload);
+          const dataadd = await postData(`${'student/add'}`, payload);
           if (dataadd?.status === 200) {
             await callAPI();
             setprofileImage(avatarUrl);
@@ -285,8 +285,8 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
             aim: datastudent?.data?.aim,
           };
           const dataadd = await putData(
-            `${"student/edit/"}${StudentId}`,
-            payload
+            `${'student/edit/'}${StudentId}`,
+            payload,
           );
           if (dataadd?.status === 200) {
             await callAPI();
@@ -300,13 +300,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
       } else {
         toast.error(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       }
     } catch (e: any) {
       toast.error(e?.message, {
         hideProgressBar: true,
-        theme: "colored",
+        theme: 'colored',
       });
     }
   };
@@ -345,7 +345,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
     ],
   };
 
-  const gender: string = profileData?.gender?.toString() || "default";
+  const gender: string = profileData?.gender?.toString() || 'default';
   const avatars = avatarsMap[gender.toLowerCase()];
 
   return (
@@ -364,14 +364,14 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                           <span
                             className="profilebody"
                             style={{
-                              display: "flex",
-                              justifyContent: "flex-end",
-                              padding: "10px",
+                              display: 'flex',
+                              justifyContent: 'flex-end',
+                              padding: '10px',
                             }}
                           >
                             <p
                               style={{
-                                cursor: "pointer",
+                                cursor: 'pointer',
                                 color: isHovered
                                   ? inputfieldtext(namecolor)
                                   : inputfieldtext(namecolor),
@@ -393,12 +393,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                               // src={loading ? '' : profileImage ? profileImage : getDefaultImage(profileData?.gender)}
                               src={
                                 loading
-                                  ? ""
+                                  ? ''
                                   : profileImage
-                                  ? profileImage
-                                  : getDefaultImage(
-                                      profileData?.basic_info?.gender
-                                    )
+                                    ? profileImage
+                                    : getDefaultImage(
+                                        profileData?.basic_info?.gender,
+                                      )
                               }
                               alt=""
                               className="rounded-circle img"
@@ -406,7 +406,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                               height="150px"
                             />
                             <h5 className="my-3">
-                              {profileData?.basic_info?.first_name}{" "}
+                              {profileData?.basic_info?.first_name}{' '}
                               {profileData?.basic_info?.last_name}
                             </h5>
                             <p className="text-muted mb-1 profiletext">
@@ -427,12 +427,12 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                               )} */}
 
                             <p className="mb-4">
-                              <span className="text-primary font-italic me-1"></span>{" "}
+                              <span className="text-primary font-italic me-1"></span>{' '}
                               Profile Completion Status
                             </p>
                             <p
                               className="mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(0)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -441,7 +441,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -454,13 +454,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(basicinfoPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(1)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -469,7 +469,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -482,13 +482,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(addressPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(2)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -497,7 +497,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -510,13 +510,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(languagePercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(3)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -525,7 +525,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded "
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -540,15 +540,15 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(
-                              academichistoryPercentage
+                              academichistoryPercentage,
                             )}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(4)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -557,7 +557,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded mb-2"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -570,13 +570,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(contactPercentage)}%`}</span>
                             <p
                               className="mt-4 mb-1"
-                              style={{ fontSize: ".77rem", cursor: "pointer" }}
+                              style={{ fontSize: '.77rem', cursor: 'pointer' }}
                               onClick={() => redirectOnClick(5)}
                               onMouseEnter={handleMouseEnter}
                               onMouseLeave={handleMouseLeave}
@@ -585,7 +585,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </p>
                             <div
                               className="progress rounded mb-2"
-                              style={{ height: "5px" }}
+                              style={{ height: '5px' }}
                             >
                               <div
                                 className="progress-bar custom-progress-bar"
@@ -598,8 +598,8 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                             </div>
                             <span
                               style={{
-                                display: "flex",
-                                flexDirection: "row-reverse",
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
                               }}
                             >{`${Math.round(subjectPercentage)}%`}</span>
                           </div>
@@ -614,7 +614,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0 profileinnertext">
-                                  {profileData?.basic_info?.first_name}{" "}
+                                  {profileData?.basic_info?.first_name}{' '}
                                   {/* {profileData?.father_name}{" "} */}
                                   {profileData?.basic_info?.last_name}
                                 </p>
@@ -630,13 +630,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                                   {/* {profileData?.contact?.email_id} */}
                                   {profileData?.contact?.email_id !== undefined
                                     ? profileData?.contact?.email_id?.includes(
-                                        "@"
+                                        '@',
                                       )
                                       ? profileData?.contact?.email_id
-                                      : ""
-                                    : userId && userId?.includes("@")
-                                    ? userId
-                                    : ""}
+                                      : ''
+                                    : userId && userId?.includes('@')
+                                      ? userId
+                                      : ''}
                                 </p>
                               </div>
                             </div>
@@ -650,11 +650,11 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                                   {profileData?.contact?.mobile_no_call !==
                                   undefined
                                     ? profileData?.contact?.mobile_isd_call +
-                                      " " +
+                                      ' ' +
                                       profileData?.contact?.mobile_no_call
-                                    : userId && !userId?.includes("@")
-                                    ? userId
-                                    : ""}
+                                    : userId && !userId?.includes('@')
+                                      ? userId
+                                      : ''}
                                 </p>
                               </div>
                             </div>
@@ -668,13 +668,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
                                   {profileData?.contact?.mobile_no_watsapp !==
                                   undefined
                                     ? profileData?.contact
-                                        ?.mobile_no_watsapp !== ""
+                                        ?.mobile_no_watsapp !== ''
                                       ? profileData?.contact
                                           ?.mobile_isd_watsapp +
-                                        " " +
+                                        ' ' +
                                         profileData?.contact?.mobile_no_watsapp
-                                      : ""
-                                    : ""}
+                                      : ''
+                                    : ''}
                                   {/* {profileData?.contact?.mobile_isd_watsapp}{" "}
                                   {profileData?.contact?.mobile_no_watsapp} */}
                                 </p>
