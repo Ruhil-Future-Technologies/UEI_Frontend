@@ -1421,7 +1421,7 @@ export const ProfileDialog: FunctionComponent<{
         setdisct(false);
       }
     }
-    if (districtquestion) {
+    if (statelist) {
       const disticRegex = /^[a-zA-Z\s]+$/;
 
       if (!disticRegex.test(updatedAnswers[answers.length - 1])) {
@@ -1930,6 +1930,20 @@ export const ProfileDialog: FunctionComponent<{
         return;
       } else {
         setper(false);
+      }
+    }
+
+    if (statelist) {
+      if (
+        updatedAnswers[answers.length - 1] === "" ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1])
+        ||!checkChanges
+      ) {
+        setdisct(true);
+        return;
+      } else {
+        setdisct(false);
       }
     }
     if (districtquestion) {
