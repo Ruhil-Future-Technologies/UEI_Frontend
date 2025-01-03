@@ -49,7 +49,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
-
+  const [hobbiesAll, setHobbiesAll] = useState<any>([]);
   const StudentId = localStorage.getItem('_id');
 
   useEffect(() => {
@@ -80,6 +80,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
+          setHobbiesAll(studentHobbyData?.data || []);
         } else if (studentHobbyData?.status === 404) {
           setEditFlag(true);
         }
@@ -120,12 +121,11 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-
-      // return editFlag
-      //   ? postData("student_hobby/add", payload)
-      //   : putData("student_hobby/edit/" + StudentId, payload);
+      const hobbyExists = hobbiesAll?.some(
+        (item: { hobby_id: any }) => item?.hobby_id === hobbyid,
+      );
       if (ishobbiestuch) {
-        if (editFlag) {
+        if (editFlag || !hobbyExists) {
           return postData('student_hobby/add', payload);
         } else if (!eq) {
           return putData('student_hobby/edit/' + StudentId, payload);
@@ -136,24 +136,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         return Promise.resolve({ status: 204 });
       }
     });
-    // <<<<<<< Updated upstream
-    //     if(payloadPromises.length >0)
-    //       {
-    //         try {
-    //           await Promise.all(payloadPromises);
-    //           toast.success("Hobbies saved successfully!!", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         } catch (e) {
-    //           toast.error("An error occurred while saving hobbies", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         }
-    //       }
-    // =======
-
     try {
       const results = await Promise.all(payloadPromises);
       const successfulResults = results.filter((res) => res.status === 200);
@@ -209,24 +191,29 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     },
   };
   const hobbydelete = (id: any) => {
-    deleteData('/student_hobby/delete/' + id)
-      .then((data: any) => {
-        if (data?.status === 200) {
-          // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
-          // setAllHobbies(filteredData ||[]);
-          // setAllHobbies(data?.data);
-          // toast.error(data?.message, {
+    const deleteHob = hobbiesAll?.filter(
+      (item: { hobby_id: any }) => item?.hobby_id == id,
+    );
+    if (deleteHob[0]?.id) {
+      deleteData('/student_hobby/delete/' + deleteHob[0]?.id)
+        .then((data: any) => {
+          if (data?.status === 200) {
+            // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
+            // setAllHobbies(filteredData ||[]);
+            // setAllHobbies(data?.data);
+            // toast.error(data?.message, {
+            //   hideProgressBar: true,
+            //   theme: "colored",
+            // });
+          }
+        })
+        .catch(() => {
+          // toast.error(e?.message, {
           //   hideProgressBar: true,
           //   theme: "colored",
           // });
-        }
-      })
-      .catch(() => {
-        // toast.error(e?.message, {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-      });
+        });
+    }
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
     if (!event.target.checked) {
@@ -235,7 +222,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       // console.log("Check", event.target.checked, hobbyId);
     }
   };
-
   return (
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
