@@ -53,7 +53,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       transform: 'translateX(22px)',
       '& .MuiSwitch-thumb:before': {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='20' width='20' viewBox='0 0 20 20'><path fill='${encodeURIComponent(
-          '#fff'
+          '#fff',
         )}' d='M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z'/></svg>')`,
       },
       '& + .MuiSwitch-track': {
@@ -79,7 +79,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='20' width='20' viewBox='0 0 20 20'><path fill='${encodeURIComponent(
-        '#fff'
+        '#fff',
       )}' d='M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z'/></svg>')`,
     },
     ...theme.applyStyles('dark', {
@@ -291,10 +291,8 @@ export const ProfileDialog: FunctionComponent<{
             setAnsweredData(data.data);
 
             if (data?.data?.academic_history?.institution_type === 'school') {
-
-            if (data?.data?.academic_history?.institution_type === "school") {
               getData(
-                `/class/get/${data?.data?.academic_history?.class_id}`
+                `/class/get/${data?.data?.academic_history?.class_id}`,
               ).then((response: any) => {
                 if (response.status === 200) {
                   setSelectedClass({
@@ -305,7 +303,7 @@ export const ProfileDialog: FunctionComponent<{
               });
             }
           }
-        }})
+        })
         .catch(() => {
           // toast.error(e?.message, {
           //     hideProgressBar: true,
@@ -469,13 +467,13 @@ export const ProfileDialog: FunctionComponent<{
               const filteredData = response?.data?.filter(
                 (item: any) =>
                   item?.is_active === 1 &&
-                  item?.class_id === answeredData?.academic_history?.class_id
+                  item?.class_id === answeredData?.academic_history?.class_id,
               );
 
               setSubjects(filteredData || []);
             } else {
               const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1
+                (item: any) => item?.is_active === 1,
               );
               setSubjects(filteredData || []);
             }
@@ -496,7 +494,7 @@ export const ProfileDialog: FunctionComponent<{
               (item: any) =>
                 item?.is_active === 1 &&
                 item.course_id === answeredData?.academic_history?.course_id &&
-                item.semester_id === answeredData?.academic_history?.sem_id
+                item.semester_id === answeredData?.academic_history?.sem_id,
             );
             setSubjects(filteredData || []);
           }
@@ -534,7 +532,7 @@ export const ProfileDialog: FunctionComponent<{
 
             if (guardianName) {
               filteredQuestions.basic = filteredQuestions.basic.filter(
-                (_, index) => index > 7
+                (_, index) => index > 7,
               );
             }
             if (instituteType) {
@@ -556,7 +554,7 @@ export const ProfileDialog: FunctionComponent<{
                   'Please select your semester ?',
                 ];
                 filteredQuestions.basic = filteredQuestions.basic.filter(
-                  (question) => !questionsToRemove.includes(question)
+                  (question) => !questionsToRemove.includes(question),
                 );
               } else {
                 const questionsToRemove = [
@@ -574,13 +572,13 @@ export const ProfileDialog: FunctionComponent<{
                   'Select your subject name',
                 ];
                 filteredQuestions.basic = filteredQuestions.basic.filter(
-                  (question) => !questionsToRemove.includes(question)
+                  (question) => !questionsToRemove.includes(question),
                 );
               }
             }
             if (hobby) {
               filteredQuestions.basic = filteredQuestions.basic.filter(
-                (question) => question !== 'Hi, Please choose your hobbies'
+                (question) => question !== 'Hi, Please choose your hobbies',
               );
             }
             if (language) {
@@ -589,7 +587,7 @@ export const ProfileDialog: FunctionComponent<{
                   ![
                     'Select your known language',
                     'What is your proficiency in the selected language?',
-                  ].includes(question)
+                  ].includes(question),
               );
             }
             if (contact) {
@@ -599,7 +597,7 @@ export const ProfileDialog: FunctionComponent<{
                     'What is your WhatsApp number?',
                     'What is your mobile number?',
                     'Please select your mobile number country code',
-                  ].includes(question)
+                  ].includes(question),
               );
             }
             if (subjectPref) {
@@ -611,7 +609,7 @@ export const ProfileDialog: FunctionComponent<{
                     'Select your subject name',
                     'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
                     'Please select your semester ?',
-                  ].includes(question)
+                  ].includes(question),
               );
             }
             if (address) {
@@ -625,7 +623,7 @@ export const ProfileDialog: FunctionComponent<{
                     'What is your Pin code?',
                     'What is your first address?',
                     'What is your second address?',
-                  ].includes(question)
+                  ].includes(question),
               );
             }
           }
@@ -643,7 +641,7 @@ export const ProfileDialog: FunctionComponent<{
       fetchProfileData();
 
       setCurrentQuestionIndex(
-        Number(mapping[filteredQuestions.basic?.[0]]?.[0])
+        Number(mapping[filteredQuestions.basic?.[0]]?.[0]),
       );
       setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
     }
@@ -652,7 +650,7 @@ export const ProfileDialog: FunctionComponent<{
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active
+            (item: any) => item?.is_active,
           );
           setClasses(filteredData || []);
         }
@@ -667,7 +665,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setUniversity(filteredData || []);
         }
@@ -682,7 +680,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);
           setSemesterpre(filteredData || []);
@@ -698,7 +696,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setInstitutes(filteredData || []);
         }
@@ -714,7 +712,7 @@ export const ProfileDialog: FunctionComponent<{
       .then((response: any) => {
         if (response.status === 200) {
           const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -731,7 +729,7 @@ export const ProfileDialog: FunctionComponent<{
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllHobbies(filteredData || []);
           // setAllHobbies(data?.data);
@@ -748,7 +746,7 @@ export const ProfileDialog: FunctionComponent<{
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
@@ -1168,7 +1166,7 @@ export const ProfileDialog: FunctionComponent<{
   }));
 
   const semlable = semester?.filter(
-    (item) => item?.semester_id === selectSemester
+    (item) => item?.semester_id === selectSemester,
   );
   const semesterSelectOptionspre = selectSemester
     ? [
@@ -1178,13 +1176,13 @@ export const ProfileDialog: FunctionComponent<{
         },
       ]
     : semesterpre[0]?.semester_id
-    ? [
-        {
-          value: semesterpre[0]?.semester_id,
-          label: `Semester ${semesterpre[0]?.semester_number}`,
-        },
-      ]
-    : [];
+      ? [
+          {
+            value: semesterpre[0]?.semester_id,
+            label: `Semester ${semesterpre[0]?.semester_number}`,
+          },
+        ]
+      : [];
 
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
@@ -1276,7 +1274,7 @@ export const ProfileDialog: FunctionComponent<{
               answeredData?.academic_history?.institute_id &&
               item.id === answeredData?.academic_history?.course_id) ||
             (item?.institution_name === answers[14] &&
-              item.course_name === answers[15])
+              item.course_name === answers[15]),
         );
         setCourses(filteredCourse);
       }
@@ -1287,7 +1285,7 @@ export const ProfileDialog: FunctionComponent<{
     (state: any) => ({
       value: state.isoCode,
       label: state.name,
-    })
+    }),
   );
 
   const saveanswerForHobbeis = () => {
@@ -1743,7 +1741,7 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const answerSaveandGotoNextquestoin = (
-    e: KeyboardEvent<HTMLInputElement>
+    e: KeyboardEvent<HTMLInputElement>,
   ) => {
     const currentQuestions = filterdQuestions1['basic'];
 
@@ -2252,7 +2250,7 @@ export const ProfileDialog: FunctionComponent<{
         ];
 
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
-          (question) => !questionsToRemove.includes(question)
+          (question) => !questionsToRemove.includes(question),
         );
 
         setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -2260,7 +2258,7 @@ export const ProfileDialog: FunctionComponent<{
           .then((response: any) => {
             if (response.status === 200) {
               const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1
+                (item: any) => item?.is_active === 1,
               );
               setSubjects(filteredData || []);
               // setSubjects(response.data);
@@ -2283,17 +2281,17 @@ export const ProfileDialog: FunctionComponent<{
           'Please select your stream',
         ];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
-          (question) => !questionsToRemove.includes(question)
+          (question) => !questionsToRemove.includes(question),
         );
         currentQuestions = currentQuestions.filter(
-          (question) => !questionsToRemove.includes(question)
+          (question) => !questionsToRemove.includes(question),
         );
 
         getData('college_subject/list')
           .then((response: any) => {
             if (response.status === 200) {
               const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1
+                (item: any) => item?.is_active === 1,
               );
               setSubjects(filteredData || []);
               // setSubjects(response.data);
@@ -2344,7 +2342,7 @@ export const ProfileDialog: FunctionComponent<{
       else {
         const questionsToRemove = ['Please select your state'];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
-          (question) => !questionsToRemove.includes(question)
+          (question) => !questionsToRemove.includes(question),
         );
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
@@ -2372,7 +2370,7 @@ export const ProfileDialog: FunctionComponent<{
         (item.class_id === answeredData?.academic_history?.class_id ||
           item.class_id === selectedClass.value) &&
         (item.stream === answeredData?.academic_history?.stream ||
-          item.stream === e.value)
+          item.stream === e.value),
     );
     setSubjects(filterData);
     const updatedAnswers = [...answers];
@@ -2437,7 +2435,7 @@ export const ProfileDialog: FunctionComponent<{
       const filterData = subjects?.filter(
         (item: any) =>
           item.class_id === answeredData?.academic_history?.class_id ||
-          item.class_id === e.value
+          item.class_id === e.value,
       );
 
       setSubjects(filterData);
@@ -2458,10 +2456,10 @@ export const ProfileDialog: FunctionComponent<{
       } else {
         const questionsToRemove = ['Please select your stream'];
         currentQuestions = currentQuestions.filter(
-          (question) => !questionsToRemove.includes(question)
+          (question) => !questionsToRemove.includes(question),
         );
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
-          (question) => !questionsToRemove.includes(question)
+          (question) => !questionsToRemove.includes(question),
         );
 
         setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -2519,7 +2517,7 @@ export const ProfileDialog: FunctionComponent<{
       (item) =>
         item.course_id === e.value &&
         (item.semester_id === answeredData?.academic_history?.sem_id ||
-          item.semester_id === answers[16])
+          item.semester_id === answers[16]),
     );
     setSemester(filteredsem);
     setSemesterpre(filteredsempre);
@@ -2552,7 +2550,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeuniversity = (e: any) => {
     const filteredInstitution = institutes.filter(
-      (item) => item.university_id === e.value
+      (item) => item.university_id === e.value,
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];
@@ -2593,7 +2591,7 @@ export const ProfileDialog: FunctionComponent<{
     const filterData = subjects?.filter(
       (item: any) =>
         item.course_id === answeredData?.academic_history?.course_id ||
-        (selectCourse && item.semester_id === e.value)
+        (selectCourse && item.semester_id === e.value),
     );
 
     setSubjects(filterData);
@@ -2618,7 +2616,7 @@ export const ProfileDialog: FunctionComponent<{
       (item) =>
         item.semester_id === e.value &&
         (item.course_id === answeredData?.academic_history?.course_id ||
-          item.course_name === answers[15])
+          item.course_name === answers[15]),
     );
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
@@ -2676,7 +2674,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeInstitute = (e: any) => {
     const filteredcourse = courses.filter(
-      (item) => item.institution_id === e.value
+      (item) => item.institution_id === e.value,
     );
 
     setCourses(filteredcourse);
@@ -2875,37 +2873,37 @@ export const ProfileDialog: FunctionComponent<{
     <>
       <div
         style={{ display: 'flex' }}
-        id='freechatbox'
+        id="freechatbox"
         className={`${!isOpen ? 'd-none' : ''} freechatbox`}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <div className='profilechatinner'>
-          <div className='proheader'>
-            <div className='me-auto'>
+        <div className="profilechatinner">
+          <div className="proheader">
+            <div className="me-auto">
               {' '}
-              <img src={glogo} width='20' alt='' /> Add your information <br />{' '}
+              <img src={glogo} width="20" alt="" /> Add your information <br />{' '}
               for better services
             </div>
             <FormControlLabel
-              className='me-0'
+              className="me-0"
               control={
                 <MaterialUISwitch
                   sx={{ m: 0 }}
-                  size='small'
+                  size="small"
                   checked={checked}
                   onChange={() => handleChange(checked ? 'light' : 'dark')}
                 />
               }
-              label=''
+              label=""
             />
-            <IconButton onClick={() => setclosemodel(true)} aria-label='close'>
+            <IconButton onClick={() => setclosemodel(true)} aria-label="close">
               <CloseIcon />
             </IconButton>
           </div>
 
-          <div className='afterheader'>
-            <div className='chat-box' ref={chatBoxRef}>
+          <div className="afterheader">
+            <div className="chat-box" ref={chatBoxRef}>
               {messages.map((message, index) => {
                 if (message.text) {
                   return (
@@ -2946,48 +2944,48 @@ export const ProfileDialog: FunctionComponent<{
 
             {currentSection && (
               <div>
-                <div className='chatinput-body'>
+                <div className="chatinput-body">
                   {(fullName && fullnamequestion && (
-                    <p className='error-text'>{errordata[0]}</p>
+                    <p className="error-text">{errordata[0]}</p>
                   )) ||
                     (goal && aimquestoin && (
-                      <p className='error-text'>{errordata[2]}</p>
+                      <p className="error-text">{errordata[2]}</p>
                     )) ||
                     (motherNameError && maaname && (
-                      <p className='error-text'>{errordata[4]}</p>
+                      <p className="error-text">{errordata[4]}</p>
                     )) ||
                     (fName && paaquestion && (
-                      <p className='error-text'>{errordata[5]}</p>
+                      <p className="error-text">{errordata[5]}</p>
                     )) ||
                     (gName && guardianquestion && (
-                      <p className='error-text'>{errordata[6]}</p>
+                      <p className="error-text">{errordata[6]}</p>
                     )) ||
                     (phnumber && mobilequestion && (
-                      <p className='error-text'>{errordata[23]}</p>
+                      <p className="error-text">{errordata[23]}</p>
                     )) ||
                     (whatsappnumbet && phnumber && (
-                      <p className='error-text'>{errordata[24]}</p>
+                      <p className="error-text">{errordata[24]}</p>
                     )) ||
                     (preferenceError && preferencequestion && (
-                      <p className='error-text'>{errordata[28]}</p>
+                      <p className="error-text">{errordata[28]}</p>
                     )) ||
                     (per && persentegequestion && (
-                      <p className='error-text'>{errordata[29]}</p>
+                      <p className="error-text">{errordata[29]}</p>
                     )) ||
                     (distic && districtquestion && (
-                      <p className='error-text'>{errordata[32]}</p>
+                      <p className="error-text">{errordata[32]}</p>
                     )) ||
                     (city && cityquestion && (
-                      <p className='error-text'>{errordata[33]}</p>
+                      <p className="error-text">{errordata[33]}</p>
                     )) ||
                     (pincode && pincodequestion && (
-                      <p className='error-text'>{errordata[34]}</p>
+                      <p className="error-text">{errordata[34]}</p>
                     )) ||
                     (firstaddress && firstaddressquestion && (
-                      <p className='error-text'>{errordata[35]}</p>
+                      <p className="error-text">{errordata[35]}</p>
                     )) ||
                     (secondaddress && secondaddressquestion && (
-                      <p className='error-text'>{errordata[36]}</p>
+                      <p className="error-text">{errordata[36]}</p>
                     ))}
 
                   {error1 && (
@@ -3003,20 +3001,20 @@ export const ProfileDialog: FunctionComponent<{
                   )}
                   {isLastQuestionCourseSelection ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangecourse}
                       options={courseSelectOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectCourse}
                     />
                   ) : insttypequestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstituteType}
                       options={institutionTypeOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedInstituteType}
                     />
                   ) : questioncountrycode ? (
@@ -3034,7 +3032,7 @@ export const ProfileDialog: FunctionComponent<{
                         color: 'black',
                       }}
                       dropdownStyle={{ color: 'black' }}
-                      placeholder=''
+                      placeholder=""
                       enableSearch={true}
                       disableDropdown={false}
                       preferredCountries={['us', 'in']}
@@ -3048,8 +3046,8 @@ export const ProfileDialog: FunctionComponent<{
                         }}
                       >
                         <input
-                          type='file'
-                          className='form-control'
+                          type="file"
+                          className="form-control"
                           onChange={handleFileUpload}
                           style={{ paddingLeft: '2px' }} // Adjust padding to make space for the button
                         />
@@ -3071,92 +3069,92 @@ export const ProfileDialog: FunctionComponent<{
                     </>
                   ) : boardcheck ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeBoard}
                       options={boardOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedBoard}
                     />
                   ) : stremquestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangestream}
                       options={streamOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedStream}
                     />
                   ) : unversityquest ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeuniversity}
                       options={universitySelectOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectUniversity}
                     />
                   ) : semisterquestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangesemester}
                       options={semesterSelectOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectSemester}
                     />
                   ) : semisterprepquestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangesemesterpre}
                       options={semesterSelectOptionspre}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectSemesterpre}
                     />
                   ) : institutequestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}
                       options={instituteSelectOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedInstitute}
                     />
                   ) : statequestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeAcademicState}
                       options={academicStateOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedAcademicState}
                     />
                   ) : classquestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeClass}
                       options={classOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedClass?.value || ''}
                     />
                   ) : stylequestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeLearningStyle}
                       options={learningStyleOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedLearningStyle}
                     />
                   ) : subjectquestion || courceforpref ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangesubject}
                       options={subjectOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectSubject}
                     />
                   ) : Dobcheck ? (
@@ -3222,7 +3220,7 @@ export const ProfileDialog: FunctionComponent<{
                               }}
                             />
                             <button
-                              className='chat_search_btn'
+                              className="chat_search_btn"
                               style={{
                                 position: 'absolute',
                                 right: '10px',
@@ -3232,11 +3230,11 @@ export const ProfileDialog: FunctionComponent<{
                                 background: 'none',
                                 cursor: 'pointer',
                               }}
-                              type='button'
+                              type="button"
                               onClick={handleclickdate}
                             >
                               {' '}
-                              <SendIcon className='mainsearch' />
+                              <SendIcon className="mainsearch" />
                             </button>
                           </LocalizationProvider>
                         </div>
@@ -3302,7 +3300,7 @@ export const ProfileDialog: FunctionComponent<{
                               }}
                             />
                             <button
-                              className='chat_search_btn'
+                              className="chat_search_btn"
                               style={{
                                 position: 'absolute',
                                 right: '10px',
@@ -3312,11 +3310,11 @@ export const ProfileDialog: FunctionComponent<{
                                 background: 'none',
                                 cursor: 'pointer',
                               }}
-                              type='button'
+                              type="button"
                               onClick={handleclickdate}
                             >
                               {' '}
-                              <SendIcon className='mainsearch' />
+                              <SendIcon className="mainsearch" />
                             </button>
                           </LocalizationProvider>
                         </div>
@@ -3331,11 +3329,11 @@ export const ProfileDialog: FunctionComponent<{
                       }}
                     >
                       <Select
-                        className='dropdown-wrapper'
+                        className="dropdown-wrapper"
                         onChange={handleDropdownChangehobby}
                         options={hobbyOptions}
-                        placeholder='Select an option'
-                        menuPlacement='top'
+                        placeholder="Select an option"
+                        menuPlacement="top"
                         value={selectedHobby}
                         styles={{
                           container: (base) => ({ ...base, width: '90%' }),
@@ -3357,48 +3355,48 @@ export const ProfileDialog: FunctionComponent<{
                     </div>
                   ) : countrylist ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       options={countryOptions}
                       onChange={handleCountryChange}
-                      placeholder='Select a country'
-                      menuPlacement='top'
+                      placeholder="Select a country"
+                      menuPlacement="top"
                       value={selectedCountry}
                     />
                   ) : statelist && stateOptions?.length > 0 ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       options={stateOptions}
-                      placeholder='Select a state'
+                      placeholder="Select a state"
                       onChange={handleStateChange}
                       isDisabled={!selectedCountry}
-                      menuPlacement='top'
+                      menuPlacement="top"
                       value={selectedstate}
                     />
                   ) : languagequestion ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangelanguage}
                       options={languageOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedLanguage}
                     />
                   ) : languagepref ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangeproficiency}
                       options={proficiencyOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedproficiency}
                     />
                   ) : gendercheck ? (
                     <Select
-                      className='dropdown-wrapper'
+                      className="dropdown-wrapper"
                       onChange={handleDropdownChangegender}
                       options={genderOptions}
-                      placeholder='Select an option'
-                      menuPlacement='top'
+                      placeholder="Select an option"
+                      menuPlacement="top"
                       value={selectedgender}
                     />
                   ) : verylastquestion ? (
@@ -3417,9 +3415,9 @@ export const ProfileDialog: FunctionComponent<{
                       }}
                     >
                       <input
-                        type='text'
-                        className='form-control'
-                        placeholder='Type your answer and press enter'
+                        type="text"
+                        className="form-control"
+                        placeholder="Type your answer and press enter"
                         value={answers[currentQuestionIndex] || ''}
                         onChange={handleAnswerChange}
                         onKeyPress={handleKeyPress}
@@ -3459,7 +3457,7 @@ export const ProfileDialog: FunctionComponent<{
           isOpen={closemodel}
           onCancel={handlecancel}
           onDeleteClick={() => handleok()}
-          title='Close chat?'
+          title="Close chat?"
         />
       </div>
     </>

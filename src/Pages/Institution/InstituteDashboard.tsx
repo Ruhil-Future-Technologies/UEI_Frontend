@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 // import React from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "../Institution/institution.css";
-import profile from "../../assets/img/profile.png";
-import studentimg from "../../assets/img/ins-1.png";
-import courseImg from "../../assets/img/courses-1.png";
-import toperstudent from "../../assets/img/topper-image.png";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Link } from "react-router-dom";
+import '../Institution/institution.css';
+import profile from '../../assets/img/profile.png';
+import studentimg from '../../assets/img/ins-1.png';
+import courseImg from '../../assets/img/courses-1.png';
+import toperstudent from '../../assets/img/topper-image.png';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Link } from 'react-router-dom';
 //import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import InstituteGraphRepo from "./institutionGraphRepo";
-import OpenInFullOutlinedIcon from "@mui/icons-material/OpenInFullOutlined";
-import MicIcon from "@mui/icons-material/Mic";
-import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
-import robotimg from "../../assets/img/robot.png";
-import glogowhite from "../../assets/img/g-logo-white.svg";
-import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
-import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
-import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
-import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
-import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import useApi from "../../hooks/useAPI";
+import InstituteGraphRepo from './institutionGraphRepo';
+import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
+import MicIcon from '@mui/icons-material/Mic';
+import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
+import robotimg from '../../assets/img/robot.png';
+import glogowhite from '../../assets/img/g-logo-white.svg';
+import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import useApi from '../../hooks/useAPI';
 // interface Course {
 //     course_id: number;
 //     course_name: string;
@@ -40,7 +40,7 @@ import useApi from "../../hooks/useAPI";
 //     institute_id: string;
 // }
 
-const instituteId = localStorage.getItem("_id");
+const instituteId = localStorage.getItem('_id');
 const InstitutionDash = () => {
   const { getData } = useApi();
   const [totelStudents, setTotelStudent] = useState(0);
@@ -49,7 +49,7 @@ const InstitutionDash = () => {
   useEffect(() => {
     getCourseCount();
     getStudentsCount();
-    console.log("getData");
+    console.log('getData');
     // eslint-disable-next-line
   }, []);
 
@@ -82,54 +82,54 @@ const InstitutionDash = () => {
   };
 
   const slides = [
-    { subject: "English", totalStudents: 30, image: courseImg },
-    { subject: "Math", totalStudents: 25, image: courseImg },
-    { subject: "Science", totalStudents: 35, image: courseImg },
-    { subject: "History", totalStudents: 20, image: courseImg },
-    { subject: "Geography", totalStudents: 40, image: courseImg },
+    { subject: 'English', totalStudents: 30, image: courseImg },
+    { subject: 'Math', totalStudents: 25, image: courseImg },
+    { subject: 'Science', totalStudents: 35, image: courseImg },
+    { subject: 'History', totalStudents: 20, image: courseImg },
+    { subject: 'Geography', totalStudents: 40, image: courseImg },
   ];
 
   const Teachers = [
     {
-      name: "atul yadav",
-      subject: "Mathematics",
+      name: 'atul yadav',
+      subject: 'Mathematics',
       image: studentimg,
     },
     {
-      name: "raj kumar",
-      subject: "English",
+      name: 'raj kumar',
+      subject: 'English',
       image: studentimg,
     },
     {
-      name: "puneet jain",
-      subject: "Data ",
+      name: 'puneet jain',
+      subject: 'Data ',
       image: studentimg,
     },
     {
-      name: "Rohit sharma",
-      subject: "Cricket",
+      name: 'Rohit sharma',
+      subject: 'Cricket',
       image: studentimg,
     },
   ];
   const topStudent = [
     {
-      name: "Akulya shiva",
-      class: "5th",
+      name: 'Akulya shiva',
+      class: '5th',
       image: studentimg,
     },
     {
-      name: "Nitn raj",
-      class: "8th",
+      name: 'Nitn raj',
+      class: '8th',
       image: studentimg,
     },
     {
-      name: "Rovin singh",
-      class: "10th",
+      name: 'Rovin singh',
+      class: '10th',
       image: studentimg,
     },
     {
-      name: "Rohit patel",
-      class: "9th",
+      name: 'Rohit patel',
+      class: '9th',
       image: studentimg,
     },
   ];
@@ -145,7 +145,7 @@ const InstitutionDash = () => {
                 <li className="breadcrumb-item">
                   <HomeOutlinedIcon
                     sx={{
-                      fontSize: "18px",
+                      fontSize: '18px',
                     }}
                   />
                   <Link to="/"></Link>
@@ -183,12 +183,12 @@ const InstitutionDash = () => {
                         <div className="">
                           <div
                             className="progress mb-0"
-                            style={{ height: "5px;" }}
+                            style={{ height: '5px;' }}
                           >
                             <div
                               className="progress-bar bg-grd-success"
                               role="progressbar"
-                              style={{ width: "60%" }}
+                              style={{ width: '60%' }}
                               aria-valuenow={25}
                               aria-valuemin={0}
                               aria-valuemax={100}
@@ -252,7 +252,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Teachers</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    to{" "}
+                    to{' '}
                     <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
@@ -290,7 +290,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Students</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    {totelStudents}{" "}
+                    {totelStudents}{' '}
                     <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
@@ -328,7 +328,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Courses</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    {totleCourse}{" "}
+                    {totleCourse}{' '}
                   </div>
                 </div>
                 <div className="table-responsive">
@@ -443,10 +443,10 @@ const InstitutionDash = () => {
                 </div>
                 <div className="chat-top-header-menu ms-auto">
                   <Link
-                    to={"/main/Chat/recentChat"}
+                    to={'/main/Chat/recentChat'}
                     className="btn-outline-primary btn btn-circle rounded-circle d-flex gap-2 wh-32"
                   >
-                    <OpenInFullOutlinedIcon sx={{ fontSize: "24px" }} />
+                    <OpenInFullOutlinedIcon sx={{ fontSize: '24px' }} />
                   </Link>
                 </div>
               </div>
@@ -456,7 +456,7 @@ const InstitutionDash = () => {
                     <div className="flex-grow-1 me-2">
                       <div className="chat-right-msg">
                         <span className="anstext">
-                          <SearchOutlinedIcon sx={{ fontSize: "20px" }} />{" "}
+                          <SearchOutlinedIcon sx={{ fontSize: '20px' }} />{' '}
                           Question
                         </span>
                         <p className="mb-0">
@@ -478,7 +478,7 @@ const InstitutionDash = () => {
                     <div className="flex-grow-1 ms-2">
                       <div className="chat-left-msg">
                         <span className="anstext">
-                          <DescriptionOutlinedIcon sx={{ fontSize: "20px" }} />{" "}
+                          <DescriptionOutlinedIcon sx={{ fontSize: '20px' }} />{' '}
                           Answer
                         </span>
                         <div className="mb-4">
@@ -492,25 +492,25 @@ const InstitutionDash = () => {
                         </div>
                         <ul className="ansfooter">
                           <li>
-                            <ThumbUpAltOutlinedIcon sx={{ fontSize: "14px" }} />
+                            <ThumbUpAltOutlinedIcon sx={{ fontSize: '14px' }} />
                           </li>
                           <li>
                             <ThumbDownAltOutlinedIcon
-                              sx={{ fontSize: "14px" }}
+                              sx={{ fontSize: '14px' }}
                             />
                           </li>
                           <li>
                             <ContentCopyOutlinedIcon
-                              sx={{ fontSize: "14px" }}
-                            />{" "}
+                              sx={{ fontSize: '14px' }}
+                            />{' '}
                             <span>Copy</span>
                           </li>
                           <li>
-                            <VolumeUpOutlinedIcon sx={{ fontSize: "14px" }} />{" "}
+                            <VolumeUpOutlinedIcon sx={{ fontSize: '14px' }} />{' '}
                             <span>Read</span>
                           </li>
                           <li>
-                            <AutorenewOutlinedIcon sx={{ fontSize: "14px" }} />{" "}
+                            <AutorenewOutlinedIcon sx={{ fontSize: '14px' }} />{' '}
                             <span>Regenerate</span>
                           </li>
                         </ul>
@@ -523,7 +523,7 @@ const InstitutionDash = () => {
                     <div className="flex-grow-1 me-2">
                       <div className="chat-right-msg">
                         <span className="anstext">
-                          <SearchOutlinedIcon sx={{ fontSize: "16px" }} />{" "}
+                          <SearchOutlinedIcon sx={{ fontSize: '16px' }} />{' '}
                           Question
                         </span>
                         <p className="mb-0">
