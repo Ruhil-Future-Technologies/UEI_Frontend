@@ -43,7 +43,7 @@ jobs:
         run: npm run test -- --coverage
         continue-on-error: false # Ensures the pipeline fails if tests fail
 
-      # Run Prettier check
+      # Run Prettier check test
       - name: Check code formatting with Prettier
         run: npx prettier --check .
         continue-on-error: false
