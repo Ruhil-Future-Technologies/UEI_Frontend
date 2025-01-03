@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+// import React from "react";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '../Institution/institution.css';
 import profile from '../../assets/img/profile.png';
@@ -24,8 +26,61 @@ import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import useApi from '../../hooks/useAPI';
+// interface Course {
+//     course_id: number;
+//     course_name: string;
+//     course_image: string;
+//     institute_id: string;
+// }
+// interface Student {
+//     student_id: number;
+//     student_name: string;
+//     student_image: string;
+//     institute_id: string;
+// }
 
+const instituteId = localStorage.getItem('_id');
 const InstitutionDash = () => {
+  const { getData } = useApi();
+  const [totelStudents, setTotelStudent] = useState(0);
+  const [totleCourse, setTotleCourse] = useState(0);
+
+  useEffect(() => {
+    getCourseCount();
+    getStudentsCount();
+    console.log('getData');
+    // eslint-disable-next-line
+  }, []);
+
+  const getCourseCount = () => {
+    console.log(totleCourse);
+    try {
+      getData(`course/course-count/${instituteId}`).then((response) => {
+        if (response?.status === 200) {
+          setTotleCourse(response?.data?.courses_count);
+        }
+        console.log(response);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getStudentsCount = () => {
+    console.log(totelStudents);
+
+    try {
+      getData(`student/students-count`).then((response) => {
+        if (response?.status === 200) {
+          setTotelStudent(response?.data?.students_count);
+        }
+        console.log(response);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const slides = [
     { subject: 'English', totalStudents: 30, image: courseImg },
     { subject: 'Math', totalStudents: 25, image: courseImg },
@@ -88,7 +143,11 @@ const InstitutionDash = () => {
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item">
-                  <HomeOutlinedIcon sx={{ fontSize: '18px' }} />
+                  <HomeOutlinedIcon
+                    sx={{
+                      fontSize: '18px',
+                    }}
+                  />
                   <Link to="/"></Link>
                 </li>
                 <li className="breadcrumb-item active" aria-current="page">
@@ -193,7 +252,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Teachers</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    70{' '}
+                    to{' '}
                     <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
@@ -231,7 +290,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Students</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    300{' '}
+                    {totelStudents}{' '}
                     <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
@@ -269,7 +328,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Courses</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    80{' '}
+                    {totleCourse}{' '}
                   </div>
                 </div>
                 <div className="table-responsive">

@@ -38,7 +38,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ChatDialogClose } from './ChatDialogClose';
 import { styled } from '@mui/material/styles';
 import Course from '../../Pages/Course/Course';
-//import { Initializable } from "@mui/x-charts/internals";
+//import { Initializable } from '@mui/x-charts/internals';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 50,
@@ -52,9 +52,9 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       color: '#fff',
       transform: 'translateX(22px)',
       '& .MuiSwitch-thumb:before': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='20' width='20' viewBox='0 0 20 20'><path fill='${encodeURIComponent(
           '#fff',
-        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+        )}' d='M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z'/></svg>')`,
       },
       '& + .MuiSwitch-track': {
         opacity: 1,
@@ -78,9 +78,9 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
       top: 0,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='20' width='20' viewBox='0 0 20 20'><path fill='${encodeURIComponent(
         '#fff',
-      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+      )}' d='M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z'/></svg>')`,
     },
     ...theme.applyStyles('dark', {
       backgroundColor: '#003892',
@@ -163,8 +163,8 @@ export const ProfileDialog: FunctionComponent<{
   onOkClick: () => void;
   title: string;
 }> = ({ isOpen, onCancel }) => {
-  // const handleClose: DialogProps["onClose"] = (event, reason) => {
-  //   if (reason && reason === "backdropClick") return;
+  // const handleClose: DialogProps['onClose'] = (event, reason) => {
+  //   if (reason && reason === 'backdropClick') return;
   //   onCancel();
   // };
 
@@ -212,7 +212,7 @@ export const ProfileDialog: FunctionComponent<{
   const [selectedClass, setSelectedClass] = useState<any>('');
   const [selectedStream, setSelectedStream] = useState<any>('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState<any>('');
-  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>("");
+  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>('');
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedstate, setSelectedState] = useState(null);
@@ -287,7 +287,7 @@ export const ProfileDialog: FunctionComponent<{
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.status === 200) {
-            //  navigate("/main/Dashboard");
+            //  navigate('/main/Dashboard');
             setAnsweredData(data.data);
 
             if (data?.data?.academic_history?.institution_type === 'school') {
@@ -307,7 +307,7 @@ export const ProfileDialog: FunctionComponent<{
         .catch(() => {
           // toast.error(e?.message, {
           //     hideProgressBar: true,
-          //     theme: "colored",
+          //     theme: 'colored',
           //     });
         });
     }
@@ -816,7 +816,7 @@ export const ProfileDialog: FunctionComponent<{
       const seconds = date?.getSeconds().toString().padStart(2, '0');
       const milliseconds = date?.getMilliseconds().toString().padStart(3, '0');
 
-      // Format as "yyyy-mm-ddThh:mm:ss.sssZ"
+      // Format as 'yyyy-mm-ddThh:mm:ss.sssZ'
       return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
     }
     const formattedDate = formatDateToISO(birthdateObj);
@@ -845,7 +845,7 @@ export const ProfileDialog: FunctionComponent<{
         if (data.status === 200) {
           // toast.success(data?.message, {
           //   hideProgressBar: true,
-          //   theme: "colored",
+          //   theme: 'colored',
           // });
           setNamepro(data?.first_name);
           const formData = new FormData();
@@ -859,30 +859,30 @@ export const ProfileDialog: FunctionComponent<{
                   setProImage(data?.image_url);
                   // toast.success(data?.message, {
                   //   hideProgressBar: true,
-                  //   theme: "colored",
+                  //   theme: 'colored',
                   // });
                 } else if (data?.status === 404) {
                   // toast.error(data?.message, {
                   //   hideProgressBar: true,
-                  //   theme: "colored",
+                  //   theme: 'colored',
                   // });
                 } else {
                   // toast.error(data?.message, {
                   //   hideProgressBar: true,
-                  //   theme: "colored",
+                  //   theme: 'colored',
                   // });
                 }
               })
               .catch(() => {
                 // toast.error(e?.message, {
                 //   hideProgressBar: true,
-                //   theme: "colored",
+                //   theme: 'colored',
                 // });
               });
           }
-          // toast.success("Basic information saved successfully", {
+          // toast.success('Basic information saved successfully', {
           //   hideProgressBar: true,
-          //   theme: "colored",
+          //   theme: 'colored',
           // });
         } else {
           toast.error(data?.message, {
@@ -901,9 +901,9 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswersforContact = (answer: string[]) => {
     // const contfullPhone = answer[20];
-    // let phoneNum = contfullPhone?.split(" ");
+    // let phoneNum = contfullPhone?.split(' ');
     // const contfullPhonewtsp = answer[21];
-    // let phoneNumwtsp = contfullPhonewtsp?.split(" ");
+    // let phoneNumwtsp = contfullPhonewtsp?.split(' ');
     const email = localStorage.getItem('userid');
     const payload = {
       student_id: StudentId,
@@ -928,7 +928,7 @@ export const ProfileDialog: FunctionComponent<{
         if (data?.status === 200) {
           // toast.success(data?.message, {
           //   hideProgressBar: true,
-          //   theme: "colored",
+          //   theme: 'colored',
           // });
         } else {
           toast.error(data?.message, {
@@ -980,9 +980,9 @@ export const ProfileDialog: FunctionComponent<{
 
     postData('/student_address/add', payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Address information saved successfully", {
+        // toast.success('Address information saved successfully', {
         //   hideProgressBar: true,
-        //   theme: "colored",
+        //   theme: 'colored',
         // });
       } else {
         toast.error(response?.message, {
@@ -1037,7 +1037,7 @@ export const ProfileDialog: FunctionComponent<{
             ? answers[length - 2]?.toString()
             : answers[length - 1]?.toString()
           : null,
-      // year: answeredData?.academic_history?.year || answers[18] || "",
+      // year: answeredData?.academic_history?.year || answers[18] || '',
       year:
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'college'
@@ -1071,9 +1071,9 @@ export const ProfileDialog: FunctionComponent<{
 
     postData('/new_student_academic_history/add', payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Academic hinstory information saved successfully", {
+        // toast.success('Academic hinstory information saved successfully', {
         //   hideProgressBar: true,
-        //   theme: "colored",
+        //   theme: 'colored',
         // });
       } else {
         toast.error(response?.message, {
@@ -1111,9 +1111,9 @@ export const ProfileDialog: FunctionComponent<{
     };
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Subject Preference information saved successfully", {
+        // toast.success('Subject Preference information saved successfully', {
         //   hideProgressBar: true,
-        //   theme: "colored",
+        //   theme: 'colored',
         // });
       } else {
         toast.error(response?.message, {
@@ -1297,14 +1297,14 @@ export const ProfileDialog: FunctionComponent<{
     if (selectedHobby) {
       postData('student_hobby/add', payload).then((response) => {
         if (response.status === 200) {
-          // toast.success("Your hobbies saved successfully", {
+          // toast.success('Your hobbies saved successfully', {
           //   hideProgressBar: true,
-          //   theme: "colored",
+          //   theme: 'colored',
           // });
         } else {
           // toast.error(response?.message, {
           //   hideProgressBar: true,
-          //   theme: "colored",
+          //   theme: 'colored',
           // });
         }
       });
@@ -1321,9 +1321,9 @@ export const ProfileDialog: FunctionComponent<{
     };
     postData('student_language_known/add', payload).then((response) => {
       if (response.status === 200) {
-        // toast.success("Your language saved successfully", {
+        // toast.success('Your language saved successfully', {
         //   hideProgressBar: true,
-        //   theme: "colored",
+        //   theme: 'colored',
         // });
       } else {
         toast.error(response?.message, {
@@ -1453,7 +1453,7 @@ export const ProfileDialog: FunctionComponent<{
         setdisct(false);
       }
     }
-    if (districtquestion) {
+    if (statelist) {
       const disticRegex = /^[a-zA-Z\s]+$/;
 
       if (!disticRegex.test(updatedAnswers[answers.length - 1])) {
@@ -1670,7 +1670,7 @@ export const ProfileDialog: FunctionComponent<{
   const handleDateChange = (newDate: Dayjs | null) => {
     // setBasicInfo((values) => ({ ...values, dob: newDate }));
     // setOpen(false);
-    // setErordate("")
+    // setErordate('')
 
     datecheck = dayjs(newDate).format(yearquesiton ? 'YYYY' : 'DD/MM/YYYY');
 
@@ -1701,12 +1701,12 @@ export const ProfileDialog: FunctionComponent<{
             setCurrentQuestionIndex(0);
           }
         } else {
-          // setErordate("The course completion date cannot be earlier than the date of joining.")
+          // setErordate('The course completion date cannot be earlier than the date of joining.')
           // toast.error(
-          //   "Date of joining should be less than to the starting date of academic course",
+          //   'Date of joining should be less than to the starting date of academic course',
           //   {
           //     hideProgressBar: true,
-          //     theme: "colored",
+          //     theme: 'colored',
           //   }
           // );
         }
@@ -1753,8 +1753,8 @@ export const ProfileDialog: FunctionComponent<{
 
       if (currentQuestionIndex < currentQuestions.length - 1) {
         // if (
-        //   (answers[8]?.toLowerCase() === "school" ||
-        //     answeredData?.academic_history?.institution_type === "school") &&
+        //   (answers[8]?.toLowerCase() === 'school' ||
+        //     answeredData?.academic_history?.institution_type === 'school') &&
         //   currentQuestionIndex === 24
         // ) {
         //   setCurrentQuestionIndex(27);
@@ -1766,13 +1766,13 @@ export const ProfileDialog: FunctionComponent<{
         //   ...updatedMessages,
         //   {
         //     text:
-        //       (answers[8]?.toLowerCase() === "school" ||
+        //       (answers[8]?.toLowerCase() === 'school' ||
         //         answeredData?.academic_history?.institution_type ===
-        //         "school") &&
+        //         'school') &&
         //         currentQuestionIndex === 24
         //         ? currentQuestions[27]
         //         : currentQuestions[currentQuestionIndex + 1],
-        //     type: "question" as const,
+        //     type: 'question' as const,
         //   },
         // ]);
         setMessages([
@@ -1953,6 +1953,20 @@ export const ProfileDialog: FunctionComponent<{
         setper(false);
       }
     }
+
+    if (statelist) {
+      if (
+        updatedAnswers[answers.length - 1] === '' ||
+        updatedAnswers[answers.length - 1] == null ||
+        !charecterRegex.test(updatedAnswers[answers.length - 1]) ||
+        !checkChanges
+      ) {
+        setdisct(true);
+        return;
+      } else {
+        setdisct(false);
+      }
+    }
     if (districtquestion) {
       if (
         updatedAnswers[answers.length - 1] === '' ||
@@ -2041,9 +2055,9 @@ export const ProfileDialog: FunctionComponent<{
           setError1('');
         } else {
           setError1('Please enter valid 6 digit pincode');
-          // toast.error("Please enter valid 6 digit pincode", {
+          // toast.error('Please enter valid 6 digit pincode', {
           //   hideProgressBar: true,
-          //   theme: "colores",
+          //   theme: 'colores',
           // });
         }
       } else if (firstaddressquestion) {
@@ -2224,7 +2238,7 @@ export const ProfileDialog: FunctionComponent<{
     if (currentQuestionIndex < currentQuestions.length - 1) {
       if (e.value === 'school') {
         const questionsToRemove = [
-          //"Please select your stream",
+          //'Please select your stream',
           'Please select your university',
           'Please select your institution',
           'Please select your course',
@@ -2773,13 +2787,13 @@ export const ProfileDialog: FunctionComponent<{
     onCancel();
     setclosemodel(false);
     document.body.classList.remove('overflow-hidden');
-    // navigate("/main/Dashboard");
+    // navigate('/main/Dashboard');
   };
   // const handleOpen = () => {
   //   // setOpen(true);
   // };
   const getLastQuestion = () => {
-    // Find the last message of type "question"
+    // Find the last message of type 'question'
     const lastQuestion = [...messages]
       .reverse() // Reverse to start searching from the end
       .find((message) => message.type === 'question');
@@ -2839,7 +2853,7 @@ export const ProfileDialog: FunctionComponent<{
     getLastQuestion() == 'What is your proficiency in the selected language?';
   const subjectquestion = getLastQuestion() == 'Select your subject name';
   const whatsappnumbet = getLastQuestion() == 'What is your WhatsApp number?';
-  //const subjectpref =getLastQuestion()=="What is your preference?";
+  //const subjectpref =getLastQuestion()=='What is your preference?';
   const countrylist =
     getLastQuestion() == 'Please select your current country of residence';
   const statelist =
@@ -3438,7 +3452,7 @@ export const ProfileDialog: FunctionComponent<{
             {/* </DialogActions> */}
           </div>
         </div>
-        {/* <div className="copyright">&copy; Copyright 2024, All Right Reserved </div> */}
+        {/* <div className='copyright'>&copy; Copyright 2024, All Right Reserved </div> */}
         <ChatDialogClose
           isOpen={closemodel}
           onCancel={handlecancel}
