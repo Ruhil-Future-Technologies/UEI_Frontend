@@ -53,7 +53,7 @@ const AddEditCourse = () => {
   const location = useLocation();
   const Menulist: any = localStorage.getItem('menulist1');
   const pathSegments = location?.pathname?.split('/').filter(Boolean);
-  let lastSegment = id
+  let lastSegment = id;
   if (pathSegments?.length >= 3 && id) {
     lastSegment = pathSegments[pathSegments?.length - 3]?.toLowerCase();
   } else if (pathSegments?.length >= 2) {
@@ -365,7 +365,10 @@ const AddEditCourse = () => {
                     </div>
                     <div className="row mt-4"></div>
                     <div className=" mt-3">
-                      <button data-testid="btn-save" className="btn btn-primary mainbutton">
+                      <button
+                        data-testid="btn-save"
+                        className="btn btn-primary mainbutton"
+                      >
                         {id ? 'Update' : 'Save'}
                       </button>
                     </div>
