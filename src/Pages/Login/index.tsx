@@ -199,7 +199,7 @@ const Login = () => {
             <div className="col-6">
               <div className="logoui">
                 <img src={gLogo} alt="" />
-                <span>Gyansetu QA</span>
+                <span>Gyansetu QA - Test</span>
               </div>
             </div>
             <div className="col-6">
