@@ -52,10 +52,16 @@ const AddEditCourse = () => {
   >(null);
   const location = useLocation();
   const Menulist: any = localStorage.getItem('menulist1');
-  const pathSegments = location.pathname.split('/').filter(Boolean);
-  const lastSegment = id
-    ? pathSegments[pathSegments.length - 3].toLowerCase()
-    : pathSegments[pathSegments.length - 2].toLowerCase();
+  const pathSegments = location?.pathname?.split('/').filter(Boolean);
+  let lastSegment = id
+  if (pathSegments?.length >= 3 && id) {
+    lastSegment = pathSegments[pathSegments?.length - 3]?.toLowerCase();
+  } else if (pathSegments?.length >= 2) {
+    lastSegment = pathSegments[pathSegments?.length - 2]?.toLowerCase();
+  }
+  // const lastSegment = id
+  //   ? pathSegments[pathSegments.length - 3].toLowerCase()
+  //   : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   useEffect(() => {
@@ -215,6 +221,7 @@ const AddEditCourse = () => {
                               Institute *
                             </InputLabel>
                             <Select
+                              data-testid="institute"
                               onChange={handleChange}
                               label="institute"
                               name="institute"
@@ -268,6 +275,7 @@ const AddEditCourse = () => {
                             name="course_name"
                             render={({ field, form }: any) => (
                               <TextField
+                                data-testid="course_name"
                                 {...field}
                                 className="form-control"
                                 label="Course Name *"
@@ -298,6 +306,7 @@ const AddEditCourse = () => {
                               Duration *
                             </InputLabel>
                             <Select
+                              data-testid="duration"
                               onChange={handleChange}
                               onBlur={handleBlur}
                               label="duration"
@@ -356,7 +365,7 @@ const AddEditCourse = () => {
                     </div>
                     <div className="row mt-4"></div>
                     <div className=" mt-3">
-                      <button className="btn btn-primary mainbutton">
+                      <button data-testid="btn-save" className="btn btn-primary mainbutton">
                         {id ? 'Update' : 'Save'}
                       </button>
                     </div>
