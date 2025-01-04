@@ -1,0 +1,84 @@
+name: Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - QA
+
+jobs:
+  build:
+    name: Lint, Typecheck, Test, and Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # Specify your project's Node.js version
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Run linting
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: false
+
+      # Run type-checking
+      - name: Run TypeScript Typecheck
+        run: npm run typecheck
+        continue-on-error: false
+
+      # Run tests and collect coverage
+      - name: Run Tests with Coverage
+        run: npm run test -- --coverage
+        continue-on-error: false
+
+      # Run Prettier check test
+      - name: Check code formatting with Prettier
+        run: npx prettier --check .
+        continue-on-error: false
+
+      - name: Generate build
+        run: npm run build
+
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v1
+        with:
+          name: react-github-actions-build
+          path: build
+  deploy:
+    name: Deploy to EC2 on QA branch push
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the files from QA branch
+      - name: Checkout the files from QA branch
+        uses: actions/checkout@v3
+        with:
+          ref: QA
+        continue-on-error: false
+
+      # Download the artifact from the build job
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build
+          path: build
+
+      # Upload the artifact to EC2
+      - name: Upload Artifact to EC2
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.QA_EC2_FE_SSH_PK }}
+          REMOTE_HOST: ${{ secrets.QA_EC2_FE_DNS }}
+          REMOTE_USER: ${{ secrets.QA_EC2_FE_USERNAME }}
+          TARGET: ${{ secrets.QA_EC2_FE_TARGET_DIR }}
+          SOURCE: build/
+        continue-on-error: false
