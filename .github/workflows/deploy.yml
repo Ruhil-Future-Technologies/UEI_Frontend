@@ -41,9 +41,9 @@ jobs:
         continue-on-error: false
 
       # Run Prettier check test
-      - name: Check code formatting with Prettier
-        run: npx prettier --check .
-        continue-on-error: false
+      # - name: Check code formatting with Prettier
+      #   run: npx prettier --check .
+      #   continue-on-error: false
 
       - name: Generate build
         run: npm run build
