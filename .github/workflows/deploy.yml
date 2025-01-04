@@ -53,12 +53,6 @@ jobs:
         with:
           name: react-github-actions-build
           path: build
-  deploy:
-    name: Deploy to EC2 on QA branch push
-    runs-on: ubuntu-latest
-
-    steps:
-      # Checkout the files from QA branch
       - name: Checkout the files from QA branch
         uses: actions/checkout@v3
         with:
@@ -82,3 +76,10 @@ jobs:
           TARGET: ${{ secrets.QA_EC2_FE_TARGET_DIR }}
           SOURCE: build/
         continue-on-error: false
+
+  # deploy:
+  #   name: Deploy to EC2 on QA branch push
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     # Checkout the files from QA branch
