@@ -24,13 +24,10 @@ jobs:
           REMOTE_HOST: ${{ secrets.QA_EC2_FE_DNS }}
           REMOTE_USER: ${{ secrets.QA_EC2_FE_USERNAME }}
           TARGET: ${{ secrets.QA_EC2_FE_TARGET_DIR }}
+          
+      - name: Install dependencies
+        run: npm install
 
-      - name: Executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.QA_EC2_FE_DNS }}
-          username: ${{ secrets.QA_EC2_FE_USERNAME }}
-          key: ${{ secrets.QA_EC2_FE_SSH_PK }}
-          script: |
-            cd home
+      - name: Build
+        run: npm run build
            
