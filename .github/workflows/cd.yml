@@ -12,10 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the files
+      - name: Checkout the files from QA branch
         uses: actions/checkout@v2
         with:
           ref: QA
+        continue-on-error: false
 
       - name: Connecting to EC2
         uses: easingthemes/ssh-deploy@main
@@ -24,17 +25,21 @@ jobs:
           REMOTE_HOST: ${{ secrets.QA_EC2_FE_DNS }}
           REMOTE_USER: ${{ secrets.QA_EC2_FE_USERNAME }}
           TARGET: ${{ secrets.QA_EC2_FE_TARGET_DIR }}
+        continue-on-error: false
+        
           
-      - name: Executing remote ssh commands using ssh key
+      - name: Running npm install and build
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.QA_EC2_FE_DNS }}
           username: ${{ secrets.QA_EC2_FE_USERNAME }}
           key: ${{ secrets.QA_EC2_FE_SSH_PK }}
           script: |
-            cd /home/ubuntu/UEI-Frontend
-            node -v
-            npm -v
-            npm install
-            npm run build
-           
+            echo "Connecting to EC2..."
+            cd /home/ubuntu/UEI-Frontend || { echo "Failed to change directory"; exit 1; }
+            echo "Current directory after cd: $(pwd)"
+            node -v || { echo "Node version check failed"; exit 1; }
+            npm -v || { echo "NPM version check failed"; exit 1; }
+            npm install || { echo "npm install failed"; exit 1; }
+            npm run build || { echo "npm build failed"; exit 1; }
+        continue-on-error: false
