@@ -2,7 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Adding this to test pipe line afterCI
+Chek pipeline
 
 ## Quality Assurance and Code Standards
 
