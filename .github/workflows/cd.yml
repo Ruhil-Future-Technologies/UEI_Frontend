@@ -1,11 +1,11 @@
-name: Push-to-EC2
+name: CD
 
-# Trigger deployment only on push to QA branch Updated
 on:
-  push:
-    branches:
-      - QA
-
+  workflow_run:
+    workflows:
+      - CI Pipeline # Must match the name of your CI workflow exactly
+    types:
+      - completed
 jobs:
   deploy:
     name: Deploy to EC2 on QA branch push
