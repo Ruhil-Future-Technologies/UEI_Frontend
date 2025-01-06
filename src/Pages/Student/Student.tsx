@@ -14,7 +14,7 @@ import FullScreenLoader from '../Loader/FullScreenLoader';
 import { dataaccess, tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 
-interface Student {
+interface Students {
   id: number; // Assuming id is a number based on the API
   aim: string;
   first_name: string;
@@ -50,7 +50,7 @@ const Student = () => {
   const columns = STUDENT_COLUMNS;
   const navigate = useNavigate();
   const { getData, deleteData, loading } = useApi();
-  const [dataStudent, setDataStudent] = useState<Student[]>([]);
+  const [dataStudent, setDataStudent] = useState<Students[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState(0);
