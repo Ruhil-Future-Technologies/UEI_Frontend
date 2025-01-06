@@ -42,7 +42,7 @@ jobs:
 
       # Run Prettier check test
       - name: Check code formatting with Prettier
-        run : `npx prettier --write .`
+        run: npx prettier --write .
         run: npx prettier --check .
         continue-on-error: false
 
