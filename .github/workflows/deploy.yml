@@ -47,9 +47,13 @@ jobs:
           npx prettier --check .
         continue-on-error: false
 
-      - name: Generate build
+      - name: Override CI variable
+        run: export CI=false
+
+      - name: Build React
         run: npm run build
-        continue-on-error: false
+        env:
+          CI: false
 
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v4
