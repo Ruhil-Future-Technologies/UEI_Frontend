@@ -60,11 +60,12 @@ jobs:
         with:
           name: react-github-actions-build
           path: build
-      - name: Checkout the files from QA branch
-        uses: actions/checkout@v3
-        with:
-          ref: QA
-        continue-on-error: false
+      # - name: Checkout the files from QA branch
+      #   uses: actions/checkout@v3
+      #   with:
+      #     ref: QA
+      #   continue-on-error: false
+      
 
       # Download the artifact from the build job
       - name: Download Build Artifact
@@ -84,9 +85,13 @@ jobs:
           SOURCE: build/
         continue-on-error: false
 
-  # deploy:
-  #   name: Deploy to EC2 on QA branch push
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     # Checkout the files from QA branch
+      # Upload the artifact to the second directory on EC2
+      - name: Upload Artifact to Second Directory on EC2
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.QA_EC2_FE_SSH_PK }}
+          REMOTE_HOST: ${{ secrets.QA_EC2_FE_DNS }}
+          REMOTE_USER: ${{ secrets.QA_EC2_FE_USERNAME }}
+          TARGET: /home/ubuntu/UEI-Frontend/src/test
+          SOURCE: build/
+        continue-on-error: false
