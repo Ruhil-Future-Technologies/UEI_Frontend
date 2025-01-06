@@ -40,7 +40,7 @@ jobs:
         run: npm run test -- --coverage
         continue-on-error: false
 
-      Run Prettier check test
+      # Run Prettier check test
       - name: Check code formatting with Prettier
         run: npx prettier --check .
         continue-on-error: false
