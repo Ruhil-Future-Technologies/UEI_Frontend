@@ -139,11 +139,13 @@ function App() {
           />
           <Route
             path="/institution-dashboard/chat"
-            element={<Protected Component={IntitutionChat} menuName="Chat"/>}
+            element={<Protected Component={IntitutionChat} menuName="Chat" />}
           />
           <Route
             path="/institution-dashboard/feedback"
-            element={<Protected Component={InstitutionFeedback} menuName='feedback'/>}
+            element={
+              <Protected Component={InstitutionFeedback} menuName="feedback" />
+            }
           />
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>

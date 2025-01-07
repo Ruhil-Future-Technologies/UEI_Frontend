@@ -160,20 +160,18 @@ const Login = () => {
       theme: 'colored',
       autoClose: 500,
     });
-    
+
     //const userType = data.data.user_type?'institute':data.data.user_type;
-    const userType = data.data.user_type
-    if(userType === 'admin'){
-      navigator("/main/Dashboard");
-   }else if(userType === 'student'){
-     navigator("/main/Dashboard");
-
-   }else if(userType === 'teacher'){
-     navigator( "/teacher-dashboard");
-
-   }else if(userType === 'institute'){
-    navigate("/institution-dashboard")
-   }
+    const userType = data.data.user_type;
+    if (userType === 'admin') {
+      navigator('/main/Dashboard');
+    } else if (userType === 'student') {
+      navigator('/main/Dashboard');
+    } else if (userType === 'teacher') {
+      navigator('/teacher-dashboard');
+    } else if (userType === 'institute') {
+      navigate('/institution-dashboard');
+    }
     // navigator(userType === "admin" ? "/profile-chat" : "/profile-chat");
     //navigator(userType === 'admin' ? '/main/Dashboard' : '/main/Dashboard');
   };

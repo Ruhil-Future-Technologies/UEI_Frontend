@@ -42,7 +42,7 @@ jobs:
 
       # Run Prettier check test
       - name: Check code formatting with Prettier
-        run: | 
+        run: |
           npx prettier --write .
           npx prettier --check .
         continue-on-error: false
@@ -65,7 +65,6 @@ jobs:
       #   with:
       #     ref: QA
       #   continue-on-error: false
-      
 
       # Download the artifact from the build job
       - name: Download Build Artifact

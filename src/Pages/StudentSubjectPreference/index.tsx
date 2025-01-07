@@ -110,7 +110,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           subject_error: !boxes[index]?.subject_id,
         }),
         ...(field === 'preference' && {
-          preference_error: boxes[index]?.preference?!/^[a-zA-Z]+$/.test(boxes[index]?.preference):!boxes[index]?.preference  ,
+          preference_error: boxes[index]?.preference
+            ? !/^[a-zA-Z]+$/.test(boxes[index]?.preference)
+            : !boxes[index]?.preference,
         }),
         ...(field === 'score_in_percentage' && {
           percentage_error: !boxes[index]?.score_in_percentage,
@@ -619,13 +621,20 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const handleSubmit = async () => {
     let valid = true;
     boxes.forEach((box, index) => {
-      if (!box?.subject_id || !box?.preference || !box?.score_in_percentage || !/^[a-zA-Z]+$/.test(box?.preference)) {
+      if (
+        !box?.subject_id ||
+        !box?.preference ||
+        !box?.score_in_percentage ||
+        !/^[a-zA-Z]+$/.test(box?.preference)
+      ) {
         valid = false;
         setError((prevError) => ({
           ...prevError,
           [index]: {
             subject_error: !box?.subject_id,
-            preference_error: boxes[index]?.preference?!/^[a-zA-Z]+$/.test(boxes[index]?.preference):!boxes[index]?.preference,
+            preference_error: boxes[index]?.preference
+              ? !/^[a-zA-Z]+$/.test(boxes[index]?.preference)
+              : !boxes[index]?.preference,
             percentage_error: !box?.score_in_percentage,
           },
         }));
@@ -711,7 +720,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
-              
             });
           }
 
@@ -741,7 +749,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
-  console.log(error[0]?.preference_error)
+  console.log(error[0]?.preference_error);
   return (
     <div>
       <form>

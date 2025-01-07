@@ -16,7 +16,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
     }
   }, []);
   const usertype: any = localStorage?.getItem('user_type');
- // const usertype: any = 'institute';
+  // const usertype: any = 'institute';
 
   const isDashboard = () => {
     const currentURL = window.location.href;
@@ -27,13 +27,13 @@ const Protected = (props: { Component: any; menuName?: string }) => {
     const feedbackRoute =
       parts[parts.length - 2] + '/' + parts[parts.length - 1];
     const MnameExist =
-    mName?.toLowerCase() === 'dashboard' ||
-      (usertype === 'admin'
-        ? mName.toLowerCase() === 'adminprofile' : '') ||
+      mName?.toLowerCase() === 'dashboard' ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'adminprofile' : '') ||
       (usertype === 'student'
-        ? mName.toLowerCase() === 'studentprofile' : '') ||
+        ? mName.toLowerCase() === 'studentprofile'
+        : '') ||
       mName.toLowerCase() === 'changepassword' ||
-       (usertype === 'student' ?  mName.toLowerCase() === 'chat':'' ) ||
+      (usertype === 'student' ? mName.toLowerCase() === 'chat' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'uploadpdf' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'pdflist' : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'recentchat' : '') ||
@@ -55,17 +55,25 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
         : '') ||
       (usertype === 'teacher'
-        ? mName.toLowerCase() === 'teacher-dashboard' : '') ||
-      ((usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard')
-        ? mName.toLowerCase() === 'chat' : '') ||
-      ((usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard')
-        ? mName.toLowerCase() === 'feedback' : '') ||
+        ? mName.toLowerCase() === 'teacher-dashboard'
+        : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'chat'
+        : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'feedback'
+        : '') ||
       (usertype === 'institute'
-        ? mName.toLowerCase() === 'institution-dashboard' : '') ||
-      ((usertype === 'institute' && uName.toLowerCase() === 'institution-dashboard')
-        ? mName.toLowerCase() === 'chat' : '') ||
-      ((usertype === 'institute' && uName.toLowerCase() === 'institution-dashboard')
-        ? mName.toLowerCase() === 'feedback' : '')
+        ? mName.toLowerCase() === 'institution-dashboard'
+        : '') ||
+      (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'chat'
+        : '') ||
+      (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'feedback'
+        : '');
 
     return MnameExist;
   };

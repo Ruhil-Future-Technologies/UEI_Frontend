@@ -436,7 +436,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             onClick={() => {
               setActiveForm((prev) => prev - 1);
             }}
-             data-testid="gobackform"
+            data-testid="gobackform"
           >
             Previous
           </button>
