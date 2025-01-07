@@ -816,7 +816,7 @@ const Chat = () => {
             const university: any =
               university_list_data.filter(
                 (university: any) => university.university_id == university_id,
-              ) || '';
+              ) || null;
             const queryParams = {
               user_query: search,
               student_id: userid,
@@ -825,7 +825,7 @@ const Chat = () => {
               state_board_selection: state_for_stateboard || null,
               stream_selection: stream || null,
               class_selection: class_id || null,
-              university_selection: university[0].university_name || null,
+              university_selection: university[0]?.university_name || null,
               college_selection: institution_name || null,
               course_selection: studentDetail?.course || null,
               year: year || null,
