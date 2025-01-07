@@ -2238,9 +2238,9 @@ function MainContent() {
   const handleExpandChat = () => {
     if (selectedchat?.length > 0 || chatLoader) {
       setIsExpanded(true);
-
+      const existingChatData = localStorage.getItem('chatData');
       const expandedChatData = {
-        chats: selectedchat,
+        chats: existingChatData,
         loading: chatLoader,
         loaderMessage: loaderMsg,
         pendingQuestion: search,
@@ -2250,6 +2250,7 @@ function MainContent() {
         'expandedChatData',
         JSON.stringify(expandedChatData),
       );
+      localStorage.removeItem('chatData');
       navigate('/main/Chat/recentChat');
     }
   };
