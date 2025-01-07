@@ -75,6 +75,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const StudentId = localStorage.getItem('_id');
   // const [subjectPreferences, setSubjectPreferences] = useState([]);
   const [editFlag, setEditFlag] = useState(false);
+  //const [preferenceValidations, setPreferenceValidations] = useState(false)
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
@@ -109,7 +110,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           subject_error: !boxes[index]?.subject_id,
         }),
         ...(field === 'preference' && {
-          preference_error: !boxes[index]?.preference,
+          preference_error: boxes[index]?.preference?!/^[a-zA-Z]+$/.test(boxes[index]?.preference):!boxes[index]?.preference  ,
         }),
         ...(field === 'score_in_percentage' && {
           percentage_error: !boxes[index]?.score_in_percentage,
@@ -474,6 +475,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       );
       setSubjects(subjectData);
     }
+    // if(field ==='preference'){
+    //   console.log("inside 1111111111");
+    //   if( /^[a-zA-Z]+$/.test(value)){
+    //     console.log("inside 22222222222");
+    //     setPreferenceValidations(false)
+    //   }else{
+    //     setPreferenceValidations(true)
+    //   }
+    // }
     if (field === 'class_id') {
       const subjectData = subjectsAll.filter(
         (item: any) => item.class_id === value,
@@ -609,13 +619,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const handleSubmit = async () => {
     let valid = true;
     boxes.forEach((box, index) => {
-      if (!box?.subject_id || !box?.preference || !box?.score_in_percentage) {
+      if (!box?.subject_id || !box?.preference || !box?.score_in_percentage || !/^[a-zA-Z]+$/.test(box?.preference)) {
         valid = false;
         setError((prevError) => ({
           ...prevError,
           [index]: {
             subject_error: !box?.subject_id,
-            preference_error: !box?.preference,
+            preference_error: boxes[index]?.preference?!/^[a-zA-Z]+$/.test(boxes[index]?.preference):!boxes[index]?.preference,
             percentage_error: !box?.score_in_percentage,
           },
         }));
@@ -692,17 +702,22 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             });
           }
           await handleReset();
-          await navigate('/');
+          setTimeout(async () => {
+            await navigate('/'); // Navigate after 2 seconds (adjust as necessary)
+          }, 1000);
         } else {
           if (!eq === true && isSubjectPrefTuch) {
             toast.success('Subject Preference updated successfully', {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
+              
             });
           }
 
-          await navigate('/');
+          setTimeout(async () => {
+            await navigate('/'); // Navigate after 2 seconds (adjust as necessary)
+          }, 1000);
         }
         setInitialState(initial);
 
@@ -726,6 +741,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
+  console.log(error[0]?.preference_error)
   return (
     <div>
       <form>
@@ -1019,6 +1035,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 {error[index]?.preference_error && box?.preference == '' && (
                   <FormHelperText style={{ color: 'red' }}>
                     Preference is required
+                  </FormHelperText>
+                )}
+                {error[index]?.preference_error && !(box?.preference == '') && (
+                  <FormHelperText style={{ color: 'red' }}>
+                    Provide a valid Preference
                   </FormHelperText>
                 )}
               </FormControl>

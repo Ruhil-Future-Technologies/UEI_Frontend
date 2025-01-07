@@ -130,7 +130,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/profile-chat" element={<ProfileChat />} />
         <Route path="/feedback-chat" element={<Feedback />} />
-        <Route path="/institution-deshboard" element={<IntituteMain />}>
+        <Route path="/institution-dashboard" element={<IntituteMain />}>
           <Route
             path=""
             element={
@@ -138,12 +138,12 @@ function App() {
             }
           />
           <Route
-            path="/institution-deshboard/chat"
-            element={<IntitutionChat />}
+            path="/institution-dashboard/chat"
+            element={<Protected Component={IntitutionChat} menuName="Chat"/>}
           />
           <Route
-            path="/institution-deshboard/feedback"
-            element={<InstitutionFeedback />}
+            path="/institution-dashboard/feedback"
+            element={<Protected Component={InstitutionFeedback} menuName='feedback'/>}
           />
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>
@@ -159,7 +159,7 @@ function App() {
           />
           <Route
             path="/teacher-dashboard/feedback"
-            element={<TeacherFeedback />}
+            element={<Protected Component={TeacherFeedback} />}
           />
         </Route>
 

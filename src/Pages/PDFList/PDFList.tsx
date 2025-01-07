@@ -97,10 +97,6 @@ const PDFList = () => {
 
   useEffect(() => {
     if (schoolOrcollFile && !dataDelete) {
-      const payload = {
-        admin_id: AdminId,
-        school_college_selection: schoolOrcollFile,
-      };
 
       const apiUrl = `https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(apiUrl)
@@ -116,7 +112,7 @@ const PDFList = () => {
             theme: 'colored',
           });
         });
-      console.log(payload);
+      
     }
     console.log(schoolOrcollFile);
   }, [schoolOrcollFile, dataDelete]);
