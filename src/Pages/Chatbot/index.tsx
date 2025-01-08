@@ -9,6 +9,8 @@ interface IChatBot {
 }
 
 const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
+  console.log({ answer });
+
   const parseAndCleanAnswer = (input: any): string[] => {
     if (typeof input === 'object') {
       return Object.entries(input).map(([key, value]) => `${key}. ${value}`);
