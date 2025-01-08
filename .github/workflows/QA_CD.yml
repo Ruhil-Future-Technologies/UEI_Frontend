@@ -1,4 +1,4 @@
-name: Deployment Pipeline
+name: CD Pipeline
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Lint, Typecheck, Test, and Coverage
+    name: Deploy to EC2 from QA Branch 
     runs-on: ubuntu-latest
 
     steps:
