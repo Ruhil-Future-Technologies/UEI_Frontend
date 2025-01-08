@@ -642,7 +642,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box width={300}>
               <DatePicker
-                label="datepicker_label"
+                aria-label="datepicker_label"
                 value={dayjs(admin?.dob)}
                 onChange={handleDateChange}
                 format="DD/MM/YYYY"
@@ -659,6 +659,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
                     helperText: error,
                     error: Boolean(error),
                     inputProps: {
+                      'aria-label': 'datepicker_label',
                       maxLength: 10,
                     },
                   },

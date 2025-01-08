@@ -290,6 +290,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                 Country code *
               </InputLabel> */}
               <Select
+                data-testid="county_pcode"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 sx={{
@@ -352,6 +353,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           </div>
           <div className="col form_field_wrapper">
             <TextField
+              data-testid="mobile_num"
               className="form-control"
               //   label="Enter Mobile Number"
               type="text"
@@ -382,6 +384,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                 Country code{" "}
               </InputLabel> */}
               <Select
+                data-testid="county_wpcode"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={contcodeWtsap}
@@ -445,6 +448,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           <div className="col form_field_wrapper ">
             <TextField
               type="text"
+              data-testid="whtmobile_num"
               className="form-control"
               placeholder="Enter Whatsapp Number"
               name="whatsappNum"
@@ -470,6 +474,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           </label>
           <TextField
             type="email"
+            data-testid="email_id"
             // label=" Email Id "
             className="form-control"
             // placeholder='Enter Email Id'
@@ -498,6 +503,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
         <div className="mt-3 d-flex align-items-center justify-content-between">
           <button
             type="button"
+            data-testid="gobackform"
             className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
             onClick={() => {
               setActiveForm((prev) => prev - 1);
@@ -507,6 +513,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           </button>
           <button
             type="button"
+            data-testid="submitForm"
             className="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn"
             onClick={(e: any) => handleSubmit(e)}
           >

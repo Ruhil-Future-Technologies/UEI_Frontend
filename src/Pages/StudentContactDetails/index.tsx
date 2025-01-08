@@ -286,6 +286,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               </InputLabel> */}
               <Select
                 labelId="demo-simple-select-label"
+                data-testid="county_pcode"
                 id="demo-simple-select"
                 sx={{
                   backgroundColor: '#f5f5f5',
@@ -312,6 +313,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           <div className="col form_field_wrapper">
             <TextField
               className="form-control"
+              data-testid="mobile_num"
               type="text"
               placeholder="Enter Mobile number"
               name="phoneNum"
@@ -350,6 +352,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
+                data-testid="county_wpcode"
                 value={contcodeWtsap}
                 sx={{
                   backgroundColor: '#f5f5f5',
@@ -375,6 +378,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           <div className="col form_field_wrapper">
             <TextField
               type="text"
+              data-testid="whtmobile_num"
               placeholder="Enter Whatsapp number"
               className="form-control"
               value={whatsappNum}
@@ -402,6 +406,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           <TextField
             type="email"
             className="form-control"
+            data-testid="email_id"
             // placeholder='Enter Email Id'
             name="email"
             value={email?.includes('@') ? email : ''}
@@ -431,6 +436,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             onClick={() => {
               setActiveForm((prev) => prev - 1);
             }}
+            data-testid="gobackform"
           >
             Previous
           </button>
@@ -438,6 +444,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             type="button"
             className="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn"
             onClick={submitHandel}
+            data-testid="submitForm"
           >
             Next
           </button>
