@@ -330,7 +330,7 @@ const Header = () => {
                               Congratulations Jhon.
                             </h5>
                             <p className="mb-0 notify-desc">
-                              Many many congtars jhon. You have won the gifts.
+                              Many congtars jhons. You have won the gifts.
                             </p>
                             <p className="mb-0 notify-time">Today</p>
                           </div>
