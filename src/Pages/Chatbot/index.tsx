@@ -68,29 +68,62 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     overflowWrap: 'break-word',
     fontSize: '15px',
     overflowY: 'auto',
+    overflow: 'hidden',
   };
-  const parseElement = (element: string): JSX.Element[] => {
-    const preservedElement = element.replace(/(\$\$[\s\S]*?\$\$)/g, (match) =>
-      match.replace(/\n/g, 'LATEXBREAK'),
-    );
-    const parts = preservedElement.split(/\n\n|\n/);
 
-    return parts.map((part, index) => {
-      const restoredPart = part.replace(/LATEXBREAK/g, '\n');
-      if (index < parts.length - 1) {
-        return (
-          <React.Fragment key={`${currentIndex}-${index}`}>
-            {renderText(restoredPart)}
-            <br />
-            {index < parts.length - 2 && <br />}
-          </React.Fragment>
-        );
-      }
-      return renderText(restoredPart);
+  const parseElement = (element: string): JSX.Element[] => {
+    const preservedElement = element
+      .replace(/(\n\\+\[[\s\S]*?\\+\]\n)/g, (match) =>
+        match.replace(/\n/g, 'LATEXBREAK'),
+      )
+      .replace(/(\$\$[\s\S]*?\$\$)/g, (match) =>
+        match.replace(/\n/g, 'LATEXBREAK'),
+      );
+
+    const sections = preservedElement.split(/\n\n+/);
+
+    return sections.map((section, sectionIndex) => {
+      const lines = section
+        .split(/\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      return (
+        <React.Fragment key={`section-${sectionIndex}`}>
+          {lines.map((line, lineIndex) => {
+            const restoredLine = line.replace(/LATEXBREAK/g, '\n').trim();
+            return (
+              <React.Fragment key={`line-${lineIndex}`}>
+                {renderText(restoredLine)}
+                {lineIndex < lines.length - 1 && <br />}
+              </React.Fragment>
+            );
+          })}
+          {sectionIndex < sections.length - 1 && (
+            <>
+              <br />
+              <br />
+            </>
+          )}
+        </React.Fragment>
+      );
     });
   };
 
   const processLatex = (latex: string): string => {
+    latex = latex
+      .replace(/^\n*\\+\[/, '')
+      .replace(/\\+\]\n*$/, '')
+      .trim();
+
+    latex = latex.replace(/^\\\[|\\\]$/g, '');
+
+    if (latex.includes('\\div')) {
+      return latex.trim();
+    }
+    if (latex.startsWith('\\(') && latex.endsWith('\\)')) {
+      latex = latex.slice(2, -2);
+    }
     if (latex.match(/\\boxed.*\\frac/)) {
       return latex.replace(/\\boxed\{(.*)\}/, '$1');
     }
@@ -151,15 +184,62 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     if (text.includes('$\\boxed{None}$')) {
       return <></>;
     }
-    if (text.includes('$') || text.includes('\\[')) {
-      const displayMathRegex =
-        /(\$\$.*?\\begin{aligned}[\s\S]*?\\end{aligned}.*?\$\$|\$\$[\s\S]*?\$\$|\\+\[[\s\S]*?\\+\]|\\begin{array}[\s\S]*?\\end{array})/g;
-      const parts = text.split(displayMathRegex);
+    const displayMathRegex =
+      /((?:\n?\\+\[[\s\S]*?\\+\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([\s\S]*?\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$[^$\n]+?\$))/gs;
+
+    if (text.includes('$') || text.includes('\\[') || text.includes('\\(')) {
+      const parts = text
+        .split(displayMathRegex)
+        .filter(
+          (part, index, arr) => !(index === arr.length - 1 && part === ''),
+        );
 
       return (
         <span key={currentIndex}>
           {parts.map((part, idx) => {
-            if (part.startsWith('\\[')) {
+            if (part?.match(/^\\\(.*\\\)$/)) {
+              try {
+                const latex = part.slice(2, -2).trim();
+                return <InlineMath key={idx} math={latex} />;
+              } catch (error) {
+                console.error('LaTeX parsing error:', error);
+                return part;
+              }
+            }
+            if (part?.match(/\n?\\+\[[\s\S]*?\\+\]\n?/)) {
+              try {
+                const equations = part
+                  .split(/\\+\]/)
+                  .map((eq) => {
+                    return eq
+                      .replace(/^[\n\s]*\\+\[/, '')
+                      .replace(/[\n\s]*$/, '')
+                      .trim();
+                  })
+                  .filter(Boolean);
+
+                return (
+                  <>
+                    {equations.map((equation, eqIdx) => {
+                      if (!equation.trim()) return null;
+
+                      return (
+                        <React.Fragment key={`${idx}-${eqIdx}`}>
+                          {eqIdx === 0 && <br />}
+                          <InlineMath math={equation} />
+                          <br />
+                        </React.Fragment>
+                      );
+                    })}
+                  </>
+                );
+              } catch (error) {
+                console.error('LaTeX parsing error:', error);
+                return part;
+              }
+            }
+
+            if (part?.startsWith('$$')) {
               try {
                 const latex = processLatex(part);
                 return <InlineMath key={idx} math={latex} />;
@@ -169,41 +249,27 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
               }
             }
 
-            if (part.startsWith('$$')) {
-              try {
-                const latex = processLatex(part);
-                return <InlineMath key={idx} math={latex} />;
-              } catch (error) {
-                console.error('LaTeX parsing error:', error);
-                return part;
+            if (part?.startsWith('$') && part?.endsWith('$')) {
+              const content = part.slice(1, -1);
+
+              if (content.includes('\\boxed{')) {
+                const boxedMatch = content.match(/\\boxed{([^]*)}/);
+                if (boxedMatch) {
+                  const innerContent = boxedMatch[1]
+                    .replace(/\\pi/g, '\\pi ')
+                    .replace(/\^{(\d+)}/g, '^{$1}')
+                    .replace(/=/g, ' = ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                  return <InlineMath key={idx} math={innerContent} />;
+                }
               }
-            } else if (part.includes('$')) {
-              const inlineParts = part.split(/(\$.*?\$)/g);
-              return (
-                <React.Fragment key={idx}>
-                  {inlineParts.map((inlinePart, inlineIdx) => {
-                    if (
-                      inlinePart.startsWith('$') &&
-                      inlinePart.endsWith('$')
-                    ) {
-                      try {
-                        const unboxedLatex = processLatex(
-                          inlinePart.slice(1, -1),
-                        );
-                        return (
-                          <InlineMath key={inlineIdx} math={unboxedLatex} />
-                        );
-                      } catch (error) {
-                        console.error('LaTeX parsing error:', error);
-                        return inlinePart;
-                      }
-                    }
-                    return processNonLatexText(inlinePart, inlineIdx);
-                  })}
-                </React.Fragment>
-              );
+              const latex = processLatex(content);
+
+              return <InlineMath key={idx} math={latex} />;
             }
-            return processNonLatexText(part, idx);
+            return part ? processNonLatexText(part, idx) : null;
           })}
         </span>
       );
@@ -211,7 +277,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
     return processNonLatexText(text, currentIndex);
   };
-
   const processNonLatexText = (text: string, idx: number): JSX.Element => {
     const parts = [];
     let lastIndex = 0;
@@ -271,6 +336,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       <span key={idx}>{text}</span>
     );
   };
+
   return (
     <div id={`answer-${index}`} style={style}>
       {displayText.map((element, index) => (

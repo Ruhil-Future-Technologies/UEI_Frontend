@@ -54,6 +54,7 @@ const Header = () => {
   const { getData } = useApi();
   const handlogout = () => {
     setProPercentage(0);
+    localStorage.removeItem('chatData');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
     localStorage.removeItem('userid');
