@@ -109,3 +109,18 @@ export const mockClassValue = {
   status: 200,
   message: 'Class Found Successfully',
 };
+
+export const mockbasicinfoPayload={
+   payload :[ {
+    student_login_id: "123",
+    first_name: "John",
+    last_name: "Patel",
+    gender: "male",
+    dob: "01/01/2024",
+    father_name: "father",
+    mother_name: "mother",
+    guardian_name: "guardian",
+    pic_path: "pic_path",
+    aim: "aim",
+  }]
+}

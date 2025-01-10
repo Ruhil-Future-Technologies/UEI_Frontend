@@ -77,9 +77,10 @@ const AdminFeedback: React.FC = () => {
               />
             </div>
             <div className="col">
-              <AddIcon className="m-2" onClick={handleAddOption} />
+              <AddIcon data-testid="add-option" className="m-2" onClick={handleAddOption} />
               {index > 0 && (
                 <DeleteIcon
+                data-testid={`delete-option-${index}`}
                   className="m-2"
                   onClick={() => handleDeleteOption(index)}
                 />

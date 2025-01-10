@@ -26,7 +26,7 @@ import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import useApi from '../../hooks/useAPI';
+//import useApi from '../../hooks/useAPI';
 // interface Course {
 //     course_id: number;
 //     course_name: string;
@@ -42,7 +42,7 @@ import useApi from '../../hooks/useAPI';
 
 const instituteId = localStorage.getItem('_id');
 const InstitutionDash = () => {
-  const { getData } = useApi();
+ // const { getData } = useApi();
   const [totelStudents, setTotelStudent] = useState(0);
   const [totleCourse, setTotleCourse] = useState(0);
 
@@ -56,12 +56,14 @@ const InstitutionDash = () => {
   const getCourseCount = () => {
     console.log(totleCourse);
     try {
-      getData(`course/course-count/${instituteId}`).then((response) => {
-        if (response?.status === 200) {
-          setTotleCourse(response?.data?.courses_count);
-        }
-        console.log(response);
-      });
+      // getData(`course/course-count/${instituteId}`).then((response) => {
+      //   if (response?.status === 200) {
+      //     setTotleCourse(response?.data?.courses_count);
+      //   }
+      //   console.log(response);
+      // });
+      console.log(instituteId);
+      setTotleCourse(10);
     } catch (error) {
       console.log(error);
     }
@@ -70,12 +72,13 @@ const InstitutionDash = () => {
     console.log(totelStudents);
 
     try {
-      getData(`student/students-count`).then((response) => {
-        if (response?.status === 200) {
-          setTotelStudent(response?.data?.students_count);
-        }
-        console.log(response);
-      });
+      // getData(`student/students-count`).then((response) => {
+      //   if (response?.status === 200) {
+      //     setTotelStudent(response?.data?.students_count);
+      //   }
+      //   console.log(response);
+      // });
+      setTotelStudent(15);
     } catch (error) {
       console.log(error);
     }

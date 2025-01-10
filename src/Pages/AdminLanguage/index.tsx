@@ -304,6 +304,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
               <Select
                 labelId={`language-label-${box.id}`}
+                data-testid={`language-${box.id}`}
                 id={`language-select-${box.id}`}
                 name={`language_${box.id}`}
                 value={box.language_id}
@@ -396,6 +397,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               </InputLabel>
               <Select
                 labelId={`proficiency-label-${box.id}`}
+                data-testid={`proficiency_${box.id}`}
                 id={`proficiency-select-${box.id}`}
                 name={`proficiency_${box.id}`}
                 value={box.proficiency}

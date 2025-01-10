@@ -15,8 +15,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       navigate('/');
     }
   }, []);
-  const usertype: any = localStorage?.getItem('user_type');
-  // const usertype: any = 'institute';
+  //const usertype: any = localStorage?.getItem('user_type');
+  const usertype: any = 'institute';
 
   const isDashboard = () => {
     const currentURL = window.location.href;
