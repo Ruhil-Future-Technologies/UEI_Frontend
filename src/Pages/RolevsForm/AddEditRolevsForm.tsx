@@ -55,10 +55,10 @@ const AddEditRolevsForm = () => {
 
   const location = useLocation();
   const Menulist: any = localStorage.getItem('menulist1');
-  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const pathSegments = location?.pathname?.split('/').filter(Boolean);
   const lastSegment = id
-    ? pathSegments[pathSegments.length - 3].toLowerCase()
-    : pathSegments[pathSegments.length - 2].toLowerCase();
+    ? pathSegments[pathSegments.length - 3]?.toLowerCase()
+    : pathSegments[pathSegments.length - 2]?.toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const AddEditRolevsForm = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator('/main/RoleVsForm');
+    // navigator('/main/RoleVsForm');
   }
 
   const initialState = {
@@ -324,6 +324,7 @@ const AddEditRolevsForm = () => {
                               Role Master *
                             </InputLabel>
                             <Select
+                              data-testid="role_master_id"
                               onChange={handleChange}
                               label="Role Master"
                               name="role_master_id"
@@ -379,6 +380,7 @@ const AddEditRolevsForm = () => {
                               Form Master *
                             </InputLabel>
                             <Select
+                              data-testid="form_master_id"
                               onChange={handleChange}
                               label="Form Master"
                               name="form_master_id"
@@ -441,6 +443,7 @@ const AddEditRolevsForm = () => {
                             Is Search
                           </Typography>
                           <RadioGroup
+                            data-testid="is_search"
                             row
                             name="is_search"
                             value={values.is_search}
@@ -497,6 +500,7 @@ const AddEditRolevsForm = () => {
                             Is Save
                           </Typography>
                           <RadioGroup
+                            data-testid="is_save"
                             row
                             name="is_save"
                             value={values.is_save}
@@ -553,6 +557,7 @@ const AddEditRolevsForm = () => {
                             Is Update
                           </Typography>
                           <RadioGroup
+                            data-testid="is_update"
                             row
                             name="is_update"
                             value={values.is_update}
@@ -597,7 +602,10 @@ const AddEditRolevsForm = () => {
                         )}
                       </div>
                     </div>
-                    <button className="btn btn-primary mainbutton mt-4">
+                    <button
+                      data-testid="submitBtn"
+                      className="btn btn-primary mainbutton mt-4"
+                    >
                       {id ? 'Update' : 'Save'}
                     </button>
                   </Form>

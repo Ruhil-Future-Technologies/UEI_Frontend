@@ -1,163 +1,100 @@
-// // login.test.tsx
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Login from '../index';
+import useApi from '../../../hooks/useAPI';
+import NameContext from '../../Context/NameContext';
+import { contextValue } from '../../../MockStorage/mockstorage';
 
-// import React from "react";
-// import { render, screen, waitFor} from "@testing-library/react";
-// import userEvent from "@testing-library/user-event";
-// import { MemoryRouter } from "react-router-dom"; // For handling routing in tests
-// import Login from "../index"; // Adjust this import to the path where your Login component is located
+jest.mock('../../../hooks/useAPI', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    dismiss: jest.fn(), // Add this line
+  },
+}));
 
-// jest.mock('swiper/react', () => ({
-//   Swiper: 'Swiper',
-//   SwiperSlide: 'SwiperSlide',
-// }));
+describe('Login Component', () => {
+  const mockPostData = jest.fn();
+  const mockGetData = jest.fn();
 
-// // Mock the API request
-// jest.mock("../../../hooks/useAPI", () => ({
-//   __esModule: true,
-//   default: jest.fn(() => ({
-//     postData: jest.fn(),
-//   })),
-// }));
+  beforeEach(() => {
+    (useApi as jest.Mock).mockReturnValue({
+      postData: mockPostData,
+      getData: mockGetData,
+      loading: false,
+    });
+  });
+  const renderRoleComponent = () => {
+    return render(
+      <NameContext.Provider value={contextValue}>
+        <Router>
+          <Login />
+        </Router>
+      </NameContext.Provider>,
+    );
+  };
 
-// describe("Login Page", () => {
-//   let postDataMock: jest.Mock;
+  it('renders the Login component', () => {
+    const { getByText, getByTestId } = renderRoleComponent();
+    expect(getByText('Sign In')).toBeInTheDocument();
+    expect(getByText('Sign in with Email / Phone')).toBeInTheDocument();
+    const signInButton = getByTestId('btn-sign');
+    fireEvent.click(signInButton);
+    expect(screen.getByText(/Email \/ Phone/i)).toBeInTheDocument();
+    expect(getByTestId('Password')).toBeInTheDocument();
+    expect(getByTestId('submitBtn')).toBeInTheDocument();
+  });
 
-//   beforeEach(() => {
-//     // eslint-disable-next-line @typescript-eslint/no-require-imports
-//     postDataMock = require("../../../hooks/useAPI").default().postData;
-//   });
+  it('validates email or phone input', async () => {
+    const { getByText, getByTestId } = renderRoleComponent();
+    const signInButton = getByTestId('btn-sign');
+    fireEvent.click(signInButton);
+    await waitFor(() => {
+      expect(getByTestId('email')).toBeInTheDocument();
+    });
+    const emailPhoneInput = getByTestId('email').querySelector('input');
+    if (emailPhoneInput) {
+      fireEvent.change(emailPhoneInput, { target: { value: 'invalid' } });
+      expect(
+        getByText(/Invalid email or phone number format/),
+      ).toBeInTheDocument();
+    }
+  });
 
-//   test("renders login form", () => {
-//     render(
-//       <MemoryRouter>
-//         <Login />
-//       </MemoryRouter>
-//     );
+  it('validates password input', async () => {
+    const { getByText, getByTestId, queryByText } = renderRoleComponent();
+    const signInButton = getByTestId('btn-sign');
+    fireEvent.click(signInButton);
+    await waitFor(() => {
+      expect(getByTestId('Password')).toBeInTheDocument();
+    });
+    // const passwordInput = screen.getByLabelText(/Password/i);
+    const passwordInput = getByTestId('Password').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    if (passwordInput) {
+      fireEvent.change(passwordInput, { target: { value: 'short' } });
+      fireEvent.blur(passwordInput);
 
-//     // Check if the form elements are rendered
-//     expect(screen.getByLabelText(/email \/ phone/i)).toBeInTheDocument();
-//     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-//     expect(screen.getByRole("button", { name: /sign in now/i })).toBeInTheDocument();
-//   });
+      expect(
+        getByText(
+          /Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long./i,
+        ),
+      ).toBeInTheDocument();
 
-//   test("validates email and password", async () => {
-//     render(
-//       <MemoryRouter>
-//         <Login />
-//       </MemoryRouter>
-//     );
+      fireEvent.change(passwordInput, { target: { value: 'ValidPass1!' } });
+      fireEvent.blur(passwordInput);
 
-//     const emailInput = screen.getByLabelText(/email \/ phone/i);
-//     const passwordInput = screen.getByLabelText(/password/i);
-//     const submitButton = screen.getByRole("button", { name: /sign in now/i });
-
-//     // Simulate user input
-//     userEvent.type(emailInput, "invalidemail");
-//     userEvent.type(passwordInput, "123456");
-
-//     // Click submit button
-//     userEvent.click(submitButton);
-
-//     // Check for validation error
-//     expect(await screen.findByText(/invalid email or phone number format/i)).toBeInTheDocument();
-
-//     // Now test for a valid email/phone number format
-//     userEvent.clear(emailInput);
-//     userEvent.type(emailInput, "test@domain.com");
-
-//     // After typing valid email, check that error is cleared
-//     expect(screen.queryByText(/invalid email or phone number format/i)).not.toBeInTheDocument();
-//   });
-
-//   test("submits login request successfully", async () => {
-//     render(
-//       <MemoryRouter>
-//         <Login />
-//       </MemoryRouter>
-//     );
-
-//     const emailInput = screen.getByLabelText(/email \/ phone/i);
-//     const passwordInput = screen.getByLabelText(/password/i);
-//     const submitButton = screen.getByRole("button", { name: /sign in now/i });
-
-//     // Simulate user input
-//     userEvent.type(emailInput, "test@domain.com");
-//     userEvent.type(passwordInput, "correctPassword");
-
-//     // Mock API response
-//     postDataMock.mockResolvedValueOnce({
-//       status: 200,
-//       token: "fake-jwt-token",
-//       data: { user_type: "admin", userid: "test@domain.com", id: "123" },
-//     });
-
-//     // Click submit button
-//     userEvent.click(submitButton);
-
-//     await waitFor(() => {
-//       // Check that the successful login logic is invoked, i.e., token saved to localStorage
-//       expect(localStorage.setItem).toHaveBeenCalledWith("token", "fake-jwt-token");
-//       expect(localStorage.setItem).toHaveBeenCalledWith("userid", "test@domain.com");
-//       expect(screen.getByText(/user logged in successfully/i)).toBeInTheDocument();
-//     });
-//   });
-
-//   test("shows loading spinner during login request", async () => {
-//     render(
-//       <MemoryRouter>
-//         <Login />
-//       </MemoryRouter>
-//     );
-
-//     const emailInput = screen.getByLabelText(/email \/ phone/i);
-//     const passwordInput = screen.getByLabelText(/password/i);
-//     const submitButton = screen.getByRole("button", { name: /sign in now/i });
-
-//     // Simulate user input
-//     userEvent.type(emailInput, "test@domain.com");
-//     userEvent.type(passwordInput, "correctPassword");
-
-//     // Mock API request to delay response
-//     postDataMock.mockImplementationOnce(() =>
-//       new Promise((resolve) => setTimeout(() => resolve({ status: 200 }), 2000))
-//     );
-
-//     // Check if the loading spinner is shown before the API call is resolved
-//     userEvent.click(submitButton);
-//     expect(screen.getByRole("status")).toBeInTheDocument(); // Assuming FullScreenLoader uses role="status"
-
-//     // Wait for the request to finish
-//     await waitFor(() => expect(screen.queryByRole("status")).not.toBeInTheDocument());
-//   });
-
-//   test("handles failed login with error message", async () => {
-//     render(
-//       <MemoryRouter>
-//         <Login />
-//       </MemoryRouter>
-//     );
-
-//     const emailInput = screen.getByLabelText(/email \/ phone/i);
-//     const passwordInput = screen.getByLabelText(/password/i);
-//     const submitButton = screen.getByRole("button", { name: /sign in now/i });
-
-//     // Simulate user input
-//     userEvent.type(emailInput, "wrong@domain.com");
-//     userEvent.type(passwordInput, "wrongPassword");
-
-//     // Mock API response
-//     postDataMock.mockResolvedValueOnce({
-//       status: 404,
-//       message: "Invalid userid or password",
-//     });
-
-//     // Click submit button
-//     userEvent.click(submitButton);
-
-//     await waitFor(() => {
-//       // Check that error message is displayed
-//       expect(screen.getByText(/invalid userid or password/i)).toBeInTheDocument();
-//     });
-//   });
-// });
-test('dummy test', () => {});
+      expect(
+        queryByText(
+          /Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long./i,
+        ),
+      ).not.toBeInTheDocument();
+    }
+  });
+});

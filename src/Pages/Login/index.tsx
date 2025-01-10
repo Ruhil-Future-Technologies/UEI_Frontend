@@ -313,7 +313,7 @@ const Login = () => {
                               /> */}
                             <TextField
                               id="email/phone"
-                              data-testid="email"
+                              inputProps={{ 'data-testid': 'email' }}
                               value={emailphone}
                               // className="form-control"
                               onChange={handleChangeData}
@@ -356,6 +356,7 @@ const Login = () => {
                             </label>
                             <div className="position-relative">
                               <TextField
+                              inputProps={{ 'data-testid': 'Password' }}
                                 id="passwordInput"
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="Password"
@@ -440,6 +441,7 @@ const Login = () => {
                             </Link>
                           </div>
                           <button
+                           data-testid="submitBtn"
                             type="submit"
                             className="btn btn-secondary w-100 mb-3 mh-56 rounded-pill"
                             onClick={(e) => {
@@ -491,6 +493,7 @@ const Login = () => {
                       <div className="col-lg-12">
                         <div className="d-flex align-items-center gap-3">
                           <div
+                          data-testid="btn-sign"
                             onClick={() => setShowForm(true)}
                             className="btn btn-secondary w-100 outsecbtn rounded-pill"
                           >
