@@ -17,7 +17,9 @@ const Footer = () => {
                 </div> */}
         {/* <div className="credits text-white">Designed & developed by <a href="#" target="_blank" className="text-pink"> Sakshem IT Solution Pvt. Ltd.</a></div> */}
         {/* <p className="mb-0">Designed & developed by <a href="#" target="_blank" className="text-pink text-decoration-none"> Sakshem IT Solution Pvt. Ltd.</a></p> */}
-        <p className="mb-0">Copyright © 2024. All right reserved.</p>
+        <p className="mb-0">
+          Copyright © {new Date().getFullYear()}. All right reserved.
+        </p>
         {/* <p className="mb-0">Copyright © 2024. All right reserved.</p> */}
       </footer>
     </>

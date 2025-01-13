@@ -3,7 +3,14 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material';
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 import { toast } from 'react-toastify';
@@ -55,7 +62,7 @@ const Login = () => {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: SelectChangeEvent) => {
     setValue((event.target as HTMLInputElement).value);
   };
 
@@ -415,7 +422,7 @@ const Login = () => {
                             )}
                           </div>
                           <div>
-                            <RadioGroup
+                            {/* <RadioGroup
                               row
                               value={value}
                               onChange={handleChange}
@@ -430,7 +437,20 @@ const Login = () => {
                                 control={<Radio />}
                                 label="Admin"
                               />
-                            </RadioGroup>
+                            </RadioGroup> */}
+                            <FormControl fullWidth>
+                              <InputLabel>Role</InputLabel>
+                              <Select
+                                value={value}
+                                onChange={handleChange}
+                                label="Role"
+                              >
+                                <MenuItem value="student">Student</MenuItem>
+                                <MenuItem value="admin">Admin</MenuItem>
+                                <MenuItem value="institute">Institute</MenuItem>
+                                <MenuItem value="teacher">Teacher</MenuItem>
+                              </Select>
+                            </FormControl>
                           </div>
                           <div className="mt-2 mb-4 text-center">
                             <Link

@@ -117,6 +117,8 @@ const Chat = () => {
       setStudentData(expandedChat.studentData);
       setSearch(expandedChat.pendingQuestion);
       setExpandSearch(true);
+      localStorage.setItem('chatData', JSON.stringify(expandedChatData));
+      setchatData(expandedChatData);
     } else {
       setSelectedChat(expandedChatData);
 
@@ -1115,12 +1117,12 @@ const Chat = () => {
     }
     // postData(`${chataddurl}`, chat_payload)
     await postData(`${chataddconversationurl}`, chat_payload)
-      .then((chatdata: any) => {
+      .then(() => {
         setChatSaved(false);
-        toast.success(chatdata?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
+        // toast.success(chatdata?.message, {
+        //   hideProgressBar: true,
+        //   theme: 'colored',
+        // });
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
 
