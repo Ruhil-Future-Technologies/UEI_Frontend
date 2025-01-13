@@ -9,8 +9,6 @@ interface IChatBot {
 }
 
 const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
-  console.log({ answer });
-
   const parseAndCleanAnswer = (input: any): string[] => {
     if (typeof input === 'object') {
       return Object.entries(input).map(([key, value]) => `${key}. ${value}`);
@@ -94,10 +92,13 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         <React.Fragment key={`section-${sectionIndex}`}>
           {lines.map((line, lineIndex) => {
             const restoredLine = line.replace(/LATEXBREAK/g, '\n').trim();
+            const isHeader = restoredLine.startsWith('##');
+
             return (
               <React.Fragment key={`line-${lineIndex}`}>
                 {renderText(restoredLine)}
-                {lineIndex < lines.length - 1 && <br />}
+                {(lineIndex < lines.length - 1 || isHeader) && <br />}
+                {isHeader && <br />}
               </React.Fragment>
             );
           })}
@@ -126,6 +127,13 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     if (latex.startsWith('\\(') && latex.endsWith('\\)')) {
       latex = latex.slice(2, -2);
     }
+    if (
+      latex.match(/\\boxed.*/) &&
+      (latex.startsWith('\\[') || latex.endsWith('\\]'))
+    ) {
+      return latex.replace(/\\boxed\{(.*)\}/, '$1');
+    }
+
     if (latex.match(/\\boxed.*\\frac/)) {
       return latex.replace(/\\boxed\{(.*)\}/, '$1');
     }
@@ -201,7 +209,18 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
           {parts.map((part, idx) => {
             if (part?.match(/^\\\(.*\\\)$/)) {
               try {
-                const latex = part.slice(2, -2).trim();
+                let latex = part.slice(2, -2).trim();
+
+                latex = latex
+                  .replace(/·/g, '\\cdot{}')
+                  .replace(/\\text{([^}]+)}/g, (_, content) => {
+                    const parts = content.split('·');
+                    return parts
+                      .map((part: any) => `\\mathrm{${part.trim()}}`)
+                      .join('\\cdot{}');
+                  })
+                  .trim();
+
                 return <InlineMath key={idx} math={latex} />;
               } catch (error) {
                 console.error('LaTeX parsing error:', error);
@@ -219,7 +238,24 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
                       .trim();
                   })
                   .filter(Boolean);
+                const content = part.slice(1, -1);
+                if (content.includes('\\boxed{')) {
+                  const boxedMatch = content.match(/\\boxed{([^]*)}/);
+                  if (boxedMatch) {
+                    const innerContent = boxedMatch[1]
+                      .replace(/\\pi/g, '\\pi ')
+                      .replace(/\^{(\d+)}/g, '^{$1}')
+                      .replace(/=/g, ' = ')
+                      .replace(/\s+/g, ' ')
+                      .trim();
 
+                    return (
+                      <>
+                        <InlineMath key={idx} math={innerContent} /> <br />
+                      </>
+                    );
+                  }
+                }
                 return (
                   <>
                     {equations.map((equation, eqIdx) => {
@@ -280,10 +316,11 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     return processNonLatexText(text, currentIndex);
   };
   const processNonLatexText = (text: string, idx: number): JSX.Element => {
+    text = text.replace(/\((\d+)\)\s*/g, (_, num) => `\n(${num}) `);
+
     const parts = [];
     let lastIndex = 0;
-
-    const combinedRegex = /(##[^#\n]*|\*\*[^*\n]+(?:\*\*)?)/g;
+    const combinedRegex = /(##[^#\n]*|\*\*[^*\n]+(?:\*\*)?|https?:\/\/[^\s]+)/g;
     let match;
 
     while ((match = combinedRegex.exec(text)) !== null) {
@@ -298,7 +335,14 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
           .replace(/(\d+)\s*\*\s*(\d+)/g, '$1 ⋆ $2')
           .replace(/\s\*\s/g, ' ⋆ ')
           .replace(/(?<![*])\*(?![*])/g, '⋆')
-          .replace(/`{1,3}/g, '');
+          .replace(/`{1,3}/g, '')
+          .split('\n')
+          .map((line, i) => (
+            <React.Fragment key={`line-${i}`}>
+              {line}
+              {i < text.split('\n').length - 1 && <br />}
+            </React.Fragment>
+          ));
         parts.push(<span key={`${idx}-${lastIndex}`}>{beforeText}</span>);
       }
 
@@ -307,6 +351,17 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         const headerContent = content.replace(/^##\s*/, '').trim();
         parts.push(
           <strong key={`${idx}-${match.index}`}>{headerContent} </strong>,
+        );
+      } else if (content.startsWith('http')) {
+        parts.push(
+          <a
+            key={`${idx}-${match.index}`}
+            href={content}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {content}
+          </a>,
         );
       } else {
         const boldContent = content.slice(2, -2).replace(/`{1,3}/g, '');
@@ -329,7 +384,34 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         .replace(/\s\*\s/g, ' ⋆ ')
         .replace(/(?<![*])\*(?![*])/g, '⋆')
         .replace(/`{1,3}/g, '');
-      parts.push(<span key={`${idx}-${lastIndex}`}>{remainingText}</span>);
+
+      const paragraphs = remainingText.split(/(?<=\.)\s+(?=[A-Z])/);
+
+      const formattedParagraphs = paragraphs.map((paragraph, pIndex) => {
+        const lines = paragraph.split('\n').map((line) => {
+          if (line.match(/^\(\d+\)/)) {
+            return `${line}`;
+          }
+          return line;
+        });
+        const hasNumberedPoints = lines.some((line) => line.match(/^\(\d+\)/));
+
+        return (
+          <React.Fragment key={`para-${pIndex}`}>
+            {lines.map((line, i) => (
+              <React.Fragment key={`line-${i}`}>
+                {hasNumberedPoints && line.match(/^\(\d+\)/) && <br />} {line}
+                {(line.match(/^\s*\(\d+\)/) || i < lines.length - 1) && <br />}
+              </React.Fragment>
+            ))}
+            {pIndex < paragraphs.length - 1 && <br />}
+          </React.Fragment>
+        );
+      });
+
+      parts.push(
+        <span key={`${idx}-${lastIndex}`}>{formattedParagraphs}</span>,
+      );
     }
 
     return parts.length ? (
