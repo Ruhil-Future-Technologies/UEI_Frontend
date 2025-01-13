@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { contextValue } from '../../../MockStorage/mockstorage';
 import NameContext from '../../Context/NameContext';
@@ -36,7 +36,7 @@ describe('Student Contect Component', () => {
     (useApi as jest.Mock).mockImplementation(() => ({
       getData: mockGetData.mockResolvedValue({ getData: mockGetData }), // Mock resolved promise
       postData: mockPostData,
-      putData: mockPutData, 
+      putData: mockPutData,
     }));
   });
 
@@ -182,16 +182,15 @@ describe('Student Contect Component', () => {
     ).not.toBeInTheDocument();
   });
 
-
   it('should be check GET data of user details ', async () => {
     const mockSubmitHandle = jest.fn();
 
     jest.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
       if (key === '_id') {
-          return '76'; // Mock the studentId value
+        return '76'; // Mock the studentId value
       }
       return null;
-  });
+    });
     mockGetData.mockResolvedValue({
       status: 200,
       data: [
@@ -206,67 +205,69 @@ describe('Student Contect Component', () => {
       ],
     });
     (useApi as jest.Mock).mockReturnValue({ getData: mockGetData });
-   
+
     const { getByTestId } = renderedComponent();
-  
+
     const submitForm = getByTestId('submitForm') as HTMLButtonElement;
 
     submitForm.onclick = mockSubmitHandle;
     fireEvent.click(submitForm);
 
     await waitFor(() => {
-          expect(mockGetData).toHaveBeenCalledWith('student_contact/edit/76');
-        });
-        
+      expect(mockGetData).toHaveBeenCalledWith('student_contact/edit/76');
+    });
   });
 
-  it("should check update API called", async () => {
-    
+  it('should check update API called', async () => {
     mockPutData.mockResolvedValue({
       status: 200,
       message: 'Contact Details updated successfully',
     });
-  
-   
+
     const mockSubmitHandle = jest.fn();
-  
+
     const { getByTestId } = renderedComponent();
-  
+
     const submitForm = getByTestId('submitForm') as HTMLButtonElement;
-    const mobileInput = getByTestId('mobile_num').querySelector('input') as HTMLInputElement;
-    const whatsappNum = getByTestId('whtmobile_num').querySelector('input') as HTMLInputElement;
-    const emailInput = getByTestId('email_id').querySelector('input') as HTMLInputElement;
-    const countrycodeDropdown = getByTestId('county_pcode').querySelector('input') as HTMLInputElement;
-    const countrycodewhatsaDropdown = getByTestId('county_wpcode').querySelector('input') as HTMLInputElement;
-  
+    const mobileInput = getByTestId('mobile_num').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const whatsappNum = getByTestId('whtmobile_num').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const emailInput = getByTestId('email_id').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const countrycodeDropdown = getByTestId('county_pcode').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const countrycodewhatsaDropdown = getByTestId(
+      'county_wpcode',
+    ).querySelector('input') as HTMLInputElement;
+
     fireEvent.change(mobileInput, { target: { value: '9876545678' } });
     fireEvent.change(whatsappNum, { target: { value: '6765433458' } });
     fireEvent.change(emailInput, { target: { value: 'atul@gmail.com' } });
     fireEvent.change(countrycodeDropdown, { target: { value: '+91' } });
     fireEvent.change(countrycodewhatsaDropdown, { target: { value: '+91' } });
-  
+
     submitForm.onclick = mockSubmitHandle;
     fireEvent.click(submitForm);
-  
-    
+
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith(
-        'Contact Details updated successfully', 
-        expect.any(Object)
+        'Contact Details updated successfully',
+        expect.any(Object),
       );
     });
-  
-  
+
     expect(mockSubmitHandle).toHaveBeenCalled();
-  
+
     expect(mockPostData).not.toHaveBeenCalledWith(
       expect.anything(),
-      expect.anything()  
+      expect.anything(),
     );
-  
-    
+
     expect(mockPutData).toHaveBeenCalled();
   });
-  
-  
 });

@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Deploy to EC2 from QA Branch 
+    name: Deploy to EC2 from QA Branch
     runs-on: ubuntu-latest
 
     steps:

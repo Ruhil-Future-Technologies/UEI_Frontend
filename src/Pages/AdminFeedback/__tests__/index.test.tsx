@@ -5,16 +5,16 @@ import AdminFeedback from '..'; // Update with correct path
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useAPI';
 
-jest.mock("../../../hooks/useAPI", () => ({
-    __esModule: true,
-    default: jest.fn(() => ({
-      getData: jest.fn(),
-      postData: jest.fn(),
-      putData: jest.fn(),
-      postFileData: jest.fn(),
-    })),
-  }));
-   // Mocking useApi hook
+jest.mock('../../../hooks/useAPI', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    getData: jest.fn(),
+    postData: jest.fn(),
+    putData: jest.fn(),
+    postFileData: jest.fn(),
+  })),
+}));
+// Mocking useApi hook
 jest.mock('react-toastify', () => ({
   toast: {
     success: jest.fn(),
@@ -22,16 +22,12 @@ jest.mock('react-toastify', () => ({
 }));
 
 describe('AdminFeedback Component', () => {
-  
-    const mockPostData = jest.fn();
-    
+  const mockPostData = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
     (useApi as jest.Mock).mockImplementation(() => ({
-    
       postData: mockPostData,
-     
     }));
   });
 
@@ -42,7 +38,9 @@ describe('AdminFeedback Component', () => {
   test('renders the feedback form correctly', () => {
     render(<AdminFeedback />);
 
-    expect(screen.getByPlaceholderText('Add your question')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Add your question'),
+    ).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Option 1')).toBeInTheDocument();
     expect(screen.getByText('save')).toBeInTheDocument();
   });
@@ -50,8 +48,12 @@ describe('AdminFeedback Component', () => {
   test('handles question input change', () => {
     render(<AdminFeedback />);
 
-    const questionInput = screen.getByPlaceholderText('Add your question') as HTMLInputElement;
-    fireEvent.change(questionInput, { target: { value: 'What is your favorite color?' } });
+    const questionInput = screen.getByPlaceholderText(
+      'Add your question',
+    ) as HTMLInputElement;
+    fireEvent.change(questionInput, {
+      target: { value: 'What is your favorite color?' },
+    });
 
     expect(questionInput.value).toBe('What is your favorite color?');
   });
@@ -59,7 +61,9 @@ describe('AdminFeedback Component', () => {
   test('handles option input change', () => {
     render(<AdminFeedback />);
 
-    const optionInput = screen.getByPlaceholderText('Option 1') as HTMLInputElement;
+    const optionInput = screen.getByPlaceholderText(
+      'Option 1',
+    ) as HTMLInputElement;
     fireEvent.change(optionInput, { target: { value: 'Red' } });
 
     expect(optionInput.value).toBe('Red');
@@ -74,25 +78,31 @@ describe('AdminFeedback Component', () => {
     expect(screen.getAllByPlaceholderText(/^Option/).length).toBe(2); // Check if 2 options are now present
   });
 
-//   test('deletes an option when DeleteIcon is clicked', () => {
-//     render(<AdminFeedback />);
-    
-//     const deleteButton = screen.getByTestId('delete-option-1'); // Add testId to DeleteIcon for easy access
-//     fireEvent.click(deleteButton);
+  //   test('deletes an option when DeleteIcon is clicked', () => {
+  //     render(<AdminFeedback />);
 
-//     expect(screen.getAllByPlaceholderText(/^Option/).length).toBe(1); // Check if 1 option remains
-//   });
+  //     const deleteButton = screen.getByTestId('delete-option-1'); // Add testId to DeleteIcon for easy access
+  //     fireEvent.click(deleteButton);
+
+  //     expect(screen.getAllByPlaceholderText(/^Option/).length).toBe(1); // Check if 1 option remains
+  //   });
 
   test('calls postData and shows success toast on save', async () => {
     render(<AdminFeedback />);
     mockPostData.mockResolvedValue({
-        status: 200,
-        message: 'question added successfully',
-      });
-    const questionInput = screen.getByPlaceholderText('Add your question') as HTMLInputElement;
-    fireEvent.change(questionInput, { target: { value: 'What is your favorite color?' } });
+      status: 200,
+      message: 'question added successfully',
+    });
+    const questionInput = screen.getByPlaceholderText(
+      'Add your question',
+    ) as HTMLInputElement;
+    fireEvent.change(questionInput, {
+      target: { value: 'What is your favorite color?' },
+    });
 
-    const optionInput = screen.getByPlaceholderText('Option 1') as HTMLInputElement;
+    const optionInput = screen.getByPlaceholderText(
+      'Option 1',
+    ) as HTMLInputElement;
     fireEvent.change(optionInput, { target: { value: 'Red' } });
 
     const saveButton = screen.getByText('save');
@@ -115,11 +125,17 @@ describe('AdminFeedback Component', () => {
       status: 200,
       message: 'question added successfully',
     });
-    
-    const questionInput = screen.getByPlaceholderText('Add your question') as HTMLInputElement;
-    fireEvent.change(questionInput, { target: { value: 'What is your favorite color?' } });
 
-    const optionInput = screen.getByPlaceholderText('Option 1') as HTMLInputElement;
+    const questionInput = screen.getByPlaceholderText(
+      'Add your question',
+    ) as HTMLInputElement;
+    fireEvent.change(questionInput, {
+      target: { value: 'What is your favorite color?' },
+    });
+
+    const optionInput = screen.getByPlaceholderText(
+      'Option 1',
+    ) as HTMLInputElement;
     fireEvent.change(optionInput, { target: { value: 'Red' } });
 
     const saveButton = screen.getByText('save');
@@ -127,8 +143,13 @@ describe('AdminFeedback Component', () => {
 
     await waitFor(() => expect(mockPostData).toHaveBeenCalledTimes(1));
 
-    expect((screen.getByPlaceholderText('Add your question') as HTMLInputElement).value).toBe('');
-    expect((screen.getByPlaceholderText('Option 1') as HTMLInputElement).value).toBe('');
+    expect(
+      (screen.getByPlaceholderText('Add your question') as HTMLInputElement)
+        .value,
+    ).toBe('');
+    expect(
+      (screen.getByPlaceholderText('Option 1') as HTMLInputElement).value,
+    ).toBe('');
   });
 
   test('does not show delete icon for the first option', () => {

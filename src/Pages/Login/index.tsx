@@ -65,7 +65,6 @@ const Login = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setValue((event.target as HTMLInputElement).value);
   };
-
   useEffect(() => {
     const theme = localStorage?.getItem('theme') || '';
     if (theme === 'light') {
@@ -363,7 +362,7 @@ const Login = () => {
                             </label>
                             <div className="position-relative">
                               <TextField
-                              inputProps={{ 'data-testid': 'Password' }}
+                                inputProps={{ 'data-testid': 'Password' }}
                                 id="passwordInput"
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="Password"
@@ -422,22 +421,6 @@ const Login = () => {
                             )}
                           </div>
                           <div>
-                            {/* <RadioGroup
-                              row
-                              value={value}
-                              onChange={handleChange}
-                            >
-                              <FormControlLabel
-                                value="student"
-                                control={<Radio />}
-                                label="Student"
-                              />
-                              <FormControlLabel
-                                value="admin"
-                                control={<Radio />}
-                                label="Admin"
-                              />
-                            </RadioGroup> */}
                             <FormControl fullWidth>
                               <InputLabel>Role</InputLabel>
                               <Select
@@ -461,7 +444,7 @@ const Login = () => {
                             </Link>
                           </div>
                           <button
-                           data-testid="submitBtn"
+                            data-testid="submitBtn"
                             type="submit"
                             className="btn btn-secondary w-100 mb-3 mh-56 rounded-pill"
                             onClick={(e) => {
@@ -513,7 +496,7 @@ const Login = () => {
                       <div className="col-lg-12">
                         <div className="d-flex align-items-center gap-3">
                           <div
-                          data-testid="btn-sign"
+                            data-testid="btn-sign"
                             onClick={() => setShowForm(true)}
                             className="btn btn-secondary w-100 outsecbtn rounded-pill"
                           >

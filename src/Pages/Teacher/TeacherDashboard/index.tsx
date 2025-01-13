@@ -519,47 +519,6 @@ const TeacherDash = () => {
               </div>
             </div>
           </div>
-
-          <div className="col-xl-7 d-flex align-items-stretch">
-            <div className="card w-100 rounded-4 mt-lg-0 mt-4">
-              <div className="card-body">
-                <div className="d-flex mb-3 justify-content-between align-items-center">
-                  <h6 className="mb-0 fw-bold ">Learning Activity</h6>
-                  <div className="dropdown">
-                    <button
-                      className="btn btn-sm btn-outline-secondary dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      I 3rd semester
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Action
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Another action
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Something else here
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="chart-container1">
-                  <canvas id="chart10"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
           <TeacherGraoh />
           <div
             className="col-xxl-8 d-flex align-items-stretch"

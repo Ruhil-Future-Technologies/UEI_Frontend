@@ -393,7 +393,7 @@ const PDFList = () => {
                         >
                           <Tooltip arrow placement="bottom" title="View">
                             <a
-                              href={`https://dbllm.gyansetu.ai/files/${(row?.row?.original?.pdf_path)}`}
+                              href={`https://dbllm.gyansetu.ai/files/${row?.row?.original?.pdf_path}`}
                               target="_blank"
                               rel="noreferrer"
                             >

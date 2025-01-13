@@ -15,8 +15,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       navigate('/');
     }
   }, []);
-  //const usertype: any = localStorage?.getItem('user_type');
-  const usertype: any = 'institute';
+  const usertype: any = localStorage?.getItem('user_type');
+  // const usertype: any = 'teacher';
 
   const isDashboard = () => {
     const currentURL = window.location.href;
@@ -27,8 +27,13 @@ const Protected = (props: { Component: any; menuName?: string }) => {
     const feedbackRoute =
       parts[parts.length - 2] + '/' + parts[parts.length - 1];
     const MnameExist =
-      mName?.toLowerCase() === 'dashboard' ||
-      (usertype === 'admin' ? mName.toLowerCase() === 'adminprofile' : '') ||
+      (usertype === 'admin' && mName?.toLowerCase() === 'dashboard') ||
+      (usertype === 'student' && mName?.toLowerCase() === 'dashboard') ||
+      (usertype === 'admin' ||
+      usertype === 'teacher' ||
+      usertype === 'institute'
+        ? mName.toLowerCase() === 'adminprofile'
+        : '') ||
       (usertype === 'student'
         ? mName.toLowerCase() === 'studentprofile'
         : '') ||
