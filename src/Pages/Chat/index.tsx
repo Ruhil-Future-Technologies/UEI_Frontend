@@ -47,19 +47,24 @@ const Chat = () => {
   const [searcherr, setSearchErr] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const { Id } = useParams();
+
   const expandedChat = localStorage.getItem('expandedChatData')
     ? JSON.parse(localStorage.getItem('expandedChatData')!)
     : [];
 
-  const [expandedChatData, setExpandedChatData] = useState<any>(expandedChat);
+  const [expandedChatData] = useState<any>(() => {
+    const chats =
+      typeof expandedChat.chats === 'string'
+        ? JSON.parse(expandedChat.chats)
+        : expandedChat.chats;
+    return chats || [];
+  });
 
   const [hasInitialExpandedChat, setHasInitialExpandedChat] = useState(false);
-  const [hasSavedLocal, setHasSavedLocal] = useState(false);
-  const [selectedchat, setSelectedChat] = useState<any>(
-    expandedChat.chats || [],
-  );
-  const [savedExpandedChat, setSavedExpandedChat] = useState<any>([]);
+  const [selectedchat, setSelectedChat] = useState<any>(expandedChatData);
   const [expandSearch, setExpandSearch] = useState(false);
+  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
+
   const userdata = JSON.parse(localStorage.getItem('userdata') || '/{/}/');
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
@@ -92,7 +97,6 @@ const Chat = () => {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const theme = useTheme();
   const [university_list_data, setUniversity_List_Data] = useState([]);
-  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
 
   synth.onvoiceschanged = () => {
     getVoices();
@@ -106,24 +110,30 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (expandedChatData.loading) {
+    if (expandedChat.loading) {
       setLoading(true);
-      setLoaderMsg(expandedChatData.loaderMessage);
+      setLoaderMsg(expandedChat.loaderMessage);
 
-      setStudentData(expandedChatData.studentData);
-      setSearch(expandedChatData.pendingQuestion);
+      setStudentData(expandedChat.studentData);
+      setSearch(expandedChat.pendingQuestion);
       setExpandSearch(true);
+      localStorage.setItem('chatData', JSON.stringify(expandedChatData));
+      setchatData(expandedChatData);
     } else {
-      setSavedExpandedChat(expandedChatData.chats);
-    }
+      setSelectedChat(expandedChatData);
 
-    if (expandedChatData.length > 0 && !hasInitialExpandedChat) {
-      setHasInitialExpandedChat(true);
+      if (expandedChatData.length > 0 && !hasInitialExpandedChat) {
+        setHasInitialExpandedChat(true);
+        localStorage.setItem('chatData', JSON.stringify(expandedChatData));
+        setchatData(expandedChatData);
+      }
+
+      // setSavedExpandedChat(expandedChat.chats);
     }
   }, []);
 
   useEffect(() => {
-    if (!expandedChatData.loading) {
+    if (!expandedChat.loading) {
       setShowInitialPage(false);
     }
   }, [expandedChat]);
@@ -136,28 +146,29 @@ const Chat = () => {
   }, [expandSearch]);
 
   useEffect(() => {
-    if (expandedChat.length > 0 && !hasInitialExpandedChat) {
+    if (expandedChatData.length > 0 && !hasInitialExpandedChat) {
       setHasInitialExpandedChat(true);
     }
-  }, [expandedChat]);
+  }, [expandedChatData]);
 
   useEffect(() => {
-    // if (!expandedChat.length) {
-    //   setSelectedChat([]);
-    // }
+    if (!expandedChatData.length) {
+      setSelectedChat([]);
+    }
     setTimeout(() => {
       if (Id !== undefined) {
         setShowInitialPage(true);
-        // if (!expandedChat.length) {
-        //   setSelectedChat([]);
-        // }
+        if (!expandedChatData.length) {
+          setSelectedChat([]);
+        }
+
         setSearchQuery('');
         setSearchQuerystarred('');
       } else {
         setShowInitialPage(false);
-        // if (!expandedChat.length) {
-        //   setSelectedChat([]);
-        // }
+        if (!expandedChatData.length) {
+          setSelectedChat([]);
+        }
         setSearchQuery('');
         setSearchQuerystarred('');
       }
@@ -179,6 +190,23 @@ const Chat = () => {
       like_dislike: true,
     };
     setSelectedChat(updatedChat);
+    setchatData((prevChatData: any) => {
+      return prevChatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: true,
+          };
+        }
+        return item;
+      });
+    });
+
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
@@ -197,36 +225,6 @@ const Chat = () => {
         return item;
       });
 
-      setchatlistData((prevChatlist: any) => {
-        const newChatlist = prevChatlist.map((chat: any) => {
-          const isMatching = chat.created_at === updatedChat[index].created_at;
-
-          if (isMatching) {
-            return {
-              ...chat,
-              like_dislike: false,
-            };
-          }
-          return chat;
-        });
-
-        return newChatlist;
-      });
-      setchathistory((prevHistory: any) => {
-        const newHistory = prevHistory.map((chat: any) => {
-          const isMatching = chat.created_at === updatedChat[index].created_at;
-
-          if (isMatching) {
-            return {
-              ...chat,
-              like_dislike: false,
-            };
-          }
-          return chat;
-        });
-
-        return newHistory;
-      });
       localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       setDisplayedChat(updatedChatData);
     }
@@ -246,6 +244,24 @@ const Chat = () => {
       like_dislike: false,
     };
     setSelectedChat(updatedChat);
+
+    setchatData((prevChatData: any) => {
+      return prevChatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: false,
+          };
+        }
+        return item;
+      });
+    });
+
     const chatDataString = localStorage.getItem('chatData');
     if (chatDataString) {
       const chatData = JSON.parse(chatDataString);
@@ -263,66 +279,8 @@ const Chat = () => {
         }
         return item;
       });
-      setchatlistData((prevChatlist: any) => {
-        const newChatlist = prevChatlist.map((chat: any) => {
-          const isMatching = chat.created_at === updatedChat[index].created_at;
-          if (isMatching) {
-            return {
-              ...chat,
-              like_dislike: false,
-            };
-          }
-          return chat;
-        });
-        return newChatlist;
-      });
-      setchathistory((prevHistory: any) => {
-        const newHistory = prevHistory.map((chat: any) => {
-          const isMatching = chat.created_at === updatedChat[index].created_at;
-
-          if (isMatching) {
-            return {
-              ...chat,
-              like_dislike: false,
-            };
-          }
-          return chat;
-        });
-
-        return newHistory;
-      });
       localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       setDisplayedChat(updatedChatData);
-    }
-  };
-
-  const syncChatStates = (chatData: any) => {
-    if (selectedchat?.length > 0) {
-      const currentQuestion = selectedchat[0]?.question;
-      const matchingChat = chatData?.find((chat: any) => {
-        const conversation = JSON.parse(chat.chat_conversation);
-        return conversation[0]?.question === currentQuestion;
-      });
-
-      if (matchingChat) {
-        const conversation = JSON.parse(matchingChat.chat_conversation);
-        setSelectedChat(
-          conversation.map((item: any) => ({
-            ...item,
-            speak: false,
-          })),
-        );
-
-        const newLikedStates: { [key: string]: string } = {};
-        conversation.forEach((item: any, index: number) => {
-          if (item.like_dislike === true) {
-            newLikedStates[index] = 'liked';
-          } else if (item.like_dislike === false) {
-            newLikedStates[index] = 'disliked';
-          }
-        });
-        setLikedStates(newLikedStates);
-      }
     }
   };
 
@@ -351,45 +309,10 @@ const Chat = () => {
       });
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
-        if (selectedchat?.length > 0) {
-          const currentChat = data?.data?.find((chat: any) => {
-            const conversation = JSON.parse(chat.chat_conversation);
-            return conversation[0]?.question === selectedchat[0]?.question;
-          });
-
-          if (currentChat) {
-            const conversation = JSON.parse(currentChat.chat_conversation);
-            setSelectedChat(
-              conversation?.map((item: any, index: number) => {
-                const existingChat = selectedchat[index];
-                return {
-                  ...item,
-                  speak: existingChat?.speak || false,
-                  like_dislike: item.like_dislike,
-                };
-              }),
-            );
-            setLikedStates(
-              conversation?.reduce(
-                (acc: any, item: any, index: number) => ({
-                  ...acc,
-                  [index]:
-                    item.like_dislike === true
-                      ? 'liked'
-                      : item.like_dislike === false
-                        ? 'disliked'
-                        : '',
-                }),
-                {},
-              ),
-            );
-          }
-        }
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
         setchathistory(data?.data);
         setchathistoryrecent(data?.data);
-        syncChatStates(data?.data);
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -816,7 +739,7 @@ const Chat = () => {
             const university: any =
               university_list_data.filter(
                 (university: any) => university.university_id == university_id,
-              ) || '';
+              ) || null;
             const queryParams = {
               user_query: search,
               student_id: userid,
@@ -825,7 +748,7 @@ const Chat = () => {
               state_board_selection: state_for_stateboard || null,
               stream_selection: stream || null,
               class_selection: class_id || null,
-              university_selection: university[0].university_name || null,
+              university_selection: university[0]?.university_name || null,
               college_selection: institution_name || null,
               course_selection: studentDetail?.course || null,
               year: year || null,
@@ -1030,6 +953,7 @@ const Chat = () => {
   useEffect(() => {
     if (dataflagged) {
       // setSelectedChat([intials]);
+
       setSelectedChat([]);
       // if (!expandedChat.length) {
       //   setSelectedChat([]);
@@ -1079,54 +1003,25 @@ const Chat = () => {
       );
 
       if (!isAlreadyInExisting) {
-        // let updatedChatData;
         const updatedChatData = [...parsedExistingChat, latestChatItem];
 
-        // if (savedExpandedChat && savedExpandedChat.length > 0) {
-        //   const isInSavedExpanded = savedExpandedChat.some(
-        //     (item: any) =>
-        //       item.question === latestChatItem.question &&
-        //       JSON.stringify(item.answer) ===
-        //         JSON.stringify(latestChatItem.answer),
-        //   );
-
-        //   updatedChatData = isInSavedExpanded
-        //     ? [...savedExpandedChat]
-        //     : [...savedExpandedChat, latestChatItem];
-        // } else {
-        //   updatedChatData = [...parsedExistingChat, latestChatItem];
-        // }
         localStorage.setItem('chatData', JSON.stringify(updatedChatData));
       }
     }
-  }, [chat, savedExpandedChat]);
+  }, [chat]);
 
   let chatData: any;
 
   useEffect(() => {
-    if (hasSavedLocal) {
-      return;
-    }
-
     const chatDataString = localStorage?.getItem('chatData');
-    const chatData = chatDataString ? JSON.parse(chatDataString) : null;
+    const chatData = chatDataString ? JSON.parse(chatDataString) : [];
 
     if (chatData?.length > 0) {
-      if (savedExpandedChat && savedExpandedChat.length > 0) {
-        setHasSavedLocal(true);
-        setSelectedChat(chatData);
-        setExpandedChatData([]);
-        return;
-      }
-
-      if (!hasInitialExpandedChat) {
-        // saveChatlocal();
-        setHasSavedLocal(true);
-        setSelectedChat(chatData);
-        setExpandedChatData([]);
+      if (!expandedChatData) {
+        saveChatlocal();
       }
     }
-  }, [chatData, savedExpandedChat, hasInitialExpandedChat, hasSavedLocal]);
+  }, [chatData]);
 
   const saveChatlocal = async () => {
     const chatDataString = localStorage?.getItem('chatData');
@@ -1180,6 +1075,7 @@ const Chat = () => {
         //   hideProgressBar: true,
         //   theme: "colored",
         // });
+
         callAPI();
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
@@ -1221,14 +1117,15 @@ const Chat = () => {
     }
     // postData(`${chataddurl}`, chat_payload)
     await postData(`${chataddconversationurl}`, chat_payload)
-      .then((chatdata: any) => {
+      .then(() => {
         setChatSaved(false);
-        toast.success(chatdata?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
+        // toast.success(chatdata?.message, {
+        //   hideProgressBar: true,
+        //   theme: 'colored',
+        // });
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
+
         callAPI();
       })
       .catch((e) => {
@@ -1289,6 +1186,17 @@ const Chat = () => {
   };
 
   const displayChat = async (chats: any) => {
+    const parsedChatConversation = JSON.parse(chats?.chat_conversation);
+
+    if (
+      selectedchat.length > 0 &&
+      parsedChatConversation.length > 0 &&
+      selectedchat[0].question === parsedChatConversation[0].question &&
+      JSON.stringify(selectedchat[0].answer) ===
+        JSON.stringify(parsedChatConversation[0].answer)
+    ) {
+      return;
+    }
     const initialLikedStates: { [key: string]: string } = {};
     setShowInitialPage(false);
 
@@ -1296,6 +1204,7 @@ const Chat = () => {
       (chatitem: { chat_title: any }) =>
         chatitem.chat_title === chat[0]?.question,
     );
+
     if (datatest.length === 0 && chat[0]?.question !== undefined) {
       await saveChat();
     } else if (Array.isArray(chat) && chat.length >= 2) {
@@ -1307,6 +1216,7 @@ const Chat = () => {
     setchatData([]);
     const chatt = JSON.parse(chats?.chat_conversation);
     setDisplayedChat(chatt);
+
     setSelectedChat([]);
 
     const chatdataset: any[] = [];
@@ -1330,7 +1240,7 @@ const Chat = () => {
 
       chatdata.answer = elements;
       chatdata.speak = false;
-      chatdata.like_dislike = itemchat?.like_dislike;
+      chatdata.like_dislike = null;
       chatdataset.push(chatdata);
 
       if (itemchat?.like_dislike === true) {

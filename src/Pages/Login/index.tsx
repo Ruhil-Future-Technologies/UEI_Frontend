@@ -3,7 +3,14 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material';
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 import { toast } from 'react-toastify';
@@ -55,7 +62,7 @@ const Login = () => {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: SelectChangeEvent) => {
     setValue((event.target as HTMLInputElement).value);
   };
 
@@ -313,7 +320,7 @@ const Login = () => {
                               /> */}
                             <TextField
                               id="email/phone"
-                              data-testid="email"
+                              inputProps={{ 'data-testid': 'email' }}
                               value={emailphone}
                               // className="form-control"
                               onChange={handleChangeData}
@@ -356,6 +363,7 @@ const Login = () => {
                             </label>
                             <div className="position-relative">
                               <TextField
+                              inputProps={{ 'data-testid': 'Password' }}
                                 id="passwordInput"
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="Password"
@@ -414,7 +422,7 @@ const Login = () => {
                             )}
                           </div>
                           <div>
-                            <RadioGroup
+                            {/* <RadioGroup
                               row
                               value={value}
                               onChange={handleChange}
@@ -429,7 +437,20 @@ const Login = () => {
                                 control={<Radio />}
                                 label="Admin"
                               />
-                            </RadioGroup>
+                            </RadioGroup> */}
+                            <FormControl fullWidth>
+                              <InputLabel>Role</InputLabel>
+                              <Select
+                                value={value}
+                                onChange={handleChange}
+                                label="Role"
+                              >
+                                <MenuItem value="student">Student</MenuItem>
+                                <MenuItem value="admin">Admin</MenuItem>
+                                <MenuItem value="institute">Institute</MenuItem>
+                                <MenuItem value="teacher">Teacher</MenuItem>
+                              </Select>
+                            </FormControl>
                           </div>
                           <div className="mt-2 mb-4 text-center">
                             <Link
@@ -440,6 +461,7 @@ const Login = () => {
                             </Link>
                           </div>
                           <button
+                           data-testid="submitBtn"
                             type="submit"
                             className="btn btn-secondary w-100 mb-3 mh-56 rounded-pill"
                             onClick={(e) => {
@@ -491,6 +513,7 @@ const Login = () => {
                       <div className="col-lg-12">
                         <div className="d-flex align-items-center gap-3">
                           <div
+                          data-testid="btn-sign"
                             onClick={() => setShowForm(true)}
                             className="btn btn-secondary w-100 outsecbtn rounded-pill"
                           >

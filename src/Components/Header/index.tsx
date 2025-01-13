@@ -54,6 +54,7 @@ const Header = () => {
   const { getData } = useApi();
   const handlogout = () => {
     setProPercentage(0);
+    localStorage.removeItem('chatData');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
     localStorage.removeItem('userid');
@@ -329,7 +330,7 @@ const Header = () => {
                               Congratulations Jhon.
                             </h5>
                             <p className="mb-0 notify-desc">
-                              Many many congtars jhon. You have won the gifts.
+                              Many congtars jhons. You have won the gifts.
                             </p>
                             <p className="mb-0 notify-time">Today</p>
                           </div>
