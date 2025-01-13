@@ -59,7 +59,7 @@ const PDFList = () => {
   const [selectedFile, setSelectedFile] = useState<IPDFList>();
   const [dataDelete, setDataDelete] = useState(false);
   // const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const [schoolOrcollFile, setSchoolOrcollFile] = useState('');
+  const [schoolOrcollFile, setSchoolOrcollFile] = useState('college');
   const [buttenView, setButtenView] = useState(true);
   const { getData, loading, deleteFileData } = useApi();
   const collageColumns = PDF_LIST_FOR_COLLAGE_COLUMNS;
@@ -393,7 +393,7 @@ const PDFList = () => {
                         >
                           <Tooltip arrow placement="bottom" title="View">
                             <a
-                              href={`https://uatllm.gyansetu.ai/files/${row?.row?.original?.pdf_path}`}
+                              href={`https://dbllm.gyansetu.ai/files/${row?.row?.original?.pdf_path}`}
                               target="_blank"
                               rel="noreferrer"
                             >

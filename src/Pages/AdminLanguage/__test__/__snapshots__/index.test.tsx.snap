@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin Language component should Admin Language page rendered currectly 1`] = `
+<DocumentFragment>
+  <form>
+    <p
+      class="font-weight-bold profiletext mt-4"
+    >
+      <b>
+         Language Known
+      </b>
+    </p>
+    <div
+      class="row justify-content-center"
+    >
+      <div
+        class="col-lg-12"
+      >
+        <div
+          class="mt-3 d-flex align-items-center justify-content-between"
+        >
+          <button
+            class="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
+            type="button"
+          >
+            Previous
+          </button>
+          <button
+            class="btn btn-dark px-lg-5 px-4  ms-auto d-block rounded-pill next-btn"
+            type="button"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

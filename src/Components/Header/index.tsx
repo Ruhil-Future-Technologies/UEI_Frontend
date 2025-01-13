@@ -514,9 +514,9 @@ const Header = () => {
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
                   to={
-                    user_type === 'admin'
-                      ? '/main/adminprofile'
-                      : '/main/StudentProfile'
+                    user_type === 'student'
+                      ? '/main/StudentProfile'
+                      : '/main/adminprofile'
                   }
                   onClick={handelStateofProfile}
                 >

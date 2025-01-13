@@ -5,9 +5,23 @@ import NameContext from '../../Context/NameContext';
 import { fireEvent, render, waitFor, screen } from '@testing-library/react';
 import StudentcontactDetails from '..';
 import useApi from '../../../hooks/useAPI';
+import { toast } from 'react-toastify';
 //import { deepEqual } from '../../../utils/helpers';
-jest.mock('../../../hooks/useAPI');
+jest.mock('../../../hooks/useAPI', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    getData: jest.fn(),
+    postData: jest.fn(),
+    putData: jest.fn(),
+  })),
+}));
 
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 describe('Student Contect Component', () => {
   // Mocking the required props
   const mockSetActiveForm = jest.fn();
@@ -17,8 +31,10 @@ describe('Student Contect Component', () => {
   const mockPutData = jest.fn();
 
   beforeEach(() => {
+    mockPostData.mockReset();
+    mockPutData.mockReset();
     (useApi as jest.Mock).mockImplementation(() => ({
-      getData: mockGetData.mockResolvedValue({}), // Mock resolved promise
+      getData: mockGetData.mockResolvedValue({ getData: mockGetData }), // Mock resolved promise
       postData: mockPostData,
       putData: mockPutData,
     }));
@@ -165,13 +181,21 @@ describe('Student Contect Component', () => {
       ),
     ).not.toBeInTheDocument();
   });
-  it('should be check data comes and flag is false ', async () => {
-    let flagValue = false;
-    mockGetData.mockResolvedValueOnce({
+
+  it('should be check GET data of user details ', async () => {
+    const mockSubmitHandle = jest.fn();
+
+    jest.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+      if (key === '_id') {
+        return '76'; // Mock the studentId value
+      }
+      return null;
+    });
+    mockGetData.mockResolvedValue({
       status: 200,
       data: [
         {
-          id: 1,
+          _id: 1,
           email_id: 'atul@gmail.com',
           mobile_no_call: '8975461325',
           mobile_isd_call: '+91',
@@ -180,148 +204,70 @@ describe('Student Contect Component', () => {
         },
       ],
     });
-
-    const fetchData = async () => {
-      const response = await mockGetData();
-      if (response.status === 200 && response.data.length > 0) {
-        flagValue = false;
-      } else {
-        flagValue = true;
-      }
-    };
-
-    if (flagValue) {
-      await mockPostData(); // Call Save API
-    } else {
-      await mockPutData(); // Call Update API
-    }
-
-    await fetchData();
-
-    // Assertions for Update API
-    expect(mockPutData).toHaveBeenCalled(); // Verify update API was called
-    expect(mockPostData).not.toHaveBeenCalled();
-  });
-  it('should save or update data when the form is submitted', async () => {
-    const mockSubmitHandle = jest.fn();
-    //const mockToast = jest.fn();
+    (useApi as jest.Mock).mockReturnValue({ getData: mockGetData });
 
     const { getByTestId } = renderedComponent();
 
-    // Mock the initial data fetch
-    mockGetData.mockResolvedValueOnce({
-      status: 200,
-      data: [
-        {
-          id: 1,
-          email_id: 'atul@gmail.com',
-          mobile_no_call: '8975461325',
-          mobile_isd_call: '+91',
-          mobile_isd_watsapp: '+91',
-          mobile_no_watsapp: '8975642563',
-        },
-      ],
-    });
-
-    // Fetch data to determine flag value
-    let flagValue = false;
-    const fetchData = async () => {
-      const response = await mockGetData();
-      if (response.status === 200 && response.data.length > 0) {
-        flagValue = true;
-      } else {
-        flagValue = false;
-      }
-    };
-    await fetchData();
-
-    // Mock the form submission
     const submitForm = getByTestId('submitForm') as HTMLButtonElement;
+
     submitForm.onclick = mockSubmitHandle;
+    fireEvent.click(submitForm);
 
-    // Simulate the form submission
-    await fireEvent.click(submitForm);
-
-    // Mock the responses based on flagValue
-    if (flagValue) {
-      await mockPutData();
-    } else {
-      await mockPostData();
-    }
-
-    // Wait for assertions
     await waitFor(() => {
-      if (flagValue) {
-        expect(mockPutData).toHaveBeenCalledTimes(1);
-        expect(mockPostData).not.toHaveBeenCalled();
-      } else {
-        expect(mockPostData).toHaveBeenCalledTimes(1);
-        expect(mockPutData).not.toHaveBeenCalled();
-      }
-
-      // Ensure that the toast notifications were triggered
-      //expect(mockToast).toHaveBeenCalled();
+      expect(mockGetData).toHaveBeenCalledWith('student_contact/edit/76');
     });
   });
 
-  // it("should save or update data based on editFlag and payload comparison", async () => {
-  //   const mockSubmitHandle = jest.fn();
-  //   const mockToast = jest.fn();
+  it('should check update API called', async () => {
+    mockPutData.mockResolvedValue({
+      status: 200,
+      message: 'Contact Details updated successfully',
+    });
 
-  //  let  editFlag =false;
-  //   // Setup initial state and payload values
-  //   const initialState = {
-  //     student_id: 1,
-  //     mobile_isd_call: '+91',
-  //     mobile_no_call: '9876543210',
-  //     mobile_isd_watsapp: '+91',
-  //     mobile_no_watsapp: '9876543210',
-  //     email_id: 'test@example.com',
-  //   };
+    const mockSubmitHandle = jest.fn();
 
-  //   const payload = {
-  //     student_id: 1,
-  //     mobile_isd_call: '+91',
-  //     mobile_no_call: '9876543210',
-  //     mobile_isd_watsapp: '+91',
-  //     mobile_no_watsapp: '9876543210',
-  //     email_id: 'test@example.com',
-  //   };
+    const { getByTestId } = renderedComponent();
 
-  //   const eq = deepEqual(initialState, payload); // This is the condition you are testing.
+    const submitForm = getByTestId('submitForm') as HTMLButtonElement;
+    const mobileInput = getByTestId('mobile_num').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const whatsappNum = getByTestId('whtmobile_num').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const emailInput = getByTestId('email_id').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const countrycodeDropdown = getByTestId('county_pcode').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const countrycodewhatsaDropdown = getByTestId(
+      'county_wpcode',
+    ).querySelector('input') as HTMLInputElement;
 
-  //   const { getByTestId } = renderedComponent();
+    fireEvent.change(mobileInput, { target: { value: '9876545678' } });
+    fireEvent.change(whatsappNum, { target: { value: '6765433458' } });
+    fireEvent.change(emailInput, { target: { value: 'atul@gmail.com' } });
+    fireEvent.change(countrycodeDropdown, { target: { value: '+91' } });
+    fireEvent.change(countrycodewhatsaDropdown, { target: { value: '+91' } });
 
-  //   // Mock the responses for postData and putData
+    submitForm.onclick = mockSubmitHandle;
+    fireEvent.click(submitForm);
 
-  //   // Simulate the form submission
-  //   const submitForm = getByTestId('submitForm') as HTMLButtonElement;
-  //   submitForm.onclick = mockSubmitHandle;
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(
+        'Contact Details updated successfully',
+        expect.any(Object),
+      );
+    });
 
-  //   if(editFlag){
-  //     mockPutData()
-  //     mockSetActiveForm(3);
-  //   }else{
-  //     if(!eq){
-  //       mockPostData();
-  //     }
-  //     mockSetActiveForm(3);
-  //   }
+    expect(mockSubmitHandle).toHaveBeenCalled();
 
-  //   // Wait for assertions
-  //   await waitFor(() => {
-  //     if (editFlag) {
-  //       // If editFlag is true, expect postData and toast success with save message
-  //       expect(mockPostData).toHaveBeenCalledTimes(1);
-  //       expect(mockPutData).not.toHaveBeenCalled();
-  //       expect(mockToast).toHaveBeenCalledWith('Contact Details saved successfully');
-  //     } else {
-  //       if(!eq){
-  //         expect(mockPostData).not.toHaveBeenCalled();
-  //         expect(mockPutData).toHaveBeenCalledTimes(1);
-  //         expect(mockToast).toHaveBeenCalledWith('Contact Details updated successfully');
-  //       }
-  //     }
-  //   });
-  // });
+    expect(mockPostData).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+    );
+
+    expect(mockPutData).toHaveBeenCalled();
+  });
 });

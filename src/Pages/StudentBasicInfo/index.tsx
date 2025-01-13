@@ -553,6 +553,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             First Name <span>*</span>
           </label>
           <input
+            data-testid="first_name"
             name="first_name"
             value={basicInfo.first_name}
             type="text"
@@ -592,6 +593,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             required
           /> */}
           <input
+            data-testid="last_name"
             name="last_name"
             value={basicInfo.last_name || ''}
             type="text"
@@ -623,6 +625,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               Gender *
             </FormLabel>
             <RadioGroup
+              data-testid="gender"
               row
               name="gender"
               value={basicInfo.gender?.toLowerCase()}
@@ -685,6 +688,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             /> */}
             <Box width={300}>
               <DatePicker
+                aria-label="datepicker_label"
                 value={dayjs(basicInfo?.dob)}
                 onChange={handleDateChange}
                 format="DD/MM/YYYY"
@@ -702,6 +706,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     error: Boolean(error),
                     inputProps: {
                       maxLength: 10,
+                      'aria-label': 'datepicker_label',
                     },
                   },
                 }}
@@ -739,6 +744,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             required
           /> */}
           <input
+            data-testid="father_name"
             name="father_name"
             value={basicInfo.father_name}
             type="text"
@@ -778,6 +784,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             required
           /> */}
           <input
+            data-testid="mother_name"
             name="mother_name"
             value={basicInfo.mother_name || ''}
             type="text"
@@ -817,6 +824,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             // required
           /> */}
           <input
+            data-testid="guardian_name"
             name="guardian_name"
             value={basicInfo?.guardian_name || ''}
             type="text"
@@ -849,6 +857,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             // required
           /> */}
           <input
+            data-testid="aim"
             name="aim"
             value={basicInfo.aim || ''}
             type="text"
@@ -904,6 +913,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               <div className="upload-profile-image" role="button">
                 <UploadOutlinedIcon />
                 <input
+                  data-testid="profile_image"
                   type="file"
                   id="file"
                   name="pic_path"
@@ -921,6 +931,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-lg-12">
           <button
+            data-testid="next_button"
             type="button"
             className="btn btn-dark px-lg-5 mt-3 ms-auto d-block rounded-pill next-btn px-4"
             onClick={() => submitHandel()}

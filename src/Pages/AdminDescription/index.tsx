@@ -209,6 +209,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
         <Form>
           <Field
             id="description"
+            data-testid="description"
             label="Description *"
             component={TextField}
             type="text"

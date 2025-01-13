@@ -40,15 +40,65 @@ import useApi from '../../hooks/useAPI';
 //     institute_id: string;
 // }
 
-const instituteId = localStorage.getItem('_id');
+interface Institute {
+  address: string;
+  city: string;
+  country: string;
+  created_at: string;
+  created_by: string;
+  district: string;
+  email_id: string;
+  entity_id: string;
+  entity_type: string;
+  icon: string | null;
+  id: string;
+  institution_name: string;
+  is_active: number;
+  mobile_no: string;
+  pincode: string;
+  state: string;
+  university_id: string;
+  university_name: string;
+  updated_at: string;
+  updated_by: string;
+  website_url: string;
+}
+
+//const instituteId = localStorage.getItem('_id');
+const instituteId = '036ca815-ee29-4baa-aaa1-2a4336d416e3';
+
 const InstitutionDash = () => {
   const { getData } = useApi();
+  const [instituteInfo, setInstituteInfo] = useState<Institute>({
+    address: '',
+    city: '',
+    country: 'India',
+    created_at: '',
+    created_by: '',
+    district: '',
+    email_id: '',
+    entity_id: '',
+    entity_type: '',
+    icon: null,
+    id: '',
+    institution_name: '',
+    is_active: 0,
+    mobile_no: '',
+    pincode: '',
+    state: '',
+    university_id: '',
+    university_name: '',
+    updated_at: '',
+    updated_by: '',
+    website_url: '',
+  });
   const [totelStudents, setTotelStudent] = useState(0);
   const [totleCourse, setTotleCourse] = useState(0);
 
   useEffect(() => {
     getCourseCount();
     getStudentsCount();
+    getInstitutionInfo();
     console.log('getData');
     // eslint-disable-next-line
   }, []);
@@ -62,6 +112,7 @@ const InstitutionDash = () => {
         }
         console.log(response);
       });
+      console.log(instituteId);
     } catch (error) {
       console.log(error);
     }
@@ -75,6 +126,19 @@ const InstitutionDash = () => {
           setTotelStudent(response?.data?.students_count);
         }
         console.log(response);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getInstitutionInfo = () => {
+    try {
+      getData(`institution/get/${instituteId}`).then((response) => {
+        if (response?.status === 200) {
+          setInstituteInfo(response?.data);
+          console.log(response);
+          console.log(instituteInfo);
+        }
       });
     } catch (error) {
       console.log(error);
@@ -174,10 +238,15 @@ const InstitutionDash = () => {
                       />
                       <div className="w-100">
                         <h4 className="fw-semibold mb-0 fs-18 mb-0">
-                          RK Institute
+                          {instituteInfo.institution_name}
                         </h4>
                         <small className="mb-3 d-block">
-                          A-11 Janakpuri East, Delhi
+                          {instituteInfo.address + ' '}
+                          {instituteInfo.city + ', '}
+                          {instituteInfo.district + ' '}
+                          {instituteInfo.state + ' '}
+                          {instituteInfo.pincode + ', '}
+                          {instituteInfo.country}
                         </small>
 
                         <div className="">
@@ -211,7 +280,7 @@ const InstitutionDash = () => {
                       className="form-check-input fs-5 m-0"
                       type="checkbox"
                       id="status"
-                      checked
+                      checked={instituteInfo.is_active == 1}
                     />
                   </div>
                 </div>
