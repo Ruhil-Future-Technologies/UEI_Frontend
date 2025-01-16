@@ -2122,11 +2122,24 @@ function MainContent() {
     let cleanedText = textArray.join(' ');
 
     // Remove unwanted characters and replace with spaces
-    // cleanedText = cleanedText.replace(/[^\w\s]/gi, ' ');
+    // cleanedText = cleanedText.replace(/[^\w\s]/gi, ' ')
 
-    // Replace multiple spaces with a single space
+    cleanedText = cleanedText.replace(/\$([^$]*)\$/g, '$1');
+    cleanedText = cleanedText.replace(/\\boxed{([^}]+)}/g, '$1');
+
+    cleanedText = cleanedText.replace(/#{1,6}\s?/g, '');
+    cleanedText = cleanedText.replace(/\*{1,3}/g, '');
+    cleanedText = cleanedText.replace(/~~/g, '');
+    cleanedText = cleanedText.replace(/`{1,3}/g, '');
+    cleanedText = cleanedText.replace(/>\s?/g, '');
+
+    cleanedText = cleanedText.replace(
+      /[^a-zA-Z0-9.,!? :;()'+\-*×x÷/=≠<>≤≥±]/g,
+      '',
+    );
+    cleanedText = cleanedText.replace(/([+\-*×x÷/=≠<>≤≥±])/g, ' $1 ');
+
     cleanedText = cleanedText.replace(/\s+/g, ' ');
-
     // Trim any leading or trailing spaces
     cleanedText = cleanedText.trim();
 
@@ -2488,7 +2501,7 @@ function MainContent() {
                   </>
                 ) : (
                   <>
-                    <div className="col-6 col-lg-4 d-flex">
+                    <div className="col-6 col-lg-2 d-flex">
                       <Link
                         to={InstitutionsExists ? '/main/Institute' : '#'}
                         className="card"
@@ -2507,6 +2520,27 @@ function MainContent() {
                           <div>
                             <h4 className="mb-0">{stats.institutionCount}</h4>
                             <p className="mb-0">Total Institutions</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+
+                    <div className="col-6 col-lg-2 d-flex">
+                      <Link to={'/main/Teacher'} className="card">
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PersonAddIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{0}</h4>
+                            <p className="mb-0">Teachers</p>
                           </div>
                         </div>
                       </Link>

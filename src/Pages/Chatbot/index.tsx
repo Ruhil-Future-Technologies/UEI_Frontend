@@ -190,7 +190,20 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
   };
 
   const renderText = (text: string): JSX.Element => {
-    text = text.replace(/\$(\d+(?:\.\d+)?)\$(?!\s*[a-zA-Z{}\\])/g, '$1');
+    text = text
+      .replace(/\(([^()]*)\)/g, (match, inner) => {
+        if (inner.match(/^[A-Z]\s*=\s*\\frac/)) {
+          return '($' + inner + '$)';
+        }
+
+        if (inner.includes('\\frac')) {
+          return '(' + inner.replace(/(\\frac{[^}]+}{[^}]+})/g, '$$$1$') + ')';
+        }
+
+        return match;
+      })
+      .replace(/\$(\d+(?:\.\d+)?)\$(?!\s*[a-zA-Z{}\\])/g, '$1');
+
     if (text.includes('$\\boxed{None}$')) {
       return <></>;
     }
