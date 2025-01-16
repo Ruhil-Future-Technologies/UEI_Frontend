@@ -109,6 +109,39 @@ function App() {
     synth.cancel();
     // logoutpro();
   };
+  const handlogoutse = () => {
+    // Clear localStorage/sessionStorage and perform logout
+    handlogout();
+    navigate('/');
+  };
+  useEffect(() => {
+    let inactivityTimer: string | number | NodeJS.Timeout | undefined;
+
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(
+        () => {
+          handlogoutse();
+        },
+        15 * 60 * 1000,
+      ); // 15 minutes
+    };
+
+    // Add event listeners for user activity
+    const events = ['click', 'keypress', 'mousemove', 'scroll', 'touchstart'];
+    events.forEach((event) => document.addEventListener(event, resetTimer));
+
+    // Start the initial timer
+    resetTimer();
+
+    return () => {
+      // Cleanup event listeners and timer on unmount
+      events.forEach((event) =>
+        document.removeEventListener(event, resetTimer),
+      );
+      clearTimeout(inactivityTimer);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
