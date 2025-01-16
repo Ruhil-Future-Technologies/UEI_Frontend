@@ -380,7 +380,7 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid Institute name only characters allowed.',
           )
-          .test('unique', 'institute name already exists', function (value) {
+          .test('unique', 'Institute name already exists', function (value) {
             if (!value) return true;
 
             // Check if the value matches the current institute name
@@ -403,7 +403,7 @@ const AddEditInstitute = () => {
         email_id: Yup.string()
           .required('Please enter Email')
           .matches(emailPattern, 'Please enter a valid Email format.')
-          .test('unique', 'email already exists', function (value) {
+          .test('unique', 'Email already exists', function (value) {
             if (!value) return true;
 
             // Check if the value matches the current institute name
@@ -474,7 +474,7 @@ const AddEditInstitute = () => {
             mobilePattern,
             'Please enter a valid mobile number.It must be 10 digits long.',
           )
-          .test('unique', 'mobile number already exists', function (value) {
+          .test('unique', 'Mobile number already exists', function (value) {
             if (!value) return true;
 
             // Check if the value matches the current institute name
@@ -509,7 +509,7 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid Institute name only characters allowed.',
           )
-          .test('unique', 'institute name already exists', (value) => {
+          .test('unique', 'Institute name already exists', (value) => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
@@ -521,7 +521,7 @@ const AddEditInstitute = () => {
         email_id: Yup.string()
           .required('Please enter Email')
           .matches(emailPattern, 'Please enter a valid Email format.')
-          .test('unique', 'email already exists', (value) => {
+          .test('unique', 'Email already exists', (value) => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
@@ -583,7 +583,7 @@ const AddEditInstitute = () => {
             mobilePattern,
             'Please enter a valid mobile number.It must be 10 digits long.',
           )
-          .test('unique', 'mobile number already exists', (value) => {
+          .test('unique', 'Mobile number already exists', (value) => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
