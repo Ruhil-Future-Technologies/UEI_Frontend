@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '../Institution/institution.css';
 import profile from '../../assets/img/profile.png';
-import studentimg from '../../assets/img/ins-1.png';
+//import studentimg from '../../assets/img/ins-1.png';
 import courseImg from '../../assets/img/courses-1.png';
 import toperstudent from '../../assets/img/topper-image.png';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -27,18 +27,21 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import useApi from '../../hooks/useAPI';
+import { CourseRep0oDTO, StudentRep0oDTO } from '../../Components/Table/columns';
+
 // interface Course {
 //     course_id: number;
 //     course_name: string;
 //     course_image: string;
 //     institute_id: string;
 // }
-// interface Student {
-//     student_id: number;
-//     student_name: string;
-//     student_image: string;
-//     institute_id: string;
-// }
+interface Teahcer {
+  teacher_id: number;
+  teacher_name: string;
+  teacher_image: string;
+  teacher_subject: string;
+  institute_id: string;
+}
 
 interface Institute {
   address: string;
@@ -64,8 +67,8 @@ interface Institute {
   website_url: string;
 }
 
-//const instituteId = localStorage.getItem('_id');
-const instituteId = '036ca815-ee29-4baa-aaa1-2a4336d416e3';
+const instituteId = localStorage.getItem('_id');
+//const instituteId = '036ca815-ee29-4baa-aaa1-2a4336d416e3';
 
 const InstitutionDash = () => {
   const { getData } = useApi();
@@ -94,46 +97,53 @@ const InstitutionDash = () => {
   });
   const [totelStudents, setTotelStudent] = useState(0);
   const [totleCourse, setTotleCourse] = useState(0);
+  const [totleTeacher, setTotleTeacher] = useState(0);
+  const [dataStudents, setDataStudents] = useState<StudentRep0oDTO[]>([]);
+  const [dataCourses, setDataCourses] = useState<CourseRep0oDTO[]>([]);
+  const [dataTeachers, setDataTeachers] = useState<Teahcer[]>([]);
 
-  useEffect(() => {
-    getCourseCount();
-    getStudentsCount();
-    getInstitutionInfo();
-    console.log('getData');
-    // eslint-disable-next-line
-  }, []);
 
-  const getCourseCount = () => {
+  const getCourseCount = async() => {
     console.log(totleCourse);
     try {
-      getData(`course/course-count/${instituteId}`).then((response) => {
+    await  getData(`course/course-count/${instituteId}`).then((response) => {
         if (response?.status === 200) {
           setTotleCourse(response?.data?.courses_count);
         }
         console.log(response);
       });
-      console.log(instituteId);
     } catch (error) {
       console.log(error);
     }
   };
-  const getStudentsCount = () => {
-    console.log(totelStudents);
-
+  const getCountTeacher = async() => {
     try {
-      getData(`student/students-count`).then((response) => {
+     await getData(`teacher/count/${instituteId}`).then((response) => {
         if (response?.status === 200) {
-          setTotelStudent(response?.data?.students_count);
+          setTotleTeacher(response?.data?.teachers_count);
         }
         console.log(response);
       });
     } catch (error) {
       console.log(error);
     }
-  };
-  const getInstitutionInfo = () => {
+  }
+  const getStudentsCount = async () => {
     try {
-      getData(`institution/get/${instituteId}`).then((response) => {
+      await getData(`/institution/get-student-count/${instituteId}`).then((response) => {
+        console.log(response);
+        if (response?.status === 200) {
+          setTotelStudent(response?.data?.students_count);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getInstitutionInfo = async () => {
+    try {
+      await getData(`institution/get/${instituteId}`).then((response) => {
+        console.log(response)
         if (response?.status === 200) {
           setInstituteInfo(response?.data);
           console.log(response);
@@ -145,6 +155,57 @@ const InstitutionDash = () => {
     }
   };
 
+  const getStudentsData = async () => {
+    try {
+      await getData(`/student/list/${instituteId}`).then((response) => {
+        console.log(response);
+        if (response?.status === 200) {
+          setDataStudents(response?.data);
+        }
+
+      })
+
+    } catch (error) {
+
+    }
+  }
+
+  const getTeahcersData = async() => {
+    try {
+      await getData(`/teacher/list/${instituteId}`).then((response) => {
+        console.log(response);
+        if (response?.status === 200) {
+          setDataTeachers(response?.data);
+        }
+      })
+    } catch (error) {
+
+    }
+  }
+  const getCoursesData = async() => {
+    try {
+      await getData(`/course/list/${instituteId}`).then((response) => {
+        console.log(response);
+        if (response?.status === 200) {
+          setDataCourses(response?.data);
+        }
+      })
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    getCourseCount();
+    getStudentsCount();
+    getInstitutionInfo();
+    getCountTeacher();
+    getStudentsData();
+    getTeahcersData();
+    getCoursesData();
+    console.log('getData');
+    // eslint-disable-next-line
+  }, []);
   const slides = [
     { subject: 'English', totalStudents: 30, image: courseImg },
     { subject: 'Math', totalStudents: 25, image: courseImg },
@@ -153,50 +214,29 @@ const InstitutionDash = () => {
     { subject: 'Geography', totalStudents: 40, image: courseImg },
   ];
 
-  const Teachers = [
-    {
-      name: 'atul yadav',
-      subject: 'Mathematics',
-      image: studentimg,
-    },
-    {
-      name: 'raj kumar',
-      subject: 'English',
-      image: studentimg,
-    },
-    {
-      name: 'puneet jain',
-      subject: 'Data ',
-      image: studentimg,
-    },
-    {
-      name: 'Rohit sharma',
-      subject: 'Cricket',
-      image: studentimg,
-    },
-  ];
-  const topStudent = [
-    {
-      name: 'Akulya shiva',
-      class: '5th',
-      image: studentimg,
-    },
-    {
-      name: 'Nitn raj',
-      class: '8th',
-      image: studentimg,
-    },
-    {
-      name: 'Rovin singh',
-      class: '10th',
-      image: studentimg,
-    },
-    {
-      name: 'Rohit patel',
-      class: '9th',
-      image: studentimg,
-    },
-  ];
+
+  // const topStudent = [
+  //   {
+  //     name: 'Akulya shiva',
+  //     class: '5th',
+  //     image: studentimg,
+  //   },
+  //   {
+  //     name: 'Nitn raj',
+  //     class: '8th',
+  //     image: studentimg,
+  //   },
+  //   {
+  //     name: 'Rovin singh',
+  //     class: '10th',
+  //     image: studentimg,
+  //   },
+  //   {
+  //     name: 'Rohit patel',
+  //     class: '9th',
+  //     image: studentimg,
+  //   },
+  // ];
 
   return (
     <div className="main-wrapper">
@@ -321,7 +361,7 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Teachers</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                    to{' '}
+                    {totleTeacher}
                     <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
@@ -335,18 +375,18 @@ const InstitutionDash = () => {
                       <th>Name</th>
                       <th>Subject</th>
                     </tr>
-                    {Teachers.map((teacher, index) => (
+                    {dataTeachers.map((teacher, index) => (
                       <tr key={index}>
                         <td>
-                          <img src={teacher.image} alt="" />
+                          <img src={teacher.teacher_image} alt="" />
                         </td>
-                        <td>{teacher.name}</td>
-                        <td>{teacher.subject}</td>
+                        <td>{teacher.teacher_name}</td>
+                        <td>{teacher.teacher_subject}</td>
                       </tr>
                     ))}
                   </table>
                 </div>
-                <Link to="/main/Student" className="text-center d-block">
+                <Link to="/institution-dashboard/teacher-list" className="text-center d-block">
                   See All
                 </Link>
               </div>
@@ -373,18 +413,18 @@ const InstitutionDash = () => {
                       <th>Name</th>
                       <th>className</th>
                     </tr>
-                    {topStudent.map((student, index) => (
+                    {dataStudents.map((student, index) => (
                       <tr key={index}>
                         <td>
-                          <img src={student.image} alt="" />
+                          <img src={String(student?.pic_path)} alt="" />
                         </td>
-                        <td>{student.name}</td>
-                        <td>{student.class}</td>
+                        <td>{student.first_name + " " + student.last_name}</td>
+                        <td>{student.gender}</td>
                       </tr>
                     ))}
                   </table>
                 </div>
-                <Link to="/main/Student" className="text-center d-block">
+                <Link to="/institution-dashboard/student-list" className="text-center d-block">
                   See All
                 </Link>
               </div>
@@ -407,37 +447,17 @@ const InstitutionDash = () => {
                       <th>Duration (Yr)</th>
                       <th>Enrollment Status</th>
                     </tr>
+                    {dataCourses.map((course) => (
+                      <tr>
+                        <td>{course.course_name}</td>
+                        <td>{course.is_active}</td>
+                        <td>{course.id}</td>
+                      </tr>
+                    ))}
 
-                    <tr>
-                      <td>B.S.C Science</td>
-                      <td>4</td>
-                      <td>
-                        <Link to="/">Enroll Student</Link>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>B.COM</td>
-                      <td>4</td>
-                      <td>25-Dec-2024</td>
-                    </tr>
-
-                    <tr>
-                      <td>BA English</td>
-                      <td>4</td>
-                      <td>29-Dec-2024</td>
-                    </tr>
-
-                    <tr>
-                      <td>BCA Computer</td>
-                      <td>4</td>
-                      <td>
-                        <Link to="/">Enroll Student</Link>
-                      </td>
-                    </tr>
                   </table>
                 </div>
-                <Link to="/" className="text-center d-block">
+                <Link to="/institution-dashboard/course-list" className="text-center d-block">
                   See All
                 </Link>
               </div>

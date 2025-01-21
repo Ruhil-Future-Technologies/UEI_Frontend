@@ -2,6 +2,7 @@ export const QUERY_KEYS = {
   GET_INSTITUTES: '/institution/list',
   POST_SIGNUP: '/auth/signup',
   POST_LOGIN: '/auth/login',
+  GET_TEACHER:'/teacher/add',
   ENTITY_LIST: '/entity/list',
   INSTITUTE_ADD: '/institution/add',
   INSTITUTE_EDIT: '/institution/edit',

@@ -74,6 +74,7 @@ const Institute = () => {
   const callAPI = async () => {
     getData(`${InstituteURL}`)
       .then((data: { data: InstituteRep0oDTO[] }) => {
+        console.log(data.data);
         if (data.data) {
           setDataInstitute(data?.data);
         }

@@ -222,7 +222,17 @@ img {
     0px 4px 32px 0px rgba(0, 0, 0, 0.03),
     0px 24px 32px -8px rgba(0, 0, 0, 0.07);
 }
-
+.access1-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 2rem;
+  height: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  box-shadow:
+    0px 4px 32px 0px rgba(0, 0, 0, 0.03),
+    0px 24px 32px -8px rgba(0, 0, 0, 0.07);
+}
 .phone-btn {
   position: absolute;
   top: 0px;
@@ -525,6 +535,15 @@ img {
   }
 
   .access-card {
+    box-shadow: none;
+    padding: 0.4rem;
+    background: url('../img/mobile-effect.jpg'), white;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top right;
+    border-radius: 0 !important;
+  }
+  .access1-card {
     box-shadow: none;
     padding: 0.4rem;
     background: url('../img/mobile-effect.jpg'), white;

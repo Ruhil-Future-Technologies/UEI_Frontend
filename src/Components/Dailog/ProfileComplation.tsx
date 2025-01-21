@@ -520,7 +520,7 @@ export const ProfileDialog: FunctionComponent<{
             setAnsweredData(data.data);
 
             // Get the values from the fetched data
-            const guardianName = data?.data?.basic_info?.aim || '';
+            const guardianName = data?.data?.basic_info?.father_name || '';
             const subjectPref =
               data?.data?.subject_preference?.score_in_percentage || '';
             const contact = data?.data?.contact?.mobile_no_call || '';
@@ -1474,7 +1474,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (pincodequestion) {
-      const pincodeRegex = /^\d{6}$/;
+      const pincodeRegex = /^[1-9][0-9]{5}$/;
 
       if (!pincodeRegex.test(updatedAnswers[answers.length - 1])) {
         // setpincode(true);
