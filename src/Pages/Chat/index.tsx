@@ -663,6 +663,7 @@ const Chat = () => {
                     data: {
                       question: response.question,
                       answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -804,6 +805,7 @@ const Chat = () => {
                     data: {
                       question: response.question,
                       answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1255,6 +1257,7 @@ const Chat = () => {
       }
 
       chatdata.answer = elements;
+      chatdata.diagram_code = itemchat?.diagram_code;
       chatdata.speak = false;
       chatdata.like_dislike = null;
       chatdataset.push(chatdata);
@@ -2173,6 +2176,20 @@ const Chat = () => {
                                       index={index}
                                     />
                                   </p>
+                                  {chat?.diagram_code && (
+                                     <div
+                                     style={{
+                                      width: '100%', 
+                                      height: '400px', 
+                                      overflow: 'hidden', 
+                                      display: 'flex',
+                                      justifyContent: 'center', 
+                                      alignItems: 'center',
+                                    }}
+                                     key={index}
+                                     dangerouslySetInnerHTML={{ __html: chat?.diagram_code }}
+                                   />
+                                  )}
                                 </div>
                                 <ul className="ansfooter">
                                   <ThumbUpAltOutlinedIcon
