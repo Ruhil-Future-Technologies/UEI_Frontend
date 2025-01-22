@@ -377,7 +377,6 @@ const TeacherRegistrationPage = () => {
     getCourses();
     getClasslist();
     //getRole();
-    // console.log(dataInstitute);
   }, []);
 
   const handleSelect = (event: SelectChangeEvent) => {
@@ -480,12 +479,10 @@ const TeacherRegistrationPage = () => {
         selectedEntity === 'School' && teacher.school_name === '',
     });
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
-      console.log('DOB is invalid or not provided.');
       setdobset_col(true);
       return;
     }
 
-    console.log(teacher);
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.class_id_error &&
@@ -502,12 +499,6 @@ const TeacherRegistrationPage = () => {
           !(teacher.institution_id === '')
         : true;
 
-    console.log(
-      !error.class_id_error,
-      !(teacher.class_id === ''),
-      !error.school_name_error,
-      !(teacher.school_name === ''),
-    );
     if (
       !error.first_name_error &&
       !(teacher.first_name === '') &&
@@ -589,10 +580,8 @@ const TeacherRegistrationPage = () => {
         };
       }
 
-      console.log(payload);
       postRegisterData(getTeacherURL, payload)
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             toast.success('Teacher registration request sent successfully', {
               hideProgressBar: true,
@@ -631,15 +620,11 @@ const TeacherRegistrationPage = () => {
   };
   const handleDate = (newDate: Dayjs | null) => {
     if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      console.log('djhfvdhdfdsd');
       if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
         setTeacher((values) => ({ ...values, dob: newDate }));
-        console.log('inside if you want to');
+
         setdobset_col(false);
       } else {
-        console.log('inside else');
-        // setDob(null);
-
         setdobset_col(true);
       }
     } else {
@@ -649,8 +634,8 @@ const TeacherRegistrationPage = () => {
   const handelSubjectChange = (
     event: SelectChangeEvent<typeof selectedSubject>,
   ) => {
-    const { value, name } = event.target;
-    console.log(name, value);
+    const { value } = event.target;
+
     setSelectedSubject(value as string[]);
   };
 
@@ -665,7 +650,7 @@ const TeacherRegistrationPage = () => {
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
-  console.log(selectedSchool);
+
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">

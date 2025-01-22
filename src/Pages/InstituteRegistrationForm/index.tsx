@@ -113,7 +113,6 @@ const InstituteRegistrationForm = () => {
       .then((data: { data: IUniversity[] }) => {
         if (data.data) {
           setDataUniversity(data?.data);
-          console.log(dataUniversity);
         }
       })
       .catch((e) => {
@@ -130,7 +129,6 @@ const InstituteRegistrationForm = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data: { data: IEntity[] }) => {
-        console.log(data);
         // const filteredData = data?.data.filter(
         //     (entity) => entity.is_active === 1,
         // );
@@ -357,9 +355,7 @@ const InstituteRegistrationForm = () => {
           };
         }
 
-        console.log(payload);
         postRegisterData(`${InstituteAddURL}`, payload).then((responsr) => {
-          console.log(responsr);
           if (responsr.status === 200) {
             toast.success('Institute registraiotn request sent successfully', {
               hideProgressBar: true,
@@ -375,8 +371,6 @@ const InstituteRegistrationForm = () => {
     } else {
       console.log('some problem gfdshjgv');
     }
-
-    console.log(error);
   };
   const handleInputChangecountry = (val: string, name: string) => {
     setValueInstitute({ ...valueInstitute, [name]: val });
@@ -385,7 +379,7 @@ const InstituteRegistrationForm = () => {
     }
     validation(name, val);
   };
-  console.log(selectedEntity);
+
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">

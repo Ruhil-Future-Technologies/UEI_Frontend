@@ -70,7 +70,6 @@ interface Institute {
   website_url: string;
 }
 
-
 //const instituteId = '036ca815-ee29-4baa-aaa1-2a4336d416e3';
 
 const InstitutionDash = () => {
@@ -148,7 +147,7 @@ const InstitutionDash = () => {
   const getInstitutionInfo = async () => {
     try {
       await getData(`institution/get/${instituteId}`).then((response) => {
-        console.log(response,"institute profile info");
+        console.log(response, 'institute profile info');
         if (response?.status === 200) {
           setInstituteInfo(response?.data);
           console.log(response);
