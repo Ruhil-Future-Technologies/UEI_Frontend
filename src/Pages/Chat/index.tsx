@@ -412,7 +412,22 @@ const Chat = () => {
 
     // Join the array into a single string
     let cleanedText = textArray.join(' ');
-    // Replace multiple spaces with a single space
+
+    cleanedText = cleanedText.replace(/\$([^$]*)\$/g, '$1');
+    cleanedText = cleanedText.replace(/\\boxed{([^}]+)}/g, '$1');
+
+    cleanedText = cleanedText.replace(/#{1,6}\s?/g, '');
+    cleanedText = cleanedText.replace(/\*{1,3}/g, '');
+    cleanedText = cleanedText.replace(/~~/g, '');
+    cleanedText = cleanedText.replace(/`{1,3}/g, '');
+    cleanedText = cleanedText.replace(/>\s?/g, '');
+
+    cleanedText = cleanedText.replace(
+      /[^a-zA-Z0-9.,!? :;()'+\-*×x÷/=≠<>≤≥±]/g,
+      '',
+    );
+    cleanedText = cleanedText.replace(/([+\-*×x÷/=≠<>≤≥±])/g, ' $1 ');
+
     cleanedText = cleanedText.replace(/\s+/g, ' ');
 
     // Trim any leading or trailing spaces
@@ -420,6 +435,7 @@ const Chat = () => {
 
     // Convert the first letter of the cleaned text to uppercase
     cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
+    console.log({ cleanedText });
 
     const utterance = new SpeechSynthesisUtterance(cleanedText);
     utterance.onerror = () => {};
@@ -647,6 +663,7 @@ const Chat = () => {
                     data: {
                       question: response.question,
                       answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -788,6 +805,7 @@ const Chat = () => {
                     data: {
                       question: response.question,
                       answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1239,6 +1257,7 @@ const Chat = () => {
       }
 
       chatdata.answer = elements;
+      chatdata.diagram_code = itemchat?.diagram_code;
       chatdata.speak = false;
       chatdata.like_dislike = null;
       chatdataset.push(chatdata);
@@ -2157,6 +2176,20 @@ const Chat = () => {
                                       index={index}
                                     />
                                   </p>
+                                  {chat?.diagram_code && (
+                                     <div
+                                     style={{
+                                      width: '100%', 
+                                      height: '400px', 
+                                      overflow: 'hidden', 
+                                      display: 'flex',
+                                      justifyContent: 'center', 
+                                      alignItems: 'center',
+                                    }}
+                                     key={index}
+                                     dangerouslySetInnerHTML={{ __html: chat?.diagram_code }}
+                                   />
+                                  )}
                                 </div>
                                 <ul className="ansfooter">
                                   <ThumbUpAltOutlinedIcon
