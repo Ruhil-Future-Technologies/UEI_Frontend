@@ -287,6 +287,7 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
+        console.log(data.data);
         if (data.data) {
           setDataInstitute(data?.data);
         }
@@ -498,7 +499,7 @@ const TeacherRegistrationPage = () => {
           !error.institution_id_error &&
           !(teacher.institution_id === '')
         : true;
-
+console.log("inside sunction")
     if (
       !error.first_name_error &&
       !(teacher.first_name === '') &&
@@ -529,6 +530,7 @@ const TeacherRegistrationPage = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
+      console.log("inside if code")
       let payload;
       // All required fields are valid, proceed with the next steps
       if (selectedEntity === 'School') {
@@ -555,6 +557,7 @@ const TeacherRegistrationPage = () => {
           pincode: teacher.pincode,
           documents: allselectedfiles,
         };
+        console.log("payload", payload)
       } else {
         payload = {
           first_name: teacher.first_name,
@@ -582,6 +585,7 @@ const TeacherRegistrationPage = () => {
 
       postRegisterData(getTeacherURL, payload)
         .then((response) => {
+          console.log(response);
           if (response.status === 200) {
             toast.success('Teacher registration request sent successfully', {
               hideProgressBar: true,
@@ -650,7 +654,7 @@ const TeacherRegistrationPage = () => {
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
-
+console.log(teacher)    ;
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">

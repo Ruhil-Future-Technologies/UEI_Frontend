@@ -306,7 +306,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'entity_id',
+    accessorKey: 'entity_type',
     header: 'Entity ',
     size: 150,
   },
