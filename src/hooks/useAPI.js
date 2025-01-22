@@ -12,7 +12,8 @@ const useApi = () => {
   const headers = {
     Authorization: `${token}`,
   };
-
+  const STATIC_JWT_TOKEN =
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNzM3MDQxOCwianRpIjoiYjgxNDU1ZTYtYThmMC00YzkxLWE0YzEtNmY5NjU4YTIyZWIzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFzaGlzaDcwODBAZ21haWwuY29tIiwibmJmIjoxNzM3MzcwNDE4LCJjc3JmIjoiYjY3MzdjODQtNGU2Mi00MjNjLWFlMjMtYTczMDAwODBjNDRkIiwiZXhwIjoxNzM3Mzc3NjE4LCJjdXN0b21fdG9rZW4iOnRydWV9.-Efb2S1UsfBLeoiSaTPRDvgOnrprHsbGoPw3Xr85Gnw';
   const context = useContext(NameContext);
   const { setProPercentage } = context;
   const synth = window?.speechSynthesis;
@@ -72,6 +73,30 @@ const useApi = () => {
       throw error; // Re-throw the error for the caller to handle
     }
   };
+  const getForRegistration = async (url) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    const headers = {
+      Authorization: `${STATIC_JWT_TOKEN}`,
+    };
+    setLoading(true);
+    setError(null);
+    try {
+      // console.log(headers);
+      const requestUrl = url;
+      // console.log("requestUrl", requestUrl);
+      const response = await httpClient.get(requestUrl, { headers });
+      setLoading(false);
+      return response?.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error; // Re-throw the error for the caller to handle
+    }
+  };
 
   const postData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
@@ -79,6 +104,32 @@ const useApi = () => {
       navigate('/');
       return;
     }
+    setLoading(true);
+    setError(null);
+
+    try {
+      //console.log(loginUrl)
+      const response = await httpClient.post(url, data, { headers });
+      setLoading(false);
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
+  const postRegisterData = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    const headers = {
+      Authorization: `${STATIC_JWT_TOKEN}`,
+    };
     setLoading(true);
     setError(null);
 
@@ -218,8 +269,10 @@ const useApi = () => {
 
   return {
     getData,
+    getForRegistration,
     postData,
     putData,
+    postRegisterData,
     deleteData,
     postFileData,
     deleteFileData,

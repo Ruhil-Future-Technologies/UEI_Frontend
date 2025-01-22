@@ -88,7 +88,7 @@ export interface InstituteRep0oDTO {
   mobile_no: MaybeNull<string>;
   website_url: MaybeNull<string>;
   id: number;
-  university_id: MaybeNull<string>;
+  university_id?: MaybeNull<string>;
 }
 export interface DepartmentRep0oDTO {
   department_name: MaybeNull<string>;
@@ -102,6 +102,7 @@ export interface CourseRep0oDTO {
   created_at: MaybeNull<string>;
   is_active: number;
   updated_at: MaybeNull<string>;
+  institution_id?: MaybeNull<string>;
 }
 export interface UniversityRep0oDTO {
   university_name: MaybeNull<string>;

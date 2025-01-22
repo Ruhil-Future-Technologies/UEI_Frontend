@@ -2177,18 +2177,20 @@ const Chat = () => {
                                     />
                                   </p>
                                   {chat?.diagram_code && (
-                                     <div
-                                     style={{
-                                      width: '100%', 
-                                      height: '400px', 
-                                      overflow: 'hidden', 
-                                      display: 'flex',
-                                      justifyContent: 'center', 
-                                      alignItems: 'center',
-                                    }}
-                                     key={index}
-                                     dangerouslySetInnerHTML={{ __html: chat?.diagram_code }}
-                                   />
+                                    <div
+                                      style={{
+                                        width: '100%',
+                                        height: '400px',
+                                        overflow: 'hidden',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                      key={index}
+                                      dangerouslySetInnerHTML={{
+                                        __html: chat?.diagram_code,
+                                      }}
+                                    />
                                   )}
                                 </div>
                                 <ul className="ansfooter">

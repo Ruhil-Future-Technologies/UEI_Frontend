@@ -48,7 +48,7 @@ const AddEditSubject = () => {
   const navigator = useNavigate();
   const { id } = useParams();
   const userdata = JSON.parse(localStorage.getItem('userdata') || '');
-  const charPattern = /^[a-zA-Z\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
+  const charPattern = /^[a-zA-Z0-9\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
 
   const initialState = {
     subject_name: '',

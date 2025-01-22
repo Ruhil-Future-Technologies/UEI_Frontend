@@ -464,9 +464,23 @@ const Signup = () => {
                         Already have an account?{' '}
                         <Link to="/" style={{ color: '#9943EC' }}>
                           {' '}
-                          Sign in here{' '}
+                          <u>Sign in here </u>
                         </Link>
                       </p>
+                      <div className="d-flex justify-content-between">
+                        <Link
+                          to="/institute-registration"
+                          style={{ color: '#9943EC' }}
+                        >
+                          <u>Register As Institute</u>
+                        </Link>
+                        <Link
+                          to="/teacher-registration"
+                          style={{ color: '#9943EC' }}
+                        >
+                          <u>Register As Teacher</u>
+                        </Link>
+                      </div>
                     </form>
                     <Dialog open={popupTermandCondi} onClose={handleClose}>
                       <DialogTitle>{'Terms and Condition'}</DialogTitle>

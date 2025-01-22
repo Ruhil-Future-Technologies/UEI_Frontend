@@ -77,6 +77,18 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         : '') ||
       (usertype === 'institute' &&
       uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'teacher-list'
+        : '') ||
+      (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'student-list'
+        : '') ||
+      (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'course-list'
+        : '') ||
+      (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'feedback'
         : '');
 

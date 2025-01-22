@@ -16380,6 +16380,13 @@ img {
   max-width: 550px;
   margin: 0 auto;
 }
+.access1-card {
+  background-color: #fff;
+  padding: 2.5rem;
+  height: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+}
 
 .phone-btn {
   position: absolute;
@@ -16650,6 +16657,14 @@ img {
   }
 
   .access-card {
+    box-shadow: none;
+    padding: 0.4rem;
+    background: url('../images/mobile-effect.jpg'), #fff;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top right;
+  }
+  .access1-card {
     box-shadow: none;
     padding: 0.4rem;
     background: url('../images/mobile-effect.jpg'), #fff;
