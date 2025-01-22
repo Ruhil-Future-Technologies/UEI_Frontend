@@ -1,8 +1,51 @@
 import Box from '@mui/material/Box';
-//import { MaterialReactTable,  } from 'material-react-table';
-import React from 'react';
+import { MaterialReactTable, MRT_ColumnDef,  } from 'material-react-table';
+import React, { useEffect } from 'react';
+import useApi from '../../../hooks/useAPI';
+interface Teahcer{
+  id: number;
+  name: string;
+  image: number;
+  subject: string;
+}
 
 const TeacherListingByInstitution = () => {
+  const instituteId=localStorage.getItem("_id");
+  const collmns:MRT_ColumnDef<Teahcer>[]=[
+    {
+      accessorKey:'name',
+      header:"Name",
+      size:150
+    },
+    {
+      accessorKey:"subject",
+      header:"Subject",
+      size:150
+    },
+    {
+      accessorKey:"image",
+      header:"Image",
+      size:150,
+    }
+  ];
+  const [dataTeachers, setDataTeachers] = React.useState<Teahcer[]>([]);
+  const {getData,}=useApi();
+
+  const getTeahcersData = async () => {
+    try {
+      await getData(`/teacher/list/${instituteId}`).then((response) => {
+        console.log(response);
+        if (response?.status === 200) {
+          setDataTeachers(response?.data);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(()=>{
+    getTeahcersData();
+  },[])
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -11,35 +54,17 @@ const TeacherListingByInstitution = () => {
             <div className="table_wrapper">
               <div className="table-inner">
                 <Box>
-                  {/* <MaterialReactTable
-                                        columns={ }
-                                        data={ }
-                                        enableRowVirtualization
-                                        positionActionsColumn="first"
-                                        enableRowActions
-                                        muiTablePaperProps={ }
-                                        displayColumnDefOptions={{
-                                            'mrt-row-actions': {
-                                                header: 'Actions',
-                                                size: 150,
-                                            },
-                                        }}
-                                        renderRowActions={(row) => (
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    flexWrap: 'nowrap',
-                                                    gap: '0.5',
-                                                    marginLeft: '-5px',
-                                                    width: '140px',
-                                                }}
-                                            >
-                                                Action 1
-                                                Action 2
-                                                Action 3
-                                            </Box>
-                                        )}
-                                    /> */}
+                <MaterialReactTable
+                  columns={collmns}
+                  data={dataTeachers}
+                  enableRowVirtualization
+                  positionActionsColumn='first'
+                  muiTablePaperProps={{
+                    elevation:0
+                  }}
+                 
+
+                  />
                 </Box>
               </div>
             </div>

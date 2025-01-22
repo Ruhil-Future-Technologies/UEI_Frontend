@@ -187,7 +187,7 @@ const InstituteRegistrationForm = () => {
           : false,
       university_id_error: false,
       institute_type_error: false,
-      school_name_error: false,
+      school_name_error: name === 'school_name' && value==='',
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
           ? true
@@ -258,7 +258,7 @@ const InstituteRegistrationForm = () => {
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
-        selectedEntity === 'School' && !(valueInstitute.school_name === '')
+        selectedEntity === 'School' && (valueInstitute.school_name === '')
           ? true
           : false,
       city_error: !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(valueInstitute.city.trim())
@@ -279,7 +279,7 @@ const InstituteRegistrationForm = () => {
         : false,
       document_error: valueInstitute.document === null ? true : false,
     });
-
+     console.log(selectedEntity);
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.school_name_error && valueInstitute.school_name !== ''
@@ -292,6 +292,8 @@ const InstituteRegistrationForm = () => {
           !error.university_id_error &&
           valueInstitute.university_id !== ''
         : true;
+        console.log(error);
+        console.log(isSchoolValid,isCollegeValid);
     if (
       !error.institute_type_error &&
       !(valueInstitute.entity_id === '') &&
@@ -356,6 +358,7 @@ const InstituteRegistrationForm = () => {
         }
 
         postRegisterData(`${InstituteAddURL}`, payload).then((responsr) => {
+          console.log(responsr)
           if (responsr.status === 200) {
             toast.success('Institute registraiotn request sent successfully', {
               hideProgressBar: true,
@@ -477,7 +480,7 @@ const InstituteRegistrationForm = () => {
                   onChange={handleChange}
                 />
                 <div>
-                  {error.website_error === true && (
+                  {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
                       Valid School Name is required.
                     </p>
