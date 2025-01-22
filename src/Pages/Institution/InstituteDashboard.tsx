@@ -27,7 +27,10 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import useApi from '../../hooks/useAPI';
-import { CourseRep0oDTO, StudentRep0oDTO } from '../../Components/Table/columns';
+import {
+  CourseRep0oDTO,
+  StudentRep0oDTO,
+} from '../../Components/Table/columns';
 
 // interface Course {
 //     course_id: number;
@@ -67,10 +70,11 @@ interface Institute {
   website_url: string;
 }
 
-const instituteId = localStorage.getItem('_id');
+
 //const instituteId = '036ca815-ee29-4baa-aaa1-2a4336d416e3';
 
 const InstitutionDash = () => {
+  const instituteId = localStorage.getItem('_id');
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<Institute>({
     address: '',
@@ -102,11 +106,10 @@ const InstitutionDash = () => {
   const [dataCourses, setDataCourses] = useState<CourseRep0oDTO[]>([]);
   const [dataTeachers, setDataTeachers] = useState<Teahcer[]>([]);
 
-
-  const getCourseCount = async() => {
+  const getCourseCount = async () => {
     console.log(totleCourse);
     try {
-    await  getData(`course/course-count/${instituteId}`).then((response) => {
+      await getData(`course/course-count/${instituteId}`).then((response) => {
         if (response?.status === 200) {
           setTotleCourse(response?.data?.courses_count);
         }
@@ -116,9 +119,9 @@ const InstitutionDash = () => {
       console.log(error);
     }
   };
-  const getCountTeacher = async() => {
+  const getCountTeacher = async () => {
     try {
-     await getData(`teacher/count/${instituteId}`).then((response) => {
+      await getData(`teacher/count/${instituteId}`).then((response) => {
         if (response?.status === 200) {
           setTotleTeacher(response?.data?.teachers_count);
         }
@@ -127,15 +130,17 @@ const InstitutionDash = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   const getStudentsCount = async () => {
     try {
-      await getData(`/institution/get-student-count/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
-          setTotelStudent(response?.data?.students_count);
-        }
-      });
+      await getData(`/institution/get-student-count/${instituteId}`).then(
+        (response) => {
+          console.log(response);
+          if (response?.status === 200) {
+            setTotelStudent(response?.data?.students_count);
+          }
+        },
+      );
     } catch (error) {
       console.log(error);
     }
@@ -143,7 +148,7 @@ const InstitutionDash = () => {
   const getInstitutionInfo = async () => {
     try {
       await getData(`institution/get/${instituteId}`).then((response) => {
-        console.log(response)
+        console.log(response,"institute profile info");
         if (response?.status === 200) {
           setInstituteInfo(response?.data);
           console.log(response);
@@ -162,38 +167,36 @@ const InstitutionDash = () => {
         if (response?.status === 200) {
           setDataStudents(response?.data);
         }
-
-      })
-
+      });
     } catch (error) {
-
+      console.log(error);
     }
-  }
+  };
 
-  const getTeahcersData = async() => {
+  const getTeahcersData = async () => {
     try {
       await getData(`/teacher/list/${instituteId}`).then((response) => {
         console.log(response);
         if (response?.status === 200) {
           setDataTeachers(response?.data);
         }
-      })
+      });
     } catch (error) {
-
+      console.log(error);
     }
-  }
-  const getCoursesData = async() => {
+  };
+  const getCoursesData = async () => {
     try {
       await getData(`/course/list/${instituteId}`).then((response) => {
         console.log(response);
         if (response?.status === 200) {
           setDataCourses(response?.data);
         }
-      })
+      });
     } catch (error) {
-
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getCourseCount();
@@ -213,7 +216,6 @@ const InstitutionDash = () => {
     { subject: 'History', totalStudents: 20, image: courseImg },
     { subject: 'Geography', totalStudents: 40, image: courseImg },
   ];
-
 
   // const topStudent = [
   //   {
@@ -386,7 +388,10 @@ const InstitutionDash = () => {
                     ))}
                   </table>
                 </div>
-                <Link to="/institution-dashboard/teacher-list" className="text-center d-block">
+                <Link
+                  to="/institution-dashboard/teacher-list"
+                  className="text-center d-block"
+                >
                   See All
                 </Link>
               </div>
@@ -418,13 +423,16 @@ const InstitutionDash = () => {
                         <td>
                           <img src={String(student?.pic_path)} alt="" />
                         </td>
-                        <td>{student.first_name + " " + student.last_name}</td>
+                        <td>{student.first_name + ' ' + student.last_name}</td>
                         <td>{student.gender}</td>
                       </tr>
                     ))}
                   </table>
                 </div>
-                <Link to="/institution-dashboard/student-list" className="text-center d-block">
+                <Link
+                  to="/institution-dashboard/student-list"
+                  className="text-center d-block"
+                >
                   See All
                 </Link>
               </div>
@@ -447,17 +455,19 @@ const InstitutionDash = () => {
                       <th>Duration (Yr)</th>
                       <th>Enrollment Status</th>
                     </tr>
-                    {dataCourses.map((course) => (
-                      <tr>
+                    {dataCourses.map((course, index) => (
+                      <tr key={index}>
                         <td>{course.course_name}</td>
                         <td>{course.is_active}</td>
                         <td>{course.id}</td>
                       </tr>
                     ))}
-
                   </table>
                 </div>
-                <Link to="/institution-dashboard/course-list" className="text-center d-block">
+                <Link
+                  to="/institution-dashboard/course-list"
+                  className="text-center d-block"
+                >
                   See All
                 </Link>
               </div>

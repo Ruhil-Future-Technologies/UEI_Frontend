@@ -633,7 +633,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           [index]: {
             subject_error: !box?.subject_id,
             preference_error: boxes[index]?.preference
-              ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(boxes[index]?.preference.trim())
+              ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(
+                  boxes[index]?.preference.trim(),
+                )
               : !boxes[index]?.preference,
             percentage_error: !box?.score_in_percentage,
           },

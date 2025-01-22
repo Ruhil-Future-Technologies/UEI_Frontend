@@ -88,7 +88,6 @@ import StudentListingByInstitution from './Pages/Institution/lists/StudentList';
 import TeacherListingByInstitution from './Pages/Institution/lists/TeacherList';
 import CourseListingByInstitution from './Pages/Institution/lists/CourseList';
 
-
 function App() {
   const navigate = useNavigate();
   const context = useContext(NameContext);
@@ -134,8 +133,14 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path='/institute-registration'  element={<InstituteRegistrationForm/>}/>
-        <Route path="/teacher-registration" element={<TeacherRegistrationPage/>}/>
+        <Route
+          path="/institute-registration"
+          element={<InstituteRegistrationForm />}
+        />
+        <Route
+          path="/teacher-registration"
+          element={<TeacherRegistrationPage />}
+        />
         <Route path="/profile-chat" element={<ProfileChat />} />
         <Route path="/feedback-chat" element={<Feedback />} />
         <Route path="/institution-dashboard" element={<IntituteMain />}>
@@ -158,19 +163,28 @@ function App() {
           <Route
             path="/institution-dashboard/student-list"
             element={
-              <Protected Component={StudentListingByInstitution} menuName="student-list" />
+              <Protected
+                Component={StudentListingByInstitution}
+                menuName="student-list"
+              />
             }
           />
           <Route
             path="/institution-dashboard/teacher-list"
             element={
-              <Protected Component={TeacherListingByInstitution} menuName="teacher-list" />
+              <Protected
+                Component={TeacherListingByInstitution}
+                menuName="teacher-list"
+              />
             }
           />
           <Route
             path="/institution-dashboard/course-list"
             element={
-              <Protected Component={CourseListingByInstitution} menuName="course-list" />
+              <Protected
+                Component={CourseListingByInstitution}
+                menuName="course-list"
+              />
             }
           />
         </Route>

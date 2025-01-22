@@ -1,19 +1,17 @@
-import Box from "@mui/material/Box";
+import Box from '@mui/material/Box';
 //import { MaterialReactTable,  } from 'material-react-table';
-import React from "react";
+import React from 'react';
 
 const TeacherListingByInstitution = () => {
-
-    
-    return (
-        <div className="main-wrapper">
-            <div className="main-content">
-                <div className="card">
-                    <div className="card-body">
-                        <div className="table_wrapper">
-                            <div className="table-inner">
-                                <Box>
-                                    {/* <MaterialReactTable
+  return (
+    <div className="main-wrapper">
+      <div className="main-content">
+        <div className="card">
+          <div className="card-body">
+            <div className="table_wrapper">
+              <div className="table-inner">
+                <Box>
+                  {/* <MaterialReactTable
                                         columns={ }
                                         data={ }
                                         enableRowVirtualization
@@ -42,19 +40,15 @@ const TeacherListingByInstitution = () => {
                                             </Box>
                                         )}
                                     /> */}
-
-                                </Box>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div className="text-center">
-                    Student Listing By Institute
-                </div>
+                </Box>
+              </div>
             </div>
+          </div>
         </div>
-    )
-}
+        <div className="text-center">Student Listing By Institute</div>
+      </div>
+    </div>
+  );
+};
 
 export default TeacherListingByInstitution;

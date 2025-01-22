@@ -12,7 +12,8 @@ const useApi = () => {
   const headers = {
     Authorization: `${token}`,
   };
-  const STATIC_JWT_TOKEN="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNzM3MDQxOCwianRpIjoiYjgxNDU1ZTYtYThmMC00YzkxLWE0YzEtNmY5NjU4YTIyZWIzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFzaGlzaDcwODBAZ21haWwuY29tIiwibmJmIjoxNzM3MzcwNDE4LCJjc3JmIjoiYjY3MzdjODQtNGU2Mi00MjNjLWFlMjMtYTczMDAwODBjNDRkIiwiZXhwIjoxNzM3Mzc3NjE4LCJjdXN0b21fdG9rZW4iOnRydWV9.-Efb2S1UsfBLeoiSaTPRDvgOnrprHsbGoPw3Xr85Gnw";
+  const STATIC_JWT_TOKEN =
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNzM3MDQxOCwianRpIjoiYjgxNDU1ZTYtYThmMC00YzkxLWE0YzEtNmY5NjU4YTIyZWIzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFzaGlzaDcwODBAZ21haWwuY29tIiwibmJmIjoxNzM3MzcwNDE4LCJjc3JmIjoiYjY3MzdjODQtNGU2Mi00MjNjLWFlMjMtYTczMDAwODBjNDRkIiwiZXhwIjoxNzM3Mzc3NjE4LCJjdXN0b21fdG9rZW4iOnRydWV9.-Efb2S1UsfBLeoiSaTPRDvgOnrprHsbGoPw3Xr85Gnw';
   const context = useContext(NameContext);
   const { setProPercentage } = context;
   const synth = window?.speechSynthesis;
@@ -72,7 +73,7 @@ const useApi = () => {
       throw error; // Re-throw the error for the caller to handle
     }
   };
-  const getForRegistration = async (url ) => {
+  const getForRegistration = async (url) => {
     if (isTokenExpired()) {
       handlogout();
       navigate('/');
