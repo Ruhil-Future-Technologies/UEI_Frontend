@@ -66,8 +66,13 @@ const Sidebar = () => {
       getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
         .then((data: any) => {
           if (data.data) {
-            setMenuList1(data.data);
-            localStorage.setItem('menulist1', JSON.stringify(data?.data));
+            const menuData = data.data;
+            setMenuList1(menuData);
+            localStorage.setItem('menulist1', JSON.stringify(menuData));
+            const saved = localStorage.getItem('menulist1');
+            if (!saved) {
+              console.warn('Failed to save menulist1');
+            }
           }
         })
         .catch((e: any) => {
@@ -258,6 +263,13 @@ const Sidebar = () => {
                                                 {' '}
                                                 <ArrowRightIcon />
                                                 Institute
+                                              </Link>
+                                            </li>
+                                            <li>
+                                              <Link to="/main/Teacher">
+                                                {' '}
+                                                <ArrowRightIcon />
+                                                Teacher
                                               </Link>
                                             </li>
                                             <li>

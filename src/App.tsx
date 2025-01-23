@@ -87,6 +87,8 @@ import TeacherRegistrationPage from './Pages/TeacherRgistrationForm';
 import StudentListingByInstitution from './Pages/Institution/lists/StudentList';
 import TeacherListingByInstitution from './Pages/Institution/lists/TeacherList';
 import CourseListingByInstitution from './Pages/Institution/lists/CourseList';
+import Teacher from './Pages/Teacher/Teacher';
+import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
 
 function App() {
   const navigate = useNavigate();
@@ -282,6 +284,24 @@ function App() {
               path="edit-Institute/:id"
               element={
                 <Protected Component={AddEditInstitute} menuName="Institute" />
+              }
+            />
+          </Route>
+          <Route path="/main/Teacher">
+            <Route
+              path=""
+              element={<Protected Component={Teacher} menuName="Teacher" />}
+            />
+            <Route
+              path="add-Teacher"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
+              }
+            />
+            <Route
+              path="edit-Teacher/:id"
+              element={
+                <Protected Component={AddEditTeacher} menuName="Teacher" />
               }
             />
           </Route>

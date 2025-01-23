@@ -69,10 +69,13 @@ function MainContent() {
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('_id');
   const menuList = localStorage.getItem('menulist1');
-  let menudata: any = [];
-  if (menuList !== null) {
-    menudata = JSON.parse(menuList);
-  }
+
+  const getMenuList = () => {
+    const menuList = localStorage.getItem('menulist1');
+    return menuList ? JSON.parse(menuList) : [];
+  };
+  const menudata = getMenuList();
+
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const ChatURL = QUERY_KEYS.CHATADD;
@@ -470,6 +473,7 @@ function MainContent() {
     courseCount: 0,
     schoolsubjectCount: 0,
     collegesubjectCount: 0,
+    teacherCount: 0,
   });
   const [statsweekly, setStatsweekly] = useState({
     FridayCount: 0,
@@ -1326,6 +1330,7 @@ function MainContent() {
             courseRes,
             schoolRes,
             collegeRes,
+            teacherRes,
           ] = await Promise.allSettled([
             getData('/institution/list'),
             getData('/student/list'),
@@ -1335,6 +1340,7 @@ function MainContent() {
             getData('/course/list'),
             getData('/school_subject/list'),
             getData('/college_subject/list'),
+            getData('./teacher/list'),
           ]);
           const institutionCount =
             institutionRes?.status === 'fulfilled'
@@ -1368,7 +1374,10 @@ function MainContent() {
             collegeRes?.status === 'fulfilled'
               ? collegeRes?.value?.data?.length || 0
               : 0;
-
+          const teacherCount =
+            teacherRes?.status === 'fulfilled'
+              ? teacherRes?.value?.data?.length || 0
+              : 0;
           setStats({
             institutionCount,
             studentCount,
@@ -1378,6 +1387,7 @@ function MainContent() {
             courseCount,
             schoolsubjectCount,
             collegesubjectCount,
+            teacherCount,
           });
 
           // setStats({
@@ -2541,7 +2551,7 @@ function MainContent() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="mb-0">{0}</h4>
+                            <h4 className="mb-0">{stats.teacherCount}</h4>
                             <p className="mb-0">Teachers</p>
                           </div>
                         </div>

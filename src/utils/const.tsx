@@ -23,6 +23,8 @@ export const QUERY_KEYS = {
   GET_INSTITUTEACTIVE: '/institution/activate',
   GET_INSTITUTEDEACTIVE: '/institution/deactivate',
   CHAT_LISTGETALL: '/Chatbot/getalldata',
+  INSITUTE_APPROVE: './insitution/approve',
+  INSITUTE_DISAPPROVE: './insitution/disapprove',
 };
 export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
@@ -34,6 +36,16 @@ export const QUERY_KEYS_STUDENT = {
   STUDENT_DELETE: '/studentdelete',
   GET_STUDENTACTIVE: '/student/activate',
   GET_STUDENTDEACTIVE: '/student/deactivate',
+};
+export const QUERY_KEYS_TEACHER = {
+  GET_TEACHER: './teacher/list/',
+  TEACHER_APPROVE: './teacher/approve',
+  TEACHER_DISAPPROVE: './teacher/disapprove',
+  TEACHER_ADD: './teacher/add',
+  TEACHER_EDIT: '/teacher/edit',
+  TEACHER_DELETE: '/teacher/delete',
+  TEACHER_ACTIVATE: 'teacher/activate',
+  TEACHER_DEACTIVATE: 'teacher/deactivate',
 };
 export const QUERY_KEYS_COURSE = {
   GET_COURSE: '/course/list',
@@ -71,7 +83,7 @@ export const QUERY_KEYS_ENTITY = {
 };
 
 export const QUERY_KEYS_CLASS = {
-  GET_CLASS: '/class/list',
+  GET_CLASS: '/class/list/',
   CLASS_ADD: '/class/add',
   CLASS_EDIT: '/class/edit',
   CLASS_DELETE: '/class/delete',
