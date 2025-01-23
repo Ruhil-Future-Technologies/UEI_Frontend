@@ -83,7 +83,7 @@ export const QUERY_KEYS_ENTITY = {
 };
 
 export const QUERY_KEYS_CLASS = {
-  GET_CLASS: '/class/list/',
+  GET_CLASS: '/class/list',
   CLASS_ADD: '/class/add',
   CLASS_EDIT: '/class/edit',
   CLASS_DELETE: '/class/delete',
