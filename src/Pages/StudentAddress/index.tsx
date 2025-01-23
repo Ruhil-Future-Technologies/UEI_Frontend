@@ -148,7 +148,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   }, []);
 
   const validatePincode = (pincode: any) => {
-    const pincodePattern = /^[1-9][0-9]{5}$/;
+    const pincodePattern = /^(?!0{6})[0-9]{6}$/;
     return pincodePattern.test(pincode);
   };
 
