@@ -608,7 +608,7 @@ const ProfileChat: React.FC = () => {
     }
     if (currentQuestionIndex === 9) {
       // Regular expression for exactly 10 digits
-      const phoneRegex = /^\d{10}$/;
+      const phoneRegex = /^(?!0{10})[0-9]{10}$/;
 
       if (!phoneRegex.test(updatedAnswers[9])) {
         setphnumber(true);
@@ -619,7 +619,7 @@ const ProfileChat: React.FC = () => {
     }
     if (currentQuestionIndex === 10) {
       // Regular expression for exactly 10 digits
-      const phoneRegex = /^\d{10}$/;
+      const phoneRegex = /^(?!0{10})[0-9]{10}$/;
 
       if (!phoneRegex.test(updatedAnswers[10])) {
         setphnumber(true);

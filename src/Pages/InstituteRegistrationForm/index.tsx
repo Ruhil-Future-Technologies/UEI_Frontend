@@ -182,19 +182,19 @@ const InstituteRegistrationForm = () => {
     setError({
       institute_name_error:
         name === 'institute_name' &&
-        !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
+          !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
           ? true
           : false,
       university_id_error: false,
       institute_type_error: false,
-      school_name_error: name === 'school_name' && value==='',
+      school_name_error: name === 'school_name' && value === '',
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
           ? true
           : false,
       mobile_no_error:
-        name === 'mobile_no' && !/^\d{10}$/.test(value.trim()) ? true : false,
-      website_error: name === 'website' && value.trim() === '' ? true : false,
+        name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim()) ? true : false,
+      website_error: name === 'website' && !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value.trim()),
       country_error: false,
       state_error: false,
       city_error:
@@ -241,7 +241,7 @@ const InstituteRegistrationForm = () => {
           : false,
       university_id_error:
         selectedEntity === 'College' &&
-        valueInstitute.university_id.trim() === ''
+          valueInstitute.university_id.trim() === ''
           ? true
           : false,
       institute_type_error:
@@ -251,10 +251,10 @@ const InstituteRegistrationForm = () => {
       )
         ? true
         : false,
-      mobile_no_error: !/^\d{10}$/.test(valueInstitute.mobile_no.trim())
+      mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())
         ? true
         : false,
-      website_error: valueInstitute.website.trim() === '' ? true : false,
+      website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website),
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
@@ -274,12 +274,12 @@ const InstituteRegistrationForm = () => {
       )
         ? true
         : false,
-      pincode_error: !/^\d{6}$/.test(valueInstitute.pincode.trim())
+      pincode_error: !/^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode.trim())
         ? true
         : false,
       document_error: valueInstitute.document === null ? true : false,
     });
-     console.log(selectedEntity);
+    console.log(selectedEntity);
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.school_name_error && valueInstitute.school_name !== ''
@@ -288,33 +288,33 @@ const InstituteRegistrationForm = () => {
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.institute_name_error &&
-          valueInstitute.institute_name !== '' &&
-          !error.university_id_error &&
-          valueInstitute.university_id !== ''
+        valueInstitute.institute_name !== '' &&
+        !error.university_id_error &&
+        valueInstitute.university_id !== ''
         : true;
-        console.log(error);
-        console.log(isSchoolValid,isCollegeValid);
+    console.log(error);
+    console.log(isSchoolValid, isCollegeValid);
     if (
       !error.institute_type_error &&
       !(valueInstitute.entity_id === '') &&
       !error.email_id_error &&
-      !(valueInstitute.email_id === '') &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id) &&
       !error.mobile_no_error &&
-      !(valueInstitute.mobile_no === '') &&
+      !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
       !error.website_error &&
-      !(valueInstitute.website === '') &&
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website) &&
       !error.country_error &&
       !(valueInstitute.country === '') &&
       !error.state_error &&
       !(valueInstitute.state === '') &&
       !error.city_error &&
-      !(valueInstitute.city === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.city.trim()) &&
       !error.district_error &&
-      !(valueInstitute.district === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.district.trim()) &&
       !error.address_error &&
-      !(valueInstitute.address === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.address.trim()) &&
       !error.pincode_error &&
-      !(valueInstitute.pincode === '') &&
+      !/^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
       !error.document_error &&
       valueInstitute.document &&
       isCollegeValid &&
@@ -357,15 +357,21 @@ const InstituteRegistrationForm = () => {
           };
         }
 
-        postRegisterData(`${InstituteAddURL}`, payload).then((responsr) => {
-          console.log(responsr)
-          if (responsr.status === 200) {
-            toast.success('Institute registraiotn request sent successfully', {
+        postRegisterData(`${InstituteAddURL}`, payload).then((response) => {
+          console.log(response)
+          if (response.status === 200) {
+            toast.success('Institute registration request sent successfully', {
               hideProgressBar: true,
               theme: 'colored',
             });
             alert('Wait for 24-48 hours, the Administrator will inform you.');
             window.location.reload();
+          }
+          else {
+            toast.error(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           }
         });
       } catch (error) {
@@ -460,7 +466,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.website_error === true && (
                   <p className="error-text" style={{ color: 'red' }}>
-                   <small> Valid Website is required.</small>
+                    <small> Valid Website is required.</small>
                   </p>
                 )}
               </div>
@@ -482,9 +488,9 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                    Valid School Name is required.
-                    </small>
+                      <small>
+                        Valid School Name is required.
+                      </small>
                     </p>
                   )}
                 </div>
@@ -542,7 +548,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.university_id_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                    <small>  Valid University Name is required.</small>
+                      <small>  Valid University Name is required.</small>
                     </p>
                   )}
                 </div>
@@ -561,9 +567,9 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.institute_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                     <small>
-                     Valid Institute Name is required.
-                     </small>
+                      <small>
+                        Valid Institute Name is required.
+                      </small>
                     </p>
                   )}
                 </div>
@@ -586,9 +592,9 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.mobile_no_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                  Valid Mobile number is required.
-                  </small>
+                    <small>
+                      Valid Mobile number is required.
+                    </small>
                   </p>
                 )}
               </div>
@@ -607,7 +613,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.email_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                   <small> Valid Email Id is required.</small>
+                    <small> Valid Email Id is required.</small>
                   </p>
                 )}
               </div>
@@ -626,9 +632,9 @@ const InstituteRegistrationForm = () => {
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                <small>
-                Please select a Country.
-                </small>
+                  <small>
+                    Please select a Country.
+                  </small>
                 </p>
               )}
             </div>
@@ -648,9 +654,9 @@ const InstituteRegistrationForm = () => {
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                 <small>
-                 Please select a state.
-                 </small>
+                  <small>
+                    Please select a state.
+                  </small>
                 </p>
               )}
             </div>
@@ -688,9 +694,9 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                   <small>
-                   Valid City is required.
-                   </small>
+                    <small>
+                      Valid City is required.
+                    </small>
                   </p>
                 )}
               </div>
@@ -712,7 +718,7 @@ const InstituteRegistrationForm = () => {
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>
-                    Valid Address is required.
+                      Valid Address is required.
                     </small>
                   </p>
                 )}
@@ -732,7 +738,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.pincode_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                   <small> Valid Pincode is required.</small>
+                    <small> Valid Pincode is required.</small>
                   </p>
                 )}
               </div>
@@ -774,7 +780,7 @@ const InstituteRegistrationForm = () => {
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
                 {' '}
-                Logo<span>*</span>
+                Logo<span></span>
               </label>
               <br />
               <Button

@@ -117,7 +117,7 @@ const AddEditStudent = () => {
         setAim(false);
       }
     } else if (name === 'mobile_no_call') {
-      if (!/^\d{10}$/.test(value)) {
+      if (!/^(?!0{10})[0-9]{10}$/.test(value)) {
         console.log(value);
         setMobileNoCall(true);
       } else {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TeacherGraoh from '../TeacherGraphs';
 import profile from '../../../assets/img/profile.png';
 import { Link } from 'react-router-dom';
@@ -37,11 +37,26 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import useApi from '../../../hooks/useAPI';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+interface Teacher {
+  teacher_id: number;
+  teacher_name: string;
+  department: string;
+  qualifications: string;
+  image: string;
+  bio: string;
+  total_students: number;
+  subjects: string[];
+}
+
 const TeacherDash = () => {
+  const teacherId=localStorage.getItem('_id');
   const [activeTab, setActiceTab] = useState(0);
+  const { getData } = useApi();
+  const [teacherData, setTeacherData] = useState<Teacher>();
   const tabContent = [
     {
       label: 'All',
@@ -80,6 +95,22 @@ const TeacherDash = () => {
       title: 'Full-Stack Coding Bootcamp',
     },
   ];
+
+  const getTeacherInfo = () => {
+    try {
+      getData(`/teacher/get/${teacherId}`).then((data) => {
+        if (data?.status === 200) {
+          setTeacherData(data.data);
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    getTeacherInfo();
+  }, []);
+
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -119,7 +150,7 @@ const TeacherDash = () => {
                         alt="user"
                       />
                       <div className="w-100">
-                        <h4 className="fw-semibold  fs-18 ">Rahul Sharma</h4>
+                        <h4 className="fw-semibold  fs-18 ">{teacherData?.teacher_name}</h4>
                         <small className=" d-block">24 Course</small>
                         <small className=" d-block mb-2">
                           18 Certification

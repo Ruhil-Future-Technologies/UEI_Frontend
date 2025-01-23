@@ -1423,7 +1423,7 @@ export const ProfileDialog: FunctionComponent<{
     }
     if (mobilequestion) {
       // Regular expression for exactly 10 digits
-      const phoneRegex = /^\d{10}$/;
+      const phoneRegex = /^(?!0{10})[0-9]{10}$/;
 
       if (!phoneRegex.test(updatedAnswers[answers.length - 1])) {
         setphnumber(true);
@@ -1434,7 +1434,7 @@ export const ProfileDialog: FunctionComponent<{
     }
     if (whatsappnumbet) {
       // Regular expression for exactly 10 digits
-      const phoneRegex = /^\d{10}$/;
+      const phoneRegex = /^(?!0{10})[0-9]{10}$/;
       if (!phoneRegex.test(updatedAnswers[answers.length - 1])) {
         setphnumber(true);
         return;
@@ -1903,7 +1903,7 @@ export const ProfileDialog: FunctionComponent<{
       if (
         updatedAnswers[answers.length - 1] === '' ||
         updatedAnswers[answers.length - 1] == null ||
-        !/^\d{10}$/.test(updatedAnswers[answers.length - 1]) ||
+        !/^(?!0{10})[0-9]{10}$/.test(updatedAnswers[answers.length - 1]) ||
         !checkChanges
       ) {
         setphnumber(true);
@@ -1917,7 +1917,7 @@ export const ProfileDialog: FunctionComponent<{
       if (
         updatedAnswers[answers.length - 1] === '' ||
         updatedAnswers[answers.length - 1] == null ||
-        !/^\d{10}$/.test(updatedAnswers[answers.length - 1]) ||
+        !/^(?!0{10})[0-9]{10}$/.test(updatedAnswers[answers.length - 1]) ||
         !checkChanges
       ) {
         setphnumber(true);
