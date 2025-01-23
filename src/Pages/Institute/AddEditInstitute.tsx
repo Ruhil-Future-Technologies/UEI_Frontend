@@ -467,17 +467,17 @@ const AddEditInstitute = () => {
             'Please enter a valid City name only characters allowed.',
           ),
         country: Yup.string()
-          .required('Please enter Country')
-          .matches(
-            charPattern,
-            'Please enter a valid Contry name only characters allowed.',
-          ),
+          .required('Please enter Country'),
+          // .matches(
+          //   charPattern,
+          //   'Please enter a valid Contry name only characters allowed.',
+          // ),
         state: Yup.string()
-          .required('Please enter State')
-          .matches(
-            charPattern,
-            'Please enter a valid State name only characters allowed.',
-          ),
+          .required('Please enter State'),
+          // .matches(
+          //   charPattern,
+          //   'Please enter a valid State name only characters allowed.',
+          // ),
         district: Yup.string()
           .required('Please enter District')
           .test(
@@ -585,17 +585,17 @@ const AddEditInstitute = () => {
             'Please enter a valid City name only characters allowed.',
           ),
         country: Yup.string()
-          .required('Please enter Country')
-          .matches(
-            charPattern,
-            'Please enter a valid Contry name only characters allowed.',
-          ),
+          .required('Please enter Country'),
+          // .matches(
+          //   charPattern,
+          //   'Please enter a valid Contry name only characters allowed.',
+          // ),
         state: Yup.string()
-          .required('Please enter State')
-          .matches(
-            charPattern,
-            'Please enter a valid State name only characters allowed.',
-          ),
+          .required('Please enter State'),
+          // .matches(
+          //   charPattern,
+          //   'Please enter a valid State name only characters allowed.',
+          // ),
         district: Yup.string()
           .required('Please enter District')
           .test(
@@ -1072,7 +1072,7 @@ const AddEditInstitute = () => {
                       </div>
                     </div>
                   </div>
-                  <button className="btn btn-primary mainbutton mt-4">
+                  <button type="submit" className="btn btn-primary mainbutton mt-4">
                     {id ? 'Update' : 'Save'}
                   </button>
                 </Form>
