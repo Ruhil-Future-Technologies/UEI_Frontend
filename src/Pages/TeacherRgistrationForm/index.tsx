@@ -415,8 +415,8 @@ const TeacherRegistrationPage = () => {
 
   const validation = (name: string, value: string) => {
     setError({
-      first_name_error: name === 'techer_name' && value === '',
-      last_name_error: name == 'techer_name' && value === '',
+      first_name_error: name === 'first_name' && value === '',
+      last_name_error: name == 'last_name' && value === '',
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
       phone_no_error: name === 'phone' && !/^\d{10}$/.test(value),
@@ -487,19 +487,19 @@ const TeacherRegistrationPage = () => {
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.class_id_error &&
-          !(teacher.class_id === '') &&
-          !error.school_name_error &&
-          !(teacher.school_name === '')
+        !(teacher.class_id === '') &&
+        !error.school_name_error &&
+        !(teacher.school_name === '')
         : true;
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.course_id_error &&
-          !(teacher.course_id === '') &&
-          !error.institution_id_error &&
-          !(teacher.institution_id === '')
+        !(teacher.course_id === '') &&
+        !error.institution_id_error &&
+        !(teacher.institution_id === '')
         : true;
-console.log("inside sunction")
+    console.log("inside sunction")
     if (
       !error.first_name_error &&
       !(teacher.first_name === '') &&
@@ -654,7 +654,7 @@ console.log("inside sunction")
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
-console.log(teacher)    ;
+  console.log(teacher);
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -669,11 +669,11 @@ console.log(teacher)    ;
       </header>
       <div className="access1-card">
         <div className="card-body">
-          <h3 className="text-center fw-bold">Register As Teahcer</h3>
+          <h3 className="text-center fw-bold">Register As Teacher</h3>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                First Name <span>*</span>
+              <label className="col-form-label">
+                First Name<span>*</span>
               </label>
 
               <TextField
@@ -685,13 +685,14 @@ console.log(teacher)    ;
               />
               {error.first_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid first name.
+                  <small> Please enter a valid first name.</small>
+                 
                 </p>
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Last Name <span>*</span>
+              <label className="col-form-label">
+                Last Name<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -702,15 +703,17 @@ console.log(teacher)    ;
               />
               {error.last_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid last name.
+                  <small>
+                  Please enter a valid last name.
+                  </small>
                 </p>
               )}
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Gender <span>*</span>
+              <label className="col-form-label">
+                Gender<span>*</span>
               </label>
               <br />
               <FormControl>
@@ -735,8 +738,8 @@ console.log(teacher)    ;
               </FormControl>
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Date Of Birth <span>*</span>
+              <label className="col-form-label">
+                Date Of Birth<span>*</span>
               </label>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer
@@ -768,8 +771,8 @@ console.log(teacher)    ;
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Phone Number <span>*</span>
+              <label className="col-form-label">
+                Phone Number<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -780,13 +783,13 @@ console.log(teacher)    ;
               />
               {error.phone_no_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid mobile NUmber.
+                 <small> Please enter a valid mobile number.</small>
                 </p>
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Email Id <span>*</span>
+              <label className="col-form-label">
+                Email Id<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -797,15 +800,17 @@ console.log(teacher)    ;
               />
               {error.email_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid Email Id.
+                  <small>
+                  Please enter a valid email ID.
+                  </small>
                 </p>
               )}
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Entity <span>*</span>
+              <label className="col-form-label">
+                Entity<span>*</span>
               </label>
 
               <FormControl fullWidth>
@@ -852,7 +857,7 @@ console.log(teacher)    ;
             </div>
             {selectedEntity === 'School' ? (
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
+                <label className="col-form-label">
                   Class<span>*</span>
                 </label>
 
@@ -875,14 +880,16 @@ console.log(teacher)    ;
                 </FormControl>
                 {error.class_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Please Enter a valid Class.
+                    <small>
+                      Please select a class.
+                    </small>
                   </p>
                 )}
               </div>
             ) : (
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
-                  Qualification <span>*</span>
+                <label className="col-form-label">
+                  Qualification<span>*</span>
                 </label>
                 <FormControl sx={{ width: 280 }}>
                   <InputLabel id="demo-multiple-name-label">
@@ -910,7 +917,7 @@ console.log(teacher)    ;
           {selectedEntity === 'School' ? (
             <div className="row d-flex justify-content-center">
               <div className="col-12">
-                <label className="col-form-label fw-bold">
+                <label className="col-form-label">
                   School Name<span>*</span>
                 </label>
                 <FormControl sx={{ width: 580 }}>
@@ -959,8 +966,8 @@ console.log(teacher)    ;
           ) : (
             <div className="row d-flex justify-content-center">
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
-                  Insitute Name<span>*</span>
+                <label className="col-form-label">
+                  Institute Name<span>*</span>
                 </label>
                 <FormControl sx={{ width: 280 }}>
                   <InputLabel id="institution_id">Institute</InputLabel>
@@ -1005,13 +1012,13 @@ console.log(teacher)    ;
                 </FormControl>
                 {error.institution_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Please Enter a valid Institute Name.
+                    <small>Please select an institute name.</small>
                   </p>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
-                  Course <span>*</span>
+                <label className="col-form-label">
+                  Course<span>*</span>
                 </label>
                 <FormControl sx={{ width: 280 }}>
                   <InputLabel id="course_id">Course</InputLabel>
@@ -1031,7 +1038,9 @@ console.log(teacher)    ;
                 </FormControl>
                 {error.course_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Please Enter a valid Course.
+                    <small>
+                    Please enter a valid course.
+                    </small>
                   </p>
                 )}
               </div>
@@ -1039,8 +1048,8 @@ console.log(teacher)    ;
           )}
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Subjects Taught <span>*</span>
+              <label className="col-form-label">
+                Subjects Taught<span>*</span>
               </label>
               <FormControl
                 sx={{
@@ -1120,13 +1129,15 @@ console.log(teacher)    ;
               </FormControl>
               {error.subject_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid Subject Name.
+                  <small>
+                    Please enter a valid subject name.
+                  </small>
                 </p>
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Experience <span>*</span>
+              <label className="col-form-label">
+                Experience(Yr)<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -1134,18 +1145,21 @@ console.log(teacher)    ;
                 className="form-control"
                 type="number"
                 onChange={handelChange}
+                inputProps={{ min: "0" }}
               />
               {error.teaching_experience_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
+                  <small>
                   Please Enter a valid Teaching Experience.
+                  </small>
                 </p>
               )}
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className={`col-form-label fw-bold`}>
-                Country <span>*</span>
+              <label className={`col-form-label`}>
+                Country<span>*</span>
               </label>
               <CountryDropdown
                 classes="form-select custom-dropdown"
@@ -1155,14 +1169,16 @@ console.log(teacher)    ;
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please select a Country.
+                  <small>
+                    Please select a country.
+                  </small>
                 </p>
               )}
             </div>
 
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                state <span>*</span>
+              <label className="col-form-label">
+                State<span>*</span>
               </label>
               <RegionDropdown
                 data-testid="perStateDropdown"
@@ -1175,15 +1191,18 @@ console.log(teacher)    ;
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please select a state.
+                  <small>
+                  Please select a state.                   
+                  </small>
+
                 </p>
               )}
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                district <span>*</span>
+              <label className="col-form-label">
+                District<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -1194,12 +1213,14 @@ console.log(teacher)    ;
               />
               {error.district_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid District.
+                  <small>
+                  Please enter a valid district.
+                  </small>
                 </p>
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
+              <label className="col-form-label">
                 City<span>*</span>
               </label>
               <TextField
@@ -1211,15 +1232,15 @@ console.log(teacher)    ;
               />
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid City.
+                <small>Please enter a valid city.</small>
                 </p>
               )}
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Address <span>*</span>
+              <label className="col-form-label">
+                Address<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -1230,13 +1251,15 @@ console.log(teacher)    ;
               />
               {error.address_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid Address.
+                 <small>
+                 Please enter a valid address.
+                 </small>
                 </p>
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Pincode <span>*</span>
+              <label className="col-form-label">
+                Pincode<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -1247,7 +1270,9 @@ console.log(teacher)    ;
               />
               {error.pincode_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid Pincode.
+                 <small>
+                 Please enter a valid pincode
+                 </small>
                 </p>
               )}
             </div>
@@ -1255,8 +1280,8 @@ console.log(teacher)    ;
           <div className="row d-flex justify-content-center">
             {selectedEntity === 'School' && (
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
-                  Qualification <span>*</span>
+                <label className="col-form-label">
+                  Qualification<span>*</span>
                 </label>
                 <FormControl sx={{ width: 280 }}>
                   <InputLabel id="demo-multiple-name-label">
@@ -1280,9 +1305,9 @@ console.log(teacher)    ;
               </div>
             )}
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
+              <label className="col-form-label">
                 {' '}
-                Document <span>*</span>
+                Document<span>*</span>
               </label>
               <Button
                 variant="contained"
@@ -1321,7 +1346,7 @@ console.log(teacher)    ;
               onChange={handleTermandCondi}
             />
             <label className="form-check-label" htmlFor="flexCheckDefault">
-              By Registring your account you have to agree with our{' '}
+            By registering your account you have to agree with our{' '}
               <a
                 href="#"
                 onClick={(e) => {
@@ -1330,7 +1355,7 @@ console.log(teacher)    ;
                 }}
               >
                 {' '}
-                Terms and Condition
+                Terms & Conditions
               </a>
             </label>
           </div>
@@ -1347,7 +1372,7 @@ console.log(teacher)    ;
             <DialogTitle>{'Terms and Condition'}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Content of Gyanshetu Terms and Condition...... will coming soon
+                Content of Gyanshetu Terms and Conditions...... will come soon
               </DialogContentText>
             </DialogContent>
             <DialogActions>

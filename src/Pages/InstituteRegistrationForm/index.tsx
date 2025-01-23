@@ -397,11 +397,11 @@ const InstituteRegistrationForm = () => {
       </header>
       <div className="access1-card">
         <div className="card-body">
-          <h3 className="text-center fw-bold">Register As Institutsion</h3>
+          <h3 className="text-center fw-bold">Register As Institution</h3>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Entity <span>*</span>
+              <label className="col-form-label">
+                Entity<span>*</span>
               </label>
 
               <FormControl fullWidth>
@@ -448,8 +448,8 @@ const InstituteRegistrationForm = () => {
             </div>
 
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Website <span>*</span>
+              <label className="col-form-label">
+                Website<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -459,8 +459,8 @@ const InstituteRegistrationForm = () => {
               />
               <div>
                 {error.website_error === true && (
-                  <p className="error-text " style={{ color: 'red' }}>
-                    Valid Website is required.
+                  <p className="error-text" style={{ color: 'red' }}>
+                   <small> Valid Website is required.</small>
                   </p>
                 )}
               </div>
@@ -469,7 +469,7 @@ const InstituteRegistrationForm = () => {
           {selectedEntity === 'School' ? (
             <div className="row d-flex justify-content-center">
               <div className="col-12">
-                <label className="col-form-label fw-bold">
+                <label className="col-form-label">
                   School Name<span>*</span>
                 </label>
                 <TextField
@@ -482,7 +482,9 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      Valid School Name is required.
+                    <small>
+                    Valid School Name is required.
+                    </small>
                     </p>
                   )}
                 </div>
@@ -491,8 +493,8 @@ const InstituteRegistrationForm = () => {
           ) : (
             <div className="row d-flex justify-content-center">
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
-                  University Name <span>*</span>
+                <label className="col-form-label">
+                  University Name<span>*</span>
                 </label>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
@@ -540,14 +542,14 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.university_id_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      Valid University Name is required.
+                    <small>  Valid University Name is required.</small>
                     </p>
                   )}
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label fw-bold">
-                  Institute Name <span>*</span>
+                <label className="col-form-label">
+                  Institute Name<span>*</span>
                 </label>
 
                 <TextField
@@ -559,7 +561,9 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.institute_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      Valid Institute Name is required.
+                     <small>
+                     Valid Institute Name is required.
+                     </small>
                     </p>
                   )}
                 </div>
@@ -569,8 +573,8 @@ const InstituteRegistrationForm = () => {
 
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Mobile No <span>*</span>
+              <label className="col-form-label">
+                Mobile No<span>*</span>
               </label>
 
               <TextField
@@ -582,14 +586,16 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.mobile_no_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Valid Mobile number is required.
+                  <small>
+                  Valid Mobile number is required.
+                  </small>
                   </p>
                 )}
               </div>
             </div>
 
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
+              <label className="col-form-label">
                 Email Id<span>*</span>
               </label>
               <TextField
@@ -601,7 +607,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.email_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Valid Email Id is required.
+                   <small> Valid Email Id is required.</small>
                   </p>
                 )}
               </div>
@@ -609,8 +615,8 @@ const InstituteRegistrationForm = () => {
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className={`col-form-label fw-bold`}>
-                Country <span>*</span>
+              <label className={`col-form-label`}>
+                Country<span>*</span>
               </label>
               <CountryDropdown
                 classes="form-select custom-dropdown"
@@ -620,14 +626,16 @@ const InstituteRegistrationForm = () => {
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please select a Country.
+                <small>
+                Please select a Country.
+                </small>
                 </p>
               )}
             </div>
 
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                state <span>*</span>
+              <label className="col-form-label">
+                State<span>*</span>
               </label>
               <RegionDropdown
                 data-testid="perStateDropdown"
@@ -640,15 +648,35 @@ const InstituteRegistrationForm = () => {
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please select a state.
+                 <small>
+                 Please select a state.
+                 </small>
                 </p>
               )}
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                city <span>*</span>
+              <label className="col-form-label">
+                District<span>*</span>
+              </label>
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="district"
+                onChange={handleChange}
+              />
+              <div>
+                {error.district_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Valid District is required.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                City<span>*</span>
               </label>
 
               <TextField
@@ -660,26 +688,9 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Valid City is required.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                District <span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                className="form-control"
-                name="district"
-                onChange={handleChange}
-              />
-              <div>
-                {error.district_error === true && (
-                  <p className="error-text " style={{ color: 'red' }}>
-                    Valid District is required.
+                   <small>
+                   Valid City is required.
+                   </small>
                   </p>
                 )}
               </div>
@@ -687,8 +698,8 @@ const InstituteRegistrationForm = () => {
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Address <span>*</span>
+              <label className="col-form-label">
+                Address<span>*</span>
               </label>
 
               <TextField
@@ -700,14 +711,16 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
+                    <small>
                     Valid Address is required.
+                    </small>
                   </p>
                 )}
               </div>
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
-                Pincode <span>*</span>
+              <label className="col-form-label">
+                Pincode<span>*</span>
               </label>
 
               <TextField
@@ -719,7 +732,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.pincode_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    Valid Pincode is required.
+                   <small> Valid Pincode is required.</small>
                   </p>
                 )}
               </div>
@@ -727,10 +740,11 @@ const InstituteRegistrationForm = () => {
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
+              <label className="col-form-label">
                 {' '}
-                Document <span>*</span>
+                Document<span>*</span>
               </label>
+              <br />
               <Button
                 variant="contained"
                 component="label"
@@ -758,9 +772,9 @@ const InstituteRegistrationForm = () => {
               </div>
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label fw-bold">
+              <label className="col-form-label">
                 {' '}
-                Logo <span>*</span>
+                Logo<span>*</span>
               </label>
               <br />
               <Button
@@ -793,7 +807,7 @@ const InstituteRegistrationForm = () => {
               onChange={handleTermandCondi}
             />
             <label className="form-check-label" htmlFor="flexCheckDefault">
-              By Registring your account you have to agree with our{' '}
+              By registering your account you have to agree with our{' '}
               <a
                 href="#"
                 onClick={(e) => {
@@ -802,7 +816,7 @@ const InstituteRegistrationForm = () => {
                 }}
               >
                 {' '}
-                Terms and Condition
+                Terms & Conditions
               </a>
             </label>
           </div>
@@ -819,7 +833,7 @@ const InstituteRegistrationForm = () => {
             <DialogTitle>{'Terms and Condition'}</DialogTitle>
             <DialogContent>
               <DialogContentText>
-                Content of Gyanshetu Terms and Condition...... will coming soon
+                Content of Gyansetu Terms and Conditions...... will come soon
               </DialogContentText>
             </DialogContent>
             <DialogActions>
