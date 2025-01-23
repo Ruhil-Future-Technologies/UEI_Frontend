@@ -415,16 +415,16 @@ const TeacherRegistrationPage = () => {
 
   const validation = (name: string, value: string) => {
     setError({
-      first_name_error: name === 'first_name' && value === '',
-      last_name_error: name == 'last_name' && value === '',
+      first_name_error: name === 'first_name' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
+      last_name_error: name == 'last_name' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-      phone_no_error: name === 'phone' && !/^\d{10}$/.test(value),
+      phone_no_error: name === 'phone' && !/^(?!0{10})[0-9]{10}$/.test(value),
       address_error: name === 'address' && value === '',
       country_error: name === 'country' && value === '',
       state_error: name === 'state' && value === '',
-      district_error: name === 'district' && value === '',
-      city_error: name === 'city' && value === '',
+      district_error: name === 'district' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
+      city_error: name === 'city' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
       pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value),
       qualifications_error: name === 'qualifications' && value == '',
       teaching_experience_error: name === 'teaching_experience' && value === '',
@@ -451,16 +451,16 @@ const TeacherRegistrationPage = () => {
   };
   const handleSubmit = () => {
     setError({
-      first_name_error: teacher.first_name === '',
-      last_name_error: teacher.last_name === '',
+      first_name_error:!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.first_name.trim()) ,
+      last_name_error:!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.last_name.trim()) ,
       email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id),
-      phone_no_error: !/^\d{10}$/.test(teacher.phone),
+      phone_no_error: !/^(?!0{10})[0-9]{10}$/.test(teacher.phone),
       address_error: teacher.address === '',
       country_error: teacher.country == '',
       state_error: teacher.state == '',
-      district_error: teacher.district == '',
-      city_error: teacher.city == '',
-      pincode_error: !/^\d{6}$/.test(teacher.pincode),
+      district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.district.trim()),
+      city_error:!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.city.trim()),
+      pincode_error: !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode),
       qualifications_error: teacher.qualification === '',
       teaching_experience_error: teacher.experience === '',
       subject_name_error: teacher.subjects.length === 0,
@@ -499,28 +499,27 @@ const TeacherRegistrationPage = () => {
         !error.institution_id_error &&
         !(teacher.institution_id === '')
         : true;
-    console.log("inside sunction")
     if (
       !error.first_name_error &&
-      !(teacher.first_name === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.first_name.trim()) &&
       !error.last_name_error &&
-      !(teacher.last_name === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.last_name.trim()) &&
       !error.email_id_error &&
-      !(teacher.email_id === '') &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id) &&
       !error.phone_no_error &&
-      !(teacher.phone === '') &&
+      !/^(?!0{10})[0-9]{10}$/.test(teacher.phone) &&
       !error.address_error &&
-      !(teacher.address === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.address.trim()) &&
       !error.country_error &&
       !(teacher.country === '') &&
       !error.state_error &&
       !(teacher.state === '') &&
       !error.district_error &&
-      !(teacher.district === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.district.trim()) &&
       !error.city_error &&
-      !(teacher.city === '') &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.city.trim()) &&
       !error.pincode_error &&
-      !(teacher.pincode === '') &&
+      !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
       !error.qualifications_error &&
       !(teacher.qualification === '') &&
       !error.teaching_experience_error &&
@@ -595,6 +594,11 @@ const TeacherRegistrationPage = () => {
               'Teacher registered request sended successfully please wait for 24-48 hours',
             );
             window.location.reload();
+          }else{
+            toast.error(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           }
         })
         .catch((error) => {

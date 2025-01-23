@@ -55,9 +55,9 @@ const AddEditInstitute = () => {
   const navigator = useNavigate();
   const { id } = useParams();
   const charPattern = /^[a-zA-Z\s]*$/;
-  const mobilePattern = /^\d{10}$/;
+  const mobilePattern = /^(?!0{10})[0-9]{10}$/;
   const emailPattern = /\S+@\S+\.\S+/;
-  const pincodePattern = /^\d{6}$/;
+  const pincodePattern = /^(?!0{6})[0-9]{6}$/;
 
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const initialState = {
