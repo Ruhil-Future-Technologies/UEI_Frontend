@@ -209,7 +209,7 @@ const InstituteRegistrationForm = () => {
         name === 'address' && !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
           ? true
           : false,
-      pincode_error: name === 'pincode' && !/^\d{6}$/.test(value.trim()),
+      pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
       document_error: false,
     });
   };

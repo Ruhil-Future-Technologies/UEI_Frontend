@@ -1474,7 +1474,7 @@ export const ProfileDialog: FunctionComponent<{
       }
     }
     if (pincodequestion) {
-      const pincodeRegex = /^[1-9][0-9]{5}$/;
+      const pincodeRegex = /^(?!0{6})[0-9]{6}$/;
 
       if (!pincodeRegex.test(updatedAnswers[answers.length - 1])) {
         // setpincode(true);

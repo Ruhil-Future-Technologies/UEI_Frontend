@@ -425,7 +425,7 @@ const TeacherRegistrationPage = () => {
       state_error: name === 'state' && value === '',
       district_error: name === 'district' && value === '',
       city_error: name === 'city' && value === '',
-      pincode_error: name === 'pincode' && !/^\d{6}$/.test(value),
+      pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value),
       qualifications_error: name === 'qualifications' && value == '',
       teaching_experience_error: name === 'teaching_experience' && value === '',
       subject_name_error: name === 'subject_name' && value == '',
