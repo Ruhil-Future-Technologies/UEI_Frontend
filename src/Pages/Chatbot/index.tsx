@@ -118,7 +118,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       .replace(/^\n*\\+\[/, '')
       .replace(/\\+\]\n*$/, '')
       .trim();
-
+    latex = latex.replace(/\\round\(([^)]+)\)/g, '\\lceil$1\\rceil');
     latex = latex.replace(/^\\\[|\\\]$/g, '');
 
     if (latex.includes('\\div')) {
@@ -248,6 +248,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
                     return eq
                       .replace(/^[\n\s]*\\+\[/, '')
                       .replace(/[\n\s]*$/, '')
+                      .replace(/\\round\(([^)]+)\)/g, '\\lceil$1\\rceil')
                       .trim();
                   })
                   .filter(Boolean);
