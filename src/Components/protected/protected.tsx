@@ -59,6 +59,11 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin'
         ? feedbackRoute.toLowerCase() === `edit-feedback/${id}`
         : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'teacher' : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'add-teacher' : '') ||
+      (usertype === 'admin' && uName.toLowerCase() === 'edit-teacher'
+        ? true
+        : '') ||
       (usertype === 'teacher'
         ? mName.toLowerCase() === 'teacher-dashboard'
         : '') ||

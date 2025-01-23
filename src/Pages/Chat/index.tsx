@@ -1204,6 +1204,7 @@ const Chat = () => {
   };
 
   const displayChat = async (chats: any) => {
+    setChatSaved(chats?.flagged === true);
     const parsedChatConversation = JSON.parse(chats?.chat_conversation);
 
     if (
@@ -1989,6 +1990,16 @@ const Chat = () => {
                                   sx={{ fontSize: '18px' }}
                                 />
                               </li>
+                              {chat?.flagged && (
+                                <li
+                                  className={`${chat?.flagged ? 'active' : ''}`}
+                                  role="button"
+                                >
+                                  <BookmarkIcon
+                                    sx={{ fontSize: '18px', color: '#9943ec' }}
+                                  />
+                                </li>
+                              )}
                             </ul>
                           </li>
                         ),

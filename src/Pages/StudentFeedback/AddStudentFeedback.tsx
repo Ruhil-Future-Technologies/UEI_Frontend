@@ -124,7 +124,7 @@ const AddStudentFeedback = () => {
       setAnsweredQuestions(updatedAnswers);
 
       const payload = {
-        student_id: Number(StudentId),
+        student_id: StudentId,
         feedbacks: updatedAnswers,
       };
       postData('/feedback/student_feedback', payload)

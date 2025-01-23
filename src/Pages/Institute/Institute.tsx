@@ -2,7 +2,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../Institute/Institute.scss';
 import useApi from '../../hooks/useAPI';
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  IconButton,
+  Tooltip,
+  Typography,
+  Tab,
+  Tabs,
+} from '@mui/material';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import {
   INSITUTION_COLUMNS,
@@ -17,6 +25,7 @@ import { toast } from 'react-toastify';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { dataaccess, tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 
 const Institute = () => {
   const context = useContext(NameContext);
@@ -36,10 +45,12 @@ const Institute = () => {
   const DeleteInstituteURL = QUERY_KEYS.INSTITUTE_DELETE;
   const columns11 = INSITUTION_COLUMNS;
   const navigate = useNavigate();
-  const { getData, deleteData, loading } = useApi();
-  const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
+  const { getData, putData, deleteData, loading } = useApi();
+  const [dataInstitute, setDataInstitute] = useState<any[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
+  const [activeTab, setActiveTab] = useState(0);
+  const [filteredInstitutes, setFilteredInstitutes] = useState<any[]>([]);
 
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
@@ -107,6 +118,22 @@ const Institute = () => {
     setDataDelete(true);
   };
 
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
+  useEffect(() => {
+    if (activeTab === 0) {
+      setFilteredInstitutes(
+        dataInstitute.filter((insitute) => insitute.is_approved === true),
+      );
+    } else {
+      setFilteredInstitutes(
+        dataInstitute.filter((insitute) => !insitute.is_approved),
+      );
+    }
+  }, [activeTab, dataInstitute]);
+
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteInstituteURL}/${id}`)
       .then((data: { message: string }) => {
@@ -125,6 +152,39 @@ const Institute = () => {
           hideProgressBar: true,
           theme: 'colored',
         });
+      });
+  };
+
+  const handleApproveInstitute = (id: number) => {
+    putData(`${QUERY_KEYS.INSITUTE_APPROVE}/${id}`)
+      .then(() => {
+        toast.success('Institute approved successfully', {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+        callAPI();
+      })
+      .catch((e) => {
+        if (e?.response?.status === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
+      });
+  };
+  const handleRejectInstitute = (id: number) => {
+    putData(`${QUERY_KEYS.INSITUTE_DISAPPROVE}/${id}`)
+      .then(() => {
+        toast.success('Institute rejected', {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+        callAPI();
+      })
+      .catch((e) => {
+        if (e?.response?.status === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
       });
   };
 
@@ -159,12 +219,18 @@ const Institute = () => {
                       </Button>
                     )}
                   </div>
+                  <Tabs value={activeTab} onChange={handleTabChange}>
+                    <Tab label="Total Institute" />
+                    <Tab label="Pending Institute" />
+                  </Tabs>
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
                       // data={ dataInstitute }
                       data={
-                        filteredData?.form_data?.is_search ? dataInstitute : []
+                        filteredData?.form_data?.is_search
+                          ? filteredInstitutes
+                          : []
                       }
                       enableRowVirtualization
                       positionActionsColumn="first"
@@ -188,37 +254,79 @@ const Institute = () => {
                             width: '140px',
                           }}
                         >
-                          {filteredData?.form_data?.is_update === true && (
-                            <Tooltip arrow placement="right" title="Edit">
-                              <IconButton
-                                sx={{
-                                  width: '35px',
-                                  height: '35px',
-                                  color: tabletools(namecolor),
-                                }}
-                                onClick={() => {
-                                  handleEditFile(row?.row?.original?.id);
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                          {row.row.original.is_approved ? (
+                            <>
+                              {filteredData?.form_data?.is_update === true && (
+                                <Tooltip arrow placement="right" title="Edit">
+                                  <IconButton
+                                    sx={{
+                                      width: '35px',
+                                      height: '35px',
+                                      color: tabletools(namecolor),
+                                    }}
+                                    onClick={() => {
+                                      handleEditFile(row?.row?.original?.id);
+                                    }}
+                                  >
+                                    <EditIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
 
-                          <Tooltip arrow placement="right" title="Delete">
-                            <IconButton
-                              sx={{
-                                width: '35px',
-                                height: '35px',
-                                color: tabletools(namecolor),
-                              }}
-                              onClick={() => {
-                                handleDeleteFiles(row?.row?.original?.id);
-                              }}
-                            >
-                              <TrashIcon />
-                            </IconButton>
-                          </Tooltip>
+                              <Tooltip arrow placement="right" title="Delete">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() => {
+                                    handleDeleteFiles(row?.row?.original?.id);
+                                  }}
+                                >
+                                  <TrashIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          ) : (
+                            <>
+                              <Tooltip arrow placement="right" title="Approve">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: 'green',
+                                  }}
+                                  onClick={() => {
+                                    handleApproveInstitute(
+                                      row?.row?.original?.id,
+                                    );
+                                  }}
+                                >
+                                  <CheckIcon />
+                                </IconButton>
+                              </Tooltip>
+
+                              <Tooltip arrow placement="right" title="Reject">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+
+                                    height: '35px',
+
+                                    color: 'red',
+                                  }}
+                                  onClick={() => {
+                                    handleRejectInstitute(
+                                      row?.row?.original?.id,
+                                    );
+                                  }}
+                                >
+                                  <CloseIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          )}
                         </Box>
                       )}
                     />

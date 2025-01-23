@@ -36,6 +36,7 @@ import {
   QUERY_KEYS_SUBJECT_SCHOOL,
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
+  QUERY_KEYS_TEACHER,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
 import React, { useState } from 'react';
@@ -74,6 +75,37 @@ export interface MenuListinter {
   updated_at: string;
   updated_by: string;
   url: string;
+}
+export interface TeacherRepoDTO {
+  teacher_id: string;
+  first_name: string;
+  last_name: string;
+  gender: string;
+  dob: string;
+  phone: string;
+  email_id: string;
+  qualification: string;
+  role_id: string;
+  subjects: string[];
+  entity_id: string;
+  class_id?: string;
+  school_name?: string;
+  university_id?: string;
+  course_id?: string;
+  experience: string | number;
+  institution_id: string;
+  address: string;
+  country: string;
+  state: string;
+  city: string;
+  district: string;
+  pincode: string;
+  is_active: number;
+  is_deleted: boolean;
+  is_kyc_verified: boolean | null;
+  pic_path: string | null;
+  created_at: string;
+  updated_at: string;
 }
 export interface InstituteRep0oDTO {
   institution_name: MaybeNull<string>;
@@ -403,6 +435,66 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   //     enableResizing:false,
   //     enableColumnActions:false,
   //   },
+];
+
+export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
+  { accessorKey: 'first_name', header: 'First Name', size: 150 },
+  { accessorKey: 'last_name', header: 'Last Name', size: 150 },
+  { accessorKey: 'gender', header: 'Gender', size: 100 },
+  { accessorKey: 'dob', header: 'Date of Birth', size: 150 },
+  { accessorKey: 'phone', header: 'Phone', size: 150 },
+  { accessorKey: 'email_id', header: 'Email', size: 200 },
+  { accessorKey: 'qualification', header: 'Qualification', size: 150 },
+  { accessorKey: 'experience', header: 'Experience', size: 120 },
+  { accessorKey: 'school_name', header: 'School Name', size: 200 },
+  { accessorKey: 'address', header: 'Address', size: 200 },
+  { accessorKey: 'city', header: 'City', size: 150 },
+  { accessorKey: 'district', header: 'District', size: 150 },
+  { accessorKey: 'state', header: 'State', size: 150 },
+  { accessorKey: 'country', header: 'Country', size: 150 },
+  { accessorKey: 'pincode', header: 'Pincode', size: 100 },
+  { accessorKey: 'created_at', header: 'Created At', size: 150 },
+  { accessorKey: 'updated_at', header: 'Last Updated At', size: 150 },
+  {
+    accessorKey: 'is_active',
+    header: 'Active/Deactive',
+    Cell: ({ cell, row }: any) => {
+      const { putData } = useApi();
+      const TeacherActive = QUERY_KEYS_TEACHER.TEACHER_ACTIVATE;
+      const TeacherDeactive = QUERY_KEYS_TEACHER.TEACHER_DEACTIVATE;
+      const value = cell?.getValue();
+      const [Showvalue, setShowvalue] = useState(value);
+      const [Show, setShow] = useState(value === 1 ? true : false);
+      const active = (id: string, valueset: any) => {
+        putData(`${valueset === 1 ? TeacherDeactive : TeacherActive}/${id}`)
+          .then((data: any) => {
+            if (data.status === 200) {
+              setShow((prevState) => !prevState);
+              setShowvalue(Showvalue === 1 ? 0 : 1);
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      };
+      return (
+        <Box>
+          {' '}
+          <Switch
+            isChecked={Show}
+            label={Show ? 'Active' : 'Deactive'}
+            onChange={() => {
+              active(row?.original?.teacher_id, Showvalue);
+            }}
+          />{' '}
+        </Box>
+      );
+    },
+    size: 150,
+  },
 ];
 
 export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
