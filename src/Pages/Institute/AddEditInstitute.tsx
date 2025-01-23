@@ -40,7 +40,7 @@ interface IInstituteForm {
   entity_id: string;
   mobile_no: string;
   website_url: string;
-  university_id: string;
+  university_id?: string;
 }
 
 const AddEditInstitute = () => {
@@ -75,7 +75,7 @@ const AddEditInstitute = () => {
     university_id: '',
   };
   const [institute, setInstitute] = useState(initialState);
-  const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
+  const [dataEntity, setDataEntity] = useState<any[]>([]);
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const formRef = useRef<FormikProps<IInstituteForm>>(null);
   const location = useLocation();
@@ -92,6 +92,12 @@ const AddEditInstitute = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
+  const [isSchool, setIsSchool] = useState(false);
+
+  const isSchoolEntity = (entityId: string | string[]): boolean => {
+    const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
+    return selectedEntity?.entity_type?.toLowerCase() === 'school';
+  };
 
   const callAPIfilter = async () => {
     getData(`${InstituteURL}`)
@@ -158,7 +164,7 @@ const AddEditInstitute = () => {
       });
     if (id) {
       getData(`${InstituteEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: IInstituteForm }) => {
+        .then((data: { data: any }) => {
           setInstitute(data?.data);
         })
         .catch((e) => {
@@ -245,6 +251,22 @@ const AddEditInstitute = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string,
   ) => {
+    if (fieldName === 'entity_id') {
+      const selectedEntity = dataEntity.find(
+        (entity) => entity.id === e.target.value,
+      );
+      const isSchoolEntity = selectedEntity?.entity_type === 'School';
+      setIsSchool(isSchoolEntity);
+      if (isSchoolEntity) {
+        setInstitute((prev) => ({
+          ...prev,
+
+          university_id: '',
+        }));
+
+        formRef?.current?.setFieldValue('university_id', '');
+      }
+    }
     setInstitute((prevInstitute) => {
       return {
         ...prevInstitute,
@@ -303,8 +325,12 @@ const AddEditInstitute = () => {
     instituteData: IInstituteForm,
     { resetForm }: FormikHelpers<IInstituteForm>,
   ) => {
+    const filteredData = { ...instituteData };
+    if (filteredData.university_id === '') {
+      delete filteredData.university_id;
+    }
     if (id) {
-      putData(`${InstituteEditURL}/${id}`, instituteData)
+      putData(`${InstituteEditURL}/${id}`, filteredData)
         .then((data: { status: number; message: string }) => {
           if (data.status === 200) {
             navigator('/main/Institute');
@@ -329,7 +355,7 @@ const AddEditInstitute = () => {
           });
         });
     } else {
-      postData(`${InstituteAddURL}`, instituteData)
+      postData(`${InstituteAddURL}`, filteredData)
         .then((data: { status: number; message: string }) => {
           if (data.status === 200) {
             // navigator('/main/Institute')
@@ -467,7 +493,16 @@ const AddEditInstitute = () => {
           .required('Please enter Pincode')
           .matches(pincodePattern, 'Please enter a valid 6-digit pincode.'),
         entity_id: Yup.string().required('Please select Entity'),
-        university_id: Yup.string().required('Please select University'),
+        university_id: Yup.string().when('entity_id', {
+          is: (entity_id: string) => {
+            const selectedEntity = dataEntity.find(
+              (entity) => entity.id === entity_id,
+            );
+            return selectedEntity?.entity_type !== 'School';
+          },
+          then: () => Yup.string().required('Please select University'),
+          otherwise: () => Yup.string(),
+        }),
         mobile_no: Yup.string()
           .required('Please enter Mobile number')
           .matches(
@@ -576,7 +611,16 @@ const AddEditInstitute = () => {
           .required('Please enter Pincode')
           .matches(pincodePattern, 'Please enter a valid 6-digit pincode.'),
         entity_id: Yup.string().required('Please select Entity'),
-        university_id: Yup.string().required('Please select University'),
+        university_id: Yup.string().when('entity_id', {
+          is: (entity_id: string) => {
+            const selectedEntity = dataEntity.find(
+              (entity) => entity.id === entity_id,
+            );
+            return selectedEntity?.entity_type !== 'School';
+          },
+          then: () => Yup.string().required('Please select University'),
+          otherwise: () => Yup.string(),
+        }),
         mobile_no: Yup.string()
           .required('Please enter Mobile number')
           .matches(
@@ -660,6 +704,18 @@ const AddEditInstitute = () => {
                             name="university_id"
                             value={values?.university_id}
                             variant="outlined"
+                            disabled={isSchool}
+                            style={{
+                              backgroundColor: isSchoolEntity(values?.entity_id)
+                                ? '#f0f0f0'
+                                : inputfield(namecolor),
+                              color: isSchoolEntity(values?.entity_id)
+                                ? '#999999'
+                                : inputfieldtext(namecolor),
+                              border: isSchoolEntity(values?.entity_id)
+                                ? '1px solid #d0d0d0'
+                                : undefined,
+                            }}
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
