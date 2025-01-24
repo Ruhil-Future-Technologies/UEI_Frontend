@@ -125,11 +125,11 @@ const Institute = () => {
   useEffect(() => {
     if (activeTab === 0) {
       setFilteredInstitutes(
-        dataInstitute.filter((insitute) => insitute.is_approved === true),
+        dataInstitute.filter((insitute) => insitute.is_approve === true),
       );
     } else {
       setFilteredInstitutes(
-        dataInstitute.filter((insitute) => !insitute.is_approved),
+        dataInstitute.filter((insitute) => !insitute.is_approve),
       );
     }
   }, [activeTab, dataInstitute]);
@@ -254,7 +254,7 @@ const Institute = () => {
                             width: '140px',
                           }}
                         >
-                          {row.row.original.is_approved ? (
+                          {row.row.original.is_approve ? (
                             <>
                               {filteredData?.form_data?.is_update === true && (
                                 <Tooltip arrow placement="right" title="Edit">
@@ -295,7 +295,7 @@ const Institute = () => {
                                   sx={{
                                     width: '35px',
                                     height: '35px',
-                                    color: 'green',
+                                    color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
                                     handleApproveInstitute(
@@ -311,10 +311,8 @@ const Institute = () => {
                                 <IconButton
                                   sx={{
                                     width: '35px',
-
                                     height: '35px',
-
-                                    color: 'red',
+                                    color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
                                     handleRejectInstitute(

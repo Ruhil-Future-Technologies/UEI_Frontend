@@ -105,12 +105,10 @@ const Teacher = () => {
   useEffect(() => {
     if (activeTab === 0) {
       setFilteredTeachers(
-        dataTeacher.filter((teacher) => teacher.is_approved === true),
+        dataTeacher.filter((teacher) => teacher.is_approve === true),
       );
     } else {
-      setFilteredTeachers(
-        dataTeacher.filter((teacher) => !teacher.is_approved),
-      );
+      setFilteredTeachers(dataTeacher.filter((teacher) => !teacher.is_approve));
     }
   }, [activeTab, dataTeacher]);
 
@@ -219,7 +217,7 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Teachers" />
+                    <Tab label="Total Teachers" />
                     <Tab label="Pending Teachers" />
                   </Tabs>
                   <Box marginTop="10px">
@@ -265,7 +263,7 @@ const Teacher = () => {
                               </IconButton>
                             </Tooltip>
                           )} */}
-                          {row.row.original.is_approved ? (
+                          {row.row.original.is_approve ? (
                             <>
                               <Tooltip arrow placement="right" title="Edit">
                                 <IconButton
@@ -307,7 +305,7 @@ const Teacher = () => {
                                   sx={{
                                     width: '35px',
                                     height: '35px',
-                                    color: 'green',
+                                    color: tabletools(namecolor),
                                   }}
                                   onClick={() =>
                                     handleApproveTeacher(
@@ -323,7 +321,7 @@ const Teacher = () => {
                                   sx={{
                                     width: '35px',
                                     height: '35px',
-                                    color: 'red',
+                                    color: tabletools(namecolor),
                                   }}
                                   onClick={() =>
                                     handleRejectTeacher(

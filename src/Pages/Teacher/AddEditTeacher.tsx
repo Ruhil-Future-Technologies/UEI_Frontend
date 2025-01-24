@@ -36,6 +36,7 @@ import {
 import NameContext from '../Context/NameContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { qualifications } from '../TeacherRgistrationForm';
 
 interface ITeacherForm {
   first_name: string;
@@ -344,14 +345,7 @@ const AddEditTeacher = () => {
         qualificationPattern,
         'Please enter valid qualification (letters, numbers, and basic punctuation allowed)',
       ),
-    school_name: Yup.string().when('entity_id', {
-      is: (val: string) => isSchoolEntity(val),
-      then: () =>
-        Yup.string()
-          .required('Please enter School Name')
-          .matches(charPattern, 'Please enter valid school name'),
-      otherwise: () => Yup.string(),
-    }),
+
     class_id: Yup.string().when('entity_id', {
       is: (val: string) => !isCollegeEntity(val),
       then: () => Yup.string().required('Please select Class'),
@@ -823,18 +817,51 @@ const AddEditTeacher = () => {
                         )}
                       </div>
                     </div>
+
                     <div className="col-md-2">
                       <div className="form_field_wrapper">
-                        <Field
-                          fullWidth
-                          component={TextField}
-                          label="Qualification *"
-                          name="qualification"
-                          value={values?.qualification}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'qualification')
-                          }
-                        />
+                        <FormControl fullWidth>
+                          <InputLabel>Qualification *</InputLabel>
+                          <Select
+                            name="qualification"
+                            value={values?.qualification}
+                            label="Qualification *"
+                            onChange={(e: SelectChangeEvent<string>) =>
+                              handleChange(e, 'qualification')
+                            }
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              '& .MuiSelect-icon': {
+                                color: fieldIcon(namecolor),
+                              },
+                            }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                },
+                              },
+                            }}
+                          >
+                            {qualifications.map((qual) => (
+                              <MenuItem
+                                key={qual}
+                                value={qual}
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '&:hover': {
+                                    backgroundColor: inputfieldhover(namecolor),
+                                  },
+                                }}
+                              >
+                                {qual}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                         {touched?.qualification && errors?.qualification && (
                           <p className="error">{errors.qualification}</p>
                         )}
@@ -910,35 +937,6 @@ const AddEditTeacher = () => {
                           <p style={{ color: 'red' }}>{errors?.entity_id}</p>
                         ) : (
                           <></>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="form_field_wrapper">
-                        <Field
-                          fullWidth
-                          component={TextField}
-                          label="School Name *"
-                          name="school_name"
-                          value={values?.school_name}
-                          disabled={isCollegeEntity(values?.entity_id)}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'school_name')
-                          }
-                          style={{
-                            backgroundColor: isCollegeEntity(values?.entity_id)
-                              ? '#f0f0f0'
-                              : inputfield(namecolor),
-                            color: isCollegeEntity(values?.entity_id)
-                              ? '#999999'
-                              : inputfieldtext(namecolor),
-                            border: isCollegeEntity(values?.entity_id)
-                              ? '1px solid #d0d0d0'
-                              : undefined,
-                          }}
-                        />
-                        {touched?.school_name && errors?.school_name && (
-                          <p className="error">{errors.school_name}</p>
                         )}
                       </div>
                     </div>
