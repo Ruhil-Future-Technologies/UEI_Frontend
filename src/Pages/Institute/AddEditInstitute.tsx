@@ -466,18 +466,16 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid City name only characters allowed.',
           ),
-        country: Yup.string()
-          .required('Please enter Country'),
-          // .matches(
-          //   charPattern,
-          //   'Please enter a valid Contry name only characters allowed.',
-          // ),
-        state: Yup.string()
-          .required('Please enter State'),
-          // .matches(
-          //   charPattern,
-          //   'Please enter a valid State name only characters allowed.',
-          // ),
+        country: Yup.string().required('Please enter Country'),
+        // .matches(
+        //   charPattern,
+        //   'Please enter a valid Contry name only characters allowed.',
+        // ),
+        state: Yup.string().required('Please enter State'),
+        // .matches(
+        //   charPattern,
+        //   'Please enter a valid State name only characters allowed.',
+        // ),
         district: Yup.string()
           .required('Please enter District')
           .test(
@@ -584,18 +582,16 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid City name only characters allowed.',
           ),
-        country: Yup.string()
-          .required('Please enter Country'),
-          // .matches(
-          //   charPattern,
-          //   'Please enter a valid Contry name only characters allowed.',
-          // ),
-        state: Yup.string()
-          .required('Please enter State'),
-          // .matches(
-          //   charPattern,
-          //   'Please enter a valid State name only characters allowed.',
-          // ),
+        country: Yup.string().required('Please enter Country'),
+        // .matches(
+        //   charPattern,
+        //   'Please enter a valid Contry name only characters allowed.',
+        // ),
+        state: Yup.string().required('Please enter State'),
+        // .matches(
+        //   charPattern,
+        //   'Please enter a valid State name only characters allowed.',
+        // ),
         district: Yup.string()
           .required('Please enter District')
           .test(
@@ -694,6 +690,60 @@ const AddEditInstitute = () => {
                       <div className="form_field_wrapper">
                         <FormControl fullWidth>
                           <InputLabel id="demo-simple-select-label">
+                            Entity *
+                          </InputLabel>
+                          <Select
+                            onChange={(e: SelectChangeEvent<string>) =>
+                              handleChange(e, 'entity_id')
+                            }
+                            label="Entity"
+                            name="entity_id"
+                            value={values?.entity_id}
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              '& .MuiSelect-icon': {
+                                color: fieldIcon(namecolor),
+                              },
+                            }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                },
+                              },
+                            }}
+                          >
+                            {dataEntity.map((item, idx) => (
+                              <MenuItem
+                                value={item.id}
+                                key={`${item.entity_type}-${idx + 1}`}
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '&:hover': {
+                                    backgroundColor: inputfieldhover(namecolor),
+                                  },
+                                }}
+                              >
+                                {item.entity_type}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {touched?.entity_id && errors?.entity_id ? (
+                          <p style={{ color: 'red' }}>{errors?.entity_id}</p>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="form_field_wrapper">
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">
                             University *
                           </InputLabel>
                           <Select
@@ -758,60 +808,7 @@ const AddEditInstitute = () => {
                         )}
                       </div>
                     </div>
-                    <div className="col-md-4">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Entity *
-                          </InputLabel>
-                          <Select
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'entity_id')
-                            }
-                            label="Entity"
-                            name="entity_id"
-                            value={values?.entity_id}
-                            variant="outlined"
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                },
-                              },
-                            }}
-                          >
-                            {dataEntity.map((item, idx) => (
-                              <MenuItem
-                                value={item.id}
-                                key={`${item.entity_type}-${idx + 1}`}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
-                              >
-                                {item.entity_type}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {touched?.entity_id && errors?.entity_id ? (
-                          <p style={{ color: 'red' }}>{errors?.entity_id}</p>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
+
                     <div
                       className="floating-label-container col-md-4"
                       ref={dropdownRef}
@@ -1072,7 +1069,10 @@ const AddEditInstitute = () => {
                       </div>
                     </div>
                   </div>
-                  <button type="submit" className="btn btn-primary mainbutton mt-4">
+                  <button
+                    type="submit"
+                    className="btn btn-primary mainbutton mt-4"
+                  >
                     {id ? 'Update' : 'Save'}
                   </button>
                 </Form>

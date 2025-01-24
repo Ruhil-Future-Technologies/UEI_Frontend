@@ -82,7 +82,7 @@ interface Teacher {
   pic_path?: string; // Optional profile picture path
 }
 
-const qualifications = [
+export const qualifications = [
   // Bachelor's Degrees
   'B.Tech',
   'B.E',
@@ -415,16 +415,24 @@ const TeacherRegistrationPage = () => {
 
   const validation = (name: string, value: string) => {
     setError({
-      first_name_error: name === 'first_name' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
-      last_name_error: name == 'last_name' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
+      first_name_error:
+        name === 'first_name' &&
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim()),
+      last_name_error:
+        name == 'last_name' &&
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim()),
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
       phone_no_error: name === 'phone' && !/^(?!0{10})[0-9]{10}$/.test(value),
       address_error: name === 'address' && value === '',
       country_error: name === 'country' && value === '',
       state_error: name === 'state' && value === '',
-      district_error: name === 'district' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
-      city_error: name === 'city' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( value.trim()),
+      district_error:
+        name === 'district' &&
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim()),
+      city_error:
+        name === 'city' &&
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim()),
       pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value),
       qualifications_error: name === 'qualifications' && value == '',
       teaching_experience_error: name === 'teaching_experience' && value === '',
@@ -451,15 +459,23 @@ const TeacherRegistrationPage = () => {
   };
   const handleSubmit = () => {
     setError({
-      first_name_error:!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.first_name.trim()) ,
-      last_name_error:!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.last_name.trim()) ,
+      first_name_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.first_name.trim(),
+      ),
+      last_name_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.last_name.trim(),
+      ),
       email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id),
       phone_no_error: !/^(?!0{10})[0-9]{10}$/.test(teacher.phone),
       address_error: teacher.address === '',
       country_error: teacher.country == '',
       state_error: teacher.state == '',
-      district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.district.trim()),
-      city_error:!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.city.trim()),
+      district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.district.trim(),
+      ),
+      city_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.city.trim(),
+      ),
       pincode_error: !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode),
       qualifications_error: teacher.qualification === '',
       teaching_experience_error: teacher.experience === '',
@@ -487,37 +503,47 @@ const TeacherRegistrationPage = () => {
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.class_id_error &&
-        !(teacher.class_id === '') &&
-        !error.school_name_error &&
-        !(teacher.school_name === '')
+          !(teacher.class_id === '') &&
+          !error.school_name_error &&
+          !(teacher.school_name === '')
         : true;
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.course_id_error &&
-        !(teacher.course_id === '') &&
-        !error.institution_id_error &&
-        !(teacher.institution_id === '')
+          !(teacher.course_id === '') &&
+          !error.institution_id_error &&
+          !(teacher.institution_id === '')
         : true;
     if (
       !error.first_name_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.first_name.trim()) &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.first_name.trim(),
+      ) &&
       !error.last_name_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.last_name.trim()) &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.last_name.trim(),
+      ) &&
       !error.email_id_error &&
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id) &&
       !error.phone_no_error &&
       !/^(?!0{10})[0-9]{10}$/.test(teacher.phone) &&
       !error.address_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.address.trim()) &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.address.trim(),
+      ) &&
       !error.country_error &&
       !(teacher.country === '') &&
       !error.state_error &&
       !(teacher.state === '') &&
       !error.district_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.district.trim()) &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.district.trim(),
+      ) &&
       !error.city_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.city.trim()) &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.city.trim(),
+      ) &&
       !error.pincode_error &&
       !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
       !error.qualifications_error &&
@@ -529,7 +555,7 @@ const TeacherRegistrationPage = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
-      console.log("inside if code")
+      console.log('inside if code');
       let payload;
       // All required fields are valid, proceed with the next steps
       if (selectedEntity === 'School') {
@@ -556,7 +582,7 @@ const TeacherRegistrationPage = () => {
           pincode: teacher.pincode,
           documents: allselectedfiles,
         };
-        console.log("payload", payload)
+        console.log('payload', payload);
       } else {
         payload = {
           first_name: teacher.first_name,
@@ -594,7 +620,7 @@ const TeacherRegistrationPage = () => {
               'Teacher registered request sended successfully please wait for 24-48 hours',
             );
             window.location.reload();
-          }else{
+          } else {
             toast.error(response.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -690,7 +716,6 @@ const TeacherRegistrationPage = () => {
               {error.first_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
                   <small> Please enter a valid first name.</small>
-                 
                 </p>
               )}
             </div>
@@ -707,9 +732,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.last_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                  Please enter a valid last name.
-                  </small>
+                  <small>Please enter a valid last name.</small>
                 </p>
               )}
             </div>
@@ -787,7 +810,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.phone_no_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                 <small> Please enter a valid mobile number.</small>
+                  <small> Please enter a valid mobile number.</small>
                 </p>
               )}
             </div>
@@ -804,9 +827,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.email_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                  Please enter a valid email ID.
-                  </small>
+                  <small>Please enter a valid email ID.</small>
                 </p>
               )}
             </div>
@@ -884,9 +905,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.class_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                      Please select a class.
-                    </small>
+                    <small>Please select a class.</small>
                   </p>
                 )}
               </div>
@@ -1042,9 +1061,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.course_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                    Please enter a valid course.
-                    </small>
+                    <small>Please enter a valid course.</small>
                   </p>
                 )}
               </div>
@@ -1133,9 +1150,7 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.subject_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please enter a valid subject name.
-                  </small>
+                  <small>Please enter a valid subject name.</small>
                 </p>
               )}
             </div>
@@ -1149,13 +1164,11 @@ const TeacherRegistrationPage = () => {
                 className="form-control"
                 type="number"
                 onChange={handelChange}
-                inputProps={{ min: "0" }}
+                inputProps={{ min: '0' }}
               />
               {error.teaching_experience_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                  Please Enter a valid Teaching Experience.
-                  </small>
+                  <small>Please Enter a valid Teaching Experience.</small>
                 </p>
               )}
             </div>
@@ -1173,9 +1186,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please select a country.
-                  </small>
+                  <small>Please select a country.</small>
                 </p>
               )}
             </div>
@@ -1195,10 +1206,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                  Please select a state.                   
-                  </small>
-
+                  <small>Please select a state.</small>
                 </p>
               )}
             </div>
@@ -1217,9 +1225,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.district_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                  Please enter a valid district.
-                  </small>
+                  <small>Please enter a valid district.</small>
                 </p>
               )}
             </div>
@@ -1236,7 +1242,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                <small>Please enter a valid city.</small>
+                  <small>Please enter a valid city.</small>
                 </p>
               )}
             </div>
@@ -1255,9 +1261,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.address_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                 <small>
-                 Please enter a valid address.
-                 </small>
+                  <small>Please enter a valid address.</small>
                 </p>
               )}
             </div>
@@ -1274,9 +1278,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.pincode_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                 <small>
-                 Please enter a valid pincode
-                 </small>
+                  <small>Please enter a valid pincode</small>
                 </p>
               )}
             </div>
@@ -1350,7 +1352,7 @@ const TeacherRegistrationPage = () => {
               onChange={handleTermandCondi}
             />
             <label className="form-check-label" htmlFor="flexCheckDefault">
-            By registering your account you have to agree with our{' '}
+              By registering your account you have to agree with our{' '}
               <a
                 href="#"
                 onClick={(e) => {
