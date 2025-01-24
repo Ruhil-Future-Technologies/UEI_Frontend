@@ -38,7 +38,7 @@ import {
 //     course_image: string;
 //     institute_id: string;
 // }
-interface Teahcer {
+interface Teacher {
   teacher_id: number;
   teacher_name: string;
   teacher_image: string;
@@ -74,6 +74,7 @@ interface Institute {
 
 const InstitutionDash = () => {
   const instituteId = localStorage.getItem('_id');
+  
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<Institute>({
     address: '',
@@ -103,7 +104,7 @@ const InstitutionDash = () => {
   const [totleTeacher, setTotleTeacher] = useState(0);
   const [dataStudents, setDataStudents] = useState<StudentRep0oDTO[]>([]);
   const [dataCourses, setDataCourses] = useState<CourseRep0oDTO[]>([]);
-  const [dataTeachers, setDataTeachers] = useState<Teahcer[]>([]);
+  const [dataTeachers, setDataTeachers] = useState<Teacher[]>([]);
 
   const getCourseCount = async () => {
     console.log(totleCourse);
