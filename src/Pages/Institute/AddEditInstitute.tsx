@@ -427,7 +427,7 @@ const AddEditInstitute = () => {
           }),
 
         email_id: Yup.string()
-          .required('Please enter Email')
+          .required('Please enter Email id')
           .matches(emailPattern, 'Please enter a valid Email format.')
           .test('unique', 'Email already exists', function (value) {
             if (!value) return true;
@@ -552,7 +552,7 @@ const AddEditInstitute = () => {
             return !exists;
           }),
         email_id: Yup.string()
-          .required('Please enter Email')
+          .required('Please enter Email id')
           .matches(emailPattern, 'Please enter a valid Email format.')
           .test('unique', 'Email already exists', (value) => {
             if (!value) return true;
@@ -826,7 +826,7 @@ const AddEditInstitute = () => {
                         tabIndex={-1}
                       >
                         <CountryDropdown
-                          classes="form-control p-3 custom-dropdown"
+                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
                           defaultOptionLabel={values?.country || ''}
                           value={values?.country || ''}
                           onChange={(e) =>
@@ -849,7 +849,7 @@ const AddEditInstitute = () => {
                     </div>
 
                     <div
-                      className="floating-label-container col-md-4"
+                      className="floating-label-container col-md-4 mt-4"
                       ref={dropdownstateRef}
                     >
                       <label
@@ -865,7 +865,7 @@ const AddEditInstitute = () => {
                         tabIndex={-1}
                       >
                         <RegionDropdown
-                          classes="form-control p-3 custom-dropdown"
+                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
                           defaultOptionLabel={values?.state || ''}
                           country={values?.country || ''}
                           value={values?.state || ''}
