@@ -329,18 +329,18 @@ const AddEditTeacher = () => {
       .matches(charPattern, 'Please enter valid name, only characters allowed'),
     gender: Yup.string().required('Please select Gender'),
     email_id: Yup.string()
-      .required('Please enter Email')
+      .required('Please enter Email id')
       .matches(emailPattern, 'Please enter a valid Email format'),
     dob: Yup.date().required('Please enter Date of Birth'),
     phone: Yup.string()
-      .required('Please enter Phone number')
+      .required('Please enter mobile number')
       .matches(mobilePattern, 'Please enter a valid 10-digit mobile number'),
     subjects: Yup.array()
       .of(Yup.string())
       .min(1, 'Please select at least one subject')
       .required('Please select at least one subject'),
     qualification: Yup.string()
-      .required('Please enter Qualification')
+      .required('Please select Qualification')
       .matches(
         qualificationPattern,
         'Please enter valid qualification (letters, numbers, and basic punctuation allowed)',
@@ -805,7 +805,7 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
-                          label="Phone *"
+                          label="Mobile *"
                           name="phone"
                           value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -879,6 +879,7 @@ const AddEditTeacher = () => {
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'experience')
                           }
+                          inputProps={{ min: '0' }}
                         />
                         {touched?.experience && errors?.experience && (
                           <p className="error">{errors.experience}</p>
@@ -1252,7 +1253,7 @@ const AddEditTeacher = () => {
                       </div>
                     </div>
                     <div
-                      className="floating-label-container col-md-2"
+                      className="floating-label-container col-md-2 mt-4"
                       ref={dropdownRef}
                     >
                       <label
@@ -1267,7 +1268,7 @@ const AddEditTeacher = () => {
                         tabIndex={-1}
                       >
                         <CountryDropdown
-                          classes="form-control p-3 custom-dropdown"
+                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
                           defaultOptionLabel={values?.country || ''}
                           value={values?.country || ''}
                           onChange={(e) =>
@@ -1284,7 +1285,7 @@ const AddEditTeacher = () => {
                       </div>
                     </div>
                     <div
-                      className="floating-label-container col-md-2"
+                      className="floating-label-container col-md-2 mt-4"
                       ref={dropdownstateRef}
                     >
                       <label
@@ -1299,7 +1300,7 @@ const AddEditTeacher = () => {
                         tabIndex={-1}
                       >
                         <RegionDropdown
-                          classes="form-control p-3 custom-dropdown"
+                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
                           defaultOptionLabel={values?.state || ''}
                           country={values?.country || ''}
                           value={values?.state || ''}
