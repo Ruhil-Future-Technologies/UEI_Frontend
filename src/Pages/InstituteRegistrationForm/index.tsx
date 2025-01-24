@@ -182,12 +182,12 @@ const InstituteRegistrationForm = () => {
     setError({
       institute_name_error:
         name === 'institute_name' &&
-          !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
+        !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)
           ? true
           : false,
       university_id_error: false,
       institute_type_error: false,
-      school_name_error: name === 'school_name' && value === '',
+      school_name_error: name === 'school_name' && !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value),
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
           ? true
@@ -206,7 +206,7 @@ const InstituteRegistrationForm = () => {
           ? true
           : false,
       address_error:
-        name === 'address' && !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
+        name === 'address' && !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
           ? true
           : false,
       pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
@@ -236,7 +236,7 @@ const InstituteRegistrationForm = () => {
   const handleSubmit = () => {
     setError({
       institute_name_error:
-        selectedEntity === 'College' && valueInstitute.institute_name === ''
+        selectedEntity === 'College' && !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
           ? true
           : false,
       university_id_error:
@@ -269,7 +269,7 @@ const InstituteRegistrationForm = () => {
       )
         ? true
         : false,
-      address_error: !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(
+      address_error: !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
         valueInstitute.address.trim(),
       )
         ? true
@@ -282,13 +282,13 @@ const InstituteRegistrationForm = () => {
     console.log(selectedEntity);
     const isSchoolValid =
       selectedEntity === 'School'
-        ? !error.school_name_error && valueInstitute.school_name !== ''
+        ? !error.school_name_error && /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.school_name)
         : true;
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.institute_name_error &&
-        valueInstitute.institute_name !== '' &&
+        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.institute_name) &&
         !error.university_id_error &&
         valueInstitute.university_id !== ''
         : true;
@@ -298,9 +298,9 @@ const InstituteRegistrationForm = () => {
       !error.institute_type_error &&
       !(valueInstitute.entity_id === '') &&
       !error.email_id_error &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id) &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id) &&
       !error.mobile_no_error &&
-      !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
+      /^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
       !error.website_error &&
       /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website) &&
       !error.country_error &&
@@ -308,13 +308,13 @@ const InstituteRegistrationForm = () => {
       !error.state_error &&
       !(valueInstitute.state === '') &&
       !error.city_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.city.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.city.trim()) &&
       !error.district_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.district.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.district.trim()) &&
       !error.address_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.address.trim()) &&
+      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test( valueInstitute.address.trim()) &&
       !error.pincode_error &&
-      !/^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
+      /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
       !error.document_error &&
       valueInstitute.document &&
       isCollegeValid &&
@@ -466,7 +466,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.website_error === true && (
                   <p className="error-text" style={{ color: 'red' }}>
-                    <small> Valid Website is required.</small>
+                    <small>Please enter a valid Website .</small>
                   </p>
                 )}
               </div>
@@ -489,7 +489,7 @@ const InstituteRegistrationForm = () => {
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
                       <small>
-                        Valid School Name is required.
+                      Please enter a valid school name
                       </small>
                     </p>
                   )}
@@ -548,7 +548,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.university_id_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>  Valid University Name is required.</small>
+                      <small>Please select a university name.</small>
                     </p>
                   )}
                 </div>
@@ -568,7 +568,7 @@ const InstituteRegistrationForm = () => {
                   {error.institute_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
                       <small>
-                        Valid Institute Name is required.
+                        Please enter a valid institute name.
                       </small>
                     </p>
                   )}
@@ -593,7 +593,7 @@ const InstituteRegistrationForm = () => {
                 {error.mobile_no_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>
-                      Valid Mobile number is required.
+                      Please enter a valid mobile number.
                     </small>
                   </p>
                 )}
@@ -613,7 +613,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.email_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small> Valid Email Id is required.</small>
+                    <small> Please enter a valid Email Id.</small>
                   </p>
                 )}
               </div>
@@ -675,7 +675,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.district_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Valid District is required.</small>
+                    <small> Please enter a valid district name.</small>
                   </p>
                 )}
               </div>
@@ -695,7 +695,7 @@ const InstituteRegistrationForm = () => {
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>
-                      Valid City is required.
+                    Please enter a valid city name.
                     </small>
                   </p>
                 )}
@@ -718,7 +718,7 @@ const InstituteRegistrationForm = () => {
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>
-                      Valid Address is required.
+                    Please enter a valid address
                     </small>
                   </p>
                 )}
@@ -738,7 +738,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.pincode_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small> Valid Pincode is required.</small>
+                    <small> Please enter a valid Pincode.</small>
                   </p>
                 )}
               </div>
@@ -832,7 +832,7 @@ const InstituteRegistrationForm = () => {
               disabled={CheckTermandcondi}
               onClick={handleSubmit}
             >
-              Submit Form
+              Submit
             </Button>
           </div>
           <Dialog open={popupTermandCondi} onClose={handleClose}>

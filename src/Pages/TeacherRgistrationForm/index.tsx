@@ -194,7 +194,7 @@ const TeacherRegistrationPage = () => {
     experience: '',
     subjects: [''],
     role_id: '',
-    entity_id: 'school',
+    entity_id: '',
     class_id: '',
     course_id: '',
     institution_id: '',
@@ -424,7 +424,7 @@ const TeacherRegistrationPage = () => {
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
       phone_no_error: name === 'phone' && !/^(?!0{10})[0-9]{10}$/.test(value),
-      address_error: name === 'address' && value === '',
+      address_error: name === 'address' && !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value),
       country_error: name === 'country' && value === '',
       state_error: name === 'state' && value === '',
       district_error:
@@ -438,7 +438,7 @@ const TeacherRegistrationPage = () => {
       teaching_experience_error: name === 'teaching_experience' && value === '',
       subject_name_error: name === 'subject_name' && value == '',
       designation_role_error: name === 'designation_role' && value == '',
-      entity_error: false,
+      entity_error: name==='entity_id'&& value ==="",
       class_id_error: name == 'class' && value === '',
       course_id_error: name === 'course' && value === '',
       institution_id_error: name === 'institute_name' && value === '',
@@ -467,7 +467,7 @@ const TeacherRegistrationPage = () => {
       ),
       email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id),
       phone_no_error: !/^(?!0{10})[0-9]{10}$/.test(teacher.phone),
-      address_error: teacher.address === '',
+      address_error:!/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address),
       country_error: teacher.country == '',
       state_error: teacher.state == '',
       district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
@@ -479,9 +479,9 @@ const TeacherRegistrationPage = () => {
       pincode_error: !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode),
       qualifications_error: teacher.qualification === '',
       teaching_experience_error: teacher.experience === '',
-      subject_name_error: teacher.subjects.length === 0,
+      subject_name_error: selectedSubject[0] === '',
       designation_role_error: false,
-      entity_error: false,
+      entity_error: teacher.entity_id==='',
       class_id_error:
         selectedEntity === 'School' && teacher.class_id === '' ? true : false,
       course_id_error:
@@ -515,21 +515,22 @@ const TeacherRegistrationPage = () => {
           !error.institution_id_error &&
           !(teacher.institution_id === '')
         : true;
+        console.log(error.subject_name_error);
     if (
       !error.first_name_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
       ) &&
       !error.last_name_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.last_name.trim(),
       ) &&
       !error.email_id_error &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id) &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id) &&
       !error.phone_no_error &&
-      !/^(?!0{10})[0-9]{10}$/.test(teacher.phone) &&
+      /^(?!0{10})[0-9]{10}$/.test(teacher.phone) &&
       !error.address_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
         teacher.address.trim(),
       ) &&
       !error.country_error &&
@@ -537,15 +538,15 @@ const TeacherRegistrationPage = () => {
       !error.state_error &&
       !(teacher.state === '') &&
       !error.district_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.district.trim(),
       ) &&
       !error.city_error &&
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.city.trim(),
       ) &&
       !error.pincode_error &&
-      !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
+      /^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
       !error.qualifications_error &&
       !(teacher.qualification === '') &&
       !error.teaching_experience_error &&
@@ -630,6 +631,13 @@ const TeacherRegistrationPage = () => {
         .catch((error) => {
           console.log(error);
         });
+    }else{
+      toast.error('validation error',{
+        hideProgressBar: true,
+        theme: 'colored',
+      })
+
+      
     }
   };
 
@@ -752,14 +760,14 @@ const TeacherRegistrationPage = () => {
                   onChange={handelChange}
                 >
                   <FormControlLabel
-                    value="female"
-                    control={<Radio />}
-                    label="Female"
-                  />
-                  <FormControlLabel
                     value="male"
                     control={<Radio />}
                     label="Male"
+                  />
+                   <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Female"
                   />
                 </RadioGroup>
               </FormControl>
@@ -791,7 +799,9 @@ const TeacherRegistrationPage = () => {
               </LocalizationProvider>
               {dobset_col === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  Please Enter a valid last name.
+                <small>
+                Please enter a valid date of birth.
+                </small>
                 </p>
               )}
             </div>
@@ -827,7 +837,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.email_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid email ID.</small>
+                  <small>Please enter a valid email address.</small>
                 </p>
               )}
             </div>
@@ -879,6 +889,13 @@ const TeacherRegistrationPage = () => {
                   ))}
                 </Select>
               </FormControl>
+              {error.entity_error&&(
+                <p className="error-text " style={{ color: 'red' }}>
+                  <small>
+                    Please select an entity.
+                  </small>
+                </p>
+              )}
             </div>
             {selectedEntity === 'School' ? (
               <div className="col-md-6 col-12 mb-3">
@@ -886,7 +903,7 @@ const TeacherRegistrationPage = () => {
                   Class<span>*</span>
                 </label>
 
-                <FormControl sx={{ width: 280 }}>
+                <FormControl fullWidth>
                   <InputLabel id="demo-multiple-name-label">class</InputLabel>
                   <Select
                     labelId="demo-multiple-name-label"
@@ -914,7 +931,7 @@ const TeacherRegistrationPage = () => {
                 <label className="col-form-label">
                   Qualification<span>*</span>
                 </label>
-                <FormControl sx={{ width: 280 }}>
+                <FormControl fullWidth>
                   <InputLabel id="demo-multiple-name-label">
                     Qualification
                   </InputLabel>
@@ -933,6 +950,12 @@ const TeacherRegistrationPage = () => {
                     ))}
                   </Select>
                 </FormControl>
+                {error.qualifications_error &&(
+                  <p className='error-text' style={{color:'red'}}>
+                    <small>Please select a qualification</small>
+                  </p>
+                )
+                }
               </div>
             )}
           </div>
@@ -943,7 +966,7 @@ const TeacherRegistrationPage = () => {
                 <label className="col-form-label">
                   School Name<span>*</span>
                 </label>
-                <FormControl sx={{ width: 580 }}>
+                <FormControl fullWidth>
                   <InputLabel id="school_id">School Name</InputLabel>
                   <Select
                     labelId="school_id"
@@ -992,7 +1015,7 @@ const TeacherRegistrationPage = () => {
                 <label className="col-form-label">
                   Institute Name<span>*</span>
                 </label>
-                <FormControl sx={{ width: 280 }}>
+                <FormControl fullWidth>
                   <InputLabel id="institution_id">Institute</InputLabel>
                   <Select
                     labelId="institution_id"
@@ -1043,7 +1066,7 @@ const TeacherRegistrationPage = () => {
                 <label className="col-form-label">
                   Course<span>*</span>
                 </label>
-                <FormControl sx={{ width: 280 }}>
+                <FormControl fullWidth>
                   <InputLabel id="course_id">Course</InputLabel>
                   <Select
                     labelId="course_id"
@@ -1073,10 +1096,7 @@ const TeacherRegistrationPage = () => {
                 Subjects Taught<span>*</span>
               </label>
               <FormControl
-                sx={{
-                  maxWidth: '300px',
-                  width: '100%',
-                }}
+               fullWidth
               >
                 <InputLabel id="demo-multiple-checkbox-label">
                   Subject
@@ -1168,7 +1188,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.teaching_experience_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please Enter a valid Teaching Experience.</small>
+                  <small>Please enter a valid Teaching Experience.</small>
                 </p>
               )}
             </div>
@@ -1289,7 +1309,7 @@ const TeacherRegistrationPage = () => {
                 <label className="col-form-label">
                   Qualification<span>*</span>
                 </label>
-                <FormControl sx={{ width: 280 }}>
+                <FormControl fullWidth>
                   <InputLabel id="demo-multiple-name-label">
                     Qualification
                   </InputLabel>
@@ -1308,13 +1328,22 @@ const TeacherRegistrationPage = () => {
                     ))}
                   </Select>
                 </FormControl>
+                {error.qualifications_error &&(
+                  <p className='error-text' style={{color:'red'}}>
+                    <small>Please select a qualification</small>
+                  </p>
+                )
+
+                }
               </div>
             )}
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
                 {' '}
-                Document<span>*</span>
+                Document<span>*   </span>
+              
               </label>
+              {' '}
               <Button
                 variant="contained"
                 component="label"
@@ -1371,7 +1400,7 @@ const TeacherRegistrationPage = () => {
               onClick={handleSubmit}
               disabled={CheckTermandcondi}
             >
-              Submit Form
+              Submit
             </Button>
           </div>
           <Dialog open={popupTermandCondi} onClose={handleClose}>
