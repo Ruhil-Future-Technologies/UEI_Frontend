@@ -518,6 +518,7 @@ const TeacherRegistrationPage = () => {
         console.log(error.subject_name_error);
     if (
       !error.first_name_error &&
+
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
       ) &&
@@ -525,26 +526,27 @@ const TeacherRegistrationPage = () => {
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.last_name.trim(),
       ) &&
+
       !error.email_id_error &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id) &&
       !error.phone_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(teacher.phone) &&
       !error.address_error &&
+
       /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
         teacher.address.trim(),
       ) &&
+
       !error.country_error &&
       !(teacher.country === '') &&
       !error.state_error &&
       !(teacher.state === '') &&
       !error.district_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
-        teacher.district.trim(),
-      ) &&
+
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.district.trim()) &&
       !error.city_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
-        teacher.city.trim(),
-      ) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.city.trim()) &&
+
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
       !error.qualifications_error &&
@@ -800,7 +802,9 @@ const TeacherRegistrationPage = () => {
               {dobset_col === true && (
                 <p className="error-text " style={{ color: 'red' }}>
                 <small>
+
                 Please enter a valid date of birth.
+
                 </small>
                 </p>
               )}
@@ -1170,7 +1174,11 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.subject_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid subject name.</small>
+
+                  <small>
+                    Please select a subject name.
+                  </small>
+
                 </p>
               )}
             </div>
@@ -1188,7 +1196,11 @@ const TeacherRegistrationPage = () => {
               />
               {error.teaching_experience_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Teaching Experience.</small>
+
+                  <small>
+                  Please enter a valid teaching experience.
+                  </small>
+
                 </p>
               )}
             </div>
@@ -1245,7 +1257,11 @@ const TeacherRegistrationPage = () => {
               />
               {error.district_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid district.</small>
+
+                  <small>
+                  Please enter a valid district name.
+                  </small>
+
                 </p>
               )}
             </div>
@@ -1262,7 +1278,9 @@ const TeacherRegistrationPage = () => {
               />
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid city.</small>
+
+                <small>Please enter a valid city name.</small>
+
                 </p>
               )}
             </div>

@@ -312,7 +312,9 @@ const InstituteRegistrationForm = () => {
       !error.district_error &&
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.district.trim()) &&
       !error.address_error &&
+
       /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test( valueInstitute.address.trim()) &&
+
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
       !error.document_error &&
