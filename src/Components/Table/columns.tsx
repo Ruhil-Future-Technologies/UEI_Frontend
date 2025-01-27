@@ -39,7 +39,7 @@ import {
   QUERY_KEYS_TEACHER,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const EMPTY_CELL_VALUE = '-';
 
@@ -446,7 +446,246 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
   { accessorKey: 'email_id', header: 'Email', size: 200 },
   { accessorKey: 'qualification', header: 'Qualification', size: 150 },
   { accessorKey: 'experience', header: 'Experience', size: 120 },
-  { accessorKey: 'school_name', header: 'School Name', size: 200 },
+  {
+    accessorKey: 'entity_id',
+    header: 'Entity Type',
+    size: 150,
+    Cell: ({ cell }: any) => {
+      const { getData } = useApi();
+      const [entityType, setEntityType] = useState<string>('-');
+      const entityId = cell.getValue();
+
+      useEffect(() => {
+        getData('/entity/list')
+          .then((response: any) => {
+            if (response.status === 200) {
+              const matchingEntity = response.data.find(
+                (entity: any) => entity.id === entityId,
+              );
+              if (matchingEntity) {
+                setEntityType(matchingEntity.entity_type);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [entityId]);
+
+      return <span>{entityType}</span>;
+    },
+  },
+  {
+    accessorKey: 'institution_id',
+    header: 'Institute Name',
+    size: 200,
+    Cell: ({ cell }: any) => {
+      const { getData } = useApi();
+      const [institute_name, setInstituteName] = useState<string>('-');
+      const institute_id = cell.getValue();
+
+      useEffect(() => {
+        getData('/institution/list')
+          .then((response: any) => {
+            if (response.status === 200) {
+              const matchingEntity = response.data.find(
+                (institute: any) => institute.id === institute_id,
+              );
+              if (matchingEntity) {
+                setInstituteName(matchingEntity.institution_name);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [institute_id]);
+
+      return <span>{institute_name}</span>;
+    },
+  },
+  {
+    accessorKey: 'university_id',
+    header: 'University Name',
+    size: 200,
+    Cell: ({ cell }: any) => {
+      const { getData } = useApi();
+      const [university_name, setUniverstiyName] = useState<string>('-');
+      const university_id = cell.getValue();
+
+      useEffect(() => {
+        getData('/university/list')
+          .then((response: any) => {
+            if (response.status === 200) {
+              const matchingEntity = response.data.find(
+                (university: any) => university.university_id === university_id,
+              );
+
+              if (matchingEntity) {
+                setUniverstiyName(matchingEntity.university_name);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [university_id]);
+
+      return <span>{university_name}</span>;
+    },
+  },
+  {
+    accessorKey: 'class_id',
+    header: 'Class',
+    size: 150,
+    Cell: ({ cell, row }: any) => {
+      const { getData } = useApi();
+      const [className, setClassName] = useState<string>('-');
+      const class_id = cell.getValue();
+      const entity_id = row.original.entity_id;
+
+      useEffect(() => {
+        if (entity_id) {
+          getData('/entity/list').then((entityResponse: any) => {
+            if (entityResponse.status === 200) {
+              const entity = entityResponse.data.find(
+                (e: any) => e.id === entity_id,
+              );
+
+              if (entity?.entity_type === 'School') {
+                getData('/class/list')
+                  .then((response: any) => {
+                    if (response.status === 200) {
+                      const matchingClass = response.data.find(
+                        (cls: any) => cls.id === class_id,
+                      );
+
+                      if (matchingClass) {
+                        setClassName(matchingClass.class_name);
+                      }
+                    }
+                  })
+                  .catch((error) => {
+                    toast.error(error?.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                    });
+                  });
+              }
+            }
+          });
+        }
+      }, [class_id, entity_id]);
+
+      return <span>{className}</span>;
+    },
+  },
+  {
+    accessorKey: 'course_id',
+    header: 'Course',
+    size: 150,
+    Cell: ({ cell, row }: any) => {
+      const { getData } = useApi();
+      const [courseName, setCourseName] = useState<string>('-');
+      const course_id = cell.getValue();
+      const entity_id = row.original.entity_id;
+
+      useEffect(() => {
+        if (entity_id) {
+          getData('/entity/list').then((entityResponse: any) => {
+            if (entityResponse.status === 200) {
+              const entity = entityResponse.data.find(
+                (e: any) => e.id === entity_id,
+              );
+              if (entity?.entity_type === 'College') {
+                getData('/course/list')
+                  .then((response: any) => {
+                    if (response.status === 200) {
+                      const matchingCourse = response.data.find(
+                        (course: any) => course.id === course_id,
+                      );
+
+                      if (matchingCourse) {
+                        setCourseName(matchingCourse.course_name);
+                      }
+                    }
+                  })
+                  .catch((error) => {
+                    toast.error(error?.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                    });
+                  });
+              }
+            }
+          });
+        }
+      }, [course_id, entity_id]);
+
+      return <span>{courseName}</span>;
+    },
+  },
+  {
+    accessorKey: 'subjects',
+    header: 'Subjects',
+    size: 200,
+    Cell: ({ cell, row }: any) => {
+      const { getData } = useApi();
+      const [subjectNames, setSubjectNames] = useState<string[]>([]);
+      const subject_ids = cell.getValue();
+      const entity_id = row.original.entity_id;
+
+      useEffect(() => {
+        if (entity_id && subject_ids?.length) {
+          getData('/entity/list').then((entityResponse: any) => {
+            if (entityResponse.status === 200) {
+              const entity = entityResponse.data.find(
+                (e: any) => e.id === entity_id,
+              );
+              const endpointUrl =
+                entity?.entity_type === 'School'
+                  ? '/school_subject/list'
+                  : '/college_subject/list';
+
+              getData(endpointUrl)
+                .then((response: any) => {
+                  if (response.status === 200) {
+                    const matchingSubjects = subject_ids
+                      .map((subjectId: string) => {
+                        const subject = response.data.find(
+                          (sub: any) => sub.subject_id === subjectId,
+                        );
+                        return subject?.subject_name || '';
+                      })
+                      .filter(Boolean);
+
+                    setSubjectNames(matchingSubjects);
+                  }
+                })
+                .catch((error) => {
+                  toast.error(error?.message, {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                  });
+                });
+            }
+          });
+        }
+      }, [subject_ids, entity_id]);
+
+      return <span>{subjectNames.join(', ')}</span>;
+    },
+  },
+
   { accessorKey: 'address', header: 'Address', size: 200 },
   { accessorKey: 'city', header: 'City', size: 150 },
   { accessorKey: 'district', header: 'District', size: 150 },
