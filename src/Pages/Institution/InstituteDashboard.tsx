@@ -147,7 +147,7 @@ const InstitutionDash = () => {
   };
   const getInstitutionInfo = async () => {
     try {
-      await getData(`institution/get/${instituteId}`).then((response) => {
+        await getData(`institution/getbyloginid/${instituteId}`).then((response) => {
         console.log(response, 'institute profile info');
         if (response?.status === 200) {
           setInstituteInfo(response?.data);
