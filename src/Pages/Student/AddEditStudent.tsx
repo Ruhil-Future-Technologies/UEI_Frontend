@@ -407,7 +407,7 @@ const AddEditStudent = () => {
                         <InputLabel id="gender-label">Select Gender</InputLabel>
                         <Select
                           labelId="gender-label"
-                          value={student.gender}
+                          value={student?.gender?.toLowerCase()}
                           onChange={handleChange}
                           label="Select Gender"
                           MenuProps={{
