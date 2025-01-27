@@ -41,6 +41,7 @@ const AddEditStudent = () => {
     mobile_no_call: '',
     // id: number;
     image_name: '',
+    student_login_id: '',
   };
   const genderSelectOptions = [
     { name: 'Male', value: 'male' },
@@ -118,49 +119,42 @@ const AddEditStudent = () => {
       }
     } else if (name === 'mobile_no_call') {
       if (!/^(?!0{10})[0-9]{10}$/.test(value)) {
-        console.log(value);
         setMobileNoCall(true);
       } else {
         setMobileNoCall(false);
       }
     } else if (name === 'first_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
-        console.log(value);
         setFname(true);
       } else {
         setFname(false);
       }
     } else if (name === 'last_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
-        console.log(value);
         setLname(true);
       } else {
         setLname(false);
       }
     } else if (name === 'gender') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
-        console.log(value);
         setGender(true);
       } else {
         setGender(false);
       }
     } else if (name === 'father_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
-        console.log(value);
         setFathernm(true);
       } else {
         setFathernm(false);
       }
     } else if (name === 'mother_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
-        console.log(value);
         setMothernm(true);
       } else {
         setMothernm(false);
       }
     } else if (name === 'guardian_name') {
       if (!/^[a-zA-Z\s]*$/.test(value)) {
-        console.log(value);
         setGname(true);
       } else {
         setGname(false);
@@ -170,7 +164,6 @@ const AddEditStudent = () => {
       const { files } = e.target;
       if (files && files[0]) {
         const file: any = files[0];
-        // console.log('file',file)
         const reader: any = new FileReader();
         reader.onloadend = () => {
           setFilePreview(reader.result);
@@ -179,7 +172,6 @@ const AddEditStudent = () => {
         formData.append('file', file);
         value = file.name;
         setUploadedFile(value);
-        // console.log('value',value)
         postFileData(`${'upload_file/upload'}`, formData)
           .then((data: any) => {
             if (data?.status === 200) {
@@ -207,7 +199,6 @@ const AddEditStudent = () => {
           });
       }
     }
-    console.log(name, value);
     setStudent((prevUser) => {
       return {
         ...prevUser,
@@ -281,11 +272,11 @@ const AddEditStudent = () => {
       // pic_path:isBase64Image?studentData.image_name :fileName  ,
       pic_path: uploadedfile ? uploadedfile : studentData?.image_name,
       // pic_path:studentData?.pic_path,
-      student_login_id: id,
+      // student_login_id: id,
+      student_login_id: student?.student_login_id,
       // email_id: studentData?.email_id,
       // mobile_no_call: studentData?.mobile_no_call
     };
-    console.log(payload);
     const datecheck: any = dayjs(payload?.dob)?.format('DD/MM/YYYY');
     if (datecheck === 'Invalid Date') {
       setdobset_col(true);
@@ -309,7 +300,6 @@ const AddEditStudent = () => {
     ) {
       putData(`${EditStudentURL}${id ? `/${id}` : ''}`, payload)
         .then((data: any) => {
-          console.log(data);
           if (data?.status === 200) {
             navigator('/main/Student');
             toast.success(data?.message, {
