@@ -102,7 +102,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [initialAdminState, setInitialState] = useState<any | null>({});
 
   const getStudentBasicInfo = async () => {
-    getData(`${'student/get/' + StudentId}`, StudentId)
+    // getData(`${'student/get/' + StudentId}`, StudentId)
+    getData(`${'student/getbylogin/' + StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
           // console.log(data);
