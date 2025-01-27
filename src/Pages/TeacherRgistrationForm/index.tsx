@@ -72,6 +72,7 @@ interface Teacher {
   experience: string;
   address: string;
   country: string;
+  stream:string;
   state: string;
   district: string;
   city: string;
@@ -135,6 +136,11 @@ export const qualifications = [
   'Doctor of Pharmacy (Pharm.D)',
   'Doctor of Business Administration (DBA)',
 ];
+const stream=[
+  "Science",
+  "Commerce",
+  "Arts",
+]
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -176,6 +182,7 @@ const TeacherRegistrationPage = () => {
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [selectedSchool, setSelectedSchool] = useState('');
+  const [selectedClassName, setSelectedClassName] = useState("col-12");
   //const [roleId, setRoleId] = useState("c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
   const [teacher, setTeacher] = useState<Teacher>({
     first_name: '',
@@ -187,6 +194,7 @@ const TeacherRegistrationPage = () => {
     address: '',
     country: '',
     state: '',
+    stream:'',
     district: '',
     city: '',
     pincode: '',
@@ -223,6 +231,7 @@ const TeacherRegistrationPage = () => {
     designation_role_error: boolean;
     entity_error: boolean;
     class_id_error: boolean;
+    stream_error: boolean;
     course_id_error: boolean;
     institution_id_error: boolean;
     school_name_error: boolean;
@@ -237,6 +246,7 @@ const TeacherRegistrationPage = () => {
     district_error: false,
     city_error: false,
     pincode_error: false,
+    stream_error:false,
     qualifications_error: false,
     teaching_experience_error: false,
     subject_name_error: false,
@@ -288,8 +298,10 @@ const TeacherRegistrationPage = () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
         console.log(data.data);
+        const fiteredInstitutedata = data.data.filter(
+          (institute: any) => institute.is_active === 1 && institute.is_approve === true);
         if (data.data) {
-          setDataInstitute(data?.data);
+          setDataInstitute(fiteredInstitutedata);
         }
       })
       .catch((e) => {
@@ -410,6 +422,18 @@ const TeacherRegistrationPage = () => {
       )?.institution_name;
       setSelectedSchool(String(selectedSchool));
     }
+    if (name === "class_id") {
+      console.log(value);
+      const selectedClass = dataClass.find(
+        (item) => String(item.id) === value,
+      )?.class_name;
+      if (selectedClass === "class_11" || selectedClass === "class_12") {
+        setSelectedClassName("col-6")
+      } else {
+        setSelectedClassName("col-12")
+      }
+
+    }
     validation(name, value);
   };
 
@@ -438,11 +462,12 @@ const TeacherRegistrationPage = () => {
       teaching_experience_error: name === 'teaching_experience' && value === '',
       subject_name_error: name === 'subject_name' && value == '',
       designation_role_error: name === 'designation_role' && value == '',
-      entity_error: name==='entity_id'&& value ==="",
+      entity_error: name === 'entity_id' && value === "",
       class_id_error: name == 'class' && value === '',
       course_id_error: name === 'course' && value === '',
       institution_id_error: name === 'institute_name' && value === '',
       school_name_error: selectedEntity === 'School' && value === '',
+      stream_error:false
     });
     if (name === 'dob') {
       setdobset_col(teacher.dob === dayjs('dd-mm-yyyy'));
@@ -467,7 +492,7 @@ const TeacherRegistrationPage = () => {
       ),
       email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id),
       phone_no_error: !/^(?!0{10})[0-9]{10}$/.test(teacher.phone),
-      address_error:!/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address),
+      address_error: !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address),
       country_error: teacher.country == '',
       state_error: teacher.state == '',
       district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
@@ -481,7 +506,7 @@ const TeacherRegistrationPage = () => {
       teaching_experience_error: teacher.experience === '',
       subject_name_error: selectedSubject[0] === '',
       designation_role_error: false,
-      entity_error: teacher.entity_id==='',
+      entity_error: teacher.entity_id === '',
       class_id_error:
         selectedEntity === 'School' && teacher.class_id === '' ? true : false,
       course_id_error:
@@ -494,6 +519,7 @@ const TeacherRegistrationPage = () => {
           : false,
       school_name_error:
         selectedEntity === 'School' && teacher.school_name === '',
+        stream_error:false
     });
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -503,19 +529,19 @@ const TeacherRegistrationPage = () => {
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.class_id_error &&
-          !(teacher.class_id === '') &&
-          !error.school_name_error &&
-          !(teacher.school_name === '')
+        !(teacher.class_id === '') &&
+        !error.school_name_error &&
+        !(teacher.school_name === '')
         : true;
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.course_id_error &&
-          !(teacher.course_id === '') &&
-          !error.institution_id_error &&
-          !(teacher.institution_id === '')
+        !(teacher.course_id === '') &&
+        !error.institution_id_error &&
+        !(teacher.institution_id === '')
         : true;
-        console.log(error.subject_name_error);
+    console.log(error.subject_name_error);
     if (
       !error.first_name_error &&
 
@@ -543,9 +569,9 @@ const TeacherRegistrationPage = () => {
       !(teacher.state === '') &&
       !error.district_error &&
 
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.district.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.district.trim()) &&
       !error.city_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( teacher.city.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.city.trim()) &&
 
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
@@ -584,6 +610,7 @@ const TeacherRegistrationPage = () => {
           city: teacher.city,
           pincode: teacher.pincode,
           documents: allselectedfiles,
+          ...(selectedClassName==="col-6" && { stream: teacher.stream }),
         };
         console.log('payload', payload);
       } else {
@@ -622,7 +649,7 @@ const TeacherRegistrationPage = () => {
             alert(
               'Teacher registered request sended successfully please wait for 24-48 hours',
             );
-            window.location.reload();
+           window.location.reload();
           } else {
             toast.error(response.message, {
               hideProgressBar: true,
@@ -633,13 +660,13 @@ const TeacherRegistrationPage = () => {
         .catch((error) => {
           console.log(error);
         });
-    }else{
-      toast.error('validation error',{
+    } else {
+      toast.error('validation error', {
         hideProgressBar: true,
         theme: 'colored',
       })
 
-      
+
     }
   };
 
@@ -694,7 +721,7 @@ const TeacherRegistrationPage = () => {
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
-  console.log(teacher);
+  console.log(selectedClassName);
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -766,7 +793,7 @@ const TeacherRegistrationPage = () => {
                     control={<Radio />}
                     label="Male"
                   />
-                   <FormControlLabel
+                  <FormControlLabel
                     value="female"
                     control={<Radio />}
                     label="Female"
@@ -801,11 +828,11 @@ const TeacherRegistrationPage = () => {
               </LocalizationProvider>
               {dobset_col === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                <small>
+                  <small>
 
-                Please enter a valid date of birth.
+                    Please enter a valid date of birth.
 
-                </small>
+                  </small>
                 </p>
               )}
             </div>
@@ -893,7 +920,7 @@ const TeacherRegistrationPage = () => {
                   ))}
                 </Select>
               </FormControl>
-              {error.entity_error&&(
+              {error.entity_error && (
                 <p className="error-text " style={{ color: 'red' }}>
                   <small>
                     Please select an entity.
@@ -954,8 +981,8 @@ const TeacherRegistrationPage = () => {
                     ))}
                   </Select>
                 </FormControl>
-                {error.qualifications_error &&(
-                  <p className='error-text' style={{color:'red'}}>
+                {error.qualifications_error && (
+                  <p className='error-text' style={{ color: 'red' }}>
                     <small>Please select a qualification</small>
                   </p>
                 )
@@ -966,7 +993,7 @@ const TeacherRegistrationPage = () => {
 
           {selectedEntity === 'School' ? (
             <div className="row d-flex justify-content-center">
-              <div className="col-12">
+              <div className={selectedClassName}>
                 <label className="col-form-label">
                   School Name<span>*</span>
                 </label>
@@ -1012,6 +1039,54 @@ const TeacherRegistrationPage = () => {
                   </Select>
                 </FormControl>
               </div>
+              {selectedClassName === "col-6" && (
+                <div className='col-md-6 col-12 mb-3'>
+                  <label className="col-form-label">
+                    Stream Name<span>*</span>
+                  </label>
+                  <FormControl fullWidth>
+                    <InputLabel id="school_id">Stream Name</InputLabel>
+                    <Select
+                      labelId="school_id"
+                      id="demo2-multiple-name"
+                      name="stream"
+                      label="Stream Name"
+                      onChange={handleSelect}
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        '& .MuiSelect-icon': {
+                          color: fieldIcon(namecolor),
+                        },
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                          },
+                        },
+                      }}
+                    >
+                      {stream.map((item) => (
+                        <MenuItem
+                          key={item}
+                          value={item}
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                            },
+                          }}
+                        >
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
             </div>
           ) : (
             <div className="row d-flex justify-content-center">
@@ -1100,7 +1175,7 @@ const TeacherRegistrationPage = () => {
                 Subjects Taught<span>*</span>
               </label>
               <FormControl
-               fullWidth
+                fullWidth
               >
                 <InputLabel id="demo-multiple-checkbox-label">
                   Subject
@@ -1198,7 +1273,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                  Please enter a valid teaching experience.
+                    Please enter a valid teaching experience.
                   </small>
 
                 </p>
@@ -1259,7 +1334,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                  Please enter a valid district name.
+                    Please enter a valid district name.
                   </small>
 
                 </p>
@@ -1279,7 +1354,7 @@ const TeacherRegistrationPage = () => {
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
 
-                <small>Please enter a valid city name.</small>
+                  <small>Please enter a valid city name.</small>
 
                 </p>
               )}
@@ -1346,8 +1421,8 @@ const TeacherRegistrationPage = () => {
                     ))}
                   </Select>
                 </FormControl>
-                {error.qualifications_error &&(
-                  <p className='error-text' style={{color:'red'}}>
+                {error.qualifications_error && (
+                  <p className='error-text' style={{ color: 'red' }}>
                     <small>Please select a qualification</small>
                   </p>
                 )
@@ -1359,7 +1434,7 @@ const TeacherRegistrationPage = () => {
               <label className="col-form-label">
                 {' '}
                 Document<span>*   </span>
-              
+
               </label>
               {' '}
               <Button
