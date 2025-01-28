@@ -274,7 +274,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleEditFile(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.teacher_login_id,
                                     )
                                   }
                                 >

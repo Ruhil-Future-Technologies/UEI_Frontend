@@ -50,7 +50,6 @@ interface ITeacherForm {
   subjects: string[];
   entity_id: string;
   class_id?: string;
-  school_name?: string;
   university_id?: string;
   course_id?: string;
   experience: number;
@@ -108,7 +107,6 @@ const AddEditTeacher = () => {
     subjects: [],
     entity_id: '',
     class_id: '',
-    school_name: '',
     university_id: '',
     course_id: '',
     experience: 0,
@@ -154,7 +152,7 @@ const AddEditTeacher = () => {
 
   const callAPI = async () => {
     if (id) {
-      getData(`teacher/get/${id}`)
+      getData(`teacher/getbyloginid/${id}`)
         .then((data: { data: any }) => {
           const processedData = {
             first_name: data?.data?.first_name || '',
@@ -329,18 +327,18 @@ const AddEditTeacher = () => {
       .matches(charPattern, 'Please enter valid name, only characters allowed'),
     gender: Yup.string().required('Please select Gender'),
     email_id: Yup.string()
-      .required('Please enter Email id')
+      .required('Please enter Email')
       .matches(emailPattern, 'Please enter a valid Email format'),
     dob: Yup.date().required('Please enter Date of Birth'),
     phone: Yup.string()
-      .required('Please enter mobile number')
+      .required('Please enter Phone number')
       .matches(mobilePattern, 'Please enter a valid 10-digit mobile number'),
     subjects: Yup.array()
       .of(Yup.string())
       .min(1, 'Please select at least one subject')
       .required('Please select at least one subject'),
     qualification: Yup.string()
-      .required('Please select Qualification')
+      .required('Please enter Qualification')
       .matches(
         qualificationPattern,
         'Please enter valid qualification (letters, numbers, and basic punctuation allowed)',
@@ -398,9 +396,8 @@ const AddEditTeacher = () => {
       (r) => r.role_name.toLowerCase() === 'teacher',
     );
 
-    if (teacherData.class_id == '' || teacherData.school_name == '') {
+    if (teacherData.class_id == '') {
       delete teacherData.class_id;
-      delete teacherData.school_name;
     }
     if (teacherData.university_id == '' || teacherData.course_id == '') {
       delete teacherData.university_id;
@@ -440,6 +437,7 @@ const AddEditTeacher = () => {
               theme: 'colored',
             });
             resetForm({ values: initialState });
+            setDob(null);
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
@@ -554,13 +552,21 @@ const AddEditTeacher = () => {
         setTeacher((prevTeacher) => ({
           ...prevTeacher,
           country: value,
+          address: '',
           state: '',
+          city: '',
+          district: '',
+          pincode: '',
         }));
         setstate_col(true);
       } else if (name === 'state') {
         setTeacher((prevTeacher) => ({
           ...prevTeacher,
           state: value,
+          address: '',
+          city: '',
+          district: '',
+          pincode: '',
         }));
         setstate_col(false);
       }
@@ -751,7 +757,7 @@ const AddEditTeacher = () => {
                     <div className="col-md-2">
                       <div className="form_field_wrapper">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <Box width={300}>
+                          <Box>
                             <DatePicker
                               aria-label="datepicker_label"
                               value={dob}
@@ -805,7 +811,7 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
-                          label="Mobile *"
+                          label="Phone *"
                           name="phone"
                           value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -879,7 +885,6 @@ const AddEditTeacher = () => {
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'experience')
                           }
-                          inputProps={{ min: '0' }}
                         />
                         {touched?.experience && errors?.experience && (
                           <p className="error">{errors.experience}</p>
@@ -1070,18 +1075,25 @@ const AddEditTeacher = () => {
                     <div className="col-md-2">
                       <div className="form_field_wrapper">
                         <FormControl fullWidth>
-                          <InputLabel>Institute *</InputLabel>
+                          <InputLabel>
+                            {isSchoolEntity(values?.entity_id)
+                              ? 'School Name *'
+                              : isCollegeEntity(values?.entity_id)
+                                ? 'College Name *'
+                                : 'Institute *'}
+                          </InputLabel>
                           <Select
                             name="institution_id"
                             value={values?.institution_id}
-                            label="Institute *"
+                            label={
+                              isSchoolEntity(values?.entity_id)
+                                ? 'School Name *'
+                                : isCollegeEntity(values?.entity_id)
+                                  ? 'College Name *'
+                                  : 'Institute *'
+                            }
                             onChange={(e: SelectChangeEvent<string>) =>
                               handleChange(e, 'institution_id')
-                            }
-                            disabled={
-                              isCollegeEntity(values?.entity_id)
-                                ? !values?.university_id
-                                : false
                             }
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1253,7 +1265,7 @@ const AddEditTeacher = () => {
                       </div>
                     </div>
                     <div
-                      className="floating-label-container col-md-2 mt-4"
+                      className="floating-label-container col-md-2"
                       ref={dropdownRef}
                     >
                       <label
@@ -1268,7 +1280,7 @@ const AddEditTeacher = () => {
                         tabIndex={-1}
                       >
                         <CountryDropdown
-                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
+                          classes="form-control p-3 custom-dropdown"
                           defaultOptionLabel={values?.country || ''}
                           value={values?.country || ''}
                           onChange={(e) =>
@@ -1285,7 +1297,7 @@ const AddEditTeacher = () => {
                       </div>
                     </div>
                     <div
-                      className="floating-label-container col-md-2 mt-4"
+                      className="floating-label-container col-md-2"
                       ref={dropdownstateRef}
                     >
                       <label
@@ -1300,7 +1312,7 @@ const AddEditTeacher = () => {
                         tabIndex={-1}
                       >
                         <RegionDropdown
-                          classes="form-control p-3 pt-1 pb-1 custom-dropdown"
+                          classes="form-control p-3 custom-dropdown"
                           defaultOptionLabel={values?.state || ''}
                           country={values?.country || ''}
                           value={values?.state || ''}

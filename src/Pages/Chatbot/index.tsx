@@ -9,6 +9,25 @@ interface IChatBot {
 }
 
 const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
+  const hasLatex = Array.isArray(answer)
+    ? answer.some(
+        (text) =>
+          typeof text === 'string' &&
+          (text.includes('$') ||
+            text.includes('\\[') ||
+            text.includes('\\(') ||
+            text.includes('\\)') ||
+            text.includes('$\\boxed') ||
+            text.match(/\$[^$\n]+?\$/g)),
+      )
+    : typeof answer === 'string' &&
+      (answer.includes('$') ||
+        answer.includes('\\[') ||
+        answer.includes('\\(') ||
+        answer.includes('\\)') ||
+        answer.includes('$\\boxed') ||
+        answer.match(/\$[^$\n]+?\$/g));
+
   const parseAndCleanAnswer = (input: any): string[] => {
     if (typeof input === 'object') {
       return Object.entries(input).map(([key, value]) => `${key}. ${value}`);
@@ -115,17 +134,22 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
   const processLatex = (latex: string): string => {
     latex = latex
+      .replace(/\\{2,}/g, '\\')
       .replace(/^\n*\\+\[/, '')
       .replace(/\\+\]\n*$/, '')
       .trim();
     latex = latex.replace(/\\round\(([^)]+)\)/g, '\\lceil$1\\rceil');
     latex = latex.replace(/^\\\[|\\\]$/g, '');
 
-    if (latex.includes('\\div')) {
+    if (latex.includes('\\times') || latex.includes('\\div')) {
       return latex.trim();
     }
+
     if (latex.startsWith('\\(') && latex.endsWith('\\)')) {
       latex = latex.slice(2, -2);
+    }
+    if (latex.match(/\\boxed{[a-zA-Z\s-]+}$/)) {
+      return latex.replace(/\\boxed{([^}]+)}/, '$1');
     }
     if (
       latex.match(/\\boxed.*/) &&
@@ -186,10 +210,17 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         /\\boxed(?:\{([^{}]*(?:\{[^{}]*\})*[^{}]*)\}|(\d+\.?\d*))/g,
         '$1$2',
       )
+      .replace(/\\$/, '')
       .trim();
   };
 
   const renderText = (text: string): JSX.Element => {
+    if (text.match(/^\[(.*)\]$/)) {
+      const innerContent = text.slice(1, -1).trim().replace(/\t/, '\\t');
+
+      return <InlineMath key={currentIndex} math={innerContent} />;
+    }
+
     text = text
       .replace(/\(([^()]*)\)/g, (match, inner) => {
         if (inner.match(/^[A-Z]\s*=\s*\\frac/)) {
@@ -208,8 +239,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       return <></>;
     }
     const displayMathRegex =
-      /((?:\n?\\+\[[\s\S]*?\\+\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([\s\S]*?\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$[^$\n]+?\$))/gs;
-
+      /((?:\n?\\[[\s\S]*?\\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([^)]*\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$[^$\n]+?\$))/gs;
     if (text.includes('$') || text.includes('\\[') || text.includes('\\(')) {
       const parts = text
         .split(displayMathRegex)
@@ -222,7 +252,9 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
           {parts.map((part, idx) => {
             if (part?.match(/^\\\(.*\\\)$/)) {
               try {
-                let latex = part.slice(2, -2).trim();
+                let latex = part.replace(/^\\\(|\\\)$/g, '').trim();
+
+                latex = latex.replace(/\$([^$]+)\$/g, '$1');
 
                 latex = latex
                   .replace(/·/g, '\\cdot{}')
@@ -241,6 +273,8 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
               }
             }
             if (part?.match(/\n?\\+\[[\s\S]*?\\+\]\n?/)) {
+              console.log('called');
+
               try {
                 const equations = part
                   .split(/\\+\]/)
@@ -303,20 +337,34 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
             if (part?.startsWith('$') && part?.endsWith('$')) {
               const content = part.slice(1, -1);
-
               if (content.includes('\\boxed{')) {
                 const boxedMatch = content.match(/\\boxed{([^]*)}/);
                 if (boxedMatch) {
-                  const innerContent = boxedMatch[1]
+                  const innerContent = boxedMatch[1];
+
+                  if (/^[a-zA-Z\s-]+$/.test(innerContent)) {
+                    return (
+                      <span
+                        key={idx}
+                        style={{
+                          fontWeight: '500',
+                        }}
+                      >
+                        {innerContent}
+                      </span>
+                    );
+                  }
+                  const processedContent = innerContent
                     .replace(/\\pi/g, '\\pi ')
                     .replace(/\^{(\d+)}/g, '^{$1}')
                     .replace(/=/g, ' = ')
                     .replace(/\s+/g, ' ')
                     .trim();
 
-                  return <InlineMath key={idx} math={innerContent} />;
+                  return <InlineMath key={idx} math={processedContent} />;
                 }
               }
+
               const latex = processLatex(content);
 
               return <InlineMath key={idx} math={latex} />;
@@ -330,7 +378,9 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     return processNonLatexText(text, currentIndex);
   };
   const processNonLatexText = (text: string, idx: number): JSX.Element => {
-    text = text.replace(/\((\d+)\)\s*/g, (_, num) => `\n(${num}) `);
+    text = text
+      .replace(/\\/g, '')
+      .replace(/\((\d+)\)\s*/g, (_, num) => `\n(${num}) `);
 
     const parts = [];
     let lastIndex = 0;
@@ -361,6 +411,7 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       }
 
       const content = match[0];
+
       if (content.startsWith('##')) {
         const headerContent = content.replace(/^##\s*/, '').trim();
         parts.push(
@@ -378,9 +429,23 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
           </a>,
         );
       } else {
-        const boldContent = content.slice(2, -2).replace(/`{1,3}/g, '');
+        const isNumberedBold =
+          /^\*\*\d+\./.test(content) && !content.endsWith(':**');
+
+        const boldContent = content
+          .replace(/^\*\*|\*\*$/g, '')
+          .replace(/`{1,3}/g, '');
+
         parts.push(
-          <strong key={`${idx}-${match.index}`}>{boldContent} </strong>,
+          <React.Fragment key={`${idx}-${match.index}`}>
+            {isNumberedBold && (
+              <>
+                <br />
+                <br />
+              </>
+            )}
+            <strong>{boldContent}</strong>
+          </React.Fragment>,
         );
       }
       lastIndex = match.index + match[0].length;
@@ -399,26 +464,34 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         .replace(/(?<![*])\*(?![*])/g, '⋆')
         .replace(/`{1,3}/g, '');
 
-      const paragraphs = remainingText.split(/(?<=\.)\s+(?=[A-Z])/);
+      const paragraphs = remainingText.split(/\d+\.\s+\*\*/);
 
       const formattedParagraphs = paragraphs.map((paragraph, pIndex) => {
-        const lines = paragraph.split('\n').map((line) => {
-          if (line.match(/^\(\d+\)/)) {
-            return `${line}`;
+        const lines = paragraph.split(/(?<=\.)\s+(?=[A-Z])/);
+
+        const processedLines = lines.map((line, lineIndex) => {
+          const boldMatch = line.match(/^([^*]+)\*\*:\s*(.*)/);
+
+          if (boldMatch) {
+            return (
+              <React.Fragment key={lineIndex}>
+                <strong>{`${pIndex}. ${boldMatch[1]}:`}</strong>
+                {!hasLatex && <br />}
+                {boldMatch[2]}
+              </React.Fragment>
+            );
           }
           return line;
         });
-        const hasNumberedPoints = lines.some((line) => line.match(/^\(\d+\)/));
 
         return (
           <React.Fragment key={`para-${pIndex}`}>
-            {lines.map((line, i) => (
+            {processedLines.map((line, i) => (
               <React.Fragment key={`line-${i}`}>
-                {hasNumberedPoints && line.match(/^\(\d+\)/) && <br />} {line}
-                {(line.match(/^\s*\(\d+\)/) || i < lines.length - 1) && <br />}
+                {line}
+                {!hasLatex && <br />}
               </React.Fragment>
             ))}
-            {pIndex < paragraphs.length - 1 && <br />}
           </React.Fragment>
         );
       });
