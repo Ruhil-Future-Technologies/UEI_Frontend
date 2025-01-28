@@ -1,32 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
-const TeacherDash = () => {
-    return (
-        <div className="main-wrapper">
-            <div className="main-content">
-            <h1 className="text-center">teacher deshboard data come soon !!!!!!</h1>
-                <div className="d-flex justify-cantent-between">
-                <div className="card m-2">
-                    <div className="p-2">
-                      
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis, natus dicta dignissimos necessitatibus dolor cum praesentium quibusdam eveniet ipsa doloribus nesciunt?
-                            Molestias ratione in quae dolorum perspiciatis mollitia totam maxime! Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus animi quod repellendus asperiores!
-                             Saepe aliquam totam architecto quae nam ducimus debitis maxime dolor aperiam assumenda. Hic quibusdam necessitatibus reprehenderit dolorum.</p>
-                    </div>
-                </div>
-                <div className="card m-2">
-                    <div className="p-2">
-                       
-                        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officiis, natus dicta dignissimos necessitatibus dolor cum praesentium quibusdam eveniet ipsa doloribus nesciunt?
-                            Molestias ratione in quae dolorum perspiciatis mollitia totam maxime!</p>
-                    </div>
-                </div>
-                </div>
-                <h3 style={{ textAlign: 'center', marginBottom: '0px', color:"red" }}>Coming soon...........!!!!!!</h3>
-            </div>
+import React, { useEffect } from 'react';
+import Header from '../../Components/Header';
+import { Outlet } from 'react-router-dom';
+import Footer from '../../Components/Footer';
+import TeacherSideVar from './TeacherSidevar';
+const TeacherMain = () => {
+  const synth: SpeechSynthesis = window?.speechSynthesis;
+  useEffect(() => {
+    synth.cancel();
+  });
+  return (
+    <>
+      <div className="main_block">
+        <div className="header"></div>
+
+        <div className="main_section" id="main-content">
+          <Header />
+          {/* <div className="sidebar_section"> */}
+          <TeacherSideVar />
+          {/* </div> */}
+          {/* <div className="dashboard_main_content"> */}
+          <Outlet />
+          {/* </div> */}
+          {/* <div className="footer"> */}
+          {/* </div> */}
         </div>
-    )
+      </div>
+      <Footer />
+    </>
+  );
+};
 
-}
-
-export default TeacherDash;
+export default TeacherMain;

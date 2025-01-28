@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Submenu/Submenu.scss";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { InputLabel, Typography } from "@mui/material";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_SUBMENU } from "../../utils/const";
-import { toast } from "react-toastify";
-import { Field, Form, Formik, FormikHelpers, FormikProps } from "formik";
-import * as Yup from "yup";
-import { MenuListinter } from "../../Components/Table/columns";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Submenu/Submenu.scss';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { InputLabel, Typography } from '@mui/material';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_SUBMENU } from '../../utils/const';
+import { toast } from 'react-toastify';
+import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
+import * as Yup from 'yup';
+import { MenuListinter } from '../../Components/Table/columns';
 import {
   dataaccess,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface ISubMenuForm {
   menu_name: string;
@@ -39,33 +40,30 @@ const AddEditSubmenu = () => {
   const numberPattern = /^\d+$/;
 
   const initialState = {
-    menu_name: "",
-    menu_master_id: "",
-    priority: "",
+    menu_name: '',
+    menu_master_id: '',
+    priority: '',
   };
   const [submenu, setSubmenu] = useState(initialState);
   const [dataMenu, setDataMenu] = useState<any>([]);
   const formRef = useRef<FormikProps<ISubMenuForm>>(null);
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = id
     ? pathSegments[pathSegments.length - 3].toLowerCase()
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
- 
-
   useEffect(() => {
-    
     setFilteredData(
       dataaccess(
         Menulist,
         lastSegment,
-        { urlcheck: "sub menu" },
-        { datatest: "submenu" }
-      )
+        { urlcheck: 'sub menu' },
+        { datatest: 'submenu' },
+      ),
     );
   }, [Menulist, lastSegment]);
 
@@ -73,7 +71,7 @@ const AddEditSubmenu = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigator("/main/Submenu");
+    navigator('/main/Submenu');
   }
 
   const callAPI = async () => {
@@ -82,7 +80,7 @@ const AddEditSubmenu = () => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
         const filteredData = data?.data.filter(
-          (item: any) => item?.is_active === 1
+          (item: any) => item?.is_active === 1,
         );
         setDataMenu(filteredData);
         // setDataMenu(data?.data)
@@ -90,19 +88,18 @@ const AddEditSubmenu = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     if (id) {
-      getData(`${SubmenuEditURL}${id ? `/${id}` : ""}`)
+      getData(`${SubmenuEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          
           setSubmenu(data?.data);
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -113,7 +110,7 @@ const AddEditSubmenu = () => {
 
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
     setSubmenu((prevMenu) => {
       return {
@@ -128,39 +125,36 @@ const AddEditSubmenu = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof ISubMenuForm]
+        formRef?.current?.errors?.[fieldName as keyof ISubMenuForm],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
 
- 
   const handleSubmit = async (
     submenuData: ISubMenuForm,
-    { resetForm }: FormikHelpers<ISubMenuForm>
+    { resetForm }: FormikHelpers<ISubMenuForm>,
   ) => {
-  
     if (id) {
       putData(`${SubmenuEditURL}/${id}`, submenuData)
         .then((data: any) => {
-         
           if (data.status === 200) {
-            navigator("/main/Submenu");
+            navigator('/main/Submenu');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -172,35 +166,35 @@ const AddEditSubmenu = () => {
             // navigator('/main/Submenu')
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             resetForm({ values: initialState });
           } else {
-            toast.error("Please add menu first", {
+            toast.error('Please add menu first', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const submenuSchema = Yup.object().shape({
     menu_name: Yup.string()
-      .required("Please enter submenu name")
+      .required('Please enter submenu name')
       .matches(
         charPattern,
-        "Please enter valid Submenu name only characters allowed."
+        'Please enter valid Submenu name only characters allowed.',
       ),
     priority: Yup.string()
-      .required("Please enter valid menu sequence number")
-      .matches(numberPattern, "Please enter valid menu sequence number."),
-    menu_master_id: Yup.string().required("Please select menu name"),
+      .required('Please enter valid menu sequence number')
+      .matches(numberPattern, 'Please enter valid menu sequence number.'),
+    menu_master_id: Yup.string().required('Please select menu name'),
   });
 
   return (
@@ -243,15 +237,18 @@ const AddEditSubmenu = () => {
                             </InputLabel>
                             <Select
                               onChange={(e: SelectChangeEvent<string>) =>
-                                handleChange(e, "menu_master_id")
+                                handleChange(e, 'menu_master_id')
                               }
-                              label="Menu"
+                              label="Menu name *"
                               name="menu_master_id"
                               value={values?.menu_master_id}
                               variant="outlined"
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
                               }}
                               MenuProps={{
                                 PaperProps: {
@@ -285,7 +282,7 @@ const AddEditSubmenu = () => {
                                       | null
                                       | undefined;
                                   },
-                                  idx: number
+                                  idx: number,
                                 ) => (
                                   <MenuItem
                                     value={item.id}
@@ -293,7 +290,7 @@ const AddEditSubmenu = () => {
                                     sx={{
                                       backgroundColor: inputfield(namecolor),
                                       color: inputfieldtext(namecolor),
-                                      "&:hover": {
+                                      '&:hover': {
                                         backgroundColor:
                                           inputfieldhover(namecolor), // Change this to your desired hover background color
                                       },
@@ -301,12 +298,12 @@ const AddEditSubmenu = () => {
                                   >
                                     {item.menu_name}
                                   </MenuItem>
-                                )
+                                ),
                               )}
                             </Select>
                           </FormControl>
                           {touched?.menu_master_id && errors?.menu_master_id ? (
-                            <p style={{ color: "red" }}>
+                            <p style={{ color: 'red' }}>
                               {errors?.menu_master_id}
                             </p>
                           ) : (
@@ -323,20 +320,18 @@ const AddEditSubmenu = () => {
                             label="Submenu name *"
                             value={values?.menu_name}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange(e, "menu_name")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'menu_name')}
                           />
                           {touched?.menu_name && errors?.menu_name ? (
-                            <p style={{ color: "red" }}>{errors?.menu_name}</p>
+                            <p style={{ color: 'red' }}>{errors?.menu_name}</p>
                           ) : (
                             <></>
                           )}
                         </div>
-                       
                       </div>
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
-                          
                           <Field
                             component={TextField}
                             type="text"
@@ -344,22 +339,20 @@ const AddEditSubmenu = () => {
                             label="Menu sequence *"
                             value={values?.priority}
                             onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => handleChange(e, "priority")}
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'priority')}
                           />
                           {touched?.priority && errors?.priority ? (
-                            <p style={{ color: "red" }}>{errors?.priority}</p>
+                            <p style={{ color: 'red' }}>{errors?.priority}</p>
                           ) : (
                             <></>
                           )}
                         </div>
-                        
                       </div>
                     </div>
                     <button className="btn btn-primary mainbutton mt-4">
-                      {id ? "Update" : "Save"}
+                      {id ? 'Update' : 'Save'}
                     </button>
-                  
                   </Form>
                 )}
               </Formik>

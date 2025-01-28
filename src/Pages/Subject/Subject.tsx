@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from "react";
-import "../Subject/Subject.scss";
-import useApi from "../../hooks/useAPI";
+import React, { useContext, useEffect, useState } from 'react';
+import '../Subject/Subject.scss';
+import useApi from '../../hooks/useAPI';
 import {
   Box,
   Button,
@@ -10,39 +10,37 @@ import {
   Tabs,
   Tooltip,
   Typography,
-} from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
+} from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 import {
   MenuListinter,
   SUBJECT_COLUMNS,
   SUBJECT_COLUMNS_SCHOOL,
-} from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+} from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
-} from "../../utils/const";
-import { toast } from "react-toastify";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { dataaccess, tabletools } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-
-
+} from '../../utils/const';
+import { toast } from 'react-toastify';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { dataaccess, tabletools } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 const Subject = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const pathSegments = location.pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  const Menulist: any = localStorage.getItem("menulist1");
+  const Menulist: any = localStorage.getItem('menulist1');
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist, lastSegment]);
   // console.log('Menulist', filteredData, lastSegment)
@@ -57,7 +55,7 @@ const Subject = () => {
   const [dataSubject, setDataSubject] = useState([]);
   const [dataSubjectSchool, setDataSubjectSchool] = useState([]);
   const [dataDelete, setDataDelete] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState("");
+  const [dataDeleteId, setDataDeleteId] = useState('');
   const [tabValue, setTabValue] = useState(0);
   const callAPI = async () => {
     getData(`${SubjectURL}`)
@@ -71,12 +69,11 @@ const Subject = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
     getData(`${SubjectSchoolURL}`)
       .then((data: any) => {
-       
         if (data.data) {
           setDataSubjectSchool(data?.data);
         }
@@ -84,7 +81,7 @@ const Subject = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -92,9 +89,9 @@ const Subject = () => {
     callAPI();
   }, []);
   const handleEditFile = (id: any) => {
-    console.log("test lod id", id);
+    console.log('test lod id', id);
     navigate(
-      tabValue === 0 ? `edit-Subject/${id}` : `edit-Subject-school/${id}`
+      tabValue === 0 ? `edit-Subject/${id}` : `edit-Subject-school/${id}`,
     );
   };
   const handlecancel = () => {
@@ -106,12 +103,12 @@ const Subject = () => {
   };
   const handleDelete = (id: any) => {
     deleteData(
-      `${tabValue === 0 ? DeleteSubjectURL : DeleteSubjectSchoolURL}/${id}`
+      `${tabValue === 0 ? DeleteSubjectURL : DeleteSubjectSchoolURL}/${id}`,
     )
       .then((data: any) => {
         toast.success(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
         callAPI();
         setDataDelete(false);
@@ -119,17 +116,17 @@ const Subject = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
   const handleTabChange = (
     _event: any,
-    newValue: React.SetStateAction<number>
+    newValue: React.SetStateAction<number>,
   ) => {
     setTabValue(newValue);
   };
-  console.log("test tabs", tabValue);
+  console.log('test tabs', tabValue);
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -142,9 +139,9 @@ const Subject = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -156,7 +153,7 @@ const Subject = () => {
                         variant="contained"
                         component={NavLink}
                         to={
-                          tabValue === 0 ? "add-Subject" : "add-Subject-school"
+                          tabValue === 0 ? 'add-Subject' : 'add-Subject-school'
                         }
                       >
                         Add Subject
@@ -198,32 +195,32 @@ const Subject = () => {
                         }}
                         enableRowActions
                         displayColumnDefOptions={{
-                          "mrt-row-actions": {
-                            header: "Actions",
+                          'mrt-row-actions': {
+                            header: 'Actions',
                             size: 150,
                           },
                         }}
                         renderRowActions={(row) => (
                           <Box
                             sx={{
-                              display: "flex",
-                              flexWrap: "nowrap",
-                              gap: "0.5",
-                              marginLeft: "-5px",
-                              width: "140px",
+                              display: 'flex',
+                              flexWrap: 'nowrap',
+                              gap: '0.5',
+                              marginLeft: '-5px',
+                              width: '140px',
                             }}
                           >
                             {filteredData?.form_data?.is_update === true && (
                               <Tooltip arrow placement="right" title="Edit">
                                 <IconButton
                                   sx={{
-                                    width: "35px",
-                                    height: "35px",
+                                    width: '35px',
+                                    height: '35px',
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
                                     handleEditFile(
-                                      row?.row?.original?.subject_id
+                                      row?.row?.original?.subject_id,
                                     );
                                   }}
                                 >
@@ -235,13 +232,13 @@ const Subject = () => {
                             <Tooltip arrow placement="right" title="Delete">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {
                                   handleDeleteFiles(
-                                    row?.row?.original?.subject_id
+                                    row?.row?.original?.subject_id,
                                   );
                                 }}
                               >
@@ -268,32 +265,32 @@ const Subject = () => {
                         }}
                         enableRowActions
                         displayColumnDefOptions={{
-                          "mrt-row-actions": {
-                            header: "Actions",
+                          'mrt-row-actions': {
+                            header: 'Actions',
                             size: 150,
                           },
                         }}
                         renderRowActions={(row) => (
                           <Box
                             sx={{
-                              display: "flex",
-                              flexWrap: "nowrap",
-                              gap: "0.5",
-                              marginLeft: "-5px",
-                              width: "140px",
+                              display: 'flex',
+                              flexWrap: 'nowrap',
+                              gap: '0.5',
+                              marginLeft: '-5px',
+                              width: '140px',
                             }}
                           >
                             {filteredData?.form_data?.is_update === true && (
                               <Tooltip arrow placement="right" title="Edit">
                                 <IconButton
                                   sx={{
-                                    width: "35px",
-                                    height: "35px",
+                                    width: '35px',
+                                    height: '35px',
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
                                     handleEditFile(
-                                      row?.row?.original?.subject_id
+                                      row?.row?.original?.subject_id,
                                     );
                                   }}
                                 >
@@ -305,13 +302,13 @@ const Subject = () => {
                             <Tooltip arrow placement="right" title="Delete">
                               <IconButton
                                 sx={{
-                                  width: "35px",
-                                  height: "35px",
+                                  width: '35px',
+                                  height: '35px',
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {
                                   handleDeleteFiles(
-                                    row?.row?.original?.subject_id
+                                    row?.row?.original?.subject_id,
                                   );
                                 }}
                               >

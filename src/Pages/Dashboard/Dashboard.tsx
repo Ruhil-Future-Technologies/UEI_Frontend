@@ -1,13 +1,12 @@
-import React from 'react'
-import MainContent from '../../Components/MainContent/MainContent'
-
+import React from 'react';
+import MainContent from '../../Components/MainContent/MainContent';
 
 function Dashboard() {
-    return (
-        <>
-            <MainContent /> 
-        </>
-    )
+  return (
+    <>
+      <MainContent />
+    </>
+  );
 }
 
-export default Dashboard
+export default Dashboard;

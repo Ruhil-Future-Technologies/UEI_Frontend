@@ -1,21 +1,39 @@
-import React from "react";
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const InstitutionDash = () => {
-    return (
+import React, { useEffect } from 'react';
 
-        <div className="main-wrapper">
-            <div className="main-content">
-                <h1>Institution Dashboard</h1>
+import InstituteSidevar from './instituteSidevar';
+// import "../Main/Main.scss";
+import { Outlet } from 'react-router-dom';
+import Header from '../../Components/Header';
+import Footer from '../../Components/Footer';
+// import "../../assets/css/main.min.css";
+// import "../../assets/css/newstyle.min.css";
+// import "../../assets/css/newstyle.scss";
 
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, vel? Ullam
-                    at eaque, voluptatum necessitatibus blanditiis totam voluptatem voluptas ut
-                    itaque natus repudiandae a id! Aliquam, tempora? Tenetur,
-                    provident voluptatibus.
-                </p>
+const IntituteMain = () => {
+  const synth: SpeechSynthesis = window?.speechSynthesis;
+  useEffect(() => {
+    synth.cancel();
+  });
+  return (
+    <>
+      <div className="main_block">
+        <div className="header"></div>
 
-            </div>
+        <div className="main_section" id="main-content">
+          <Header />
+          {/* <div className="sidebar_section"> */}
+          <InstituteSidevar />
+          {/* </div> */}
+          {/* <div className="dashboard_main_content"> */}
+          <Outlet />
+          {/* </div> */}
+          {/* <div className="footer"> */}
+          {/* </div> */}
         </div>
-    )
-}
+      </div>
+      <Footer />
+    </>
+  );
+};
 
-export default InstitutionDash;
+export default IntituteMain;

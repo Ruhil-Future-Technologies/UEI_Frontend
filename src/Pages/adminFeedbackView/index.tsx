@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from "@mui/material";
-import useApi from "../../hooks/useAPI";
+} from '@mui/material';
+import useApi from '../../hooks/useAPI';
 type Feedback = {
   id: number;
   created_by: string;
@@ -27,7 +27,7 @@ const AdminFeedbackView = () => {
 
   // Fetch feedbacks from an API
   useEffect(() => {
-    getData(`${"/feedback/"}`).then((data) => {
+    getData(`${'/feedback/'}`).then((data) => {
       if (data.status === 200) {
         console.log(data.data);
         setFeedbacks(data.data);
@@ -66,9 +66,9 @@ const AdminFeedbackView = () => {
                 {new Date(feedback.updated_at).toLocaleString()}
               </TableCell>
               <TableCell>
-                {feedback.is_active ? "Active" : "Inactive"}
+                {feedback.is_active ? 'Active' : 'Inactive'}
               </TableCell>
-              <TableCell>{feedback.is_deleted ? "Yes" : "No"}</TableCell>
+              <TableCell>{feedback.is_deleted ? 'Yes' : 'No'}</TableCell>
             </TableRow>
           ))}
         </TableBody>

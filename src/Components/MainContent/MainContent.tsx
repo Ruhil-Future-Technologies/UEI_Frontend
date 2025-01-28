@@ -1,107 +1,105 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from 'react';
 //import "./MainContent.css";
-import { Bar, Line } from "react-chartjs-2";
-import Chart from "react-apexcharts";
-import "chart.js/auto";
-import { PieChart } from "@mui/x-charts/PieChart";
-import { Chart as ChartJS, ChartOptions, ChartData } from "chart.js";
+import { Bar, Line } from 'react-chartjs-2';
+import Chart from 'react-apexcharts';
+import 'chart.js/auto';
+import { PieChart } from '@mui/x-charts/PieChart';
+import { Chart as ChartJS, ChartOptions, ChartData } from 'chart.js';
 
 // import { Dataset } from '@mui/icons-material';
 // import Box from '@mui/material/Box';
-import useApi from "../../hooks/useAPI";
+import useApi from '../../hooks/useAPI';
 // import Button from '@mui/material/Button';
-import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
-import { Link, useNavigate } from "react-router-dom";
+import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_STUDENT,
-} from "../../utils/const";
-import CreateIcon from "@mui/icons-material/Create";
+  QUERY_KEYS_UNIVERSITY,
+} from '../../utils/const';
+import CreateIcon from '@mui/icons-material/Create';
 
-import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
-import OpenInFullOutlinedIcon from "@mui/icons-material/OpenInFullOutlined";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import VolumeUpOutlinedIcon from "@mui/icons-material/VolumeUpOutlined";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import VolumeOffOutlinedIcon from "@mui/icons-material/VolumeOffOutlined";
-import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined";
-import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
-import CircularProgress from "@mui/material/CircularProgress";
-import IconButton from "@mui/material/IconButton";
-import { toast, ToastContentProps } from "react-toastify";
-import logo from "../../assets/img/g-logo-white.svg";
-import chatLogo from "../../assets/img/chat-logo.svg";
-import maleImage from "../../assets/img/avatars/male.png";
-import femaleImage from "../../assets/img/avatars/female.png";
-import robotImage from "../../assets/img/robot.png";
-import { hasSubMenu } from "../../utils/helpers";
-import FullScreenLoader from "../../Pages/Loader/FullScreenLoader";
-import NameContext from "../../Pages/Context/NameContext";
-import { ProfileDialog } from "../Dailog/ProfileComplation";
-import "../../../node_modules/react-perfect-scrollbar/dist/css/styles.css";
-import ThemeSidebar from "../ThemeSidebar/ThemeSidebar";
-import Chatbot from "../../Pages/Chatbot";
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
+import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined';
+import CachedOutlinedIcon from '@mui/icons-material/CachedOutlined';
+import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import { toast, ToastContentProps } from 'react-toastify';
+import logo from '../../assets/img/g-logo-white.svg';
+import chatLogo from '../../assets/img/chat-logo.svg';
+import maleImage from '../../assets/img/avatars/male.png';
+import femaleImage from '../../assets/img/avatars/female.png';
+import robotImage from '../../assets/img/robot.png';
+import { fieldIcon, hasSubMenu } from '../../utils/helpers';
+import FullScreenLoader from '../../Pages/Loader/FullScreenLoader';
+import NameContext from '../../Pages/Context/NameContext';
+import { ProfileDialog } from '../Dailog/ProfileComplation';
+import '../../../node_modules/react-perfect-scrollbar/dist/css/styles.css';
+import ThemeSidebar from '../ThemeSidebar/ThemeSidebar';
+import Chatbot from '../../Pages/Chatbot';
+import theme from '../../theme';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import FlagIcon from '@mui/icons-material/Flag';
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage }: any = context;
-  const [userName, setUserName] = useState("");
-  const StudentId = localStorage.getItem("_id");
-  const menuList = localStorage.getItem("menulist1");
-  let menudata: any = [];
-  if (menuList !== null) {
-    menudata = JSON.parse(menuList);
-  }
+  const { ProPercentage, setProPercentage, namecolor }: any = context;
+  const [userName, setUserName] = useState('');
+  const StudentId = localStorage.getItem('_id');
+  const menuList = localStorage.getItem('menulist1');
+
+  const getMenuList = () => {
+    const menuList = localStorage.getItem('menulist1');
+    return menuList ? JSON.parse(menuList) : [];
+  };
+  const menudata = getMenuList();
+
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const ChatURL = QUERY_KEYS.CHATADD;
   const ChatStore = QUERY_KEYS.CHAT_STORE;
-  // const ChatDELETEURL = QUERY_KEYS.CHATDELETE;
+  const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
+  const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
   const chatlisturl = QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const [profileDatas, setProfileDatas] = useState<any>({});
-  // const [basicinfoPercentage, setbasicinfoPercentage] = useState<number>(0);
-  // const [addressPercentage, setaddressPercentage] = useState<number>(0);
-  // const [languagePercentage, setlanguagePercentage] = useState<number>(0);
-  // const [academichistoryPercentage, setacademichistoryPercentage] =
-  //   useState<number>(0);
-  // const [contactPercentage, setcontactPercentage] = useState<number>(0);
-  // // const [hobbyPercentage, sethobbyPercentage] = useState<number>(0);
-  // const [subjectPercentage, setsubjectPercentage] = useState<number>(0);
-  // const [overallProfilePercentage, setoverallProfilePercentage] =
-  //   useState<number>(0);
-  // const [desctiptionPercentage, setdesctiptionPercentage] = useState<number>(0);
   const [profileImage, setprofileImage] = useState<any>();
   const [dataCompleted, setDataCompleted] = useState(false);
-  const [themeMode, setThemeMode] = useState("");
-  const [studentClass, setStudentClass] = useState("");
-  const [studentCourse, setStudentCourse] = useState("");
-  const [search, setSearch] = useState("");
-  const [regenerateSearch, setRegenerateSearch] = useState("");
+  const [themeMode, setThemeMode] = useState('');
+  const [studentClass, setStudentClass] = useState('');
+  const [studentCourse, setStudentCourse] = useState('');
+  const [search, setSearch] = useState('');
+  // const [regenerateSearch, setRegenerateSearch] = useState("");
   const [searcherr, setSearchErr] = useState(false);
-  const [loaderMsg, setLoaderMsg] = useState("");
+  const [loaderMsg, setLoaderMsg] = useState('');
   const [loader, setLoader] = useState(false);
   const [chatLoader, setChatLoader] = useState(false);
   const [selectedchat, setSelectedChat] = useState<any>([]);
-  const [chatsaved, setChatSaved] = useState<boolean>(false);
+  const [, setChatSaved] = useState<boolean>(false);
   const [chat, setchatData] = useState<any>([]);
   const [chatlist, setchatlistData] = useState<any>();
   // const [chathistory, setchathistory] = useState<any>([]);
@@ -117,15 +115,106 @@ function MainContent() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const chatRef = useRef<HTMLInputElement>(null);
 
-  const usertype: any = localStorage.getItem("user_type");
+  const usertype: any = localStorage.getItem('user_type');
   // const userdata = JSON.parse(localStorage?.getItem("userdata") || "/{/}/");
-  const userdata = JSON.parse(localStorage?.getItem("userdata") || "{}");
+  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [university_list_data, setUniversity_List_Data] = useState([]);
+  const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
+  const [flagged, setFlagged] = useState(false);
+
+  const handleFlag = () => {
+    setFlagged(!flagged);
+
+    const chatDataString = localStorage.getItem('chatData');
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((chat: any) => ({
+        ...chat,
+        flagged: !flagged,
+      }));
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
+    }
+    // saveChat();
+  };
+
+  const handleUpIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
+    }
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: 'liked',
+    }));
+
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: true,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem('chatData');
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: true,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
+    }
+  };
+  const handleDownIconClick = (index: number) => {
+    if (selectedchat[index].like_dislike !== null) {
+      return;
+    }
+    setLikedStates((prevStates) => ({
+      ...prevStates,
+      [index]: 'disliked',
+    }));
+    const updatedChat = [...selectedchat];
+    updatedChat[index] = {
+      ...updatedChat[index],
+      like_dislike: false,
+    };
+    setSelectedChat(updatedChat);
+    const chatDataString = localStorage.getItem('chatData');
+    if (chatDataString) {
+      const chatData = JSON.parse(chatDataString);
+      const updatedChatData = chatData.map((item: any) => {
+        const isMatch =
+          item.question === selectedchat[index].question &&
+          JSON.stringify(item.answer) ===
+            JSON.stringify(selectedchat[index].answer);
+
+        if (isMatch) {
+          return {
+            ...item,
+            like_dislike: false,
+          };
+        }
+        return item;
+      });
+
+      localStorage.setItem('chatData', JSON.stringify(updatedChatData));
+    }
+  };
 
   const barChartOptions = {
     chart: {
-      id: "chart5",
+      id: 'chart5',
       height: 295,
-      width: "100%",
+      width: '100%',
       toolbar: {
         show: false,
       },
@@ -134,11 +223,11 @@ function MainContent() {
       bar: {
         borderRadius: 5,
         horizontal: false,
-        columnWidth: "50%",
+        columnWidth: '50%',
       },
     },
     xaxis: {
-      categories: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     },
     grid: {
       show: false,
@@ -149,16 +238,16 @@ function MainContent() {
     stroke: {
       show: true,
       width: 2,
-      colors: ["#00E396"], // Green border for the bars
+      colors: ['#00E396'], // Green border for the bars
     },
-    colors: ["#00E396"],
+    colors: ['#00E396'],
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        type: "vertical",
+        shade: 'dark',
+        type: 'vertical',
         shadeIntensity: 0.5,
-        gradientToColors: ["#009FFD"],
+        gradientToColors: ['#009FFD'],
         inverseColors: true,
         // opacityFrom: 0.85,
         // opacityTo: 0.85,
@@ -169,48 +258,48 @@ function MainContent() {
 
   const barChartSeries = [
     {
-      name: "Data",
+      name: 'Data',
       data: [10, 40, 35, 55, 30, 25, 30], // The values based on the chart
     },
   ];
 
   const radialChartOptions = {
     chart: {
-      id: "chart1",
+      id: 'chart1',
     },
     plotOptions: {
       radialBar: {
         startAngle: -115, // Starts from the left
         endAngle: 115, // Ends on the right (half-circle gauge)
         hollow: {
-          size: "70%", // Creates the hollow center
+          size: '70%', // Creates the hollow center
         },
         dataLabels: {
           name: {
             show: false, // Hides the name label
           },
           value: {
-            fontSize: "22px",
+            fontSize: '22px',
             show: true,
             formatter: function (val: any) {
-              return val + "%"; // Display the percentage value in the center
+              return val + '%'; // Display the percentage value in the center
             },
           },
         },
         track: {
-          background: "#e7e7e7", // Gray background for the unused portion
-          strokeWidth: "97%",
+          background: '#e7e7e7', // Gray background for the unused portion
+          strokeWidth: '97%',
           margin: 5, // Margin between the track and the bar
         },
       },
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "light",
-        type: "horizontal",
+        shade: 'light',
+        type: 'horizontal',
         shadeIntensity: 0.5,
-        gradientToColors: ["#FF0080"], // Gradient from yellow to red
+        gradientToColors: ['#FF0080'], // Gradient from yellow to red
         inverseColors: false,
         opacityFrom: 1,
         opacityTo: 1,
@@ -218,14 +307,14 @@ function MainContent() {
       },
     },
     stroke: {
-      lineCap: "round" as const,
+      lineCap: 'round' as const,
     },
-    labels: ["Progress"], // Label (hidden as per the dataLabels.name.show: false)
+    labels: ['Progress'], // Label (hidden as per the dataLabels.name.show: false)
   };
 
   const lineChartOptions = {
     chart: {
-      id: "chart2",
+      id: 'chart2',
       sparkline: {
         enabled: !0,
       },
@@ -238,42 +327,42 @@ function MainContent() {
     },
     stroke: {
       width: 2,
-      curve: "smooth" as const,
+      curve: 'smooth' as const,
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#02c27a"],
+        shade: 'dark',
+        gradientToColors: ['#02c27a'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.1,
         stops: [0, 100, 100, 100],
       },
     },
 
-    colors: ["#02c27a"],
+    colors: ['#02c27a'],
     xaxis: {
       categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
       ],
     },
   };
 
   const secondLineChartOptions = {
     chart: {
-      id: "chart8",
-      height: "100%",
-      width: "100%",
+      id: 'chart8',
+      height: '100%',
+      width: '100%',
       zoom: {
         enabled: false, // Disables zoom functionality
       },
@@ -282,31 +371,31 @@ function MainContent() {
       },
     },
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
-        shade: "dark",
-        gradientToColors: ["#7DFF50"],
+        shade: 'dark',
+        gradientToColors: ['#7DFF50'],
         shadeIntensity: 1,
-        type: "vertical",
+        type: 'vertical',
         opacityFrom: 0.8,
         opacityTo: 0.1,
         stops: [0, 100, 100, 100],
       },
     },
 
-    colors: ["#7DFF50"],
+    colors: ['#7DFF50'],
     dataLabels: {
       enabled: false,
     },
     stroke: {
-      curve: "straight" as const,
+      curve: 'straight' as const,
       width: 2,
-      colors: ["#7DFF50"],
+      colors: ['#7DFF50'],
     },
     markers: {
       size: 5,
-      colors: ["#7DFF50"],
-      strokeColors: "#fff",
+      colors: ['#7DFF50'],
+      strokeColors: '#fff',
       strokeWidth: 2,
       hover: {
         size: 7,
@@ -314,15 +403,15 @@ function MainContent() {
     },
     xaxis: {
       categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
       ],
       labels: {
         show: false, // Hides the x-axis values
@@ -337,33 +426,33 @@ function MainContent() {
   };
 
   useEffect(() => {
-    if (usertype === "admin") {
-      setUserName("admin");
+    if (usertype === 'admin') {
+      setUserName('admin');
       setDataCompleted(false);
-    } else if (usertype === "student") {
-      setUserName("student");
+    } else if (usertype === 'student') {
+      setUserName('student');
       // setUserName('teacher')
-    } else if (usertype === "teacher") {
-      setUserName("teacher");
+    } else if (usertype === 'teacher') {
+      setUserName('teacher');
     } else {
-      setUserName("admin");
+      setUserName('admin');
     }
   }, [usertype]);
 
   useEffect(() => {
-    const lastRoute = localStorage.getItem("lastRoute");
-    if (usertype === "student") {
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (usertype === 'student') {
       if (lastRoute && ProPercentage) {
         if (ProPercentage > 90) {
-          navigate("/main/Chat/recentChat");
-          localStorage.removeItem("lastRoute");
+          navigate('/main/Chat/recentChat');
+          localStorage.removeItem('lastRoute');
         } else {
-          navigate("/main/Dashboard");
-          localStorage.removeItem("lastRoute");
+          navigate('/main/Dashboard');
+          localStorage.removeItem('lastRoute');
         }
       }
     } else {
-      localStorage.removeItem("lastRoute");
+      localStorage.removeItem('lastRoute');
     }
   }, [ProPercentage]);
 
@@ -384,6 +473,7 @@ function MainContent() {
     courseCount: 0,
     schoolsubjectCount: 0,
     collegesubjectCount: 0,
+    teacherCount: 0,
   });
   const [statsweekly, setStatsweekly] = useState({
     FridayCount: 0,
@@ -446,22 +536,22 @@ function MainContent() {
   // };
 
   // bar chart
-  const barChartRef = useRef<ChartJS<"bar", number[], string> | null>(null);
+  const barChartRef = useRef<ChartJS<'bar', number[], string> | null>(null);
 
   // Define the bar chart data
-  const barChartDataStudent: ChartData<"bar", number[], string> = {
+  const barChartDataStudent: ChartData<'bar', number[], string> = {
     labels: [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
     ],
     datasets: [
       {
-        label: "This Week",
+        label: 'This Week',
         data: [
           statsweekly?.SundayCount,
           statsweekly?.MondayCount,
@@ -477,17 +567,17 @@ function MainContent() {
 
           if (!chartArea) {
             // This case happens on initial chart load
-            return "rgba(0, 0, 0, 0)";
+            return 'rgba(0, 0, 0, 0)';
           }
 
           const gradientFill1 = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradientFill1.addColorStop(0, "#005bea");
-          gradientFill1.addColorStop(1, "#00c6fb");
+          gradientFill1.addColorStop(0, '#005bea');
+          gradientFill1.addColorStop(1, '#00c6fb');
           return gradientFill1;
         },
         borderColor: function (context) {
@@ -495,17 +585,17 @@ function MainContent() {
           const { ctx, chartArea } = chart;
 
           if (!chartArea) {
-            return "#000000";
+            return '#000000';
           }
 
           const gradientBorder1 = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradientBorder1.addColorStop(0, "#005bea");
-          gradientBorder1.addColorStop(1, "#00c6fb");
+          gradientBorder1.addColorStop(0, '#005bea');
+          gradientBorder1.addColorStop(1, '#00c6fb');
           return gradientBorder1;
         },
         borderWidth: 0,
@@ -514,15 +604,20 @@ function MainContent() {
       },
     ],
   };
-  const statsChatCountArray = Array?.isArray(statsChatCount) ? statsChatCount : [];
+  const statsChatCountArray = Array?.isArray(statsChatCount)
+    ? statsChatCount
+    : [];
 
-const top5Chats = statsChatCountArray
-  ?.sort((a: { chat_count: number }, b: { chat_count: number }) => b?.chat_count - a?.chat_count)
-  ?.slice(0, 5);
+  const top5Chats = statsChatCountArray
+    ?.sort(
+      (a: { chat_count: number }, b: { chat_count: number }) =>
+        b?.chat_count - a?.chat_count,
+    )
+    ?.slice(0, 5);
 
-// Extract student names and chat counts for the top 5 entries
-const studentNames = top5Chats?.map((item: any) => item?.student_name);
-const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
+  // Extract student names and chat counts for the top 5 entries
+  const studentNames = top5Chats?.map((item: any) => item?.student_name);
+  const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // // Sort statsChatCount by chat_count in descending order and take the top 5
   // const top5Chats = statsChatCount
   //   ?.sort((a: { chat_count: number; }, b: { chat_count: number; }) => b?.chat_count - a?.chat_count)
@@ -531,11 +626,11 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // // Extract student names and chat counts for the top 5 entries
   // const studentNames = top5Chats?.map((item: any) => item?.student_name);
   // const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
-  const barChartDataStudentChatCount: ChartData<"bar", number[], string> = {
+  const barChartDataStudentChatCount: ChartData<'bar', number[], string> = {
     labels: studentNames,
     datasets: [
       {
-        label: "This Week",
+        label: 'This Week',
         data: chatCounts,
         backgroundColor: function (context) {
           const chart = context.chart;
@@ -543,17 +638,17 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
           if (!chartArea) {
             // This case happens on initial chart load
-            return "rgba(0, 0, 0, 0)";
+            return 'rgba(0, 0, 0, 0)';
           }
 
           const gradientFill1 = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradientFill1.addColorStop(0, "#005bea");
-          gradientFill1.addColorStop(1, "#00c6fb");
+          gradientFill1.addColorStop(0, '#005bea');
+          gradientFill1.addColorStop(1, '#00c6fb');
           return gradientFill1;
         },
         borderColor: function (context) {
@@ -561,17 +656,17 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           const { ctx, chartArea } = chart;
 
           if (!chartArea) {
-            return "#000000";
+            return '#000000';
           }
 
           const gradientBorder1 = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradientBorder1.addColorStop(0, "#005bea");
-          gradientBorder1.addColorStop(1, "#00c6fb");
+          gradientBorder1.addColorStop(0, '#005bea');
+          gradientBorder1.addColorStop(1, '#00c6fb');
           return gradientBorder1;
         },
         borderWidth: 0,
@@ -582,12 +677,12 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   };
 
   // Define the bar chart options
-  const barChartOptionsStudent: ChartOptions<"bar"> = {
+  const barChartOptionsStudent: ChartOptions<'bar'> = {
     maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
-        position: "bottom",
+        position: 'bottom',
       },
     },
     scales: {
@@ -599,18 +694,18 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   };
 
   // Define the bar chart data
-  const barChartData: ChartData<"bar", number[], string> = {
+  const barChartData: ChartData<'bar', number[], string> = {
     labels: [
-      "Entities",
-      "Institute",
-      "Student",
-      "Course",
-      "Subject",
-      "Department",
+      'Entities',
+      'Institute',
+      'Student',
+      'Course',
+      'Subject',
+      'Department',
     ],
     datasets: [
       {
-        label: "This Week",
+        label: 'This Week',
         data: [
           stats.entityCount,
           stats.institutionCount,
@@ -625,17 +720,17 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
           if (!chartArea) {
             // This case happens on initial chart load
-            return "rgba(0, 0, 0, 0)";
+            return 'rgba(0, 0, 0, 0)';
           }
 
           const gradientFill1 = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradientFill1.addColorStop(0, "#005bea");
-          gradientFill1.addColorStop(1, "#00c6fb");
+          gradientFill1.addColorStop(0, '#005bea');
+          gradientFill1.addColorStop(1, '#00c6fb');
           return gradientFill1;
         },
         borderColor: function (context) {
@@ -643,17 +738,17 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           const { ctx, chartArea } = chart;
 
           if (!chartArea) {
-            return "#000000";
+            return '#000000';
           }
 
           const gradientBorder1 = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradientBorder1.addColorStop(0, "#005bea");
-          gradientBorder1.addColorStop(1, "#00c6fb");
+          gradientBorder1.addColorStop(0, '#005bea');
+          gradientBorder1.addColorStop(1, '#00c6fb');
           return gradientBorder1;
         },
         borderWidth: 0,
@@ -664,12 +759,12 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   };
 
   // Define the bar chart options
-  const barChartOptionsadmin: ChartOptions<"bar"> = {
+  const barChartOptionsadmin: ChartOptions<'bar'> = {
     maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
-        position: "bottom",
+        position: 'bottom',
       },
     },
     scales: {
@@ -707,19 +802,19 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // };
 
   //line chart
-  const chartRef = useRef<ChartJS<"line", number[], string> | null>(null);
-  const data: ChartData<"line", number[], string> = {
+  const chartRef = useRef<ChartJS<'line', number[], string> | null>(null);
+  const data: ChartData<'line', number[], string> = {
     labels: [
-      "Entities",
-      "Institute",
-      "Student",
-      "Course",
-      "Subject",
-      "Department",
+      'Entities',
+      'Institute',
+      'Student',
+      'Course',
+      'Subject',
+      'Department',
     ],
     datasets: [
       {
-        label: "This Week",
+        label: 'This Week',
         data: [
           stats.entityCount,
           stats.institutionCount,
@@ -729,8 +824,8 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           stats.departmentCount,
         ],
         fill: {
-          target: "origin",
-          above: "rgba(13, 110, 253, 0.15)", // Area above the origin
+          target: 'origin',
+          above: 'rgba(13, 110, 253, 0.15)', // Area above the origin
         },
         backgroundColor: function (context) {
           const chart = context.chart;
@@ -738,16 +833,16 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
           if (!chartArea) {
             // This case happens on initial chart load
-            return "rgba(0, 0, 0, 0)";
+            return 'rgba(0, 0, 0, 0)';
           }
           const gradient = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradient.addColorStop(0, "#005bea");
-          gradient.addColorStop(1, "#00c6fb");
+          gradient.addColorStop(0, '#005bea');
+          gradient.addColorStop(1, '#00c6fb');
           return gradient;
         },
         borderColor: function (context) {
@@ -755,16 +850,16 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           const { ctx, chartArea } = chart;
 
           if (!chartArea) {
-            return "#000000";
+            return '#000000';
           }
           const gradient = ctx.createLinearGradient(
             0,
             chartArea.top,
             0,
-            chartArea.bottom
+            chartArea.bottom,
           );
-          gradient.addColorStop(0, "#005bea");
-          gradient.addColorStop(1, "#00c6fb");
+          gradient.addColorStop(0, '#005bea');
+          gradient.addColorStop(1, '#00c6fb');
           return gradient;
         },
         borderWidth: 4,
@@ -774,11 +869,11 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       },
     ],
   };
-  const options: ChartOptions<"line"> = {
+  const options: ChartOptions<'line'> = {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "bottom",
+        position: 'bottom',
         display: true,
       },
       tooltip: {
@@ -804,12 +899,12 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
-      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== ""
+      (key) => obj[key] !== null && obj[key] !== undefined && obj[key] !== '',
     ).length;
   };
 
   const callAPIStudent = async () => {
-    if (usertype === "student") {
+    if (usertype === 'student') {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.data) {
@@ -859,11 +954,11 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             let sectionCount = 0;
 
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== "") {
+              if (data?.data?.basic_info?.pic_path !== '') {
                 getData(
                   `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
-                  }`
+                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  }`,
                 )
                   .then((imgdata: any) => {
                     setprofileImage(imgdata.data);
@@ -912,17 +1007,17 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             }
 
             if (academic_history && Object.keys(academic_history).length > 0) {
-              if (academic_history?.institution_type === "school") {
+              if (academic_history?.institution_type === 'school') {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) =>
                       setStudentClass(
                         response.data.class_name
-                          .replace("_", " ")
+                          .replace('_', ' ')
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace("_", " ").slice(1)
-                      )
+                          response.data.class_name.replace('_', ' ').slice(1),
+                      ),
                   );
                 }
                 delete academic_history?.course_id;
@@ -934,7 +1029,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                 delete academic_history?.sem_id;
                 delete academic_history?.year;
                 delete academic_history?.stream;
-                if (academic_history?.board !== "state_board") {
+                if (academic_history?.board !== 'state_board') {
                   delete academic_history?.state_for_stateboard;
                 }
               } else {
@@ -942,7 +1037,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                   getData(`course/edit/${academic_history?.course_id}`).then(
                     (response) => {
                       setStudentCourse(response.data.course_name);
-                    }
+                    },
                   );
                 }
                 delete academic_history?.board;
@@ -976,7 +1071,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
               subject_preference &&
               Object.keys(subject_preference)?.length > 0
             ) {
-              if (academic_history?.institution_type === "school") {
+              if (academic_history?.institution_type === 'school') {
                 // console.log("test subject pref school",subject_preference)
                 delete subject_preference?.course_name;
                 delete subject_preference?.course_id;
@@ -1002,8 +1097,8 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
               const nandata = 100 - overallPercentage;
 
               localStorage.setItem(
-                "Profile_completion",
-                JSON.stringify(overallPercentage)
+                'Profile_completion',
+                JSON.stringify(overallPercentage),
               );
               if (overallPercentage !== 100) {
                 setDataCompleted(true);
@@ -1019,42 +1114,35 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
+      getData(`${university_list}`).then((data: any) => {
+        setUniversity_List_Data(data?.data);
+      });
     }
   };
 
   const fetchStudentData = async () => {
-    if (usertype === "student") {
+    if (usertype === 'student') {
       try {
         const [chatCount] = await Promise.all([
-          getData(`${chatlisturl}/${userdata?.id}`),
-          getData("/chat/api/chat-summary"),
+          // getData(`${chatlisturl}/${userdata?.id}`),
+          getData('/chat/api/chat-summary'),
         ]);
-        // const chatstarred =
-        //   chatHistory?.data?.filter((chat: any) => chat?.flagged) || [];
-
-        // setStudent({
-        //   // chatHistory: chatHistory?.data?.length || 0,
-        //   chatHistory: chatstarred?.length || 0,
-        //   chatCount: chatHistory?.data?.length || 0,
-        // });
-        //  const chatstarred =
-        //   chatHistory?.data?.filter((chat: any) => chat) || [];
         setStudent({
-          // chatHistory: chatHistory?.data?.length || 0,
           chatHistory: chatCount?.data?.saved_chat_count || 0,
           chatCount: chatCount?.data?.total_chat_count || 0,
         });
+        setchatlistData(chatCount?.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     }
   };
 
   const callAPIAdmin = async () => {
-    if (usertype === "admin") {
+    if (usertype === 'admin') {
       getData(`${profileURLadmin}/${StudentId}`)
         .then((data: any) => {
           if (data?.data) {
@@ -1109,11 +1197,11 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.basic_info?.pic_path !== "") {
+              if (data?.data?.basic_info?.pic_path !== '') {
                 getData(
                   `${
-                    "upload_file/get_image/" + data?.data?.basic_info?.pic_path
-                  }`
+                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  }`,
                 )
                   .then((imgdata: any) => {
                     setprofileImage(imgdata?.data);
@@ -1190,8 +1278,8 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
               // console.log("overallPercentage sss", nandata,overallPercentage);
               localStorage.setItem(
-                "Profile_completion",
-                JSON.stringify(overallPercentage)
+                'Profile_completion',
+                JSON.stringify(overallPercentage),
               );
               setProPercentage(overallPercentage);
               // console.log("---- ddd",overallPercentage)
@@ -1213,25 +1301,25 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     setDataCompleted(false);
   };
   const handleOk = (userName: string) => {
-    if (userName === "admin") {
-      navigate("/main/adminprofile");
+    if (userName === 'admin') {
+      navigate('/main/adminprofile');
     } else {
-      navigate("/main/StudentProfile");
+      navigate('/main/StudentProfile');
     }
   };
 
   useEffect(() => {
-    if (userName !== "admin") {
+    if (userName !== 'admin') {
       callAPIStudent();
       fetchStudentData();
-      const newTheme = localStorage.getItem("theme");
-      setThemeMode(newTheme || "light");
+      const newTheme = localStorage.getItem('theme');
+      setThemeMode(newTheme || 'light');
     }
 
     callAPIAdmin();
 
     const fetchData = async () => {
-      if (usertype === "admin") {
+      if (usertype === 'admin') {
         try {
           const [
             institutionRes,
@@ -1242,22 +1330,24 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             courseRes,
             schoolRes,
             collegeRes,
+            teacherRes,
           ] = await Promise.allSettled([
-            getData("/institution/list"),
-            getData("/student/list"),
+            getData('/institution/list'),
+            getData('/student/list'),
             // getData("/subject/list"),
-            getData("/entity/list"),
-            getData("/department/list"),
-            getData("/course/list"),
-            getData("/school_subject/list"),
-            getData("/college_subject/list"),
+            getData('/entity/list'),
+            getData('/department/list'),
+            getData('/course/list'),
+            getData('/school_subject/list'),
+            getData('/college_subject/list'),
+            getData('./teacher/list'),
           ]);
           const institutionCount =
-            institutionRes?.status === "fulfilled"
+            institutionRes?.status === 'fulfilled'
               ? institutionRes?.value?.data?.length || 0
               : 0;
           const studentCount =
-            studentRes?.status === "fulfilled"
+            studentRes?.status === 'fulfilled'
               ? studentRes?.value?.data?.length || 0
               : 0;
           const subjectCount = 0;
@@ -1265,26 +1355,29 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           //     ? subjectRes?.value?.data?.length || 0
           //     : 0;
           const entityCount =
-            entityRes?.status === "fulfilled"
+            entityRes?.status === 'fulfilled'
               ? entityRes?.value?.data?.length || 0
               : 0;
           const departmentCount =
-            departmentRes?.status === "fulfilled"
+            departmentRes?.status === 'fulfilled'
               ? departmentRes?.value?.data?.length || 0
               : 0;
           const courseCount =
-            courseRes?.status === "fulfilled"
+            courseRes?.status === 'fulfilled'
               ? courseRes?.value?.data?.length || 0
               : 0;
           const schoolsubjectCount =
-            schoolRes?.status === "fulfilled"
+            schoolRes?.status === 'fulfilled'
               ? schoolRes?.value?.data?.length || 0
               : 0;
           const collegesubjectCount =
-            collegeRes?.status === "fulfilled"
+            collegeRes?.status === 'fulfilled'
               ? collegeRes?.value?.data?.length || 0
               : 0;
-
+          const teacherCount =
+            teacherRes?.status === 'fulfilled'
+              ? teacherRes?.value?.data?.length || 0
+              : 0;
           setStats({
             institutionCount,
             studentCount,
@@ -1294,6 +1387,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             courseCount,
             schoolsubjectCount,
             collegesubjectCount,
+            teacherCount,
           });
 
           // setStats({
@@ -1305,19 +1399,19 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           //     courseCount: courseRes?.data?.length || 0 ,
           // });
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       }
     };
 
     const fetchStudentweeklyData = async () => {
-      if (usertype === "admin") {
+      if (usertype === 'admin') {
         try {
           const [studentweeklycount] = await Promise.allSettled([
-            getData("/student/weekly_student_count"),
+            getData('/student/weekly_student_count'),
           ]);
           const studentweeklydata =
-            studentweeklycount?.status === "fulfilled"
+            studentweeklycount?.status === 'fulfilled'
               ? studentweeklycount?.value?.data || 0
               : 0;
 
@@ -1331,42 +1425,42 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             SaturdayCount: studentweeklydata?.Saturday,
           });
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       }
     };
     const fetchStudentCourseData = async () => {
-      if (usertype === "admin") {
+      if (usertype === 'admin') {
         try {
           const [studentCoursecount] = await Promise.allSettled([
-            getData("/course/course-wise-student-count"),
+            getData('/course/course-wise-student-count'),
           ]);
           const studentCoursedata =
-            studentCoursecount?.status === "fulfilled"
+            studentCoursecount?.status === 'fulfilled'
               ? studentCoursecount?.value?.data || 0
               : 0;
 
           setStatsCourse(studentCoursedata);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       }
     };
 
     const fetchStudentChatCountData = async () => {
-      if (usertype === "admin") {
+      if (usertype === 'admin') {
         try {
           const [studentChatCount] = await Promise.allSettled([
-            getData("/chat/api/chat-count"),
+            getData('/chat/api/chat-count'),
           ]);
           const studentChatCountdata =
-            studentChatCount?.status === "fulfilled"
+            studentChatCount?.status === 'fulfilled'
               ? studentChatCount?.value?.data || 0
               : 0;
 
           setStatsChatCount(studentChatCountdata);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       }
     };
@@ -1395,19 +1489,60 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     // fetchstucount();
   }, []);
 
+  // useEffect(() => {
+  //   if (chat?.length) saveChat();
+  // }, [chat]);
+
   useEffect(() => {
-    if (chat?.length) saveChat();
-  }, [chat]);
+    if (!isExpanded && chat?.length > 0) {
+      localStorage.setItem(
+        'chatData',
+        JSON.stringify(chat?.length ? chat : []),
+      );
+    }
+  }, [chat, isExpanded]);
+
+  useEffect(() => {
+    if (!isExpanded) {
+      const chatDataString = localStorage?.getItem('chatData');
+      if (chatDataString) {
+        const chatData = JSON.parse(chatDataString);
+
+        if (chatData?.length > 0) {
+          saveChat();
+        }
+      }
+    }
+
+    return () => {
+      setIsExpanded(false);
+    };
+  }, [isExpanded]);
 
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
 
     newData.speak = false;
-    setSelectedChat((prevState: any) => [...prevState, newData]);
+    newData.like_dislike = null;
+    // setSelectedChat((prevState: any) => [...prevState, newData]);
+    setSelectedChat((prevState: any) => {
+      const newState = [...prevState, newData];
+      const newIndex = newState.length - 1;
+      setLikedStates((prevStates) => ({
+        ...prevStates,
+        [newIndex]:
+          newData.like_dislike === true
+            ? 'liked'
+            : newData.like_dislike === false
+              ? 'disliked'
+              : '',
+      }));
+      return newState;
+    });
     setChatSaved(false);
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
-    setSearch("");
+    setSearch('');
     getData(`${chatlisturl}/${userdata?.id}`)
       .then((data: any) => {
         setchatlistData(data?.data);
@@ -1417,7 +1552,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -1437,27 +1572,27 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     setChatLoader(false);
     toast.error(e?.message, {
       hideProgressBar: true,
-      theme: "colored",
+      theme: 'colored',
     });
   };
 
   const searchData = () => {
-    setRegenerateSearch(search);
-    setSearch("");
+    // setRegenerateSearch(search);
+    // setSearch("");
     // setShowInitialPage(false)
-    if (search === "") {
+    if (search === '') {
       setSearchErr(true);
       return;
     }
 
     setChatLoader(true);
-    setLoaderMsg("Searching result from knowledge base");
+    setLoaderMsg('Searching result from knowledge base');
     setSearchErr(false);
 
-    const prompt = profileDatas?.prompt?.replace("**question**", "answer");
+    const prompt = profileDatas?.prompt?.replace('**question**', 'answer');
     let payload = {};
     // let rag_payload = {};
-    if (selectedchat?.question !== "") {
+    if (selectedchat?.question !== '') {
       payload = {
         student_id: StudentId,
         question: search,
@@ -1465,14 +1600,14 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
         // course: "class_10",
         course:
-          profileDatas?.academic_history?.institution_type === "school"
+          profileDatas?.academic_history?.institution_type === 'school'
             ? profileDatas?.class?.name
             : studentCourse,
         stream: profileDatas?.subject,
         chat_hostory: [
-          { role: "user", content: selectedchat?.question },
+          { role: 'user', content: selectedchat?.question },
           {
-            role: "assistant",
+            role: 'assistant',
             content: selectedchat?.answer,
           },
         ],
@@ -1487,7 +1622,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         question: search,
         prompt: prompt,
         course:
-          profileDatas?.academic_history?.institution_type === "school"
+          profileDatas?.academic_history?.institution_type === 'school'
             ? profileDatas?.class?.name
             : studentCourse,
         stream: profileDatas?.subject,
@@ -1506,7 +1641,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       setChatSaved(false);
       setchatData((prevState: any) => [...prevState, newData]);
       setChatLoader(false);
-      setSearch("");
+      setSearch('');
       getData(`${chatlisturl}/${userdata?.id}`)
         .then((data: any) => {
           setchatlistData(data?.data);
@@ -1518,31 +1653,22 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     };
 
     postData(`${ChatURL}`, payload)
       .then((data) => {
-        if (data.status === 200) {
-          handleResponse(data);
-        } else if (data.status === 404) {
-          // return postData(`${ChatURLAI}`, payload);
-          // return postData(`${ChatURLRAG}`, rag_payload);
-          setLoaderMsg("Searching result from knowledge base");
-          // return getData(
-          //   `http://13.232.96.204:5000/rag-model?user_query=${search}&student_id=${userid}`
-          // );
-          if (profileDatas?.academic_history?.institution_type === "school") {
-            // return getData(
-            //   `https://uatllm.gyansetu.ai/rag-model-class?user_query=${encodeURIComponent(
-            //     search
-            //   )}&student_id=${StudentId}&class_name=${
-            //     profileDatas?.class?.name
-            //   }`
-            // )
-            postData("https://dbllm.gyansetu.ai/rag-model-hierarchy", {
+        // if (data.status === 200) {
+        //   handleResponse(data);
+        // } else if (data.status === 404) {
+        if (data.status === 200 || data.status === 404) {
+          // setLoaderMsg('Searching result from knowledge base');
+          setLoaderMsg('Searching result from Rag model');
+
+          if (profileDatas?.academic_history?.institution_type === 'school') {
+            postData(`${ChatRAGURL}`, {
               user_query: search,
               student_id: StudentId,
               school_college_selection:
@@ -1553,46 +1679,68 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                 profileDatas.academic_history.state_for_stateboard,
               stream_selection: profileDatas.academic_history.stream,
               class_selection: profileDatas.class.name,
-              university_selection:
-                profileDatas.academic_history.university_name,
-              college_selection: profileDatas.academic_history.institution_name,
-              course_selection: profileDatas.academic_history.course_id,
+              university_selection: null,
+              college_selection: null,
+              course_selection: profileDatas?.course,
               year: profileDatas.academic_history.year,
               subject: profileDatas.subject,
             })
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === 'object' && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === 'string' &&
+                              value.includes('\\frac') &&
+                              !value.includes('$')
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(''),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
                   const formattedResponse = {
                     data: {
                       question: response.question,
-                      answer: Array.isArray(response.answer)
-                        ? response.answer
-                        : [response.answer.toString()],
+                      answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
                     },
                   };
                   const ChatStorepayload = {
                     student_id: StudentId,
                     chat_question: response.question,
-                    response: response?.answer,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
-                      handleError
+                      handleError,
                     );
                   }
                   handleResponse(formattedResponse);
                 } else {
-                  setLoaderMsg("Fetching Data from Ollama model.");
+                  setLoaderMsg('Fetching Data from Ollama model.');
                   // getData(
                   //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                   //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
                   //     search
                   //   )}`
                   // )
-                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
-                    class_or_course_selection: profileDatas?.class.name, 
+                    class_or_course_selection: profileDatas?.class.name,
                   })
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1603,7 +1751,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           response: response?.answer,
                         };
                         postData(`${ChatStore}`, ChatStorepayload).catch(
-                          handleError
+                          handleError,
                         );
                       }
                     })
@@ -1621,10 +1769,10 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                 //     search
                 //   )}`
                 // )
-                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
-                  class_or_course_selection: profileDatas?.class.name, 
+                  class_or_course_selection: profileDatas?.class.name,
                 })
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1635,7 +1783,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                         response: response?.answer,
                       };
                       postData(`${ChatStore}`, ChatStorepayload).catch(
-                        handleError
+                        handleError,
                       );
                     }
                   })
@@ -1643,7 +1791,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                     postData(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
-                  })
+                  }),
               );
           } else {
             const {
@@ -1653,64 +1801,92 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
               stream,
               class_id,
               university_id,
-              institute_id,
-              course_id,
               year,
               institution_name,
-              university_name,
             } = profileDatas?.academic_history || {};
-            const { subject_name, course_name, } = profileDatas?.subject_preference || {};
+            const { subject_name, course_name } =
+              profileDatas?.subject_preference || {};
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
-            const queryParams = new URLSearchParams({
-              user_query: encodeURIComponent(search),
+            const university: any =
+              university_list_data.filter(
+                (university: any) => university.university_id == university_id,
+              ) || null;
+            const queryParams = {
+              user_query: search,
               student_id: StudentId,
-              ...(institution_type && {
-                school_college_selection: institution_type,
-              }),
-              ...(board && { board_selection: board }),
-              ...(state_for_stateboard && {
-                state_board_selection: state_for_stateboard,
-              }),
-              ...(stream && { stream_selection: stream }),
-              ...(class_id && { class_selection: class_id }),
-              ...(university_id && { university_selection: university_name }),
-              ...(institute_id && { college_selection: institution_name }),
-              ...(course_id && { course_selection: profileDatas?.course }),
-              ...(year && { year: year }),
-              ...(subject_name && { subject: subject_name }),
-            });
-
+              school_college_selection: institution_type || null,
+              board_selection: board || null,
+              state_board_selection: state_for_stateboard || null,
+              stream_selection: stream || null,
+              class_selection: class_id || null,
+              university_selection: university[0]?.university_name || null,
+              college_selection: institution_name || null,
+              course_selection: profileDatas?.course || null,
+              year: year || null,
+              subject: subject_name || null,
+            };
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             // )
-            return postData("https://prodllm.gyansetu.ai/rag-model-hierarchy", queryParams)
+            return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
-                  handleResponse(response);
+                  function formatAnswer(answer: any) {
+                    if (Array.isArray(answer)) {
+                      return answer;
+                    }
+                    if (typeof answer === 'object' && answer !== null) {
+                      const entries = Object.entries(answer);
+                      return [
+                        entries
+                          .map(([key, value]) => {
+                            if (
+                              typeof value === 'string' &&
+                              value.includes('\\frac') &&
+                              !value.includes('$')
+                            ) {
+                              const latexValue = `$${value}$`;
+                              return `${key}) ${latexValue}\n`;
+                            }
+                            return `${key}) ${value}\n`;
+                          })
+                          .join(''),
+                      ];
+                    }
+                    return [answer.toString()];
+                  }
+                  const formattedResponse = {
+                    data: {
+                      question: response.question,
+                      answer: formatAnswer(response.answer),
+                      diagram_code: response.diagram_code,
+                    },
+                  };
                   const ChatStorepayload = {
                     student_id: StudentId,
-                    chat_question: search,
-                    response: response?.answer,
+                    chat_question: response.question,
+                    response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
-                      handleError
+                      handleError,
                     );
                   }
+                  handleResponse(formattedResponse);
                 } else {
-                  setLoaderMsg("Fetching Data from Ollama model.");
+                  setLoaderMsg('Fetching Data from Ollama model.');
                   // getData(
                   //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                   //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
                   //     search
                   //   )}`
                   // )
-                  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                  postData(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
-                    class_or_course_selection: course_name, 
+                    class_or_course_selection: course_name,
                   })
                     .then((response) => {
                       if (response?.status === 200) {
@@ -1721,7 +1897,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           response: response?.answer,
                         };
                         postData(`${ChatStore}`, ChatStorepayload).catch(
-                          handleError
+                          handleError,
                         );
                       }
                     })
@@ -1733,17 +1909,17 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                 }
               })
               .catch(() => {
-                setLoaderMsg("Fetching Data from Ollama model.");
+                setLoaderMsg('Fetching Data from Ollama model.');
                 // getData(
                 //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                 //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
                 //     search
                 //   )}`
                 // )
-                postData("https://prodllm.gyansetu.ai/ollama-chat", {
+                postData(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
-                  class_or_course_selection: course_name, 
+                  class_or_course_selection: course_name,
                 })
                   .then((response) => {
                     if (response?.status === 200) {
@@ -1754,7 +1930,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                         response: response?.answer,
                       };
                       postData(`${ChatStore}`, ChatStorepayload).catch(
-                        handleError
+                        handleError,
                       );
                     }
                   })
@@ -1793,17 +1969,20 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
           //   user_query: search,
           // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
-          setLoaderMsg("Fetching Data from Ollama model.");
+          setLoaderMsg('Fetching Data from Ollama model.');
           // return getData(
           //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
           //     search
           //   )}`
           // );
-          return  postData("https://prodllm.gyansetu.ai/ollama-chat", {
+          return postData(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: StudentId,
-            class_or_course_selection:  profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
-          })
+            class_or_course_selection:
+              profileDatas?.academic_history?.institution_type === 'school'
+                ? profileDatas?.class.name
+                : profileDatas?.subject_preference?.course_name,
+          });
         } else if (data) {
           handleError(data);
         }
@@ -1828,7 +2007,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             .catch(handleError);
           handleResponsereg(data);
         } else if (data?.status === 404) {
-          setLoaderMsg("Fetching data from Chat-GPT API.");
+          setLoaderMsg('Fetching data from Chat-GPT API.');
           return postData(`${ChatURLAI}`, payload);
         } else if (data) {
           handleError(data);
@@ -1845,12 +2024,12 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   };
 
   const pieData = [
-    { id: 0, value: stats.entityCount, label: "Entity" },
-    { id: 1, value: stats.institutionCount, label: "Institute" },
-    { id: 2, value: stats.studentCount, label: "Student" },
-    { id: 3, value: stats.courseCount, label: "Course" },
-    { id: 4, value: stats.subjectCount, label: "Subject" },
-    { id: 5, value: stats.departmentCount, label: "Department" },
+    { id: 0, value: stats.entityCount, label: 'Entity' },
+    { id: 1, value: stats.institutionCount, label: 'Institute' },
+    { id: 2, value: stats.studentCount, label: 'Student' },
+    { id: 3, value: stats.courseCount, label: 'Course' },
+    { id: 4, value: stats.subjectCount, label: 'Subject' },
+    { id: 5, value: stats.departmentCount, label: 'Department' },
   ];
 
   //   const dataTest =[
@@ -1881,7 +2060,10 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   //     }
   // ]
   // Get the top 5 courses
-  const top5Courses = statsCourse.slice(0, 5);
+  // const top5Courses = statsCourse.slice(0, 5);
+  const top5Courses = Array.isArray(statsCourse)
+    ? statsCourse?.slice(0, 5)
+    : [];
   // const top5Courses = dataTest.slice(0, 5);
 
   // Truncate the label and add '...' if it's too long
@@ -1896,7 +2078,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       value: course?.student_count,
       // label: course?.course_name
       label: truncateLabel(course.course_name, 10),
-    })
+    }),
   );
 
   // const pieData1 = [
@@ -1906,11 +2088,11 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // ];
 
   // const EntityExists = hasSubMenu(menudata, "Entity");
-  const InstitutionsExists = hasSubMenu(menudata, "Institute");
-  const StudentsExists = hasSubMenu(menudata, "Student");
-  const CoursesExists = hasSubMenu(menudata, "Course");
-  const SubjectsExists = hasSubMenu(menudata, "Subject");
-  const DepartmentExists = hasSubMenu(menudata, "Department");
+  const InstitutionsExists = hasSubMenu(menudata, 'Institute');
+  const StudentsExists = hasSubMenu(menudata, 'Student');
+  const CoursesExists = hasSubMenu(menudata, 'Course');
+  const SubjectsExists = hasSubMenu(menudata, 'Subject');
+  const DepartmentExists = hasSubMenu(menudata, 'Department');
 
   // const CustomTooltip = ({ active, payload }: any) => {
   //   if (active && payload && payload.length) {
@@ -1933,7 +2115,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
   // };
 
   const handleKeyDown = (e: { key: string }) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       searchData();
     }
   };
@@ -1949,14 +2131,27 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     const textArray = Array.isArray(text) ? text : [text];
 
     // Join the array into a single string
-    let cleanedText = textArray.join(" ");
+    let cleanedText = textArray.join(' ');
 
     // Remove unwanted characters and replace with spaces
-    // cleanedText = cleanedText.replace(/[^\w\s]/gi, ' ');
+    // cleanedText = cleanedText.replace(/[^\w\s]/gi, ' ')
 
-    // Replace multiple spaces with a single space
-    cleanedText = cleanedText.replace(/\s+/g, " ");
+    cleanedText = cleanedText.replace(/\$([^$]*)\$/g, '$1');
+    cleanedText = cleanedText.replace(/\\boxed{([^}]+)}/g, '$1');
 
+    cleanedText = cleanedText.replace(/#{1,6}\s?/g, '');
+    cleanedText = cleanedText.replace(/\*{1,3}/g, '');
+    cleanedText = cleanedText.replace(/~~/g, '');
+    cleanedText = cleanedText.replace(/`{1,3}/g, '');
+    cleanedText = cleanedText.replace(/>\s?/g, '');
+
+    cleanedText = cleanedText.replace(
+      /[^a-zA-Z0-9.,!? :;()'+\-*×x÷/=≠<>≤≥±]/g,
+      '',
+    );
+    cleanedText = cleanedText.replace(/([+\-*×x÷/=≠<>≤≥±])/g, ' $1 ');
+
+    cleanedText = cleanedText.replace(/\s+/g, ' ');
     // Trim any leading or trailing spaces
     cleanedText = cleanedText.trim();
 
@@ -1977,7 +2172,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     };
 
     const voice = voices.find(
-      (voice) => voice.name === "Microsoft Mark - English (United States)"
+      (voice) => voice.name === 'Microsoft Mark - English (United States)',
     ) as SpeechSynthesisVoice;
     utterance.rate = 0.9;
     utterance.voice = voice;
@@ -1997,36 +2192,36 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
 
   const regenerateChat = () => {
     setChatLoader(true);
-    setLoaderMsg("Fetching Data from Ollama model.");
+    setLoaderMsg('Fetching Data from Ollama model.');
     setSearchErr(false);
 
-    const prompt = profileDatas?.prompt?.replace("**question**", "answer");
+    const prompt = profileDatas?.prompt?.replace('**question**', 'answer');
     let payload = {};
 
-    if (selectedchat?.question !== "") {
+    if (selectedchat?.question !== '') {
       payload = {
-        question: regenerateSearch,
+        question: selectedchat.question,
         prompt: prompt,
         course:
-          profileDatas?.academic_history?.institution_type === "school"
+          profileDatas?.academic_history?.institution_type === 'school'
             ? profileDatas?.class?.name
             : studentCourse,
         // course: "class_10",
         stream: profileDatas?.subject,
         chat_hostory: [
-          { role: "user", content: selectedchat?.question },
+          { role: 'user', content: selectedchat?.question },
           {
-            role: "assistant",
+            role: 'assistant',
             content: selectedchat?.answer,
           },
         ],
       };
     } else {
       payload = {
-        question: regenerateSearch,
+        question: selectedchat?.question,
         prompt: prompt,
         course:
-          profileDatas?.academic_history?.institution_type === "school"
+          profileDatas?.academic_history?.institution_type === 'school'
             ? profileDatas?.class?.name
             : studentCourse,
         stream: profileDatas?.subject,
@@ -2036,20 +2231,23 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     // getData(
     //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
     //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-    //     regenerateSearch
+    //     search
     //   )}`
     // )
-    postData("https://prodllm.gyansetu.ai/ollama-chat", {
-      user_query: regenerateSearch,
+    postData(`${ChatOLLAMAURL}`, {
+      user_query: search,
       student_id: StudentId,
-      class_or_course_selection: profileDatas?.academic_history?.institution_type === "school" ? profileDatas?.class.name : profileDatas?.subject_preference?.course_name, 
+      class_or_course_selection:
+        profileDatas?.academic_history?.institution_type === 'school'
+          ? profileDatas?.class.name
+          : profileDatas?.subject_preference?.course_name,
     })
       .then((response) => {
         if (response?.status === 200) {
           handleResponse(response);
           const ChatStorepayload = {
             student_id: StudentId,
-            chat_question: regenerateSearch,
+            chat_question: search,
             response: response?.answer,
           };
           postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
@@ -2062,48 +2260,97 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
       });
   };
 
+  const handleExpandChat = () => {
+    if (selectedchat?.length > 0 || chatLoader) {
+      setIsExpanded(true);
+      const existingChatData = localStorage.getItem('chatData');
+      const expandedChatData = {
+        chats: existingChatData,
+        loading: chatLoader,
+        loaderMessage: loaderMsg,
+        pendingQuestion: search,
+        studentData: profileDatas,
+      };
+      localStorage.setItem(
+        'expandedChatData',
+        JSON.stringify(expandedChatData),
+      );
+      localStorage.removeItem('chatData');
+      navigate('/main/Chat/recentChat');
+    }
+  };
+
+  useEffect(() => {
+    localStorage.removeItem('expandedChatData');
+
+    return () => {
+      localStorage.removeItem('expandedChatData');
+      setIsExpanded(false);
+    };
+  }, []);
+
   const saveChat = async () => {
-    // alert("called!!");
+    const chatDataString = localStorage?.getItem('chatData');
+    // const chatflagged = localStorage?.getItem("chatsaved");
+    // console.log("chatData testing save",chatDataString);
+
+    let chatData: any;
+
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
+
     let datatest;
     if (chatlist !== undefined) {
       datatest = chatlist?.filter(
         (chatitem: { chat_title: any }) =>
-          chatitem?.chat_title === chat[0]?.question
+          chatitem?.chat_title === chatData?.[0]?.question,
       );
     }
 
     let chat_payload;
-    if (datatest?.length !== 0 && Array.isArray(chat) && chat.length >= 2) {
-      chat?.shift();
+    if (
+      datatest?.length !== 0 &&
+      Array.isArray(chatData) &&
+      chatData.length >= 2
+    ) {
+      // chatData?.shift();
       chat_payload = {
-        student_id: userdata?.id,
-        chat_title: chat[0]?.question,
-        chat_conversation: JSON.stringify(chat),
-        flagged: chatsaved,
+        student_id: userdata.id,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata?.id,
-        chat_title: chat[0]?.question,
-        chat_conversation: JSON.stringify(chat),
-        flagged: chatsaved,
+        student_id: userdata.id,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
       };
     }
+
     await postData(`${chataddconversationurl}`, chat_payload)
       .then(() => {
-        setChatSaved(false);
+        // setChatSaved(false);
         // toast.success(chatdata?.message, {
         //   hideProgressBar: true,
         //   theme: "colored",
         // });
-        localStorage.removeItem("chatData");
-        localStorage.removeItem("chatsaved");
         // callAPI();
+        fetchStudentData();
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -2125,7 +2372,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
         setIsTextCopied(updatedState);
       })
       .catch((err) => {
-        console.error("Error copying text: ", err);
+        console.error('Error copying text: ', err);
       });
   };
 
@@ -2133,7 +2380,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
     <>
       {loader && !chatLoader && <FullScreenLoader />}
       {/* {basicinfo!==null && basicinfo?.basic_info && userName === 'admin' ?  */}
-      {userName === "admin" ? (
+      {userName === 'admin' ? (
         <>
           <div className="main-wrapper">
             <main className="main-content">
@@ -2266,9 +2513,9 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                   </>
                 ) : (
                   <>
-                    <div className="col-6 col-lg-4 d-flex">
+                    <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={InstitutionsExists ? "/main/Institute" : "#"}
+                        to={InstitutionsExists ? '/main/Institute' : '#'}
                         className="card"
                       >
                         <div className="card-body">
@@ -2289,9 +2536,30 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                         </div>
                       </Link>
                     </div>
+
+                    <div className="col-6 col-lg-2 d-flex">
+                      <Link to={'/main/Teacher'} className="card">
+                        <div className="card-body">
+                          <div className="mb-3 d-flex align-items-center justify-content-between">
+                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
+                              <PersonAddIcon />
+                            </div>
+                            <div>
+                              <span className="text-success d-flex align-items-center">
+                                +24% <ExpandMoreIcon />
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="mb-0">{stats.teacherCount}</h4>
+                            <p className="mb-0">Teachers</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={StudentsExists ? "/main/Student" : ""}
+                        to={StudentsExists ? '/main/Student' : ''}
                         className="card"
                       >
                         <div className="card-body">
@@ -2314,7 +2582,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={CoursesExists ? "/main/Course" : "#"}
+                        to={CoursesExists ? '/main/Course' : '#'}
                         className="card "
                       >
                         <div className="card-body">
@@ -2337,7 +2605,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={SubjectsExists ? "/main/Subject" : "#"}
+                        to={SubjectsExists ? '/main/Subject' : '#'}
                         className="card "
                       >
                         <div className="card-body">
@@ -2364,7 +2632,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                     </div>
                     <div className="col-6 col-lg-2 d-flex">
                       <Link
-                        to={DepartmentExists ? "/main/Department" : "#"}
+                        to={DepartmentExists ? '/main/Department' : '#'}
                         className="card "
                       >
                         <div className="card-body">
@@ -2484,13 +2752,13 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           {
                             data: pieDataCourse,
                             highlightScope: {
-                              faded: "global",
-                              highlighted: "item",
+                              faded: 'global',
+                              highlighted: 'item',
                             },
                             faded: {
                               innerRadius: 30,
                               additionalRadius: -30,
-                              color: "gray",
+                              color: 'gray',
                             },
                           },
                         ]}
@@ -2591,13 +2859,13 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           {
                             data: pieData,
                             highlightScope: {
-                              faded: "global",
-                              highlighted: "item",
+                              faded: 'global',
+                              highlighted: 'item',
                             },
                             faded: {
                               innerRadius: 30,
                               additionalRadius: -30,
-                              color: "gray",
+                              color: 'gray',
                             },
                           },
                         ]}
@@ -2611,7 +2879,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
             </main>
           </div>
         </>
-      ) : userName === "student" ? (
+      ) : userName === 'student' ? (
         <>
           {/* <main className="main-content">
             <section className="stats stats12">
@@ -2736,9 +3004,9 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                 profileImage
                                   ? profileImage
                                   : profileDatas?.basic_info?.gender.toLowerCase() ===
-                                    "female"
-                                  ? femaleImage
-                                  : maleImage
+                                      'female'
+                                    ? femaleImage
+                                    : maleImage
                               }
                               className="rounded-circle img-fluid bg-grd-info p-1"
                               width="80"
@@ -2751,14 +3019,16 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                   <h4 className="fw-semibold mb-0 fs-18 mb-0">
                                     {profileDatas?.basic_info?.first_name
                                       ? `${profileDatas?.basic_info?.first_name}`
-                                      : "Welcome"}
+                                      : 'Welcome'}
                                   </h4>
                                   <small className="mb-lg-3 mb-1 d-block ">
                                     {studentClass || studentCourse}
                                   </small>
                                 </div>
                                 <IconButton href="/main/StudentProfile">
-                                  <CreateIcon />
+                                  <CreateIcon
+                                    sx={{ color: fieldIcon(namecolor) }}
+                                  />
                                 </IconButton>
                               </div>
 
@@ -2870,7 +3140,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           </h5>
                           <small className="fs-12">
                             Learning journey with our comprehensive lesson
-                            exercise courses,{" "}
+                            exercise courses,{' '}
                           </small>
                         </div>
                         <Link
@@ -2891,7 +3161,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                             <p className="mb-0 ">
                               {profileDatas?.subject_preference?.subject_name
                                 ? `${profileDatas?.subject_preference?.subject_name}`
-                                : ""}
+                                : ''}
                             </p>
                             {/* <small className="text-success">Completed</small> */}
                           </Link>
@@ -2901,7 +3171,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
                                     ?.score_in_percentage
-                                : ""}
+                                : ''}
                             </p>
                           </div>
                           <div className="">
@@ -2910,7 +3180,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                 7/7
                               </span> */}
                               <CircularProgress
-                                size={"30px"}
+                                size={'30px'}
                                 thickness={5}
                                 variant="determinate"
                                 value={
@@ -2971,20 +3241,47 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                       <div>
                         <img src={robotImage} className="chatroboimg" alt="" />
                       </div>
+
+                      {selectedchat?.length > 0 && (
+                        <div>
+                          {flagged ? (
+                            <FlagIcon
+                              onClick={handleFlag}
+                              sx={{
+                                color: '#9943ec',
+                                cursor: 'pointer',
+                                transition: 'color 0.3s ease',
+                                marginLeft: '120px',
+                              }}
+                            />
+                          ) : (
+                            <FlagOutlinedIcon
+                              onClick={handleFlag}
+                              sx={{
+                                cursor: 'pointer',
+                                color: 'inherit',
+                                transition: 'color 0.3s ease',
+                                marginLeft: '120px',
+                              }}
+                            />
+                          )}
+                        </div>
+                      )}
                       {stats1?.Student_Profile === 100 && (
                         <div className="chat-top-header-menu ms-auto">
                           <Link
-                            to={"/main/Chat/recentChat"}
+                            to={'/main/Chat/recentChat'}
+                            onClick={handleExpandChat}
                             className="btn-outline-primary btn btn-circle rounded-circle d-flex gap-2 wh-32"
                           >
-                            <OpenInFullOutlinedIcon sx={{ fontSize: "24px" }} />
+                            <OpenInFullOutlinedIcon sx={{ fontSize: '24px' }} />
                           </Link>
                         </div>
                       )}
                     </div>
                     <div className="chat-content ms-0 rounded-top-5">
                       {chatLoader && (
-                        <FullScreenLoader msg={loaderMsg} flag={"chat"} />
+                        <FullScreenLoader msg={loaderMsg} flag={'chat'} />
                       )}
                       {selectedchat?.length > 0 ? (
                         selectedchat?.map((chat: any, index: any) => (
@@ -2999,8 +3296,8 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                     <div className="chat-right-msg">
                                       <span className="anstext">
                                         <SearchOutlinedIcon
-                                          sx={{ fontSize: "18px" }}
-                                        />{" "}
+                                          sx={{ fontSize: '18px' }}
+                                        />{' '}
                                         Question
                                       </span>
                                       <p className="mb-0">{chat?.question}</p>
@@ -3020,7 +3317,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                     src={logo}
                                     width="38"
                                     height="38"
-                                    style={{ backgroundColor: "#9943ec" }}
+                                    style={{ backgroundColor: '#9943ec' }}
                                     className="rounded-circle p-2"
                                     alt=""
                                   />
@@ -3028,23 +3325,102 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                     <div className="chat-left-msg">
                                       <span className="anstext">
                                         <DescriptionOutlinedIcon
-                                          sx={{ fontSize: "14px" }}
-                                        />{" "}
+                                          sx={{ fontSize: '14px' }}
+                                        />{' '}
                                         Answer
                                       </span>
                                       <div className="mb-4">
                                         <p>
                                           <Chatbot
+                                            key={chat?.question}
                                             answer={chat?.answer}
                                             index={index}
                                           />
                                         </p>
+                                        {chat?.diagram_code && (
+                                          <div
+                                            style={{
+                                              width: '100%',
+                                              height: '400px',
+                                              overflow: 'hidden',
+                                              display: 'flex',
+                                              justifyContent: 'center',
+                                              alignItems: 'center',
+                                            }}
+                                            key={index}
+                                            dangerouslySetInnerHTML={{
+                                              __html: chat?.diagram_code,
+                                            }}
+                                          />
+                                        )}
                                       </div>
                                       <ul className="ansfooter">
+                                        <ThumbUpAltOutlinedIcon
+                                          onClick={() =>
+                                            handleUpIconClick(index)
+                                          }
+                                          sx={{
+                                            fontSize: '14px',
+                                            color:
+                                              likedStates[index] === 'liked' ||
+                                              chat.like_dislike === true
+                                                ? theme.palette.primary.main
+                                                : chat.like_dislike !== null
+                                                  ? '#ccc'
+                                                  : '',
+                                            cursor:
+                                              chat.like_dislike !== null
+                                                ? 'default'
+                                                : 'pointer',
+                                            transform:
+                                              likedStates[index] === 'liked' ||
+                                              chat.like_dislike === true
+                                                ? 'scale(1.3)'
+                                                : 'scale(1)',
+                                            transition: 'color 0.3s ease',
+                                            opacity:
+                                              chat.like_dislike !== null &&
+                                              chat.like_dislike !== true
+                                                ? 0.5
+                                                : 1,
+                                          }}
+                                        />
+                                        <ThumbDownOutlinedIcon
+                                          onClick={() =>
+                                            handleDownIconClick(index)
+                                          }
+                                          sx={{
+                                            fontSize: '14px',
+                                            color:
+                                              likedStates[index] ===
+                                                'disliked' ||
+                                              chat.like_dislike === false
+                                                ? theme.palette.primary.main
+                                                : chat.like_dislike !== null
+                                                  ? '#ccc'
+                                                  : '',
+                                            cursor:
+                                              chat.like_dislike !== null
+                                                ? 'default'
+                                                : 'pointer',
+                                            transform:
+                                              likedStates[index] ===
+                                                'disliked' ||
+                                              chat.like_dislike === false
+                                                ? 'scale(1.3)'
+                                                : 'scale(1)',
+                                            transition: 'color 0.3s ease',
+                                            opacity:
+                                              chat.like_dislike !== null &&
+                                              chat.like_dislike !== false
+                                                ? 0.5
+                                                : 1,
+                                          }}
+                                        />
                                         <li onClick={regenerateChat}>
                                           <CachedOutlinedIcon
-                                            sx={{ fontSize: "14px" }}
-                                          />{" "}
+                                            sx={{ fontSize: '14px' }}
+                                          />{' '}
                                           <span>Regenerate</span>
                                         </li>
                                         {!chat?.speak ? (
@@ -3054,37 +3430,27 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                             }
                                           >
                                             <VolumeUpOutlinedIcon
-                                              sx={{ fontSize: "14px" }}
-                                            />{" "}
+                                              sx={{ fontSize: '14px' }}
+                                            />{' '}
                                             <span>Read</span>
                                           </li>
                                         ) : (
                                           <li onClick={() => stop(index)}>
                                             <VolumeOffOutlinedIcon
-                                              sx={{ fontSize: "14px" }}
-                                            />{" "}
+                                              sx={{ fontSize: '14px' }}
+                                            />{' '}
                                             <span>Stop</span>
                                           </li>
                                         )}
                                         <li onClick={() => copyText(index)}>
                                           <ContentCopyOutlinedIcon
-                                            sx={{ fontSize: "14px" }}
-                                          />{" "}
+                                            sx={{ fontSize: '14px' }}
+                                          />{' '}
                                           <span>
                                             {isTextCopied[`answer-${index}`]
-                                              ? "Copied"
-                                              : "Copy"}
+                                              ? 'Copied'
+                                              : 'Copy'}
                                           </span>
-                                        </li>
-                                        <li>
-                                          <ThumbDownOutlinedIcon
-                                            sx={{ fontSize: "14px" }}
-                                          />
-                                        </li>
-                                        <li>
-                                          <ThumbUpAltOutlinedIcon
-                                            sx={{ fontSize: "14px" }}
-                                          />
                                         </li>
                                       </ul>
                                     </div>
@@ -3096,7 +3462,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                         ))
                       ) : (
                         <div className="d-flex flex-column align-items-center text-center">
-                          <img width={"200px"} src={chatLogo} alt="" />
+                          <img width={'200px'} src={chatLogo} alt="" />
                           <h4>Hi, How can I help you today?</h4>
                         </div>
                       )}
@@ -3111,7 +3477,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                               ref={chatRef}
                               placeholder="Type your question"
                               aria-label="Search"
-                              value={search}
+                              value={!chatLoader ? search : ''}
                               onChange={(e) => setSearch(e?.target?.value)}
                               onKeyDown={handleKeyDown}
                             />
@@ -3145,7 +3511,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                               options={barChartOptions}
                               series={barChartSeries}
                               type="bar"
-                              height={"280px"}
+                              height={'280px'}
                             />
                           </div>
                           <p>Your Total Time Spend & Study Chart</p>
@@ -3178,7 +3544,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                 className="dropdown-toggle-nocaret options dropdown-toggle"
                                 data-bs-toggle="dropdown"
                               >
-                                {" "}
+                                {' '}
                                 <span className="fs-5">
                                   <MoreVertOutlinedIcon />
                                 </span>
@@ -3207,7 +3573,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                               options={radialChartOptions}
                               series={[78]}
                               type="radialBar"
-                              height={"200px"}
+                              height={'200px'}
                             />
                           </div>
                           <div className="text-center">
@@ -3264,13 +3630,13 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                                 },
                               ]}
                               type="area"
-                              height={"100%"}
+                              height={'100%'}
                             />
                           </div>
                           <div className="text-center">
                             <p className="mb-0 font-12">
-                              {" "}
-                              You have done{" "}
+                              {' '}
+                              You have done{' '}
                               <span className="text-success me-1">12</span>
                               assignments out of 67
                             </p>
@@ -3287,7 +3653,7 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                         options={secondLineChartOptions}
                         series={[
                           {
-                            name: "",
+                            name: '',
                             data: [4, 10, 25, 12, 25, 18, 40, 22, 7],
                           },
                         ]}
@@ -3310,10 +3676,10 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           <p className="mb-1">
                             Clicks <span className="float-end">2589</span>
                           </p>
-                          <div className="progress" style={{ height: "5px" }}>
+                          <div className="progress" style={{ height: '5px' }}>
                             <div
                               className="progress-bar bg-grd-primary"
-                              style={{ width: "65%" }}
+                              style={{ width: '65%' }}
                             ></div>
                           </div>
                         </div>
@@ -3321,10 +3687,10 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           <p className="mb-1">
                             Likes <span className="float-end">6748</span>
                           </p>
-                          <div className="progress" style={{ height: "5px" }}>
+                          <div className="progress" style={{ height: '5px' }}>
                             <div
                               className="progress-bar bg-grd-warning"
-                              style={{ width: "55%" }}
+                              style={{ width: '55%' }}
                             ></div>
                           </div>
                         </div>
@@ -3332,10 +3698,10 @@ const chatCounts = top5Chats?.map((item: any) => item?.chat_count);
                           <p className="mb-1">
                             Upvotes <span className="float-end">9842</span>
                           </p>
-                          <div className="progress" style={{ height: "5px" }}>
+                          <div className="progress" style={{ height: '5px' }}>
                             <div
                               className="progress-bar bg-grd-info"
-                              style={{ width: "45%" }}
+                              style={{ width: '45%' }}
                             ></div>
                           </div>
                         </div>

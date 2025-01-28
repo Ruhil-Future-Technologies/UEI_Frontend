@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import Stepper from "@mui/material/Stepper";
 // import Step from "@mui/material/Step";
@@ -13,23 +13,24 @@ import {
   Select,
   SelectChangeEvent,
   //TextField,
- // useTheme,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import useApi from "../../hooks/useAPI";
+  // useTheme,
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import StudentHobbies from "../StudentHobbies";
+import StudentHobbies from '../StudentHobbies';
 import {
+  commonStyle,
   deepEqual,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-  tabletools,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-import { ChildComponentProps } from "../StudentProfile";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
+import { ChildComponentProps } from '../StudentProfile';
 
 interface Language {
   id: string;
@@ -69,26 +70,27 @@ interface Box {
   proficiency: any;
 }
 
-const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
+const StudentLanguage: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
-  const { namecolor }: any = context;
-  const StudentId = localStorage.getItem("_id");
+  const { namecolor, activeForm, setActiveForm }: any = context;
+  const StudentId = localStorage.getItem('_id');
   const { getData, postData, putData, deleteData } = useApi();
 
   //const theme = useTheme();
   const [alllanguage, setAllLanguage] = useState<Language[]>([]);
- // const [selectedLeng, setSelectedLeng] = useState<any>();
+  // const [selectedLeng, setSelectedLeng] = useState<any>();
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [isSave, setIsSave] = useState<boolean>(false);
- // const [proficiency, setProficiency] = useState<any>("read");
+  // const [proficiency, setProficiency] = useState<any>("read");
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [isLanguageUpdated, setIsLanguageUpdated] = useState<boolean>(false);
   const [isHobbiesUpdated, setIsHobbiesUpdated] = useState<boolean>(false);
+  const menuItems = ['read', 'write', 'both'];
   const addRow = () => {
     setBoxes((prevBoxes) => [
       ...prevBoxes,
-      { id: 0, language_id: "", proficiency: "" },
+      { id: 0, language_id: '', proficiency: '' },
     ]);
   };
 
@@ -97,30 +99,28 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       deleteData(`/student_language_knowndelete/${id}`)
         .then((data: any) => {
           if (data.status === 200) {
-            toast.success("Language deleted successfully", {
+            toast.success('Language deleted successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center"
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
+            theme: 'colored',
+            position: 'top-center',
           });
         });
     }
     setBoxes(boxes.filter((_, index) => index !== indx));
   };
   const getdatalanguage = async () => {
-   
     getData(`student_language_known/edit/${StudentId}`)
       .then((data: any) => {
         if (data?.status === 200) {
-          
-       //   const lenduageIds = data.data.language_id;
+          //   const lenduageIds = data.data.language_id;
           //setSelectedLeng(lenduageIds);
           data.data.forEach((item: any) => {
             const newBox: Box = {
@@ -134,30 +134,30 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             }
           });
         } else if (data?.status === 404) {
-          setBoxes([{ id: 0, language_id: "", proficiency: "" }]);
+          setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
           setEditFlag(true);
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
+            theme: 'colored',
+            position: 'top-center',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center"
+          theme: 'colored',
+          position: 'top-center',
         });
       });
   };
   useEffect(() => {
-    getData("language/list")
+    getData('language/list')
       .then((data: any) => {
         if (data?.status === 200) {
           const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+            (item: any) => item?.is_active === 1,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
@@ -166,12 +166,48 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center"
+          theme: 'colored',
+          position: 'top-center',
         });
       });
     getdatalanguage();
   }, []);
+
+  useEffect(() => {
+    getData(`student_language_known/edit/${StudentId}`).then((data: any) => {
+      if (data?.status === 200) {
+        //   const lenduageIds = data.data.language_id;
+        //setSelectedLeng(lenduageIds);
+
+        const newLanageage = data?.data?.filter((items: any) =>
+          boxes.some((box: Box) => box.id === items.id || box.id == 0),
+        );
+
+        const newBoxes: Box[] = newLanageage.map((item: any) => ({
+          id: item.id,
+          language_id: item.language_id,
+          proficiency: item.proficiency,
+        }));
+
+        if (newBoxes.length > 0) {
+          setBoxes((prevBoxes: Box[]) => [
+            ...prevBoxes.filter((box: Box) => box.id != 0),
+            ...newBoxes.filter(
+              (newBox: Box) =>
+                !prevBoxes.some((box: Box) => box.id === newBox.id),
+            ),
+          ]);
+          setInitialState((prevBoxes: Box[]) => [
+            ...prevBoxes,
+            ...newBoxes.filter(
+              (newBox: Box) =>
+                !prevBoxes.some((box: Box) => box.id === newBox.id),
+            ),
+          ]);
+        }
+      }
+    });
+  }, [activeForm]);
 
   const saveLanguage = async () => {
     // event: React.FormEvent<HTMLFormElement>
@@ -191,7 +227,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     });
 
     if (!valid) return; // Don't proceed if validation fails
-    setActiveForm((prev) => prev + 1);
+    setActiveForm((prev: number) => prev + 1);
     setIsSave(true);
     // console.log("saving",initialAdminState,boxes)
     const eq = deepEqual(initialAdminState, boxes);
@@ -202,13 +238,17 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      console.log(editFlag,"what is the output of editflag");
-      if (editFlag || box.id === 0) {
-        return postData("student_language_known/add", payload);
-      } else if (!eq) {
-        return putData("student_language_known/edit/" + box.id, payload);
+
+      if (isLanguageUpdated) {
+        if (editFlag || box.id === 0) {
+          return postData('student_language_known/add', payload);
+        } else if (!eq) {
+          return putData('student_language_known/edit/' + box.id, payload);
+        } else {
+          return Promise.resolve({ status: 204 }); // Skip update
+        }
       } else {
-        return Promise.resolve({ status: 204 }); // Skip update
+        return Promise.resolve({ status: 204 });
       }
     });
 
@@ -227,51 +267,58 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       //   });
       // }
       const successfulResults = results.filter(
-        (res: { status: number }) => res.status === 200
+        (res: { status: number }) => res.status === 200,
       );
 
       if (successfulResults?.length > 0) {
-        console.log(await isHobbiesUpdated,isLanguageUpdated);
-        if(isHobbiesUpdated &&isLanguageUpdated){
-          toast.success("Language And Hobbies saved successfully", {
+        if (isHobbiesUpdated && isLanguageUpdated && editFlag) {
+          toast.success('Language And Hobbies saved successfully', {
             hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
-          }); 
+            theme: 'colored',
+            position: 'top-center',
+          });
           setIsLanguageUpdated(false);
-        }else if(isLanguageUpdated){
+          setEditFlag(false);
+        } else if (isHobbiesUpdated && isLanguageUpdated && !editFlag) {
+          toast.success('Language And Hobbies updated successfully', {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+          setIsLanguageUpdated(false);
+        } else if (isLanguageUpdated) {
           if (editFlag) {
             setEditFlag(false);
-            toast.success("Language saved successfully", {
+            toast.success('Language saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center"
-            });    
-               
+              theme: 'colored',
+              position: 'top-center',
+            });
+            setIsLanguageUpdated(false);
           } else {
-            toast.success("Language updated successfully", {
+            toast.success('Language updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center"
+              theme: 'colored',
+              position: 'top-center',
             });
           }
-          setIsLanguageUpdated(false);  
-        }else if(isHobbiesUpdated){
+          setIsLanguageUpdated(false);
+        } else if (isHobbiesUpdated) {
           if (editFlag) {
-            toast.success("Hobbies saved successfully", {
+            toast.success('Hobbies saved successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center"
+              theme: 'colored',
+              position: 'top-center',
             });
-          }else {
-            toast.success("Hobbies update successfully", {
+          } else {
+            toast.success('Hobbies updated successfully', {
               hideProgressBar: true,
-              theme: "colored",
-              position: "top-center"
+              theme: 'colored',
+              position: 'top-center',
             });
           }
         }
-       
+
         // getdatalanguage()
       } else if (
         results.some((res: { status: number }) => res.status !== 204)
@@ -286,8 +333,8 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     } catch (error: any) {
       toast.error(error?.message, {
         hideProgressBar: true,
-        theme: "colored",
-        position: "top-center"
+        theme: 'colored',
+        position: 'top-center',
       });
     }
   };
@@ -297,10 +344,10 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
-        i === index ? { ...box, language_id: value } : box
-      )
+        i === index ? { ...box, language_id: value } : box,
+      ),
     );
-    validateFields(index, "language");
+    validateFields(index, 'language');
   };
 
   const handleChange1 = (event: SelectChangeEvent<string>, index: number) => {
@@ -308,24 +355,30 @@ const StudentLanguage: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const { value } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) =>
-        i === index ? { ...box, proficiency: value } : box
-      )
+        i === index ? { ...box, proficiency: value } : box,
+      ),
     );
-    validateFields(index, "proficiency");
+    validateFields(index, 'proficiency');
   };
 
-  const [error, setError] = useState<{ [key: number]: { language_error: boolean; proficiency_error: boolean } }>({});
+  const [error, setError] = useState<{
+    [key: number]: { language_error: boolean; proficiency_error: boolean };
+  }>({});
   const validateFields = (index: number, field: string) => {
     setError((prevError) => ({
       ...prevError,
       [index]: {
         ...prevError[index],
-        ...(field === "language" && { language_error: !boxes[index].language_id }),
-        ...(field === "proficiency" && { proficiency_error: !boxes[index].proficiency }),
+        ...(field === 'language' && {
+          language_error: !boxes[index].language_id,
+        }),
+        ...(field === 'proficiency' && {
+          proficiency_error: !boxes[index].proficiency,
+        }),
       },
     }));
   };
-console.log(isSave);
+
   return (
     <>
       <div className="row">
@@ -336,81 +389,129 @@ console.log(isSave);
         </div>
       </div>
       <div className="row form_field_wrapper mb-4">
-        <StudentHobbies  save={isSave} setSave={setIsSave} setIsHobbiesUpdated={setIsHobbiesUpdated} isLanguageUpdated={isLanguageUpdated}/>
+        <StudentHobbies
+          save={isSave}
+          setSave={setIsSave}
+          setIsHobbiesUpdated={setIsHobbiesUpdated}
+          isLanguageUpdated={isLanguageUpdated}
+        />
       </div>
-      
+
       <form>
-          <p className="font-weight-bold profiletext mt-4">
-            <b> Language Known</b>
-          </p>
+        <p className="font-weight-bold profiletext mt-4">
+          <b> Language Known</b>
+        </p>
         {boxes.map((box, index) => (
           <div
             className="row d-flex justify-content-start align-items-center mt-4 "
             key={index}
           >
             <div className="col form_field_wrapper ">
-            <FormControl required sx={{ m: 1 , mt:  error[index]?.language_error && box.language_id == "" ? 4 :1  }} fullWidth>
-        <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
-        <Select
-          labelId={`language-label-${box.id}`}
-          id={`language-select-${box.id}`}
-          name={`language_${box.id}`}
-          value={box.language_id}
-          label="Language *"
-          sx={{
-            backgroundColor: "#f5f5f5",
-          }}
-          onChange={(e) => handleChange(e, index)}
-          MenuProps={MenuProps}
-          onBlur={() => validateFields(index, "language")}
-        >
-          {/* Render the selected language as a disabled MenuItem at the top */}
-          {alllanguage
-            .filter((lang) => lang.id === box.language_id)
-            .map((lang) => (
-              <MenuItem
-                key={lang.id}
-                value={lang.id}
-                disabled
+              <FormControl
+                required
                 sx={{
-                  backgroundColor: inputfield(namecolor),
-                  color: inputfieldtext(namecolor),
-                  fontWeight: "bold",
+                  m: 1,
+                  mt:
+                    error[index]?.language_error && box.language_id == ''
+                      ? 4
+                      : 1,
                 }}
+                fullWidth
               >
-                {lang.language_name}
-              </MenuItem>
-            ))}
+                <InputLabel id={`language-label-${box.id}`}>
+                  Language
+                </InputLabel>
+                <Select
+                  labelId={`language-label-${box.id}`}
+                  id={`language-select-${box.id}`}
+                  name={`language_${box.id}`}
+                  value={box.language_id}
+                  label="Language *"
+                  sx={{
+                    backgroundColor: '#f5f5f5',
+                    '& .MuiSelect-icon': {
+                      color: fieldIcon(namecolor),
+                    },
+                  }}
+                  onChange={(e) => handleChange(e, index)}
+                  MenuProps={MenuProps}
+                  onBlur={() => validateFields(index, 'language')}
+                >
+                  {/* Render the selected language as a disabled MenuItem at the top */}
+                  {alllanguage
+                    .filter((lang) => lang.id === box.language_id)
+                    .map((lang) => (
+                      <MenuItem
+                        key={lang.id}
+                        value={lang.id}
+                        disabled
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          fontWeight: 'bold',
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: inputfield(namecolor),
+                          },
+                          '&.Mui-selected, &:focus': {
+                            backgroundColor: inputfield(namecolor),
+                          },
+                        }}
+                      >
+                        {lang.language_name}
+                      </MenuItem>
+                    ))}
 
-          {/* Render the rest of the languages except the ones already selected in other boxes */}
-          {alllanguage
-            .filter(
-              (lang) =>
-                lang.id !== box.language_id &&
-                !boxes.some((b) => b.language_id === lang.id)
-            )
-            .map((lang) => (
-              <MenuItem
-                key={lang.id}
-                value={lang.id}
-                sx={{
-                  backgroundColor: inputfield(namecolor),
-                  color: inputfieldtext(namecolor),
-                  "&:hover": {
-                    backgroundColor: inputfieldhover(namecolor),
-                  },
-                }}
-              >
-                {lang.language_name}
-              </MenuItem>
-            ))}
-        </Select>
-        {error[index]?.language_error && box.language_id == "" && <FormHelperText style={{color: "red"}}>Language is required</FormHelperText>}
-      </FormControl>
-             
+                  {/* Render the rest of the languages except the ones already selected in other boxes */}
+                  {alllanguage
+                    .filter(
+                      (lang) =>
+                        lang.id !== box.language_id &&
+                        !boxes.some((b) => b.language_id === lang.id),
+                    )
+                    .map((lang) => (
+                      <MenuItem
+                        key={lang.id}
+                        value={lang.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: inputfield(namecolor),
+                          },
+                          '&.Mui-selected, &:focus': {
+                            backgroundColor: inputfield(namecolor),
+                          },
+                        }}
+                      >
+                        {lang.language_name}
+                      </MenuItem>
+                    ))}
+                </Select>
+                {error[index]?.language_error && box.language_id == '' && (
+                  <FormHelperText style={{ color: 'red' }}>
+                    Language is required
+                  </FormHelperText>
+                )}
+              </FormControl>
             </div>
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1 , mt:  error[index]?.proficiency_error &&  box.proficiency == "" ? 4 :1  }} fullWidth>
+              <FormControl
+                required
+                sx={{
+                  m: 1,
+                  mt:
+                    error[index]?.proficiency_error && box.proficiency == ''
+                      ? 4
+                      : 1,
+                }}
+                fullWidth
+              >
                 <InputLabel id={`proficiency-label-${box.id}`}>
                   Proficiency
                 </InputLabel>
@@ -420,60 +521,40 @@ console.log(isSave);
                   name={`proficiency_${box.id}`}
                   value={box.proficiency}
                   sx={{
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: '#f5f5f5',
+                    '& .MuiSelect-icon': {
+                      color: fieldIcon(namecolor),
+                    },
                   }}
                   label="Proficiency *"
                   onChange={(e) => handleChange1(e, index)}
                   MenuProps={MenuProps}
-                  onBlur={() => validateFields(index, "proficiency")}
+                  onBlur={() => validateFields(index, 'proficiency')}
                 >
-                  <MenuItem
-                    value={"read"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Read
-                  </MenuItem>
-                  <MenuItem
-                    value={"write"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Write
-                  </MenuItem>
-                  <MenuItem
-                    value={"both"}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      "&:hover": {
-                        backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      },
-                    }}
-                  >
-                    Both
-                  </MenuItem>
+                  {menuItems.map((item) => (
+                    <MenuItem
+                      key={item}
+                      value={item}
+                      sx={commonStyle(namecolor)}
+                    >
+                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                    </MenuItem>
+                  ))}
                 </Select>
-                  {error[index]?.proficiency_error &&  box.proficiency == "" && <FormHelperText style={{color: "red"}}>Proficiency is required</FormHelperText>}
+                {error[index]?.proficiency_error && box.proficiency == '' && (
+                  <FormHelperText style={{ color: 'red' }}>
+                    Proficiency is required
+                  </FormHelperText>
+                )}
               </FormControl>
             </div>
             <div className="col form_field_wrapper d-flex">
               <IconButton
                 onClick={addRow}
                 sx={{
-                  width: "35px",
-                  height: "35px",
-                  color: tabletools(namecolor),
+                  width: '35px',
+                  height: '35px',
+                  color: fieldIcon(namecolor),
                 }}
               >
                 <AddCircleOutlinedIcon />
@@ -482,9 +563,9 @@ console.log(isSave);
                 <IconButton
                   onClick={() => deleterow(box.id, index)}
                   sx={{
-                    width: "35px",
-                    height: "35px",
-                    color: tabletools(namecolor),
+                    width: '35px',
+                    height: '35px',
+                    color: fieldIcon(namecolor),
                   }}
                 >
                   <DeleteOutlineOutlinedIcon />
@@ -509,7 +590,7 @@ console.log(isSave);
                 type="button"
                 className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
                 onClick={() => {
-                  setActiveForm((prev) => prev - 1);
+                  setActiveForm((prev: number) => prev - 1);
                 }}
               >
                 Previous

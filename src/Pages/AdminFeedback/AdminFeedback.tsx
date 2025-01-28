@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
-import { toast } from "react-toastify";
-import useApi from "../../hooks/useAPI";
-import { FEEDBACK_COLUMNS, IFeedback } from "../../Components/Table/columns";
-import { EditIcon, TrashIcon } from "../../assets";
-import { QUERY_KEYS_FEEDBACK } from "../../utils/const";
-import { DeleteDialog } from "../../Components/Dailog/DeleteDialog";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import { tabletools } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
-import "../Hobby/Hobby.scss";
+import React, { useContext, useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
+import { toast } from 'react-toastify';
+import useApi from '../../hooks/useAPI';
+import { FEEDBACK_COLUMNS, IFeedback } from '../../Components/Table/columns';
+import { EditIcon, TrashIcon } from '../../assets';
+import { QUERY_KEYS_FEEDBACK } from '../../utils/const';
+import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import { tabletools } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
+import '../Hobby/Hobby.scss';
 
 const AdminFeedback = () => {
   const context = useContext(NameContext);
@@ -31,18 +31,18 @@ const AdminFeedback = () => {
     getData(`${FeedbackURL}`)
       .then((data: { data: IFeedback[] }) => {
         if (data.data) {
-          console.log("FeedBack Data", data.data);
+          console.log('FeedBack Data', data.data);
 
           setDataFeedback(data?.data);
         }
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -69,18 +69,18 @@ const AdminFeedback = () => {
       .then((data: { message: string }) => {
         toast.success(data?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
         callAPI();
         setDataDelete(false);
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
-          navigate("/");
+          navigate('/');
         }
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
       });
   };
@@ -96,9 +96,9 @@ const AdminFeedback = () => {
                   <div
                     className="containerbutton"
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography variant="h6" sx={{ m: 1 }}>
@@ -126,27 +126,27 @@ const AdminFeedback = () => {
                       }}
                       enableRowActions
                       displayColumnDefOptions={{
-                        "mrt-row-actions": {
-                          header: "Actions",
+                        'mrt-row-actions': {
+                          header: 'Actions',
                           size: 150,
                         },
                       }}
                       renderRowActions={(row) => (
                         <Box
                           sx={{
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            gap: "0.5",
-                            marginLeft: "-5px",
-                            width: "140px",
+                            display: 'flex',
+                            flexWrap: 'nowrap',
+                            gap: '0.5',
+                            marginLeft: '-5px',
+                            width: '140px',
                           }}
                         >
                           {/* {filteredData?.form_data?.is_update === true && ( */}
                           <Tooltip arrow placement="right" title="Edit">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
@@ -160,8 +160,8 @@ const AdminFeedback = () => {
                           <Tooltip arrow placement="right" title="Delete">
                             <IconButton
                               sx={{
-                                width: "35px",
-                                height: "35px",
+                                width: '35px',
+                                height: '35px',
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {

@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
 function Profile() {
-  const name = "atul yadav";
+  const name = 'atul yadav';
 
   return (
     <>
