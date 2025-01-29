@@ -11,7 +11,7 @@ interface Student {
   class_name: string;
 }
 const StudentListingByInstitution = () => {
-  const instituteId = localStorage.getItem("_id");
+  const instituteId = localStorage.getItem("institute_id");
   const { getData } = useApi();
   const collumns:MRT_ColumnDef<Student>[]=[
     {

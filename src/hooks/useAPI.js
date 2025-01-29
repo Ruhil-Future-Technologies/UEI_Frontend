@@ -81,6 +81,7 @@ const useApi = () => {
     }
     const headers = {
       Authorization: `${STATIC_JWT_TOKEN}`,
+     "ngrok-skip-browser-warning":1
     };
     setLoading(true);
     setError(null);
@@ -129,6 +130,8 @@ const useApi = () => {
     }
     const headers = {
       Authorization: `${STATIC_JWT_TOKEN}`,
+      "ngrok-skip-browser-warning":1,
+      'Content-Type': 'multipart/form-data'
     };
     setLoading(true);
     setError(null);

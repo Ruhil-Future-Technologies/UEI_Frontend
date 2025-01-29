@@ -26,6 +26,7 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import OtpCard from '../../Components/Dailog/OtpCard';
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -33,7 +34,7 @@ interface Institute {
   entity_id: string;
   email_id: string;
   mobile_no: string;
-  website: string;
+  website_url: string;
   country: string;
   state: string;
   city: string;
@@ -61,7 +62,7 @@ const InstituteRegistrationForm = () => {
     entity_id: '',
     email_id: '',
     mobile_no: '',
-    website: '',
+    website_url: '',
     country: '',
     state: '',
     city: '',
@@ -104,6 +105,7 @@ const InstituteRegistrationForm = () => {
   });
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
   const [selectedEntity, setSelectedEntity] = useState('');
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [allselectedfiles, handleFileChanges] = useState<File[]>([]);
@@ -168,7 +170,6 @@ const InstituteRegistrationForm = () => {
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
-
       handleFileChanges((prevFiles) => [
         ...prevFiles, // Keep previously selected files
         ...filesArray, // Add newly selected files
@@ -182,7 +183,7 @@ const InstituteRegistrationForm = () => {
     setError({
       institute_name_error:
         name === 'institute_name' &&
-        !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)
+          !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)
           ? true
           : false,
       university_id_error: false,
@@ -194,7 +195,7 @@ const InstituteRegistrationForm = () => {
           : false,
       mobile_no_error:
         name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim()) ? true : false,
-      website_error: name === 'website' && !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value.trim()),
+      website_error: name === 'website_url' && !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value.trim()),
       country_error: false,
       state_error: false,
       city_error:
@@ -234,6 +235,7 @@ const InstituteRegistrationForm = () => {
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
   const handleSubmit = () => {
+    // setPopupOtpCard(true);
     setError({
       institute_name_error:
         selectedEntity === 'College' && !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
@@ -254,7 +256,7 @@ const InstituteRegistrationForm = () => {
       mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())
         ? true
         : false,
-      website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website),
+      website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url),
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
@@ -302,18 +304,18 @@ const InstituteRegistrationForm = () => {
       !error.mobile_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
       !error.website_error &&
-      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website) &&
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url) &&
       !error.country_error &&
       !(valueInstitute.country === '') &&
       !error.state_error &&
       !(valueInstitute.state === '') &&
       !error.city_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.city.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.city.trim()) &&
       !error.district_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.district.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.district.trim()) &&
       !error.address_error &&
 
-      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test( valueInstitute.address.trim()) &&
+      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(valueInstitute.address.trim()) &&
 
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
@@ -322,44 +324,42 @@ const InstituteRegistrationForm = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
-      try {
-        let payload;
-        if (selectedEntity === 'School') {
-          payload = {
-            institution_name: valueInstitute.school_name,
-            entity_id: valueInstitute.entity_id,
-            address: valueInstitute.address,
-            country: valueInstitute.country,
-            state: valueInstitute.state,
-            city: valueInstitute.city,
-            district: valueInstitute.district,
-            pincode: valueInstitute.pincode,
-            website_url: valueInstitute.website,
-            mobile_no: valueInstitute.mobile_no,
-            email_id: valueInstitute.email_id,
-            icon: '',
-            document: allselectedfiles,
-          };
-        } else {
-          payload = {
-            institution_name: valueInstitute.institute_name,
-            entity_id: valueInstitute.entity_id,
-            address: valueInstitute.address,
-            country: valueInstitute.country,
-            state: valueInstitute.state,
-            city: valueInstitute.city,
-            district: valueInstitute.district,
-            pincode: valueInstitute.pincode,
-            website_url: valueInstitute.website,
-            mobile_no: valueInstitute.mobile_no,
-            university_id: valueInstitute.university_id,
-            email_id: valueInstitute.email_id,
-            icon: '',
-            document: allselectedfiles,
-          };
-        }
+      const formData = new FormData();
 
-        postRegisterData(`${InstituteAddURL}`, payload).then((response) => {
+      allselectedfiles.forEach((file, index) => {
+        if (file instanceof File) {
+          formData.append(`documents[${index}]`, file);
+        } else {
+          console.error(`Invalid file at index ${index}`, file);
+        }
+      });
+    
+      // Append text fields to FormData
+      formData.append("institution_name", valueInstitute.school_name || valueInstitute.institute_name);
+      formData.append("entity_id", valueInstitute.entity_id);
+      formData.append("address", valueInstitute.address);
+      formData.append("country", valueInstitute.country);
+      formData.append("state", valueInstitute.state);
+      formData.append("city", valueInstitute.city);
+      formData.append("district", valueInstitute.district);
+      formData.append("pincode", valueInstitute.pincode);
+      formData.append("website_url", valueInstitute.website_url);
+      formData.append("mobile_no", valueInstitute.mobile_no);
+      formData.append("email_id", valueInstitute.email_id);
+      formData.append("icon", "");  
+      
+
+      if (selectedEntity !== 'School') {
+        formData.append("university_id", valueInstitute.university_id);
+      }
+    
+      // ✅ Debugging: Check FormData contents before sending
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+      console.log(formData.entries())
+      try{
+        postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
           console.log(response)
           if (response.status === 200) {
             toast.success('Institute registration request sent successfully', {
@@ -462,8 +462,9 @@ const InstituteRegistrationForm = () => {
               <TextField
                 autoComplete="off"
                 className="form-control"
-                name="website"
+                name="website_url"
                 onChange={handleChange}
+                value={valueInstitute.website_url}
               />
               <div>
                 {error.website_error === true && (
@@ -491,7 +492,7 @@ const InstituteRegistrationForm = () => {
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
                       <small>
-                      Please enter a valid school name
+                        Please enter a valid school name
                       </small>
                     </p>
                   )}
@@ -565,6 +566,7 @@ const InstituteRegistrationForm = () => {
                   className="form-control"
                   name="institute_name"
                   onChange={handleChange}
+                  value={valueInstitute.institute_name}
                 />
                 <div>
                   {error.institute_name_error === true && (
@@ -590,6 +592,7 @@ const InstituteRegistrationForm = () => {
                 className="form-control"
                 name="mobile_no"
                 onChange={handleChange}
+                value={valueInstitute.mobile_no}
               />
               <div>
                 {error.mobile_no_error === true && (
@@ -610,6 +613,7 @@ const InstituteRegistrationForm = () => {
                 autoComplete="off"
                 className="form-control"
                 name="email_id"
+                value={valueInstitute.email_id}
                 onChange={handleChange}
               />
               <div>
@@ -673,6 +677,7 @@ const InstituteRegistrationForm = () => {
                 className="form-control"
                 name="district"
                 onChange={handleChange}
+                value={valueInstitute.district}
               />
               <div>
                 {error.district_error === true && (
@@ -692,12 +697,13 @@ const InstituteRegistrationForm = () => {
                 className="form-control"
                 name="city"
                 onChange={handleChange}
+                value={valueInstitute.city}
               />
               <div>
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>
-                    Please enter a valid city name.
+                      Please enter a valid city name.
                     </small>
                   </p>
                 )}
@@ -715,12 +721,13 @@ const InstituteRegistrationForm = () => {
                 className="form-control"
                 name="address"
                 onChange={handleChange}
+                value={valueInstitute.address}
               />
               <div>
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>
-                    Please enter a valid address
+                      Please enter a valid address
                     </small>
                   </p>
                 )}
@@ -736,6 +743,7 @@ const InstituteRegistrationForm = () => {
                 className="form-control"
                 name="pincode"
                 onChange={handleChange}
+                value={valueInstitute.pincode}
               />
               <div>
                 {error.pincode_error === true && (
@@ -750,7 +758,7 @@ const InstituteRegistrationForm = () => {
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
                 {' '}
-                Document<span>*</span>
+                Document<span></span>
               </label>
               <br />
               <Button
@@ -763,7 +771,7 @@ const InstituteRegistrationForm = () => {
                 <input
                   type="file"
                   name="document"
-                  accept=".pdf, .jpg, .jpeg, .png, .gif"
+                  accept=".pdf, .jpg, .jpeg, .png,"
                   hidden
                   multiple
                   onChange={handleFileChange}
@@ -851,6 +859,7 @@ const InstituteRegistrationForm = () => {
             </DialogActions>
           </Dialog>
         </div>
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} />
       </div>
     </div>
   );

@@ -6,28 +6,38 @@ import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 
 interface Course {
   id: string;
-  course_Name: string;
-  courseimage: string;
+  course_name: string;
+  duration: string;
+  semester_count:number;
+  enrollment_status: string;
 }
 const CourseListingByInstitution = () => {
-  const instituteId = localStorage.getItem("_id");
+  const instituteId = localStorage.getItem("institute_id");
   const collmns: MRT_ColumnDef<Course>[] = [
     {
 
-      accessorKey: 'course_Name',
+      accessorKey: 'course_name',
       header: 'Course Name',
       size: 150,
     },
     {
 
-      accessorKey: 'Duration(yr)',
+      accessorKey: 'duration',
       header: 'Duration(yr)',
       size: 150,
     },
     {
-      accessorKey: 'course_Name',
-      header: 'Course Name',
+      accessorKey: 'semester_count',
+      header: 'Semester Count',
       size: 150,
+    },
+    {
+      accessorKey: 'enrollment_status',
+      header: 'Enrollment Status',
+      size: 150,
+      Cell:({row})=>(
+        row.original.enrollment_status?row.original.enrollment_status:"NA"
+      )
     }
   ];
   const [dataCourses, setDataCourses] = useState<Course[]>([]);

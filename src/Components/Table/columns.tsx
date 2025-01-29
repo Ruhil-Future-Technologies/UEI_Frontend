@@ -121,6 +121,8 @@ export interface InstituteRep0oDTO {
   website_url: MaybeNull<string>;
   id: number;
   university_id?: MaybeNull<string>;
+  is_active?:MaybeNull<number>;
+  documents?: MaybeNull<File[]>;
 }
 export interface DepartmentRep0oDTO {
   department_name: MaybeNull<string>;
@@ -135,6 +137,9 @@ export interface CourseRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
   institution_id?: MaybeNull<string>;
+  duration?:MaybeNull<string>;
+  semester_count?: MaybeNull<string>;
+  enrollment_status?: MaybeNull<string>;
 }
 export interface UniversityRep0oDTO {
   university_name: MaybeNull<string>;
@@ -153,6 +158,7 @@ export interface SemesterRep0oDTO {
   updated_at: MaybeNull<string>;
   icon?: MaybeNull<string>;
   semester_id: number;
+  semester_number?: MaybeNull<string>;
 }
 
 export interface FormRep0oDTO {

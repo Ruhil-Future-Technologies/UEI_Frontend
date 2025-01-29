@@ -34,6 +34,7 @@ import {
   IClass,
   IEntity,
   InstituteRep0oDTO,
+  SemesterRep0oDTO,
   SubjectRep0oDTO,
 } from '../../Components/Table/columns';
 import useApi from '../../hooks/useAPI';
@@ -52,8 +53,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs/AdapterDayjs';
-
-interface Teacher {
+import OtpCard from "../../Components/Dailog/OtpCard"
+export interface Teacher {
   first_name: string;
   last_name: string;
   gender: string;
@@ -72,7 +73,8 @@ interface Teacher {
   experience: string;
   address: string;
   country: string;
-  stream:string;
+  stream: string;
+  semester?: string;
   state: string;
   district: string;
   city: string;
@@ -136,7 +138,7 @@ export const qualifications = [
   'Doctor of Pharmacy (Pharm.D)',
   'Doctor of Business Administration (DBA)',
 ];
-const stream=[
+const stream = [
   "Science",
   "Commerce",
   "Arts",
@@ -151,6 +153,12 @@ const MenuProps = {
     },
   },
 };
+
+interface Boxes {
+  id: string,
+  semester_id: string,
+  subjects: string[]
+}
 
 const TeacherRegistrationPage = () => {
   const context = useContext(NameContext);
@@ -180,9 +188,13 @@ const TeacherRegistrationPage = () => {
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string[]>([]);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [selectedSchool, setSelectedSchool] = useState('');
   const [selectedClassName, setSelectedClassName] = useState("col-12");
+  const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
+  const [boxes, setBoxes] = useState<Boxes[]>([]);
+
   //const [roleId, setRoleId] = useState("c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
   const [teacher, setTeacher] = useState<Teacher>({
     first_name: '',
@@ -194,7 +206,8 @@ const TeacherRegistrationPage = () => {
     address: '',
     country: '',
     state: '',
-    stream:'',
+    stream: '',
+    semester: '',
     district: '',
     city: '',
     pincode: '',
@@ -246,7 +259,7 @@ const TeacherRegistrationPage = () => {
     district_error: false,
     city_error: false,
     pincode_error: false,
-    stream_error:false,
+    stream_error: false,
     qualifications_error: false,
     teaching_experience_error: false,
     subject_name_error: false,
@@ -384,11 +397,25 @@ const TeacherRegistrationPage = () => {
         });
     }
   };
+  const getSemester = () => {
+    try {
+      getForRegistration(`/semester/list`).then((data) => {
+        if (data.status === 200) {
+          setSemesterData(data.data);
+        }
+      }).catch((e) => {
+        console.error(e)
+      })
+    } catch (error) {
+
+    }
+  }
   useEffect(() => {
     getInstitutelist();
     getEntity();
     getCourses();
     getClasslist();
+    getSemester();
     //getRole();
   }, []);
 
@@ -459,7 +486,7 @@ const TeacherRegistrationPage = () => {
         !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim()),
       pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value),
       qualifications_error: name === 'qualifications' && value == '',
-      teaching_experience_error: name === 'teaching_experience' && value === '',
+      teaching_experience_error: name === 'experience' && !/^\d+$/.test(value),
       subject_name_error: name === 'subject_name' && value == '',
       designation_role_error: name === 'designation_role' && value == '',
       entity_error: name === 'entity_id' && value === "",
@@ -467,7 +494,7 @@ const TeacherRegistrationPage = () => {
       course_id_error: name === 'course' && value === '',
       institution_id_error: name === 'institute_name' && value === '',
       school_name_error: selectedEntity === 'School' && value === '',
-      stream_error:false
+      stream_error: false
     });
     if (name === 'dob') {
       setdobset_col(teacher.dob === dayjs('dd-mm-yyyy'));
@@ -503,7 +530,7 @@ const TeacherRegistrationPage = () => {
       ),
       pincode_error: !/^(?!0{6})[0-9]{6}$/.test(teacher.pincode),
       qualifications_error: teacher.qualification === '',
-      teaching_experience_error: teacher.experience === '',
+      teaching_experience_error: !/^\d+$/.test(teacher.experience),
       subject_name_error: selectedSubject[0] === '',
       designation_role_error: false,
       entity_error: teacher.entity_id === '',
@@ -519,7 +546,7 @@ const TeacherRegistrationPage = () => {
           : false,
       school_name_error:
         selectedEntity === 'School' && teacher.school_name === '',
-        stream_error:false
+      stream_error: false
     });
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -542,6 +569,7 @@ const TeacherRegistrationPage = () => {
         !(teacher.institution_id === '')
         : true;
     console.log(error.subject_name_error);
+    setPopupOtpCard(true)
     if (
       !error.first_name_error &&
 
@@ -578,7 +606,7 @@ const TeacherRegistrationPage = () => {
       !error.qualifications_error &&
       !(teacher.qualification === '') &&
       !error.teaching_experience_error &&
-      !(teacher.experience === '') &&
+      /^\d+$/.test(teacher.experience) &&
       !error.subject_name_error &&
       teacher.subjects.length > 0 &&
       isCollegeValid &&
@@ -610,7 +638,7 @@ const TeacherRegistrationPage = () => {
           city: teacher.city,
           pincode: teacher.pincode,
           documents: allselectedfiles,
-          ...(selectedClassName==="col-6" && { stream: teacher.stream }),
+          ...(selectedClassName === "col-6" && { stream: teacher.stream }),
         };
         console.log('payload', payload);
       } else {
@@ -621,6 +649,7 @@ const TeacherRegistrationPage = () => {
           dob: teacher.dob,
           phone: teacher.phone,
           email_id: teacher.email_id,
+          semester_id: teacher.semester,
           qualification: teacher.qualification,
           documents: allselectedfiles,
           subjects: selectedSubject,
@@ -638,6 +667,9 @@ const TeacherRegistrationPage = () => {
         };
       }
 
+      // if(){
+
+      // }
       postRegisterData(getTeacherURL, payload)
         .then((response) => {
           console.log(response);
@@ -649,7 +681,7 @@ const TeacherRegistrationPage = () => {
             alert(
               'Teacher registered request sended successfully please wait for 24-48 hours',
             );
-           window.location.reload();
+            window.location.reload();
           } else {
             toast.error(response.message, {
               hideProgressBar: true,
@@ -713,6 +745,7 @@ const TeacherRegistrationPage = () => {
   const handleClose = () => {
     setPopupTermandcondi(false);
   };
+
   const handleTermandCondi = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
 
@@ -722,6 +755,15 @@ const TeacherRegistrationPage = () => {
     setPopupTermandcondi(true);
   };
   console.log(selectedClassName);
+
+  const handleAddmore = () => {
+    const newbox: Boxes =
+      { id: '', semester_id: '', subjects: [] }
+
+    setBoxes([...boxes, newbox]);
+  }
+  console.log(boxes);
+
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -958,36 +1000,89 @@ const TeacherRegistrationPage = () => {
                 )}
               </div>
             ) : (
+              // <div className="col-md-6 col-12 mb-3">
+              //   <label className="col-form-label">
+              //     Qualification<span>*</span>
+              //   </label>
+              //   <FormControl fullWidth>
+              //     <InputLabel id="demo-multiple-name-label">
+              //       Qualification
+              //     </InputLabel>
+              //     <Select
+              //       labelId="demo-multiple-name-label"
+              //       id="demo1-multiple-name"
+              //       name="qualification"
+              //       onChange={handleSelect}
+              //       value={teacher.qualification}
+              //       input={<OutlinedInput label="Qualification" />}
+              //     >
+              //       {qualifications.map((item) => (
+              //         <MenuItem key={item} value={item}>
+              //           {item}
+              //         </MenuItem>
+              //       ))}
+              //     </Select>
+              //   </FormControl>
+              //   {error.qualifications_error && (
+              //     <p className='error-text' style={{ color: 'red' }}>
+              //       <small>Please select a qualification</small>
+              //     </p>
+              //   )
+              //   }
+              // </div>
+
               <div className="col-md-6 col-12 mb-3">
                 <label className="col-form-label">
-                  Qualification<span>*</span>
+                  Institute Name<span>*</span>
                 </label>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-multiple-name-label">
-                    Qualification
-                  </InputLabel>
+                  <InputLabel id="institution_id">Institute</InputLabel>
                   <Select
-                    labelId="demo-multiple-name-label"
-                    id="demo1-multiple-name"
-                    name="qualification"
+                    labelId="institution_id"
+                    id="demo2-multiple-name"
+                    name="institution_id"
+                    label="Institute"
                     onChange={handleSelect}
-                    value={teacher.qualification}
-                    input={<OutlinedInput label="Qualification" />}
+                    sx={{
+                      backgroundColor: inputfield(namecolor),
+                      color: inputfieldtext(namecolor),
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                        },
+                      },
+                    }}
                   >
-                    {qualifications.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
+                    {filteredInstitute.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        {item.institution_name}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-                {error.qualifications_error && (
-                  <p className='error-text' style={{ color: 'red' }}>
-                    <small>Please select a qualification</small>
+                {error.institution_id_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please select an institute name.</small>
                   </p>
-                )
-                }
+                )}
               </div>
+
             )}
           </div>
 
@@ -1090,57 +1185,7 @@ const TeacherRegistrationPage = () => {
             </div>
           ) : (
             <div className="row d-flex justify-content-center">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
-                  Institute Name<span>*</span>
-                </label>
-                <FormControl fullWidth>
-                  <InputLabel id="institution_id">Institute</InputLabel>
-                  <Select
-                    labelId="institution_id"
-                    id="demo2-multiple-name"
-                    name="institution_id"
-                    label="Institute"
-                    onChange={handleSelect}
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      '& .MuiSelect-icon': {
-                        color: fieldIcon(namecolor),
-                      },
-                    }}
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                        },
-                      },
-                    }}
-                  >
-                    {filteredInstitute.map((item) => (
-                      <MenuItem
-                        key={item.id}
-                        value={item.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          '&:hover': {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        {item.institution_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {error.institution_id_error === true && (
-                  <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please select an institute name.</small>
-                  </p>
-                )}
-              </div>
+
               <div className="col-md-6 col-12 mb-3">
                 <label className="col-form-label">
                   Course<span>*</span>
@@ -1164,6 +1209,57 @@ const TeacherRegistrationPage = () => {
                 {error.course_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
                     <small>Please enter a valid course.</small>
+                  </p>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="col-form-label">
+                  semester <span>*</span>
+                </label>
+                <FormControl fullWidth>
+                  <InputLabel id="semester_id">Semester</InputLabel>
+                  <Select
+                    labelId="semester_id"
+                    id="demo2-multiple-name"
+                    name="semester_id"
+                    label="Semester"
+                    onChange={handleSelect}
+                    sx={{
+                      backgroundColor: inputfield(namecolor),
+                      color: inputfieldtext(namecolor),
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                        },
+                      },
+                    }}
+                  >
+                    {semesterData.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.semester_id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        {item.semester_number}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {error.institution_id_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please select an semester.</small>
                   </p>
                 )}
               </div>
@@ -1397,39 +1493,39 @@ const TeacherRegistrationPage = () => {
             </div>
           </div>
           <div className="row d-flex justify-content-center">
-            {selectedEntity === 'School' && (
-              <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
-                  Qualification<span>*</span>
-                </label>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-multiple-name-label">
-                    Qualification
-                  </InputLabel>
-                  <Select
-                    labelId="demo-multiple-name-label"
-                    id="demo1-multiple-name"
-                    name="qualification"
-                    onChange={handleSelect}
-                    value={teacher.qualification}
-                    input={<OutlinedInput label="Qualification" />}
-                  >
-                    {qualifications.map((item) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {error.qualifications_error && (
-                  <p className='error-text' style={{ color: 'red' }}>
-                    <small>Please select a qualification</small>
-                  </p>
-                )
 
-                }
-              </div>
-            )}
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                Qualification<span>*</span>
+              </label>
+              <FormControl fullWidth>
+                <InputLabel id="demo-multiple-name-label">
+                  Qualification
+                </InputLabel>
+                <Select
+                  labelId="demo-multiple-name-label"
+                  id="demo1-multiple-name"
+                  name="qualification"
+                  onChange={handleSelect}
+                  value={teacher.qualification}
+                  input={<OutlinedInput label="Qualification" />}
+                >
+                  {qualifications.map((item) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {error.qualifications_error && (
+                <p className='error-text' style={{ color: 'red' }}>
+                  <small>Please select a qualification</small>
+                </p>
+              )
+
+              }
+            </div>
+
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
                 {' '}
@@ -1462,6 +1558,154 @@ const TeacherRegistrationPage = () => {
                   </ul>
                 )}
               </div>
+            </div>
+          </div>
+          {boxes.length > 0 &&(
+            <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 mb-3">
+                  <label className="col-form-label">
+                    semester <span>*</span>
+                  </label>
+                  <FormControl fullWidth>
+                    <InputLabel id="semester_id">Semester</InputLabel>
+                    <Select
+                      labelId="semester_id"
+                      id="demo2-multiple-name"
+                      name="semester_id"
+                      label="Semester"
+                      onChange={handleSelect}
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        '& .MuiSelect-icon': {
+                          color: fieldIcon(namecolor),
+                        },
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                          },
+                        },
+                      }}
+                    >
+                      {semesterData.map((item) => (
+                        <MenuItem
+                          key={item.id}
+                          value={item.semester_id}
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                            },
+                          }}
+                        >
+                          {item.semester_number}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {error.institution_id_error === true && (
+                    <p className="error-text " style={{ color: 'red' }}>
+                      <small>Please select an semester name.</small>
+                    </p>
+                  )}
+                </div>
+            <div className="col-md-6 col-12 mb-3">
+                <label className="col-form-label">
+                  Subjects Taught<span>*</span>
+                </label>
+                <FormControl
+                  fullWidth
+                >
+                  <InputLabel id="demo-multiple-checkbox-label">
+                    Subject
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-multiple-checkbox"
+                    multiple
+                    data-testid="Subject_text"
+                    sx={{
+                      backgroundColor: '#f5f5f5',
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                    value={selectedSubject}
+                    onChange={handelSubjectChange}
+                    input={<OutlinedInput label="Subject" />}
+                    renderValue={(selected) =>
+                      (selected as string[])
+                        .map((id) => {
+                          const subject = totleSubject.find(
+                            (subject: any) => subject.subject_id === id,
+                          );
+                          return subject ? subject.subject_name : '';
+                        })
+                        // .join(", ")
+                        .reduce(
+                          (prev, curr) =>
+                            prev === '' ? curr : `${prev}, ${curr}`,
+                          '',
+                        )
+                    }
+                    MenuProps={MenuProps}
+                  >
+                    {totleSubject.map((subject: any) => (
+                      <MenuItem
+                        key={subject.subject_id}
+                        value={subject.subject_id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          // "&:hover": {
+                          //   backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                          // },
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                            color: 'black !important',
+                          },
+                          '&.Mui-selected': {
+                            // backgroundColor: inputfield(namecolor),
+                            color: 'black',
+                          },
+                          '&.Mui-selected, &:focus': {
+                            backgroundColor: inputfield(namecolor),
+                            color: namecolor === 'dark' ? 'white' : 'black',
+                          },
+                        }}
+                      >
+                        <Checkbox
+                          checked={
+                            selectedSubject.indexOf(
+                              subject.subject_id.toString(),
+                            ) > -1
+                          }
+                        />
+                        <ListItemText primary={subject.subject_name} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {error.subject_name_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+  
+                    <small>
+                      Please select a subject name.
+                    </small>
+  
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 mb-3">
+              <Button
+                variant="contained" onClick={handleAddmore} >Add more</Button>
             </div>
           </div>
           <div className="form-check mb-3 fs-14">
@@ -1510,6 +1754,7 @@ const TeacherRegistrationPage = () => {
             </DialogActions>
           </Dialog>
         </div>
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} />
       </div>
     </div>
   );

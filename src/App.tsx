@@ -89,6 +89,8 @@ import TeacherListingByInstitution from './Pages/Institution/lists/TeacherList';
 import CourseListingByInstitution from './Pages/Institution/lists/CourseList';
 import Teacher from './Pages/Teacher/Teacher';
 import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
+import InstitutionProfile from './Pages/Institution/InstitutionProfile';
+import TeacherProfile from './Pages/Teacher/TeacherProfile';
 
 function App() {
   const navigate = useNavigate();
@@ -190,6 +192,10 @@ function App() {
             element={<Protected Component={IntitutionChat} menuName="Chat" />}
           />
           <Route
+            path="/institution-dashboard/profile"
+            element={<Protected Component={InstitutionProfile} menuName="Chat" />}
+          />
+          <Route
             path="/institution-dashboard/feedback"
             element={
               <Protected Component={InstitutionFeedback} menuName="feedback" />
@@ -233,6 +239,10 @@ function App() {
           <Route
             path="/teacher-dashboard/chat"
             element={<Protected Component={TeacherChat} />}
+          />
+          <Route
+            path="/teacher-dashboard/profile"
+            element={<Protected Component={TeacherProfile} />}
           />
           <Route
             path="/teacher-dashboard/feedback"
