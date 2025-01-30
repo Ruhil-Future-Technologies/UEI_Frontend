@@ -10,25 +10,39 @@ export const Switch: FunctionComponent<{
   disabled?: boolean;
   onChange: (v: boolean) => void;
   label?: string;
-}> = ({ onChange, isChecked, label, disabled }) => (
+  activeColor?: string;
+  inactiveColor?: string;
+}> = ({ onChange, isChecked, label, disabled, activeColor, inactiveColor }) => (
   <FormControlLabel
     control={
       <MuiSwitch
         sx={{
+          width: 40,
+          height: 20,
+          padding: 0,
           '& .MuiSwitch-switchBase': {
-            color: 'var(--buttonbgcolor)', // Use CSS variable here
-          },
-          '& .MuiSwitch-track': {
-            backgroundColor: 'var(--buttonbgcolor)', // Use CSS variable here
+            padding: 0,
+            margin: '2px',
+            color: inactiveColor,
+            '&.Mui-checked': {
+              transform: 'translateX(20px)',
+              color: activeColor,
+              '& + .MuiSwitch-track': {
+                backgroundColor: '#fff',
+                opacity: 0.5,
+              },
+            },
           },
           '& .MuiSwitch-thumb': {
-            color: 'var(--buttonbgcolor)', // Example thumb color
+            width: 16,
+            height: 16,
+            boxShadow: '0 2px 4px 0 rgba(0,0,0,0.2)',
           },
-          '& .MuiSwitch-switchBase.Mui-checked': {
-            color: 'var(--buttonbgcolor)', // Color when checked
-          },
-          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-            backgroundColor: 'var(--buttonbgcolor)', // Track color when checked
+          '& .MuiSwitch-track': {
+            borderRadius: 20,
+            backgroundColor: '#fff',
+            opacity: 0.5,
+            border: '1px solid #ccc',
           },
         }}
         checked={isChecked}
@@ -36,7 +50,10 @@ export const Switch: FunctionComponent<{
       />
     }
     label={
-      <Typography variant="body1" style={{ fontSize: '14px' }}>
+      <Typography
+        variant="body1"
+        style={{ fontSize: '14px', marginLeft: '5px' }}
+      >
         {label}
       </Typography>
     }
