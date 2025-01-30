@@ -52,6 +52,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs/AdapterDayjs';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 
 interface Teacher {
   first_name: string;
@@ -297,7 +298,6 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        console.log(data.data);
         const fiteredInstitutedata = data.data.filter(
           (institute: any) => institute.is_active === 1 && institute.is_approve === true);
         if (data.data) {
@@ -331,24 +331,7 @@ const TeacherRegistrationPage = () => {
         });
       });
   };
-  // const getRole = () => {
-  //     getForRegistration(`${Rolelist}`)
-  //         .then((data) => {
-  //             if (data.data) {
-  //                 setRoleId(data.data.id) // setRoleData(data?.data);
-  //             }
-  //         })
-  //         .catch((e) => {
-  //             if (e?.response?.status === 401) {
-  //                 navigate('/');
-  //             }
-  //             toast.error(e?.message, {
-  //                 hideProgressBar: true,
-  //                 theme: 'colored',
-  //             });
-  //         });
-  // }
-
+ 
   const getSubjects = (type: string) => {
     if (type === 'College') {
       getForRegistration(`${getSubjectCollege}`)
@@ -423,7 +406,6 @@ const TeacherRegistrationPage = () => {
       setSelectedSchool(String(selectedSchool));
     }
     if (name === "class_id") {
-      console.log(value);
       const selectedClass = dataClass.find(
         (item) => String(item.id) === value,
       )?.class_name;
@@ -541,7 +523,6 @@ const TeacherRegistrationPage = () => {
         !error.institution_id_error &&
         !(teacher.institution_id === '')
         : true;
-    console.log(error.subject_name_error);
     if (
       !error.first_name_error &&
 
@@ -584,7 +565,6 @@ const TeacherRegistrationPage = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
-      console.log('inside if code');
       let payload;
       // All required fields are valid, proceed with the next steps
       if (selectedEntity === 'School') {
@@ -612,7 +592,6 @@ const TeacherRegistrationPage = () => {
           documents: allselectedfiles,
           ...(selectedClassName==="col-6" && { stream: teacher.stream }),
         };
-        console.log('payload', payload);
       } else {
         payload = {
           first_name: teacher.first_name,
@@ -640,7 +619,6 @@ const TeacherRegistrationPage = () => {
 
       postRegisterData(getTeacherURL, payload)
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             toast.success('Teacher registration request sent successfully', {
               hideProgressBar: true,
@@ -721,7 +699,6 @@ const TeacherRegistrationPage = () => {
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
-  console.log(selectedClassName);
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -1437,22 +1414,12 @@ const TeacherRegistrationPage = () => {
 
               </label>
               {' '}
-              <Button
-                variant="contained"
-                component="label"
-                className="custom-button mainbutton"
-                sx={{ height: 50 }}
-              >
-                Upload Documents
-                <input
-                  type="file"
-                  name="document"
-                  accept=".pdf, .jpg, .jpeg, .png, .gif"
-                  hidden
-                  multiple
-                  onChange={handleFileChange}
-                />
-              </Button>
+               <UploadBtn
+                label="Upload Documents"
+                name="document"
+                accept=".pdf, .jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
               <div>
                 {allselectedfiles.length > 0 && (
                   <ul>
