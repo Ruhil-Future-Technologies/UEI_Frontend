@@ -54,6 +54,7 @@ interface ITeacherForm {
   course_id?: string;
   experience: number;
   institution_id: string;
+  stream?: string;
   address: string;
   country: string;
   state: string;
@@ -117,9 +118,11 @@ const AddEditTeacher = () => {
     city: '',
     district: '',
     pincode: '',
+    stream: '',
   };
 
   const [teacher, setTeacher] = useState(initialState);
+  // const [dataTeacher, setDataTeacher] = useState<any[]>([]);
   const formRef = useRef<FormikProps<ITeacherForm>>(null);
   const [state_col, setstate_col] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -130,6 +133,10 @@ const AddEditTeacher = () => {
   const [isStateOpen, setIsStateOpen] = useState(false);
   const genderOptions = ['Male', 'Female'];
   const [dob, setDob] = useState<any>(null);
+  const navigate = useNavigate();
+
+  const [streams, setStreams] = useState<string[]>([]);
+  const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
 
   const maxSelectableDate = dayjs().subtract(18, 'year');
   const minSelectableDate = dayjs().subtract(100, 'year');
@@ -152,48 +159,63 @@ const AddEditTeacher = () => {
 
   const callAPI = async () => {
     if (id) {
-      getData(`teacher/getbyloginid/${id}`)
-        .then((data: { data: any }) => {
-          const processedData = {
-            first_name: data?.data?.first_name || '',
-            last_name: data?.data?.last_name || '',
-            gender: data?.data?.gender || '',
-            dob: data?.data?.dob || '',
-            phone: data?.data?.phone || '',
-            email_id: data?.data?.email_id || '',
-            qualification: data?.data?.qualification || '',
-            role_id: data?.data?.role_id || '',
-            subjects: data?.data?.subjects || [],
-            entity_id: data?.data?.entity_id || '',
-            class_id: data?.data?.class_id || '',
-            school_name: data?.data?.school_name || '',
-            university_id: data?.data?.university_id || '',
-            course_id: data?.data?.course_id || '',
-            experience: Number(data?.data?.experience) || 0,
-            institution_id: data?.data?.institution_id || '',
-            address: data?.data?.address || '',
-            country: data?.data?.country || '',
-            state: data?.data?.state || '',
-            city: data?.data?.city || '',
-            district: data?.data?.district || '',
-            pincode: data?.data?.pincode || '',
-          };
-
-          setTeacher(processedData);
-
-          if (data?.data?.dob) {
-            setDob(dayjs(data.data.dob));
+      const teacherData = await getData(`${TeacherURL}`);
+      try {
+        if (!teacherData?.data) {
+          return;
+        }
+        const currentTeacher = teacherData?.data.find((teacher: any) => {
+          if (teacher.teacher_id == id) {
+            return teacher.teacher_login_id;
           }
-        })
-        .catch((e) => {
-          if (e?.response?.status === 401) {
-            navigator('/');
-          }
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
         });
+
+        if (!currentTeacher?.teacher_login_id) {
+          return;
+        }
+        const teacherDetail = await getData(
+          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_LOGIN_ID}/${currentTeacher.teacher_login_id}`,
+        );
+        const processedData = {
+          first_name: teacherDetail?.data?.first_name || '',
+          last_name: teacherDetail?.data?.last_name || '',
+          gender: teacherDetail?.data?.gender || '',
+          dob: teacherDetail?.data?.dob || '',
+          phone: teacherDetail?.data?.phone || '',
+          email_id: teacherDetail?.data?.email_id || '',
+          qualification: teacherDetail?.data?.qualification || '',
+          role_id: teacherDetail?.data?.role_id || '',
+          stream: teacherDetail?.data?.stream || '',
+          subjects: teacherDetail?.data?.subjects || [],
+          entity_id: teacherDetail?.data?.entity_id || '',
+          class_id: teacherDetail?.data?.class_id || '',
+          school_name: teacherDetail?.data?.school_name || '',
+          university_id: teacherDetail.data?.university_id || '',
+          course_id: teacherDetail?.data?.course_id || '',
+          experience: Number(teacherDetail?.data?.experience) || 0,
+          institution_id: teacherDetail?.data?.institution_id || '',
+          address: teacherDetail?.data?.address || '',
+          country: teacherDetail?.data?.country || '',
+          state: teacherDetail?.data?.state || '',
+          city: teacherDetail?.data?.city || '',
+          district: teacherDetail?.data?.district || '',
+          pincode: teacherDetail?.data?.pincode || '',
+        };
+
+        setTeacher(processedData);
+
+        if (teacherDetail.data?.dob) {
+          setDob(dayjs(teacherDetail.data.dob));
+        }
+      } catch (e: any) {
+        if (e?.response?.status === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      }
     }
   };
 
@@ -295,9 +317,34 @@ const AddEditTeacher = () => {
       if (values?.entity_id) {
         if (isSchoolEntity(values.entity_id)) {
           if (values.class_id) {
-            const filtered = schoolSubjects.filter(
+            let filtered = schoolSubjects.filter(
               (subject) => subject.class_id === values.class_id,
             );
+
+            const checkClass = dataClasses.some((classes) => {
+              const current_Class_id = values?.class_id;
+              if (current_Class_id == classes.id) {
+                if (
+                  classes.class_name == 'class_11' ||
+                  classes.class_name == 'class_12'
+                ) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            });
+
+            if (checkClass) {
+              if (values.stream) {
+                filtered = filtered.filter(
+                  (subject: any) => subject.stream === values.stream,
+                );
+              } else {
+                filtered = [];
+              }
+            }
+
             setFilteredSubjects(filtered);
           } else {
             setFilteredSubjects([]);
@@ -313,10 +360,26 @@ const AddEditTeacher = () => {
           }
         }
       }
-    }, [values?.class_id, values?.course_id, values?.entity_id]);
+    }, [
+      values?.class_id,
+      values?.course_id,
+      values?.entity_id,
+      values?.stream,
+    ]);
 
     return null;
   };
+
+  useEffect(() => {
+    if (filteredSubjects?.length > 0) {
+      const uniqueStreams = filteredSubjects
+        .map((subject) => subject.stream)
+        .filter((stream, index, array) => array.indexOf(stream) === index);
+      setStreams(uniqueStreams);
+    } else {
+      setStreams([]);
+    }
+  }, [filteredSubjects]);
 
   const teacherSchema = Yup.object().shape({
     first_name: Yup.string()
@@ -333,6 +396,11 @@ const AddEditTeacher = () => {
     phone: Yup.string()
       .required('Please enter Phone number')
       .matches(mobilePattern, 'Please enter a valid 10-digit mobile number'),
+    stream: Yup.string().when('class_id', {
+      is: (class_id: string) => ['class_11', 'class_12'].includes(class_id),
+      then: () => Yup.string().required('Stream is required'),
+      otherwise: () => Yup.string(),
+    }),
     subjects: Yup.array()
       .of(Yup.string())
       .min(1, 'Please select at least one subject')
@@ -396,10 +464,15 @@ const AddEditTeacher = () => {
       (r) => r.role_name.toLowerCase() === 'teacher',
     );
 
-    if (teacherData.class_id == '') {
+    if (teacherData.class_id == '' || teacherData.class_id == 'None') {
       delete teacherData.class_id;
     }
-    if (teacherData.university_id == '' || teacherData.course_id == '') {
+    if (
+      teacherData.university_id == '' ||
+      teacherData.course_id == '' ||
+      teacherData.university_id == 'None' ||
+      teacherData.course_id == 'None'
+    ) {
       delete teacherData.university_id;
       delete teacherData.course_id;
     }
@@ -586,7 +659,9 @@ const AddEditTeacher = () => {
         ...prevTeacher,
         [fieldName]: value,
       };
-
+      if (fieldName === 'stream' || fieldName === 'class_id') {
+        formRef?.current?.setFieldValue('subjects', []);
+      }
       if (fieldName === 'institution_id') {
         formRef?.current?.setFieldValue('course_id', '');
         formRef?.current?.setFieldValue('subjects', []);
@@ -1194,6 +1269,61 @@ const AddEditTeacher = () => {
                         </FormControl>
                         {touched?.course_id && errors?.course_id && (
                           <p className="error">{errors.course_id}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-2">
+                      <div className="form_field_wrapper">
+                        <FormControl fullWidth>
+                          <InputLabel>Stream</InputLabel>
+                          <Select
+                            name="stream"
+                            value={values?.stream}
+                            label="Stream"
+                            // disabled={
+                            //   typeof values?.class_id !== 'string' ||
+                            //   !['class_11', 'class_12'].includes(
+                            //     values.class_id,
+                            //   )
+                            // }
+                            onChange={(e: SelectChangeEvent<string>) => {
+                              handleChange(e, 'stream');
+                            }}
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              '& .MuiSelect-icon': {
+                                color: fieldIcon(namecolor),
+                              },
+                            }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                },
+                              },
+                            }}
+                          >
+                            {streams.map((streamOption: string) => (
+                              <MenuItem
+                                key={streamOption}
+                                value={streamOption}
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '&:hover': {
+                                    backgroundColor: inputfieldhover(namecolor),
+                                  },
+                                }}
+                              >
+                                {streamOption}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {touched?.stream && errors?.stream && (
+                          <p className="error">{errors.stream}</p>
                         )}
                       </div>
                     </div>

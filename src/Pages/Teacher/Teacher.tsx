@@ -44,12 +44,14 @@ const Teacher = () => {
   const columns11 = TEACHER_COLUMNS;
   const navigate = useNavigate();
   const { getData, putData, loading } = useApi();
+  const [entity, setEntity] = useState<any[]>([]);
   const [dataTeacher, setDataTeacher] = useState<any[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
   const [activeTab, setActiveTab] = useState(0);
   const [filteredTeachers, setFilteredTeachers] = useState<any[]>([]);
+  const [activeSubTab, setActiveSubTab] = useState(0);
 
   useEffect(() => {
     const updatedColumns = columns11.map((column: any) => {
@@ -77,6 +79,9 @@ const Teacher = () => {
   }, [dataTeacher, columns11]);
 
   const callAPI = async () => {
+    getData('/entity/list').then((data) => {
+      setEntity(data.data);
+    });
     getData(`${TeacherURL}`)
       .then((data: { data: any[] }) => {
         if (data.data) {
@@ -102,15 +107,39 @@ const Teacher = () => {
     setActiveTab(newValue);
   };
 
+  const handleSubTabChange = (
+    _event: React.SyntheticEvent,
+    newValue: number,
+  ) => {
+    setActiveSubTab(newValue);
+  };
+
   useEffect(() => {
     if (activeTab === 0) {
-      setFilteredTeachers(
-        dataTeacher.filter((teacher) => teacher.is_approve === true),
+      const approvedTeachers = dataTeacher.filter(
+        (teacher) => teacher.is_approve === true,
       );
+
+      const college: any = entity.filter((ent) => ent.entity_type == 'College');
+      const school: any = entity.filter((ent) => ent.entity_type == 'School');
+
+      if (activeSubTab === 0) {
+        setFilteredTeachers(
+          approvedTeachers.filter((teacher) => {
+            return teacher.entity_id == college[0]?.id;
+          }),
+        );
+      } else {
+        setFilteredTeachers(
+          approvedTeachers.filter((teacher) => {
+            return teacher.entity_id == school[0]?.id;
+          }),
+        );
+      }
     } else {
       setFilteredTeachers(dataTeacher.filter((teacher) => !teacher.is_approve));
     }
-  }, [activeTab, dataTeacher]);
+  }, [activeTab, activeSubTab, dataTeacher]);
 
   const handleApproveTeacher = (id: number) => {
     putData(`${QUERY_KEYS_TEACHER.TEACHER_APPROVE}/${id}`)
@@ -217,9 +246,16 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Teachers" />
+                    <Tab label="Total Teachers"></Tab>
                     <Tab label="Pending Teachers" />
                   </Tabs>
+
+                  {activeTab === 0 && (
+                    <Tabs value={activeSubTab} onChange={handleSubTabChange}>
+                      <Tab label="College" />
+                      <Tab label="School" />
+                    </Tabs>
+                  )}
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
@@ -274,7 +310,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleEditFile(
-                                      row?.row?.original?.teacher_login_id,
+                                      row?.row?.original?.teacher_id,
                                     )
                                   }
                                 >
