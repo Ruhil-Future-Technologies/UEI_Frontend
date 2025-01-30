@@ -39,7 +39,7 @@ import {
   QUERY_KEYS_TEACHER,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const EMPTY_CELL_VALUE = '-';
 
@@ -313,36 +313,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     header: 'Email ',
     size: 150,
   },
-  {
-    accessorKey: 'address',
-    header: 'Address',
-    size: 150,
-  },
-  {
-    accessorKey: 'city',
-    header: 'City ',
-    size: 150,
-  },
-  {
-    accessorKey: 'country',
-    header: 'Country',
-    size: 150,
-  },
-  {
-    accessorKey: 'state',
-    header: 'State ',
-    size: 150,
-  },
-  {
-    accessorKey: 'district',
-    header: 'District ',
-    size: 150,
-  },
-  {
-    accessorKey: 'pincode',
-    header: 'Pincode',
-    size: 150,
-  },
+
   {
     accessorKey: 'entity_type',
     header: 'Entity ',
@@ -355,28 +326,31 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   },
   {
     accessorKey: 'website_url',
-    header: 'URL ',
+    header: 'URL',
     size: 180,
-  },
-  {
-    accessorKey: 'created_by',
-    header: 'Created By',
-    size: 150,
-  },
-  {
-    accessorKey: 'created_at',
-    header: 'Created At',
-    size: 150,
-  },
-  {
-    accessorKey: 'updated_by',
-    header: 'Updated By',
-    size: 150,
-  },
-  {
-    accessorKey: 'updated_at',
-    header: 'Last Updated At',
-    size: 150,
+    Cell: ({ cell }: any) => {
+      const url = cell.getValue();
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: '#2196F3',
+            textDecoration: 'none',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.textDecoration = 'none';
+          }}
+        >
+          {url}
+        </a>
+      );
+    },
   },
   {
     accessorKey: 'is_active',
@@ -444,23 +418,191 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
 ];
 
 export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
-  { accessorKey: 'first_name', header: 'First Name', size: 150 },
-  { accessorKey: 'last_name', header: 'Last Name', size: 150 },
-  { accessorKey: 'gender', header: 'Gender', size: 100 },
-  { accessorKey: 'dob', header: 'Date of Birth', size: 150 },
+  {
+    accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+    header: 'Full Name',
+    size: 200,
+  },
   { accessorKey: 'phone', header: 'Phone', size: 150 },
   { accessorKey: 'email_id', header: 'Email', size: 200 },
-  { accessorKey: 'qualification', header: 'Qualification', size: 150 },
-  { accessorKey: 'experience', header: 'Experience', size: 120 },
-  { accessorKey: 'school_name', header: 'School Name', size: 200 },
-  { accessorKey: 'address', header: 'Address', size: 200 },
-  { accessorKey: 'city', header: 'City', size: 150 },
-  { accessorKey: 'district', header: 'District', size: 150 },
-  { accessorKey: 'state', header: 'State', size: 150 },
-  { accessorKey: 'country', header: 'Country', size: 150 },
-  { accessorKey: 'pincode', header: 'Pincode', size: 100 },
-  { accessorKey: 'created_at', header: 'Created At', size: 150 },
-  { accessorKey: 'updated_at', header: 'Last Updated At', size: 150 },
+  {
+    accessorKey: 'institution_id',
+    header: 'Institute Name',
+    size: 200,
+    Cell: ({ cell, row }: any) => {
+      const { getData } = useApi();
+      const [institute_name, setInstituteName] = useState<string>('-');
+      const institute_id = cell.getValue();
+      const [, setEntityType] = useState<string>('-');
+      const entityId = row.original.entity_id;
+
+      useEffect(() => {
+        getData('/entity/list')
+          .then((response: any) => {
+            if (response.status === 200) {
+              const matchingEntity = response.data.find(
+                (entity: any) => entity.id === entityId,
+              );
+              if (matchingEntity) {
+                setEntityType(matchingEntity.entity_type);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [entityId]);
+
+      useEffect(() => {
+        getData('/institution/list')
+          .then((response: any) => {
+            if (response.status === 200) {
+              const matchingEntity = response.data.find(
+                (institute: any) => institute.id === institute_id,
+              );
+              if (matchingEntity) {
+                setInstituteName(matchingEntity.institution_name);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [institute_id]);
+
+      return <span>{institute_name}</span>;
+    },
+  },
+  {
+    accessorKey: 'university_id',
+    header: 'University Name',
+    size: 200,
+    Cell: ({ cell }: any) => {
+      const { getData } = useApi();
+      const [university_name, setUniverstiyName] = useState<string>('-');
+      const university_id = cell.getValue();
+
+      useEffect(() => {
+        getData('/university/list')
+          .then((response: any) => {
+            if (response.status === 200) {
+              const matchingEntity = response.data.find(
+                (university: any) => university.university_id === university_id,
+              );
+
+              if (matchingEntity) {
+                setUniverstiyName(matchingEntity.university_name);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [university_id]);
+
+      return <span>{university_name}</span>;
+    },
+  },
+  {
+    accessorKey: 'class_id',
+    header: 'Class',
+    size: 150,
+    Cell: ({ cell, row }: any) => {
+      const { getData } = useApi();
+      const [className, setClassName] = useState<string>('-');
+      const class_id = cell.getValue();
+      const entity_id = row.original.entity_id;
+
+      useEffect(() => {
+        if (entity_id) {
+          getData('/entity/list').then((entityResponse: any) => {
+            if (entityResponse.status === 200) {
+              const entity = entityResponse.data.find(
+                (e: any) => e.id === entity_id,
+              );
+
+              if (entity?.entity_type === 'School') {
+                getData('/class/list')
+                  .then((response: any) => {
+                    if (response.status === 200) {
+                      const matchingClass = response.data.find(
+                        (cls: any) => cls.id === class_id,
+                      );
+
+                      if (matchingClass) {
+                        setClassName(matchingClass.class_name);
+                      }
+                    }
+                  })
+                  .catch((error) => {
+                    toast.error(error?.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                    });
+                  });
+              }
+            }
+          });
+        }
+      }, [class_id, entity_id]);
+
+      return <span>{className}</span>;
+    },
+  },
+  {
+    accessorKey: 'course_id',
+    header: 'Course',
+    size: 150,
+    Cell: ({ cell, row }: any) => {
+      const { getData } = useApi();
+      const [courseName, setCourseName] = useState<string>('-');
+      const course_id = cell.getValue();
+      const entity_id = row.original.entity_id;
+
+      useEffect(() => {
+        if (entity_id) {
+          getData('/entity/list').then((entityResponse: any) => {
+            if (entityResponse.status === 200) {
+              const entity = entityResponse.data.find(
+                (e: any) => e.id === entity_id,
+              );
+              if (entity?.entity_type === 'College') {
+                getData('/course/list')
+                  .then((response: any) => {
+                    if (response.status === 200) {
+                      const matchingCourse = response.data.find(
+                        (course: any) => course.id === course_id,
+                      );
+
+                      if (matchingCourse) {
+                        setCourseName(matchingCourse.course_name);
+                      }
+                    }
+                  })
+                  .catch((error) => {
+                    toast.error(error?.message, {
+                      hideProgressBar: true,
+                      theme: 'colored',
+                    });
+                  });
+              }
+            }
+          });
+        }
+      }, [course_id, entity_id]);
+
+      return <span>{courseName}</span>;
+    },
+  },
   {
     accessorKey: 'is_active',
     header: 'Active/Deactive',
@@ -469,14 +611,15 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       const TeacherActive = QUERY_KEYS_TEACHER.TEACHER_ACTIVATE;
       const TeacherDeactive = QUERY_KEYS_TEACHER.TEACHER_DEACTIVATE;
       const value = cell?.getValue();
-      const [Showvalue, setShowvalue] = useState(value);
-      const [Show, setShow] = useState(value === 1 ? true : false);
-      const active = (id: string, valueset: any) => {
-        putData(`${valueset === 1 ? TeacherDeactive : TeacherActive}/${id}`)
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(value === 1 ? true : false);
+
+      const active = (id: string, valueSet: any) => {
+        putData(`${valueSet === 1 ? TeacherDeactive : TeacherActive}/${id}`)
           .then((data: any) => {
             if (data.status === 200) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowValue(showValue === 1 ? 0 : 1);
             }
           })
           .catch((e) => {
@@ -486,17 +629,15 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
             });
           });
       };
+
       return (
-        <Box>
-          {' '}
-          <Switch
-            isChecked={Show}
-            label={Show ? 'Active' : 'Deactive'}
-            onChange={() => {
-              active(row?.original?.teacher_id, Showvalue);
-            }}
-          />{' '}
-        </Box>
+        <Switch
+          isChecked={show}
+          onChange={() => active(row?.original?.teacher_id, showValue)}
+          label={show ? 'Active' : 'Deactive'}
+          activeColor="#4CAF50" // green
+          inactiveColor="#f44336" // red
+        />
       );
     },
     size: 150,
@@ -537,15 +678,21 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
       const { putData } = useApi();
       const MenuEntityActive = QUERY_KEYS_ENTITY.GET_ENTITYACTIVE;
       const MenuEntityDeactive = QUERY_KEYS_ENTITY.GET_ENTITYDEACTIVE;
-      // console.log("active data",row.original.id)
       const value = cell?.getValue();
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-
       const [Show, setShow] = useState(Showvalue === 1 ? true : false);
+
+      const containerStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      };
+
+      const labelStyle = {
+        fontWeight: 500,
+        minWidth: '70px',
+        color: Show ? '#4CAF50' : '#f44336',
+      };
 
       const active = (id: number, valueset: any) => {
         putData(
@@ -555,7 +702,6 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
             if (data.status === 200) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue === 1 ? 0 : 1);
-              // window.location.reload();
             }
           })
           .catch((e) => {
@@ -567,16 +713,15 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
       };
 
       return (
-        <Box>
+        <Box style={containerStyle}>
           <Switch
             isChecked={Show}
-            label={Show ? 'Active' : 'Deactive'}
-            // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+            label={Show ? 'Active' : 'Deactive'}
           />
+          <span style={labelStyle}>{Show ? 'Active' : 'Deactive'}</span>
         </Box>
       );
     },

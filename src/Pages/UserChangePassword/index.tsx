@@ -115,7 +115,21 @@ const UserChangePassword = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string,
   ) => {
+    const newValue = e.target.value;
     formRef?.current?.setFieldValue(fieldName, e.target.value);
+
+    if (fieldName === 'password' || fieldName === 'confpassword') {
+      const oldPasswordValue = formRef?.current?.values.oldpassword;
+      if (newValue === oldPasswordValue && oldPasswordValue !== '') {
+        formRef?.current?.setFieldError(
+          fieldName,
+          'New password cannot be the same as the old password',
+        );
+        formRef?.current?.setFieldTouched(fieldName, true);
+        return;
+      }
+    }
+
     await formRef?.current?.validateField(fieldName);
     if (
       formRef?.current?.errors?.[fieldName as keyof changepasswordform] !==
@@ -143,10 +157,7 @@ const UserChangePassword = () => {
         lowercaseRegex,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
-      .matches(
-        numberRegex,
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
-      )
+
       .matches(
         specialCharRegex,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
@@ -157,6 +168,13 @@ const UserChangePassword = () => {
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
+      )
+      .test(
+        'not-same-as-old',
+        'New password cannot be the same as the old password',
+        function (value) {
+          return value !== this.parent.oldpassword;
+        },
       )
       .matches(
         uppercaseRegex,
@@ -180,6 +198,13 @@ const UserChangePassword = () => {
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
+      )
+      .test(
+        'not-same-as-old',
+        'New password cannot be the same as the old password',
+        function (value) {
+          return value !== this.parent.oldpassword;
+        },
       )
       .matches(
         uppercaseRegex,
