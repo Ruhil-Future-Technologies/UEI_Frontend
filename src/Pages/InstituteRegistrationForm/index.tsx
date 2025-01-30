@@ -26,6 +26,7 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -187,14 +188,22 @@ const InstituteRegistrationForm = () => {
           : false,
       university_id_error: false,
       institute_type_error: false,
-      school_name_error: name === 'school_name' && !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value),
+      school_name_error:
+        name === 'school_name' &&
+        !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value),
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
           ? true
           : false,
       mobile_no_error:
-        name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim()) ? true : false,
-      website_error: name === 'website' && !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value.trim()),
+        name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim())
+          ? true
+          : false,
+      website_error:
+        name === 'website' &&
+        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+          value.trim(),
+        ),
       country_error: false,
       state_error: false,
       city_error:
@@ -206,10 +215,12 @@ const InstituteRegistrationForm = () => {
           ? true
           : false,
       address_error:
-        name === 'address' && !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
+        name === 'address' &&
+        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
           ? true
           : false,
-      pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
+      pincode_error:
+        name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
       document_error: false,
     });
   };
@@ -236,12 +247,13 @@ const InstituteRegistrationForm = () => {
   const handleSubmit = () => {
     setError({
       institute_name_error:
-        selectedEntity === 'College' && !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
+        selectedEntity === 'College' &&
+        !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
           ? true
           : false,
       university_id_error:
         selectedEntity === 'College' &&
-          valueInstitute.university_id.trim() === ''
+        valueInstitute.university_id.trim() === ''
           ? true
           : false,
       institute_type_error:
@@ -251,14 +263,19 @@ const InstituteRegistrationForm = () => {
       )
         ? true
         : false,
-      mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())
+      mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(
+        valueInstitute.mobile_no.trim(),
+      )
         ? true
         : false,
-      website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website),
+      website_error:
+        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+          valueInstitute.website,
+        ),
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
-        selectedEntity === 'School' && (valueInstitute.school_name === '')
+        selectedEntity === 'School' && valueInstitute.school_name === ''
           ? true
           : false,
       city_error: !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(valueInstitute.city.trim())
@@ -282,15 +299,20 @@ const InstituteRegistrationForm = () => {
     console.log(selectedEntity);
     const isSchoolValid =
       selectedEntity === 'School'
-        ? !error.school_name_error && /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.school_name)
+        ? !error.school_name_error &&
+          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+            valueInstitute.school_name,
+          )
         : true;
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.institute_name_error &&
-        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.institute_name) &&
-        !error.university_id_error &&
-        valueInstitute.university_id !== ''
+          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+            valueInstitute.institute_name,
+          ) &&
+          !error.university_id_error &&
+          valueInstitute.university_id !== ''
         : true;
     console.log(error);
     console.log(isSchoolValid, isCollegeValid);
@@ -302,19 +324,25 @@ const InstituteRegistrationForm = () => {
       !error.mobile_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
       !error.website_error &&
-      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website) &&
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+        valueInstitute.website,
+      ) &&
       !error.country_error &&
       !(valueInstitute.country === '') &&
       !error.state_error &&
       !(valueInstitute.state === '') &&
       !error.city_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.city.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        valueInstitute.city.trim(),
+      ) &&
       !error.district_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test( valueInstitute.district.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        valueInstitute.district.trim(),
+      ) &&
       !error.address_error &&
-
-      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test( valueInstitute.address.trim()) &&
-
+      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
+        valueInstitute.address.trim(),
+      ) &&
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
       !error.document_error &&
@@ -360,7 +388,7 @@ const InstituteRegistrationForm = () => {
         }
 
         postRegisterData(`${InstituteAddURL}`, payload).then((response) => {
-          console.log(response)
+          console.log(response);
           if (response.status === 200) {
             toast.success('Institute registration request sent successfully', {
               hideProgressBar: true,
@@ -368,8 +396,7 @@ const InstituteRegistrationForm = () => {
             });
             alert('Wait for 24-48 hours, the Administrator will inform you.');
             window.location.reload();
-          }
-          else {
+          } else {
             toast.error(response.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -490,9 +517,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>
-                      Please enter a valid school name
-                      </small>
+                      <small>Please enter a valid school name</small>
                     </p>
                   )}
                 </div>
@@ -569,9 +594,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.institute_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>
-                        Please enter a valid institute name.
-                      </small>
+                      <small>Please enter a valid institute name.</small>
                     </p>
                   )}
                 </div>
@@ -594,9 +617,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.mobile_no_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                      Please enter a valid mobile number.
-                    </small>
+                    <small>Please enter a valid mobile number.</small>
                   </p>
                 )}
               </div>
@@ -634,9 +655,7 @@ const InstituteRegistrationForm = () => {
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please select a Country.
-                  </small>
+                  <small>Please select a Country.</small>
                 </p>
               )}
             </div>
@@ -656,9 +675,7 @@ const InstituteRegistrationForm = () => {
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please select a state.
-                  </small>
+                  <small>Please select a state.</small>
                 </p>
               )}
             </div>
@@ -696,9 +713,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                    Please enter a valid city name.
-                    </small>
+                    <small>Please enter a valid city name.</small>
                   </p>
                 )}
               </div>
@@ -719,9 +734,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                    Please enter a valid address
-                    </small>
+                    <small>Please enter a valid address</small>
                   </p>
                 )}
               </div>
@@ -753,22 +766,12 @@ const InstituteRegistrationForm = () => {
                 Document<span>*</span>
               </label>
               <br />
-              <Button
-                variant="contained"
-                component="label"
-                className="custom-button mainbutton"
-                sx={{ height: 50 }}
-              >
-                Upload Documents
-                <input
-                  type="file"
-                  name="document"
-                  accept=".pdf, .jpg, .jpeg, .png, .gif"
-                  hidden
-                  multiple
-                  onChange={handleFileChange}
-                />
-              </Button>
+              <UploadBtn
+                label="Upload Documents"
+                name="document"
+                accept=".pdf, .jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
               <div>
                 {allselectedfiles.length > 0 && (
                   <ul>
@@ -785,21 +788,12 @@ const InstituteRegistrationForm = () => {
                 Logo<span></span>
               </label>
               <br />
-              <Button
-                variant="contained"
-                component="label"
-                className="custom-button mainbutton"
-                sx={{ height: 50 }}
-              >
-                Upload Logo
-                <input
-                  type="file"
-                  name="icon"
-                  accept=".jpg, .jpeg, .png, .gif"
-                  hidden
-                  onChange={handleFileChange}
-                />
-              </Button>
+              <UploadBtn
+                label="Upload Logo"
+                name="icon"
+                accept=".jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
               <div>
                 <ul>{valueInstitute.icon}</ul>
               </div>
