@@ -390,11 +390,11 @@ const AddEditTeacher = () => {
       .matches(charPattern, 'Please enter valid name, only characters allowed'),
     gender: Yup.string().required('Please select Gender'),
     email_id: Yup.string()
-      .required('Please enter Email')
+      .required('Please enter Email Id')
       .matches(emailPattern, 'Please enter a valid Email format'),
     dob: Yup.date().required('Please enter Date of Birth'),
     phone: Yup.string()
-      .required('Please enter Phone number')
+      .required('Please enter Mobile number')
       .matches(mobilePattern, 'Please enter a valid 10-digit mobile number'),
     stream: Yup.string().when('class_id', {
       is: (class_id: string) => ['class_11', 'class_12'].includes(class_id),
@@ -446,10 +446,10 @@ const AddEditTeacher = () => {
     country: Yup.string().required('Please select Country'),
     state: Yup.string().required('Please select State'),
     city: Yup.string()
-      .required('Please enter City')
+      .required('Please enter City name')
       .matches(charPattern, 'Please enter valid city name'),
     district: Yup.string()
-      .required('Please enter District')
+      .required('Please enter District name')
       .matches(charPattern, 'Please enter valid district name'),
     pincode: Yup.string()
       .required('Please enter Pincode')
@@ -868,7 +868,7 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
-                          label="Email *"
+                          label="Email Id*"
                           name="email_id"
                           type="email"
                           value={values?.email_id}
@@ -886,7 +886,7 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
-                          label="Phone *"
+                          label="Mobile Number*"
                           name="phone"
                           value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

@@ -262,10 +262,11 @@ const AddEditCourse = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.institute === 'string' &&
-                                errors.institute}
-                            </Typography>
+                            {touched?.institute && errors?.institute && (
+                              <p className="error">
+                                {String(errors?.institute)}
+                              </p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -279,24 +280,18 @@ const AddEditCourse = () => {
                                 {...field}
                                 className="form-control"
                                 label="Course Name *"
-                                error={Boolean(
-                                  form.errors.course_name &&
-                                    form.touched.course_name,
-                                )}
-                                helperText={
-                                  form.errors.course_name &&
-                                  form.touched.course_name
-                                    ? form.errors.course_name
-                                    : ''
-                                }
                                 onBlur={form.handleBlur}
                                 onChange={form.handleChange}
                               />
                             )}
                           />
-                          {/* {touched?.course_name && errors?.course_name ?
-                                                    <p style={{ color: 'red' }}>{errors?.course_name}</p> : <></>
-                                                } */}
+                          {touched?.course_name && errors?.course_name ? (
+                            <p style={{ color: 'red' }}>
+                              {String(errors?.course_name)}
+                            </p>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </div>
                       <div className="col-md-4">
@@ -312,9 +307,6 @@ const AddEditCourse = () => {
                               label="duration"
                               name="duration"
                               value={values?.duration}
-                              error={Boolean(
-                                errors.duration && touched.duration,
-                              )}
                               variant="outlined"
                               sx={{
                                 backgroundColor: inputfield(namecolor),
@@ -350,10 +342,9 @@ const AddEditCourse = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.duration === 'string' &&
-                                errors.duration}
-                            </Typography>
+                            {touched?.duration && errors?.duration && (
+                              <p className="error">{String(errors.duration)}</p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
