@@ -297,6 +297,12 @@ const Teacher = () => {
     teacherDetail.full_name = full_name;
     delete teacherDetail.first_name;
     delete teacherDetail.last_name;
+    delete teacherDetail.is_active;
+    delete teacherDetail.is_approve;
+    delete teacherDetail.is_deleted;
+    delete teacherDetail.is_kyc_verified;
+    delete teacherDetail.role_id;
+    delete teacherDetail.pic_path;
 
     const isSchool = isSchoolEntity(teacherDetail?.entity_id);
     const isCollege = isCollegeEntity(teacherDetail?.entity_id);
@@ -354,9 +360,38 @@ const Teacher = () => {
       delete teacherDetail.university_id;
       delete teacherDetail.course_id;
     }
-    // console.log({ teacherDetail });
+    console.log({ teacherDetail });
 
     setSelectedTeacher(teacherDetail);
+    // setSelectedTeacher({
+    //   address: 'ddd',
+    //   city: 'Vapi',
+    //   country: 'India',
+    //   created_at: '2025-01-29 10:20:38',
+    //   district: 'Valsad',
+    //   dob: '1992-01-17',
+    //   documents: [
+    //     'https://qauploads.s3.ap-south-1.amazonaws.com/uploads/f0cad47d-3732-4cbd-bfca-7d5736c622e6_Api_updattion_and_creation.txt',
+    //     'https://qauploads.s3.ap-south-1.amazonaws.com/uploads/f0cad47d-3732-4cbd-bfca-7d5736c622e6_Algo Today DOC .pdf',
+    //     'https://qauploads.s3.ap-south-1.amazonaws.com/uploads/f0cad47d-3732-4cbd-bfca-7d5736c622e6_api_errors.txt',
+    //   ],
+    //   email_id: 'jay@yopmail.com',
+    //   experience: '2',
+    //   gender: 'male',
+    //   phone: '8454412541',
+    //   pincode: '444444',
+    //   qualification: 'BCA',
+    //   state: 'Gujarat',
+    //   subjects: ['DSP', 'SS'],
+    //   teacher_id: '85c204f1-450e-413d-b6eb-d369ac917e6a',
+    //   teacher_login_id: 'fc878eef-1854-41f5-a6c9-fdf152b950ce',
+    //   updated_at: '2025-01-30 07:03:04',
+    //   full_name: 'Jay Patel',
+    //   entity_type: 'College',
+    //   college_name: 'GJU institute',
+    //   university_name: 'GJU(Guru Jambheshwar University)',
+    //   course_name: 'BSc Geography',
+    // });
 
     setOpen(true);
   };
@@ -613,7 +648,7 @@ const Teacher = () => {
                                   'phone',
                                   'qualification',
                                   'experience',
-                                  'documents',
+
                                   'entity_type',
                                   'school_name',
                                   'class_name',
@@ -621,10 +656,7 @@ const Teacher = () => {
                                   'university_name',
                                   'course_name',
                                   'subjects',
-                                  'is_active',
-                                  'is_approve',
-                                  'is_kyc_verified',
-                                  'is_deleted',
+
                                   'teacher_id',
                                   'teacher_login_id',
                                   'address',
@@ -633,6 +665,8 @@ const Teacher = () => {
                                   'state',
                                   'country',
                                   'pincode',
+                                  'created_at',
+                                  'updated_at',
                                   ...Object.keys(selectedTeacher).filter(
                                     (key) =>
                                       ![
@@ -643,7 +677,7 @@ const Teacher = () => {
                                         'phone',
                                         'qualification',
                                         'experience',
-                                        'documents',
+
                                         'entity_type',
                                         'school_name',
                                         'class_name',
@@ -651,10 +685,7 @@ const Teacher = () => {
                                         'university_name',
                                         'course_name',
                                         'subjects',
-                                        'is_active',
-                                        'is_approve',
-                                        'is_kyc_verified',
-                                        'is_deleted',
+
                                         'teacher_id',
                                         'teacher_login_id',
                                         'address',
@@ -663,7 +694,10 @@ const Teacher = () => {
                                         'state',
                                         'country',
                                         'pincode',
+                                        'created_at',
+                                        'updated_at',
                                       ].includes(key),
+                                    'documents',
                                   ),
                                 ].map((key) => {
                                   if (key in selectedTeacher) {
