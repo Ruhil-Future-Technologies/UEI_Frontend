@@ -5,6 +5,10 @@ import useApi from '../../hooks/useAPI';
 import {
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Tab,
   Tabs,
@@ -20,8 +24,19 @@ import { toast } from 'react-toastify';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-import { QUERY_KEYS_TEACHER } from '../../utils/const';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_COURSE,
+  QUERY_KEYS_SUBJECT,
+  QUERY_KEYS_SUBJECT_SCHOOL,
+  QUERY_KEYS_TEACHER,
+} from '../../utils/const';
+import {
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Visibility,
+} from '@mui/icons-material';
 
 const Teacher = () => {
   const context = useContext(NameContext);
@@ -52,6 +67,28 @@ const Teacher = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [filteredTeachers, setFilteredTeachers] = useState<any[]>([]);
   const [activeSubTab, setActiveSubTab] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<any>({});
+  const [dataCourses, setDataCourses] = useState<any[]>([]);
+  const [dataClasses, setDataClasses] = useState<any[]>([]);
+  const [collegeSubjects, setCollegeSubjects] = useState<any[]>([]);
+  const [schoolSubjects, setSchoolSubjects] = useState<any[]>([]);
+  // const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+  // const [filteredSubjects, setFilteredSubjects] = useState<any[]>([]);
+  // const [filteredInstitutes, setFilteredInstitutes] = useState<any[]>([]);
+  const [schoolInstitutes, setSchoolInstitutes] = useState<any[]>([]);
+  const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
+  const GET_COURSE = QUERY_KEYS_COURSE.GET_COURSE;
+
+  const isSchoolEntity = (entityId: string | string[]): boolean => {
+    const selectedEntity = entity?.find((entity) => entity.id === entityId);
+    return selectedEntity?.entity_type?.toLowerCase() === 'school';
+  };
+
+  const isCollegeEntity = (entityId: string | string[]): boolean => {
+    const selectedEntity = entity?.find((entity) => entity.id === entityId);
+    return selectedEntity?.entity_type?.toLowerCase() === 'college';
+  };
 
   useEffect(() => {
     const updatedColumns = columns11.map((column: any) => {
@@ -81,6 +118,31 @@ const Teacher = () => {
   const callAPI = async () => {
     getData('/entity/list').then((data) => {
       setEntity(data.data);
+    });
+    getData(`${GET_COURSE}`).then((data) => setDataCourses(data.data));
+    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
+      const allInstitutes = data.data;
+      const schoolInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
+      );
+      const collegeInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
+      );
+      setSchoolInstitutes(schoolInstitutes);
+      setCollegeInstitutes(collegeInstitutes);
+    });
+
+    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
+      setDataClasses(data.data);
+    });
+    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
+      setDataCourses(data.data);
+    });
+    getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
+      setCollegeSubjects(data.data);
+    });
+    getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
+      setSchoolSubjects(data.data);
     });
     getData(`${TeacherURL}`)
       .then((data: { data: any[] }) => {
@@ -123,23 +185,62 @@ const Teacher = () => {
       const college: any = entity.filter((ent) => ent.entity_type == 'College');
       const school: any = entity.filter((ent) => ent.entity_type == 'School');
 
-      if (activeSubTab === 0) {
-        setFilteredTeachers(
-          approvedTeachers.filter((teacher) => {
-            return teacher.entity_id == college[0]?.id;
-          }),
-        );
-      } else {
-        setFilteredTeachers(
-          approvedTeachers.filter((teacher) => {
-            return teacher.entity_id == school[0]?.id;
-          }),
-        );
-      }
+      setFilteredTeachers([]);
+
+      setTimeout(() => {
+        if (activeSubTab === 0) {
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institution_id') {
+              return {
+                ...column,
+                header: 'College Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const collegeTeachers = approvedTeachers
+            .filter((teacher) => teacher.entity_id == college[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                class_id: null,
+                className: '-',
+                class_name: '-',
+              };
+            });
+          setFilteredTeachers(collegeTeachers);
+        } else {
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institution_id') {
+              return {
+                ...column,
+                header: 'School Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const schoolTeachers = approvedTeachers
+            .filter((teacher) => teacher.entity_id == school[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                course_id: null,
+                university_id: null,
+                course_name: '-',
+                university_name: '-',
+              };
+            });
+          setFilteredTeachers(schoolTeachers);
+        }
+      }, 0);
     } else {
       setFilteredTeachers(dataTeacher.filter((teacher) => !teacher.is_approve));
     }
-  }, [activeTab, activeSubTab, dataTeacher]);
+  }, [activeTab, activeSubTab, dataTeacher, entity]);
 
   const handleApproveTeacher = (id: number) => {
     putData(`${QUERY_KEYS_TEACHER.TEACHER_APPROVE}/${id}`)
@@ -179,6 +280,85 @@ const Teacher = () => {
           theme: 'colored',
         });
       });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedTeacher([]);
+  };
+
+  const handleTeacherDetails = (id: number) => {
+    const teacherDetail = dataTeacher?.find((teacher) => {
+      if (teacher.teacher_id == id) {
+        return teacher;
+      }
+    });
+    const full_name = teacherDetail.first_name + ' ' + teacherDetail.last_name;
+    teacherDetail.full_name = full_name;
+    delete teacherDetail.first_name;
+    delete teacherDetail.last_name;
+
+    const isSchool = isSchoolEntity(teacherDetail?.entity_id);
+    const isCollege = isCollegeEntity(teacherDetail?.entity_id);
+
+    if (isSchool) {
+      const class_info = dataClasses.find(
+        (cls) => cls.id == teacherDetail.class_id,
+      );
+
+      const school = schoolInstitutes.find(
+        (school) => school.id == teacherDetail.institution_id,
+      );
+      const teacherSubjects = schoolSubjects.filter((subject) =>
+        teacherDetail.subjects.includes(subject.subject_id),
+      );
+
+      const subjectNames = teacherSubjects.map(
+        (subject) => subject.subject_name,
+      );
+
+      teacherDetail.entity_type = 'School';
+      teacherDetail.school_name = school.institution_name;
+      teacherDetail.class_name = class_info.class_name;
+      teacherDetail.subjects = subjectNames;
+
+      delete teacherDetail.entity_id;
+      delete teacherDetail.class_id;
+      delete teacherDetail.institution_id;
+      delete teacherDetail.university_id;
+      delete teacherDetail.course_id;
+    } else if (isCollege) {
+      const college = collegeInstitutes.find(
+        (college) => college.id == teacherDetail.institution_id,
+      );
+      const course = dataCourses.find(
+        (course) => course.id == teacherDetail.course_id,
+      );
+      const teacherSubjects = collegeSubjects.filter((subject) =>
+        teacherDetail.subjects.includes(subject.subject_id),
+      );
+      const subjectNames = teacherSubjects.map(
+        (subject) => subject.subject_name,
+      );
+
+      teacherDetail.entity_type = 'College';
+      teacherDetail.college_name = college.institution_name;
+      teacherDetail.university_name = college.university_name;
+      teacherDetail.course_name = course.course_name;
+      teacherDetail.subjects = subjectNames;
+
+      delete teacherDetail.stream;
+      delete teacherDetail.entity_id;
+      delete teacherDetail.class_id;
+      delete teacherDetail.institution_id;
+      delete teacherDetail.university_id;
+      delete teacherDetail.course_id;
+    }
+    // console.log({ teacherDetail });
+
+    setSelectedTeacher(teacherDetail);
+
+    setOpen(true);
   };
 
   const handleEditFile = (id: number) => {
@@ -299,6 +479,7 @@ const Teacher = () => {
                               </IconButton>
                             </Tooltip>
                           )} */}
+
                           {row.row.original.is_approve ? (
                             <>
                               <Tooltip arrow placement="right" title="Edit">
@@ -331,6 +512,22 @@ const Teacher = () => {
                                   }
                                 >
                                   <TrashIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(
+                                      row?.row?.original?.teacher_id,
+                                    )
+                                  }
+                                >
+                                  <Visibility />
                                 </IconButton>
                               </Tooltip>
                             </>
@@ -368,9 +565,186 @@ const Teacher = () => {
                                   <CloseIcon />
                                 </IconButton>
                               </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(
+                                      row?.row?.original?.teacher_id,
+                                    )
+                                  }
+                                >
+                                  <Visibility />
+                                </IconButton>
+                              </Tooltip>
                             </>
                           )}
-
+                          <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            sx={{
+                              '& .MuiBackdrop-root': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                              },
+                              '& .MuiPaper-root': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+                              },
+                            }}
+                          >
+                            <DialogTitle
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
+                              Teacher Details
+                            </DialogTitle>
+                            <DialogContent>
+                              <div className="teacher-details">
+                                {[
+                                  'full_name',
+                                  'dob',
+                                  'gender',
+                                  'email_id',
+                                  'phone',
+                                  'qualification',
+                                  'experience',
+                                  'documents',
+                                  'entity_type',
+                                  'school_name',
+                                  'class_name',
+                                  'college_name',
+                                  'university_name',
+                                  'course_name',
+                                  'subjects',
+                                  'is_active',
+                                  'is_approve',
+                                  'is_kyc_verified',
+                                  'is_deleted',
+                                  'teacher_id',
+                                  'teacher_login_id',
+                                  'address',
+                                  'city',
+                                  'district',
+                                  'state',
+                                  'country',
+                                  'pincode',
+                                  ...Object.keys(selectedTeacher).filter(
+                                    (key) =>
+                                      ![
+                                        'full_name',
+                                        'dob',
+                                        'gender',
+                                        'email_id',
+                                        'phone',
+                                        'qualification',
+                                        'experience',
+                                        'documents',
+                                        'entity_type',
+                                        'school_name',
+                                        'class_name',
+                                        'college_name',
+                                        'university_name',
+                                        'course_name',
+                                        'subjects',
+                                        'is_active',
+                                        'is_approve',
+                                        'is_kyc_verified',
+                                        'is_deleted',
+                                        'teacher_id',
+                                        'teacher_login_id',
+                                        'address',
+                                        'city',
+                                        'district',
+                                        'state',
+                                        'country',
+                                        'pincode',
+                                      ].includes(key),
+                                  ),
+                                ].map((key) => {
+                                  if (key in selectedTeacher) {
+                                    return (
+                                      <p key={key}>
+                                        <strong
+                                          style={{
+                                            fontWeight: 500,
+                                            fontSize: '14px',
+                                          }}
+                                        >
+                                          {key.replace(/_/g, ' ').toUpperCase()}
+                                        </strong>
+                                        :{' '}
+                                        {key === 'documents' ? (
+                                          Array.isArray(selectedTeacher[key]) &&
+                                          (selectedTeacher[key] as string[])
+                                            .length > 0 ? (
+                                            <div style={{ marginLeft: '20px' }}>
+                                              {(
+                                                selectedTeacher[key] as string[]
+                                              ).map(
+                                                (
+                                                  doc: string,
+                                                  index: number,
+                                                ) => (
+                                                  <div
+                                                    key={index}
+                                                    style={{
+                                                      margin: '5px 0',
+                                                    }}
+                                                  >
+                                                    <a
+                                                      href={doc}
+                                                      target="_blank"
+                                                      rel="noopener noreferrer"
+                                                      style={{
+                                                        textDecoration:
+                                                          'underline ',
+                                                      }}
+                                                    >
+                                                      {doc.split('/').pop()}
+                                                    </a>
+                                                    {index <
+                                                    (
+                                                      selectedTeacher[
+                                                        key
+                                                      ] as string[]
+                                                    ).length -
+                                                      1
+                                                      ? ', '
+                                                      : ''}
+                                                  </div>
+                                                ),
+                                              )}
+                                            </div>
+                                          ) : (
+                                            'No documents available'
+                                          )
+                                        ) : Array.isArray(
+                                            selectedTeacher[key],
+                                          ) ? (
+                                          selectedTeacher[key].join(', ')
+                                        ) : selectedTeacher[key] === null ? (
+                                          'Not Available'
+                                        ) : (
+                                          selectedTeacher[key]?.toString()
+                                        )}
+                                      </p>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </div>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={handleClose} color="primary">
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           {/* <Tooltip arrow placement="right" title="Edit">
                             <IconButton
                               sx={{

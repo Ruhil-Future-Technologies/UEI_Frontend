@@ -394,6 +394,8 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
               active(row?.original?.id, Showvalue);
             }}
             // disabled={true}
+            activeColor="#4CAF50"
+            inactiveColor="#f44336"
           />
         </Box>
       );
@@ -417,38 +419,16 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     header: 'Full Name',
     size: 200,
   },
-  { accessorKey: 'phone', header: 'Phone', size: 150 },
+  { accessorKey: 'phone', header: 'Phone', size: 200, minSize: 200 },
   { accessorKey: 'email_id', header: 'Email', size: 200 },
   {
     accessorKey: 'institution_id',
     header: 'Institute Name',
     size: 200,
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell }: any) => {
       const { getData } = useApi();
       const [institute_name, setInstituteName] = useState<string>('-');
       const institute_id = cell.getValue();
-      const [, setEntityType] = useState<string>('-');
-      const entityId = row.original.entity_id;
-
-      useEffect(() => {
-        getData('/entity/list')
-          .then((response: any) => {
-            if (response.status === 200) {
-              const matchingEntity = response.data.find(
-                (entity: any) => entity.id === entityId,
-              );
-              if (matchingEntity) {
-                setEntityType(matchingEntity.entity_type);
-              }
-            }
-          })
-          .catch((error) => {
-            toast.error(error?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          });
-      }, [entityId]);
 
       useEffect(() => {
         getData('/institution/list')
@@ -629,8 +609,8 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
           isChecked={show}
           onChange={() => active(row?.original?.teacher_id, showValue)}
           label={show ? 'Active' : 'Deactive'}
-          activeColor="#4CAF50" // green
-          inactiveColor="#f44336" // red
+          activeColor="#4CAF50"
+          inactiveColor="#f44336"
         />
       );
     },
