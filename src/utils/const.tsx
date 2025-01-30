@@ -39,6 +39,7 @@ export const QUERY_KEYS_STUDENT = {
 };
 export const QUERY_KEYS_TEACHER = {
   GET_TEACHER: './teacher/list',
+  GET_TECHER_BY_LOGIN_ID: './teacher/getbyloginid',
   TEACHER_APPROVE: './teacher/approve',
   TEACHER_DISAPPROVE: './teacher/disapprove',
   TEACHER_ADD: './teacher/add',
