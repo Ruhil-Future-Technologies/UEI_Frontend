@@ -128,7 +128,7 @@ const AddUniversity = () => {
                 validationSchema={universitySchema}
                 // innerRef={formRef}
               >
-                {() => (
+                {({ errors, touched }) => (
                   <Form>
                     <div className="row">
                       <div className="col-md-4">
@@ -140,16 +140,6 @@ const AddUniversity = () => {
                                 {...field}
                                 className="form-control"
                                 label="University Name *"
-                                error={Boolean(
-                                  form.errors.university_name &&
-                                    form.touched.university_name,
-                                )}
-                                helperText={
-                                  form.errors.university_name &&
-                                  form.touched.university_name
-                                    ? form.errors.university_name
-                                    : ''
-                                }
                                 onBlur={form.handleBlur}
                                 onChange={form.handleChange}
                               />
@@ -158,7 +148,11 @@ const AddUniversity = () => {
                         </div>
                       </div>
                     </div>
-
+                    {touched?.university_name && errors?.university_name && (
+                      <p style={{ color: 'red' }}>
+                        {String(errors?.university_name)}
+                      </p>
+                    )}
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
                         {' '}

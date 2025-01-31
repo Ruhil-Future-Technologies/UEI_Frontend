@@ -328,7 +328,7 @@ const AddEditSubject = () => {
       ),
     description: Yup.string(),
     menu_image: Yup.string(),
-    semester_id: Yup.string().required('Please select Semester name'),
+    semester_id: Yup.string().required('Please select Semester'),
     course_id: Yup.string().required('Please select Course name'),
     institution_id: Yup.string().required('Please select institute name'),
   });
@@ -417,10 +417,14 @@ const AddEditSubject = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.institution_id === 'string' &&
-                                errors.institution_id}
-                            </Typography>
+                            {touched?.institution_id &&
+                            errors?.institution_id ? (
+                              <p style={{ color: 'red' }}>
+                                {errors?.institution_id}
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -475,10 +479,13 @@ const AddEditSubject = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.course_id === 'string' &&
-                                errors.course_id}
-                            </Typography>
+                            {touched?.course_id && errors?.course_id ? (
+                              <p style={{ color: 'red' }}>
+                                {errors?.course_id}
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -554,10 +561,14 @@ const AddEditSubject = () => {
                                   </MenuItem>
                                 ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.semester_id === 'string' &&
-                                errors?.semester_id}
-                            </Typography>
+
+                            {touched?.semester_id && errors?.semester_id ? (
+                              <p style={{ color: 'red' }}>
+                                {errors?.semester_id}
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </FormControl>
                         </div>
                       </div>
