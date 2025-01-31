@@ -655,10 +655,9 @@ const Teacher = () => {
                                   'college_name',
                                   'university_name',
                                   'course_name',
+                                  'stream',
                                   'subjects',
 
-                                  'teacher_id',
-                                  'teacher_login_id',
                                   'address',
                                   'city',
                                   'district',
@@ -684,10 +683,9 @@ const Teacher = () => {
                                         'college_name',
                                         'university_name',
                                         'course_name',
+                                        'stream',
                                         'subjects',
 
-                                        'teacher_id',
-                                        'teacher_login_id',
                                         'address',
                                         'city',
                                         'district',

@@ -312,42 +312,55 @@ const AddEditTeacher = () => {
     }
   }, [formRef.current?.values?.institution_id, dataCourses]);
 
+  const checkHigherClass = (
+    classId: string | undefined,
+    dataClasses: any[],
+  ): boolean => {
+    if (!classId) return false;
+    return dataClasses.some(
+      (classes) =>
+        classes.id === classId &&
+        (classes.class_name === 'class_11' ||
+          classes.class_name === 'class_12'),
+    );
+  };
+
   const SubjectsHandler = ({ values }: { values: ITeacherForm }) => {
     useEffect(() => {
       if (values?.entity_id) {
         if (isSchoolEntity(values.entity_id)) {
           if (values.class_id) {
-            let filtered = schoolSubjects.filter(
+            const filtered = schoolSubjects.filter(
               (subject) => subject.class_id === values.class_id,
             );
 
-            const checkClass = dataClasses.some((classes) => {
-              const current_Class_id = values?.class_id;
-              if (current_Class_id == classes.id) {
-                if (
-                  classes.class_name == 'class_11' ||
-                  classes.class_name == 'class_12'
-                ) {
-                  return true;
-                } else {
-                  return false;
-                }
-              }
-            });
+            const higherClass = checkHigherClass(values.class_id, dataClasses);
 
-            if (checkClass) {
+            if (higherClass) {
               if (values.stream) {
-                filtered = filtered.filter(
-                  (subject: any) => subject.stream === values.stream,
+                const streamFiltered = filtered.filter(
+                  (subject) => subject.stream === values.stream,
                 );
-              } else {
-                filtered = [];
-              }
-            }
 
-            setFilteredSubjects(filtered);
+                setFilteredSubjects(streamFiltered);
+              } else {
+                setFilteredSubjects([]);
+              }
+
+              setStreams(
+                filtered
+                  .map((subject) => subject.stream)
+                  .filter(
+                    (stream, index, array) => array.indexOf(stream) === index,
+                  ),
+              );
+            } else {
+              setFilteredSubjects(filtered);
+              setStreams([]);
+            }
           } else {
             setFilteredSubjects([]);
+            setStreams([]);
           }
         } else if (isCollegeEntity(values.entity_id)) {
           if (values.course_id) {
@@ -369,17 +382,6 @@ const AddEditTeacher = () => {
 
     return null;
   };
-
-  useEffect(() => {
-    if (filteredSubjects?.length > 0) {
-      const uniqueStreams = filteredSubjects
-        .map((subject) => subject.stream)
-        .filter((stream, index, array) => array.indexOf(stream) === index);
-      setStreams(uniqueStreams);
-    } else {
-      setStreams([]);
-    }
-  }, [filteredSubjects]);
 
   const teacherSchema = Yup.object().shape({
     first_name: Yup.string()
@@ -659,9 +661,13 @@ const AddEditTeacher = () => {
         ...prevTeacher,
         [fieldName]: value,
       };
-      if (fieldName === 'stream' || fieldName === 'class_id') {
+      if (fieldName === 'class_id') {
         formRef?.current?.setFieldValue('subjects', []);
+        formRef?.current?.setFieldValue('stream', '');
+        newState.stream = '';
+        setStreams([]);
       }
+
       if (fieldName === 'institution_id') {
         formRef?.current?.setFieldValue('course_id', '');
         formRef?.current?.setFieldValue('subjects', []);
@@ -1280,12 +1286,9 @@ const AddEditTeacher = () => {
                             name="stream"
                             value={values?.stream}
                             label="Stream"
-                            // disabled={
-                            //   typeof values?.class_id !== 'string' ||
-                            //   !['class_11', 'class_12'].includes(
-                            //     values.class_id,
-                            //   )
-                            // }
+                            disabled={
+                              !checkHigherClass(values?.class_id, dataClasses)
+                            }
                             onChange={(e: SelectChangeEvent<string>) => {
                               handleChange(e, 'stream');
                             }}
@@ -1295,6 +1298,26 @@ const AddEditTeacher = () => {
                               '& .MuiSelect-icon': {
                                 color: fieldIcon(namecolor),
                               },
+                            }}
+                            style={{
+                              backgroundColor: !checkHigherClass(
+                                values?.class_id,
+                                dataClasses,
+                              )
+                                ? '#f0f0f0'
+                                : inputfield(namecolor),
+                              color: !checkHigherClass(
+                                values?.class_id,
+                                dataClasses,
+                              )
+                                ? '#999999'
+                                : inputfieldtext(namecolor),
+                              border: !checkHigherClass(
+                                values?.class_id,
+                                dataClasses,
+                              )
+                                ? '1px solid #d0d0d0'
+                                : undefined,
                             }}
                             MenuProps={{
                               PaperProps: {
