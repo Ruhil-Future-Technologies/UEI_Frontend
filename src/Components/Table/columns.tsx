@@ -159,6 +159,7 @@ export interface SemesterRep0oDTO {
   icon?: MaybeNull<string>;
   semester_id: number;
   semester_number?: MaybeNull<string>;
+  course_id?:MaybeNull<string>;
 }
 
 export interface FormRep0oDTO {
@@ -197,7 +198,9 @@ export interface RoleRep0oDTO {
 export interface SubjectRep0oDTO {
   subject_id(subject_id: any): unknown;
   subject_name: MaybeNull<string>;
+  semester_number?: MaybeNull<string>;
   id: number;
+  semester_id?: MaybeNull<string>;
 }
 
 export interface LanguageRep0oDTO {

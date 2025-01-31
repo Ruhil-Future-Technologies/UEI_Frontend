@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 interface OtpCardProps {
     open: boolean;
-    handleOtpClose: () => void; // Change this
+    handleOtpClose: () => void; // Change 
+    handleOtpSuccess: () => void;
 }
 
-const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose }) => {
-    const [otp, setOtp] = useState(["", "", "", ""]);
+const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess }) => {
+    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
 
     const handleOtpChange = (index: number, value: string) => {
@@ -17,7 +18,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose }) => {
             setOtp(newOtp);
 
             // Auto-focus to next field
-            if (value && index < 3) {
+            if (value && index < 5) {
                 document.getElementById(`otp-${index + 1}`)?.focus();
             }
         }
@@ -26,22 +27,30 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose }) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData("text").trim();
 
-        if (/^\d{4}$/.test(pastedData)) {
+        if (/^\d{6}$/.test(pastedData)) {
             setOtp(pastedData.split(""));
         }
     };
-    const handleOtpReset=()=>{
-        setOtp(["", "", "", ""]);
+    const handleOtpReset = () => {
+        setOtp(["", "", "", "", "", ""]);
         document.getElementById(`otp-0`)?.focus();
     }
     const isOtpComplete = otp.every((digit) => digit !== "");
+    const handleSubmitOtp = () => {
+        const enteredOtp = otp.join("");
+        if (enteredOtp === "123456") {
+            handleOtpSuccess();
+        } else {
+            alert("Invalid OTP");
+        }
+    }
     return (
         <div>
             <Dialog open={open} onClose={handleOtpClose}>
                 <div className="d-flex justify-content-end m-1">
                     <ClearOutlinedIcon onClick={handleOtpClose} />
                 </div>
-                <DialogTitle>{"Confirm Your OTP"}</DialogTitle>
+                <DialogTitle>{"verify Your OTP"}</DialogTitle>
                 <DialogContent>
                     <Box display="flex" justifyContent="center" gap={1} mt={1}>
                         {otp.map((digit, index) => (
@@ -64,8 +73,8 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose }) => {
                     <Button onClick={handleOtpReset} color="primary">
                         reset
                     </Button>
-                    <Button onClick={() => alert("OTP Confirmed!")} color="primary" disabled={!isOtpComplete}>
-                        Confirm
+                    <Button onClick={handleSubmitOtp} color="primary" disabled={!isOtpComplete}>
+                        Verify
                     </Button>
                 </DialogActions>
             </Dialog>

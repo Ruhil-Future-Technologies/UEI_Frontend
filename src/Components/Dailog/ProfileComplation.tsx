@@ -101,6 +101,8 @@ interface Institute {
   institution_id: string;
   institution_name: string;
   university_id: string;
+  is_active:number;
+  is_approve:boolean;
 }
 
 interface Course {
@@ -696,7 +698,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+            (item: any) => item?.is_active === 1  && item.is_approve==true,
           );
           setInstitutes(filteredData || []);
         }
@@ -2550,7 +2552,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeuniversity = (e: any) => {
     const filteredInstitution = institutes.filter(
-      (item) => item.university_id === e.value,
+      (item) => item.university_id === e.value  && item.is_active===1 && item.is_approve==true,
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];

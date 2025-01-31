@@ -167,7 +167,7 @@ const InstituteRegistrationForm = () => {
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-
+console.log(files,typeof files)
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
       handleFileChanges((prevFiles) => [
@@ -234,8 +234,7 @@ const InstituteRegistrationForm = () => {
     validation(name, value);
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
-  const handleSubmit = () => {
-    // setPopupOtpCard(true);
+  const openPopupOtp=()=>{
     setError({
       institute_name_error:
         selectedEntity === 'College' && !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
@@ -324,14 +323,31 @@ const InstituteRegistrationForm = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
+      setPopupOtpCard(true)
+    }  else {
+      toast.error('validation error', {
+        hideProgressBar: true,
+        theme: 'colored',
+      })
+
+  }
+}
+  const handleSubmit = () => {
+    // setPopupOtpCard(true);
+   
+   
+   
       const formData = new FormData();
 
-      allselectedfiles.forEach((file, index) => {
-        if (file instanceof File) {
-          formData.append(`documents[${index}]`, file);
-        } else {
-          console.error(`Invalid file at index ${index}`, file);
-        }
+      // allselectedfiles.forEach((file, index) => {
+      //   if (file instanceof File) {
+      //     formData.append(`documents[${index}]`, file);
+      //   } else {
+      //     console.error(`Invalid file at index ${index}`, file);
+      //   }
+      // });
+      allselectedfiles.forEach((file) => {
+        formData.append("documents", file);  // Use same key for all files
       });
     
       // Append text fields to FormData
@@ -357,7 +373,6 @@ const InstituteRegistrationForm = () => {
       for (let pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
-      console.log(formData.entries())
       try{
         postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
           console.log(response)
@@ -379,9 +394,7 @@ const InstituteRegistrationForm = () => {
       } catch (error) {
         console.error(error);
       }
-    } else {
-      console.log('some problem gfdshjgv');
-    }
+   
   };
   const handleInputChangecountry = (val: string, name: string) => {
     setValueInstitute({ ...valueInstitute, [name]: val });
@@ -840,7 +853,7 @@ const InstituteRegistrationForm = () => {
             <Button
               variant="contained"
               disabled={CheckTermandcondi}
-              onClick={handleSubmit}
+              onClick={openPopupOtp}
             >
               Submit
             </Button>
@@ -859,7 +872,7 @@ const InstituteRegistrationForm = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} />
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit}/>
       </div>
     </div>
   );

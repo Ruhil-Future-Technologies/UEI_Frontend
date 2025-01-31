@@ -74,7 +74,7 @@ export interface Teacher {
   address: string;
   country: string;
   stream: string;
-  semester?: string;
+  semester_id?: string;
   state: string;
   district: string;
   city: string;
@@ -155,9 +155,9 @@ const MenuProps = {
 };
 
 interface Boxes {
-  id: string,
-  semester_id: string,
-  subjects: string[]
+  semester_number:string,
+  subjects: string[],
+  course_id:string,
 }
 
 const TeacherRegistrationPage = () => {
@@ -186,6 +186,7 @@ const TeacherRegistrationPage = () => {
   const [dobset_col, setdobset_col] = useState<boolean>(false);
   const [selectedEntity, setSelectedEntity] = useState('');
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
+  const [filteredSubjetcs, setFilteredSubjetcs] = useState<SubjectRep0oDTO[]>([])
   const [selectedSubject, setSelectedSubject] = useState<string[]>([]);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   const [popupOtpCard, setPopupOtpCard] = useState(false);
@@ -193,6 +194,8 @@ const TeacherRegistrationPage = () => {
   const [selectedSchool, setSelectedSchool] = useState('');
   const [selectedClassName, setSelectedClassName] = useState("col-12");
   const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
+  const [finterSemesterData, setFiterSemesterData] = useState<SemesterRep0oDTO[]>([]);
+  const [finterSemesterDatat, setFiterSemesterDatat] = useState<SemesterRep0oDTO[]>([]);
   const [boxes, setBoxes] = useState<Boxes[]>([]);
 
   //const [roleId, setRoleId] = useState("c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
@@ -207,7 +210,7 @@ const TeacherRegistrationPage = () => {
     country: '',
     state: '',
     stream: '',
-    semester: '',
+    semester_id: '',
     district: '',
     city: '',
     pincode: '',
@@ -437,7 +440,12 @@ const TeacherRegistrationPage = () => {
       );
       FilteredDataCourse(filteredDta);
     }
+    if (name === 'course_id') {
+      const filteredata = semesterData.filter((item) => item.course_id === value)
+      setFiterSemesterData(filteredata);
+    }
     if (name === 'entity_id') {
+      console.log(dataInstitute, value)
       const filteredInstitute = dataInstitute.filter(
         (item) => String(item.entity_id) === value,
       );
@@ -448,6 +456,11 @@ const TeacherRegistrationPage = () => {
         (item) => String(item.id) === value,
       )?.institution_name;
       setSelectedSchool(String(selectedSchool));
+    }
+    if (name === 'semester_id') {
+      const filterData = totleSubject.filter((item) => item.semester_id === value);
+      setFilteredSubjetcs(filterData);
+
     }
     if (name === "class_id") {
       console.log(value);
@@ -509,7 +522,8 @@ const TeacherRegistrationPage = () => {
 
     validation(name, value);
   };
-  const handleSubmit = () => {
+
+  const openPopupOtp = () => {
     setError({
       first_name_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
@@ -569,7 +583,7 @@ const TeacherRegistrationPage = () => {
         !(teacher.institution_id === '')
         : true;
     console.log(error.subject_name_error);
-    setPopupOtpCard(true)
+
     if (
       !error.first_name_error &&
 
@@ -612,95 +626,90 @@ const TeacherRegistrationPage = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
-      console.log('inside if code');
-      let payload;
-      // All required fields are valid, proceed with the next steps
-      if (selectedEntity === 'School') {
-        payload = {
-          first_name: teacher.first_name,
-          last_name: teacher.last_name,
-          gender: genderData,
-          dob: teacher.dob,
-          phone: teacher.phone,
-          email_id: teacher.email_id,
-          qualification: teacher.qualification,
-          subjects: selectedSubject,
-          entity_id: teacher.entity_id,
-          role_id: 'c848bc42-0e62-46b1-ab2e-2dd4f9bef546',
-          school_name: selectedSchool,
-          institution_id: teacher.school_name,
-          class_id: teacher.class_id,
-          experience: teacher.experience,
-          address: teacher.address,
-          country: teacher.country,
-          state: teacher.state,
-          district: teacher.district,
-          city: teacher.city,
-          pincode: teacher.pincode,
-          documents: allselectedfiles,
-          ...(selectedClassName === "col-6" && { stream: teacher.stream }),
-        };
-        console.log('payload', payload);
-      } else {
-        payload = {
-          first_name: teacher.first_name,
-          last_name: teacher.last_name,
-          gender: genderData,
-          dob: teacher.dob,
-          phone: teacher.phone,
-          email_id: teacher.email_id,
-          semester_id: teacher.semester,
-          qualification: teacher.qualification,
-          documents: allselectedfiles,
-          subjects: selectedSubject,
-          entity_id: teacher.entity_id,
-          course_id: teacher.course_id,
-          role_id: 'c848bc42-0e62-46b1-ab2e-2dd4f9bef546',
-          institution_id: teacher.institution_id,
-          experience: teacher.experience,
-          address: teacher.address,
-          country: teacher.country,
-          state: teacher.state,
-          district: teacher.district,
-          city: teacher.city,
-          pincode: teacher.pincode,
-        };
-      }
-
-      // if(){
-
-      // }
-      postRegisterData(getTeacherURL, payload)
-        .then((response) => {
-          console.log(response);
-          if (response.status === 200) {
-            toast.success('Teacher registration request sent successfully', {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-            alert(
-              'Teacher registered request sended successfully please wait for 24-48 hours',
-            );
-            window.location.reload();
-          } else {
-            toast.error(response.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      setPopupOtpCard(true)
     } else {
       toast.error('validation error', {
         hideProgressBar: true,
         theme: 'colored',
       })
-
-
     }
+
   };
+  const handleSubmit = () => {
+
+    // All required fields are valid, proceed with the next steps
+    const formData = new FormData();
+
+    // Append files
+    allselectedfiles.forEach((file, index) => {
+      if (file instanceof File) {
+        formData.append(`documents[${index}]`, file);
+      } else {
+        console.error(`Invalid file at index ${index}`, file);
+      }
+    });
+
+    // Append common fields for both 'School' and other entities
+    formData.append("first_name", teacher.first_name);
+    formData.append("last_name", teacher.last_name);
+    formData.append("gender", genderData);
+    formData.append("dob", teacher.dob ? dayjs(teacher.dob).format("YYYY-MM-DD") : "");
+    formData.append("phone", teacher.phone);
+    formData.append("email_id", teacher.email_id);
+    formData.append("qualification", teacher.qualification);
+    formData.append("subjects", JSON.stringify(selectedSubject)); // Array should be stringified
+    formData.append("entity_id", teacher.entity_id);
+    formData.append("role_id", "c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
+    formData.append("experience", teacher.experience);
+    formData.append("address", teacher.address);
+    formData.append("country", teacher.country);
+    formData.append("state", teacher.state);
+    formData.append("district", teacher.district);
+    formData.append("city", teacher.city);
+    formData.append("pincode", teacher.pincode);
+
+    // Conditional fields based on `selectedEntity`
+    if (selectedEntity === "School") {
+      formData.append("school_name", selectedSchool);
+      formData.append("institution_id", teacher.school_name);
+      formData.append("class_id", teacher.class_id?.toString() || "");
+      if (selectedClassName === "col-6") {
+        formData.append("stream", teacher.stream);
+      }
+    } else {
+      formData.append("semester_id", teacher.semester_id?.toString() || '');
+      formData.append("course_id", teacher.course_id);
+      formData.append("institution_id", teacher.institution_id?.toString() || '');
+    }
+
+
+    postRegisterData(getTeacherURL, formData)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          toast.success('Teacher registration request sent successfully', {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+          alert(
+            'Teacher registered request sended successfully please wait for 24-48 hours',
+          );
+          window.location.reload();
+        } else {
+          toast.error(response.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+
+
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -741,6 +750,38 @@ const TeacherRegistrationPage = () => {
 
     setSelectedSubject(value as string[]);
   };
+  const handelSubjectBoxChange = (
+    event: SelectChangeEvent<typeof selectedSubject>, index: Number
+  ) => {
+    const { value, name } = event.target;
+    console.log(value, index, name)
+    if (name === "subjects") {
+      setBoxes((prevBoxes) =>
+        prevBoxes.map((box, i) =>
+          i === index ? { ...box, subjects: value as string[] } : box,
+        ),
+      );
+    }else if(name === "course_id"){
+      setBoxes((prevBoxes) =>
+        prevBoxes.map((box, i) =>
+          i === index ? { ...box, course_id: value as string } : box,
+        ),
+      );
+      const filteredata = semesterData.filter((item) => item.course_id === value)
+      setFiterSemesterDatat(filteredata);
+    } else {
+      setBoxes((prevBoxes) =>
+        prevBoxes.map((box, i) =>
+          i === index ? { ...box, semester_number: value as string } : box,
+        ),
+      );
+      console.log(totleSubject);
+      const filterData = totleSubject.filter((item) => item.semester_number === value);
+      setFilteredSubjetcs(filterData);
+
+    }
+
+  };
 
   const handleClose = () => {
     setPopupTermandcondi(false);
@@ -758,11 +799,11 @@ const TeacherRegistrationPage = () => {
 
   const handleAddmore = () => {
     const newbox: Boxes =
-      { id: '', semester_id: '', subjects: [] }
+      { semester_number: '',course_id:'', subjects: [] }
 
     setBoxes([...boxes, newbox]);
   }
-  console.log(boxes);
+console.log(boxes);
 
   return (
     <div className="without-login">
@@ -1214,7 +1255,7 @@ const TeacherRegistrationPage = () => {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="col-form-label">
-                  semester <span>*</span>
+                  Semester <span>*</span>
                 </label>
                 <FormControl fullWidth>
                   <InputLabel id="semester_id">Semester</InputLabel>
@@ -1240,7 +1281,7 @@ const TeacherRegistrationPage = () => {
                       },
                     }}
                   >
-                    {semesterData.map((item) => (
+                    {finterSemesterData.map((item) => (
                       <MenuItem
                         key={item.id}
                         value={item.semester_id}
@@ -1273,7 +1314,7 @@ const TeacherRegistrationPage = () => {
               <FormControl
                 fullWidth
               >
-                <InputLabel id="demo-multiple-checkbox-label">
+                <InputLabel id={`demo-multiple-checkbox-label$`}>
                   Subject
                 </InputLabel>
                 <Select
@@ -1307,7 +1348,7 @@ const TeacherRegistrationPage = () => {
                   }
                   MenuProps={MenuProps}
                 >
-                  {totleSubject.map((subject: any) => (
+                  {filteredSubjetcs.map((subject: any) => (
                     <MenuItem
                       key={subject.subject_id}
                       value={subject.subject_id}
@@ -1560,20 +1601,49 @@ const TeacherRegistrationPage = () => {
               </div>
             </div>
           </div>
-          {boxes.length > 0 &&(
-            <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
+          {boxes.length > 0 &&
+            boxes.map((box, index) => (
+              <div key={index} className="row d-flex justify-content-center">
+                <div className="col-md-4 col-12 mb-3">
                   <label className="col-form-label">
-                    semester <span>*</span>
+                    Course<span>*</span>
                   </label>
                   <FormControl fullWidth>
-                    <InputLabel id="semester_id">Semester</InputLabel>
+                    <InputLabel id={`course_id_${index}`}>Course</InputLabel>
                     <Select
-                      labelId="semester_id"
-                      id="demo2-multiple-name"
+                      labelId={`course_id_${index}`}
+                      id={`demo3-multiple-name-${index}`}
+                      name="course_id"
+                      label="Course"
+                      onChange={(event:any)=>handelSubjectBoxChange(event,index)}
+                    >
+                      {filteredCourse.map((course) => (
+                        <MenuItem key={course.id} value={course.id}>
+                          {course.course_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {error.course_id_error === true && (
+                    <p className="error-text " style={{ color: 'red' }}>
+                      <small>Please enter a valid course.</small>
+                    </p>
+                  )}
+                </div>
+                <div className="col-md-4 col-12 mb-3">
+                  <label className="col-form-label">
+                    Semester <span>*</span>
+                  </label>
+                  <FormControl fullWidth>
+                    <InputLabel id={`semester_id_${index}`}>Semester</InputLabel>
+                    <Select
+                      labelId={`semester_id_${index}`}
+                      id={`semester_select_${index}`}
                       name="semester_id"
                       label="Semester"
-                      onChange={handleSelect}
+                      onChange={(event: any) => handelSubjectBoxChange(event, index)
+                      }
+                      value={box.semester_number}
                       sx={{
                         backgroundColor: inputfield(namecolor),
                         color: inputfieldtext(namecolor),
@@ -1590,10 +1660,10 @@ const TeacherRegistrationPage = () => {
                         },
                       }}
                     >
-                      {semesterData.map((item) => (
+                      {finterSemesterDatat.map((item) => (
                         <MenuItem
                           key={item.id}
-                          value={item.semester_id}
+                          value={item.semester_number || ''}
                           sx={{
                             backgroundColor: inputfield(namecolor),
                             color: inputfieldtext(namecolor),
@@ -1607,101 +1677,77 @@ const TeacherRegistrationPage = () => {
                       ))}
                     </Select>
                   </FormControl>
-                  {error.institution_id_error === true && (
-                    <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please select an semester name.</small>
+                  {error.institution_id_error && (
+                    <p className="error-text" style={{ color: 'red' }}>
+                      <small>Please select a semester.</small>
                     </p>
                   )}
                 </div>
-            <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
-                  Subjects Taught<span>*</span>
-                </label>
-                <FormControl
-                  fullWidth
-                >
-                  <InputLabel id="demo-multiple-checkbox-label">
-                    Subject
-                  </InputLabel>
-                  <Select
-                    labelId="demo-multiple-checkbox-label"
-                    id="demo-multiple-checkbox"
-                    multiple
-                    data-testid="Subject_text"
-                    sx={{
-                      backgroundColor: '#f5f5f5',
-                      '& .MuiSelect-icon': {
-                        color: fieldIcon(namecolor),
-                      },
-                    }}
-                    value={selectedSubject}
-                    onChange={handelSubjectChange}
-                    input={<OutlinedInput label="Subject" />}
-                    renderValue={(selected) =>
-                      (selected as string[])
-                        .map((id) => {
-                          const subject = totleSubject.find(
-                            (subject: any) => subject.subject_id === id,
-                          );
-                          return subject ? subject.subject_name : '';
-                        })
-                        // .join(", ")
-                        .reduce(
-                          (prev, curr) =>
-                            prev === '' ? curr : `${prev}, ${curr}`,
-                          '',
-                        )
-                    }
-                    MenuProps={MenuProps}
-                  >
-                    {totleSubject.map((subject: any) => (
-                      <MenuItem
-                        key={subject.subject_id}
-                        value={subject.subject_id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          // "&:hover": {
-                          //   backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                          // },
-                          '&:hover': {
-                            backgroundColor: inputfieldhover(namecolor),
-                            color: 'black !important',
-                          },
-                          '&.Mui-selected': {
-                            // backgroundColor: inputfield(namecolor),
-                            color: 'black',
-                          },
-                          '&.Mui-selected, &:focus': {
+                <div className="col-md-4 col-12 mb-3">
+                  <label className="col-form-label">
+                    Subjects Taught<span>*</span>
+                  </label>
+                  <FormControl fullWidth>
+                    <InputLabel id={`subject_label_${index}`}>Subject</InputLabel>
+                    <Select
+                      labelId={`subject_label_${index}`}
+                      id={`subject_select_${index}`}
+                      multiple
+                      data-testid="Subject_text"
+                      name='subjects'
+                      sx={{
+                        backgroundColor: '#f5f5f5',
+                        '& .MuiSelect-icon': {
+                          color: fieldIcon(namecolor),
+                        },
+                      }}
+                      value={box.subjects}
+                      onChange={(event) => handelSubjectBoxChange(event, index)}
+                      input={<OutlinedInput label="Subject" />}
+                      renderValue={(selected) =>
+                        (selected as string[])
+                          .map((id) => {
+                            const subject = totleSubject.find((subject: any) => subject.subject_id === id);
+                            return subject ? subject.subject_name : '';
+                          })
+                          .join(', ')
+                      }
+                      MenuProps={MenuProps}
+                    >
+                      {filteredSubjetcs.map((subject: any) => (
+                        <MenuItem
+                          key={subject.subject_id}
+                          value={subject.subject_id}
+                          sx={{
                             backgroundColor: inputfield(namecolor),
-                            color: namecolor === 'dark' ? 'white' : 'black',
-                          },
-                        }}
-                      >
-                        <Checkbox
-                          checked={
-                            selectedSubject.indexOf(
-                              subject.subject_id.toString(),
-                            ) > -1
-                          }
-                        />
-                        <ListItemText primary={subject.subject_name} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {error.subject_name_error === true && (
-                  <p className="error-text " style={{ color: 'red' }}>
-  
-                    <small>
-                      Please select a subject name.
-                    </small>
-  
-                  </p>
-                )}
+                            color: inputfieldtext(namecolor),
+                            '&:hover': {
+                              backgroundColor: inputfieldhover(namecolor),
+                              color: 'black !important',
+                            },
+                            '&.Mui-selected': {
+                              color: 'black',
+                            },
+                            '&.Mui-selected, &:focus': {
+                              backgroundColor: inputfield(namecolor),
+                              color: namecolor === 'dark' ? 'white' : 'black',
+                            },
+                          }}
+                        >
+                          <Checkbox id={`check_box_${index}`} name={`check_box_${index}`} checked={boxes[index].subjects.includes(subject.subject_id.toString())} />
+                          <ListItemText primary={subject.subject_name} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {error.subject_name_error && (
+                    <p className="error-text" style={{ color: 'red' }}>
+                      <small>Please select a subject.</small>
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            ))}
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
               <Button
@@ -1734,7 +1780,7 @@ const TeacherRegistrationPage = () => {
           <div className=" d-flex justify-content-center m-2">
             <Button
               variant="contained"
-              onClick={handleSubmit}
+              onClick={openPopupOtp}
               disabled={CheckTermandcondi}
             >
               Submit
@@ -1754,7 +1800,7 @@ const TeacherRegistrationPage = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} />
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} />
       </div>
     </div>
   );
