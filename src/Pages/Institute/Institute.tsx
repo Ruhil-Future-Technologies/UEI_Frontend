@@ -232,36 +232,6 @@ const Institute = () => {
     delete instituteDetail.icon;
     delete instituteDetail.id;
 
-    // console.log({ instituteDetail });
-
-    // setSelectedInstitute({
-    //   address: 'akhsdb',
-    //   city: 'dfjs d',
-    //   country: 'sdfkj s',
-    //   created_at: 'Thu, 30 Jan 2025 15:10:33 GMT',
-    //   created_by: 'Admin',
-    //   district: 'sdkjf',
-    //   documents: [
-    //     'https://qauploads.s3.ap-south-1.amazonaws.com/uploads/f0cad47d-3732-4cbd-bfca-7d5736c622e6_Api_updattion_and_creation.txt',
-    //     'https://qauploads.s3.ap-south-1.amazonaws.com/uploads/f0cad47d-3732-4cbd-bfca-7d5736c622e6_Algo Today DOC .pdf',
-    //     'https://qauploads.s3.ap-south-1.amazonaws.com/uploads/f0cad47d-3732-4cbd-bfca-7d5736c622e6_api_errors.txt',
-    //   ],
-    //   email_id: 's3@test.com',
-
-    //   entity_type: 'College',
-
-    //   institution_login_id: '67a1d063-9cf3-4d65-ba0d-c2a23b8503d2',
-    //   institution_name: 'TEST DOC',
-    //   mobile_no: '9988776655',
-    //   pincode: '000123',
-    //   state: 'dfjks df',
-    //   university_id: '4f6602d7-33bf-4227-a1c0-924c8f3105a1',
-    //   university_name: 'IIT DELHI UNIVERSITY',
-    //   updated_at: 'Thu, 30 Jan 2025 15:10:33 GMT',
-    //   updated_by: 'Admin',
-    //   website_url: 'kjdfbiwufboa',
-    // });
-
     setSelectedInstitute(instituteDetail);
     setOpen(true);
   };
