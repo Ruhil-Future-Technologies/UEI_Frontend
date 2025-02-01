@@ -58,7 +58,7 @@ describe('UserChangePassword Component', () => {
     await act(async () => {
       fireEvent.click(submitButton);
     });
-    expect(screen.getAllByText(/Please enter a password/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Please enter a Password/i).length).toBeGreaterThan(0);
 
   });
 

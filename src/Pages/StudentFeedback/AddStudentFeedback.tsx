@@ -106,7 +106,7 @@ const AddStudentFeedback = () => {
     const newErrors: any = {};
     questions.forEach((question: any) => {
       if (!selectAnswer[question.id]) {
-        newErrors[question.id] = 'This question is required.';
+        newErrors[question.id] = 'This Question is required.';
       }
     });
     setErrors(newErrors);
@@ -368,7 +368,7 @@ const AddStudentFeedback = () => {
             </div>
           </div>
           <CommonModal
-            message={'You have already submitted your feedback.'}
+            message={'You have successfully submitted your Feedback.'}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
           />
