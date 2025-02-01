@@ -122,7 +122,7 @@ const ChangePassword = () => {
   };
   const changePasswordSchema = Yup.object().shape({
     newpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
@@ -145,7 +145,7 @@ const ChangePassword = () => {
       ),
 
     confpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',

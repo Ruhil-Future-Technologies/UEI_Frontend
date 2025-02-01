@@ -495,7 +495,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.website_error === true && (
                   <p className="error-text" style={{ color: 'red' }}>
-                    <small>Please enter a valid Website .</small>
+                    <small>Please enter a valid Website.</small>
                   </p>
                 )}
               </div>
@@ -517,7 +517,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please enter a valid school name</small>
+                      <small>Please enter a valid School name.</small>
                     </p>
                   )}
                 </div>
@@ -575,7 +575,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.university_id_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please select a university name.</small>
+                      <small>Please select a University name.</small>
                     </p>
                   )}
                 </div>
@@ -594,7 +594,7 @@ const InstituteRegistrationForm = () => {
                 <div>
                   {error.institute_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please enter a valid institute name.</small>
+                      <small>Please enter a valid Institute name.</small>
                     </p>
                   )}
                 </div>
@@ -605,7 +605,7 @@ const InstituteRegistrationForm = () => {
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
-                Mobile No<span>*</span>
+                Mobile Number<span>*</span>
               </label>
 
               <TextField
@@ -617,7 +617,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.mobile_no_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please enter a valid mobile number.</small>
+                    <small>Please enter a valid Mobile Number.</small>
                   </p>
                 )}
               </div>
@@ -675,7 +675,7 @@ const InstituteRegistrationForm = () => {
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a state.</small>
+                  <small>Please select a State.</small>
                 </p>
               )}
             </div>
@@ -694,7 +694,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.district_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small> Please enter a valid district name.</small>
+                    <small> Please enter a valid District name.</small>
                   </p>
                 )}
               </div>
@@ -713,7 +713,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please enter a valid city name.</small>
+                    <small>Please enter a valid City name.</small>
                   </p>
                 )}
               </div>
@@ -734,7 +734,7 @@ const InstituteRegistrationForm = () => {
               <div>
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please enter a valid address</small>
+                    <small>Please enter a valid Address.</small>
                   </p>
                 )}
               </div>
