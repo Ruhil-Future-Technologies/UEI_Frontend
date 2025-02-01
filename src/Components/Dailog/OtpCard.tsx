@@ -1,6 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, Box, TextField, DialogActions, Button } from "@mui/material";
 import React, { useState } from "react";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+//import useApi from "../../hooks/useAPI";
 interface OtpCardProps {
     open: boolean;
     handleOtpClose: () => void; // Change 
@@ -9,6 +10,7 @@ interface OtpCardProps {
 
 const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess }) => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+   // const {postData}=useApi();
 
 
     const handleOtpChange = (index: number, value: string) => {
@@ -39,6 +41,15 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
     const handleSubmitOtp = () => {
         const enteredOtp = otp.join("");
         if (enteredOtp === "123456") {
+            // try {
+            //     postData("xyz",postData).then((data)=>{
+            //           if(data.status===true && data){
+
+            //           }
+            //     })
+            // } catch (error) {
+                
+            // }
             handleOtpSuccess();
         } else {
             alert("Invalid OTP");

@@ -96,7 +96,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   // const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs().subtract(6, 'year');
+  const exactSixYearsAgo = dayjs().subtract(6, 'year').subtract(1, 'day').endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
   useEffect(() => {
@@ -318,8 +318,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     }
   };
   const handleDateChange = (newDate: Dayjs | null) => {
-    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
+      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
         // setDob(newDate);
         setAdminDOB(newDate);
         setError(null); // Clear error

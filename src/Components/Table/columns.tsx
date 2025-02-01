@@ -200,7 +200,11 @@ export interface SubjectRep0oDTO {
   subject_name: MaybeNull<string>;
   semester_number?: MaybeNull<string>;
   id: number;
+  course_id: MaybeNull<string>;
   semester_id?: MaybeNull<string>;
+  class_id?: MaybeNull<string>;
+  class_name?: MaybeNull<string>;
+  stream?: MaybeNull<string>;
 }
 
 export interface LanguageRep0oDTO {
@@ -270,6 +274,7 @@ export interface IUniversity {
 export interface IClass {
   created_at: string;
   class_name: string;
+  class_id?: string;
   id: number;
   is_active: number;
   updated_at: string;
