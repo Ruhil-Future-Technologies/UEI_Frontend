@@ -53,6 +53,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs/AdapterDayjs';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from "../../Components/Dailog/OtpCard"
 export interface Teacher {
   first_name: string;
@@ -228,7 +229,8 @@ const TeacherRegistrationPage = () => {
     is_kyc_verified: false,
     pic_path: '',
   });
-  const exactSixYearsAgo = dayjs()?.subtract(18, 'year');
+  // const exactSixYearsAgo = dayjs()?.subtract(18, 'year');
+  const exactSixYearsAgo = dayjs().subtract(18, 'year').subtract(1, 'day').endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = useState<{
     first_name_error: boolean;
@@ -313,7 +315,6 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        console.log(data.data);
         const fiteredInstitutedata = data.data.filter(
           (institute: any) => institute.is_active === 1 && institute.is_approve === true);
         if (data.data) {
@@ -347,24 +348,7 @@ const TeacherRegistrationPage = () => {
         });
       });
   };
-  // const getRole = () => {
-  //     getForRegistration(`${Rolelist}`)
-  //         .then((data) => {
-  //             if (data.data) {
-  //                 setRoleId(data.data.id) // setRoleData(data?.data);
-  //             }
-  //         })
-  //         .catch((e) => {
-  //             if (e?.response?.status === 401) {
-  //                 navigate('/');
-  //             }
-  //             toast.error(e?.message, {
-  //                 hideProgressBar: true,
-  //                 theme: 'colored',
-  //             });
-  //         });
-  // }
-
+ 
   const getSubjects = (type: string) => {
     if (type === 'College') {
       getForRegistration(`${getSubjectCollege}`)
@@ -463,7 +447,6 @@ const TeacherRegistrationPage = () => {
 
     }
     if (name === "class_id") {
-      console.log(value);
       const selectedClass = dataClass.find(
         (item) => String(item.id) === value,
       )?.class_name;
@@ -582,8 +565,6 @@ const TeacherRegistrationPage = () => {
         !error.institution_id_error &&
         !(teacher.institution_id === '')
         : true;
-    console.log(error.subject_name_error);
-
     if (
       !error.first_name_error &&
 
@@ -730,11 +711,23 @@ const TeacherRegistrationPage = () => {
     }
     validation(name, val);
   };
-  const handleDate = (newDate: Dayjs | null) => {
-    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
-        setTeacher((values) => ({ ...values, dob: newDate }));
+  // const handleDate = (newDate: Dayjs | null) => {
+  //   if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
+  //     if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+  //       setTeacher((values) => ({ ...values, dob: newDate }));
 
+  //       setdobset_col(false);
+  //     } else {
+  //       setdobset_col(true);
+  //     }
+  //   } else {
+  //     setdobset_col(true);
+  //   }
+  // };
+  const handleDate = (newDate: Dayjs | null) => {
+    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
+      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
+        setTeacher((values) => ({ ...values, dob: newDate }));
         setdobset_col(false);
       } else {
         setdobset_col(true);
@@ -835,7 +828,7 @@ console.log(boxes);
               />
               {error.first_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid first name.</small>
+                  <small> Please enter a valid First name.</small>
                 </p>
               )}
             </div>
@@ -852,7 +845,7 @@ console.log(boxes);
               />
               {error.last_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid last name.</small>
+                  <small>Please enter a valid Last name.</small>
                 </p>
               )}
             </div>
@@ -913,7 +906,7 @@ console.log(boxes);
                 <p className="error-text " style={{ color: 'red' }}>
                   <small>
 
-                    Please enter a valid date of birth.
+                    Please enter a valid Date of Birth.
 
                   </small>
                 </p>
@@ -923,7 +916,7 @@ console.log(boxes);
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
-                Phone Number<span>*</span>
+                Mobile Number<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -934,7 +927,7 @@ console.log(boxes);
               />
               {error.phone_no_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid mobile number.</small>
+                  <small> Please enter a valid Mobile Number.</small>
                 </p>
               )}
             </div>
@@ -951,7 +944,7 @@ console.log(boxes);
               />
               {error.email_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid email address.</small>
+                  <small>Please enter a valid Email Id.</small>
                 </p>
               )}
             </div>
@@ -1006,7 +999,7 @@ console.log(boxes);
               {error.entity_error && (
                 <p className="error-text " style={{ color: 'red' }}>
                   <small>
-                    Please select an entity.
+                    Please select an Entity.
                   </small>
                 </p>
               )}
@@ -1018,7 +1011,7 @@ console.log(boxes);
                 </label>
 
                 <FormControl fullWidth>
-                  <InputLabel id="demo-multiple-name-label">class</InputLabel>
+                  <InputLabel id="demo-multiple-name-label">Class</InputLabel>
                   <Select
                     labelId="demo-multiple-name-label"
                     id="demo1-multiple-name"
@@ -1036,7 +1029,7 @@ console.log(boxes);
                 </FormControl>
                 {error.class_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please select a class.</small>
+                    <small>Please select a Class.</small>
                   </p>
                 )}
               </div>
@@ -1388,7 +1381,7 @@ console.log(boxes);
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please select a subject name.
+                    Please select a Subject name.
                   </small>
 
                 </p>
@@ -1410,7 +1403,7 @@ console.log(boxes);
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please enter a valid teaching experience.
+                    Please enter a valid Teaching Experience.
                   </small>
 
                 </p>
@@ -1430,7 +1423,7 @@ console.log(boxes);
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a country.</small>
+                  <small>Please select a Country.</small>
                 </p>
               )}
             </div>
@@ -1450,7 +1443,7 @@ console.log(boxes);
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a state.</small>
+                  <small>Please select a State.</small>
                 </p>
               )}
             </div>
@@ -1471,7 +1464,7 @@ console.log(boxes);
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please enter a valid district name.
+                    Please enter a valid District name.
                   </small>
 
                 </p>
@@ -1491,7 +1484,7 @@ console.log(boxes);
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
 
-                  <small>Please enter a valid city name.</small>
+                  <small>Please enter a valid City name.</small>
 
                 </p>
               )}
@@ -1511,7 +1504,7 @@ console.log(boxes);
               />
               {error.address_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid address.</small>
+                  <small>Please enter a valid Address.</small>
                 </p>
               )}
             </div>
@@ -1528,7 +1521,7 @@ console.log(boxes);
               />
               {error.pincode_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid pincode</small>
+                  <small>Please enter a valid Pincode.</small>
                 </p>
               )}
             </div>
@@ -1574,22 +1567,12 @@ console.log(boxes);
 
               </label>
               {' '}
-              <Button
-                variant="contained"
-                component="label"
-                className="custom-button mainbutton"
-                sx={{ height: 50 }}
-              >
-                Upload Documents
-                <input
-                  type="file"
-                  name="document"
-                  accept=".pdf, .jpg, .jpeg, .png, .gif"
-                  hidden
-                  multiple
-                  onChange={handleFileChange}
-                />
-              </Button>
+               <UploadBtn
+                label="Upload Documents"
+                name="document"
+                accept=".pdf, .jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
               <div>
                 {allselectedfiles.length > 0 && (
                   <ul>

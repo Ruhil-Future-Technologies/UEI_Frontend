@@ -399,10 +399,9 @@ const AddEditSubjectSchool = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.class_id === 'string' &&
-                                errors.class_id}
-                            </Typography>
+                            {touched?.class_id && errors?.class_id && (
+                              <p className="error">{errors.class_id}</p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -469,10 +468,9 @@ const AddEditSubjectSchool = () => {
                                 Arts
                               </MenuItem>
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.stream === 'string' &&
-                                errors.stream}
-                            </Typography>
+                            {touched?.stream && errors?.stream && (
+                              <p className="error">{errors.stream}</p>
+                            )}
                           </FormControl>
                         </div>
                       )}
@@ -490,9 +488,7 @@ const AddEditSubjectSchool = () => {
                             ) => handleChange(e, 'subject_name')}
                           />
                           {touched?.subject_name && errors?.subject_name ? (
-                            <Typography variant="body2" color="error">
-                              {errors?.subject_name}
-                            </Typography>
+                            <p className="error">{errors.subject_name}</p>
                           ) : (
                             <></>
                           )}

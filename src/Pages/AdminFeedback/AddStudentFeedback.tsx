@@ -92,7 +92,7 @@ const AddStudentFeedback = () => {
     const newErrors: any = {};
     questions.forEach((question: any) => {
       if (!selectAnswer[question.id]) {
-        newErrors[question.id] = 'This question is required.';
+        newErrors[question.id] = 'This Question is required.';
       }
     });
     setErrors(newErrors);

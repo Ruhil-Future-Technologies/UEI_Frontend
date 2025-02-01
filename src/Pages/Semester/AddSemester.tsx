@@ -224,10 +224,11 @@ const AddSemester = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.institute === 'string' &&
-                                errors.institute}
-                            </Typography>
+                            {touched?.institute && errors?.institute && (
+                              <p className="error">
+                                {String(errors.institute)}
+                              </p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -298,10 +299,9 @@ const AddSemester = () => {
                                                                 >{item.course_name}</MenuItem>
                                                             ))} */}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.course === 'string' &&
-                                errors.course}
-                            </Typography>
+                            {touched?.course && errors?.course && (
+                              <p className="error">{String(errors.course)}</p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -355,10 +355,13 @@ const AddSemester = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.semester_name === 'string' &&
-                                errors.semester_name}
-                            </Typography>
+
+                            {touched?.semester_name &&
+                              errors?.semester_name && (
+                                <p className="error">
+                                  {String(errors.semester_name)}
+                                </p>
+                              )}
                           </FormControl>
                         </div>
                       </div>

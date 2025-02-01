@@ -10,6 +10,10 @@ import {
   Typography,
   Tab,
   Tabs,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from '@mui/material';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import {
@@ -25,7 +29,30 @@ import { toast } from 'react-toastify';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { dataaccess, tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Visibility,
+} from '@mui/icons-material';
+
+interface InstituteDetails {
+  institution_name?: string;
+  university_name?: string;
+  email_id?: string;
+  mobile_no?: string;
+  entity_type?: string;
+  is_active?: 0 | 1;
+  is_approve?: boolean;
+  address?: string;
+  city?: string;
+  district?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  website_url?: string;
+  documents?: string[];
+  [key: string]: any;
+}
 
 const Institute = () => {
   const context = useContext(NameContext);
@@ -51,9 +78,13 @@ const Institute = () => {
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [activeTab, setActiveTab] = useState(0);
   const [filteredInstitutes, setFilteredInstitutes] = useState<any[]>([]);
+  const [selectedInstitute, setSelectedInstitute] = useState<InstituteDetails>(
+    [],
+  );
 
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
+  const [open, setOpen] = useState(false);
 
   // Calculate and update column widths based on content length
   useEffect(() => {
@@ -85,7 +116,6 @@ const Institute = () => {
   const callAPI = async () => {
     getData(`${InstituteURL}`)
       .then((data: { data: InstituteRep0oDTO[] }) => {
-        console.log(data.data);
         if (data.data) {
           setDataInstitute(data?.data);
         }
@@ -187,6 +217,24 @@ const Institute = () => {
         toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
       });
   };
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedInstitute([]);
+  };
+
+  const handleInstituteDetails = (id: number) => {
+    const instituteDetail = filteredInstitutes.find(
+      (institute) => institute.id == id,
+    );
+    delete instituteDetail.is_active;
+    delete instituteDetail.is_approve;
+    delete instituteDetail.entity_id;
+    delete instituteDetail.icon;
+    delete instituteDetail.id;
+
+    setSelectedInstitute(instituteDetail);
+    setOpen(true);
+  };
 
   return (
     <>
@@ -287,6 +335,22 @@ const Institute = () => {
                                   <TrashIcon />
                                 </IconButton>
                               </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleInstituteDetails(
+                                      row?.row?.original?.id,
+                                    )
+                                  }
+                                >
+                                  <Visibility />
+                                </IconButton>
+                              </Tooltip>
                             </>
                           ) : (
                             <>
@@ -323,8 +387,185 @@ const Institute = () => {
                                   <CloseIcon />
                                 </IconButton>
                               </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleInstituteDetails(
+                                      row?.row?.original?.id,
+                                    )
+                                  }
+                                >
+                                  <Visibility />
+                                </IconButton>
+                              </Tooltip>
                             </>
                           )}
+
+                          <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            sx={{
+                              '& .MuiBackdrop-root': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                              },
+                              '& .MuiPaper-root': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+                              },
+                            }}
+                          >
+                            <DialogTitle
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
+                              Institute Details
+                            </DialogTitle>
+                            <DialogContent>
+                              <div className="insitute-details">
+                                {[
+                                  'institution_name',
+                                  'university_name',
+                                  'email_id',
+                                  'mobile_no',
+                                  'entity_type',
+                                  'is_active',
+                                  'is_approve',
+
+                                  'address',
+                                  'city',
+                                  'district',
+                                  'state',
+                                  'country',
+                                  'pincode',
+                                  'website_url',
+
+                                  'institution_login_id',
+                                  'university_id',
+                                  'created_at',
+                                  'created_by',
+                                  'updated_at',
+                                  'updated_by',
+                                  ...Object.keys(selectedInstitute).filter(
+                                    (key) =>
+                                      ![
+                                        'institution_name',
+                                        'university_name',
+                                        'email_id',
+                                        'mobile_no',
+                                        'entity_type',
+                                        'is_active',
+                                        'is_approve',
+
+                                        'address',
+                                        'city',
+                                        'district',
+                                        'state',
+                                        'country',
+                                        'pincode',
+                                        'website_url',
+                                        'institution_login_id',
+                                        'university_id',
+                                        'created_at',
+                                        'created_by',
+                                        'updated_at',
+                                        'updated_by',
+                                      ].includes(key),
+                                  ),
+                                ].map((key) => {
+                                  if (key in selectedInstitute) {
+                                    return (
+                                      <p key={key}>
+                                        <strong
+                                          style={{
+                                            fontWeight: 500,
+                                            fontSize: '14px',
+                                          }}
+                                        >
+                                          {key.replace(/_/g, ' ').toUpperCase()}
+                                        </strong>
+                                        :{' '}
+                                        {key === 'website_url' ? (
+                                          selectedInstitute[key] ? (
+                                            <a
+                                              href={selectedInstitute[key]}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              style={{
+                                                textDecoration: 'underline',
+                                              }}
+                                            >
+                                              {selectedInstitute[key]}
+                                            </a>
+                                          ) : (
+                                            'Not Available'
+                                          )
+                                        ) : key === 'documents' ? (
+                                          Array.isArray(
+                                            selectedInstitute[key],
+                                          ) &&
+                                          (selectedInstitute[key] as string[])
+                                            .length > 0 ? (
+                                            <div style={{ marginLeft: '20px' }}>
+                                              {selectedInstitute[key]?.map(
+                                                (
+                                                  doc: string,
+                                                  index: number,
+                                                ) => (
+                                                  <div
+                                                    key={index}
+                                                    style={{ margin: '5px 0' }}
+                                                  >
+                                                    <a
+                                                      href={doc}
+                                                      target="_blank"
+                                                      rel="noopener noreferrer"
+                                                    >
+                                                      {doc.split('/').pop()}
+                                                    </a>
+                                                    {index <
+                                                    (
+                                                      selectedInstitute[
+                                                        key
+                                                      ] as string[]
+                                                    ).length -
+                                                      1
+                                                      ? ', '
+                                                      : ''}
+                                                  </div>
+                                                ),
+                                              )}
+                                            </div>
+                                          ) : (
+                                            'No documents available'
+                                          )
+                                        ) : Array.isArray(
+                                            selectedInstitute[key],
+                                          ) ? (
+                                          selectedInstitute[key].join(', ')
+                                        ) : selectedInstitute[key] === null ? (
+                                          'Not Available'
+                                        ) : (
+                                          selectedInstitute[key]?.toString()
+                                        )}
+                                      </p>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </div>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={handleClose} color="primary">
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                         </Box>
                       )}
                     />

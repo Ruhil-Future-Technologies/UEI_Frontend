@@ -26,6 +26,7 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from '../../Components/Dailog/OtpCard';
 interface Institute {
   institute_name: string;
@@ -188,14 +189,22 @@ console.log(files,typeof files)
           : false,
       university_id_error: false,
       institute_type_error: false,
-      school_name_error: name === 'school_name' && !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value),
+      school_name_error:
+        name === 'school_name' &&
+        !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value),
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
           ? true
           : false,
       mobile_no_error:
-        name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim()) ? true : false,
-      website_error: name === 'website_url' && !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value.trim()),
+        name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim())
+          ? true
+          : false,
+      website_error:
+        name === 'website' &&
+        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+          value.trim(),
+        ),
       country_error: false,
       state_error: false,
       city_error:
@@ -207,10 +216,12 @@ console.log(files,typeof files)
           ? true
           : false,
       address_error:
-        name === 'address' && !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
+        name === 'address' &&
+        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
           ? true
           : false,
-      pincode_error: name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
+      pincode_error:
+        name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
       document_error: false,
     });
   };
@@ -237,12 +248,13 @@ console.log(files,typeof files)
   const openPopupOtp=()=>{
     setError({
       institute_name_error:
-        selectedEntity === 'College' && !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
+        selectedEntity === 'College' &&
+        !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
           ? true
           : false,
       university_id_error:
         selectedEntity === 'College' &&
-          valueInstitute.university_id.trim() === ''
+        valueInstitute.university_id.trim() === ''
           ? true
           : false,
       institute_type_error:
@@ -252,14 +264,16 @@ console.log(files,typeof files)
       )
         ? true
         : false,
-      mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())
+      mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(
+        valueInstitute.mobile_no.trim(),
+      )
         ? true
         : false,
       website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url),
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
-        selectedEntity === 'School' && (valueInstitute.school_name === '')
+        selectedEntity === 'School' && valueInstitute.school_name === ''
           ? true
           : false,
       city_error: !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(valueInstitute.city.trim())
@@ -283,15 +297,20 @@ console.log(files,typeof files)
     console.log(selectedEntity);
     const isSchoolValid =
       selectedEntity === 'School'
-        ? !error.school_name_error && /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.school_name)
+        ? !error.school_name_error &&
+          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+            valueInstitute.school_name,
+          )
         : true;
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.institute_name_error &&
-        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.institute_name) &&
-        !error.university_id_error &&
-        valueInstitute.university_id !== ''
+          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+            valueInstitute.institute_name,
+          ) &&
+          !error.university_id_error &&
+          valueInstitute.university_id !== ''
         : true;
     console.log(error);
     console.log(isSchoolValid, isCollegeValid);
@@ -383,8 +402,7 @@ console.log(files,typeof files)
             });
             alert('Wait for 24-48 hours, the Administrator will inform you.');
             window.location.reload();
-          }
-          else {
+          } else {
             toast.error(response.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -482,7 +500,7 @@ console.log(files,typeof files)
               <div>
                 {error.website_error === true && (
                   <p className="error-text" style={{ color: 'red' }}>
-                    <small>Please enter a valid Website .</small>
+                    <small>Please enter a valid Website.</small>
                   </p>
                 )}
               </div>
@@ -504,9 +522,7 @@ console.log(files,typeof files)
                 <div>
                   {error.school_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>
-                        Please enter a valid school name
-                      </small>
+                      <small>Please enter a valid School name.</small>
                     </p>
                   )}
                 </div>
@@ -564,7 +580,7 @@ console.log(files,typeof files)
                 <div>
                   {error.university_id_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please select a university name.</small>
+                      <small>Please select a University name.</small>
                     </p>
                   )}
                 </div>
@@ -584,9 +600,7 @@ console.log(files,typeof files)
                 <div>
                   {error.institute_name_error === true && (
                     <p className="error-text " style={{ color: 'red' }}>
-                      <small>
-                        Please enter a valid institute name.
-                      </small>
+                      <small>Please enter a valid Institute name.</small>
                     </p>
                   )}
                 </div>
@@ -597,7 +611,7 @@ console.log(files,typeof files)
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
-                Mobile No<span>*</span>
+                Mobile Number<span>*</span>
               </label>
 
               <TextField
@@ -610,9 +624,7 @@ console.log(files,typeof files)
               <div>
                 {error.mobile_no_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                      Please enter a valid mobile number.
-                    </small>
+                    <small>Please enter a valid Mobile Number.</small>
                   </p>
                 )}
               </div>
@@ -651,9 +663,7 @@ console.log(files,typeof files)
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please select a Country.
-                  </small>
+                  <small>Please select a Country.</small>
                 </p>
               )}
             </div>
@@ -673,9 +683,7 @@ console.log(files,typeof files)
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please select a state.
-                  </small>
+                  <small>Please select a State.</small>
                 </p>
               )}
             </div>
@@ -695,7 +703,7 @@ console.log(files,typeof files)
               <div>
                 {error.district_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small> Please enter a valid district name.</small>
+                    <small> Please enter a valid District name.</small>
                   </p>
                 )}
               </div>
@@ -715,9 +723,7 @@ console.log(files,typeof files)
               <div>
                 {error.city_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                      Please enter a valid city name.
-                    </small>
+                    <small>Please enter a valid City name.</small>
                   </p>
                 )}
               </div>
@@ -739,9 +745,7 @@ console.log(files,typeof files)
               <div>
                 {error.address_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>
-                      Please enter a valid address
-                    </small>
+                    <small>Please enter a valid Address.</small>
                   </p>
                 )}
               </div>
@@ -774,22 +778,12 @@ console.log(files,typeof files)
                 Document<span></span>
               </label>
               <br />
-              <Button
-                variant="contained"
-                component="label"
-                className="custom-button mainbutton"
-                sx={{ height: 50 }}
-              >
-                Upload Documents
-                <input
-                  type="file"
-                  name="document"
-                  accept=".pdf, .jpg, .jpeg, .png,"
-                  hidden
-                  multiple
-                  onChange={handleFileChange}
-                />
-              </Button>
+              <UploadBtn
+                label="Upload Documents"
+                name="document"
+                accept=".pdf, .jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
               <div>
                 {allselectedfiles.length > 0 && (
                   <ul>
@@ -806,21 +800,12 @@ console.log(files,typeof files)
                 Logo<span></span>
               </label>
               <br />
-              <Button
-                variant="contained"
-                component="label"
-                className="custom-button mainbutton"
-                sx={{ height: 50 }}
-              >
-                Upload Logo
-                <input
-                  type="file"
-                  name="icon"
-                  accept=".jpg, .jpeg, .png, .gif"
-                  hidden
-                  onChange={handleFileChange}
-                />
-              </Button>
+              <UploadBtn
+                label="Upload Logo"
+                name="icon"
+                accept=".jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
               <div>
                 <ul>{valueInstitute.icon}</ul>
               </div>

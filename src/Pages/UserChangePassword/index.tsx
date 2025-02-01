@@ -123,7 +123,7 @@ const UserChangePassword = () => {
       if (newValue === oldPasswordValue && oldPasswordValue !== '') {
         formRef?.current?.setFieldError(
           fieldName,
-          'New password cannot be the same as the old password',
+          'New Password cannot be the same as the old Password.',
         );
         formRef?.current?.setFieldTouched(fieldName, true);
         return;
@@ -144,7 +144,7 @@ const UserChangePassword = () => {
   };
   const changePasswordSchema = Yup.object().shape({
     oldpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
@@ -164,14 +164,14 @@ const UserChangePassword = () => {
       ),
 
     password: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .test(
         'not-same-as-old',
-        'New password cannot be the same as the old password',
+        'New Password cannot be the same as the old Password.',
         function (value) {
           return value !== this.parent.oldpassword;
         },
@@ -194,14 +194,14 @@ const UserChangePassword = () => {
       ),
 
     confpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .test(
         'not-same-as-old',
-        'New password cannot be the same as the old password',
+        'New Password cannot be the same as the old Password.',
         function (value) {
           return value !== this.parent.oldpassword;
         },
