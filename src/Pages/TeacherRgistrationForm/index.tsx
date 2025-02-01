@@ -213,7 +213,8 @@ const TeacherRegistrationPage = () => {
     is_kyc_verified: false,
     pic_path: '',
   });
-  const exactSixYearsAgo = dayjs()?.subtract(18, 'year');
+  // const exactSixYearsAgo = dayjs()?.subtract(18, 'year');
+  const exactSixYearsAgo = dayjs().subtract(18, 'year').subtract(1, 'day').endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = useState<{
     first_name_error: boolean;
@@ -625,7 +626,7 @@ const TeacherRegistrationPage = () => {
               theme: 'colored',
             });
             alert(
-              'Teacher registered request sended successfully please wait for 24-48 hours',
+              'Your teacher registration request has been sent successfully.Please wait for 24-48 hours for Processing.',
             );
            window.location.reload();
           } else {
@@ -667,11 +668,23 @@ const TeacherRegistrationPage = () => {
     }
     validation(name, val);
   };
-  const handleDate = (newDate: Dayjs | null) => {
-    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
-        setTeacher((values) => ({ ...values, dob: newDate }));
+  // const handleDate = (newDate: Dayjs | null) => {
+  //   if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
+  //     if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+  //       setTeacher((values) => ({ ...values, dob: newDate }));
 
+  //       setdobset_col(false);
+  //     } else {
+  //       setdobset_col(true);
+  //     }
+  //   } else {
+  //     setdobset_col(true);
+  //   }
+  // };
+  const handleDate = (newDate: Dayjs | null) => {
+    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
+      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
+        setTeacher((values) => ({ ...values, dob: newDate }));
         setdobset_col(false);
       } else {
         setdobset_col(true);
@@ -729,7 +742,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.first_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid first name.</small>
+                  <small> Please enter a valid First name.</small>
                 </p>
               )}
             </div>
@@ -746,7 +759,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.last_name_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid last name.</small>
+                  <small>Please enter a valid Last name.</small>
                 </p>
               )}
             </div>
@@ -807,7 +820,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
                   <small>
 
-                    Please enter a valid date of birth.
+                    Please enter a valid Date of Birth.
 
                   </small>
                 </p>
@@ -817,7 +830,7 @@ const TeacherRegistrationPage = () => {
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
-                Phone Number<span>*</span>
+                Mobile Number<span>*</span>
               </label>
               <TextField
                 autoComplete="off"
@@ -828,7 +841,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.phone_no_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid mobile number.</small>
+                  <small> Please enter a valid Mobile Number.</small>
                 </p>
               )}
             </div>
@@ -845,7 +858,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.email_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid email address.</small>
+                  <small>Please enter a valid Email Id.</small>
                 </p>
               )}
             </div>
@@ -900,7 +913,7 @@ const TeacherRegistrationPage = () => {
               {error.entity_error && (
                 <p className="error-text " style={{ color: 'red' }}>
                   <small>
-                    Please select an entity.
+                    Please select an Entity.
                   </small>
                 </p>
               )}
@@ -912,7 +925,7 @@ const TeacherRegistrationPage = () => {
                 </label>
 
                 <FormControl fullWidth>
-                  <InputLabel id="demo-multiple-name-label">class</InputLabel>
+                  <InputLabel id="demo-multiple-name-label">Class</InputLabel>
                   <Select
                     labelId="demo-multiple-name-label"
                     id="demo1-multiple-name"
@@ -930,7 +943,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.class_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please select a class.</small>
+                    <small>Please select a Class.</small>
                   </p>
                 )}
               </div>
@@ -960,7 +973,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.qualifications_error && (
                   <p className='error-text' style={{ color: 'red' }}>
-                    <small>Please select a qualification</small>
+                    <small>Please select a Qualification.</small>
                   </p>
                 )
                 }
@@ -1114,7 +1127,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.institution_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please select an institute name.</small>
+                    <small>Please select an Institute name.</small>
                   </p>
                 )}
               </div>
@@ -1140,7 +1153,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.course_id_error === true && (
                   <p className="error-text " style={{ color: 'red' }}>
-                    <small>Please enter a valid course.</small>
+                    <small>Please enter a valid Course.</small>
                   </p>
                 )}
               </div>
@@ -1228,7 +1241,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please select a subject name.
+                    Please select a Subject name.
                   </small>
 
                 </p>
@@ -1250,7 +1263,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please enter a valid teaching experience.
+                    Please enter a valid Teaching Experience.
                   </small>
 
                 </p>
@@ -1270,7 +1283,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.country_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a country.</small>
+                  <small>Please select a Country.</small>
                 </p>
               )}
             </div>
@@ -1290,7 +1303,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.state_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a state.</small>
+                  <small>Please select a State.</small>
                 </p>
               )}
             </div>
@@ -1311,7 +1324,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please enter a valid district name.
+                    Please enter a valid District name.
                   </small>
 
                 </p>
@@ -1331,7 +1344,7 @@ const TeacherRegistrationPage = () => {
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
 
-                  <small>Please enter a valid city name.</small>
+                  <small>Please enter a valid City name.</small>
 
                 </p>
               )}
@@ -1351,7 +1364,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.address_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid address.</small>
+                  <small>Please enter a valid Address.</small>
                 </p>
               )}
             </div>
@@ -1368,7 +1381,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.pincode_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid pincode</small>
+                  <small>Please enter a valid Pincode.</small>
                 </p>
               )}
             </div>
@@ -1400,7 +1413,7 @@ const TeacherRegistrationPage = () => {
                 </FormControl>
                 {error.qualifications_error && (
                   <p className='error-text' style={{ color: 'red' }}>
-                    <small>Please select a qualification</small>
+                    <small>Please select a Qualification.</small>
                   </p>
                 )
 
