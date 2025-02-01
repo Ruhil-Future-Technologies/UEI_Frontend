@@ -43,7 +43,8 @@ import useApi from '../../../hooks/useAPI';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 interface Teacher {
   teacher_id: number;
-  teacher_name: string;
+  first_name: string;
+  last_name: string;
   department: string;
   qualifications: string;
   image: string;
@@ -98,7 +99,8 @@ const TeacherDash = () => {
 
   const getTeacherInfo = () => {
     try {
-      getData(`/teacher/get/${teacherId}`).then((data) => {
+      getData(`/teacher/getbyloginid/${teacherId}`).then((data) => {
+        console.log(data);
         if (data?.status === 200) {
           setTeacherData(data.data);
         }
@@ -150,7 +152,7 @@ const TeacherDash = () => {
                         alt="user"
                       />
                       <div className="w-100">
-                        <h4 className="fw-semibold  fs-18 ">{teacherData?.teacher_name}</h4>
+                        <h4 className="fw-semibold  fs-18 ">{teacherData?.first_name} {teacherData?.last_name}</h4>
                         <small className=" d-block">24 Course</small>
                         <small className=" d-block mb-2">
                           18 Certification

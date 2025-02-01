@@ -62,7 +62,7 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/">
+            <Link to="/institution-dashboard">
               <div className="parent-icon">
                 {' '}
                 <LocalLibraryOutlinedIcon />

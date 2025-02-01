@@ -63,7 +63,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="study.html">
+              <Link to="/teacher-dashboard">
                 <div className="parent-icon">
                   <LocalLibraryOutlinedIcon />
                 </div>
