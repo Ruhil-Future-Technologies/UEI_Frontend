@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -197,12 +198,12 @@ const InstitutionProfile = () => {
     };
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
-        if (name === 'website' &&!/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test( value)) {
+        if (name === 'website' && !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value)) {
             setWebsite_error(true)
         } else {
             setWebsite_error(false)
         }
-        if (name === 'institution_name' &&!/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test( value)) {
+        if (name === 'institution_name' && !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)) {
             setInstitute_name_error(true)
         } else {
             setInstitute_name_error(false)
@@ -217,12 +218,12 @@ const InstitutionProfile = () => {
         } else {
             setPincode_error(false)
         }
-        if (name === 'address' &&!/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test( value)) {
+        if (name === 'address' && !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value)) {
             setAddress_error(true)
         } else {
             setAddress_error(false)
         }
-        if (name === 'district' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value )) {
+        if (name === 'district' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value)) {
             setDistrict_error(true)
         } else {
             setDistrict_error(false)
@@ -251,7 +252,7 @@ const InstitutionProfile = () => {
     };
 
     const handleSubmit = () => {
-        if(!/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(instituteInfo.website_url)){
+        if (!/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(instituteInfo.website_url)) {
             setWebsite_error(true);
             return;
         }
@@ -293,7 +294,7 @@ const InstitutionProfile = () => {
             return;
         }
 
-        let payload = {
+        const payload = {
             institution_name: instituteInfo.institution_name,
             email_id: instituteInfo.email_id,
             address: instituteInfo.address,
@@ -328,7 +329,7 @@ const InstitutionProfile = () => {
             })
 
         } catch (error) {
-
+            console.error(error);
         }
     }
     console.log(selectedFile);
@@ -594,7 +595,7 @@ const InstitutionProfile = () => {
                                                     // onChange={(val) => setRegion(val)}
                                                     onChange={(e: string) => handleInputChangecountry(e, 'state')}
                                                 />
-                                                {state_error  && (
+                                                {state_error && (
                                                     <p className="error-text " style={{ color: 'red' }}>
                                                         <small>
                                                             Please select a state.

@@ -388,10 +388,7 @@ console.log(files,typeof files)
         formData.append("university_id", valueInstitute.university_id);
       }
     
-      // ✅ Debugging: Check FormData contents before sending
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      
       try{
         postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
           console.log(response)

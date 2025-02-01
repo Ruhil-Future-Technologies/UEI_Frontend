@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checkbox, FormControl, FormControlLabel, InputLabel, List, ListItem, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
 import React, { ChangeEvent, useContext, useEffect, useState, } from "react";
 import { qualifications, Teacher } from "../../TeacherRgistrationForm";
@@ -198,11 +199,12 @@ const TeacherProfile = () => {
             .catch((e) => {
                 if (e?.response?.status === 401) {
 
-                }
+                
                 toast.error(e?.message, {
                     hideProgressBar: true,
                     theme: 'colored',
                 });
+            }
             });
     };
     const getEntity = () => {
@@ -217,11 +219,12 @@ const TeacherProfile = () => {
             .catch((e) => {
                 if (e?.response?.status === 401) {
 
-                }
+                
                 toast.error(e?.message, {
                     hideProgressBar: true,
                     theme: 'colored',
                 });
+            }
             });
     };
     const getTeacherProfileInfo = () => {
@@ -443,7 +446,7 @@ const TeacherProfile = () => {
             return;
         }
 
-        let payload = {
+        const payload = {
             first_name: teacherData.first_name,
             last_name: teacherData.last_name,
             email_id: teacherData.email_id,
@@ -484,7 +487,7 @@ const TeacherProfile = () => {
                 }
             })
         } catch (error) {
-
+         console.error(error);
         }
         console.log(teacherData);
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import useApi from '../../../hooks/useAPI';
 import Box from '@mui/material/Box';

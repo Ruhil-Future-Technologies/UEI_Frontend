@@ -202,7 +202,6 @@ const TeacherRegistrationPage = () => {
   const [selectedEntity, setSelectedEntity] = useState('');
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
   // const [filteredSubjetcs, setFilteredSubjetcs] = useState<SubjectRep0oDTO[]>([])
-  const [selectedSubject] = useState<string[]>([]);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
@@ -471,7 +470,7 @@ const TeacherRegistrationPage = () => {
         console.error(e)
       })
     } catch (error) {
-
+        console.error(error);
     }
   }
   useEffect(() => {
@@ -851,7 +850,7 @@ const TeacherRegistrationPage = () => {
   //   setSelectedSubject(value as string[]);
   // };
   const handelSubjectBoxChange = (
-    event: SelectChangeEvent<typeof selectedSubject>,
+    event: SelectChangeEvent<string[]>,
     index: number
   ) => {
     const { value, name } = event.target;
@@ -880,7 +879,7 @@ const TeacherRegistrationPage = () => {
 
   };
   const handelSchoolBoxChange = (
-    event: SelectChangeEvent<typeof selectedSubject>,
+    event: SelectChangeEvent< string[]>,
     index: number
   ) => {
     const { value, name } = event.target;
@@ -1609,7 +1608,7 @@ const TeacherRegistrationPage = () => {
                       multiple
                       name="subjects"
                       value={box.subjects || []}
-                      onChange={(event) => handelSubjectBoxChange(event, index)}
+                      onChange={(event:any) => handelSubjectBoxChange(event, index)}
                       input={<OutlinedInput label="Subject" />}
                       renderValue={(selected) =>
                         (selected as string[])
@@ -1738,7 +1737,7 @@ const TeacherRegistrationPage = () => {
                       multiple
                       name="subjects"
                       value={box.subjects || []}
-                      onChange={(event) => handelSchoolBoxChange(event, index)}
+                      onChange={(event:any) => handelSchoolBoxChange(event, index)}
                       input={<OutlinedInput label="Subject" />}
                       renderValue={(selected) =>
                         (selected as string[])
