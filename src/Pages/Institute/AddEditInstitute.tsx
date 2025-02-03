@@ -54,7 +54,7 @@ const AddEditInstitute = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const charPattern = /^[a-zA-Z\s]*$/;
+  const charPattern = /^[a-zA-Z0-9\s()-]*$/;
   const mobilePattern = /^(?!0{10})[0-9]{10}$/;
   const emailPattern = /\S+@\S+\.\S+/;
   const pincodePattern = /^(?!0{6})[0-9]{6}$/;
@@ -456,7 +456,7 @@ const AddEditInstitute = () => {
           ),
         // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
         city: Yup.string()
-          .required('Please enter City')
+          .required('Please enter City name')
           .test(
             'not-whitespace',
             'Please enter a valid City; whitespace is not allowed.',
@@ -466,7 +466,7 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid City name only characters allowed.',
           ),
-        country: Yup.string().required('Please enter Country'),
+        country: Yup.string().required('Please enter Country name'),
         // .matches(
         //   charPattern,
         //   'Please enter a valid Contry name only characters allowed.',
@@ -477,7 +477,7 @@ const AddEditInstitute = () => {
         //   'Please enter a valid State name only characters allowed.',
         // ),
         district: Yup.string()
-          .required('Please enter District')
+          .required('Please enter District name')
           .test(
             'not-whitespace',
             'Please enter a valid District; whitespace is not allowed.',
@@ -572,7 +572,7 @@ const AddEditInstitute = () => {
           ),
         // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
         city: Yup.string()
-          .required('Please enter City')
+          .required('Please enter City name')
           .test(
             'not-whitespace',
             'Please enter a valid City; whitespace is not allowed.',
@@ -582,18 +582,18 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid City name only characters allowed.',
           ),
-        country: Yup.string().required('Please enter Country'),
+        country: Yup.string().required('Please enter Country name'),
         // .matches(
         //   charPattern,
         //   'Please enter a valid Contry name only characters allowed.',
         // ),
-        state: Yup.string().required('Please enter State'),
+        state: Yup.string().required('Please enter State name'),
         // .matches(
         //   charPattern,
         //   'Please enter a valid State name only characters allowed.',
         // ),
         district: Yup.string()
-          .required('Please enter District')
+          .required('Please enter District name')
           .test(
             'not-whitespace',
             'Please enter a valid District; whitespace is not allowed.',
@@ -840,7 +840,7 @@ const AddEditInstitute = () => {
                         {/* {contry_col && <p style={{ color: "red" }}>Please enter Country Name.</p>} */}
                         {touched?.country && errors?.country ? (
                           <p style={{ color: 'red' }}>
-                            Please enter Country Name.
+                            Please enter Country name.
                           </p>
                         ) : (
                           <></>
@@ -936,7 +936,7 @@ const AddEditInstitute = () => {
                           fullWidth
                           component={TextField}
                           type="email"
-                          label="Email *"
+                          label="Email Id*"
                           name="email_id"
                           value={values?.email_id}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

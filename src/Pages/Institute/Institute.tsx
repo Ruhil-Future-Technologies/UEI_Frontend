@@ -227,10 +227,11 @@ const Institute = () => {
       (institute) => institute.id == id,
     );
     delete instituteDetail.is_active;
-    delete instituteDetail.is_approve;
     delete instituteDetail.entity_id;
     delete instituteDetail.icon;
     delete instituteDetail.id;
+    delete instituteDetail.university_id;
+    delete instituteDetail.institution_login_id;
 
     setSelectedInstitute(instituteDetail);
     setOpen(true);
@@ -434,8 +435,6 @@ const Institute = () => {
                                   'email_id',
                                   'mobile_no',
                                   'entity_type',
-                                  'is_active',
-                                  'is_approve',
 
                                   'address',
                                   'city',
@@ -445,8 +444,6 @@ const Institute = () => {
                                   'pincode',
                                   'website_url',
 
-                                  'institution_login_id',
-                                  'university_id',
                                   'created_at',
                                   'created_by',
                                   'updated_at',
@@ -459,8 +456,6 @@ const Institute = () => {
                                         'email_id',
                                         'mobile_no',
                                         'entity_type',
-                                        'is_active',
-                                        'is_approve',
 
                                         'address',
                                         'city',
@@ -469,8 +464,7 @@ const Institute = () => {
                                         'country',
                                         'pincode',
                                         'website_url',
-                                        'institution_login_id',
-                                        'university_id',
+
                                         'created_at',
                                         'created_by',
                                         'updated_at',
@@ -493,7 +487,13 @@ const Institute = () => {
                                         {key === 'website_url' ? (
                                           selectedInstitute[key] ? (
                                             <a
-                                              href={selectedInstitute[key]}
+                                              href={
+                                                selectedInstitute[
+                                                  key
+                                                ]?.startsWith('http')
+                                                  ? selectedInstitute[key]
+                                                  : `http://${selectedInstitute[key]}`
+                                              }
                                               target="_blank"
                                               rel="noopener noreferrer"
                                               style={{
