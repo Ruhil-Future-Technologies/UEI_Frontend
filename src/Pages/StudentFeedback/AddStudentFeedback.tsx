@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { TextField } from '@mui/material';
 import useApi from '../../hooks/useAPI';
-import CommonModal from '../../Components/CommonModal';
+// import CommonModal from '../../Components/CommonModal';
 import ThemeSidebar from '../../Components/ThemeSidebar/ThemeSidebar';
 
 interface Question {
@@ -27,7 +27,7 @@ const AddStudentFeedback = () => {
   const [selectAnswer, setSelectAnswer] = useState<string>('');
   const [studentFlag, setStudentFlag] = useState<boolean>(true);
   const [errors, setErrors] = useState<any>({});
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const [themeMode, setThemeMode] = useState<string>('');
 
   const [finalList, setFinalList] = useState<any>([]);
@@ -48,7 +48,7 @@ const AddStudentFeedback = () => {
         if (data.data.length > 0) {
           setAnsweredQuestions(data.data);
           setStudentFlag(false);
-          setIsOpen(true);
+          // setIsOpen(true);
         }
       }
     });
@@ -106,7 +106,7 @@ const AddStudentFeedback = () => {
     const newErrors: any = {};
     questions.forEach((question: any) => {
       if (!selectAnswer[question.id]) {
-        newErrors[question.id] = 'This question is required.';
+        newErrors[question.id] = 'This Question is required.';
       }
     });
     setErrors(newErrors);
@@ -295,7 +295,7 @@ const AddStudentFeedback = () => {
                 </div>
               </div>
               <div className="feedback">
-                <h1>You have already submitted your feedback</h1>
+                <h1>You have already submitted your feedback.</h1>
                 <div className="feedback-questions">
                   {
                     <>
@@ -367,11 +367,11 @@ const AddStudentFeedback = () => {
               </div>
             </div>
           </div>
-          <CommonModal
-            message={'You have already submitted your feedback.'}
+          {/* <CommonModal
+            message={'You have successfully submitted your Feedback.'}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-          />
+          /> */}
         </>
       )}
 

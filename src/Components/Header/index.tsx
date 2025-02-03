@@ -50,8 +50,10 @@ const Header = () => {
   const user_type = localStorage.getItem('user_type');
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
+  const [profileUrl, setProfileUrl] = useState('')
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const { getData } = useApi();
+  const [dashboardURL, setDashboardURL] = useState('')
   const handlogout = () => {
     setProPercentage(0);
     localStorage.removeItem('chatData');
@@ -105,13 +107,13 @@ const Header = () => {
                 .then((imgdata: any) => {
                   setProImage(imgdata.data);
                 })
-                .catch(() => {});
+                .catch(() => { });
             }
           }
           sessionStorage.setItem('profileData', JSON.stringify(data.data));
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   const getAdminDetails = () => {
     getData(`${adminProfileURL}/${StudentId}`)
@@ -128,15 +130,14 @@ const Header = () => {
             });
             if (response?.data?.basic_info?.pic_path !== '') {
               getData(
-                `${
-                  'upload_file/get_image/' +
-                  response?.data?.basic_info?.pic_path
+                `${'upload_file/get_image/' +
+                response?.data?.basic_info?.pic_path
                 }`,
               )
                 .then((imgdata) => {
                   setProImage(imgdata.data);
                 })
-                .catch(() => {});
+                .catch(() => { });
             }
           }
         }
@@ -151,8 +152,18 @@ const Header = () => {
   useEffect(() => {
     if (user_type === 'admin') {
       getAdminDetails();
+      setProfileUrl('/main/adminprofile')
+      setDashboardURL('/main/DashBoard')
+    } else if (user_type === 'institute') {
+      setProfileUrl("/institution-dashboard/profile")
+      setDashboardURL('/institution-dashboard')
+    } else if (user_type === 'teacher') {
+      setProfileUrl('/teacher-dashboard/profile');
+      setDashboardURL('/teacher-dashboard')
     } else {
       callAPI();
+      setProfileUrl('/main/StudentProfile')
+      setDashboardURL('/main/DashBoard')
     }
   }, []);
 
@@ -513,11 +524,7 @@ const Header = () => {
                 <hr className="dropdown-divider" />
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
-                  to={
-                    user_type === 'student'
-                      ? '/main/StudentProfile'
-                      : '/main/adminprofile'
-                  }
+                  to={profileUrl}
                   onClick={handelStateofProfile}
                 >
                   <PersonOutlineOutlinedIcon />
@@ -525,7 +532,7 @@ const Header = () => {
                 </Link>
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
-                  to="/main/DashBoard"
+                  to={dashboardURL}
                 >
                   <DashboardOutlinedIcon />
                   Dashboard

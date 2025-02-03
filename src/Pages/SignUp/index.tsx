@@ -472,7 +472,7 @@ const Signup = () => {
                           to="/institute-registration"
                           style={{ color: '#9943EC' }}
                         >
-                          <u>Register As Institute</u>
+                          <u>Register As Institution</u>
                         </Link>
                         <Link
                           to="/teacher-registration"
