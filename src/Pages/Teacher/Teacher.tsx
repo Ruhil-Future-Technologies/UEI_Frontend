@@ -79,6 +79,7 @@ const Teacher = () => {
   const [schoolInstitutes, setSchoolInstitutes] = useState<any[]>([]);
   const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
   const GET_COURSE = QUERY_KEYS_COURSE.GET_COURSE;
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = entity?.find((entity) => entity.id === entityId);
@@ -189,6 +190,11 @@ const Teacher = () => {
 
       setTimeout(() => {
         if (activeSubTab === 0) {
+          setColumnVisibility({
+            university_id: true,
+            course_id: true,
+            class_id: false,
+          });
           const updatedColumns = columns11.map((column) => {
             if (column.accessorKey === 'institution_id') {
               return {
@@ -210,8 +216,14 @@ const Teacher = () => {
                 class_name: '-',
               };
             });
+
           setFilteredTeachers(collegeTeachers);
         } else {
+          setColumnVisibility({
+            university_id: false,
+            course_id: false,
+            class_id: true,
+          });
           const updatedColumns = columns11.map((column) => {
             if (column.accessorKey === 'institution_id') {
               return {
@@ -360,7 +372,8 @@ const Teacher = () => {
       delete teacherDetail.university_id;
       delete teacherDetail.course_id;
     }
-
+    delete teacherDetail.teacher_login_id;
+    delete teacherDetail.teacher_id;
     setSelectedTeacher(teacherDetail);
     setOpen(true);
   };
@@ -444,6 +457,9 @@ const Teacher = () => {
                     <MaterialReactTable
                       columns={columns}
                       data={filteredTeachers}
+                      state={{
+                        columnVisibility,
+                      }}
                       enableRowVirtualization
                       positionActionsColumn="first"
                       muiTablePaperProps={{

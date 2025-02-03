@@ -98,7 +98,7 @@ const AddUniversity = () => {
   };
   const universitySchema = Yup.object().shape({
     university_name: Yup.string()
-      .required('Please enter university name')
+      .required('Please enter University name')
       .test(
         'not-whitespace',
         'Please enter a valid university name;not-whitespace only characters allowed.',

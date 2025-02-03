@@ -340,7 +340,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       const url = cell.getValue();
       return (
         <a
-          href={url}
+          href={url.startsWith('http') ? url : `http://${url}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -471,31 +471,32 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     accessorKey: 'university_id',
     header: 'University Name',
     size: 200,
-    Cell: ({ cell }: any) => {
+    Cell: ({ row }: any) => {
       const { getData } = useApi();
-      const [university_name, setUniverstiyName] = useState<string>('-');
-      const university_id = cell.getValue();
+      const [university_name, setUniversityName] = useState('');
+      const institution_id = row.original.institution_id;
 
       useEffect(() => {
-        getData('/university/list')
-          .then((response: any) => {
-            if (response.status === 200) {
-              const matchingEntity = response.data.find(
-                (university: any) => university.university_id === university_id,
-              );
-
-              if (matchingEntity) {
-                setUniverstiyName(matchingEntity.university_name);
+        if (institution_id) {
+          getData('/institution/list')
+            .then((response: any) => {
+              if (response.status === 200) {
+                const matchingEntity = response.data.find(
+                  (institute: any) => institute.id === institution_id,
+                );
+                if (matchingEntity) {
+                  setUniversityName(matchingEntity.university_name);
+                }
               }
-            }
-          })
-          .catch((error) => {
-            toast.error(error?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
+            })
+            .catch((error) => {
+              toast.error(error?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
             });
-          });
-      }, [university_id]);
+        }
+      }, [institution_id]);
 
       return <span>{university_name}</span>;
     },
