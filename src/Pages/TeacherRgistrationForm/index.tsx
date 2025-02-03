@@ -1080,7 +1080,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.phone_no_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid Mobile Number.</small>
+                  <small> Please enter a valid Mobile number.</small>
                 </p>
               )}
             </div>
@@ -1156,7 +1156,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please enter a valid District Name.
+                    Please enter a valid District name.
                   </small>
 
                 </p>
@@ -1176,7 +1176,7 @@ const TeacherRegistrationPage = () => {
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
 
-                  <small>Please enter a valid City Name.</small>
+                  <small>Please enter a valid City name.</small>
 
                 </p>
               )}
@@ -1213,7 +1213,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.pincode_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Pincode</small>
+                  <small>Please enter a valid Pincode.</small>
                 </p>
               )}
             </div>
@@ -1321,7 +1321,7 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.institution_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select an Institute Name.</small>
+                  <small>Please select an Institute name.</small>
                 </p>
               )}
             </div>
@@ -1374,7 +1374,7 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.qualifications_error && (
                 <p className='error-text' style={{ color: 'red' }}>
-                  <small>Please select a Qualification</small>
+                  <small>Please select a Qualification.</small>
                 </p>
               )
 
@@ -1409,7 +1409,7 @@ const TeacherRegistrationPage = () => {
                   </FormControl>
                   {errorForCourse_semester_subject[index]?.course_id_error === true && (
                     <p className="error-text" style={{ color: "red" }}>
-                      <small>Please enter a valid Course.</small>
+                      <small>Please select Course name.</small>
                     </p>
                   )}
                 </div>
