@@ -63,7 +63,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                 <div className="d-flex justify-content-end m-1">
                     <ClearOutlinedIcon onClick={handleOtpClose} />
                 </div>
-                <DialogTitle>{"verify Your OTP"}</DialogTitle>
+                <DialogTitle>{"Please verify your OTP."}</DialogTitle>
                 <DialogContent>
                     <Box display="flex" justifyContent="center" gap={1} mt={1}>
                         {otp.map((digit, index) => (

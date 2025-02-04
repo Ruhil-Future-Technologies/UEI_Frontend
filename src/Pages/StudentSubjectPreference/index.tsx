@@ -580,7 +580,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     const newBox: Box = {
       id: 0,
       course_id: boxes[0]?.course_id || '',
-      subject_id: boxes[0]?.subject_id || '',
+      // subject_id: boxes[0]?.subject_id || '',
+      subject_id:'',
       preference: '',
       score_in_percentage: '',
       sem_id: boxes[0]?.sem_id || '',
@@ -751,7 +752,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
-  console.log(error[0]?.preference_error);
   return (
     <div>
       <form>
@@ -1003,17 +1003,27 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   label="Subject"
                   onBlur={() => validateFields(index, 'subject_id')}
                 >
-                  {subjects.map((subject) => (
+                  {subjects
+                  ?.filter((subject) => subject.subject_id === box.subject_id)
+                  ?.map((subject) => (
                     <MenuItem
                       key={subject.subject_id}
                       value={subject.subject_id}
-                      // sx={{
-                      //   backgroundColor: inputfield(namecolor),
-                      //   color: inputfieldtext(namecolor),
-                      //   "&:hover": {
-                      //     backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      //   },
-                      // }}
+                      disabled
+                      sx={commonStyle(namecolor)}
+                    >
+                      {subject.subject_name}
+                    </MenuItem>
+                  ))}
+                   {subjects
+                   ?.filter(
+                    (subject) => 
+                      !boxes?.some((b) => b.subject_id === subject.subject_id)
+                  )
+                  ?.map((subject) => (
+                    <MenuItem
+                      key={subject.subject_id}
+                      value={subject.subject_id}
                       sx={commonStyle(namecolor)}
                     >
                       {subject.subject_name}
