@@ -155,7 +155,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   const listData = async () => {
     getData(`${'student_address/edit/' + StudentId}`)
       .then((response: any) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           let add1: any;
           let add2: any;
           response?.data.forEach((address: any) => {
@@ -225,7 +225,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
 
   useEffect(() => {
     getData(`${'student_address/edit/' + StudentId}`).then((response: any) => {
-      if (response?.status === 200) {
+      if (response?.status) {
         response?.data.forEach((address: any) => {
           if (address?.address_type === 'permanent') {
             //setPermanentAddress(address);
@@ -503,6 +503,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
     }
 
     validatinforperm();
+
+    const formData = new FormData();
     const currentAddressPayload = {
       student_id: StudentId,
       ...studentAddress,
@@ -537,9 +539,12 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
-            const data = await postData('/student_address/add', addressPayload);
+            Object.keys(addressPayload).forEach((key) => {
+              formData.append(key, addressPayload[key]);
+            });
+            const data = await postData('/student_address/add', formData);
 
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(`${addressType} address saved successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -587,12 +592,17 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           addressPayload: any,
         ) => {
           try {
+            const formData = new FormData();
+
+            Object.keys(addressPayload).forEach((key) => {
+              formData.append(key, addressPayload[key]);
+            });
+            formData.append('pincode', addressPayload?.pincode || 0);
             const data = await putData('/student_address/edit/' + StudentId, {
-              ...addressPayload,
-              pincode: addressPayload?.pincode || 0,
+              formData,
             });
 
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',

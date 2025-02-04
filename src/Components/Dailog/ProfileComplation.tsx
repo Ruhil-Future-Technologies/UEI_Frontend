@@ -101,8 +101,8 @@ interface Institute {
   institution_id: string;
   institution_name: string;
   university_id: string;
-  is_active:number;
-  is_approve:boolean;
+  is_active: number;
+  is_approve: boolean;
 }
 
 interface Course {
@@ -288,7 +288,7 @@ export const ProfileDialog: FunctionComponent<{
     if (usertype === 'student') {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             //  navigate('/main/Dashboard');
             setAnsweredData(data.data);
 
@@ -296,7 +296,7 @@ export const ProfileDialog: FunctionComponent<{
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`,
               ).then((response: any) => {
-                if (response.status === 200) {
+                if (response.status) {
                   setSelectedClass({
                     label: response.data.class_name,
                     value: response.data.class_id,
@@ -464,7 +464,7 @@ export const ProfileDialog: FunctionComponent<{
     if (answeredData?.academic_history?.institution_type === 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             if (answeredData?.academic_history?.class_id) {
               const filteredData = response?.data?.filter(
                 (item: any) =>
@@ -491,7 +491,7 @@ export const ProfileDialog: FunctionComponent<{
     } else {
       getData('college_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = response?.data?.filter(
               (item: any) =>
                 item?.is_active === 1 &&
@@ -518,7 +518,7 @@ export const ProfileDialog: FunctionComponent<{
       const fetchProfileData = async () => {
         try {
           const data = await getData(`${profileURL}/${StudentId}`);
-          if (data.status === 200) {
+          if (data.status) {
             setAnsweredData(data.data);
 
             // Get the values from the fetched data
@@ -650,7 +650,7 @@ export const ProfileDialog: FunctionComponent<{
 
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active,
           );
@@ -665,7 +665,7 @@ export const ProfileDialog: FunctionComponent<{
       });
     getData('/university/list')
       .then(async (response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = await response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -680,7 +680,7 @@ export const ProfileDialog: FunctionComponent<{
       });
     getData('/semester/list')
       .then(async (response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = await response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -696,9 +696,9 @@ export const ProfileDialog: FunctionComponent<{
       });
     getData('/institution/list')
       .then(async (response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1  && item.is_approve==true,
+            (item: any) => item?.is_active === 1 && item.is_approve == true,
           );
           setInstitutes(filteredData || []);
         }
@@ -712,7 +712,7 @@ export const ProfileDialog: FunctionComponent<{
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -729,7 +729,7 @@ export const ProfileDialog: FunctionComponent<{
 
     getData('hobby/list')
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -746,7 +746,7 @@ export const ProfileDialog: FunctionComponent<{
 
     getData('language/list')
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -822,13 +822,14 @@ export const ProfileDialog: FunctionComponent<{
       return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
     }
     const formattedDate = formatDateToISO(birthdateObj);
+    const formData = new FormData();
 
     const fullName = answers?.[0];
     const nameParts: string[] = fullName?.split(' ');
     const firstname = nameParts?.[0];
     const lastname = nameParts?.[1];
     const payload = {
-      student_login_id: StudentId,
+      user_uuid: StudentId,
       first_name: answeredData?.basic_info?.first_name || firstname,
       last_name: answeredData?.basic_info?.last_name || lastname,
       // gender: answers[1],
@@ -840,11 +841,19 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.basic_info?.guardian_name || answers[6] || '',
       aim: answeredData?.basic_info?.aim || answers[2],
       pic_path: answeredData?.basic_info?.pic_path || answers[7],
-    };
+    } as any;
 
-    postData(`${'student/add'}`, payload)
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    if (payload.pic_path instanceof File) {
+      formData.append('pic_path', payload.pic_path);
+    }
+
+    postFileData(`${'student/add'}`, formData)
       .then((data: any) => {
-        if (data.status === 200) {
+        if (data.status) {
           // toast.success(data?.message, {
           //   hideProgressBar: true,
           //   theme: 'colored',
@@ -857,13 +866,13 @@ export const ProfileDialog: FunctionComponent<{
           if (formData.has('file')) {
             postFileData(`${'upload_file/upload'}`, formData)
               .then((data: any) => {
-                if (data?.status === 200) {
+                if (data?.status) {
                   setProImage(data?.image_url);
                   // toast.success(data?.message, {
                   //   hideProgressBar: true,
                   //   theme: 'colored',
                   // });
-                } else if (data?.status === 404) {
+                } else if (data?.code === 404) {
                   // toast.error(data?.message, {
                   //   hideProgressBar: true,
                   //   theme: 'colored',
@@ -907,6 +916,8 @@ export const ProfileDialog: FunctionComponent<{
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(' ');
     const email = localStorage.getItem('userid');
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
@@ -923,11 +934,15 @@ export const ProfileDialog: FunctionComponent<{
           : answer[answer.length - 2],
 
       email_id: answeredData?.contact?.email_id || email,
-    };
+    } as any;
 
-    postData(`${'student_contact/add'}`, payload)
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    postData(`${'student_contact/add'}`, formData)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           // toast.success(data?.message, {
           //   hideProgressBar: true,
           //   theme: 'colored',
@@ -948,6 +963,8 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const saveAnswerforAddress = (answers: string[]) => {
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
 
@@ -978,10 +995,14 @@ export const ProfileDialog: FunctionComponent<{
           : answers[answers.length - 4],
 
       address_type: 'current',
-    };
+    } as any;
 
-    postData('/student_address/add', payload).then((response) => {
-      if (response.status === 200) {
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    postData('/student_address/add', formData).then((response) => {
+      if (response.status) {
         // toast.success('Address information saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -997,6 +1018,8 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
     const length = answers.length;
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       institution_type:
@@ -1069,10 +1092,14 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType?.toLowerCase() === 'college'
           ? answeredData?.academic_history?.sem_id || answers[length - 3]
           : null,
-    };
+    } as any;
 
-    postData('/new_student_academic_history/add', payload).then((response) => {
-      if (response.status === 200) {
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    postData('/new_student_academic_history/add', formData).then((response) => {
+      if (response.status) {
         // toast.success('Academic hinstory information saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -1088,6 +1115,8 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswerforsubjectpreference = (answers: string[]) => {
     const length = answers.length;
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       subject_id: answeredData?.subject_preference?.id || selectSubject,
@@ -1110,9 +1139,14 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType?.toLowerCase() === 'college') && {
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
-    };
-    postData('/subject_preference/add', payload).then((response) => {
-      if (response.status === 200) {
+    } as any;
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    postData('/subject_preference/add', formData).then((response) => {
+      if (response.status) {
         // toast.success('Subject Preference information saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -1291,14 +1325,20 @@ export const ProfileDialog: FunctionComponent<{
   );
 
   const saveanswerForHobbeis = () => {
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
-    };
+    } as any;
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
 
     if (selectedHobby) {
-      postData('student_hobby/add', payload).then((response) => {
-        if (response.status === 200) {
+      postData('student_hobby/add', formData).then((response) => {
+        if (response.status) {
           // toast.success('Your hobbies saved successfully', {
           //   hideProgressBar: true,
           //   theme: 'colored',
@@ -1314,15 +1354,22 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const saveAnswerForLanguage = () => {
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       language_id:
         answeredData?.language_known?.language_id || selectedLanguage,
       proficiency:
         answeredData?.language_known?.proficiency || selectedproficiency,
-    };
-    postData('student_language_known/add', payload).then((response) => {
-      if (response.status === 200) {
+    } as any;
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    postData('student_language_known/add', formData).then((response) => {
+      if (response.status) {
         // toast.success('Your language saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -2258,7 +2305,7 @@ export const ProfileDialog: FunctionComponent<{
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         getData('school_subject/list')
           .then((response: any) => {
-            if (response.status === 200) {
+            if (response.status) {
               const filteredData = response?.data?.filter(
                 (item: any) => item?.is_active === 1,
               );
@@ -2291,7 +2338,7 @@ export const ProfileDialog: FunctionComponent<{
 
         getData('college_subject/list')
           .then((response: any) => {
-            if (response.status === 200) {
+            if (response.status) {
               const filteredData = response?.data?.filter(
                 (item: any) => item?.is_active === 1,
               );
@@ -2552,7 +2599,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeuniversity = (e: any) => {
     const filteredInstitution = institutes.filter(
-      (item) => item.university_id === e.value  && item.is_active===1 && item.is_approve==true,
+      (item) =>
+        item.university_id === e.value &&
+        item.is_active === 1 &&
+        item.is_approve == true,
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];

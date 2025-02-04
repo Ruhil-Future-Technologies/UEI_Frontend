@@ -63,7 +63,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       try {
         const hobbyListData = await getData('hobby/list');
 
-        if (hobbyListData?.status === 200) {
+        if (hobbyListData?.status) {
           const filteredData = hobbyListData?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -117,23 +117,29 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     const eq = deepEqual(initialAdminState, selectedHobbies);
 
     const payloadPromises = selectedHobbies.map((hobbyid) => {
+      const formData = new FormData();
       const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
-      };
+      } as any;
       const hobbyExists = hobbiesAll?.some(
         (item: { hobby_id: any }) => item?.hobby_id === hobbyid,
       );
+
+      Object.keys(payload).forEach((key) => {
+        formData.append(key, payload[key]);
+      });
+
       if (ishobbiestuch) {
         if (editFlag || !hobbyExists) {
-          return postData('student_hobby/add', payload);
+          return postData('student_hobby/add', formData);
         } else if (!eq) {
-          return putData('student_hobby/edit/' + StudentId, payload);
+          return putData('student_hobby/edit/' + StudentId, formData);
         } else {
-          return Promise.resolve({ status: 204 }); // Skip update
+          return Promise.resolve({ code: 204 }); // Skip update
         }
       } else {
-        return Promise.resolve({ status: 204 });
+        return Promise.resolve({ code: 204 });
       }
     });
     try {

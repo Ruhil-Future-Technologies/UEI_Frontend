@@ -79,7 +79,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [editBasicInfo, setEditBasicInfo] = useState(false);
   //const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs()?.subtract(6, 'year').subtract(1, 'day').endOf('day');
+  const exactSixYearsAgo = dayjs()
+    ?.subtract(6, 'year')
+    .subtract(1, 'day')
+    .endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
 
@@ -105,7 +108,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     // getData(`${'student/get/' + StudentId}`, StudentId)
     getData(`${'student/getbylogin/' + StudentId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           // console.log(data);
           // setBasicInfo(data);
           if (data?.data?.pic_path !== '') {
@@ -302,11 +305,17 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   //     handleChange(event.target.value as Date | null);
   //   };
 
-
   const handleDateChange = (newDate: Dayjs | null) => {
     setEditBasicInfo(true);
-    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
-      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
+    if (
+      newDate &&
+      newDate.isValid() &&
+      newDate.isAfter(minSelectableDate, 'day')
+    ) {
+      if (
+        newDate.isBefore(exactSixYearsAgo, 'day') ||
+        newDate.isSame(exactSixYearsAgo, 'day')
+      ) {
         setBasicInfo((values) => ({ ...values, dob: newDate }));
         setError(null);
         setdobset_col(false);
@@ -407,6 +416,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (!basicInfo?.father_name) setFathername_col1(true);
     if (!basicInfo?.mother_name) setMothername_col1(true);
 
+    const formData = new FormData();
+
     const payload = {
       student_login_id: StudentId,
       first_name: basicInfo?.first_name,
@@ -418,7 +429,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       guardian_name: basicInfo?.guardian_name,
       pic_path: selectedFile ? selectedFile : basicInfo?.pic_path,
       aim: basicInfo?.aim,
-    };
+    } as any;
 
     const datecheck: any = dayjs(payload?.dob).format('DD/MM/YYYY');
     if (datecheck === 'Invalid Date') {
@@ -443,9 +454,13 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     ) {
       if (editBasicInfo) {
         if (editFalg) {
-          postData(`${'student/add'}`, payload)
+          Object.keys(payload).forEach((key) => {
+            formData.append(key, payload[key]);
+          });
+
+          postData(`${'student/add'}`, formData)
             .then((data: any) => {
-              if (data.status == 200) {
+              if (data.status) {
                 toast.success('Basic information saved successfully', {
                   hideProgressBar: true,
                   theme: 'colored',
@@ -464,7 +479,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 )
                   .then((data: any) => {
                     // setprofileImage(imgdata.data)
-                    if (data.status == 200) {
+                    if (data.status) {
                       setProImage(data.data);
                     }
                   })
@@ -487,11 +502,15 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               });
             });
         } else {
+          Object.keys(payload).forEach((key) => {
+            formData.append(key, payload[key]);
+          });
+
           const editData = async () => {
-            putData(`${'student/edit/'}${StudentId}`, payload)
+            putData(`${'student/edit/'}${StudentId}`, formData)
               .then((data: any) => {
                 // console.log("----- res ----", data);
-                if (data.status == 200) {
+                if (data.status) {
                   toast.success('Basic information updated successfully', {
                     hideProgressBar: true,
                     theme: 'colored',
@@ -512,7 +531,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     )
                       .then((data: any) => {
                         // setprofileImage(imgdata.data)
-                        if (data.status == 200) {
+                        if (data.status) {
                           setProImage(data.data);
                         }
                       })
@@ -557,7 +576,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="first_name"
             name="first_name"
-            value={basicInfo.first_name}
+            value={basicInfo?.first_name}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -597,7 +616,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="last_name"
             name="last_name"
-            value={basicInfo.last_name || ''}
+            value={basicInfo?.last_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -630,7 +649,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               data-testid="gender"
               row
               name="gender"
-              value={basicInfo.gender?.toLowerCase()}
+              value={basicInfo?.gender?.toLowerCase()}
               onChange={handleChange}
             >
               <FormControlLabel
@@ -748,7 +767,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="father_name"
             name="father_name"
-            value={basicInfo.father_name}
+            value={basicInfo?.father_name}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -788,7 +807,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="mother_name"
             name="mother_name"
-            value={basicInfo.mother_name || ''}
+            value={basicInfo?.mother_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -861,7 +880,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="aim"
             name="aim"
-            value={basicInfo.aim || ''}
+            value={basicInfo?.aim || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -883,7 +902,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             <div className="image-container">
               {!filePreview ? (
                 <>
-                  {basicInfo.gender?.toLowerCase() === 'male' ? (
+                  {basicInfo?.gender?.toLowerCase() === 'male' ? (
                     <div className="image-box">
                       <input type="checkbox" className="image-checkbox" />
                       <img src={maleImage} alt="male" />

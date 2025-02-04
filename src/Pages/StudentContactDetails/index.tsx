@@ -112,7 +112,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const getContacInfo = async () => {
     getData(`${'student_contact/edit/' + StudentId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
@@ -128,7 +128,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             student_id: StudentId,
           });
           setEditFlag(false);
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setEditFlag(true);
           //   toast.warning("Please Add Your Information", {
           //     hideProgressBar: true,
@@ -180,6 +180,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // });
       return;
     }
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       mobile_isd_call: contcodePhone,
@@ -187,12 +189,17 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       mobile_isd_watsapp: contcodeWtsap,
       mobile_no_watsapp: whatsappNum,
       email_id: email,
-    };
+    } as any;
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
     const eq = deepEqual(initialState, payload);
     if (editFalg) {
-      postData(`${'student_contact/add'}`, payload)
+      postData(`${'student_contact/add'}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             setEditFlag(false);
             toast.success('Contact Details saved successfully', {
               hideProgressBar: true,
@@ -204,9 +211,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           } else {
             if (data?.message === 'Email Already exist') {
               setEditFlag(false);
-              putData(`${'student_contact/edit/'}${StudentId}`, payload)
+              putData(`${'student_contact/edit/'}${StudentId}`, formData)
                 .then((data: any) => {
-                  if (data.status === 200) {
+                  if (data.status) {
                     toast.success('Contact Details updated successfully', {
                       hideProgressBar: true,
                       theme: 'colored',
@@ -243,7 +250,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // eslint-disable-next-line no-lone-blocks
       {
         if (!eq) {
-          putData(`${'student_contact/edit/'}${StudentId}`, payload)
+          putData(`${'student_contact/edit/'}${StudentId}`, formData)
             .then((data: any) => {
               if (data.status === 200) {
                 toast.success('Contact Details updated successfully', {
