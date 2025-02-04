@@ -57,7 +57,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs/AdapterDayjs';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from "../../Components/Dailog/OtpCard";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 export interface Teacher {
@@ -417,7 +417,9 @@ const TeacherRegistrationPage = () => {
       .then((data) => {
         console.log(data.data)
         if (data.data) {
-          setRoleId(data.data.id) // setRoleData(data?.data);
+          const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
+          console.log(filerRoleId);
+          setRoleId(filerRoleId) // setRoleData(data?.data);
         }
       })
       .catch((e) => {
@@ -608,11 +610,8 @@ const TeacherRegistrationPage = () => {
 
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
-      console.log("schoole");
       boxesForSchool.forEach((box, index) => {
-        console.log((box.stream === '' ? false : !box.stream), !box.class_id, !box.subjects?.length);
         if (!box.class_id || (box.stream === '' ? false : !box.stream) || !box.subjects?.length) {
-          console.log(box);
           valid = false;
           setErrorForClass_stream_subject((prevError) => ({
             ...prevError,
@@ -711,7 +710,7 @@ const TeacherRegistrationPage = () => {
     formData.append("email_id", teacher.email_id);
     formData.append("qualification", teacher.qualification);
     formData.append("entity_id", teacher.entity_id);
-    formData.append("role_id", "4e0b6904-081c-4a39-9a21-c553ca8bf12e");
+    formData.append("role_id", roleId);
     formData.append("experience", teacher.experience);
     formData.append("address", teacher.address);
     formData.append("country", teacher.country);
@@ -903,7 +902,7 @@ const TeacherRegistrationPage = () => {
           );
           console.log("Filtered Subjects by Stream:", filteredSubjects);
 
-          updatedBox = { ...updatedBox, stream: value.toString().toLowerCase(), filteredSubjects, subjects: [] };
+          updatedBox = { ...updatedBox, stream: value.toString(), filteredSubjects, subjects: [] };
 
         }
         validateFields(index, name, updatedBox);
@@ -1490,12 +1489,12 @@ const TeacherRegistrationPage = () => {
                   {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
                     ((boxes.length === 1 && index === 0) ||
                       (boxes.length > 1 && index === boxes.length - 1))) && (
-                      <AddOutlinedIcon className="m-2" onClick={() => handleAddmore(selectedEntity)} />
+                      <AddCircleIcon className="m-2 cursor-pointer" onClick={() => handleAddmore(selectedEntity)} />
                     )}
                   {index > 0 && (
-                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2' />
+                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2 cursor-pointer' />
                   )}
-                  
+
                 </div>
               </div>
 
@@ -1623,13 +1622,14 @@ const TeacherRegistrationPage = () => {
                 </div>
 
                 <div>
-                {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
+                  {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
                     ((boxesForSchool.length === 1 && index === 0) ||
                       (boxesForSchool.length > 1 && index === boxesForSchool.length - 1))) && (
-                      <AddOutlinedIcon className="m-2" onClick={() => handleAddmore(selectedEntity)} />
+                      <AddCircleIcon className="m-2 cursor-pointer" onClick={() => handleAddmore(selectedEntity)} />
+
                     )}
                   {index > 0 && (
-                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2' />
+                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2 cursor-pointer' />
                   )}
                 </div>
 
