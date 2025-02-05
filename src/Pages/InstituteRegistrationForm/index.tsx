@@ -54,6 +54,8 @@ const InstituteRegistrationForm = () => {
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
+
+
   const { postRegisterData, getForRegistration } = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
@@ -110,7 +112,8 @@ const InstituteRegistrationForm = () => {
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [allselectedfiles, handleFileChanges] = useState<File[]>([]);
-  // const [logo,setLogo]=useState<File>();
+
+
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
       .then((data: { data: IUniversity[] }) => {
@@ -128,6 +131,7 @@ const InstituteRegistrationForm = () => {
         });
       });
   };
+
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
@@ -149,26 +153,34 @@ const InstituteRegistrationForm = () => {
       });
   };
 
+
   useEffect(() => {
     getUniversity();
     getEntity();
   }, []);
 
+
   const handleClose = () => {
     setPopupTermandcondi(false);
   };
+
+
   const handleTermandCondi = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
 
     setCheckTermandcondi(!isChecked);
   };
+
+
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
+
+  
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-console.log(files,typeof files)
+    console.log(files, typeof files)
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
       handleFileChanges((prevFiles) => [
@@ -217,7 +229,7 @@ console.log(files,typeof files)
           : false,
       address_error:
         name === 'address' &&
-        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
+          !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
           ? true
           : false,
       pincode_error:
@@ -245,16 +257,16 @@ console.log(files,typeof files)
     validation(name, value);
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
-  const openPopupOtp=()=>{
+  const openPopupOtp = () => {
     setError({
       institute_name_error:
         selectedEntity === 'College' &&
-        !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
+          !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
           ? true
           : false,
       university_id_error:
         selectedEntity === 'College' &&
-        valueInstitute.university_id.trim() === ''
+          valueInstitute.university_id.trim() === ''
           ? true
           : false,
       institute_type_error:
@@ -294,26 +306,27 @@ console.log(files,typeof files)
         : false,
       document_error: valueInstitute.document === null ? true : false,
     });
-    console.log(selectedEntity);
+  
+
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.school_name_error &&
-          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-            valueInstitute.school_name,
-          )
+        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+          valueInstitute.school_name,
+        )
         : true;
+
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.institute_name_error &&
-          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-            valueInstitute.institute_name,
-          ) &&
-          !error.university_id_error &&
-          valueInstitute.university_id !== ''
+        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+          valueInstitute.institute_name,
+        ) &&
+        !error.university_id_error &&
+        valueInstitute.university_id !== ''
         : true;
-    console.log(error);
-    console.log(isSchoolValid, isCollegeValid);
+  
     if (
       !error.institute_type_error &&
       !(valueInstitute.entity_id === '') &&
@@ -343,73 +356,73 @@ console.log(files,typeof files)
       isSchoolValid
     ) {
       setPopupOtpCard(true)
-    }  else {
+    } else {
       toast.error('validation error', {
         hideProgressBar: true,
         theme: 'colored',
       })
 
+    }
   }
-}
   const handleSubmit = () => {
     // setPopupOtpCard(true);
-   
-   
-   
-      const formData = new FormData();
 
-      // allselectedfiles.forEach((file, index) => {
-      //   if (file instanceof File) {
-      //     formData.append(`documents[${index}]`, file);
-      //   } else {
-      //     console.error(`Invalid file at index ${index}`, file);
-      //   }
-      // });
-      allselectedfiles.forEach((file) => {
-        formData.append("documents", file);  // Use same key for all files
+
+
+    const formData = new FormData();
+
+    // allselectedfiles.forEach((file, index) => {
+    //   if (file instanceof File) {
+    //     formData.append(`documents[${index}]`, file);
+    //   } else {
+    //     console.error(`Invalid file at index ${index}`, file);
+    //   }
+    // });
+    allselectedfiles.forEach((file) => {
+      formData.append("documents", file);  // Use same key for all files
+    });
+
+    // Append text fields to FormData
+    formData.append("institution_name", valueInstitute.school_name || valueInstitute.institute_name);
+    formData.append("entity_id", valueInstitute.entity_id);
+    formData.append("address", valueInstitute.address);
+    formData.append("country", valueInstitute.country);
+    formData.append("state", valueInstitute.state);
+    formData.append("city", valueInstitute.city);
+    formData.append("district", valueInstitute.district);
+    formData.append("pincode", valueInstitute.pincode);
+    formData.append("website_url", valueInstitute.website_url);
+    formData.append("mobile_no", valueInstitute.mobile_no);
+    formData.append("email_id", valueInstitute.email_id);
+    formData.append("icon", valueInstitute.icon);
+
+
+    if (selectedEntity !== 'School') {
+      formData.append("university_id", valueInstitute.university_id);
+    }
+
+
+    try {
+      postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
+        console.log(response)
+        if (response.status === 200) {
+          toast.success('Institute registration request sent successfully', {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+          alert('Wait for 24-48 hours, the Administrator will inform you.');
+          window.location.reload();
+        } else {
+          toast.error(response.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        }
       });
-    
-      // Append text fields to FormData
-      formData.append("institution_name", valueInstitute.school_name || valueInstitute.institute_name);
-      formData.append("entity_id", valueInstitute.entity_id);
-      formData.append("address", valueInstitute.address);
-      formData.append("country", valueInstitute.country);
-      formData.append("state", valueInstitute.state);
-      formData.append("city", valueInstitute.city);
-      formData.append("district", valueInstitute.district);
-      formData.append("pincode", valueInstitute.pincode);
-      formData.append("website_url", valueInstitute.website_url);
-      formData.append("mobile_no", valueInstitute.mobile_no);
-      formData.append("email_id", valueInstitute.email_id);
-      formData.append("icon", "");  
-      
+    } catch (error) {
+      console.error(error);
+    }
 
-      if (selectedEntity !== 'School') {
-        formData.append("university_id", valueInstitute.university_id);
-      }
-    
-      
-      try{
-        postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
-          console.log(response)
-          if (response.status === 200) {
-            toast.success('Institute registration request sent successfully', {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-            alert('Wait for 24-48 hours, the Administrator will inform you.');
-            window.location.reload();
-          } else {
-            toast.error(response.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          }
-        });
-      } catch (error) {
-        console.error(error);
-      }
-   
   };
   const handleInputChangecountry = (val: string, name: string) => {
     setValueInstitute({ ...valueInstitute, [name]: val });
@@ -854,7 +867,7 @@ console.log(files,typeof files)
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit}/>
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} />
       </div>
     </div>
   );

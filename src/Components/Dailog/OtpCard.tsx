@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, Box, TextField, DialogActions, Button } from "@mui/material";
 import React, { useState } from "react";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
-//import useApi from "../../hooks/useAPI";
+
 interface OtpCardProps {
     open: boolean;
     handleOtpClose: () => void; // Change 
@@ -10,7 +10,6 @@ interface OtpCardProps {
 
 const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess }) => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-   // const {postData}=useApi();
 
 
     const handleOtpChange = (index: number, value: string) => {
@@ -25,6 +24,8 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
             }
         }
     };
+
+
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData("text").trim();
@@ -41,6 +42,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
     const handleSubmitOtp = () => {
         const enteredOtp = otp.join("");
         if (enteredOtp === "123456") {
+            handleOtpClose();
             // try {
             //     postData("xyz",postData).then((data)=>{
             //           if(data.status===true && data){
@@ -61,7 +63,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                 <div className="d-flex justify-content-end m-1">
                     <ClearOutlinedIcon onClick={handleOtpClose} />
                 </div>
-                <DialogTitle>{"verify Your OTP"}</DialogTitle>
+                <DialogTitle>{"Please verify your OTP."}</DialogTitle>
                 <DialogContent>
                     <Box display="flex" justifyContent="center" gap={1} mt={1}>
                         {otp.map((digit, index) => (

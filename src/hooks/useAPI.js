@@ -161,7 +161,6 @@ const useApi = () => {
     setError(null);
     try {
       const requestUrl = url;
-      // const response = await axios.put(requestUrl, data,{ headers });
       const response = await httpClient.put(requestUrl, JSON.stringify(data), {
         headers,
       });
