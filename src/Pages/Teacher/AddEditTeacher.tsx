@@ -620,9 +620,7 @@ const AddEditTeacher = () => {
         );
 
         const streamOrClassName =
-          cls.stream === '' && classDetails
-            ? classDetails.class_name
-            : cls.stream;
+          cls.stream === '' && classDetails ? 'general' : cls.stream;
 
         class_stream_subjects[cls.class_id] = {
           [streamOrClassName]: cls.subjects,
@@ -822,7 +820,6 @@ const AddEditTeacher = () => {
         setTeacher((prevTeacher) => ({
           ...prevTeacher,
           country: value,
-          address: '',
           state: '',
           city: '',
           district: '',
@@ -833,7 +830,6 @@ const AddEditTeacher = () => {
         setTeacher((prevTeacher) => ({
           ...prevTeacher,
           state: value,
-          address: '',
           city: '',
           district: '',
           pincode: '',
@@ -1704,7 +1700,7 @@ const AddEditTeacher = () => {
                                         (subject: any) => (
                                           <MenuItem
                                             key={subject.subject_id}
-                                            value={subject.subject_id}
+                                            value={subject.subject_name}
                                             sx={{
                                               backgroundColor:
                                                 inputfield(namecolor),
@@ -1952,7 +1948,7 @@ const AddEditTeacher = () => {
                                         (subject: any) => (
                                           <MenuItem
                                             key={subject.subject_id}
-                                            value={subject.subject_id}
+                                            value={subject.subject_name}
                                             sx={{
                                               backgroundColor:
                                                 inputfield(namecolor),
