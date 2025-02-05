@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
+  QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_STUDENT,
 } from '../../utils/const';
@@ -50,13 +51,55 @@ const Header = () => {
   const user_type = localStorage.getItem('user_type');
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
-  const [profileUrl, setProfileUrl] = useState('')
+  const [profileUrl, setProfileUrl] = useState('');
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const { getData } = useApi();
-  const [dashboardURL, setDashboardURL] = useState('')
-  const handlogout = () => {
+  const { getData, postData } = useApi();
+  const [dashboardURL, setDashboardURL] = useState('');
+
+  const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
+
+  const saveChat = async () => {
+    const chatDataString = localStorage?.getItem('chatData');
+
+    let chatData: any;
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
+
+    let chat_payload;
+
+    if (Array.isArray(chatData)) {
+      chat_payload = {
+        student_id: userdata.id,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
+      };
+
+      try {
+        await postData(`${chataddconversationurl}`, chat_payload);
+
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
+      } catch (e: any) {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      }
+    }
+  };
+
+  const handlogout = async () => {
+    await saveChat();
     setProPercentage(0);
-    localStorage.removeItem('chatData');
+    localStorage.removeItem('theme');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
     localStorage.removeItem('userid');
@@ -107,13 +150,13 @@ const Header = () => {
                 .then((imgdata: any) => {
                   setProImage(imgdata.data);
                 })
-                .catch(() => { });
+                .catch(() => {});
             }
           }
           sessionStorage.setItem('profileData', JSON.stringify(data.data));
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   };
   const getAdminDetails = () => {
     getData(`${adminProfileURL}/${StudentId}`)
@@ -130,14 +173,15 @@ const Header = () => {
             });
             if (response?.data?.basic_info?.pic_path !== '') {
               getData(
-                `${'upload_file/get_image/' +
-                response?.data?.basic_info?.pic_path
+                `${
+                  'upload_file/get_image/' +
+                  response?.data?.basic_info?.pic_path
                 }`,
               )
                 .then((imgdata) => {
                   setProImage(imgdata.data);
                 })
-                .catch(() => { });
+                .catch(() => {});
             }
           }
         }
@@ -152,18 +196,18 @@ const Header = () => {
   useEffect(() => {
     if (user_type === 'admin') {
       getAdminDetails();
-      setProfileUrl('/main/adminprofile')
-      setDashboardURL('/main/DashBoard')
+      setProfileUrl('/main/adminprofile');
+      setDashboardURL('/main/DashBoard');
     } else if (user_type === 'institute') {
-      setProfileUrl("/institution-dashboard/profile")
-      setDashboardURL('/institution-dashboard')
+      setProfileUrl('/institution-dashboard/profile');
+      setDashboardURL('/institution-dashboard');
     } else if (user_type === 'teacher') {
       setProfileUrl('/teacher-dashboard/profile');
-      setDashboardURL('/teacher-dashboard')
+      setDashboardURL('/teacher-dashboard');
     } else {
       callAPI();
-      setProfileUrl('/main/StudentProfile')
-      setDashboardURL('/main/DashBoard')
+      setProfileUrl('/main/StudentProfile');
+      setDashboardURL('/main/DashBoard');
     }
   }, []);
 
