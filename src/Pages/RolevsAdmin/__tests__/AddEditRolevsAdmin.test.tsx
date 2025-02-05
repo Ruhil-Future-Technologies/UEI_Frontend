@@ -106,7 +106,7 @@ describe('AddEditRolevsAdmin', () => {
     const { getByText, getByTestId } = renderRoleComponent();
     fireEvent.click(getByTestId('save_btn'));
     await waitFor(() => {
-      expect(getByText('Please select Role matser')).toBeInTheDocument();
+      expect(getByText('Please select Role Matser')).toBeInTheDocument();
       expect(getByText('Please select Admin')).toBeInTheDocument();
     });
   });

@@ -34,8 +34,8 @@ describe("PDF LIST COMPONENT", () => {
               </NameContext.Provider>
             );
     
-    expect(screen.getByText('college')).toBeInTheDocument();
-    expect(screen.getByText('school')).toBeInTheDocument();
+    expect(screen.getByText('College')).toBeInTheDocument();
+    expect(screen.getByText('School')).toBeInTheDocument();
   });
   it('handleDeleteFiles sets selected file and opens delete modal', () => {
     const { result } = renderHook(() => {
