@@ -111,7 +111,7 @@ describe('AddEditMenu Component', () => {
     await waitFor(() => {
       expect(getByText('Please enter Menu name')).toBeInTheDocument();
       expect(
-        getByText('Please enter valid Menu sequence number'),
+        getByText('Please enter valid Menu Sequence number'),
       ).toBeInTheDocument();
     });
   });
@@ -130,7 +130,7 @@ describe('AddEditMenu Component', () => {
     );
 
     const menuNameField = getByLabelText('Menu name *');
-    const priorityField = getByLabelText('Menu sequence *');
+    const priorityField = getByLabelText('Menu Sequence *');
     const saveButton = getByText('Save');
 
     fireEvent.change(menuNameField, { target: { value: 'New Menu' } });
@@ -196,7 +196,7 @@ describe('AddEditMenu Component', () => {
       </NameContext.Provider>,
     );
     const menuNameField = getByLabelText('Menu name *');
-    const priorityField = getByLabelText('Menu sequence *');
+    const priorityField = getByLabelText('Menu Sequence *');
     const saveButton = getByText('Save');
 
     fireEvent.change(menuNameField, { target: { value: 'New Menu' } });

@@ -283,7 +283,7 @@ const AddEditForm = () => {
         FormNamePattern,
         'Please enter a valid Form name only characters allowed.',
       ),
-    menu_master_id: Yup.string().required('Menu master is required'),
+    menu_master_id: Yup.string().required('Menu Master is required'),
     // sub_menu_master_id: Yup.string().required('Sub Menu Master is required'),
     form_url: Yup.string().required('Form URL is required'),
     form_description: Yup.string(),
@@ -453,7 +453,7 @@ const AddEditForm = () => {
                           <TextField
                             inputProps={{ 'data-testid': 'form_name' }}
                             type="text"
-                            label="Form Name *"
+                            label="Form name *"
                             name="form_name"
                             value={values.form_name}
                             variant="outlined"

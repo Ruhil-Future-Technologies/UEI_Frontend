@@ -2579,12 +2579,12 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   },
   {
     accessorKey: 'college_name',
-    header: 'Collage Name',
+    header: 'College Name',
     size: 150,
   },
   {
     accessorKey: 'course_name',
-    header: 'Courase Name',
+    header: 'Course Name',
     size: 150,
   },
   {

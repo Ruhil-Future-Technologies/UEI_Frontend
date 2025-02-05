@@ -169,7 +169,7 @@ const PDFList = () => {
                         onClick={() => handlefilter('college')}
                         disabled={buttenView}
                       >
-                        college
+                        College
                       </button>
                       <button
                         name="school"
@@ -177,7 +177,7 @@ const PDFList = () => {
                         disabled={!buttenView}
                         onClick={() => handlefilter('school')}
                       >
-                        school
+                        School
                       </button>
                     </div>                    
                   </div>

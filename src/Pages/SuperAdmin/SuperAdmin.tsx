@@ -184,11 +184,11 @@ const SuperAdmin = () => {
   const menuSchema = Yup.object().shape({
     userid: Yup.string().test(
       'is-email-or-phone',
-      'Please enter a valid email or phone number',
+      'Please enter a valid Email Id or Mobile Number',
       function (value) {
         if (!value) {
           return this.createError({
-            message: 'Please enter email or phone number',
+            message: 'Please enter Email Id or Mobile Number',
           });
         }
         if (emailRegex.test(value)) {
@@ -256,7 +256,7 @@ const SuperAdmin = () => {
                             component={TextField}
                             type="text"
                             name="userid"
-                            label="Email or Mobile Number *"
+                            label="Email Id or Mobile Number *"
                             value={values?.userid}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,

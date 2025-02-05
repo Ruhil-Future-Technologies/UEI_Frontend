@@ -281,7 +281,8 @@ const InstituteRegistrationForm = () => {
       )
         ? true
         : false,
-      website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url),
+      // website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url),
+      website_error: valueInstitute.website_url.trim() !== '' &&  !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url),
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
@@ -334,8 +335,9 @@ const InstituteRegistrationForm = () => {
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id) &&
       !error.mobile_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
-      !error.website_error &&
-      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url) &&
+      // !error.website_error &&
+      // /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url) &&
+      (valueInstitute.website_url.trim() === '' || !error.website_error) && 
       !error.country_error &&
       !(valueInstitute.country === '') &&
       !error.state_error &&
@@ -498,7 +500,7 @@ const InstituteRegistrationForm = () => {
 
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
-                Website<span>*</span>
+                Website<span></span>
               </label>
               <TextField
                 autoComplete="off"
