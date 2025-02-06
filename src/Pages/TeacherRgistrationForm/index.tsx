@@ -1636,7 +1636,7 @@ const TeacherRegistrationPage = () => {
               </div>
             ))}
           <div className="row d-flex justify-content-between">
-            <div className="col-md-6 col-12 mb-5">
+            <div className="col-md-6 col-12">
               <label className="col-form-label">
                 {' '}
                 Document<span>*   </span>
@@ -1651,7 +1651,7 @@ const TeacherRegistrationPage = () => {
               />
               <div>
                 {allselectedfiles.length > 0 && (
-                  <ul>
+                  <ul className='mt-4'>
                     {allselectedfiles.map((file, index) => (
                       <li key={index}>{file.name}</li>
                     ))}
