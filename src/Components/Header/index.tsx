@@ -59,11 +59,10 @@ const Header = () => {
     localStorage.removeItem('chatData');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
-    localStorage.removeItem('userid');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');

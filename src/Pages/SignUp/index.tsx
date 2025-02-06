@@ -34,6 +34,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { QUERY_KEYS } from '../../utils/const';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import registerHero from '../../assets/img/register-hero.png';
+import OtpCard from '../../Components/Dailog/OtpCard';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
@@ -41,10 +42,14 @@ const Signup = () => {
   const [password, setPassword] = useState('');
 
   const [emailphone, setEmailphone] = useState('');
+  const [phone, setPhone] = useState('');
   const value = 'student';
-  const userId = 'Email';
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [errorEmail, setEmailError] = useState('');
+  const [errorPhone, setPhoneError] = useState('');
+  const [errorPhoneValidation, setErrorPhoneValidation] = useState<boolean>(false);
+  const [errorEmailValidation, setErrorEmailValidation] = useState<boolean>(false);
   const [errorPassword, setPasswordError] = useState('');
 
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
@@ -80,13 +85,13 @@ const Signup = () => {
     // setIsLoading(true);
     e.preventDefault();
     // Validate email/phone and password
-    if (validateInput(emailphone) && validatePassword(password)) {
+    if (errorEmailValidation && errorPhoneValidation && validatePassword(password)) {
       // setLoading(true);
       const UserSignUp = {
-        userid:
-          userId === 'Email' || userId === 'Phone' ? String(emailphone) : '',
+        email: String(emailphone),
         password: String(password),
         user_type: String(value),
+        phone: String(phone)
       };
 
       const emptyKeys: string[] = [];
@@ -104,38 +109,30 @@ const Signup = () => {
           }
         }
       }
-
       // If no empty fields, proceed with registration
+      console.log(UserSignUp);
       if (emptyKeys.length === 0) {
         try {
           const data = await postData(signupUrl, UserSignUp);
-
-          if (data?.status === 200) {
+          console.log(data);
+          if (data?.status === true) {
             // setLoading(false);
+            setPopupOtpCard(true);
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            // setIsLoading(false);
-            navigate('/');
-          } else if (
-            data?.status === 400 &&
-            data?.message === 'Userid already exists'
-          ) {
-            // setLoading(false);
+            localStorage.setItem('user_uuid', data?.data.user_uuid)
+            localStorage.setItem('eamil', data?.data.email)
+            localStorage.setItem('phone', data?.data.phone)
+            localStorage.setItem('user_type', data?.data.user_type)
+          } else {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            // setLoading(false);
-            // setIsLoading(false);
-          } else {
-            // setIssuccess(true);
-            // setMsg(data?.message);
           }
         } catch (error) {
-          // setLoading(false);
-          // setIsLoading(false);
           let errorMessage = 'An unexpected error occurred';
 
           if (error instanceof Error) {
@@ -151,32 +148,99 @@ const Signup = () => {
     }
   };
 
-  const validateInput = (value: string): boolean => {
-    if (!value) {
-      setEmailError('Please enter an email or phone number');
-      return false;
+  const handleSubmit = (otp: string) => {
+    let payload = {
+      email: emailphone,
+      otp: otp
     }
+    postData(`/auth/verify-otp`, payload).then((data) => {
+      console.log(data);
+      if (data.status === true) {
+        handleSuccessfulLogin(data.data,);
+      }
+    })
+  }
 
-    const phoneRegex = /^[0-9]{10}$/;
+  const handleSuccessfulLogin = (data: any) => {
+    console.log(data)
+    localStorage.setItem('token', data?.token);
+    localStorage.setItem('userid', data?.data?.userid);
+    localStorage.setItem('lastRoute', window.location.pathname);
+
+    const tokenLifespan = 7100; // token lifespan in seconds (1 hour)
+    // Calculate the expiry time
+    const expiryTime = Date.now() + tokenLifespan * 1000;
+    localStorage.setItem('tokenExpiry', expiryTime.toString());
+
+    toast.success('User logged in successfully', {
+      hideProgressBar: true,
+      theme: 'colored',
+      autoClose: 500,
+    });
+    const userType = localStorage.getItem('user_type');
+    if (userType === 'student') {
+      navigate('/main/Dashboard');
+    }
+    ;
+  }
+
+  const validateInput = (value: string, name: string): boolean => {
+    const phoneRegex = /^(?!0{10})[0-9]{10}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (phoneRegex.test(value) || emailRegex.test(value)) {
-      setEmailError('');
-      return true;
-    } else {
-      setEmailError('Invalid email or phone number format');
-      return false;
+    let valid = true;
+    if (name === 'email_id') {
+      if (!value) {
+        setEmailError('Please enter an email');
+        valid = false;
+        setErrorEmailValidation(false);
+      }
+      if (emailRegex.test(value)) {
+        setEmailError('');
+        valid = true;
+        setErrorEmailValidation(true);
+      } else {
+        setEmailError('Invalid email format');
+        valid = false;
+        setErrorEmailValidation(false);
+      }
     }
+
+    if (name === 'phone_no') {
+      if (!value) {
+        setPhoneError('Please enter valid Phone No');
+        valid = false;
+        setErrorPhoneValidation(false)
+      }
+      if (phoneRegex.test(value)) {
+        setPhoneError('');
+        valid = true;
+        setErrorPhoneValidation(true);
+      } else {
+        setPhoneError('Invalid  phone number');
+        valid = false;
+        setErrorPhoneValidation(false)
+      }
+    }
+
+    return valid;
   };
 
   const handleChangeData = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    if (!emailphone) {
-      setEmailError('Please fill out this field test');
-      // You can set your custom error message logic here if needed
+    const { value, name } = e.target;
+
+    if (name == 'email_id') {
+      if (!emailphone) {
+        setEmailError('Please fill out this field test');
+        // You can set your custom error message logic here if needed
+      }
+      setEmailphone(value);
     }
-    setEmailphone(value);
-    validateInput(value);
+    if (name == 'phone_no') {
+      setPhone(value);
+    }
+
+
+    validateInput(value, name);
   };
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -325,16 +389,56 @@ const Signup = () => {
                     >
                       <div className="mb-3">
                         <label htmlFor="" className="form-label">
-                          Email/Phone
+                          Email
                         </label>
                         <TextField
                           data-testid="emailphone"
                           id="emailphone"
+                          name='email_id'
                           value={emailphone}
                           onChange={handleChangeData}
-                          placeholder="Email or Mobile Number"
+                          placeholder="Enter your email"
                           error={!!errorEmail}
                           helperText={errorEmail}
+                          required={true}
+                          fullWidth
+                          sx={{
+                            '& input:-webkit-autofill': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important', // Set the background color you want
+                              WebkitTextFillColor: 'black !important', // Set the text color you want
+                            },
+                            '& input:-webkit-autofill:hover': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
+                            },
+                            '& input:-webkit-autofill:focus': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
+                            },
+                            '& input:-webkit-autofill:active': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
+                            },
+                          }}
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="" className="form-label">
+                          Phone N0.
+                        </label>
+                        <TextField
+                          data-testid="phone"
+                          id="phone"
+                          name='phone_no'
+                          value={phone}
+                          onChange={handleChangeData}
+                          placeholder="Mobile Number"
+                          error={!!errorPhone}
+                          helperText={errorPhone}
                           required={true}
                           fullWidth
                           sx={{
@@ -502,6 +606,7 @@ const Signup = () => {
             </div>
           </div>
         </section>
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string) => handleSubmit(otp)} email={emailphone}/>
       </div>
     </>
   );

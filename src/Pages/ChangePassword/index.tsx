@@ -68,14 +68,14 @@ const ChangePassword = () => {
       postData(`${changepassUrl}`, UserSignUp)
         /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status === true) {
             navigate('/');
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
           } else if (
-            data?.status === 404 &&
+            data?.code === 404 &&
             data?.message === 'Invalid userid or password'
           ) {
             toast.error('Invalid userid or password', {

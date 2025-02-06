@@ -1,16 +1,19 @@
 import { Dialog, DialogTitle, DialogContent, Box, TextField, DialogActions, Button } from "@mui/material";
 import React, { useState } from "react";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import useApi from "../../hooks/useAPI";
 
 interface OtpCardProps {
     open: boolean;
     handleOtpClose: () => void; // Change 
-    handleOtpSuccess: () => void;
+    handleOtpSuccess: (opt: string) => void;
+    email: string;
 }
 
-const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess }) => {
+const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess,email }) => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-
+    const {postData}=useApi()
+    const [viewBtn,setViewBtn]=useState(true);
 
     const handleOtpChange = (index: number, value: string) => {
         if (/^\d?$/.test(value)) {
@@ -38,24 +41,32 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
         setOtp(["", "", "", "", "", ""]);
         document.getElementById(`otp-0`)?.focus();
     }
+
+    const handleOtpResend =()=>{
+        setViewBtn(false);
+        let payload={
+            email:email
+        }
+        try {
+            postData(`/auth/send-otp`,payload).then((response)=>{
+             console.log(response);
+                   setTimeout(()=>{
+                     setViewBtn(true);
+                   },2000)
+            })
+        } catch (error) {
+            
+        }
+           console.log(email)
+    }
+
     const isOtpComplete = otp.every((digit) => digit !== "");
     const handleSubmitOtp = () => {
         const enteredOtp = otp.join("");
-        if (enteredOtp === "123456") {
-            handleOtpClose();
-            // try {
-            //     postData("xyz",postData).then((data)=>{
-            //           if(data.status===true && data){
-
-            //           }
-            //     })
-            // } catch (error) {
-                
-            // }
-            handleOtpSuccess();
-        } else {
-            alert("Invalid OTP");
+        if (enteredOtp.length === 6) {
+            handleOtpSuccess(enteredOtp);
         }
+
     }
     return (
         <div>
@@ -83,6 +94,10 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                     </Box>
                 </DialogContent>
                 <DialogActions>
+                    <Button className="content-left" 
+                   disabled={!viewBtn} onClick={handleOtpResend} color="primary">
+                        resend Otp
+                    </Button>
                     <Button onClick={handleOtpReset} color="primary">
                         reset
                     </Button>
