@@ -186,15 +186,15 @@ const AddEditSubmenu = () => {
   };
   const submenuSchema = Yup.object().shape({
     menu_name: Yup.string()
-      .required('Please enter submenu name')
+      .required('Please enter Submenu name')
       .matches(
         charPattern,
         'Please enter valid Submenu name only characters allowed.',
       ),
     priority: Yup.string()
-      .required('Please enter valid menu sequence number')
-      .matches(numberPattern, 'Please enter valid menu sequence number.'),
-    menu_master_id: Yup.string().required('Please select menu name'),
+      .required('Please enter valid Menu Sequence number')
+      .matches(numberPattern, 'Please enter valid Menu Sequence number.'),
+    menu_master_id: Yup.string().required('Please select Menu name'),
   });
 
   return (

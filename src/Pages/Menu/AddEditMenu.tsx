@@ -159,8 +159,8 @@ const AddEditMenu = () => {
         'Please enter a valid Menu name only characters allowed.',
       ),
     priority: Yup.string()
-      .required('Please enter valid Menu sequence number')
-      .matches(numberPattern, 'Please enter a valid Menu sequence number.'),
+      .required('Please enter valid Menu Sequence number')
+      .matches(numberPattern, 'Please enter a valid Menu Sequence number.'),
     menu_image: Yup.string(),
   });
 
@@ -229,7 +229,7 @@ const AddEditMenu = () => {
                             component={TextField}
                             type="text"
                             name="priority"
-                            label="Menu sequence *"
+                            label="Menu Sequence *"
                             value={values?.priority}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,

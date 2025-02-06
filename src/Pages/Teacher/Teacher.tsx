@@ -305,7 +305,8 @@ const Teacher = () => {
         return teacher;
       }
     });
-    const full_name = teacherDetail.first_name + ' ' + teacherDetail.last_name;
+    const full_name =
+      teacherDetail?.first_name + ' ' + teacherDetail?.last_name;
     teacherDetail.full_name = full_name;
     delete teacherDetail.first_name;
     delete teacherDetail.last_name;
@@ -321,14 +322,14 @@ const Teacher = () => {
 
     if (isSchool) {
       const class_info = dataClasses.find(
-        (cls) => cls.id == teacherDetail.class_id,
+        (cls) => cls.id == teacherDetail?.class_id,
       );
 
       const school = schoolInstitutes.find(
-        (school) => school.id == teacherDetail.institution_id,
+        (school) => school.id == teacherDetail?.institution_id,
       );
       const teacherSubjects = schoolSubjects.filter((subject) =>
-        teacherDetail.subjects.includes(subject.subject_id),
+        teacherDetail?.subjects?.includes(subject.subject_id),
       );
 
       const subjectNames = teacherSubjects.map(
@@ -336,8 +337,8 @@ const Teacher = () => {
       );
 
       teacherDetail.entity_type = 'School';
-      teacherDetail.school_name = school.institution_name;
-      teacherDetail.class_name = class_info.class_name;
+      teacherDetail.school_name = school?.institution_name;
+      teacherDetail.class_name = class_info?.class_name;
       teacherDetail.subjects = subjectNames;
 
       delete teacherDetail.entity_id;
@@ -353,16 +354,16 @@ const Teacher = () => {
         (course) => course.id == teacherDetail.course_id,
       );
       const teacherSubjects = collegeSubjects.filter((subject) =>
-        teacherDetail.subjects.includes(subject.subject_id),
+        teacherDetail?.subjects?.includes(subject.subject_id),
       );
       const subjectNames = teacherSubjects.map(
         (subject) => subject.subject_name,
       );
 
       teacherDetail.entity_type = 'College';
-      teacherDetail.college_name = college.institution_name;
-      teacherDetail.university_name = college.university_name;
-      teacherDetail.course_name = course.course_name;
+      teacherDetail.college_name = college?.institution_name;
+      teacherDetail.university_name = college?.university_name;
+      teacherDetail.course_name = course?.course_name;
       teacherDetail.subjects = subjectNames;
 
       delete teacherDetail.stream;

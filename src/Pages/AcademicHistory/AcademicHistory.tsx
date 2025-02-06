@@ -166,7 +166,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     const errors = { ...initialErrors };
     if (box?.institute_type === '') {
       if (!box?.institute_type)
-        errors.institute_type = 'institute type name is required';
+        errors.institute_type = 'Please select Institute type';
     }
 
     // Validation logic for "college"

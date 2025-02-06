@@ -57,7 +57,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs/AdapterDayjs';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from "../../Components/Dailog/OtpCard";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
 export interface Teacher {
@@ -412,7 +412,27 @@ const TeacherRegistrationPage = () => {
   };
 
 
- 
+  const getRole = () => {
+    getForRegistration(`${Rolelist}`)
+      .then((data) => {
+        console.log(data.data)
+        if (data.data) {
+          const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
+          console.log(filerRoleId);
+          setRoleId(filerRoleId) // setRoleData(data?.data);
+        }
+      })
+      .catch((e) => {
+        if (e?.response?.status === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  }
+
 
   const getSubjects = (type: string) => {
     if (type === 'College') {
@@ -609,11 +629,8 @@ const TeacherRegistrationPage = () => {
 
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
-      console.log("schoole");
       boxesForSchool.forEach((box, index) => {
-        console.log((box.stream === '' ? false : !box.stream), !box.class_id, !box.subjects?.length);
         if (!box.class_id || (box.stream === '' ? false : !box.stream) || !box.subjects?.length) {
-          console.log(box);
           valid = false;
           setErrorForClass_stream_subject((prevError) => ({
             ...prevError,
@@ -904,7 +921,7 @@ const TeacherRegistrationPage = () => {
           );
           console.log("Filtered Subjects by Stream:", filteredSubjects);
 
-          updatedBox = { ...updatedBox, stream: value.toString().toLowerCase(), filteredSubjects, subjects: [] };
+          updatedBox = { ...updatedBox, stream: value.toString(), filteredSubjects, subjects: [] };
 
         }
         validateFields(index, name, updatedBox);
@@ -1080,7 +1097,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.phone_no_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid Mobile Number.</small>
+                  <small> Please enter a valid Mobile number.</small>
                 </p>
               )}
             </div>
@@ -1156,7 +1173,7 @@ const TeacherRegistrationPage = () => {
                 <p className="error-text " style={{ color: 'red' }}>
 
                   <small>
-                    Please enter a valid District Name.
+                    Please enter a valid District name.
                   </small>
 
                 </p>
@@ -1176,7 +1193,7 @@ const TeacherRegistrationPage = () => {
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
 
-                  <small>Please enter a valid City Name.</small>
+                  <small>Please enter a valid City name.</small>
 
                 </p>
               )}
@@ -1213,7 +1230,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.pincode_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Pincode</small>
+                  <small>Please enter a valid Pincode.</small>
                 </p>
               )}
             </div>
@@ -1321,7 +1338,7 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.institution_id_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select an Institute Name.</small>
+                  <small>Please select an Institute name.</small>
                 </p>
               )}
             </div>
@@ -1374,7 +1391,7 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.qualifications_error && (
                 <p className='error-text' style={{ color: 'red' }}>
-                  <small>Please select a Qualification</small>
+                  <small>Please select a Qualification.</small>
                 </p>
               )
 
@@ -1409,7 +1426,7 @@ const TeacherRegistrationPage = () => {
                   </FormControl>
                   {errorForCourse_semester_subject[index]?.course_id_error === true && (
                     <p className="error-text" style={{ color: "red" }}>
-                      <small>Please enter a valid Course.</small>
+                      <small>Please select Course name.</small>
                     </p>
                   )}
                 </div>
@@ -1490,12 +1507,12 @@ const TeacherRegistrationPage = () => {
                   {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
                     ((boxes.length === 1 && index === 0) ||
                       (boxes.length > 1 && index === boxes.length - 1))) && (
-                      <AddOutlinedIcon className="m-2" onClick={() => handleAddmore(selectedEntity)} />
+                      <AddCircleIcon className="m-2 cursor-pointer" onClick={() => handleAddmore(selectedEntity)} />
                     )}
                   {index > 0 && (
-                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2' />
+                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2 cursor-pointer' />
                   )}
-                  
+
                 </div>
               </div>
 
@@ -1623,13 +1640,14 @@ const TeacherRegistrationPage = () => {
                 </div>
 
                 <div>
-                {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
+                  {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
                     ((boxesForSchool.length === 1 && index === 0) ||
                       (boxesForSchool.length > 1 && index === boxesForSchool.length - 1))) && (
-                      <AddOutlinedIcon className="m-2" onClick={() => handleAddmore(selectedEntity)} />
+                      <AddCircleIcon className="m-2 cursor-pointer" onClick={() => handleAddmore(selectedEntity)} />
+
                     )}
                   {index > 0 && (
-                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2' />
+                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2 cursor-pointer' />
                   )}
                 </div>
 

@@ -92,7 +92,6 @@ const AddEditInstitute = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
-  const [isSchool, setIsSchool] = useState(false);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
@@ -256,7 +255,7 @@ const AddEditInstitute = () => {
         (entity) => entity.id === e.target.value,
       );
       const isSchoolEntity = selectedEntity?.entity_type === 'School';
-      setIsSchool(isSchoolEntity);
+
       if (isSchoolEntity) {
         setInstitute((prev) => ({
           ...prev,
@@ -754,7 +753,7 @@ const AddEditInstitute = () => {
                             name="university_id"
                             value={values?.university_id}
                             variant="outlined"
-                            disabled={isSchool}
+                            disabled={isSchoolEntity(values?.entity_id)}
                             style={{
                               backgroundColor: isSchoolEntity(values?.entity_id)
                                 ? '#f0f0f0'
@@ -895,7 +894,11 @@ const AddEditInstitute = () => {
                           component={TextField}
                           type="text"
                           name="institution_name"
-                          label="Institute name *"
+                          label={
+                            isSchoolEntity(values?.entity_id)
+                              ? 'School Name *'
+                              : 'Institute name *'
+                          }
                           value={values?.institution_name}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'institution_name')
@@ -904,7 +907,7 @@ const AddEditInstitute = () => {
                         {touched?.institution_name &&
                         errors?.institution_name ? (
                           <p style={{ color: 'red' }}>
-                            {errors?.institution_name}
+                            {isSchoolEntity(values?.entity_id) ?"Please enter School name":errors?.institution_name}
                           </p>
                         ) : (
                           <></>

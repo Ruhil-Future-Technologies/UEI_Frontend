@@ -521,7 +521,7 @@ const InstituteRegistrationForm = () => {
 
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
-                Website<span>*</span>
+                Website<span></span>
               </label>
               <TextField
                 autoComplete="off"

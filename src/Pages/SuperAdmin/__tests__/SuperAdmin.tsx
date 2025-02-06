@@ -64,16 +64,16 @@ describe('SuperAdmin Component', () => {
         </Router>
       </NameContext.Provider>,
     );
-    fireEvent.change(getByLabelText(/Email or Mobile Number \*/i), {
+    fireEvent.change(getByLabelText(/Email Id or Mobile Number \*/i), {
       target: { value: 'invalid-email' },
     });
 
-    fireEvent.blur(screen.getByLabelText(/Email or Mobile Number \*/i));
+    fireEvent.blur(screen.getByLabelText(/Email Id or Mobile Number \*/i));
     fireEvent.click(getByRole('button', { name: /Save/i }));
 
     await waitFor(() => {
       expect(
-        getByText(/Please enter a valid email or phone number/i),
+        getByText(/Please enter a valid Email Id or Mobile number/i),
       ).toBeInTheDocument();
     });
   });
@@ -115,7 +115,7 @@ describe('SuperAdmin Component', () => {
     );
 
     // Fill out the form fields
-    fireEvent.change(screen.getByLabelText(/Email or Mobile Number \*/i), {
+    fireEvent.change(screen.getByLabelText(/Email Id or Mobile Number \*/i), {
       target: { value: 'test@example.com' },
     });
 
@@ -146,7 +146,7 @@ describe('SuperAdmin Component', () => {
     // Ensure the form is reset (i.e., values are cleared)
     await waitFor(() => {
       const useridField = screen.getByLabelText(
-        /Email or Mobile Number \*/i,
+        /Email Id or Mobile Number \*/i,
       ) as HTMLInputElement;
       const passwordField = screen.getByLabelText(
         /Password \*/i,
@@ -175,7 +175,7 @@ describe('SuperAdmin Component', () => {
     );
 
     // Fill out the form fields
-    fireEvent.change(screen.getByLabelText(/Email or Mobile Number \*/i), {
+    fireEvent.change(screen.getByLabelText(/Email Id or Mobile Number \*/i), {
       target: { value: 'test@example.com' },
     });
 
@@ -211,7 +211,7 @@ describe('SuperAdmin Component', () => {
     // Ensure the form is not reset (since the submission failed)
     await waitFor(() => {
       const useridField = screen.getByLabelText(
-        /Email or Mobile Number \*/i,
+        /Email Id or Mobile Number \*/i,
       ) as HTMLInputElement;
       const passwordField = screen.getByLabelText(
         /Password \*/i,
