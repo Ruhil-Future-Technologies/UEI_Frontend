@@ -495,26 +495,7 @@ const TeacherRegistrationPage = () => {
     getRole();
   }, []);
 
-  const getRole = () => {
-    getForRegistration(`${Rolelist}`)
-      .then((data) => {
-        console.log(data.data)
-        if (data.data) {
-          const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
-          console.log(filerRoleId);
-          setRoleId(filerRoleId) // setRoleData(data?.data);
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.status === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-  }
+ 
   const handleSelect = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
 
