@@ -150,14 +150,14 @@ const stream = [
   "Arts",
 ]
 
-interface Boxes {
+export interface Boxes {
   semester_number: string,
   subjects: string[],
   course_id: string,
   filteredSemesters?: any[];
   filteredSubjects?: any[];
 }
-interface BoxesForSchool {
+export interface BoxesForSchool {
   stream?: string,
   subjects: string[],
   class_id: string,
@@ -495,7 +495,7 @@ const TeacherRegistrationPage = () => {
     getRole();
   }, []);
 
-
+ 
   const handleSelect = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
 
@@ -948,8 +948,7 @@ const TeacherRegistrationPage = () => {
       setBoxes(boxes.filter((_, i) => i !== index));
     }
   };
-  console.log(roleId);
-  console.log(boxes.length - 1)
+ 
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -1637,7 +1636,7 @@ const TeacherRegistrationPage = () => {
               </div>
             ))}
           <div className="row d-flex justify-content-between">
-            <div className="col-md-6 col-12 mb-5">
+            <div className="col-md-6 col-12">
               <label className="col-form-label">
                 {' '}
                 Document<span>*   </span>
@@ -1652,7 +1651,7 @@ const TeacherRegistrationPage = () => {
               />
               <div>
                 {allselectedfiles.length > 0 && (
-                  <ul>
+                  <ul className='mt-4'>
                     {allselectedfiles.map((file, index) => (
                       <li key={index}>{file.name}</li>
                     ))}
