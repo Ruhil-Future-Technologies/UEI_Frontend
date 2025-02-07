@@ -997,6 +997,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
     const length = answers.length;
+    const classname=classes.find((item)=>String(item.id) === answers[answers.length - 1] || String(item.id) === answers[answers.length - 2])?.class_name;
     const payload = {
       student_id: StudentId,
       institution_type:
@@ -1035,7 +1036,7 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'school'
           ? answeredData?.academic_history?.class_id ||
-            typeof answers[length - 2] === 'number'
+          classname=="class_11" ||classname=="class_12"
             ? answers[length - 2]?.toString()
             : answers[length - 1]?.toString()
           : null,
@@ -1054,7 +1055,7 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'school'
           ? answeredData?.academic_history?.stream ||
-            typeof answers[length - 2] === 'number'
+            classname=="class_11" ||classname=="class_12"
             ? answers[length - 1]
             : null
           : null,
@@ -1070,7 +1071,6 @@ export const ProfileDialog: FunctionComponent<{
           ? answeredData?.academic_history?.sem_id || answers[length - 3]
           : null,
     };
-
     postData('/new_student_academic_history/add', payload).then((response) => {
       if (response.status === 200) {
         // toast.success('Academic hinstory information saved successfully', {
@@ -2870,7 +2870,6 @@ export const ProfileDialog: FunctionComponent<{
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
-
   return (
     <>
       <div
