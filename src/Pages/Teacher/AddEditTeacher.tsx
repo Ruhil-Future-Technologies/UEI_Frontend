@@ -96,7 +96,6 @@ const AddEditTeacher = () => {
   const { getData, postData, putData } = useApi();
   const GET_UNIVERSITY = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const GET_ENTITIES = QUERY_KEYS_ENTITY.GET_ENTITY;
-  const GET_COURSE = QUERY_KEYS_COURSE.GET_COURSE;
 
   const [dataUniversity, setDataUniversity] = useState<any[]>([]);
   const [dataEntity, setDataEntity] = useState<any[]>([]);
@@ -190,6 +189,23 @@ const AddEditTeacher = () => {
   };
 
   const callAPI = async () => {
+    let all_courses: any = [];
+    let all_classes: any = [];
+
+    await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
+      all_classes = data?.data;
+      setDataClasses(data.data);
+    });
+    await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
+      all_courses = data.data;
+      setDataCourses(data.data);
+    });
+    await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
+      setCollegeSubjects(data.data);
+    });
+    await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
+      setSchoolSubjects(data.data);
+    });
     if (id) {
       const teacherData = await getData(`${TeacherURL}`);
       try {
@@ -208,6 +224,82 @@ const AddEditTeacher = () => {
         const teacherDetail = await getData(
           `${QUERY_KEYS_TEACHER.GET_TECHER_BY_LOGIN_ID}/${currentTeacher.teacher_login_id}`,
         );
+
+        const filterTeacherCourses = (
+          teacherDetail: any,
+          allCourses: any,
+        ): { coures: any[] } => {
+          const result = {
+            courses: [],
+          } as any;
+
+          const teacherCoursesObj = teacherDetail.data.course_semester_subjects;
+          for (const [courseName, semesterData] of Object.entries(
+            teacherCoursesObj as any,
+          )) {
+            const matchingCourse = allCourses.find(
+              (course: any) =>
+                course.course_name === courseName &&
+                course.institution_id === teacherDetail.data.institution_id,
+            );
+
+            if (matchingCourse) {
+              for (const [semester, subjects] of Object.entries(
+                semesterData as any,
+              )) {
+                result.courses.push({
+                  course_id: matchingCourse.id,
+                  semester: semester,
+                  subjects: subjects,
+                });
+              }
+            }
+          }
+
+          return result;
+        };
+        const course_semester_subjects_arr: any = filterTeacherCourses(
+          teacherDetail,
+          all_courses,
+        );
+
+        const filterTeacherClasses = (
+          teacherDetail: any,
+          all_classes: any,
+        ): { classes: any[] } => {
+          const result = {
+            classes: [],
+          } as any;
+
+          const teacherClassesObj = teacherDetail.data.class_stream_subjects;
+
+          for (const [className, semesterData] of Object.entries(
+            teacherClassesObj as any,
+          )) {
+            const matchingClass = all_classes.find(
+              (cls: any) => cls.class_name === className,
+            );
+
+            if (matchingClass) {
+              for (const [stream, subjects] of Object.entries(
+                semesterData as any,
+              )) {
+                result.classes.push({
+                  class_id: matchingClass.id,
+                  stream: stream,
+                  subjects: subjects,
+                });
+              }
+            }
+          }
+
+          return result;
+        };
+        const class_stream_subjects_arr: any = filterTeacherClasses(
+          teacherDetail,
+          all_classes,
+        );
+
         const processedData = {
           first_name: teacherDetail?.data?.first_name || '',
           last_name: teacherDetail?.data?.last_name || '',
@@ -217,14 +309,14 @@ const AddEditTeacher = () => {
           email_id: teacherDetail?.data?.email_id || '',
           qualification: teacherDetail?.data?.qualification || '',
           role_id: teacherDetail?.data?.role_id || '',
-          stream: teacherDetail?.data?.stream || '',
 
-          subjects: teacherDetail?.data?.subjects || [],
-          courses: teacherDetail?.data?.courses || [
-            { course_id: '', semester: '', subjects: [] },
+          courses: course_semester_subjects_arr.courses || [
+            { course_id: '', Semester: '', subjects: [] },
           ],
           entity_id: teacherDetail?.data?.entity_id || '',
-          class_id: teacherDetail?.data?.class_id || '',
+          classes: class_stream_subjects_arr.classes || [
+            { class_id: '', stream: '', subjects: [] },
+          ],
           school_name: teacherDetail?.data?.school_name || '',
           university_id: teacherDetail.data?.university_id || '',
 
@@ -256,30 +348,12 @@ const AddEditTeacher = () => {
   };
 
   useEffect(() => {
-    callAPI();
-  }, []);
-
-  // useEffect(() => {
-  //   setFilteredData(
-  //     dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
-  //   );
-  // }, [Menulist]);
-
-  // if (
-  //   (id && !filteredData?.form_data?.is_update) ||
-  //   (!id && !filteredData?.form_data?.is_save)
-  // ) {
-  //   navigator('/main/Institute');
-  // }
-
-  useEffect(() => {
     getData(`${GET_UNIVERSITY}`).then((data) => {
       setDataUniversity(data.data);
     });
     getData(`${GET_ENTITIES}`).then((data) => {
       setDataEntity(data.data);
     });
-    getData(`${GET_COURSE}`).then((data) => setDataCourses(data.data));
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
       const allInstitutes = data.data;
 
@@ -309,6 +383,10 @@ const AddEditTeacher = () => {
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       setSchoolSubjects(data.data);
     });
+  }, []);
+
+  useEffect(() => {
+    callAPI();
   }, []);
 
   useEffect(() => {
@@ -414,8 +492,93 @@ const AddEditTeacher = () => {
   };
 
   useEffect(() => {
+    const initialCourses = teacher.courses;
+
+    formRef.current?.setFieldValue('courses', initialCourses);
+
+    setTeacher((prev) => ({
+      ...prev,
+      courses: initialCourses,
+    }));
+
+    initialCourses?.forEach((course, index) => {
+      if (course.course_id) {
+        const allSubjects = collegeSubjects.filter(
+          (subject) => subject.course_id === course.course_id,
+        );
+
+        const uniqueSemesters = allSubjects
+          .map((subject) => subject.semester_number)
+          .filter((semester, index, self) => self.indexOf(semester) === index)
+          .sort((a, b) => Number(a) - Number(b));
+
+        setCourseSemesters((prev) => ({
+          ...prev,
+          [index]: uniqueSemesters,
+        }));
+
+        if (course.semester) {
+          const filteredSubjects = allSubjects.filter(
+            (subject) => subject.semester_number === Number(course.semester),
+          );
+
+          setCourseSubjects((prev) => ({
+            ...prev,
+            [index]: filteredSubjects,
+          }));
+        }
+      }
+    });
+  }, [teacher, collegeSubjects]);
+
+  useEffect(() => {
+    const initialClasses = teacher.classes;
+
+    formRef.current?.setFieldValue('classes', initialClasses);
+
+    setTeacher((prev) => ({
+      ...prev,
+      classes: initialClasses,
+    }));
+    if (!Array.isArray(schoolSubjects)) {
+      return;
+    }
+
+    initialClasses?.forEach((cls, index) => {
+      if (cls.class_id) {
+        const allSubjects = schoolSubjects.filter(
+          (subject) => subject.class_id === cls.class_id,
+        );
+
+        const uniqueStreams = allSubjects
+          .map((subject) => subject.stream)
+          .filter((stream, index, self) => self.indexOf(stream) === index);
+
+        setClassStreams((prev) => ({
+          ...prev,
+          [index]: uniqueStreams,
+        }));
+
+        if (cls.stream) {
+          const filteredSubjects = allSubjects.filter(
+            (subject) =>
+              (subject.class_id === cls.class_id &&
+                subject.stream === cls.stream) ||
+              subject.stream == '',
+          );
+
+          setClassSubjects((prev) => ({
+            ...prev,
+            [index]: filteredSubjects,
+          }));
+        }
+      }
+    });
+  }, [teacher, schoolSubjects]);
+
+  useEffect(() => {
     if (formRef.current?.values?.courses) {
-      formRef.current.values.courses.forEach((course, index) => {
+      formRef.current?.values?.courses.forEach((course, index) => {
         if (course.course_id) {
           const allSubjects = collegeSubjects.filter(
             (subject) => subject.course_id === course.course_id,
@@ -596,9 +759,19 @@ const AddEditTeacher = () => {
       const course_semester_subjects = {} as any;
 
       originalData.courses.forEach((course: any) => {
-        course_semester_subjects[course.course_id] = {
-          [course.semester]: course.subjects,
-        };
+        const courseDetail = dataCourses.find(
+          (dataCourse) => dataCourse.id === course.course_id,
+        );
+
+        const semesterorCourseName =
+          course.semester === '' && courseDetail ? '' : course.semester;
+
+        if (!course_semester_subjects[course.course_id]) {
+          course_semester_subjects[course.course_id] = {};
+        }
+
+        course_semester_subjects[course.course_id][semesterorCourseName] =
+          course.subjects;
       });
 
       return {
@@ -622,9 +795,11 @@ const AddEditTeacher = () => {
         const streamOrClassName =
           cls.stream === '' && classDetails ? 'general' : cls.stream;
 
-        class_stream_subjects[cls.class_id] = {
-          [streamOrClassName]: cls.subjects,
-        };
+        if (!class_stream_subjects[cls.class_id]) {
+          class_stream_subjects[cls.class_id] = {};
+        }
+
+        class_stream_subjects[cls.class_id][streamOrClassName] = cls.subjects;
       });
 
       return {
