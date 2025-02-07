@@ -372,12 +372,14 @@ const Chat = () => {
       const chatmodify = JSON.parse(chatDataString);
 
       if (chatmodify && chatmodify[0].question !== '') {
-        const tadaysChat = getTodaysData(sortedChatHistory);
-        const newArray = [...tadaysChat];
+        const todaysChat = getTodaysData(sortedChatHistory);
+        const newArray = [...todaysChat];
+
         const column = [
           {
             question: chatmodify[0]?.question,
             answer: chatmodify[0]?.answer,
+            diagram_code: chatmodify[0]?.diagram_code,
           },
         ];
 
@@ -435,7 +437,6 @@ const Chat = () => {
 
     // Convert the first letter of the cleaned text to uppercase
     cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
-    console.log({ cleanedText });
 
     const utterance = new SpeechSynthesisUtterance(cleanedText);
     utterance.onerror = () => {};
