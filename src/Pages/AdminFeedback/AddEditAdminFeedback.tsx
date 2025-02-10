@@ -152,7 +152,7 @@ const AddEditAdminFeedback = () => {
                 <Form>
                   <div className="row gy-4">
                     <div className="col-md-4">
-                      <div className="form_field_wrapper">
+                      <div className="form_field_wrapper mb-3">
                         <TextField
                           label="Question *"
                           name="question"
@@ -167,7 +167,7 @@ const AddEditAdminFeedback = () => {
                         />
                       </div>
                       <div>
-                        <FieldArray name="options">
+                        <FieldArray  name="options">
                           {({ push, remove }) => (
                             <div>
                               {values.options.length > 0 &&

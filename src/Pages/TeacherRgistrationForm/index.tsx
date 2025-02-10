@@ -1667,7 +1667,7 @@ const TeacherRegistrationPage = () => {
               </div>
             </div>
           </div>
-          <div className="form-check mb-3 fs-14">
+          <div className="form-check mb-3 mt-2 fs-14">
             <input
               data-testid="checkbox"
               className="form-check-input"
@@ -1676,7 +1676,7 @@ const TeacherRegistrationPage = () => {
               id="flexCheckDefault"
               onChange={handleTermandCondi}
             />
-            <label className="form-check-label" htmlFor="flexCheckDefault">
+            <label className="form-check-label " htmlFor="flexCheckDefault">
               By registering your account you have to agree with our{' '}
               <a
                 href="#"
