@@ -90,7 +90,7 @@ const AddEditSubjectSchool = () => {
   const callAPI = async () => {
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === true,
           );
@@ -121,7 +121,7 @@ const AddEditSubjectSchool = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -142,7 +142,7 @@ const AddEditSubjectSchool = () => {
           setSubject(data?.data);
           getData(`/class/get/${data?.data?.class_id}`).then(
             (response: any) => {
-              if (response.status === 200) {
+              if (response.status) {
                 setParticularClass(response.data.class_name);
               } else setParticularClass('');
             },
@@ -176,7 +176,7 @@ const AddEditSubjectSchool = () => {
   ) => {
     if (fieldName === 'class_id') {
       getData(`/class/get/${e.target.value}`).then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           setParticularClass(response.data.class_name);
         } else setParticularClass('');
       });
@@ -206,6 +206,7 @@ const AddEditSubjectSchool = () => {
   // ) => {
   // const handleSubmit = async (subjectData: ISubjectForm) => {
   const handleSubmit1 = () => {
+    const formData = new FormData();
     const submitData = {
       subject_name: (subject[''] as string) || subject?.subject_name,
       pdf_content: subject?.pdf_content || '',
@@ -214,7 +215,7 @@ const AddEditSubjectSchool = () => {
         particularClass === 'class_11' || particularClass === 'class_12'
           ? subject.stream || ''
           : '',
-    };
+    } as any;
     if (!submitData.subject_name || !submitData.class_id) {
       return;
     }
@@ -225,11 +226,14 @@ const AddEditSubjectSchool = () => {
       return;
     }
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -254,13 +258,13 @@ const AddEditSubjectSchool = () => {
   const handleSubmit = async () => {
     // e.preventDefault();
     // e.target.reset()
-
+    const formData = new FormData();
     const submitData = {
       subject_name: subject[''] as string,
       pdf_content: subject?.menu_image || '',
       class_id: subject.class_id,
       stream: subject.stream || '',
-    };
+    } as any;
     if (!submitData.subject_name || !submitData.class_id) {
       return;
     }
@@ -271,9 +275,12 @@ const AddEditSubjectSchool = () => {
       return;
     }
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -293,9 +300,12 @@ const AddEditSubjectSchool = () => {
           });
         });
     } else {
-      postData(`${SubjectAddURL}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      postData(`${SubjectAddURL}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',

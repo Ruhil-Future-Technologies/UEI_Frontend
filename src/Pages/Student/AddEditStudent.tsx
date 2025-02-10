@@ -174,12 +174,12 @@ const AddEditStudent = () => {
         setUploadedFile(value);
         postFileData(`${'upload_file/upload'}`, formData)
           .then((data: any) => {
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
               });
-            } else if (data?.status === 404) {
+            } else if (data?.code === 404) {
               toast.error(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -259,6 +259,7 @@ const AddEditStudent = () => {
     },
   ) => {
     e.preventDefault();
+    const formData = new FormData();
     const payload = {
       aim: studentData?.aim,
       first_name: studentData?.first_name,
@@ -276,7 +277,7 @@ const AddEditStudent = () => {
       student_login_id: student?.student_login_id,
       // email_id: studentData?.email_id,
       // mobile_no_call: studentData?.mobile_no_call
-    };
+    } as any;
     const datecheck: any = dayjs(payload?.dob)?.format('DD/MM/YYYY');
     if (datecheck === 'Invalid Date') {
       setdobset_col(true);
@@ -298,9 +299,12 @@ const AddEditStudent = () => {
       error === null &&
       datecheck !== 'Invalid Date'
     ) {
-      putData(`${EditStudentURL}${id ? `/${id}` : ''}`, payload)
+      Object.keys(payload).forEach((key) => {
+        formData.append(key, payload[key]);
+      });
+      putData(`${EditStudentURL}${id ? `/${id}` : ''}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             navigator('/main/Student');
             toast.success(data?.message, {
               hideProgressBar: true,

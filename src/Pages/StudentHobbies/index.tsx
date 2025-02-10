@@ -74,14 +74,14 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           'student_hobby/edit/' + StudentId,
         );
 
-        if (studentHobbyData?.status === 200) {
+        if (studentHobbyData?.status) {
           const hobbyIds = studentHobbyData.data.map(
             (selecthobby: any) => selecthobby.hobby_id,
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
           setHobbiesAll(studentHobbyData?.data || []);
-        } else if (studentHobbyData?.status === 404) {
+        } else if (studentHobbyData?.code === 404) {
           setEditFlag(true);
         }
       } catch (e: any) {
@@ -144,7 +144,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     });
     try {
       const results = await Promise.all(payloadPromises);
-      const successfulResults = results.filter((res) => res.status === 200);
+      const successfulResults = results.filter((res) => res.code === 200);
 
       if (successfulResults?.length > 0) {
         if (!isLanguageUpdated && ishobbiestuch) {
@@ -167,7 +167,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         } else {
           setIshobbiestuch(false);
         }
-      } else if (results.some((res) => res.status !== 204)) {
+      } else if (results.some((res) => res.code !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
         //     theme: "colored",
@@ -203,7 +203,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     if (deleteHob[0]?.id) {
       deleteData('/student_hobby/delete/' + deleteHob[0]?.id)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
             // setAllHobbies(filteredData ||[]);
             // setAllHobbies(data?.data);

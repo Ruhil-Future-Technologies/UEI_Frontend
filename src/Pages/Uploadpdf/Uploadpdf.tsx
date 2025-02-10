@@ -171,7 +171,7 @@ const Uploadpdf = () => {
 
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
@@ -197,7 +197,7 @@ const Uploadpdf = () => {
     return new Promise((resolve) => {
       getData('/institution/list')
         .then(async (response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = await response?.data?.filter(
               (item: any) => item?.is_active === 1,
             );
@@ -223,7 +223,7 @@ const Uploadpdf = () => {
     if (boxes[0]?.institute_type?.toLowerCase() === 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = response?.data?.filter(
               (item: any) => item?.is_active === 1,
             );
@@ -241,7 +241,7 @@ const Uploadpdf = () => {
     } else {
       getData('college_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = response?.data?.filter(
               (item: any) => item?.is_active === 1,
             );
@@ -263,7 +263,7 @@ const Uploadpdf = () => {
     listData();
     getData('university/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -279,7 +279,7 @@ const Uploadpdf = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -296,7 +296,7 @@ const Uploadpdf = () => {
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -313,7 +313,7 @@ const Uploadpdf = () => {
       });
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === true,
           );
@@ -635,7 +635,7 @@ const Uploadpdf = () => {
     setBoxes(newBoxes);
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           setParticularClass(response.data.class_name);
         } else setParticularClass('');
       });

@@ -197,7 +197,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           if (equal) {
             setChecked(true);
           }
-        } else if (response?.status === 404) {
+        } else if (response?.code === 404) {
           setEditFlag(true);
           // toast.error(response?.message, {
           //   hideProgressBar: true,
@@ -626,7 +626,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
               } else if (!tuchedPram && tuchedCurrent) {
                 setActiveForm(2);
               }
-            } else if (data?.status === 201) {
+            } else if (data?.code === 201) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',

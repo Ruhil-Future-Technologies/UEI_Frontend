@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEvent, useEffect, useState } from 'react';
 import useApi from '../../hooks/useAPI';
 import { toast } from 'react-toastify';
@@ -43,7 +44,7 @@ const Feedback = () => {
   useEffect(() => {
     getData(`${'/feedback/'}`)
       .then((data) => {
-        if (data.status === 200) {
+        if (data.status) {
           setQuestions(data.data);
           if (data?.data?.length > 0) {
             setQuestion(data?.data[0]);
@@ -117,11 +118,15 @@ const Feedback = () => {
 
     alert('Form submitted successfully');
     // Handle submission logic here
+    const formData = new FormData();
     const payload = {
       student_id: StudentId,
       feedbacks: updatedAnswers,
-    };
+    } as any;
 
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
     // postData("/feedback/student_feedback", payload)
     //   .then((response) => {
     //     if (response.status === 200) {
@@ -140,8 +145,8 @@ const Feedback = () => {
     //     alert("Error while submitting feedback. Please try again later.");
     //   });
     try {
-      const response = await postData('/feedback/student_feedback', payload);
-      if (response.status === 200) {
+      const response = await postData('/feedback/student_feedback', formData);
+      if (response.status) {
         toast.success('Feedback sent successfully', {
           hideProgressBar: true,
           theme: 'colored',

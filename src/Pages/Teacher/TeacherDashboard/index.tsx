@@ -54,7 +54,7 @@ interface Teacher {
 }
 
 const TeacherDash = () => {
-  const teacherId=localStorage.getItem('_id');
+  const teacherId = localStorage.getItem('_id');
   const [activeTab, setActiceTab] = useState(0);
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
@@ -101,14 +101,14 @@ const TeacherDash = () => {
     try {
       getData(`/teacher/getbyloginid/${teacherId}`).then((data) => {
         console.log(data);
-        if (data?.status === 200) {
+        if (data?.status) {
           setTeacherData(data.data);
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
     getTeacherInfo();
   }, []);
@@ -152,7 +152,9 @@ const TeacherDash = () => {
                         alt="user"
                       />
                       <div className="w-100">
-                        <h4 className="fw-semibold  fs-18 ">{teacherData?.first_name} {teacherData?.last_name}</h4>
+                        <h4 className="fw-semibold  fs-18 ">
+                          {teacherData?.first_name} {teacherData?.last_name}
+                        </h4>
                         <small className=" d-block">24 Course</small>
                         <small className=" d-block mb-2">
                           18 Certification

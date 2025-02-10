@@ -150,14 +150,20 @@ const SuperAdmin = () => {
     // e.preventDefault()
     // e.target.reset()
     console.log('reset', menuData);
+    const formData = new FormData();
     const payload = {
       user_type: value,
       userid: menuData?.userid,
       password: menuData?.password,
-    };
-    postData(`${signupUrl}`, payload)
+    } as any;
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+    postData(`${signupUrl}`, formData)
       .then((data: any) => {
-        if (data.status === 200) {
+        if (data.status) {
           // Navigate('/main/Menu')
           toast.success(data.message, {
             hideProgressBar: true,

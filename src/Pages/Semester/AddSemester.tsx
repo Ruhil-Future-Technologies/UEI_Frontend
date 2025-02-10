@@ -53,7 +53,7 @@ const AddSemester = () => {
         setinstituteList(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -67,7 +67,7 @@ const AddSemester = () => {
         setCourseList(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -92,16 +92,20 @@ const AddSemester = () => {
     callAPI();
   }, []);
   const handleSubmit = async (semesterData: any, { resetForm }: any) => {
+    const formData = new FormData();
     const semPayload = {
       course_id: semesterData.course,
       institution_id: semesterData.institute,
       semester_number: semesterData?.semester_name,
-    };
+    } as any;
 
     if (id) {
-      putData(`${semesterUpdateURL}/${id}`, semPayload)
+      Object.keys(semPayload).forEach((key) => {
+        formData.append(key, semPayload[key]);
+      });
+      putData(`${semesterUpdateURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Semester');
             resetForm();
             toast.success(data.message, {
@@ -122,7 +126,10 @@ const AddSemester = () => {
           });
         });
     } else {
-      postData(`${SemesterAddURL}`, semPayload)
+      Object.keys(semPayload).forEach((key) => {
+        formData.append(key, semPayload[key]);
+      });
+      postData(`${SemesterAddURL}`, formData)
         .then((data: { status: number; message: string }) => {
           if (data.status === 200) {
             toast.success(data.message, {

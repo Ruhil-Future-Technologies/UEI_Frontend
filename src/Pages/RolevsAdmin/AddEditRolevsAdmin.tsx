@@ -88,7 +88,7 @@ const AddEditRoleVsAdmin = () => {
         // setDataRole(data?.data||[])
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -105,7 +105,7 @@ const AddEditRoleVsAdmin = () => {
         // setDataAdmin(data?.data||[])
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -123,7 +123,7 @@ const AddEditRoleVsAdmin = () => {
           });
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -157,11 +157,16 @@ const AddEditRoleVsAdmin = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  const handleSubmit = async (rolevsadminData: IRolevsAdmin) => {
+  const handleSubmit = async (rolevsadminData: any) => {
+    const formData = new FormData();
+
+    Object.keys(rolevsadminData).forEach((key) => {
+      formData.append(key, rolevsadminData[key]);
+    });
     if (id) {
-      putData(`${RolevsAdminEditURL}/${id}`, rolevsadminData)
+      putData(`${RolevsAdminEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             navigator('/main/RoleVsUser');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -181,9 +186,9 @@ const AddEditRoleVsAdmin = () => {
           });
         });
     } else {
-      postData(`${RolevsAdminAddURL}`, rolevsadminData)
+      postData(`${RolevsAdminAddURL}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             // navigator('/main/RoleVsUser')
             toast.success(data.message, {
               hideProgressBar: true,

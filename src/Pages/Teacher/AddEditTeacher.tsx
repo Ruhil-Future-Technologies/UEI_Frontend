@@ -208,7 +208,7 @@ const AddEditTeacher = () => {
           setDob(dayjs(teacherDetail.data.dob));
         }
       } catch (e: any) {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -462,6 +462,7 @@ const AddEditTeacher = () => {
     teacherData: ITeacherForm,
     { resetForm }: FormikHelpers<ITeacherForm>,
   ) => {
+    const formData = new FormData();
     const teacherRole = role.find(
       (r) => r.role_name.toLowerCase() === 'teacher',
     );
@@ -481,12 +482,15 @@ const AddEditTeacher = () => {
     const formattedData = {
       ...teacherData,
       role_id: teacherRole?.id,
-    };
+    } as any;
 
     if (id) {
-      putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formattedData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      Object.keys(formattedData).forEach((key) => {
+        formData.append(key, formattedData[key]);
+      });
+      putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formData)
+        .then((data: any) => {
+          if (data.status) {
             navigator('/main/Teacher');
             toast.success('Teacher updated successfully', {
               hideProgressBar: true,
@@ -495,7 +499,7 @@ const AddEditTeacher = () => {
           }
         })
         .catch((e: any) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -504,9 +508,12 @@ const AddEditTeacher = () => {
           });
         });
     } else {
-      postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formattedData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      Object.keys(formattedData).forEach((key) => {
+        formData.append(key, formattedData[key]);
+      });
+      postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formData)
+        .then((data: any) => {
+          if (data.status) {
             toast.success('Teacher saved successfully', {
               hideProgressBar: true,
               theme: 'colored',

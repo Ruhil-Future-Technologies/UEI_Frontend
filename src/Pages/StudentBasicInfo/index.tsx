@@ -134,7 +134,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
           // setSelectedFile(data?.data?.pic_path);
           // console.log(typeof data?.data?.gender);
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setEditFlag(true);
           toast.warning('Please add your information', {
             hideProgressBar: true,
@@ -261,13 +261,13 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         value = file.name;
         postFileData(`${'upload_file/upload'}`, formData)
           .then((data: any) => {
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
                 position: 'top-center',
               });
-            } else if (data?.status === 404) {
+            } else if (data?.code === 404) {
               toast.error(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',

@@ -97,7 +97,7 @@ const AddEditSubject = () => {
         setinstituteList(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -112,7 +112,7 @@ const AddEditSubject = () => {
         setCourseListAll(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -122,7 +122,7 @@ const AddEditSubject = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.code === 200) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -222,19 +222,23 @@ const AddEditSubject = () => {
   };
 
   const handleSubmit1 = () => {
+    const formData = new FormData();
     const submitData = {
       subject_name: (subject[''] as string) || subject?.subject_name,
       pdf_content: subject?.pdf_content || '',
       semester_id: subject.semester_id,
       course_id: subject.course_id,
       institution_id: subject.institution_id,
-    };
+    } as any;
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -259,17 +263,21 @@ const AddEditSubject = () => {
     subjectData: ISubjectForm,
     { resetForm }: FormikHelpers<ISubjectForm>,
   ) => {
+    const formData = new FormData();
     const submitData = {
       subject_name: subjectData.subject_name,
       pdf_content: subjectData?.menu_image || '',
       semester_id: subjectData.semester_id,
       course_id: subjectData.course_id,
       institution_id: subjectData.institution_id,
-    };
+    } as any;
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -289,9 +297,12 @@ const AddEditSubject = () => {
           });
         });
     } else {
-      postData(`${SubjectAddURL}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      postData(`${SubjectAddURL}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',

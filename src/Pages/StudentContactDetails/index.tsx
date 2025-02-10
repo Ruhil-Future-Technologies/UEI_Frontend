@@ -252,7 +252,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
         if (!eq) {
           putData(`${'student_contact/edit/'}${StudentId}`, formData)
             .then((data: any) => {
-              if (data.status === 200) {
+              if (data.status) {
                 toast.success('Contact Details updated successfully', {
                   hideProgressBar: true,
                   theme: 'colored',

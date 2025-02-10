@@ -53,7 +53,7 @@ const RolevsForm = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -78,7 +78,7 @@ const RolevsForm = () => {
   const handleDelete = (id: any) => {
     deleteData(`${DeleteRolevsFormURL}/${id}`)
       .then((data: any) => {
-        if (data.status === 200) {
+        if (data.status) {
           toast.success('Role vs Form deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -93,7 +93,7 @@ const RolevsForm = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
