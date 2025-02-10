@@ -9,6 +9,8 @@ interface IChatBot {
 }
 
 const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
+  console.log({ answer });
+
   const hasLatex = Array.isArray(answer)
     ? answer.some(
         (text) =>
