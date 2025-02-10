@@ -477,15 +477,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       );
       setSubjects(subjectData);
     }
-    // if(field ==='preference'){
-    //   console.log("inside 1111111111");
-    //   if( /^[a-zA-Z]+$/.test(value)){
-    //     console.log("inside 22222222222");
-    //     setPreferenceValidations(false)
-    //   }else{
-    //     setPreferenceValidations(true)
-    //   }
-    // }
     if (field === 'class_id') {
       const subjectData = subjectsAll.filter(
         (item: any) => item.class_id === value,
@@ -529,15 +520,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     
       // Ensure value is properly formatted as a string
       const trimmedValue = String(value).trim();
-    
-      // Debugging logs to check input before regex
-      console.log("Checking value:", trimmedValue);
-    
+
       // Updated regex to accept 10-100 with up to 2 decimal places
       const regex = /^(100|[1-9][0-9])(\.\d{1,2})?$/;
-    console.log(trimmedValue);
       if (!regex.test(trimmedValue)) {
-        console.log("❌ Invalid input:", trimmedValue);
         if (!newValidationErrors[index]) {
           newValidationErrors[index] = {};
         }
@@ -545,7 +531,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setValidationErrors(newValidationErrors);
        // return;
       } else {
-        console.log("✅ Valid input:", trimmedValue);
         if (newValidationErrors[index]) {
           delete newValidationErrors[index][field];
           if (Object.keys(newValidationErrors[index]).length === 0) {
