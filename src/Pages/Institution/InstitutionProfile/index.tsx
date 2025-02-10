@@ -80,12 +80,14 @@ const InstitutionProfile = () => {
     }, [])
     const getEntity = () => {
         getData(`${InstituteEntityURL}`)
-            .then((data: { data: IEntity[] }) => {
-                const filteredData = data?.data.filter(
-                    (entity) => entity.is_active === 1,
-                );
-                setEntityData(filteredData);
-                // setDataEntity(data?.data)
+            .then((data: {status:boolean, data: IEntity[] }) => {
+                if(data?.status){
+                    const filteredData = data?.data.filter(
+                        (entity) => entity.is_active === 1,
+                    );
+                    setEntityData(filteredData);
+                }
+
             })
             .catch((e) => {
 
@@ -97,8 +99,8 @@ const InstitutionProfile = () => {
     };
     const getUniversity = () => {
         getData(`${UniversityURL}`)
-            .then((data: { data: IUniversity[] }) => {
-                if (data.data) {
+            .then((data: {status:boolean, data: IUniversity[] }) => {
+                if (data.status) {
                     setUniversityData(data?.data);
                 }
             })
@@ -113,7 +115,7 @@ const InstitutionProfile = () => {
         try {
             await getData(`institution/getbyloginid/${instituttionLoginId}`).then((response) => {
                 console.log(response, 'institute profile info');
-                if (response?.status === 200) {
+                if (response?.status) {
                     setInstituteInfo(response?.data);
                     setInstituteId(response.data.id);
                     console.log(response);
@@ -312,7 +314,7 @@ const InstitutionProfile = () => {
         try {
             console.log(payload);
             putData(`/institution/edit/${instituteId}`, payload).then((reaponse) => {
-                if (reaponse.status === 200) {
+                if (reaponse.status) {
                     toast.success('Profile updated successfully', {
                         hideProgressBar: true,
                         theme: 'colored',

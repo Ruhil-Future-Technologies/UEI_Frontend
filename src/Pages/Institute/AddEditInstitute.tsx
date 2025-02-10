@@ -101,13 +101,13 @@ const AddEditInstitute = () => {
 
   const callAPIfilter = async () => {
     getData(`${InstituteURL}`)
-      .then((data: { data: InstituteRep0oDTO[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: InstituteRep0oDTO[] }) => {
+        if (data.status) {
           setDataInstitute(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           // navigate("/")
         }
       });
@@ -131,15 +131,18 @@ const AddEditInstitute = () => {
 
   const callAPI = async () => {
     getData(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        const filteredData = data?.data.filter(
-          (entity) => entity.is_active === 1,
-        );
-        setDataEntity(filteredData);
+      .then((data: {status:boolean, data: IEntity[] }) => {
+        if(data.status){
+          const filteredData = data?.data.filter(
+            (entity) => entity.is_active === 1,
+          );
+          setDataEntity(filteredData);
+        }
+        
         // setDataEntity(data?.data)
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -148,13 +151,13 @@ const AddEditInstitute = () => {
         });
       });
     getData(`${UniversityURL}`)
-      .then((data: { data: IUniversity[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: IUniversity[] }) => {
+        if (data.status) {
           setDataUniversity(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -164,11 +167,13 @@ const AddEditInstitute = () => {
       });
     if (id) {
       getData(`${InstituteEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: any }) => {
-          setInstitute(data?.data);
+        .then((data: {status:boolean, data: any }) => {
+          if(data.status){
+            setInstitute(data?.data);
+          }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -331,8 +336,8 @@ const AddEditInstitute = () => {
     }
     if (id) {
       putData(`${InstituteEditURL}/${id}`, filteredData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Institute');
             toast.success('Institute updated successfully', {
               hideProgressBar: true,
@@ -346,7 +351,7 @@ const AddEditInstitute = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -356,8 +361,8 @@ const AddEditInstitute = () => {
         });
     } else {
       postData(`${InstituteAddURL}`, filteredData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Institute')
             toast.success('Institute saved successfully', {
               hideProgressBar: true,

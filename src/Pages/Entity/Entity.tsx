@@ -55,13 +55,13 @@ const Entity = () => {
 
   const callAPI = async () => {
     getData(`${EntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: IEntity[] }) => {
+        if (data.status) {
           setDataEntity(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -90,8 +90,8 @@ const Entity = () => {
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteEntityURL}/${id}`)
-      .then((data: { message: string; status: any }) => {
-        if (data.status === 200) {
+      .then((data: { message: string; status: boolean }) => {
+        if (data.status) {
           toast.success('Entity deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -106,7 +106,7 @@ const Entity = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {

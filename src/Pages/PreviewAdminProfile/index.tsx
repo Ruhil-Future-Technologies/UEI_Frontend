@@ -76,7 +76,7 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
     getData(`${profileURL}/${AdminId}`)
       .then((data: any) => {
         // console.log(data.data)
-        if (data.data) {
+        if (data.status) {
           setProfileData(data?.data);
           const basic_info = {
             dob: data?.data?.basic_info?.dob,
@@ -254,9 +254,13 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
           admin_login_id: AdminId,
           pic_path: filename,
         };
+        const formData=new FormData();
+        Object.entries(payload).forEach(([key,value])=>{
+          formData.append(key,value as string);
+        })
         if (dataadmin?.status === 404) {
-          const dataadd = await postData(`${'admin_basicinfo/add'}`, payload);
-          if (dataadd?.status === 200) {
+          const dataadd = await postData(`${'admin_basicinfo/add'}`, formData);
+          if (dataadd?.status) {
             await callAPI();
             setprofileImage(avatarUrl);
           }
@@ -273,11 +277,16 @@ const PreviewAdminProfile: React.FC<PreviewAdminProfileProps> = ({
             pic_path: filename,
             department_id: dataadmin?.data?.department_id,
           };
+
+          const formData= new FormData();
+           Object.entries(payload).forEach(([key,value])=>{
+            formData.append(key,value);
+           })
           const dataadd = await putData(
             `${'admin_basicinfo/edit/'}${AdminId}`,
-            payload,
+            formData,
           );
-          if (dataadd?.status === 200) {
+          if (dataadd?.status) {
             await callAPI();
             setprofileImage(avatarUrl);
             setProImage(avatarUrl);

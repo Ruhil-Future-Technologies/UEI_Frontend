@@ -66,7 +66,6 @@ const InstitutionDash = () => {
   useEffect(() => {
     getInstitutionInfo();
    
-    console.log('getData');
     // eslint-disable-next-line
   }, []);
  
@@ -74,7 +73,7 @@ const InstitutionDash = () => {
     console.log(totleCourse);
     try {
       await getData(`course/course-count/${instituteId}`).then((response) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           setTotleCourse(response?.data?.courses_count);
         }
         console.log(response);
@@ -86,7 +85,7 @@ const InstitutionDash = () => {
   const getCountTeacher = async (instituteId:any) => {
     try {
       await getData(`/teacher/count/${instituteId}`).then((response) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           setTotleTeacher(response?.data?.teacher_count);
         }
         console.log(response);
@@ -99,9 +98,9 @@ const InstitutionDash = () => {
     try {
       await getData(`/institution/get-student-count/${instituteId}`).then(
         (response) => {
-          console.log(response);
+          if(response.status) {
             setTotelStudent(response.student_count);
-          
+          }
         },
       );
     } catch (error) {
@@ -111,8 +110,7 @@ const InstitutionDash = () => {
   const getInstitutionInfo = async () => {
     try {
       await getData(`institution/getbyloginid/${instituteLoginId}`).then((response) => {
-        console.log(response, 'institute profile info');
-        if (response?.status === 200) {
+        if (response?.status) {
 
           setInstituteInfo(response?.data);
           getCourseCount(response?.data?.id);
@@ -133,8 +131,7 @@ const InstitutionDash = () => {
   const getStudentsData = async (instituteId:any) => {
     try {
       await getData(`/student/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataStudents(response?.data);
         }
       });
@@ -146,8 +143,7 @@ const InstitutionDash = () => {
   const getTeahcersData = async (instituteId:any) => {
     try {
       await getData(`/teacher/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataTeachers(response?.data);
         }
       });
@@ -158,8 +154,7 @@ const InstitutionDash = () => {
   const getCoursesData = async (instituteId:any) => {
     try {
       await getData(`/course/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataCourses(response?.data);
         }
       });
@@ -177,29 +172,7 @@ const InstitutionDash = () => {
     { subject: 'Geography', totalStudents: 40, image: courseImg },
   ];
 
-  // const topStudent = [
-  //   {
-  //     name: 'Akulya shiva',
-  //     class: '5th',
-  //     image: studentimg,
-  //   },
-  //   {
-  //     name: 'Nitn raj',
-  //     class: '8th',
-  //     image: studentimg,
-  //   },
-  //   {
-  //     name: 'Rovin singh',
-  //     class: '10th',
-  //     image: studentimg,
-  //   },
-  //   {
-  //     name: 'Rohit patel',
-  //     class: '9th',
-  //     image: studentimg,
-  //   },
-  // ];
-  return (
+   return (
     <div className="main-wrapper">
       <div className="main-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

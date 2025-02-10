@@ -52,8 +52,11 @@ const AddEditHobby = () => {
   const callAPI = async () => {
     if (id) {
       getData(`${HobbyEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: IHobbyForm }) => {
-          setHobby(data?.data);
+        .then((data: { status: boolean, data: IHobbyForm }) => {
+          if (data.status) {
+            setHobby(data?.data);
+          }
+
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
@@ -68,8 +71,8 @@ const AddEditHobby = () => {
   };
   const callAPIHobby = async () => {
     getData(`${HobbyURL}`)
-      .then((data: { data: HobbyRep0oDTO[] }) => {
-        if (data.data) {
+      .then((data: { status: boolean, data: HobbyRep0oDTO[] }) => {
+        if (data.status) {
           setDataHobby(data?.data);
         }
       })
@@ -112,10 +115,20 @@ const AddEditHobby = () => {
     hobbyData: { hobby_name: string | null },
     { resetForm }: FormikHelpers<{ hobby_name: string | null }>,
   ) => {
+
+    const formData = new FormData();
+
+
+
+    Object.entries(hobbyData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value)
+      }
+    })
     if (id) {
-      putData(`${HobbyEditURL}/${id}`, hobbyData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      putData(`${HobbyEditURL}/${id}`, formData)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Hobby');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -139,9 +152,9 @@ const AddEditHobby = () => {
           });
         });
     } else {
-      postData(`${HobbyAddURL}`, hobbyData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      postData(`${HobbyAddURL}`, formData)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Hobby')
             toast.success(data.message, {
               hideProgressBar: true,

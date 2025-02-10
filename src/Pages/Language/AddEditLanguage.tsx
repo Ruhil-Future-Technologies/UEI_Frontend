@@ -63,7 +63,9 @@ const AddEditLanguage = () => {
       try {
         if (id) {
           const data = await getData(`${LanguageEditURL}/${id}`);
-          setLanguage(data?.data || initialState);
+          if(data?.status){
+            setLanguage(data?.data || initialState);
+          }
         }
       } catch (e: any) {
         toast.error(e?.message, {
@@ -75,29 +77,12 @@ const AddEditLanguage = () => {
 
     fetchData();
   }, [id, LanguageEditURL]);
-  // const callAPILanguage = async () => {
-  //   getData(`${LanguageURL}`)
-  //     .then((data: any) => {
-  //       if (data?.data) {
-  //         setDataLanguage(data?.data);
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       if (e?.response?.status === 401) {
-  //         // navigate("/")
-  //       }
-  //       // toast.error(e?.message, {
-  //       //     hideProgressBar: true,
-  //       //     theme: "colored",
-  //       // });
-  //     });
-  // };
+
   const callAPILanguage = async () => {
     try {
-      console.log('Calling getData');
+  
       const data = await getData(`${LanguageURL}`);
-      console.log('Data received:', data);
-      if (data?.data) {
+      if (data?.status) {
         setDataLanguage(data?.data);
       }
     } catch (e) {

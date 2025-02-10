@@ -114,7 +114,6 @@ const Login = () => {
       } else {
         setuserValue('');
       }
-      console.log(UserSignUp)
       try {
         const data = await postData(loginUrl, UserSignUp);
         console.log(data)

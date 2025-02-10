@@ -42,13 +42,13 @@ const Hobby = () => {
 
   const callAPI = async () => {
     getData(`${HobbyURL}`)
-      .then((data: { data: HobbyRep0oDTO[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: HobbyRep0oDTO[] }) => {
+        if (data.status) {
           setDataHobby(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {

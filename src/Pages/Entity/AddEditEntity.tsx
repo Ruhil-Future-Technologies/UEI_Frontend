@@ -52,11 +52,13 @@ const AddEditEntity = () => {
   const callAPI = async () => {
     if (id) {
       getData(`${EntityEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: { entity_type: string } }) => {
-          setEntity(data?.data?.entity_type);
+        .then((data: { status: boolean, data: { entity_type: string } }) => {
+          if (data.status) {
+            setEntity(data?.data?.entity_type);
+          }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -83,10 +85,18 @@ const AddEditEntity = () => {
 
   // const handleSubmit = async (formData: { entity_type: string; }) => {
   const handleSubmit = async (formData: { entity_type: string }) => {
+    const formDataObject = new FormData();
+
+    // Append each key-value pair to FormData
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formDataObject.append(key, value);
+      }
+    });
     if (id) {
-      putData(`${EntityEditURL}/${id}`, formData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      putData(`${EntityEditURL}/${id}`, formDataObject)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Entity');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -100,7 +110,7 @@ const AddEditEntity = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -109,9 +119,9 @@ const AddEditEntity = () => {
           });
         });
     } else {
-      postData(`${EntityAddURL}`, formData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      postData(`${EntityAddURL}`, formDataObject)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Entity')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -128,7 +138,7 @@ const AddEditEntity = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -192,9 +202,9 @@ const AddEditEntity = () => {
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e)
                           }
-                          // onChange={handleChange}
-                          //   error={touched.entity_type && !!errors.entity_type}
-                          //   helperText={touched.entity_type && errors.entity_type}
+                        // onChange={handleChange}
+                        //   error={touched.entity_type && !!errors.entity_type}
+                        //   helperText={touched.entity_type && errors.entity_type}
                         />
                         {touched?.entity_type && errors?.entity_type ? (
                           <p style={{ color: 'red' }}>{errors?.entity_type}</p>

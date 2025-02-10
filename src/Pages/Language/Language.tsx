@@ -41,12 +41,12 @@ const Language = () => {
   const callAPI = async () => {
     getData(`${LanguageURL}`)
       .then((data: any) => {
-        if (data.data) {
+        if (data.status) {
           setDataLanguage(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -75,7 +75,10 @@ const Language = () => {
           hideProgressBar: true,
           theme: 'colored',
         });
-        callAPI();
+        if(data.status){
+          callAPI();
+        }
+       
         setDataDelete(false);
       })
       .catch((e) => {

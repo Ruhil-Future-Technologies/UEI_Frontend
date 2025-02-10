@@ -115,13 +115,13 @@ const Institute = () => {
 
   const callAPI = async () => {
     getData(`${InstituteURL}`)
-      .then((data: { data: InstituteRep0oDTO[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: InstituteRep0oDTO[] }) => {
+        if (data.status) {
           setDataInstitute(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -187,15 +187,18 @@ const Institute = () => {
 
   const handleApproveInstitute = (id: number) => {
     putData(`${QUERY_KEYS.INSITUTE_APPROVE}/${id}`)
-      .then(() => {
-        toast.success('Institute approved successfully', {
+      .then((data) => {
+        if(data.status){
+          callAPI();
+        }
+        toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
-        callAPI();
+        
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
@@ -203,15 +206,18 @@ const Institute = () => {
   };
   const handleRejectInstitute = (id: number) => {
     putData(`${QUERY_KEYS.INSITUTE_DISAPPROVE}/${id}`)
-      .then(() => {
-        toast.success('Institute rejected', {
+      .then((data) => {
+        if(data.status){
+          callAPI();
+        }
+        toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
-        callAPI();
+      
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });

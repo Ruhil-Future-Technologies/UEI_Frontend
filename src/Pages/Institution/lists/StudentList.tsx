@@ -35,8 +35,7 @@ const StudentListingByInstitution = () => {
   const getStudentsData = async () => {
     try {
       await getData(`/student/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataStudents(response?.data);
         }
       });

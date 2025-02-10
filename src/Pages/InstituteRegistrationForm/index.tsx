@@ -116,13 +116,13 @@ const InstituteRegistrationForm = () => {
 
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
-      .then((data: { data: IUniversity[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: IUniversity[] }) => {
+        if (data.status) {
           setDataUniversity(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -135,15 +135,13 @@ const InstituteRegistrationForm = () => {
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        // const filteredData = data?.data.filter(
-        //     (entity) => entity.is_active === 1,
-        // );
-        // setDataEntity(filteredData);
-        setDataEntity(data?.data);
+      .then((data: {status:boolean, data: IEntity[] }) => {
+        if(data.status){
+          setDataEntity(data?.data);
+        }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -397,8 +395,8 @@ const InstituteRegistrationForm = () => {
     try {
       postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
         console.log(response)
-        if (response.status === 200) {
-          toast.success('Institute registration request sent successfully', {
+        if (response.status ) {
+          toast.success(response.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
