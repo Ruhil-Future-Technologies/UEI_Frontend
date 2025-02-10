@@ -226,6 +226,15 @@ const Institute = () => {
     const instituteDetail = filteredInstitutes.find(
       (institute) => institute.id == id,
     );
+
+    const createdDateTime = instituteDetail.created_at;
+    const updatedDateTime = instituteDetail.updated_at;
+    const created_time = new Date(createdDateTime);
+    const updated_time = new Date(updatedDateTime);
+
+    instituteDetail.created_at = created_time.toLocaleString();
+    instituteDetail.updated_at = updated_time.toLocaleString();
+
     delete instituteDetail.is_active;
     delete instituteDetail.entity_id;
     delete instituteDetail.icon;
