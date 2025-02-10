@@ -186,7 +186,7 @@ const TeacherRegistrationPage = () => {
 
 
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
-  const [allselectedfiles, handleFileChanges] = useState<File[]>([]);
+  const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const [filteredInstitute, setFiteredInstitute] = useState<InstituteRep0oDTO[]>([]);
   const [dataCourse, setDataCourse] = useState<CourseRep0oDTO[]>([]);
@@ -495,7 +495,7 @@ const TeacherRegistrationPage = () => {
     getRole();
   }, []);
 
- 
+
   const handleSelect = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
 
@@ -798,7 +798,7 @@ const TeacherRegistrationPage = () => {
       // Convert FileList to an array
       const filesArray = Array.from(files);
 
-      handleFileChanges((prevFiles) => [
+      setAllSelectedfiles((prevFiles) => [
         ...prevFiles, // Keep previously selected files
         ...filesArray, // Add newly selected files
       ]);
@@ -948,7 +948,9 @@ const TeacherRegistrationPage = () => {
       setBoxes(boxes.filter((_, i) => i !== index));
     }
   };
- 
+  const handleRemoveFile = (index: number) => {
+    setAllSelectedfiles((previous) => previous.filter((_, ind) => ind !== index));
+  }
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -1636,24 +1638,29 @@ const TeacherRegistrationPage = () => {
               </div>
             ))}
           <div className="row d-flex justify-content-between">
-            <div className="col-md-6 col-12">
+            <div className="col-md-6 col-12 ">
               <label className="col-form-label">
                 {' '}
                 Document<span>*   </span>
-
               </label>
-              {' '}
               <UploadBtn
                 label="Upload Documents"
                 name="document"
                 accept=".pdf, .jpg, .jpeg, .png, .gif"
                 handleFileChange={handleFileChange}
+                
               />
               <div>
                 {allselectedfiles.length > 0 && (
-                  <ul className='mt-4'>
+                  <ul>
                     {allselectedfiles.map((file, index) => (
-                      <li key={index}>{file.name}</li>
+                      <li key={index} className="flex items-center justify-between">
+                        {file.name}
+                        <DeleteOutlinedIcon
+                          className="m-2 cursor-pointer"
+                          onClick={() => handleRemoveFile(index)}
+                        />
+                      </li>
                     ))}
                   </ul>
                 )}

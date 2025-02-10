@@ -477,15 +477,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       );
       setSubjects(subjectData);
     }
-    // if(field ==='preference'){
-    //   console.log("inside 1111111111");
-    //   if( /^[a-zA-Z]+$/.test(value)){
-    //     console.log("inside 22222222222");
-    //     setPreferenceValidations(false)
-    //   }else{
-    //     setPreferenceValidations(true)
-    //   }
-    // }
     if (field === 'class_id') {
       const subjectData = subjectsAll.filter(
         (item: any) => item.class_id === value,
@@ -519,7 +510,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     }
 
     if (field === 'score_in_percentage') {
-      // Allow empty value
       if (value === '') {
         newBoxes[index][field] = value;
         delete newValidationErrors[index]?.[field];
@@ -527,16 +517,19 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setBoxes(newBoxes);
         return;
       }
+    
+      // Ensure value is properly formatted as a string
+      const trimmedValue = String(value).trim();
 
-      // Validate the score_in_percentage using regex
-      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
-      if (!regex.test(value)) {
+      // Updated regex to accept 10-100 with up to 2 decimal places
+      const regex = /^(100|[1-9][0-9])(\.\d{1,2})?$/;
+      if (!regex.test(trimmedValue)) {
         if (!newValidationErrors[index]) {
           newValidationErrors[index] = {};
         }
         newValidationErrors[index][field] = true;
         setValidationErrors(newValidationErrors);
-        return;
+       // return;
       } else {
         if (newValidationErrors[index]) {
           delete newValidationErrors[index][field];
@@ -547,6 +540,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setValidationErrors(newValidationErrors);
       }
     }
+    
+    
     newBoxes[index][field] = value;
     setBoxes(newBoxes);
     validateFields(index, field);

@@ -28,6 +28,7 @@ import {
 import NameContext from '../Context/NameContext';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from '../../Components/Dailog/OtpCard';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -113,7 +114,7 @@ const InstituteRegistrationForm = () => {
   const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
-  const [allselectedfiles, handleFileChanges] = useState<File[]>([]);
+  const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
 
 
@@ -205,7 +206,7 @@ const InstituteRegistrationForm = () => {
     console.log(files, typeof files)
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
-      handleFileChanges((prevFiles) => [
+      setAllSelectedfiles((prevFiles) => [
         ...prevFiles, // Keep previously selected files
         ...filesArray, // Add newly selected files
       ]);
@@ -454,7 +455,9 @@ const InstituteRegistrationForm = () => {
     }
     validation(name, val);
   };
-
+const handleRemoveFile=(index:number)=>{
+  setAllSelectedfiles((previous)=>previous.filter((_,ind)=>ind!==index));
+}
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -826,10 +829,18 @@ const InstituteRegistrationForm = () => {
                 {allselectedfiles.length > 0 && (
                   <ul className='mt-4'>
                     {allselectedfiles.map((file, index) => (
-                      <li key={index}>{file.name}</li>
+                      <li key={index} className="flex items-center justify-between">
+                        {file.name}
+                        <DeleteOutlinedIcon
+                          className="m-2 cursor-pointer"
+                          onClick={() => handleRemoveFile(index)}
+                          />
+                        
+                      </li>
                     ))}
                   </ul>
                 )}
+
               </div>
             </div>
             <div className="col-md-6 col-12 mb-3">
