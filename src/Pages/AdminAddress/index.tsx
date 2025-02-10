@@ -161,7 +161,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   const listData = async () => {
     getData(`${'admin_address/edit/' + adminId}`)
       .then((response: any) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           let add1: any;
           let add2: any;
           response?.data.forEach((address: any) => {
@@ -205,7 +205,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           if (equal) {
             setChecked(true);
           }
-        } else if (response?.status === 404) {
+        } else if (response?.code === 404) {
           setEditFlag(true);
           // toast.error(response?.message, {
           //   hideProgressBar: true,
@@ -233,7 +233,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
   useEffect(() => {
     getData(`${'admin_address/edit/' + adminId}`).then((response: any) => {
-      if (response?.status === 200) {
+      if (response?.status) {
         response?.data.forEach((address: any) => {
           if (address?.address_type === 'permanent_address') {
             //setPermanentAddress(address);
@@ -548,9 +548,18 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
     ) {
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
+
+          const formData = new FormData();
+
+          // Loop through each key in the payload and append it if it's not null or undefined
+          Object.entries(addressPayload).forEach(([key, value]) => {
+              if (value !== null && value !== undefined) {
+                  formData.append(key, value as string);
+              }
+          });
           try {
-            const data = await postData('/admin_address/add', addressPayload);
-            if (data?.status === 200) {
+            const data = await postData('/admin_address/add', formData);
+            if (data?.status) {
               toast.success(`${addressType} address saved successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -598,13 +607,21 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           addressType: string,
           addressPayload: any,
         ) => {
+          const formData = new FormData();
+
+          // Loop through each key in the payload and append it if it's not null or undefined
+          Object.entries(addressPayload).forEach(([key, value]) => {
+              if (value !== null && value !== undefined) {
+                  formData.append(key, value as string);
+              }
+          });
           try {
             const data = await putData(
               '/admin_address/edit/' + adminId,
-              addressPayload,
+              formData,
             );
 
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -628,7 +645,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               } else if (!tuchedPram && tuchedCurrent) {
                 setActiveForm(2);
               }
-            } else if (data?.status === 201) {
+            } else if (data?.code === 201) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',

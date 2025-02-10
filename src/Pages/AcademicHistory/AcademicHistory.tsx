@@ -210,7 +210,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     return new Promise((resolve) => {
       getData('/institution/list')
         .then(async (response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = await response?.data?.filter(
               (item: any) => item?.is_active === 1,
             );
@@ -246,7 +246,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     getData('university/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -263,7 +263,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -281,7 +281,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -299,7 +299,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       });
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === true,
@@ -327,11 +327,11 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       });
     getData(`${'new_student_academic_history/get/' + StudentId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           if (data?.data?.[0]?.class_id) {
             getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
               (response: any) => {
-                if (response.status === 200) {
+                if (response.status) {
                   setParticularClass(response.data.class_name);
                 } else setParticularClass('');
               },
@@ -359,7 +359,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
           });
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setBoxes([
             {
               id: 0,
@@ -423,67 +423,39 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
     // If validation passes, proceed with form submission
     const promises = updatedBoxes.map((box) => {
-      const payload = {
-        student_id: StudentId,
-        institution_type: box.institute_type,
-        board:
-          box.institute_type.toLowerCase() === 'school'
-            ? box.board
-            : box.id
-              ? ''
-              : null,
-        state_for_stateboard:
-          box.institute_type.toLowerCase() === 'school' &&
-            box.state_for_stateboard !== null
-            ? String(box.state_for_stateboard)
-            : box.id
-              ? ''
-              : null,
-        institute_id:
-          box.institute_type.toLowerCase() === 'college'
-            ? String(instituteId || box.institute_id)
-            : box.id
-              ? ''
-              : null,
-        course_id:
-          box.institute_type.toLowerCase() === 'college'
-            ? String(box.course_id)
-            : box.id
-              ? ''
-              : null,
-        learning_style:
-          box.institute_type.toLowerCase() === 'college'
-            ? box.learning_style
-            : box.id
-              ? ''
-              : null,
-        class_id:
-          box.institute_type.toLowerCase() === 'school'
-            ? String(box.class_id)
-            : box.id
-              ? ''
-              : null,
-        ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
-        ...(box.university_id
-          ? { university_id: String(box.university_id) }
-          : {}),
-        year:
-          box?.year?.$y && box.institute_type.toLowerCase() === 'college'
-            ? String(box?.year?.$y)
-            : '', // Assuming 'year' is a string
-        stream:
-          (particularClass === 'class_11' || particularClass === 'class_12') &&
-            box.institute_type.toLowerCase() === 'school'
-            ? box?.stream
-            : '',
-      };
+      const formData = new FormData();
+
+      // Common fields
+      formData.append('student_id', StudentId || '');
+      formData.append('institution_type', box.institute_type);
+      formData.append('year', box?.year?.$y && box.institute_type.toLowerCase() === 'college' ? String(box.year.$y) : '');
+      
+      // School-specific fields
+      if (box.institute_type.toLowerCase() === 'school') {
+          formData.append('board', box.board);
+          formData.append('class_id', String(box.class_id));
+          formData.append('state_for_stateboard', box.state_for_stateboard !== null ? String(box.state_for_stateboard) : '');
+          if (['class_11', 'class_12'].includes(particularClass)) {
+              formData.append('stream', box?.stream || '');
+          }
+      }
+      
+      // College-specific fields
+      if (box.institute_type.toLowerCase() === 'college') {
+          formData.append('institute_id', String(instituteId || box.institute_id));
+          formData.append('course_id', String(box.course_id));
+          formData.append('learning_style', box.learning_style);
+          if (box.sem_id) formData.append('sem_id', String(box.sem_id));
+          if (box.university_id) formData.append('university_id', String(box.university_id));
+      }
+      
 
       // Submit the form data (handle POST/PUT request here)
 
       if (editFlag && box.id === 0) {
-        return postData('/new_student_academic_history/add', payload);
+        return postData('/new_student_academic_history/add', formData);
       } else {
-        return putData(`/new_student_academic_history/edit/${box.id}`, payload);
+        return putData(`/new_student_academic_history/edit/${box.id}`, formData);
       }
     });
 
@@ -491,7 +463,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     Promise.all(promises)
       .then((responses) => {
         const allSuccessful = responses.every(
-          (response) => response?.status === 200,
+          (response) => response?.status ,
         );
         if (allSuccessful) {
           if (editAcademicHistory) {
@@ -589,7 +561,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     setEnddateInvalidList(newEnddateInvalidList);
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           setParticularClass(response.data.class_name);
         } else setParticularClass('');
       });

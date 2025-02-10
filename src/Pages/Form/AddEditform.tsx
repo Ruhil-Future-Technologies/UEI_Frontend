@@ -93,14 +93,15 @@ const AddEditForm = () => {
   const callAPI = async () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
-        );
-        setDataMenu(filteredData || []);
-        // setDataMenu(data?.data||[])
+        if(data?.status){
+          const filteredData = data?.data?.filter(
+            (item: any) => item?.is_active === 1,
+          );
+          setDataMenu(filteredData || []);
+        }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -110,14 +111,16 @@ const AddEditForm = () => {
       });
     getData(`${SubMenuURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
-        );
-        setDataSubMenu(filteredData || []);
-        // setDataSubMenu(data?.data||[])
+        if(data?.status)
+          {
+            const filteredData = data?.data?.filter(
+              (item: any) => item?.is_active === 1,
+            );
+            setDataSubMenu(filteredData || []);
+          }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -127,15 +130,17 @@ const AddEditForm = () => {
       });
     if (id) {
       getData(`${FormEditURL}${id ? `/${id}` : ''}`).then((data: any) => {
-        const datavalue = data?.data;
-        setForm({
-          form_name: datavalue?.form_name,
-          menu_master_id: datavalue?.menu_master_id,
-          sub_menu_master_id: datavalue?.sub_menu_master_id,
-          form_url: datavalue?.form_url,
-          form_description: datavalue?.form_description,
-          is_menu_visible: datavalue?.is_menu_visible,
-        });
+        if(data?.status){
+          const datavalue = data?.data;
+          setForm({
+            form_name: datavalue?.form_name,
+            menu_master_id: datavalue?.menu_master_id,
+            sub_menu_master_id: datavalue?.sub_menu_master_id,
+            form_url: datavalue?.form_url,
+            form_description: datavalue?.form_description,
+            is_menu_visible: datavalue?.is_menu_visible,
+          });
+        }
       });
     }
   };
@@ -212,7 +217,7 @@ const AddEditForm = () => {
     if (id && isPathAvailable) {
       putData(`${FormEditURL}/${id}`, formdata1)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             navigator('/main/Form');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -227,7 +232,7 @@ const AddEditForm = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -239,7 +244,7 @@ const AddEditForm = () => {
       if (isPathAvailable) {
         postData(`${FormAddURL}`, formdata1)
           .then((data: any) => {
-            if (data?.status === 201) {
+            if (data?.code === 201) {
               // navigator('/main/Form')
               toast.success(data.message, {
                 hideProgressBar: true,
@@ -263,7 +268,7 @@ const AddEditForm = () => {
             }
           })
           .catch((e) => {
-            if (e?.response?.status === 401) {
+            if (e?.response?.code === 401) {
               navigator('/');
             }
             toast.error(e?.message, {

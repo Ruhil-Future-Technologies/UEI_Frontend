@@ -51,8 +51,7 @@ const TeacherListingByInstitution = () => {
   const getTeachersData = async () => {
     try {
       await getData(`/teacher/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataTeachers(response?.data);
         }
       });

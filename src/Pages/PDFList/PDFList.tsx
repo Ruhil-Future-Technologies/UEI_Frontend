@@ -48,7 +48,7 @@ const PDFList = () => {
 
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData: any[] = [];
           response?.data?.forEach((item: any) => {
             if (item?.is_active) {
@@ -74,7 +74,9 @@ const PDFList = () => {
       const apiUrl = `https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(apiUrl)
         .then((response: any) => {
-          setFileList(response);
+          if(response.status){
+            setFileList(response);
+          }
         })
         .catch((error) => {
           toast.error(error?.message, {
@@ -107,8 +109,7 @@ const PDFList = () => {
     };
     deleteFileData(`https://dbllm.gyansetu.ai/delete-files`, payload)
       .then((data: any) => {
-        console.log('DELETED FILES', data);
-        if (data.status === 200) {
+        if (data.status) {
           setDataDelete(false);
           toast.success(data?.message, {
             hideProgressBar: true,
@@ -117,7 +118,7 @@ const PDFList = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {

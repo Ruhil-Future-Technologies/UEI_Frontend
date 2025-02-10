@@ -46,7 +46,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   handleStep,
 }) => {
   const context = useContext(NameContext);
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const { setProImage, namecolor }: any = context;
   const [profileData, setProfileData] = useState<any>({});
@@ -69,7 +69,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   const callAPI = async () => {
     getData(`${profileURL}/${StudentId}`)
       .then((data: any) => {
-        if (data.data) {
+        if (data.status) {
           setProfileData(data?.data);
           // let basic_info = data?.data?.basic_info;
           const basic_info = {
@@ -265,9 +265,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
           student_login_id: StudentId,
           pic_path: filename,
         };
+        const formData= new FormData();
+        Object.entries(payload).forEach(([key,value])=>{
+          formData.append(key, value as string);
+        })
         if (datastudent?.status === 404) {
-          const dataadd = await postData(`${'student/add'}`, payload);
-          if (dataadd?.status === 200) {
+          const dataadd = await postData(`${'student/add'}`, formData);
+          if (dataadd?.status) {
             await callAPI();
             setprofileImage(avatarUrl);
           }
@@ -284,9 +288,13 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
             pic_path: filename,
             aim: datastudent?.data?.aim,
           };
+          const formData=new FormData();
+          Object.entries(payload).forEach(([key,value])=>{
+            formData.append(key, value as string);
+          })
           const dataadd = await putData(
             `${'student/edit/'}${StudentId}`,
-            payload,
+            formData,
           );
           if (dataadd?.status === 200) {
             await callAPI();

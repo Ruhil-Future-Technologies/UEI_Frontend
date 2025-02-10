@@ -47,8 +47,7 @@ const CourseListingByInstitution = () => {
   const getCoursesData = async () => {
     try {
       await getData(`/course/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataCourses(response?.data);
         }
       });

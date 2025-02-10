@@ -43,7 +43,7 @@ const Header = () => {
     setProPercentage,
     setActiveForm,
   }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -59,11 +59,10 @@ const Header = () => {
     localStorage.removeItem('chatData');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
-    localStorage.removeItem('userid');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');

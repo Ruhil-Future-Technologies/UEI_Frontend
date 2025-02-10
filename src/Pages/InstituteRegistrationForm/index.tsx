@@ -116,13 +116,13 @@ const InstituteRegistrationForm = () => {
 
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
-      .then((data: { data: IUniversity[] }) => {
-        if (data.data) {
+      .then((data: {status:boolean, data: IUniversity[] }) => {
+        if (data.status) {
           setDataUniversity(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -135,15 +135,13 @@ const InstituteRegistrationForm = () => {
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        // const filteredData = data?.data.filter(
-        //     (entity) => entity.is_active === 1,
-        // );
-        // setDataEntity(filteredData);
-        setDataEntity(data?.data);
+      .then((data: {status:boolean, data: IEntity[] }) => {
+        if(data.status){
+          setDataEntity(data?.data);
+        }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -212,19 +210,15 @@ const InstituteRegistrationForm = () => {
         name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim())
           ? true
           : false,
-      website_error:
-        name === 'website' &&
-        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
-          value.trim(),
-        ),
+      website_error:false,
       country_error: false,
       state_error: false,
       city_error:
-        name === 'city' && !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
+        name === 'city' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
           ? true
           : false,
       district_error:
-        name === 'district' && !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(value.trim())
+        name === 'district' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
           ? true
           : false,
       address_error:
@@ -281,17 +275,17 @@ const InstituteRegistrationForm = () => {
       )
         ? true
         : false,
-      website_error: !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url),
+      website_error: false,
       country_error: valueInstitute.country.trim() === '' ? true : false,
       state_error: valueInstitute.state.trim() === '' ? true : false,
       school_name_error:
         selectedEntity === 'School' && valueInstitute.school_name === ''
           ? true
           : false,
-      city_error: !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(valueInstitute.city.trim())
+      city_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.city.trim())
         ? true
         : false,
-      district_error: !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(
+      district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         valueInstitute.district.trim(),
       )
         ? true
@@ -326,7 +320,6 @@ const InstituteRegistrationForm = () => {
         !error.university_id_error &&
         valueInstitute.university_id !== ''
         : true;
-  
     if (
       !error.institute_type_error &&
       !(valueInstitute.entity_id === '') &&
@@ -334,8 +327,7 @@ const InstituteRegistrationForm = () => {
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id) &&
       !error.mobile_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
-      !error.website_error &&
-      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(valueInstitute.website_url) &&
+      !error.website_error  &&
       !error.country_error &&
       !(valueInstitute.country === '') &&
       !error.state_error &&
@@ -345,9 +337,7 @@ const InstituteRegistrationForm = () => {
       !error.district_error &&
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.district.trim()) &&
       !error.address_error &&
-
       /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(valueInstitute.address.trim()) &&
-
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
       !error.document_error &&
@@ -405,8 +395,8 @@ const InstituteRegistrationForm = () => {
     try {
       postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
         console.log(response)
-        if (response.status === 200) {
-          toast.success('Institute registration request sent successfully', {
+        if (response.status ) {
+          toast.success(response.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -867,7 +857,7 @@ const InstituteRegistrationForm = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} />
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} email={valueInstitute.email_id}/>
       </div>
     </div>
   );

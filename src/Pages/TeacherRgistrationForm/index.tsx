@@ -150,14 +150,14 @@ const stream = [
   "Arts",
 ]
 
-interface Boxes {
+export interface Boxes {
   semester_number: string,
   subjects: string[],
   course_id: string,
   filteredSemesters?: any[];
   filteredSubjects?: any[];
 }
-interface BoxesForSchool {
+export interface BoxesForSchool {
   stream?: string,
   subjects: string[],
   class_id: string,
@@ -1707,7 +1707,7 @@ const TeacherRegistrationPage = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} />
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} email={teacher.email_id} />
       </div>
     </div>
   );

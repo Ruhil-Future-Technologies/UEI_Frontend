@@ -36,15 +36,15 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
         'admin_profile_description/edit/' + adminId,
       );
 
-      if (response && response?.status === 200) {
+      if (response && response?.status) {
         setDesctiption(response?.data);
-      } else if (response && response?.status === 404) {
+      } else if (response && response?.code === 404) {
         setEditFlag(true);
       } else {
         console.error('Unexpected response:', response);
       }
     } catch (error: any) {
-      if (error?.response && error?.response?.status === 401) {
+      if (error?.response && error?.response?.code === 401) {
         navigator('/');
         toast.warning('Please login again', {
           hideProgressBar: true,
@@ -66,9 +66,9 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
 
   useEffect(() => {
     getData('admin_profile_description/edit/' + adminId).then((response) => {
-      if (response && response?.status === 200) {
+      if (response && response?.status) {
         setEditable(false);
-      } else if (response && response?.status === 404) {
+      } else if (response && response?.code === 404) {
         setEditable(true);
       }
     });
@@ -106,16 +106,21 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
       admin_id: adminId,
       description: description1?.description,
     };
-
+    const formData=new FormData();
+    Object.entries(paylod).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+          formData.append(key, value);
+      }
+  });
     if (editFalg && editable) {
       const saveData = async () => {
         try {
           const response = await postData(
             'admin_profile_description/add',
-            paylod,
+            formData,
           );
 
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success('Admin description saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -125,7 +130,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
             setActiveForm((prev: number) => prev + 1);
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             toast.warning('Please login again', {
               hideProgressBar: true,
               theme: 'colored',
@@ -150,10 +155,10 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
         try {
           const response = await putData(
             'admin_profile_description/edit/' + adminId,
-            paylod,
+            formData,
           );
 
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success('Admin description updated successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -169,7 +174,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
             });
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             navigator('/');
             toast.warning('Please login again', {
               hideProgressBar: true,

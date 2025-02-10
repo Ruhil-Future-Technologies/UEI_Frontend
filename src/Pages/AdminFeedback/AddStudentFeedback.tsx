@@ -37,7 +37,7 @@ const AddStudentFeedback = () => {
 
   useEffect(() => {
     getData(`${'/feedback/list'}`).then((data) => {
-      if (data.status === 200) {
+      if (data.status) {
         setQuestions(data.data);
         setQuestion(data.data[0]);
         // setOptions(data.data[0].options);
@@ -45,7 +45,7 @@ const AddStudentFeedback = () => {
       }
     });
     getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
-      if (data.status === 200) {
+      if (data.status ) {
         if (data.data.length > 0) {
           setAnsweredQuestions(data.data);
           setStudentFlag(false);
@@ -116,10 +116,15 @@ const AddStudentFeedback = () => {
         student_id: StudentId,
         feedbacks: updatedAnswers,
       };
-
-      postData('/feedback/student_feedback', payload)
+      const formData= new FormData();
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+            formData.append(key, value as string);
+        }
+    });
+      postData('/feedback/student_feedback', formData)
         .then((response) => {
-          if (response.status === 200) {
+          if (response.status) {
             toast.success('feedback sent successfully', {
               hideProgressBar: true,
               theme: 'colored',

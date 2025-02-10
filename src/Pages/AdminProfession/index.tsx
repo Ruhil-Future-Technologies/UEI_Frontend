@@ -57,7 +57,7 @@ const AdminProfession: React.FC<PropsItem> = ({
     try {
       const response = await getData('institution/list');
 
-      if (response?.status === 200) {
+      if (response?.status) {
         const filteredData = response?.data?.filter(
           (item: any) => item?.is_active === 1,
         );
@@ -65,7 +65,7 @@ const AdminProfession: React.FC<PropsItem> = ({
       }
     } catch (error: any) {
       console.error('error comes :', error?.response?.status);
-      if (error?.response?.status === 401) {
+      if (error?.response?.code === 401) {
         toast.warning('Please login again', {
           hideProgressBar: true,
           theme: 'colored',
@@ -82,14 +82,14 @@ const AdminProfession: React.FC<PropsItem> = ({
   const getCourse = async () => {
     try {
       const response = await getData('course/list');
-      if (response?.status === 200) {
+      if (response?.status) {
         const filteredData = response?.data?.filter(
           (item: any) => item?.is_active === 1,
         );
         setCourse(filteredData || []);
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.code === 401) {
         toast.warning('Please login again ', {
           hideProgressBar: true,
           theme: 'colored',
@@ -107,7 +107,7 @@ const AdminProfession: React.FC<PropsItem> = ({
     try {
       const response = await getData('admin_profession/edit/' + adminId);
 
-      if (response?.status === 200) {
+      if (response?.status) {
         setSelectInstitude(response?.data?.institution_id);
         setSelectCourse(response?.data?.course_id);
         setSelectSubject(response?.data?.subject_id);
@@ -117,13 +117,13 @@ const AdminProfession: React.FC<PropsItem> = ({
           course_id: response?.data?.course_id,
           subject_id: response?.data?.subject_id,
         });
-      } else if (response?.status === 404) {
+      } else if (response?.code === 404) {
         setEditFlag(true);
       } else {
         console.error('Unexpected response:', response);
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.code === 401) {
         toast.warning('Please login again', {
           hideProgressBar: true,
           theme: 'colored',
@@ -151,16 +151,21 @@ const AdminProfession: React.FC<PropsItem> = ({
       course_id: selectCourse,
       subject_id: selectSubject,
     };
-    // console.log(paylod);
+    const formData= new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+          formData.append(key, value);
+      }
+  });
 
     const eq = deepEqual(initialState, payload);
 
     if (editFlag) {
       const saveData = async () => {
         try {
-          const response = await postData('admin_profession/add', payload);
+          const response = await postData('admin_profession/add', formData);
 
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success('Admin profession saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -169,7 +174,7 @@ const AdminProfession: React.FC<PropsItem> = ({
             navigate('/');
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             toast.warning('Please login again', {
               hideProgressBar: true,
               theme: 'colored',
@@ -188,10 +193,10 @@ const AdminProfession: React.FC<PropsItem> = ({
         try {
           const response = await putData(
             'admin_profession/edit/' + adminId,
-            payload,
+            formData,
           );
 
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success('Admin profession updated successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -206,7 +211,7 @@ const AdminProfession: React.FC<PropsItem> = ({
             });
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             toast.warning('Please login again', {
               hideProgressBar: true,
               theme: 'colored',

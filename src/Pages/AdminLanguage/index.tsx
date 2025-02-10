@@ -64,7 +64,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
     if (id !== 0) {
       deleteData(`/admin_language_known/delete/${id}`)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success('Language deleted successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -86,7 +86,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   useEffect(() => {
     getData(`${'language/list'}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           const filteredData = data?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -102,7 +102,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       });
     getData(`${'admin_language_known/edit/' + AdminId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status ) {
           data.data.map((item: any) => {
             const newBox: Box = {
               id: item.id,
@@ -113,7 +113,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
           });
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
           // setEditFlag(true);
         } else {
@@ -136,7 +136,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   useEffect(() => {
     getData(`${'admin_language_known/edit/' + AdminId}`).then(
       (response: any) => {
-        if (response?.status == 200) {
+        if (response?.status) {
           const newLanageage = response?.data?.filter((items: any) =>
             boxes.some((box: Box) => box.id === items.id || box.id == 0),
           );
@@ -164,7 +164,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
             ]);
           }
           setEditable(false);
-        } else if (response?.status == 401) {
+        } else if (response?.code == 401) {
           setEditable(true);
         }
       },
@@ -198,11 +198,17 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
+      const formData= new FormData();
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+            formData.append(key, value);
+        }
+    });
       if (checkChanges) {
         if (box.id === 0) {
-          return postData('admin_language_known/add', payload);
+          return postData('admin_language_known/add', formData);
         } else {
-          return putData('admin_language_known/edit/' + AdminId, payload);
+          return putData('admin_language_known/edit/' + AdminId, formData);
         }
       } else {
         return Promise.resolve({ status: 204 });
@@ -212,7 +218,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       const results: any = await Promise.all(promises);
 
       const successfulResults = results.filter(
-        (res: { status: number }) => res.status === 200,
+        (res: { status: number }) => res.status,
       );
       if (successfulResults?.length > 0) {
         if (checkChanges) {

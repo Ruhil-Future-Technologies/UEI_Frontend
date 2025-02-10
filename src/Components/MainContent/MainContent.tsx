@@ -67,7 +67,7 @@ function MainContent() {
   const navigate = useNavigate();
   const { ProPercentage, setProPercentage, namecolor }: any = context;
   const [userName, setUserName] = useState('');
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
 
   const getMenuList = () => {
@@ -904,9 +904,11 @@ function MainContent() {
   };
 
   const callAPIStudent = async () => {
-    if (usertype === 'student') {
+    console.log(StudentId);
+    if (usertype === 'student' &&  StudentId !== null) {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
+         // console.log(data);
           if (data.data) {
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
