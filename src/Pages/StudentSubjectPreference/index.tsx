@@ -519,7 +519,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     }
 
     if (field === 'score_in_percentage') {
-      // Allow empty value
       if (value === '') {
         newBoxes[index][field] = value;
         delete newValidationErrors[index]?.[field];
@@ -527,17 +526,26 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setBoxes(newBoxes);
         return;
       }
-
-      // Validate the score_in_percentage using regex
-      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
-      if (!regex.test(value)) {
+    
+      // Ensure value is properly formatted as a string
+      const trimmedValue = String(value).trim();
+    
+      // Debugging logs to check input before regex
+      console.log("Checking value:", trimmedValue);
+    
+      // Updated regex to accept 10-100 with up to 2 decimal places
+      const regex = /^(100|[1-9][0-9])(\.\d{1,2})?$/;
+    console.log(trimmedValue);
+      if (!regex.test(trimmedValue)) {
+        console.log("❌ Invalid input:", trimmedValue);
         if (!newValidationErrors[index]) {
           newValidationErrors[index] = {};
         }
         newValidationErrors[index][field] = true;
         setValidationErrors(newValidationErrors);
-        return;
+       // return;
       } else {
+        console.log("✅ Valid input:", trimmedValue);
         if (newValidationErrors[index]) {
           delete newValidationErrors[index][field];
           if (Object.keys(newValidationErrors[index]).length === 0) {
@@ -547,6 +555,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setValidationErrors(newValidationErrors);
       }
     }
+    
+    
     newBoxes[index][field] = value;
     setBoxes(newBoxes);
     validateFields(index, field);
