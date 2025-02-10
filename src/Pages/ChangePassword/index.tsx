@@ -68,7 +68,7 @@ const ChangePassword = () => {
       postData(`${changepassUrl}`, UserSignUp)
         /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
-          if (data?.status === true) {
+          if (data?.status) {
             navigate('/');
             toast.success(data?.message, {
               hideProgressBar: true,

@@ -79,13 +79,16 @@ const AddEditCourse = () => {
 
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
-        setinstituteList(filteredData);
+      .then((data) => {
+        if(data?.status){
+          const filteredData = data?.data.filter((item:any) => item.is_active === 1);
+          setinstituteList(filteredData);
+        }
+        
         // setDataEntity(data?.data)
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -95,11 +98,13 @@ const AddEditCourse = () => {
       });
     if (id) {
       getData(`${CourseEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: any }) => {
-          setInstitute(data?.data);
+        .then((data) => {
+          if(data?.status){
+            setInstitute(data?.data);
+          }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -127,8 +132,8 @@ const AddEditCourse = () => {
     console.log('test log ===', coursedata, courseData);
     if (id) {
       putData(`${CourseEditURL}/${id}`, coursedata)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Course');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -142,7 +147,7 @@ const AddEditCourse = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -152,8 +157,8 @@ const AddEditCourse = () => {
         });
     } else {
       postData(`${CourseAddURL}`, coursedata)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Course')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -168,7 +173,7 @@ const AddEditCourse = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {

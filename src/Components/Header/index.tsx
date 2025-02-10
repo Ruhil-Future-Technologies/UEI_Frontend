@@ -43,7 +43,7 @@ const Header = () => {
     setProPercentage,
     setActiveForm,
   }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;

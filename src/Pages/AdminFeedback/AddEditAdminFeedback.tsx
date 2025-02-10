@@ -76,9 +76,16 @@ const AddEditAdminFeedback = () => {
       options: stringifyOptions,
     };
 
+    const formData1=new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData1.append(key, value);
+      }
+  });
+
     if (id) {
-      putData(`${FeedbackEditURL}/${id}`, payload).then((response) => {
-        if (response.status === 200) {
+      putData(`${FeedbackEditURL}/${id}`, formData1).then((response) => {
+        if (response.status) {
           toast.success('question added successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -90,8 +97,8 @@ const AddEditAdminFeedback = () => {
         }
       });
     } else {
-      postData(`${FeedbackAddURL}`, payload).then((response) => {
-        if (response.status === 200) {
+      postData(`${FeedbackAddURL}`, formData1).then((response) => {
+        if (response.status) {
           toast.success('question added successfully', {
             hideProgressBar: true,
             theme: 'colored',

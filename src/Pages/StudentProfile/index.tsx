@@ -66,7 +66,7 @@ const StudentProfile = () => {
   const { activeForm, setActiveForm }: any = context;
   const usertype: any = localStorage.getItem('user_type');
   const { getData } = useApi();
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {

@@ -56,7 +56,7 @@ interface Option {
 }
 
 const ProfileChat: React.FC = () => {
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const usertype = localStorage.getItem('user_type');
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState('');

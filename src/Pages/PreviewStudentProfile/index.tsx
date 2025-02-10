@@ -46,7 +46,7 @@ const PreviewStudentProfile: React.FC<PreviewStudentProfileProps> = ({
   handleStep,
 }) => {
   const context = useContext(NameContext);
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const { setProImage, namecolor }: any = context;
   const [profileData, setProfileData] = useState<any>({});
