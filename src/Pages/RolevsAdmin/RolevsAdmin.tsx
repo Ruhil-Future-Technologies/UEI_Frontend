@@ -206,7 +206,7 @@ const RoleVsAdmin = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="RoleVsUser"
       />
     </>
   );

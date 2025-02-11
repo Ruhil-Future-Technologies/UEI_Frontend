@@ -640,7 +640,7 @@ const Teacher = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete Teacher?"
+        title="Teacher"
       />
     </>
   );
