@@ -40,7 +40,7 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     toast.dismiss();
-    const login_id = localStorage.getItem('_id');
+    const login_id = localStorage.getItem('user_uuid');
     if (login_id) {
       navigate('/main/DashBoard');
     }
@@ -52,7 +52,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [emailphone, setEmailphone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-   const [popupOtpCard, setPopupOtpCard] = useState(false);
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [value, setValue] = React.useState('student');
   const loginUrl = QUERY_KEYS.POST_LOGIN;
@@ -97,8 +97,7 @@ const Login = () => {
         setLoading(true);
       }
       const UserSignUp = {
-        email:
-           String(emailphone) ,
+        email: String(emailphone),
         password: String(password),
         user_type: String(value),
       };
@@ -116,15 +115,15 @@ const Login = () => {
       }
       try {
         const data = await postData(loginUrl, UserSignUp);
-        console.log(data)
+        console.log(data);
         if (data?.status === true) {
           setLoading(false);
-          localStorage.setItem('token',"Bearer "+ data?.token);
+          localStorage.setItem('token', 'Bearer ' + data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
         } else {
           console.log(data.message);
-          if(data?.message==='User is not verified'){
-          setPopupOtpCard(true);
+          if (data?.message === 'User is not verified') {
+            setPopupOtpCard(true);
           }
           setLoading(false);
           toast.error(data?.message, {
@@ -142,33 +141,31 @@ const Login = () => {
       }
     }
   };
-  
+
   const handleSubmit = (otp: string) => {
-   
-    let payload = {
+    const payload = {
       email: emailphone,
-      otp: otp
-    }
+      otp: otp,
+    };
     postData(`/auth/verify-otp`, payload).then((data) => {
       console.log(data);
       if (data.status === true) {
-
         handleSuccessfulLogin(data);
-        toast.success(data.message,{
+        toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
-        })
+        });
         setPopupOtpCard(false);
       }
-    })
-  }
+    });
+  };
   const handleSuccessfulLogin = (data: any, password?: string) => {
-    console.log(data)
-   
-    localStorage.setItem('token',"Bearer "+ data?.data?.access_token);
+    console.log(data);
+
+    localStorage.setItem('token', 'Bearer ' + data?.data?.access_token);
     localStorage.setItem('user_type', value);
     localStorage.setItem('user_uuid', data?.data?.user_uuid);
-    localStorage.setItem('pd', password ||'');
+    localStorage.setItem('pd', password || '');
     localStorage.setItem('userdata', JSON.stringify(data?.data));
     localStorage.setItem('lastRoute', window.location.pathname);
 
@@ -542,7 +539,12 @@ const Login = () => {
             </div>
           </div>
         </section>
-         <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(e:any)=>handleSubmit(e)} email={emailphone}/>
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={(e: any) => handleSubmit(e)}
+          email={emailphone}
+        />
       </div>
     </>
   );

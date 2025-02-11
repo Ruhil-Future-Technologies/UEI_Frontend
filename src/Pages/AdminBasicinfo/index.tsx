@@ -75,7 +75,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [selectedFile, setSelectedFile] = React.useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState('');
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   const [editable, setEditable] = useState(true);
   const [editCheck, setEditCheck] = useState(false);
   const [admin, setadmin] = useState<AdminInformation>({
@@ -96,7 +96,10 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [fathername_col1, setFathername_col1] = useState<boolean>(false);
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   // const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs().subtract(6, 'year').subtract(1, 'day').endOf('day');
+  const exactSixYearsAgo = dayjs()
+    .subtract(6, 'year')
+    .subtract(1, 'day')
+    .endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
   useEffect(() => {
@@ -124,7 +127,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         setLname_col(false);
       }
     }
-    
+
     if (name === 'father_name') {
       setFathername_col1(true);
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -318,8 +321,15 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     }
   };
   const handleDateChange = (newDate: Dayjs | null) => {
-    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
-      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
+    if (
+      newDate &&
+      newDate.isValid() &&
+      newDate.isAfter(minSelectableDate, 'day')
+    ) {
+      if (
+        newDate.isBefore(exactSixYearsAgo, 'day') ||
+        newDate.isSame(exactSixYearsAgo, 'day')
+      ) {
         // setDob(newDate);
         setAdminDOB(newDate);
         setError(null); // Clear error
@@ -372,14 +382,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    const formData= new FormData();
+    const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-          formData.append(key, value as string);
+        formData.append(key, value as string);
       }
-  });
+    });
 
-    
     const compare = {
       department_id: adminDepartment,
       first_name: admin?.first_name,
@@ -474,7 +483,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             formData,
           );
 
-          if (response?.status ) {
+          if (response?.status) {
             toast.success('Admin basic information updated successfully', {
               hideProgressBar: true,
               theme: 'colored',
