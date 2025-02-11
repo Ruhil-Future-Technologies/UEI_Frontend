@@ -1,12 +1,8 @@
 .dropdown-container {
   position: relative;
-  width: auto;
+  width: 100%;
+  max-width: 250px;
   display: inline-block;
-}
-
-.dropdown-container {
-  position: relative;
-  width: 250px;
 }
 
 .dropdown-header {
@@ -38,42 +34,96 @@
 }
 
 .dropdown-item {
+  position: relative;
   padding: 10px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+
+    > .subjects-list,
+    > .stream-list,
+    > .class-list,
+    > .semester-list,
+    > .course-list {
+      display: block;
+    }
+  }
 }
 
-.dropdown-item:hover {
-  background-color: #f5f5f5;
-}
-
-.subjects-list {
+.subjects-list,
+.stream-list,
+.class-list,
+.semester-list,
+.course-list {
   display: none;
-  padding: 10px;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.dropdown-item:hover .subjects-list {
-  display: block;
   position: absolute;
   left: 100%;
   top: 0;
   min-width: 200px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
 }
 
 .stream-container,
 .semester-container {
   margin-bottom: 10px;
+
+  ul {
+    margin: 5px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    list-style: none;
+  }
 }
 
-.stream-container ul,
-.semester-container ul {
-  margin: 5px 0;
-  padding-left: 20px;
+@media screen and (max-width: 768px) {
+  .dropdown-item {
+    position: static;
+
+    &:hover {
+      > .subjects-list,
+      > .stream-list,
+      > .class-list,
+      > .semester-list,
+      > .course-list {
+        position: fixed;
+        left: auto;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        max-height: 80vh;
+        overflow-y: auto;
+        width: 200px;
+      }
+    }
+  }
 }
 
-.stream-container li,
-.semester-container li {
-  list-style: none;
+@media screen and (max-width: 480px) {
+  .dropdown-container {
+    max-width: 100%;
+  }
+
+  .dropdown-header {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .dropdown-item {
+    &:hover {
+      > .subjects-list,
+      > .stream-list,
+      > .class-list,
+      > .semester-list,
+      > .course-list {
+        width: 100px;
+      }
+    }
+  }
 }
