@@ -249,7 +249,8 @@ const AddEditTeacher = () => {
               )) {
                 result.courses.push({
                   course_id: matchingCourse.id,
-                  semester: semester,
+                  semester:
+                    semester.charAt(0).toUpperCase() + semester.slice(1),
                   subjects: subjects,
                 });
               }
@@ -273,7 +274,7 @@ const AddEditTeacher = () => {
 
           const teacherClassesObj = teacherDetail.data.class_stream_subjects;
 
-          for (const [className, semesterData] of Object.entries(
+          for (const [className, streamData] of Object.entries(
             teacherClassesObj as any,
           )) {
             const matchingClass = all_classes.find(
@@ -282,11 +283,11 @@ const AddEditTeacher = () => {
 
             if (matchingClass) {
               for (const [stream, subjects] of Object.entries(
-                semesterData as any,
+                streamData as any,
               )) {
                 result.classes.push({
                   class_id: matchingClass.id,
-                  stream: stream,
+                  stream: stream.toLowerCase(),
                   subjects: subjects,
                 });
               }
@@ -303,7 +304,9 @@ const AddEditTeacher = () => {
         const processedData = {
           first_name: teacherDetail?.data?.first_name || '',
           last_name: teacherDetail?.data?.last_name || '',
-          gender: teacherDetail?.data?.gender || '',
+          gender:
+            teacherDetail?.data?.gender.charAt(0).toUpperCase() +
+              teacherDetail?.data?.gender.slice(1) || '',
           dob: teacherDetail?.data?.dob || '',
           phone: teacherDetail?.data?.phone || '',
           email_id: teacherDetail?.data?.email_id || '',
@@ -563,7 +566,7 @@ const AddEditTeacher = () => {
           const filteredSubjects = allSubjects.filter(
             (subject) =>
               (subject.class_id === cls.class_id &&
-                subject.stream === cls.stream) ||
+                subject.stream === cls.stream?.toLowerCase()) ||
               subject.stream == '',
           );
 
@@ -2237,7 +2240,7 @@ const AddEditTeacher = () => {
                         tabIndex={-1}
                       >
                         <CountryDropdown
-                          classes="form-control p-3 custom-dropdown"
+                          classes="form-control custom-dropdown"
                           defaultOptionLabel={values?.country || ''}
                           value={values?.country || ''}
                           onChange={(e) =>
@@ -2269,7 +2272,7 @@ const AddEditTeacher = () => {
                         tabIndex={-1}
                       >
                         <RegionDropdown
-                          classes="form-control p-3 custom-dropdown"
+                          classes="form-control custom-dropdown"
                           defaultOptionLabel={values?.state || ''}
                           country={values?.country || ''}
                           value={values?.state || ''}

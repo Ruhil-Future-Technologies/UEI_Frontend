@@ -203,16 +203,38 @@ export const TeacherDetailsDialog = ({
       open={open}
       onClose={onClose}
       sx={{
-        '& .MuiBackdrop-root': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+        '& .MuiBackdrop-root': {
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        },
         '& .MuiPaper-root': {
-          width: '30%',
+          width: {
+            xs: '95%',
+            sm: '80%',
+            md: '60%',
+            lg: '40%',
+          },
           maxWidth: '900px',
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+          margin: {
+            xs: '10px',
+            sm: 'auto',
+          },
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: 600 }}>Teacher Details</DialogTitle>
+      <DialogTitle
+        sx={{
+          fontWeight: 600,
+          fontSize: {
+            xs: '18px',
+            sm: '20px',
+            md: '22px',
+          },
+        }}
+      >
+        Teacher Details
+      </DialogTitle>
       <DialogContent>
         <div className="teacher-details">
           {TEACHER_DETAIL_FIELDS.map((key: any) => {
