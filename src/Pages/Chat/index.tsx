@@ -2376,7 +2376,7 @@ const Chat = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete chat ?"
+        title="chat"
       />
     </>
   );
