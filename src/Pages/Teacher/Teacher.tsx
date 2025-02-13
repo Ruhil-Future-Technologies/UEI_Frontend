@@ -242,6 +242,79 @@ const Teacher = () => {
           setFilteredTeachers(schoolTeachers);
         }
       }, 0);
+    } else if (activeTab === 1) {
+      const pendingTeachers = dataTeacher.filter(
+        (teacher) => teacher.is_approve === false,
+      );
+
+      const college: any = entity.filter((ent) => ent.entity_type == 'College');
+      const school: any = entity.filter((ent) => ent.entity_type == 'School');
+
+      setFilteredTeachers([]);
+
+      setTimeout(() => {
+        if (activeSubTab === 0) {
+          setColumnVisibility({
+            university_id: true,
+            course_id: true,
+            class_id: false,
+            class_stream_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institution_id') {
+              return {
+                ...column,
+                header: 'College Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const collegeTeachers = pendingTeachers
+            .filter((teacher) => teacher.entity_id == college[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                class_id: null,
+                className: '-',
+                class_name: '-',
+              };
+            });
+
+          setFilteredTeachers(collegeTeachers);
+        } else {
+          setColumnVisibility({
+            university_id: false,
+            course_id: false,
+            class_stream_subjects: true,
+            course_semester_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institution_id') {
+              return {
+                ...column,
+                header: 'School Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const schoolTeachers = pendingTeachers
+            .filter((teacher) => teacher.entity_id == school[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                course_semester_subjects: null,
+                university_id: null,
+                course_name: '-',
+                university_name: '-',
+              };
+            });
+          setFilteredTeachers(schoolTeachers);
+        }
+      }, 0);
     } else {
       setFilteredTeachers(dataTeacher.filter((teacher) => !teacher.is_approve));
     }
@@ -430,6 +503,12 @@ const Teacher = () => {
                   </Tabs>
 
                   {activeTab === 0 && (
+                    <Tabs value={activeSubTab} onChange={handleSubTabChange}>
+                      <Tab label="College" />
+                      <Tab label="School" />
+                    </Tabs>
+                  )}
+                  {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
                       <Tab label="College" />
                       <Tab label="School" />
