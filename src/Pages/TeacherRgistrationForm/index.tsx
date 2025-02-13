@@ -36,6 +36,7 @@ import {
   InstituteRep0oDTO,
   SemesterRep0oDTO,
   SubjectRep0oDTO,
+  UniversityRep0oDTO,
 } from '../../Components/Table/columns';
 import useApi from '../../hooks/useAPI';
 import {
@@ -44,7 +45,8 @@ import {
   QUERY_KEYS_COURSE,
   QUERY_KEYS_ROLE,
   QUERY_KEYS_SUBJECT,
-  QUERY_KEYS_SUBJECT_SCHOOL /* QUERY_KEYS_ROLE*/,
+  QUERY_KEYS_SUBJECT_SCHOOL, /* QUERY_KEYS_ROLE*/
+  QUERY_KEYS_UNIVERSITY,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
@@ -183,7 +185,7 @@ const TeacherRegistrationPage = () => {
   const getTeacherURL = QUERY_KEYS.GET_TEACHER;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
-
+  const UniversityURL=QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
 
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
@@ -202,7 +204,8 @@ const TeacherRegistrationPage = () => {
   const [selectedSchool, setSelectedSchool] = useState('');
   const [selectedClassName, setSelectedClassName] = useState("col-6");
   const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
-
+  const [universityData,setUniversityData]= useState<UniversityRep0oDTO[]>([]);
+  const [universityError, setUniversityError] =useState<boolean>(false);
 
   const [boxes, setBoxes] = useState<Boxes[]>([{
     semester_number: '',
@@ -242,6 +245,7 @@ const TeacherRegistrationPage = () => {
     class_id: '',
     course_id: '',
     institution_id: '',
+    university_id:'',
     school_name: '',
     documents: [],
     is_verified: false,
@@ -485,6 +489,23 @@ const TeacherRegistrationPage = () => {
     }
   }
 
+  const getUniversity=()=>{
+    getForRegistration(`${UniversityURL}`)
+     .then((data) => {
+        if (data.data) {
+          setUniversityData(data?.data);
+        }
+      })
+     .catch((e) => {
+        if (e?.response?.status === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  }
 
   useEffect(() => {
     getInstitutelist();
@@ -493,12 +514,13 @@ const TeacherRegistrationPage = () => {
     getClasslist();
     getSemester();
     getRole();
+    getUniversity();
   }, []);
 
 
   const handleSelect = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
-
+    console.log( name, value)
     setTeacher({ ...teacher, [name]: value });
     if (name === 'entity_id') {
       dataEntity.map((item) => {
@@ -529,6 +551,13 @@ const TeacherRegistrationPage = () => {
         (item) => String(item.id) === value,
       )?.institution_name;
       setSelectedSchool(String(selectedSchool));
+    }
+    if(name==='university_id'){
+      const filteredInstitute = dataInstitute.filter((item)=>
+        item.university_id ===value
+      )
+      setUniversityError(false);
+      setFiteredInstitute(filteredInstitute);
     }
 
     validation(name, value);
@@ -579,7 +608,7 @@ const TeacherRegistrationPage = () => {
 
 
   const openPopupOtp = () => {
-    console.log("opened")
+
     setError({
       first_name_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
@@ -637,6 +666,11 @@ const TeacherRegistrationPage = () => {
           }));
         }
       });
+      console.log(teacher.university_id ==='')
+      if(teacher.university_id ===''){
+        console.log("unversity")
+        setUniversityError(true)
+      }
     }
 
 
@@ -684,7 +718,8 @@ const TeacherRegistrationPage = () => {
       !error.teaching_experience_error &&
       /^\d+$/.test(teacher.experience) &&
       !error.institution_id_error &&
-      !(teacher.institution_id === '')
+      !(teacher.institution_id === '') &&
+      teacher.university_id
     ) {
       setPopupOtpCard(true)
     } else {
@@ -747,7 +782,7 @@ const TeacherRegistrationPage = () => {
         formData.append("stream", teacher.stream);
       }
     } else {
-
+      formData.append("university_id", teacher.university_id ||'');
       formData.append("institution_id", teacher.institution_id?.toString() || '');
       const course_semester_subjects = boxes.reduce((acc, box) => {
         const { course_id, semester_number, subjects } = box;
@@ -951,6 +986,7 @@ const TeacherRegistrationPage = () => {
   const handleRemoveFile = (index: number) => {
     setAllSelectedfiles((previous) => previous.filter((_, ind) => ind !== index));
   }
+  console.log(teacher);
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -1273,59 +1309,166 @@ const TeacherRegistrationPage = () => {
                 </p>
               )}
             </div>
-
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Institution Name<span>*</span>
-              </label>
-              <FormControl fullWidth>
-                <InputLabel id="institution_id">Institute</InputLabel>
-                <Select
-                  labelId="institution_id"
-                  id="demo2-multiple-name"
-                  name="institution_id"
-                  label="Institute"
-                  onChange={handleSelect}
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    '& .MuiSelect-icon': {
-                      color: fieldIcon(namecolor),
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
+            {selectedEntity.toLowerCase() === 'college' ? (
+              <div className="col-md-6 col-12 mb-3">
+                <label className="col-form-label">
+                  University Name<span>*</span>
+                </label>
+                <FormControl fullWidth>
+                  <InputLabel id="university_id">University Name</InputLabel>
+                  <Select
+                    labelId="institution_id"
+                    id="demo2-multiple-name"
+                    name="university_id"
+                    label="University Name"
+                    onChange={handleSelect}
+                    sx={{
+                      backgroundColor: inputfield(namecolor),
+                      color: inputfieldtext(namecolor),
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
                       },
-                    },
-                  }}
-                >
-                  {filteredInstitute.map((item) => (
-                    <MenuItem
-                      key={item.id}
-                      value={item.id}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        '&:hover': {
-                          backgroundColor: inputfieldhover(namecolor),
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
                         },
-                      }}
-                    >
-                      {item.institution_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {error.institution_id_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select an Institute name.</small>
-                </p>
-              )}
-            </div>
+                      },
+                    }}
+                  >
+                    {universityData.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.university_id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        {item.university_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {universityError === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please select an University name.</small>
+                  </p>
+                )}
+              </div>
+            ) :
+              <div className="col-md-6 col-12 mb-3">
+                <label className="col-form-label">
+                  Institution Name<span>*</span>
+                </label>
+                <FormControl fullWidth>
+                  <InputLabel id="institution_id">Institute</InputLabel>
+                  <Select
+                    labelId="institution_id"
+                    id="demo2-multiple-name"
+                    name="institution_id"
+                    label="Institute"
+                    onChange={handleSelect}
+                    sx={{
+                      backgroundColor: inputfield(namecolor),
+                      color: inputfieldtext(namecolor),
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                        },
+                      },
+                    }}
+                  >
+                    {filteredInstitute.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        {item.institution_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {error.institution_id_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please select an Institute name.</small>
+                  </p>
+                )}
+              </div>}
           </div>
+          {selectedEntity.toLowerCase() === 'college' && (
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-12 col-12 mb-3">
+                <label className="col-form-label">
+                  Institution Name<span>*</span>
+                </label>
+                <FormControl fullWidth>
+                  <InputLabel id="institution_id">Institute</InputLabel>
+                  <Select
+                    labelId="institution_id"
+                    id="demo2-multiple-name"
+                    name="institution_id"
+                    label="Institute"
+                    onChange={handleSelect}
+                    sx={{
+                      backgroundColor: inputfield(namecolor),
+                      color: inputfieldtext(namecolor),
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                        },
+                      },
+                    }}
+                  >
+                    {filteredInstitute.map((item) => (
+                      <MenuItem
+                        key={item.id}
+                        value={item.id}
+                        sx={{
+                          backgroundColor: inputfield(namecolor),
+                          color: inputfieldtext(namecolor),
+                          '&:hover': {
+                            backgroundColor: inputfieldhover(namecolor),
+                          },
+                        }}
+                      >
+                        {item.institution_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {error.institution_id_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please select an Institute name.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
