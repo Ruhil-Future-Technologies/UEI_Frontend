@@ -28,11 +28,8 @@ const theme: ThemeOptions = {
     secondary: {
       main: '#dc004e',
     },
-   
-    
   },
 };
-
 
 const muiTheme = createTheme(theme);
 

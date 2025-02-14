@@ -20,7 +20,7 @@ describe('AvatarModal Component', () => {
         handleClose={mockHandleClose}
         handleAvatarSelect={mockHandleAvatarSelect}
         avatars={avatars}
-      />
+      />,
     );
 
     // Check if modal is rendered
@@ -34,12 +34,12 @@ describe('AvatarModal Component', () => {
         handleClose={mockHandleClose}
         handleAvatarSelect={mockHandleAvatarSelect}
         avatars={avatars}
-      />
+      />,
     );
 
     // Check if all avatars are rendered as images
     const avatarImages = screen.getAllByAltText('avatar');
-    
+
     // Check that all images have the correct src attribute
     avatars.forEach((avatar, index) => {
       expect(avatarImages[index]).toHaveAttribute('src', avatar);
@@ -53,7 +53,7 @@ describe('AvatarModal Component', () => {
         handleClose={mockHandleClose}
         handleAvatarSelect={mockHandleAvatarSelect}
         avatars={avatars}
-      />
+      />,
     );
 
     // Simulate clicking the first avatar
@@ -71,7 +71,7 @@ describe('AvatarModal Component', () => {
         handleClose={mockHandleClose}
         handleAvatarSelect={mockHandleAvatarSelect}
         avatars={avatars}
-      />
+      />,
     );
 
     // Simulate closing the modal by clicking outside the modal (on the backdrop)

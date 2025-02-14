@@ -1,21 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "../Language/Language.scss";
-import TextField from "@mui/material/TextField";
-import TextareaAutosize from "react-textarea-autosize";
-import useApi from "../../hooks/useAPI";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { QUERY_KEYS_LANGUAGE } from "../../utils/const";
-import { Grid, InputLabel, SelectChangeEvent, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { Field, Form, Formik, FormikHelpers } from "formik";
-import * as Yup from "yup";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../Language/Language.scss';
+import TextField from '@mui/material/TextField';
+import TextareaAutosize from 'react-textarea-autosize';
+import useApi from '../../hooks/useAPI';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { QUERY_KEYS_LANGUAGE } from '../../utils/const';
+import { Grid, InputLabel, SelectChangeEvent, Typography } from '@mui/material';
+import { toast } from 'react-toastify';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
 import {
   LanguageRep0oDTO,
   MenuListinter,
-} from "../../Components/Table/columns";
-import { dataaccess, inputfield, inputfieldtext } from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../Components/Table/columns';
+import { dataaccess, inputfield, inputfieldtext } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 interface ILanguageForm {
   language_name: string;
   // description:string
@@ -33,21 +33,21 @@ const AddEditLanguage = () => {
   const LanguageNamePattern = /^[a-zA-Z\s]*$/;
 
   const location = useLocation();
-  const Menulist: any = localStorage.getItem("menulist1");
-  const pathSegments = location.pathname.split("/").filter(Boolean) || [];
+  const Menulist: any = localStorage.getItem('menulist1');
+  const pathSegments = location.pathname.split('/').filter(Boolean) || [];
   const lastSegment = id
-    ? pathSegments[pathSegments.length - 3]?.toLowerCase() || ""
-    : pathSegments[pathSegments.length - 2]?.toLowerCase() || "";
+    ? pathSegments[pathSegments.length - 3]?.toLowerCase() || ''
+    : pathSegments[pathSegments.length - 2]?.toLowerCase() || '';
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const initialState = {
-    language_name: "",
+    language_name: '',
   };
   const [language, setLanguage] = useState(initialState);
   const [dataLanguage, setDataLanguage] = useState<LanguageRep0oDTO[]>([]);
 
   useEffect(() => {
     setFilteredData(
-      dataaccess(Menulist, lastSegment, { urlcheck: "" }, { datatest: "" })
+      dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
     );
   }, [Menulist]);
 
@@ -55,21 +55,26 @@ const AddEditLanguage = () => {
     (id && !filteredData?.form_data?.is_update) ||
     (!id && !filteredData?.form_data?.is_save)
   ) {
-    navigate("/main/Language");
+    navigate('/main/Language');
   }
 
   useEffect(() => {
-    if (id) {
-        getData(`${LanguageEditURL}/${id}`).then((data) => {
-            setLanguage(data?.data || initialState);
-        }).catch(e => {
-            toast.error(e?.message, {
-                hideProgressBar: true,
-                theme: "colored",
-            });
+    const fetchData = async () => {
+      try {
+        if (id) {
+          const data = await getData(`${LanguageEditURL}/${id}`);
+          setLanguage(data?.data || initialState);
+        }
+      } catch (e: any) {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
         });
-    }
-}, [id, LanguageEditURL]);
+      }
+    };
+
+    fetchData();
+  }, [id, LanguageEditURL]);
   // const callAPILanguage = async () => {
   //   getData(`${LanguageURL}`)
   //     .then((data: any) => {
@@ -99,7 +104,7 @@ const AddEditLanguage = () => {
       console.error('Error fetching data:', e);
     }
   };
-  
+
   useEffect(() => {
     callAPILanguage();
   }, []);
@@ -108,7 +113,7 @@ const AddEditLanguage = () => {
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
     setLanguage((prevMenu) => {
       return {
@@ -123,7 +128,7 @@ const AddEditLanguage = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof ILanguageForm]
+        formRef?.current?.errors?.[fieldName as keyof ILanguageForm],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
@@ -131,24 +136,24 @@ const AddEditLanguage = () => {
 
   const handleSubmit = async (
     languageData: ILanguageForm,
-    { resetForm }: FormikHelpers<ILanguageForm>
+    { resetForm }: FormikHelpers<ILanguageForm>,
   ) => {
     // console.log("test submit", languageData)
     if (id) {
       putData(`${LanguageEditURL}/${id}`, languageData)
         .then((data) => {
           if (data.status === 200) {
-            navigate("/main/Language");
+            navigate('/main/Language');
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     } else {
@@ -159,7 +164,7 @@ const AddEditLanguage = () => {
             callAPILanguage();
             toast.success(data.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             resetForm({ values: initialState });
             setLanguage(initialState);
@@ -168,7 +173,7 @@ const AddEditLanguage = () => {
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
@@ -178,17 +183,17 @@ const AddEditLanguage = () => {
     if (id) {
       languageSchema = Yup.object().shape({
         language_name: Yup.string()
-          .required("Please enter Language name")
+          .required('Please enter Language name')
           .test(
-            "not-whitespace",
-            "Please enter a valid Language name; whitespace is not allowed.",
-            (value: any) => value && value?.trim().length > 0
+            'not-whitespace',
+            'Please enter a valid Language name; whitespace is not allowed.',
+            (value: any) => value && value?.trim().length > 0,
           )
           .matches(
             LanguageNamePattern,
-            "Please enter a valid Language name only characters allowed."
+            'Please enter a valid Language name only characters allowed.',
           )
-          .test("unique", "Language name already exists", function (value) {
+          .test('unique', 'Language name already exists', function (value) {
             if (!value) return true;
 
             // Check if the value matches the current institute name
@@ -200,7 +205,7 @@ const AddEditLanguage = () => {
             const exists = dataLanguage?.some(
               (inst) =>
                 inst?.language_name &&
-                inst?.language_name.toLowerCase() === value?.toLowerCase()
+                inst?.language_name.toLowerCase() === value?.toLowerCase(),
             );
 
             return !exists;
@@ -211,22 +216,22 @@ const AddEditLanguage = () => {
     } else {
       languageSchema = Yup.object().shape({
         language_name: Yup.string()
-          .required("Please enter Language name")
+          .required('Please enter Language name')
           .test(
-            "not-whitespace",
-            "Please enter a valid Language name; whitespace is not allowed.",
-            (value: any) => value && value?.trim().length > 0
+            'not-whitespace',
+            'Please enter a valid Language name; whitespace is not allowed.',
+            (value: any) => value && value?.trim().length > 0,
           )
           .matches(
             LanguageNamePattern,
-            "Please enter a valid Language name only characters allowed."
+            'Please enter a valid Language name only characters allowed.',
           )
-          .test("unique", "Language name already exists", (value) => {
+          .test('unique', 'Language name already exists', (value) => {
             if (!value) return true;
             const exists = dataLanguage?.some(
               (inst) =>
                 inst?.language_name &&
-                inst?.language_name?.toLowerCase() === value?.toLowerCase()
+                inst?.language_name?.toLowerCase() === value?.toLowerCase(),
             );
             return !exists;
           }),
@@ -261,23 +266,23 @@ const AddEditLanguage = () => {
               // data-testid="form"
             >
               {({ errors, values, touched }: any) => (
-                <Form  data-testid = "form">
+                <Form data-testid="form">
                   <div className="row">
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
-                          inputProps={{ "data-testid": "language_name" }}
+                          inputProps={{ 'data-testid': 'language_name' }}
                           component={TextField}
                           type="text"
                           label="Language Name *"
                           name="language_name"
                           value={values.language_name}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, "language_name")
+                            handleChange(e, 'language_name')
                           }
                         />
                         {errors.language_name && touched.language_name ? (
-                          <p style={{ color: "red" }} color="error">
+                          <p style={{ color: 'red' }} color="error">
                             {errors.language_name}
                           </p>
                         ) : (
@@ -322,8 +327,8 @@ const AddEditLanguage = () => {
                         aria-label="empty textarea"
                         minRows={5}
                         style={{
-                          width: "100%",
-                          fontSize: "1rem",
+                          width: '100%',
+                          fontSize: '1rem',
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
                         }}
@@ -331,7 +336,7 @@ const AddEditLanguage = () => {
                         name="description"
                         value={values.description}
                         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                          handleChange(e, "description")
+                          handleChange(e, 'description')
                         }
                       />
                     </div>
@@ -342,7 +347,7 @@ const AddEditLanguage = () => {
                       type="submit"
                       className="btn btn-primary mainbutton"
                     >
-                      {id ? "Update" : "Save"}
+                      {id ? 'Update' : 'Save'}
                     </button>
                   </div>
                 </Form>

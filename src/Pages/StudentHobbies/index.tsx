@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
@@ -9,18 +9,19 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
- // useTheme,
-} from "@mui/material";
-import { toast } from "react-toastify";
-import useApi from "../../hooks/useAPI";
-import "react-toastify/dist/ReactToastify.css";
+  // useTheme,
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import useApi from '../../hooks/useAPI';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   deepEqual,
+  fieldIcon,
   inputfield,
   inputfieldhover,
   inputfieldtext,
-} from "../../utils/helpers";
-import NameContext from "../Context/NameContext";
+} from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 
 interface Hobby {
   hobby_name: string;
@@ -30,74 +31,75 @@ interface Hobby {
 interface StudentHobbiesProps {
   save: boolean;
   setSave: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsHobbiesUpdated:React.Dispatch<React.SetStateAction<boolean>>;
-  isLanguageUpdated:boolean;
+  setIsHobbiesUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  isLanguageUpdated: boolean;
 }
-const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHobbiesUpdated,isLanguageUpdated }) => {
+const StudentHobbies: React.FC<StudentHobbiesProps> = ({
+  save,
+  setSave,
+  setIsHobbiesUpdated,
+  isLanguageUpdated,
+}) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
+  const [ishobbiestuch, setIshobbiestuch] = useState(false);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
+  const [hobbiesAll, setHobbiesAll] = useState<any>([]);
+  const StudentId = localStorage.getItem('_id');
 
-
-  const StudentId = localStorage.getItem("_id");
-  
   useEffect(() => {
-    console.log(save);
     if (save) {
       submitHandle();
     }
   }, [save]);
 
   useEffect(() => {
-    getData("hobby/list")
-      .then((data: any) => {
-        console.log(data?.data);
-        if (data?.status === 200) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1
+    const fetchData = async () => {
+      try {
+        const hobbyListData = await getData('hobby/list');
+
+        if (hobbyListData?.status === 200) {
+          const filteredData = hobbyListData?.data?.filter(
+            (item: any) => item?.is_active === 1,
           );
           setAllHobbies(filteredData || []);
-          // setAllHobbies(data?.data);
         }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: "colored",
-          position: "top-center"
-        });
-      });
 
-    getData("student_hobby/edit/" + StudentId)
-      .then((data: any) => {
-        console.log(data?.data);
-        if (data?.status === 200) {
-          const hobbyIds = data.data.map(
-            (selecthobby: any) => selecthobby.hobby_id
+        const studentHobbyData = await getData(
+          'student_hobby/edit/' + StudentId,
+        );
+
+        if (studentHobbyData?.status === 200) {
+          const hobbyIds = studentHobbyData.data.map(
+            (selecthobby: any) => selecthobby.hobby_id,
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
-        } else if (data?.status === 404) {
+          setHobbiesAll(studentHobbyData?.data || []);
+        } else if (studentHobbyData?.status === 404) {
           setEditFlag(true);
         }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
+      } catch (e: any) {
+        toast.error(e?.message || 'An error occurred', {
           hideProgressBar: true,
-          theme: "colored",
-          position: "top-center"
+          theme: 'colored',
+          position: 'top-center',
         });
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     Promise.resolve(setIsHobbiesUpdated(true));
     setSelectedHobbies(event.target.value as string[]);
+    setIshobbiestuch(true);
   };
   //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
   //     setSelectedHobbies(event.target.value as string[]);
@@ -112,70 +114,53 @@ const StudentHobbies : React.FC<StudentHobbiesProps> = ({ save, setSave,setIsHob
   // };
 
   const submitHandle = async () => {
-    
     const eq = deepEqual(initialAdminState, selectedHobbies);
-    console.log(selectedHobbies);
+
     const payloadPromises = selectedHobbies.map((hobbyid) => {
       const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
       };
-console.log(payload);
-      // return editFlag
-      //   ? postData("student_hobby/add", payload)
-      //   : putData("student_hobby/edit/" + StudentId, payload);
-      if (editFlag) {
-        return postData("student_hobby/add", payload);
-      } else if (!eq) {
-        console.log("edit hobby");
-        return putData("student_hobby/edit/" + StudentId, payload);
+      const hobbyExists = hobbiesAll?.some(
+        (item: { hobby_id: any }) => item?.hobby_id === hobbyid,
+      );
+      if (ishobbiestuch) {
+        if (editFlag || !hobbyExists) {
+          return postData('student_hobby/add', payload);
+        } else if (!eq) {
+          return putData('student_hobby/edit/' + StudentId, payload);
+        } else {
+          return Promise.resolve({ status: 204 }); // Skip update
+        }
       } else {
-        return Promise.resolve({ status: 204 }); // Skip update
+        return Promise.resolve({ status: 204 });
       }
     });
-    // <<<<<<< Updated upstream
-    //     if(payloadPromises.length >0)
-    //       {
-    //         try {
-    //           await Promise.all(payloadPromises);
-    //           toast.success("Hobbies saved successfully!!", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         } catch (e) {
-    //           toast.error("An error occurred while saving hobbies", {
-    //             hideProgressBar: true,
-    //             theme: "colored",
-    //           });
-    //         }
-    //       }
-    // =======
-
     try {
       const results = await Promise.all(payloadPromises);
       const successfulResults = results.filter((res) => res.status === 200);
-      console.log(successfulResults);
-      console.log(results);
-      console.log(payloadPromises);
-      console.log(successfulResults);
+
       if (successfulResults?.length > 0) {
-        console.log(successfulResults);
-        if(!isLanguageUpdated){
-           if (editFlag) {
-          toast.success("Hobbies saved successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
-          });
-        }else {
-          toast.success("Hobbies update successfully", {
-            hideProgressBar: true,
-            theme: "colored",
-            position: "top-center"
-          });
+        if (!isLanguageUpdated && ishobbiestuch) {
+          if (editFlag) {
+            toast.success('Hobbies saved successfully', {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+
+            setIshobbiestuch(false);
+          } else {
+            toast.success('Hobbies updated successfully', {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+            setIshobbiestuch(false);
+          }
+        } else {
+          setIshobbiestuch(false);
         }
-        }
-       
       } else if (results.some((res) => res.status !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
@@ -184,11 +169,11 @@ console.log(payload);
       } else {
         //empty
       }
-    } catch  {
-      toast.error("An error occurred while saving hobbies", {
+    } catch {
+      toast.error('An error occurred while saving hobbies', {
         hideProgressBar: true,
-        theme: "colored",
-        position: "top-center"
+        theme: 'colored',
+        position: 'top-center',
       });
     }
     setSave(false);
@@ -206,50 +191,58 @@ console.log(payload);
     },
   };
   const hobbydelete = (id: any) => {
-    deleteData("/student_hobby/delete/" + id)
-      .then((data: any) => {
-        console.log(data);
-        if (data?.status === 200) {
-          // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
-          // setAllHobbies(filteredData ||[]);
-          // setAllHobbies(data?.data);
-          // toast.error(data?.message, {
+    const deleteHob = hobbiesAll?.filter(
+      (item: { hobby_id: any }) => item?.hobby_id == id,
+    );
+    if (deleteHob[0]?.id) {
+      deleteData('/student_hobby/delete/' + deleteHob[0]?.id)
+        .then((data: any) => {
+          if (data?.status === 200) {
+            // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
+            // setAllHobbies(filteredData ||[]);
+            // setAllHobbies(data?.data);
+            // toast.error(data?.message, {
+            //   hideProgressBar: true,
+            //   theme: "colored",
+            // });
+          }
+        })
+        .catch(() => {
+          // toast.error(e?.message, {
           //   hideProgressBar: true,
           //   theme: "colored",
           // });
-        }
-      })
-      .catch(() => {
-        // toast.error(e?.message, {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-      });
+        });
+    }
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
-    console.log(event.target.checked);
     if (!event.target.checked) {
       // Call your function when checkbox is unchecked
       hobbydelete(hobbyId);
       // console.log("Check", event.target.checked, hobbyId);
     }
   };
-
   return (
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
         <div className="col-12 justify-content-start form_field_wrapper">
-          <FormControl sx={{
-               maxWidth: "300px",
-               width: "100%",
-          }}>
+          <FormControl
+            sx={{
+              maxWidth: '300px',
+              width: '100%',
+            }}
+          >
             <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
             <Select
               labelId="demo-multiple-checkbox-label"
               id="demo-multiple-checkbox"
               multiple
+              data-testid="hobby_text"
               sx={{
-                backgroundColor: "#f5f5f5",             
+                backgroundColor: '#f5f5f5',
+                '& .MuiSelect-icon': {
+                  color: fieldIcon(namecolor),
+                },
               }}
               value={selectedHobbies}
               onChange={handleChange}
@@ -259,14 +252,14 @@ console.log(payload);
                 (selected as string[])
                   .map((id) => {
                     const hobby = allHobbies.find(
-                      (hobby: any) => hobby.id === id
+                      (hobby: any) => hobby.id === id,
                     );
-                    return hobby ? hobby.hobby_name : "";
+                    return hobby ? hobby.hobby_name : '';
                   })
                   // .join(", ")
                   .reduce(
-                    (prev, curr) => (prev === "" ? curr : `${prev}, ${curr}`),
-                    ""
+                    (prev, curr) => (prev === '' ? curr : `${prev}, ${curr}`),
+                    '',
                   )
               }
               MenuProps={MenuProps}
@@ -278,8 +271,20 @@ console.log(payload);
                   sx={{
                     backgroundColor: inputfield(namecolor),
                     color: inputfieldtext(namecolor),
-                    "&:hover": {
-                      backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                    // "&:hover": {
+                    //   backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
+                    // },
+                    '&:hover': {
+                      backgroundColor: inputfieldhover(namecolor),
+                      color: 'black !important',
+                    },
+                    '&.Mui-selected': {
+                      // backgroundColor: inputfield(namecolor),
+                      color: 'black',
+                    },
+                    '&.Mui-selected, &:focus': {
+                      backgroundColor: inputfield(namecolor),
+                      color: namecolor === 'dark' ? 'white' : 'black',
                     },
                   }}
                 >

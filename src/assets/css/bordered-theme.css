@@ -1,15 +1,15 @@
-[data-bs-theme=bodered-theme] body {
+[data-bs-theme='bodered-theme'] body {
   background-color: rgb(255, 255, 255);
 }
-[data-bs-theme=bodered-theme] body .top-header .navbar {
+[data-bs-theme='bodered-theme'] body .top-header .navbar {
   border-bottom: 1px solid #dee2e6;
   box-shadow: none;
 }
-[data-bs-theme=bodered-theme] body .sidebar-wrapper {
+[data-bs-theme='bodered-theme'] body .sidebar-wrapper {
   border-right: 1px solid #dee2e6;
   box-shadow: none;
 }
-[data-bs-theme=bodered-theme] body .card {
+[data-bs-theme='bodered-theme'] body .card {
   box-shadow: none;
   border: 1px solid #dee2e6;
-}/*# sourceMappingURL=bordered-theme.css.map */
+} /*# sourceMappingURL=bordered-theme.css.map */

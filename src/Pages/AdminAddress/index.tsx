@@ -1,17 +1,13 @@
+import React, { useContext, useEffect, useRef, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as React from "react";
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  SelectChangeEvent,
-} from "@mui/material";
-import { useState, useEffect, useRef } from "react";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import { deepEqual } from "../../utils/helpers";
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { ChildComponentProps } from "../StudentProfile";
+import { Checkbox, FormControl, FormControlLabel } from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useApi from '../../hooks/useAPI';
+import { deepEqual, fieldIcon } from '../../utils/helpers';
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
+import { ChildComponentProps } from '../StudentProfile';
+import NameContext from '../Context/NameContext';
 
 interface AdminAddress {
   admin_id?: string;
@@ -24,47 +20,78 @@ interface AdminAddress {
   pincode?: string;
   address_type?: string;
 }
-////start
-const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
-  const adminId = localStorage.getItem("_id");
+
+// let isToastActive = false;
+
+// const showErrorToast = (message: string) => {
+//   if (isToastActive) return;
+
+//   isToastActive = true;
+
+//   toast.error(message, {
+//     onClose: () => {
+//       isToastActive = false;
+//     },
+//     hideProgressBar: true,
+//     theme: "colored",
+//     position: "top-center"
+//   });
+// };
+
+const AdminAddress: React.FC<ChildComponentProps> = () => {
+  const context = useContext(NameContext);
+
+  const { activeForm, setActiveForm }: any = context;
+  const adminId = localStorage.getItem('_id');
+
+  const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
-    address_type: "current_address",
+    address_type: 'current_address',
   });
 
-  const [adminAddress1, setadminAddress1] = useState<AdminAddress>({
-    address_type: "current_address",
-  });
+  // const [adminAddress1, setadminAddress1] = useState<AdminAddress>({
+  //   address_type: "current_address",
+  // });
 
   const [permanentAddress, setPermanentAddress] = useState<AdminAddress>({
-    address_type: "permanent_address",
+    address_type: 'permanent_address',
   });
 
-  const [permanentAddress1, setPermanentAddress1] = useState<AdminAddress>({
-    address_type: "permanent",
-  });
-
+  // const [permanentAddress1, setPermanentAddress1] = useState<AdminAddress>({
+  //   address_type: "permanent",
+  // });
   const [editFlag, setEditFlag] = useState<boolean>(false);
-
+  // const [pincode, setPincode] = useState("");
   const [contry_col, setcontry_col] = useState<boolean>(false);
+  const [add_col, setAdd_col] = useState<boolean>(false);
+  const [city_colerror, setCity_colerror] = useState<boolean>(false);
+  const [district_colerror, setDistrict_colerror] = useState<boolean>(false);
   const [state_col, setstate_col] = useState<boolean>(false);
   const [city_col, setcity_col] = useState<boolean>(false);
   const [district_col, setdistrict_col] = useState<boolean>(false);
-  const [city_colerror, setCity_colerror] = useState<boolean>(false);
-  const [district_colerror, setDistrict_colerror] = useState<boolean>(false);
   const [pincode_col, setpincode_col] = useState<boolean>(false);
-  const [contry_col1, setcontry_col1] = useState<boolean>(false);
   const [state_col1, setstate_col1] = useState<boolean>(false);
   const [city_col1, setcity_col1] = useState<boolean>(false);
+  const [add_col1, setAdd_col1] = useState<boolean>(false);
+  const [contry_col1, setcontry_col1] = useState<boolean>(false);
   const [district_col1, setdistrict_col1] = useState<boolean>(false);
   const [pincode_col1, setpincode_col1] = useState<boolean>(false);
-  const [add_col, setAdd_col] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
+
+  const [editableCurrent, setEditableCurrect] = useState<boolean>(false);
+  const [editablePerm, setEditableCurrectPerm] = useState<boolean>(false);
+  const [tuched, setTuched] = useState<boolean>(false);
+  const [tuchedPram, setTuchedPram] = useState<boolean>(false);
+  const [tuchedCurrent, setTuchedCurrent] = useState<boolean>(false);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownstateRef = useRef<HTMLDivElement>(null);
+
+  // const [editaddress,seteditaddress] = useState(false);
+
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
     const handleFocusstate = () => setIsFocusedstate(true);
@@ -87,77 +114,84 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
     const currentDropdown = dropdownRef.current;
     if (currentDropdown) {
-      currentDropdown.addEventListener("focus", handleFocus as EventListener);
-      currentDropdown.addEventListener("blur", handleBlur as EventListener);
+      currentDropdown.addEventListener('focus', handleFocus as EventListener);
+      currentDropdown.addEventListener('blur', handleBlur as EventListener);
     }
     const currentDropdownstate = dropdownstateRef.current;
     if (currentDropdownstate) {
       currentDropdownstate.addEventListener(
-        "focus",
-        handleFocusstate as EventListener
+        'focus',
+        handleFocusstate as EventListener,
       );
       currentDropdownstate.addEventListener(
-        "blur",
-        handleBlurstate as EventListener
+        'blur',
+        handleBlurstate as EventListener,
       );
     }
 
     return () => {
       if (currentDropdown) {
         currentDropdown.removeEventListener(
-          "focus",
-          handleFocus as EventListener
+          'focus',
+          handleFocus as EventListener,
         );
         currentDropdown.removeEventListener(
-          "blur",
-          handleBlur as EventListener
+          'blur',
+          handleBlur as EventListener,
         );
       }
       if (currentDropdownstate) {
         currentDropdownstate.removeEventListener(
-          "focus",
-          handleFocusstate as EventListener
+          'focus',
+          handleFocusstate as EventListener,
         );
         currentDropdownstate.removeEventListener(
-          "blur",
-          handleBlurstate as EventListener
+          'blur',
+          handleBlurstate as EventListener,
         );
       }
     };
   }, []);
-  useEffect(() => {
-    getAddressInfo();
-  }, [adminId]);
 
-  const getAddressInfo = async () => {
-    getData(`${"admin_address/edit/" + adminId}`)
+  const validatePincode = (pincode: any) => {
+    const pincodePattern = /^(?!0{6})[0-9]{6}$/;
+    return pincodePattern.test(pincode);
+  };
+
+  const listData = async () => {
+    getData(`${'admin_address/edit/' + adminId}`)
       .then((response: any) => {
         if (response?.status === 200) {
-          let add1 :any
-          let add2 :any
+          let add1: any;
+          let add2: any;
           response?.data.forEach((address: any) => {
-            if (address?.address_type === "permanent_address") {
+            if (address?.address_type === 'permanent_address') {
               setPermanentAddress(address);
-              setPermanentAddress1(address);
-              add1 = address
-            } else if (address?.address_type === "current_address") {
+
+              // setPermanentAddress1(address);
+              add1 = address;
+            } else if (address?.address_type === 'current_address') {
               setadminAddress(address);
-              setadminAddress1(address);
-              add2 = address
-            } else {
-              console.error("Unexpected response:", response);
+              // setadminAddress1(address);
+              add2 = address;
             }
           });
-          const fieldsToCompare = ['address1', 'address2', 'city', 'country', 'district', 'pincode', 'state'];
-          const filteredAdd1:any = {};
-          const filteredAdd2:any = {};
-          fieldsToCompare?.forEach(field => {
-            // if (add1.hasOwnProperty(field)) {
-            //   filteredAdd1[field] = add1[field];
-            // }
-            // if (add2.hasOwnProperty(field)) {
-            //   filteredAdd2[field] = add2[field];
-            // }
+          // Filter out unwanted fields from both add1 and add2
+
+          const fieldsToCompare = [
+            'address1',
+            'address2',
+            'city',
+            'country',
+            'district',
+            'pincode',
+            'state',
+          ];
+
+          const filteredAdd1: any = {};
+          const filteredAdd2: any = {};
+
+          fieldsToCompare?.forEach((field) => {
             if (add1 && Object.prototype.hasOwnProperty.call(add1, field)) {
               filteredAdd1[field] = add1[field];
             }
@@ -165,70 +199,101 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               filteredAdd2[field] = add2[field];
             }
           });
+
           // Use deepEqual to compare only the selected fields
           const equal = deepEqual(filteredAdd1, filteredAdd2);
-              if(equal){
-                setChecked(true)
-              }
+          if (equal) {
+            setChecked(true);
+          }
         } else if (response?.status === 404) {
           setEditFlag(true);
+          // toast.error(response?.message, {
+          //   hideProgressBar: true,
+          //   theme: "colored",
+          // });
         } else {
           toast.error(response?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
+            position: 'top-center',
           });
         }
       })
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
+          position: 'top-center',
         });
       });
   };
- 
+  useEffect(() => {
+    listData();
+  }, []);
 
+  useEffect(() => {
+    getData(`${'admin_address/edit/' + adminId}`).then((response: any) => {
+      if (response?.status === 200) {
+        response?.data.forEach((address: any) => {
+          if (address?.address_type === 'permanent_address') {
+            //setPermanentAddress(address);
+            //setPermanentAddress1(address);
+            setEditableCurrectPerm(true);
+            setTuchedPram(false);
+          } else if (address?.address_type === 'current_address') {
+            // setadminAddress(address);
+            // setadminAddress1(address);
+            setEditableCurrect(true);
+            setTuchedCurrent(false);
+          } else {
+            setEditableCurrect(false);
+            setEditableCurrectPerm(false);
+          }
+        });
+      }
+    });
+  }, [activeForm]);
   const handleInputChange = (
-    event:
-      | React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-      | SelectChangeEvent<string>,
-
-    addressType: string
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    addressType: string,
   ) => {
+    setTuched(true);
     const { name, value } = event.target;
-    setChecked(false)
-    if (addressType === "current_address") {
-      if (name === "country") {
+    setChecked(false);
+
+    if (addressType === 'current') {
+      if (name === 'country') {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setcontry_col(true);
         } else {
           setcontry_col(false);
         }
       }
-      if (name === "state") {
+      if (name === 'state') {
         if (!/^[a-zA-Z\s]*$/.test(value)) {
           setstate_col(true);
         } else {
           setstate_col(false);
         }
       }
-      if (name === "city") {
-        if(value === "" ){
-          setCity_colerror(true)
-        }else{
-          setCity_colerror(false)
+      if (name === 'city') {
+        if (value === '') {
+          setCity_colerror(true);
+        } else {
+          setCity_colerror(false);
         }
+        // if (!/^[a-zA-Z\s]*$/.test(value)) {
         if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setcity_col(true);
         } else {
           setcity_col(false);
         }
       }
-      if (name === "district") {
-        if(value === "" ){
-          setDistrict_colerror(true)
-        }else{
-          setDistrict_colerror(false)
+      if (name === 'district') {
+        if (value === '') {
+          setDistrict_colerror(true);
+        } else {
+          setDistrict_colerror(false);
         }
         if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
           setdistrict_col(true);
@@ -236,345 +301,452 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           setdistrict_col(false);
         }
       }
-      if (name === "pincode") {
-        if (value === "" || /^\d{6}$/.test(value)) {
+      if (name === 'pincode') {
+        if (value === '' || validatePincode(value)) {
           setpincode_col(false);
         } else {
           setpincode_col(true);
         }
       }
-      if (name === "address1") {
-        if (value === "" || (!/^[A-Za-z0-9]+(?:[ A-Za-z0-9]+)*$/.test(value))) {
+      if (name === 'address1') {
+        // if (value === "") {
+        if (value === '' || !/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
           setAdd_col(true);
         } else {
-          setAdd_col(false)
+          setAdd_col(false);
         }
       }
-
+      setTuchedCurrent(true);
       setadminAddress((prevState) => ({ ...prevState, [name]: value }));
     } else {
-      if (name === "country") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setcontry_col1(true);
-        } else {
-          setcontry_col1(false);
+      if (name !== 'address2' && value === '') {
+        setAdd_col1(false);
+        setstate_col1(false);
+        setcity_col1(false);
+        setcontry_col1(false);
+        setdistrict_col1(false);
+        setpincode_col1(false);
+        if (!editablePerm) {
+          setChecked(false);
+          setTuched(false);
+          setTuchedPram(false);
         }
-      }
-      if (name === "state") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setstate_col1(true);
-        } else {
-          setstate_col1(false);
-        }
-      }
-      if (name === "city") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setcity_col1(true);
-        } else {
-          setcity_col1(false);
-        }
-      }
-      if (name === "district") {
-        if (!/^[a-zA-Z\s]*$/.test(value)) {
-          setdistrict_col1(true);
-        } else {
-          setdistrict_col1(false);
-        }
-      }
-      if (name === "pincode") {
-        if (value === "" || /^\d+$/.test(value)) {
-          setpincode_col1(false);
-        } else {
-          setpincode_col1(true);
-        }
-      }
+      } else {
+        setTuchedPram(true);
 
-      setPermanentAddress((prevState) => ({ ...prevState, [name]: value }));
-    }
-  };
-
-  const handlePermanentAddressCheckbox = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.checked) {
-      setChecked(true)
-      for (const key of Object.keys(adminAddress)) {
-        if (key === "country") {
-          if (!/^[a-zA-Z\s]*$/.test(adminAddress?.country || "")) {
+        if (name === 'address1') {
+          // if (value === "") {
+          if (!/^[A-Za-z0-9/]+(?:[ A-Za-z0-9/]+)*$/.test(value)) {
+            setAdd_col1(true);
+          } else {
+            setAdd_col1(false);
+          }
+        }
+        if (name === 'country') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
             setcontry_col1(true);
           } else {
             setcontry_col1(false);
           }
         }
-        if (key === "state") {
-          if (!/^[a-zA-Z\s]*$/.test(adminAddress?.state || "")) {
+        if (name === 'state') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
             setstate_col1(true);
           } else {
             setstate_col1(false);
           }
         }
-        if (key === "city") {
-          if (!/^[a-zA-Z\s]*$/.test(adminAddress?.city || "")) {
+        if (name === 'city') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
             setcity_col1(true);
           } else {
             setcity_col1(false);
           }
         }
-        if (key === "district") {
-          if (!/^[a-zA-Z\s]*$/.test(adminAddress?.district || "")) {
+        if (name === 'district') {
+          if (!/^[a-zA-Z\s]*$/.test(value)) {
             setdistrict_col1(true);
           } else {
             setdistrict_col1(false);
           }
         }
-        if (key === "pincode") {
-          if (/^\d+$/.test(adminAddress?.pincode || "")) {
+        if (name === 'pincode') {
+          if (value === '' || validatePincode(value)) {
             setpincode_col1(false);
           } else {
             setpincode_col1(true);
           }
         }
       }
-
-      setPermanentAddress({
-        ...adminAddress,
-        address_type: "permanent_address",
-      });
-    } else {
-      setChecked(false)
-      setPermanentAddress((prevPermanentAddress) => ({
-        ...prevPermanentAddress,
-        address1: "",
-        address2: "",
-        country: "",
-        state: "",
-        city: "",
-        district: "",
-        pincode: "",
-        address_type: "permanent_address",
-      }));
+      // if(name==='pincode')
+      //   {
+      //         setErrors({
+      //           ...errors,
+      //           permanentpin: !validatePincode(value) ? 'Please enter a valid Pincode Only numbers allowed.' : '',
+      //         });
+      //   }
+      setPermanentAddress((prevState) => ({ ...prevState, [name]: value }));
     }
   };
 
-  const SubmitHandle = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if(!("address1" in adminAddress) || adminAddress?.address1 === ""){
-      setAdd_col(true)
-    }else{
-      setAdd_col(false)
+  const handlePermanentAddressCheckbox = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event.target.checked) {
+      setChecked(true);
+
+      setTuched(true);
+      setTuchedPram(true);
+      setPermanentAddress({
+        ...adminAddress,
+        address_type: 'permanent_address',
+      });
+      if (pincode_col) {
+        setpincode_col1(true);
+      } else {
+        setpincode_col1(false);
+      }
+      validatinforperm();
+    } else {
+      setChecked(false);
+      setTuched(false);
+      setTuchedPram(false);
+      setPermanentAddress((prevPermanentAddress) => ({
+        ...prevPermanentAddress,
+        address1: '',
+        address2: '',
+        country: '',
+        state: '',
+        city: '',
+        district: '',
+        pincode: '',
+        address_type: 'permanent_address',
+      }));
     }
-    if (!("country" in adminAddress) || adminAddress?.country === "") {
+  };
+  let hasPermanentAddressFields = false;
+  let validPermanentAddress = true;
+  const validatinforperm = () => {
+    // Check if any permanent address field has a value
+    if (
+      (permanentAddress.address1 && permanentAddress.address1 !== '') ||
+      (permanentAddress.address2 && permanentAddress.address2 !== '') ||
+      (permanentAddress.country && permanentAddress.country !== '') ||
+      (permanentAddress.state && permanentAddress.state !== '') ||
+      (permanentAddress.district && permanentAddress.district !== '') ||
+      (permanentAddress.city && permanentAddress.city !== '') ||
+      (permanentAddress.pincode && permanentAddress.pincode !== '')
+    ) {
+      hasPermanentAddressFields = true;
+
+      if (permanentAddress?.address1 === '' || !permanentAddress?.address1) {
+        setAdd_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setAdd_col1(false);
+      }
+
+      if (permanentAddress?.country === '' || !permanentAddress?.country) {
+        setcontry_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setcontry_col1(false);
+      }
+
+      if (permanentAddress?.city === '' || !permanentAddress?.city) {
+        setcity_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setcity_col1(false);
+      }
+
+      if (permanentAddress?.district === '' || !permanentAddress?.district) {
+        setdistrict_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setdistrict_col1(false);
+      }
+
+      if (
+        permanentAddress?.pincode === '' ||
+        !validatePincode(permanentAddress.pincode)
+      ) {
+        setpincode_col1(true);
+        validPermanentAddress = false;
+      } else {
+        setpincode_col1(false);
+      }
+    }
+  };
+  const SubmitHandle = async () => {
+    if (!('address1' in adminAddress) || adminAddress?.address1 === '') {
+      setAdd_col(true);
+    } else {
+      setAdd_col(false);
+    }
+
+    if (!('city' in adminAddress) || adminAddress?.city === '') {
+      setCity_colerror(true);
+    } else {
+      setCity_colerror(false);
+    }
+    if (!('district' in adminAddress) || adminAddress?.district === '') {
+      setDistrict_colerror(true);
+    } else {
+      setDistrict_colerror(false);
+    }
+    if (
+      !('pincode' in adminAddress) ||
+      adminAddress?.pincode === '' ||
+      !validatePincode(adminAddress.pincode)
+    ) {
+      setpincode_col(true);
+      // toast.error("Pincode is invalid");
+      // showErrorToast("Entered Pincode is invalid");
+    } else {
+      setpincode_col(false);
+    }
+
+    if (!('country' in adminAddress) || adminAddress?.country === '') {
       setcontry_col(true);
     } else {
       setcontry_col(false);
     }
-    if (!("country" in permanentAddress) || permanentAddress?.country === "") {
-      setcontry_col1(true);
-    } else {
-      setcontry_col1(false);
-    }
-    if(!("city" in adminAddress) || adminAddress?.city === ""){
-      setCity_colerror(true)
-    }else{
-      setCity_colerror(false)
-    }
-    if(!("district" in adminAddress) || adminAddress?.district === ""){
-      setDistrict_colerror(true)
-    }else{
-      setDistrict_colerror(false)
-    }
-    if(!("pincode" in adminAddress) || adminAddress?.pincode === ""){
-      setpincode_col(true)
-    }else{
-      setpincode_col(false)
-    }
+
+    validatinforperm();
     const currentAddressPayload = {
       admin_id: adminId,
       ...adminAddress,
     };
+
     const permanentAddressPayload = {
       admin_id: adminId,
       ...permanentAddress,
     };
-    const eq = deepEqual(adminAddress1, currentAddressPayload);
-    const permanentAddressEq = deepEqual(
-      permanentAddress1,
-      permanentAddressPayload
-    );
-    if (editFlag) {
-      const addAddress = async (addressType: string, addressPayload: any) => {
-        try {
-          const data = await postData("/admin_address/add", addressPayload);
-          if (data?.status === 200) {
-            toast.success(`${addressType} Address saved successfully`, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-            setActiveForm((prev) => prev + 1);
-          } else {
-            // toast.error(`Failed to add ${addressType} address`, {
-            //   hideProgressBar: true,
-            //   theme: "colored",
-            // });
+
+    // const eq = deepEqual(adminAddress1, currentAddressPayload);
+    // const permanentAddressEq = deepEqual(
+    //   permanentAddress1,
+    //   permanentAddressPayload
+    // );
+    if (
+      (!hasPermanentAddressFields || validPermanentAddress) &&
+      adminAddress?.address1 &&
+      adminAddress?.country &&
+      adminAddress?.state &&
+      adminAddress?.city &&
+      adminAddress?.district &&
+      adminAddress?.pincode &&
+      !city_col &&
+      !district_col &&
+      !pincode_col &&
+      !pincode_col1 &&
+      !add_col1 &&
+      !district_col1 &&
+      !city_col1 &&
+      !contry_col1
+    ) {
+      if (editFlag && tuched) {
+        const addAddress = async (addressType: string, addressPayload: any) => {
+          try {
+            const data = await postData('/admin_address/add', addressPayload);
+            if (data?.status === 200) {
+              toast.success(`${addressType} address saved successfully`, {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+              if (addressType === 'Current') {
+                setActiveForm(2);
+              }
+              setTuched(false);
+              setEditFlag(false);
+            } else {
+              // toast.error(`Failed to add ${addressType} address`, {
+              //   hideProgressBar: true,
+              //   theme: "colored",
+              // });
+            }
+          } catch (error) {
+            if (error instanceof Error) {
+              toast.error(error?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+            } else {
+              toast.error('An unexpected error occurred', {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+            }
           }
-        } catch (error) {
-          if (error instanceof Error) {
-            toast.error(error?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else {
-            toast.error("An unexpected error occurred", {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
+        };
+
+        // Add current address
+        if (adminAddress?.address_type === 'current_address') {
+          await addAddress('Current', currentAddressPayload);
         }
-      };
-      // Add current address
-      if (adminAddress?.address_type === "current_address") {
-        await addAddress("Current", currentAddressPayload);
-      }
-      // Add permanent address
-      if (permanentAddress?.address_type === "permanent_address") {
-        await addAddress("Permanent", permanentAddressPayload);
-      }
-    } else {
-      const editAddress = async (addressType: string, addressPayload: any) => {
-        try {
-          const data = await putData(
-            "/admin_address/edit/" + adminId,
-            addressPayload
-          );
-          if (data?.status === 200) {
-            toast.success(`${addressType} Address updated successfully`, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-            getAddressInfo();
-            setActiveForm((prev) => prev + 1);
-          } else if (data?.status === 201) setActiveForm((prev) => prev + 1);
-          else {
+
+        // Add permanent address
+        if (permanentAddress?.address_type === 'permanent_address') {
+          await addAddress('Permanent', permanentAddressPayload);
+        }
+      } else {
+        const editAddress = async (
+          addressType: string,
+          addressPayload: any,
+        ) => {
+          try {
+            const data = await putData(
+              '/admin_address/edit/' + adminId,
+              addressPayload,
+            );
+
+            if (data?.status === 200) {
+              toast.success(`${addressType} address updated successfully`, {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+              listData();
+              setTuched(false);
+
+              if (tuchedPram && tuchedCurrent) {
+                // if (!eq && !permanentAddressEq) {
+                //   // block of code to write the address
+                // } else {
+                //   setActiveForm((prev: number) => prev + 1);
+                // }
+
+                await setTuchedCurrent(false);
+                await setTuchedPram(false);
+                setActiveForm(2);
+              } else if (tuchedPram && !tuchedCurrent) {
+                setActiveForm(2);
+              } else if (!tuchedPram && tuchedCurrent) {
+                setActiveForm(2);
+              }
+            } else if (data?.status === 201) {
+              toast.success(`${addressType} address updated successfully`, {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+              listData();
+              setTuched(false);
+
+              setTuchedCurrent(false);
+
+              setTuchedPram(false);
+              setActiveForm(2);
+            } else setActiveForm(2);
+            // else {
+
             // toast.error(`Failed to update ${addressType} address`, {
             //   hideProgressBar: true,
             //   theme: "colored",
             // });
-          }
-        } catch (error) {
-          if (error instanceof Error) {
-            toast.error(error?.message, {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          } else {
-            toast.error("An unexpected error occurred", {
-              hideProgressBar: true,
-              theme: "colored",
-            });
-          }
-        }
-      };
 
-      if (adminId !== null) {
-        // Edit current address
-        if (eq && permanentAddressEq) setActiveForm((prev) => prev + 1);
-        else {
-          if (
-            adminAddress?.address_type === "current_address" &&
-            adminAddress.address1 !== "" &&
-            !contry_col &&
-            adminAddress.country !== "" &&
-            !state_col &&
-            adminAddress.state !== "" &&
-            !city_col &&
-            adminAddress.city !== "" &&
-            !district_col &&
-            adminAddress.district !== "" &&
-            !pincode_col &&
-            adminAddress.pincode !== ""
-          ) {
-           
-            // {
-            //   !eq && (await editAddress("Current", currentAddressPayload));
             // }
-            if (!eq) {
-              await editAddress("Current", currentAddressPayload);
+          } catch (error) {
+            if (error instanceof Error) {
+              toast.error(error?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+            } else {
+              toast.error('An unexpected error occurred', {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
             }
           }
-          // Edit permanent address
-          if (
-            permanentAddress?.address_type === "permanent_address" &&
-            "address1" in permanentAddress &&
-            permanentAddress.address1 !== "" &&
-            "address2" in permanentAddress &&
-            !contry_col1 &&
-            "country" in permanentAddress &&
-            permanentAddress.country !== "" &&
-            !state_col1 &&
-            "state" in permanentAddress &&
-            permanentAddress.state !== "" &&
-            !city_col1 &&
-            "city" in permanentAddress &&
-            permanentAddress.city !== "" &&
-            !district_col1 &&
-            "district" in permanentAddress &&
-            permanentAddress.district !== "" &&
-            !pincode_col1 &&
-            "pincode" in permanentAddress &&
-            permanentAddress.pincode !== ""
-          ) {
-            await editAddress("Permanent", permanentAddressPayload);
+        };
+
+        if (adminId !== null) {
+          // Edit current address
+
+          if (!tuched) setActiveForm((prev: number) => prev + 1);
+          else {
+            if (
+              adminAddress?.address_type === 'current_address' &&
+              editableCurrent &&
+              tuchedCurrent
+            )
+              await editAddress('Current', currentAddressPayload);
+            // Edit permanent address
+
+            if (
+              permanentAddress?.address_type === 'permanent_address' &&
+              tuchedPram
+            )
+              await editAddress('Permanent', permanentAddressPayload);
           }
+        } else {
+          // Handle the case where StudentId is null
+          console.error('StudentId is null. Unable to edit addresses.');
         }
-      } else {
-        // Handle the case where adminId is null
-        console.error("adminId is null. Unable to edit addresses.");
       }
     }
+
+    // }
   };
   const handleInputChangecountry = (
     value: string,
     addressType: string,
-    name: string
+    name: string,
   ) => {
-    if (addressType === "current_address") {
-      if (name === "country") {
-        setadminAddress((prevState) => ({ ...prevState, ["country"]: value }));
-        setadminAddress((prevState) => ({ ...prevState, ["state"]: "" }));
+    if (addressType === 'current_address') {
+      if (name === 'country') {
+        setadminAddress((prevState) => ({
+          ...prevState,
+          ['country']: value,
+        }));
+        setadminAddress((prevState) => ({ ...prevState, ['state']: '' }));
         setstate_col(true);
         setcontry_col(false);
-      } else if (name === "state") {
-        setadminAddress((prevState) => ({ ...prevState, ["state"]: value }));
+        // if(adminAddress1.country === value && adminAddress1.state === adminAddress.state ){
+        //   setstate_col(false)
+        // }
+      } else if (name === 'state') {
+        setadminAddress((prevState) => ({ ...prevState, ['state']: value }));
         setstate_col(false);
       } else {
         return;
       }
+      setTuchedCurrent(true);
     } else {
-      if (name === "country") {
+      if (name === 'country') {
         setPermanentAddress((prevState) => ({
           ...prevState,
-          ["country"]: value,
+          ['country']: value,
         }));
-        setPermanentAddress((prevState) => ({ ...prevState, ["state"]: "" }));
+        setPermanentAddress((prevState) => ({ ...prevState, ['state']: '' }));
         setstate_col1(true);
-        setcontry_col1(false);
-      } else if (name === "state") {
+        // setcontry_col1(false);
+      } else if (name === 'state') {
         setPermanentAddress((prevState) => ({
           ...prevState,
-          ["state"]: value,
+          ['state']: value,
         }));
         setstate_col1(false);
       } else {
         return;
       }
+      setTuchedPram(true);
     }
+    setTuched(true);
   };
   return (
     <form>
       <div className="row form_field_wrapper">
         <div className="col-12">
           <h5 className="font-weight-bold profiletext">
-            {" "}
+            {' '}
             <b>Current Address</b>
           </h5>
         </div>
@@ -582,178 +754,200 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       <div className="row">
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Address 1 <span>*</span>
           </label>
           <input
+            data-testid="address1"
             type="text"
             name="address1"
             className="form-control"
             value={adminAddress.address1}
-            onChange={(e) => handleInputChange(e, "current_address")}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {(adminAddress.address1 == "" || add_col) && (
-              <p style={{ color: "red" }}>Please enter Address 1.</p>
+            {' '}
+            {(adminAddress?.address1 === '' || add_col) && (
+              <p style={{ color: 'red' }}>Please enter Address 1.</p>
             )}
           </div>
         </div>
-        <div className="col-6 pb-3 form_field_wrapper mt-2">
-          <label>
-            {" "}
-            Address 2 <span></span>
-          </label>
+        <div className="col-6 pb-3 form_field_wrapper">
+          <label className="col-form-label"> Address 2</label>
           <input
             type="text"
+            data-testid="address2"
             name="address2"
-            className="form-control mt-1"
-            value={adminAddress.address2}
-            onChange={(e) => handleInputChange(e, "current_address")}
+            className="form-control"
+            value={adminAddress?.address2}
+            onChange={(e) => handleInputChange(e, 'current')}
+            // required
+
+            autoComplete="off"
           />
         </div>
+
         <div className="col-6 pb-3 form_field_wrapper">
           <label
             className={`col-form-label  ${
-              isFocusedstate || adminAddress.country
-                ? "focused"
-                : "focusedempty"
+              isFocusedstate || adminAddress?.country
+                ? 'focused'
+                : 'focusedempty'
             }`}
-            style={{ fontSize: "14px" }}
+            style={{ fontSize: '14px' }}
           >
             Country <span>*</span>
           </label>
           <CountryDropdown
+            data-testid="countryDropdown"
             classes="form-select custom-dropdown"
             defaultOptionLabel={adminAddress.country}
-            value={adminAddress.country || ""}
+            value={adminAddress.country || ''}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "current_address", "country")
+              handleInputChangecountry(e, 'current_address', 'country')
             }
           />
           <div>
-            {" "}
+            {' '}
             {contry_col && (
-              <p style={{ color: "red" }}>Please enter Country Name.</p>
+              <p style={{ color: 'red' }}>Please select Country Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label
             className={`col-form-label ${
-              isFocusedstate || adminAddress.state ? "focused" : "focusedempty"
+              isFocusedstate || adminAddress.state ? 'focused' : 'focusedempty'
             }`}
-            style={{ fontSize: "14px" }}
+            style={{ fontSize: '14px' }}
           >
             State <span>*</span>
           </label>
 
           <RegionDropdown
+            data-testid="stateDropdown"
             classes="form-select custom-dropdown"
             defaultOptionLabel={adminAddress.state}
-            country={adminAddress.country || ""}
-            value={adminAddress.state || ""}
+            country={adminAddress.country || ''}
+            value={adminAddress.state || ''}
+            // onChange={(val) => setRegion(val)}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "current_address", "state")
+              handleInputChangecountry(e, 'current_address', 'state')
             }
           />
           <div>
-            {" "}
+            {' '}
             {state_col && (
-              <p style={{ color: "red" }}>Please enter a valid state Name.</p>
+              <p style={{ color: 'red' }}>Please select a valid state Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             City <span>*</span>
           </label>
+
           <input
+            data-testid="cityid"
             type="text"
             name="city"
             className="form-control"
-            value={adminAddress.city}
-            onChange={(e) => handleInputChange(e, "current_address")}
+            value={adminAddress?.city}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {city_col && adminAddress.city !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {city_col && adminAddress?.city !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid City Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {(adminAddress.city == "" || city_colerror )&& (
-              <p style={{ color: "red" }}>Please enter City name.</p>
+            {' '}
+            {(adminAddress?.city == '' || city_colerror) && (
+              <p style={{ color: 'red' }}>Please enter City name.</p>
             )}
           </div>
+          {/* {error.city && <span style={{ color: 'red' }}>{error.city}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             District <span>*</span>
           </label>
+
           <input
+            data-testid="districtid"
             type="text"
             name="district"
             className="form-control"
-            value={adminAddress.district}
-            onChange={(e) => handleInputChange(e, "current_address")}
+            value={adminAddress?.district}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
+            autoComplete="off"
           />
           <div>
-            {" "}
-            {district_col && adminAddress.district !== "" && (
-              <p style={{ color: "red" }}>
+            {' '}
+            {district_col && adminAddress?.district !== '' && (
+              <p style={{ color: 'red' }}>
                 Please enter a valid District Name only characters allowed.
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {(adminAddress.district == "" || district_colerror) && (
-              <p style={{ color: "red" }}>Please enter District name.</p>
+            {' '}
+            {(adminAddress?.district == '' || district_colerror) && (
+              <p style={{ color: 'red' }}>Please enter District name.</p>
             )}
           </div>
+          {/* {error.district && <span style={{ color: 'red' }}>{error.district}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Pincode <span>*</span>
           </label>
+
           <input
+            data-testid="pincodeid"
             type="text"
             name="pincode"
             className="form-control"
-            value={adminAddress.pincode}
-            onChange={(e) => handleInputChange(e, "current_address")}
+            maxLength={6}
+            value={adminAddress.pincode || ''}
+            onChange={(e) => handleInputChange(e, 'current')}
             required
+            autoComplete="off"
+
+            // error={!!errors.currentpin}
+            // helperText={errors.currentpin}
           />
           <div>
-            {" "}
+            {' '}
             {pincode_col && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid 6-digit Pincode (numbers only).
               </p>
             )}
           </div>
           <div>
-            {" "}
-            {adminAddress.pincode == "" && (
-              <p style={{ color: "red" }}>Please enter Pincode.</p>
+            {' '}
+            {adminAddress.pincode === '' && (
+              <p style={{ color: 'red' }}>Please enter Pincode.</p>
             )}
           </div>
         </div>
       </div>
       <div className="row mt-4">
-        <div className="col-12">
+        <div className="col-12 ">
           <h5 className="font-weight-bold profiletext">
-            {" "}
+            {' '}
             <b>Permanent Address</b>
           </h5>
         </div>
@@ -764,9 +958,13 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             <FormControlLabel
               control={
                 <Checkbox
+                  data-testid="checkboxAddress"
                   onChange={handlePermanentAddressCheckbox}
                   name="sameAsCurrent"
                   checked={checked}
+                  sx={{
+                    color: fieldIcon(namecolor),
+                  }}
                 />
               }
               label="Same as Current Address"
@@ -775,140 +973,183 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Address 1 <span></span>
           </label>
+
           <input
+            data-testid="per_address1"
             type="text"
             name="address1"
             className="form-control"
             value={permanentAddress.address1}
-            onChange={(e) => handleInputChange(e, "permanent_address")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
+            // required
+
+            autoComplete="off"
           />
+          <div>
+            {' '}
+            {(adminAddress?.address1 === '' || add_col1) && (
+              <p style={{ color: 'red' }}>Please enter Address 1.</p>
+            )}
+          </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Address 2 <span></span>
           </label>
+
           <input
+            data-testid="per_address2"
             type="text"
             name="address2"
             className="form-control"
             value={permanentAddress.address2}
-            onChange={(e) => handleInputChange(e, "permanent_address")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
+            // required
+
+            autoComplete="off"
           />
+          {/* {error.address2 && <span style={{ color: 'red' }}>{error.address2}</span>} */}
         </div>
-        <div className="col-6 pb-3 form_field_wrapper " ref={dropdownRef}>
+
+        <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
           <label
             className={`col-form-label ${
-              isFocused || permanentAddress.country ? "focused" : "focusedempty"
+              isFocused || permanentAddress.country ? 'focused' : 'focusedempty'
             }`}
-            style={{ fontSize: "14px" }}
+            style={{ fontSize: '14px' }}
           >
             Country <span></span>
           </label>
           <CountryDropdown
+            data-testid="perCountryDropdown"
             classes="form-select custom-dropdown"
-            defaultOptionLabel={permanentAddress.country || ""}
-            value={permanentAddress.country || ""}
+            defaultOptionLabel={permanentAddress.country || ''}
+            value={permanentAddress.country || ''}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "permanent_address", "country")
+              handleInputChangecountry(e, 'permanent_address', 'country')
             }
           />
+          <div>
+            {' '}
+            {contry_col1 && (
+              <p style={{ color: 'red' }}>Please selete a country Name.</p>
+            )}
+          </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownstateRef}>
           <label
             className={`col-form-label ${
               isFocusedstate || permanentAddress.state
-                ? "focused"
-                : "focusedempty"
+                ? 'focused'
+                : 'focusedempty'
             }`}
-            style={{ fontSize: "14px" }}
+            style={{ fontSize: '14px' }}
           >
             State <span></span>
           </label>
 
           <RegionDropdown
+            data-testid="perStateDropdown"
             classes="form-select custom-dropdown"
-            defaultOptionLabel={permanentAddress.state || ""}
-            country={permanentAddress.country || ""}
-            value={permanentAddress.state || ""}
+            defaultOptionLabel={permanentAddress.state || ''}
+            country={permanentAddress.country || ''}
+            value={permanentAddress.state || ''}
             // onChange={(val) => setRegion(val)}
             onChange={(e: string) =>
-              handleInputChangecountry(e, "permanent_address", "state")
+              handleInputChangecountry(e, 'permanent_address', 'state')
             }
           />
           <div>
-            {" "}
+            {' '}
             {state_col1 && (
-              <p style={{ color: "red" }}>Please enter a valid state Name.</p>
+              <p style={{ color: 'red' }}>Please enter a valid state Name.</p>
             )}
           </div>
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             City <span></span>
           </label>
+
           <input
+            data-testid="per_city"
             type="text"
             name="city"
             className="form-control"
             value={permanentAddress.city}
-            onChange={(e) => handleInputChange(e, "permanent_address")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
+            // required
+
+            autoComplete="off"
           />
           <div>
-            {" "}
+            {' '}
             {city_col1 && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid City Name only characters allowed.
               </p>
             )}
           </div>
+          {/* {error.city && <span style={{ color: 'red' }}>{error.city}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             District <span></span>
           </label>
+
           <input
+            data-testid="per_district"
             type="text"
             name="district"
             className="form-control"
             value={permanentAddress.district}
-            onChange={(e) => handleInputChange(e, "permanent_address")}
+            onChange={(e) => handleInputChange(e, 'permanent')}
+            // required
+
+            autoComplete="off"
           />
           <div>
-            {" "}
+            {' '}
             {district_col1 && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Please enter a valid District Name only characters allowed.
               </p>
             )}
           </div>
-         
+
+          {/* {error.district && <span style={{ color: 'red' }}>{error.district}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
-            {" "}
+            {' '}
             Pincode <span></span>
           </label>
+
           <input
+            data-testid="per_pincode"
             type="text"
             name="pincode"
             className="form-control"
-            value={permanentAddress.pincode}
-            onChange={(e) => handleInputChange(e, "permanent_address")}
+            maxLength={6}
+            value={permanentAddress.pincode || ''}
+            onChange={(e) => handleInputChange(e, 'permanent')}
+            autoComplete="off"
           />
           <div>
-            {" "}
+            {' '}
             {pincode_col1 && (
-              <p style={{ color: "red" }}>
-                Please enter a valid Pincode only numbers allowed.
+              <p style={{ color: 'red' }}>
+                Please enter a valid 6-digit Pincode (numbers only).
               </p>
             )}
           </div>
+          {/* {error.pincode && <span style={{ color: 'red' }}>{error.pincode}</span>} */}
         </div>
         <div className="col-lg-12">
           <div className="mt-3 d-flex align-items-center justify-content-between">
@@ -916,24 +1157,34 @@ const AdminAddress: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               type="button"
               className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
               onClick={() => {
-                setActiveForm((prev) => prev - 1);
+                setActiveForm((prev: number) => prev - 1);
               }}
             >
               Previous
             </button>
             <button
-              type="submit"
+              data-testid="submitForm"
+              type="button"
               className="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn px-4"
-              onClick={(e: any) => SubmitHandle(e)}
+              onClick={SubmitHandle}
             >
               Next
             </button>
           </div>
         </div>
       </div>
+      {/* <div className="d-flex justify-content-center">
+        <Button
+          className="mainbutton"
+          variant="contained"
+          color="primary"
+          type="submit"
+        >
+          {editFlag ? "save" : "Save Changes"}
+        </Button>
+      </div> */}
     </form>
   );
 };
 
 export default AdminAddress;
-

@@ -1,105 +1,135 @@
-[data-bs-theme="dark"] body {
+[data-bs-theme='dark'] body {
   color: var(--bs-body-color);
-  background-color: var(--bs-body-bg-2)!important;
+  background-color: var(--bs-body-bg-2) !important;
   $primary: #9943ec;
   $headingColor: #d5d5d5;
   $headerbg: #212529;
-  .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card{
-    background-color: #212529!important;
+  $date_text: #d5d5d5 !important;
+  $mui_date_bg: #32363b !important;
+  .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card {
+    background-color: #212529 !important;
   }
   .feedback .feedback-questions .question {
-   
-   
-    background: rgb(75 75 75 / 48%)!important;
-    
-}
-.seprator span{
-  background-color: $headerbg;
-}
-.seprator::before{
-  background-color: rgba($headingColor, .3);
-}
-.seprator::after{
-  background-color: rgba($headingColor, .3);
-}
-.css-9g6qmn-MuiFormControl-root-MuiTextField-root input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px #2f3336 inset !important;
-  -webkit-text-fill-color: $headingColor !important;
-}
-.without-login{
-  background-color: transparent!important;
-}
-.access-card{
-  background-color: $headerbg!important;
-
-  svg{
-    path{
-      fill: #939aa0
-    }
+    background: rgb(75 75 75 / 48%) !important;
   }
-}
-.freechatbox{
-  .profilechatinner{
-    background-color: $headerbg!important;
-    .MuiIconButton-root{
-      svg{
-        fill: rgba($headingColor, 0.6);
+  .MuiMenu-list {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .seprator span {
+    background-color: $headerbg;
+  }
+  .seprator::before {
+    background-color: rgba($headingColor, 0.3);
+  }
+  .seprator::after {
+    background-color: rgba($headingColor, 0.3);
+  }
+  .css-9g6qmn-MuiFormControl-root-MuiTextField-root input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #2f3336 inset !important;
+    -webkit-text-fill-color: $headingColor !important;
+  }
+  .without-login {
+    background-color: transparent !important;
+  }
+  .access-card {
+    background-color: $headerbg !important;
+
+    svg {
+      path {
+        fill: #939aa0;
       }
     }
-    .chatinput-body{
-      input, select, .css-13cymwt-control{
-        background-color: rgb(75 75 75 / 48%)!important;
+  }
+  .freechatbox {
+    .profilechatinner {
+      background-color: $headerbg !important;
+      .MuiIconButton-root {
+        svg {
+          fill: rgba($headingColor, 0.6);
+        }
+      }
+      .chatinput-body {
+        input,
+        select,
+        .css-13cymwt-control {
+          background-color: rgb(75 75 75 / 48%) !important;
+        }
+      }
+      .message-bubble.left {
+        background-color: rgb(75 75 75 / 48%) !important;
+        color: $headingColor !important;
+      }
+      .message-bubble.right {
+        background-color: $primary !important;
       }
     }
-    .message-bubble.left{
-      background-color: rgb(75 75 75 / 48%)!important;
-      color: $headingColor!important;
-    }
-    .message-bubble.right{
-      background-color: $primary!important;
+  }
+  .css-1tzjnoi-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root,
+  .MuiInputBase-colorPrimary {
+    background-color: #32363b !important;
+    border-color: #32363b !important;
+  }
+  .MuiTextField-root {
+    background-color: transparent !important;
+  }
+
+  .MuiSelect-outlined,
+  .MuiInputBase-input,
+  .MuiInputBase-input {
+    color: $headingColor !important;
+  }
+  .Mui-disabled {
+    -webkit-text-fill-color: $date_text;
+  }
+  .MuiIconButton-root {
+    color: $date_text;
+  }
+  .MuiPickersPopper-paper {
+    background-color: $mui_date_bg;
+  }
+  .MuiPickersCalendarHeader-root {
+    color: $date_text;
+  }
+  .MuiDayCalendar-weekDayLabel {
+    color: $date_text;
+  }
+  .MuiPickersDay-root {
+    color: $date_text;
+  }
+  .MuiSelect-icon {
+    color: $date_text;
+  }
+  .MuiPickersYear-yearButton {
+    color: $date_text;
+  }
+  .addcomingsoon {
+    &::after {
+      background-color: rgba(75, 75, 75, 0.8);
     }
   }
-}
-.css-1tzjnoi-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, .MuiInputBase-colorPrimary{
-  background-color: #32363b!important;
-  border-color: #32363b!important;
-}
-.MuiTextField-root{
-  background-color: transparent!important;
-}
-
-.MuiSelect-outlined, .MuiInputBase-input, .MuiInputBase-input{
-  color: $headingColor!important;
-}
-.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled{
-  -webkit-text-fill-color: black!important
-}
-.addcomingsoon{
-
-  &::after{
-   
-    background-color: rgba(75, 75, 75, 0.8);
-    
+  .MuiFormLabel-colorPrimary {
+    color: $headingColor !important;
   }
-}
-.MuiFormLabel-colorPrimary{
-  color: $headingColor!important;
-}
-.wizard-content .form-control, .wizard-content .form-select, .btn-dark, .wizard-content .progress-bar, .chat-top-header-menu a {
-  background-color: #32363b!important;
-  border-color: #32363b!important;
-}
-.btn-outline-dark {
-  border-color: #32363b;
-  color: white;
-}
-.chat-wrapper{
-  background-color: #212529!important;
-}
-.form-control:focus {
-  box-shadow: none !important;
-  border-color: #495057 !important;
-}
+  .wizard-content .form-control,
+  .wizard-content .form-select,
+  .btn-dark,
+  .wizard-content .progress-bar,
+  .chat-top-header-menu a {
+    background-color: #32363b !important;
+    border-color: #32363b !important;
+  }
+  .btn-outline-dark {
+    border-color: #32363b;
+    color: white;
+  }
+  .chat-wrapper {
+    background-color: #212529 !important;
+  }
+  .form-control:focus {
+    box-shadow: none !important;
+    border-color: #495057 !important;
+  }
   .accordion-item:not(:first-of-type) {
     border-top: 1px solid rgba(73, 80, 87, 1) !important;
   }
@@ -111,23 +141,26 @@
   input::placeholder {
     color: #fff !important;
   }
-.bg-primary-20{
-  background-color:  #32363b !important;
-}
-.show-seprate{
-  border: 1px solid #878d96!important;
-}
-.link-underline, .text-dark{
-  color: #dee2e6!important;
-  &::after{
-    background-color: #939aa0!important;
+  .bg-primary-20 {
+    background-color: #32363b !important;
   }
-}
-.btn-outline-light{
-  background-color: #212529!important;
-  color: #d5d5d5!important;
-}
-  .bg-light, .chat-header, .chat-footer {
+  .show-seprate {
+    border: 1px solid #878d96 !important;
+  }
+  .link-underline,
+  .text-dark {
+    color: #dee2e6 !important;
+    &::after {
+      background-color: #939aa0 !important;
+    }
+  }
+  .btn-outline-light {
+    background-color: #212529 !important;
+    color: #d5d5d5 !important;
+  }
+  .bg-light,
+  .chat-header,
+  .chat-footer {
     background-color: #32363b !important;
   }
   .chat-suggestion {
@@ -145,8 +178,8 @@
       color: #dee2e6 !important;
     }
   }
-  .chat-result{
-    background-color: #000!important;
+  .chat-result {
+    background-color: #000 !important;
   }
   .chat-content-leftside .chat-left-msg {
     background-image: linear-gradient(
@@ -169,10 +202,9 @@
   }
 
   @media (min-width: 1024px) {
-    .left-side-history  {
+    .left-side-history {
       border-right: 1px solid rgba($stroke-100, 0.1) !important;
     }
-    
   }
 
   /*header*/
@@ -354,15 +386,15 @@
       .chat-panel {
         .left-side-history {
           .history-list {
-            li { 
+            li {
               &::before {
-              content: "";
-              position: absolute;
-              background-image: url("../icons/search-circle-white.svg");
-              width: 38px;
-              height: 38px;
-              background-size: 100%;
-              left: 0;
+                content: '';
+                position: absolute;
+                background-image: url('../icons/search-circle-white.svg');
+                width: 38px;
+                height: 38px;
+                background-size: 100%;
+                left: 0;
               }
             }
           }

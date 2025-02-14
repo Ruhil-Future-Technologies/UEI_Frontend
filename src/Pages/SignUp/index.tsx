@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ChangeEvent, useEffect, useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 // import  { SnackbarOrigin } from "@mui/material/Snackbar";
-import { Swiper, SwiperSlide } from "swiper/react";
-import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 // import CloseIcon from "@mui/icons-material/Close";
 // import NameContext from "../../Pages/Context/NameContext";
 import {
@@ -16,29 +23,29 @@ import {
   BackArrowCircle,
   VisibilityOn,
   VisibilityOff,
-} from "../../assets";
-import gLogo from "../../assets/img/logo-white.svg";
-import gyansetuLogo from "../../assets/img/gyansetu-logo.svg";
-import useApi from "../../hooks/useAPI";
-import { Autoplay, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "react-toastify/dist/ReactToastify.css";
-import { QUERY_KEYS } from "../../utils/const";
-import FullScreenLoader from "../Loader/FullScreenLoader";
-import registerHero from "../../assets/img/register-hero.png";
+} from '../../assets';
+import gLogo from '../../assets/img/logo-white.svg';
+import gyansetuLogo from '../../assets/img/gyansetu-logo.svg';
+import useApi from '../../hooks/useAPI';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'react-toastify/dist/ReactToastify.css';
+import { QUERY_KEYS } from '../../utils/const';
+import FullScreenLoader from '../Loader/FullScreenLoader';
+import registerHero from '../../assets/img/register-hero.png';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
   const { postData, loading } = useApi();
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
 
-  const [emailphone, setEmailphone] = useState("");
-  const value = "student";
-  const userId ="Email";
-  const [uservalue, setuserValue] = React.useState<any>("");
-  const [errorEmail, setEmailError] = useState("");
-  const [errorPassword, setPasswordError] = useState("");
+  const [emailphone, setEmailphone] = useState('');
+  const value = 'student';
+  const userId = 'Email';
+  const [uservalue, setuserValue] = React.useState<any>('');
+  const [errorEmail, setEmailError] = useState('');
+  const [errorPassword, setPasswordError] = useState('');
 
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [popupTermandCondi, setPopupTermandcondi] = useState(false);
@@ -48,26 +55,24 @@ const Signup = () => {
   };
 
   useEffect(() => {
-    const theme = localStorage?.getItem("theme") || "";
-    if (theme === "light") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    } else if (theme === "dark") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-
-    } else if (theme === "blue-theme")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else if (theme === "semi-dark")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else if (theme === "bordered-theme")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
+    const theme = localStorage?.getItem('theme') || '';
+    if (theme === 'light') {
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    } else if (theme === 'dark') {
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    } else if (theme === 'blue-theme')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else if (theme === 'semi-dark')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else if (theme === 'bordered-theme')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else document?.documentElement?.setAttribute('data-bs-theme', theme);
     // document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
   useEffect(() => {
     if (emailphone && password) {
-      setuserValue("");
+      setuserValue('');
     }
   }, [emailphone, password]);
 
@@ -79,7 +84,7 @@ const Signup = () => {
       // setLoading(true);
       const UserSignUp = {
         userid:
-          userId === "Email" || userId === "Phone" ? String(emailphone) : "",
+          userId === 'Email' || userId === 'Phone' ? String(emailphone) : '',
         password: String(password),
         user_type: String(value),
       };
@@ -89,13 +94,13 @@ const Signup = () => {
       // Check for empty fields
       for (const key in UserSignUp) {
         // if (UserSignUp?.hasOwnProperty(key)) {
-          if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
-          if (UserSignUp[key as keyof typeof UserSignUp] === "") {
+        if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
+          if (UserSignUp[key as keyof typeof UserSignUp] === '') {
             setuserValue(key);
             emptyKeys.push(key);
             break;
           } else {
-            setuserValue("");
+            setuserValue('');
           }
         }
       }
@@ -109,18 +114,18 @@ const Signup = () => {
             // setLoading(false);
             toast.success(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             // setIsLoading(false);
-            navigate("/");
+            navigate('/');
           } else if (
             data?.status === 400 &&
-            data?.message === "Userid already exists"
+            data?.message === 'Userid already exists'
           ) {
             // setLoading(false);
             toast.error(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
             // setLoading(false);
             // setIsLoading(false);
@@ -131,7 +136,7 @@ const Signup = () => {
         } catch (error) {
           // setLoading(false);
           // setIsLoading(false);
-          let errorMessage = "An unexpected error occurred";
+          let errorMessage = 'An unexpected error occurred';
 
           if (error instanceof Error) {
             errorMessage = error?.message;
@@ -139,17 +144,16 @@ const Signup = () => {
           //  setLoading(false);
           toast.error(errorMessage, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         }
       }
     }
   };
 
-
   const validateInput = (value: string): boolean => {
     if (!value) {
-      setEmailError("Please enter an email or phone number");
+      setEmailError('Please enter an email or phone number');
       return false;
     }
 
@@ -157,10 +161,10 @@ const Signup = () => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (phoneRegex.test(value) || emailRegex.test(value)) {
-      setEmailError("");
+      setEmailError('');
       return true;
     } else {
-      setEmailError("Invalid email or phone number format");
+      setEmailError('Invalid email or phone number format');
       return false;
     }
   };
@@ -168,7 +172,7 @@ const Signup = () => {
   const handleChangeData = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
     if (!emailphone) {
-      setEmailError("Please fill out this field test");
+      setEmailError('Please fill out this field test');
       // You can set your custom error message logic here if needed
     }
     setEmailphone(value);
@@ -177,7 +181,7 @@ const Signup = () => {
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    setPasswordError(""); // Clear error message when password is changed
+    setPasswordError(''); // Clear error message when password is changed
     validatePassword(e.target.value);
   };
 
@@ -195,11 +199,11 @@ const Signup = () => {
       password.length < 8
     ) {
       setPasswordError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long."
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.',
       );
       return false;
     } else {
-      setPasswordError("");
+      setPasswordError('');
       return true;
     }
   };
@@ -211,14 +215,14 @@ const Signup = () => {
     const isChecked = e.target.checked;
 
     setCheckTermandcondi(!isChecked);
-  }
+  };
 
   const handleTACpopup = () => {
-    setPopupTermandcondi(true)
-  }
+    setPopupTermandcondi(true);
+  };
   const handleClose = () => {
     setPopupTermandcondi(false);
-  }
+  };
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -228,7 +232,7 @@ const Signup = () => {
           <div className="row align-items-center">
             <div className="col-6">
               <div className="logoui">
-                <img src={gLogo} alt="" onClick={() => navigate("/")} />
+                <img src={gLogo} alt="" onClick={() => navigate('/')} />
                 <span>Gyansetu</span>
               </div>
             </div>
@@ -244,7 +248,7 @@ const Signup = () => {
                   disableOnInteraction: false,
                 }}
                 pagination={{
-                  el: ".swiper-pagination",
+                  el: '.swiper-pagination',
                 }}
                 modules={[Autoplay, Pagination]}
                 className="mySwiper login-textslider"
@@ -289,18 +293,19 @@ const Signup = () => {
                   <div className="col-lg-12">
                     <BackArrowCircle
                       className="d-none d-lg-block mt-3"
-                      onClick={() => navigate("/")}
+                      onClick={() => navigate('/')}
                     />
                     <ArrowLeft
                       className="d-lg-none mt-3"
-                      onClick={() => navigate("/")}
+                      onClick={() => navigate('/')}
                     />
                   </div>
                   <div className="col-lg-12 d-lg-none d-block">
                     <img
                       src={gyansetuLogo}
                       className=" mx-auto my-0 d-block"
-                      alt="" width="120"
+                      alt=""
+                      width="120"
                     />
                   </div>
                   <div className="col-lg-12">
@@ -323,6 +328,7 @@ const Signup = () => {
                           Email/Phone
                         </label>
                         <TextField
+                          data-testid="emailphone"
                           id="emailphone"
                           value={emailphone}
                           onChange={handleChangeData}
@@ -332,25 +338,25 @@ const Signup = () => {
                           required={true}
                           fullWidth
                           sx={{
-                            "& input:-webkit-autofill": {
+                            '& input:-webkit-autofill': {
                               WebkitBoxShadow:
-                                "0 0 0 1000px white inset !important", // Set the background color you want
-                              WebkitTextFillColor: "black !important", // Set the text color you want
+                                '0 0 0 1000px white inset !important', // Set the background color you want
+                              WebkitTextFillColor: 'black !important', // Set the text color you want
                             },
-                            "& input:-webkit-autofill:hover": {
+                            '& input:-webkit-autofill:hover': {
                               WebkitBoxShadow:
-                                "0 0 0 1000px white inset !important",
-                              WebkitTextFillColor: "black !important",
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
                             },
-                            "& input:-webkit-autofill:focus": {
+                            '& input:-webkit-autofill:focus': {
                               WebkitBoxShadow:
-                                "0 0 0 1000px white inset !important",
-                              WebkitTextFillColor: "black !important",
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
                             },
-                            "& input:-webkit-autofill:active": {
+                            '& input:-webkit-autofill:active': {
                               WebkitBoxShadow:
-                                "0 0 0 1000px white inset !important",
-                              WebkitTextFillColor: "black !important",
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
                             },
                           }}
                         />
@@ -361,7 +367,8 @@ const Signup = () => {
                         </label>
                         <div className="position-relative">
                           <TextField
-                            type={showPassword ? "text" : "password"}
+                            data-testid="Password"
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
                             value={password}
                             onChange={handleChangePassword}
@@ -387,30 +394,33 @@ const Signup = () => {
                               ),
                             }}
                             sx={{
-                              "& input:-webkit-autofill": {
-                                WebkitBoxShadow:
-                                  "0 0 0 1000px white inset !important", // Set the background color you want
-                                WebkitTextFillColor: "black !important", // Set the text color you want
+                              '& input::-ms-reveal, & input::-ms-clear': {
+                                display: 'none',
                               },
-                              "& input:-webkit-autofill:hover": {
+                              '& input:-webkit-autofill': {
                                 WebkitBoxShadow:
-                                  "0 0 0 1000px white inset !important",
-                                WebkitTextFillColor: "black !important",
+                                  '0 0 0 1000px white inset !important', // Set the background color you want
+                                WebkitTextFillColor: 'black !important', // Set the text color you want
                               },
-                              "& input:-webkit-autofill:focus": {
+                              '& input:-webkit-autofill:hover': {
                                 WebkitBoxShadow:
-                                  "0 0 0 1000px white inset !important",
-                                WebkitTextFillColor: "black !important",
+                                  '0 0 0 1000px white inset !important',
+                                WebkitTextFillColor: 'black !important',
                               },
-                              "& input:-webkit-autofill:active": {
+                              '& input:-webkit-autofill:focus': {
                                 WebkitBoxShadow:
-                                  "0 0 0 1000px white inset !important",
-                                WebkitTextFillColor: "black !important",
+                                  '0 0 0 1000px white inset !important',
+                                WebkitTextFillColor: 'black !important',
+                              },
+                              '& input:-webkit-autofill:active': {
+                                WebkitBoxShadow:
+                                  '0 0 0 1000px white inset !important',
+                                WebkitTextFillColor: 'black !important',
                               },
                             }}
                             fullWidth
                           />
-                          {uservalue === "password" && (
+                          {uservalue === 'password' && (
                             <small className="text-danger">
                               Please Enter Password
                             </small>
@@ -419,7 +429,8 @@ const Signup = () => {
                       </div>
 
                       <div className="form-check mb-3 fs-14">
-                         <input
+                        <input
+                          data-testid="checkbox"
                           className="form-check-input"
                           type="checkbox"
                           value=""
@@ -430,25 +441,53 @@ const Signup = () => {
                           className="form-check-label"
                           htmlFor="flexCheckDefault"
                         >
-                          By Creating your account you have to agree with our{" "}
-                          
-                          <a href="#" onClick={(e)=>{e.preventDefault();handleTACpopup()}}> Terms and Condition</a>
+                          By Creating your account you have to agree with our{' '}
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleTACpopup();
+                            }}
+                          >
+                            {' '}
+                            Terms and Condition
+                          </a>
                         </label>
-
                       </div>
-                      <button className="btn btn-secondary w-100 mh-56 rounded-pill" disabled={CheckTermandcondi}>
+                      <button
+                        className="btn btn-secondary w-100 mh-56 rounded-pill"
+                        disabled={CheckTermandcondi}
+                      >
                         Sign Up Now
                       </button>
                       <p className="my-4 text-center">
-                        Already have an account?{" "}
-                        <Link to="/" style={{ color: "#9943EC" }}> Sign in here </Link>
+                        Already have an account?{' '}
+                        <Link to="/" style={{ color: '#9943EC' }}>
+                          {' '}
+                          <u>Sign in here </u>
+                        </Link>
                       </p>
+                      <div className="d-flex justify-content-between">
+                        <Link
+                          to="/institute-registration"
+                          style={{ color: '#9943EC' }}
+                        >
+                          <u>Register As Institute</u>
+                        </Link>
+                        <Link
+                          to="/teacher-registration"
+                          style={{ color: '#9943EC' }}
+                        >
+                          <u>Register As Teacher</u>
+                        </Link>
+                      </div>
                     </form>
                     <Dialog open={popupTermandCondi} onClose={handleClose}>
-                      <DialogTitle>{"Terms and Condition"}</DialogTitle>
+                      <DialogTitle>{'Terms and Condition'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Content of Gyanshetu Terms and Condition...... will coming soon
+                          Content of Gyanshetu Terms and Condition...... will
+                          coming soon
                         </DialogContentText>
                       </DialogContent>
                       <DialogActions>

@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Add Edit Language Component renders correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="main-wrapper"
+  >
+    <div
+      class="main-content"
+    >
+      <div
+        class="card p-lg-3"
+      >
+        <div
+          class="card-body"
+        >
+          <h6
+            class="MuiTypography-root MuiTypography-h6 mb-3 css-2ulfj5-MuiTypography-root"
+          >
+            <div
+              class="main_title"
+            >
+              Add Language
+            </div>
+          </h6>
+          <form
+            action="#"
+            data-testid="form"
+          >
+            <div
+              class="row"
+            >
+              <div
+                class="col-md-4"
+              >
+                <div
+                  class="form_field_wrapper"
+                >
+                  <div
+                    class="MuiFormControl-root MuiTextField-root css-1u3bzj6-MuiFormControl-root-MuiTextField-root"
+                    field="[object Object]"
+                    form="[object Object]"
+                  >
+                    <label
+                      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-outlined css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root"
+                      data-shrink="false"
+                      for=":r0:"
+                      id=":r0:-label"
+                    >
+                      Language Name *
+                    </label>
+                    <div
+                      class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+                    >
+                      <input
+                        aria-invalid="false"
+                        class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+                        data-testid="language_name"
+                        id=":r0:"
+                        type="text"
+                        value=""
+                      />
+                      <fieldset
+                        aria-hidden="true"
+                        class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                      >
+                        <legend
+                          class="css-yjsfm1"
+                        >
+                          <span>
+                            Language Name *
+                          </span>
+                        </legend>
+                      </fieldset>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+            >
+              <div
+                class="col-md-4 mt-2"
+              >
+                <div
+                  class="col"
+                >
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-13i4rnv-MuiGrid-root"
+                  >
+                    <h6
+                      class="MuiTypography-root MuiTypography-h6 css-2ulfj5-MuiTypography-root"
+                    >
+                      Upload a Photo
+                    </h6>
+                  </div>
+                  <div
+                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-13i4rnv-MuiGrid-root"
+                  >
+                    <input
+                      accept="image/*"
+                      data-testid="language_file"
+                      id="file-upload"
+                      type="file"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="row mt-4"
+            >
+              <div
+                class="col-md-4"
+              >
+                <label
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-animated MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-animated text-secondary css-9npbnl-MuiFormLabel-root-MuiInputLabel-root"
+                >
+                  Description
+                </label>
+                <textarea
+                  aria-label="empty textarea"
+                  data-testid="language_description"
+                  name="description"
+                  placeholder="Enter your text here..."
+                  style="width: 100%; font-size: 1rem;"
+                />
+              </div>
+            </div>
+            <div
+              class="mt-3"
+            >
+              <button
+                class="btn btn-primary mainbutton"
+                data-testid="submitBtn"
+                type="submit"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

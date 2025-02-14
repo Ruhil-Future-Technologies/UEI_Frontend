@@ -1,42 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import TextField from "@mui/material/TextField";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import useApi from "../../hooks/useAPI";
-import gLogo from "../../assets/img/logo-white.svg";
-import loginImage from "../../assets/img/login-image.png";
-import { QUERY_KEYS } from "../../utils/const";
-import { Autoplay, Pagination } from "swiper/modules";
-import { ArrowLeft, BackArrowCircle } from "../../assets";
-import "swiper/css";
-import "swiper/css/pagination";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import TextField from '@mui/material/TextField';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import useApi from '../../hooks/useAPI';
+import gLogo from '../../assets/img/logo-white.svg';
+import loginImage from '../../assets/img/login-image.png';
+import { QUERY_KEYS } from '../../utils/const';
+import { Autoplay, Pagination } from 'swiper/modules';
+import { ArrowLeft, BackArrowCircle } from '../../assets';
+import 'swiper/css';
+import 'swiper/css/pagination';
 // import "../../assets/css/main.min.css";
-import FullScreenLoader from "../Loader/FullScreenLoader";
+import FullScreenLoader from '../Loader/FullScreenLoader';
 
 const Forgotpassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   // const [msg, setMsg] = useState("");
-  const [value, setValue] = React.useState("student");
+  const [value, setValue] = React.useState('student');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const theme = localStorage?.getItem("theme") || "";
-    if (theme === "light") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    } else if (theme === "dark") {
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    } else if (theme === "blue-theme")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else if (theme === "semi-dark")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else if (theme === "bordered-theme")
-      document?.documentElement?.setAttribute("data-bs-theme", theme);
-    else document?.documentElement?.setAttribute("data-bs-theme", theme);
+    const theme = localStorage?.getItem('theme') || '';
+    if (theme === 'light') {
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    } else if (theme === 'dark') {
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    } else if (theme === 'blue-theme')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else if (theme === 'semi-dark')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else if (theme === 'bordered-theme')
+      document?.documentElement?.setAttribute('data-bs-theme', theme);
+    else document?.documentElement?.setAttribute('data-bs-theme', theme);
     // document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
@@ -57,16 +57,16 @@ const Forgotpassword = () => {
           // setMsg(data?.message);
           toast.success(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           setTimeout(() => {
-            navigate("/");
+            navigate('/');
           }, 2000);
           setIsLoading(false);
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
           setIsLoading(false);
         }
@@ -74,7 +74,7 @@ const Forgotpassword = () => {
       .catch((e) => {
         toast.error(e?.message, {
           hideProgressBar: true,
-          theme: "colored",
+          theme: 'colored',
         });
         setIsLoading(false);
       });
@@ -87,7 +87,7 @@ const Forgotpassword = () => {
           <div className="row align-items-center">
             <div className="col-6">
               <div className="logoui">
-                <img onClick={() => navigate("/")} src={gLogo} alt="" />
+                <img onClick={() => navigate('/')} src={gLogo} alt="" />
                 <span>Gyansetu</span>
               </div>
             </div>
@@ -110,7 +110,7 @@ const Forgotpassword = () => {
                   disableOnInteraction: false,
                 }}
                 pagination={{
-                  el: ".swiper-pagination",
+                  el: '.swiper-pagination',
                 }}
                 modules={[Autoplay, Pagination]}
                 className="mySwiper login-textslider"
@@ -155,11 +155,11 @@ const Forgotpassword = () => {
                   <div className="col-lg-12">
                     <BackArrowCircle
                       className="d-none d-lg-block"
-                      onClick={() => navigate("/")}
+                      onClick={() => navigate('/')}
                     />
                     <ArrowLeft
                       className="d-lg-none"
-                      onClick={() => navigate("/")}
+                      onClick={() => navigate('/')}
                     />
                   </div>
                   <div className="col-lg-12">
@@ -205,15 +205,15 @@ const Forgotpassword = () => {
                         Send Link
                       </button>
                       <p className="text-center">
-                        Remember Now{" "}
+                        Remember Now{' '}
                         <Link
                           to="/"
                           className="fw-semibold"
                           style={{
-                            color: "#9943EC",
+                            color: '#9943EC',
                           }}
                         >
-                          {" "}
+                          {' '}
                           Sign In here
                         </Link>
                       </p>

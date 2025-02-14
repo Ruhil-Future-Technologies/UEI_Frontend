@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useRef, useState } from "react";
-import passwordicon from "../../assets/img/password.svg";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import LockResetIcon from "@mui/icons-material/LockReset";
-import { IconButton, SelectChangeEvent } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import useApi from "../../hooks/useAPI";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { QUERY_KEYS } from "../../utils/const";
-import { Formik, FormikHelpers, FormikProps, Form } from "formik";
-import * as Yup from "yup";
+import React, { useContext, useRef, useState } from 'react';
+import passwordicon from '../../assets/img/password.svg';
+import passwordiconDark from '../../assets/img/passwords.svg';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import LockResetIcon from '@mui/icons-material/LockReset';
+import { IconButton, SelectChangeEvent } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import useApi from '../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { QUERY_KEYS } from '../../utils/const';
+import { Formik, FormikHelpers, FormikProps, Form } from 'formik';
+import * as Yup from 'yup';
+import { fieldIcon } from '../../utils/helpers';
+import NameContext from '../Context/NameContext';
 interface changepasswordform {
   oldpassword: string;
   password: string;
@@ -19,14 +22,15 @@ interface changepasswordform {
 }
 
 const UserChangePassword = () => {
-  const user_type = localStorage.getItem("user_type");
-  const email = localStorage.getItem("userid");
+  const context = useContext(NameContext);
+  const { namecolor }: any = context;
+  const user_type = localStorage.getItem('user_type');
+  const email = localStorage.getItem('userid');
   const { postData } = useApi();
 
-  const [password, setPassword] = useState("");
-  const [oldpassword, setOldPassword] = useState("");
-  const [confpassword, setConfPassword] = useState("");
-  
+  const [password, setPassword] = useState('');
+  const [oldpassword, setOldPassword] = useState('');
+  const [confpassword, setConfPassword] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -47,12 +51,11 @@ const UserChangePassword = () => {
   const handleClickShowConfPassword = () => {
     setShowConfPassword(!showConfPassword);
   };
- 
+
   const handleSubmit = async (
     formData: changepasswordform,
-    { resetForm }: FormikHelpers<changepasswordform>
+    { resetForm }: FormikHelpers<changepasswordform>,
   ) => {
-    
     const UserSignUp = {
       email: String(email),
       new_password: String(formData.password),
@@ -62,7 +65,7 @@ const UserChangePassword = () => {
     const emptyKeys: string[] = [];
     for (const key in UserSignUp) {
       if (Object.prototype.hasOwnProperty.call(UserSignUp, key)) {
-        if (UserSignUp[key as keyof typeof UserSignUp] === "") {
+        if (UserSignUp[key as keyof typeof UserSignUp] === '') {
           emptyKeys.push(key);
           break;
         }
@@ -75,44 +78,43 @@ const UserChangePassword = () => {
           if (data?.status === 200) {
             // navigator('/')
             toast.success(
-              "Your Password has been changed successfuly! Please try to login again with new password",
+              'Your Password has been changed successfuly! Please try to login again with new password',
               {
                 hideProgressBar: true,
-                theme: "colored",
-              }
+                theme: 'colored',
+              },
             );
             resetForm();
-            setPassword("");
-            setOldPassword("");
-            setConfPassword("");
+            setPassword('');
+            setOldPassword('');
+            setConfPassword('');
           } else if (
             data?.status === 404 &&
-            data?.message === "Invalid userid or password"
+            data?.message === 'Invalid userid or password'
           ) {
-            toast.error("Invalid userid or password", {
+            toast.error('Invalid userid or password', {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           } else {
             toast.error(data?.message, {
               hideProgressBar: true,
-              theme: "colored",
+              theme: 'colored',
             });
           }
         })
         .catch((e) => {
           toast.error(e?.message, {
             hideProgressBar: true,
-            theme: "colored",
+            theme: 'colored',
           });
         });
     }
   };
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
-    fieldName: string
+    fieldName: string,
   ) => {
-   
     formRef?.current?.setFieldValue(fieldName, e.target.value);
     await formRef?.current?.validateField(fieldName);
     if (
@@ -121,81 +123,81 @@ const UserChangePassword = () => {
     ) {
       formRef?.current?.setFieldError(
         fieldName,
-        formRef?.current?.errors?.[fieldName as keyof changepasswordform]
+        formRef?.current?.errors?.[fieldName as keyof changepasswordform],
       );
       formRef?.current?.setFieldTouched(fieldName, true);
     }
   };
   const changePasswordSchema = Yup.object().shape({
     oldpassword: Yup.string()
-      .required("Please enter a password")
+      .required('Please enter a password')
       .min(
         8,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         uppercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         lowercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         numberRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         specialCharRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       ),
 
     password: Yup.string()
-      .required("Please enter a password")
+      .required('Please enter a password')
       .min(
         8,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         uppercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         lowercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         numberRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         specialCharRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       ),
 
     confpassword: Yup.string()
-      .required("Please enter a password")
+      .required('Please enter a password')
       .min(
         8,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         uppercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         lowercaseRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         numberRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
       .matches(
         specialCharRegex,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long"
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
-      .oneOf([Yup.ref("password")], "Password did not match."),
+      .oneOf([Yup.ref('password')], 'Password did not match.'),
   });
 
   return (
@@ -222,7 +224,6 @@ const UserChangePassword = () => {
           <div className="profile_section">
             <div className="card w-100 rounded-4 shadow-none desk-card p-4">
               <div className="card-body">
-               
                 <Formik
                   // onSubmit={(formData) => handleSubmit(formData)}
                   onSubmit={(formData, formikHelpers) =>
@@ -243,18 +244,25 @@ const UserChangePassword = () => {
                         <div className="col-md-4">
                           <div className="form_field_wrapper w-100">
                             <TextField
-                              type={showOldPassword ? "text" : "password"}
+                              type={showOldPassword ? 'text' : 'password'}
                               name="oldpassword"
                               label="Current Password"
                               className="w-100"
                               value={values?.oldpassword}
                               onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => handleChange(e, "oldpassword")}
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'oldpassword')}
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
-                                    <img src={passwordicon} alt="oldpassword" />
+                                    <img
+                                      src={
+                                        namecolor === 'dark'
+                                          ? passwordiconDark
+                                          : passwordicon
+                                      }
+                                      alt="oldpassword"
+                                    />
                                   </InputAdornment>
                                 ),
                                 endAdornment: (
@@ -265,9 +273,17 @@ const UserChangePassword = () => {
                                       edge="end"
                                     >
                                       {showOldPassword ? (
-                                        <Visibility />
+                                        <Visibility
+                                          sx={{
+                                            color: fieldIcon(namecolor),
+                                          }}
+                                        />
                                       ) : (
-                                        <VisibilityOff />
+                                        <VisibilityOff
+                                          sx={{
+                                            color: fieldIcon(namecolor),
+                                          }}
+                                        />
                                       )}
                                     </IconButton>
                                   </InputAdornment>
@@ -287,21 +303,28 @@ const UserChangePassword = () => {
                         </div>
 
                         <div className="col-lg-4">
-                          {" "}
+                          {' '}
                           <div className="form_field_wrapper">
                             <TextField
-                              type={showPassword ? "text" : "password"}
+                              type={showPassword ? 'text' : 'password'}
                               name="password"
                               label="New Password"
                               className="w-100"
                               value={values?.password}
                               onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => handleChange(e, "password")}
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'password')}
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
-                                    <img src={passwordicon} alt="password" />
+                                    <img
+                                      src={
+                                        namecolor === 'dark'
+                                          ? passwordiconDark
+                                          : passwordicon
+                                      }
+                                      alt="password"
+                                    />
                                   </InputAdornment>
                                 ),
                                 endAdornment: (
@@ -312,9 +335,17 @@ const UserChangePassword = () => {
                                       edge="end"
                                     >
                                       {showPassword ? (
-                                        <Visibility />
+                                        <Visibility
+                                          sx={{
+                                            color: fieldIcon(namecolor),
+                                          }}
+                                        />
                                       ) : (
-                                        <VisibilityOff />
+                                        <VisibilityOff
+                                          sx={{
+                                            color: fieldIcon(namecolor),
+                                          }}
+                                        />
                                       )}
                                     </IconButton>
                                   </InputAdornment>
@@ -333,19 +364,24 @@ const UserChangePassword = () => {
                         <div className="col-lg-4">
                           <div className="form_field_wrapper">
                             <TextField
-                              type={showConfPassword ? "text" : "password"}
+                              type={showConfPassword ? 'text' : 'password'}
                               name="confpassword"
                               className="w-100"
                               label="Confirm Password"
                               value={values?.confpassword}
                               onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                              ) => handleChange(e, "confpassword")}
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'confpassword')}
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
                                     <img
-                                      src={passwordicon}
+                                      // src={passwordicon}
+                                      src={
+                                        namecolor === 'dark'
+                                          ? passwordiconDark
+                                          : passwordicon
+                                      }
                                       alt="confpassword"
                                     />
                                   </InputAdornment>
@@ -358,9 +394,17 @@ const UserChangePassword = () => {
                                       edge="end"
                                     >
                                       {showConfPassword ? (
-                                        <Visibility />
+                                        <Visibility
+                                          sx={{
+                                            color: fieldIcon(namecolor),
+                                          }}
+                                        />
                                       ) : (
-                                        <VisibilityOff />
+                                        <VisibilityOff
+                                          sx={{
+                                            color: fieldIcon(namecolor),
+                                          }}
+                                        />
                                       )}
                                     </IconButton>
                                   </InputAdornment>
@@ -378,7 +422,7 @@ const UserChangePassword = () => {
                         </div>
                         <div className="col-lg-4">
                           <button className="btn btn-primary w-100 mh-56">
-                            {"Change Password"}
+                            {'Change Password'}
                           </button>
                         </div>
                       </div>
