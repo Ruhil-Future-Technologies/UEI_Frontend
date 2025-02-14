@@ -361,12 +361,15 @@ const AddEditTeacher = () => {
       const allInstitutes = data.data;
 
       const schoolInstitutes = allInstitutes?.filter(
-        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
+        (institute: any) =>
+          institute.entity_type?.toLowerCase() === 'school' &&
+          institute.is_approve,
       );
       const collegeInstitutes = allInstitutes?.filter(
-        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
+        (institute: any) =>
+          institute.entity_type?.toLowerCase() === 'college' &&
+          institute.is_approve,
       );
-
       setDataInstitutes(allInstitutes);
       setSchoolInstitutes(schoolInstitutes);
       setCollegeInstitutes(collegeInstitutes);
