@@ -9,12 +9,6 @@ interface IChatBot {
 }
 
 const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
-  // answer = [
-  //   "Water is a clear, colorless, odorless liquid that is essential for life on Earth. It's made up of two hydrogen atoms and one oxygen atom ($\\boxed{H_{2}O}$). The chemical formula $\\boxed{H_{2}O}$ represents the composition of water. In simple terms, when you combine two hydrogen molecules with an oxygen molecule, you get water! This unique combination makes water a vital substance for all living things.",
-  // ];
-
-  console.log({ answer });
-
   const hasLatex = Array.isArray(answer)
     ? answer.some(
         (text) =>
@@ -139,8 +133,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
   };
 
   const processLatex = (latex: string): string => {
-    console.log({ latex });
-
     latex = latex
       .replace(/\\{2,}/g, '\\')
       .replace(/^\n*\\+\[/, '')
@@ -150,29 +142,23 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     latex = latex.replace(/^\\\[|\\\]$/g, '');
 
     if (latex.includes('\\times') || latex.includes('\\div')) {
-      console.log('called');
       return latex.trim();
     }
 
     if (latex.startsWith('\\(') && latex.endsWith('\\)')) {
-      console.log('called');
-
       latex = latex.slice(2, -2);
     }
     if (latex.match(/\\boxed{[a-zA-Z\s-]+}$/)) {
-      console.log('called');
       return latex.replace(/\\boxed{([^}]+)}/, '$1');
     }
     if (
       latex.match(/\\boxed.*/) &&
       (latex.startsWith('\\[') || latex.endsWith('\\]'))
     ) {
-      console.log('called');
       return latex.replace(/\\boxed\{(.*)\}/, '$1');
     }
 
     if (latex.match(/\\boxed.*\\frac/)) {
-      console.log('called');
       return latex.replace(/\\boxed\{(.*)\}/, '$1');
     }
     latex = latex.replace(/\\(\[|\])/g, '$1');
@@ -187,17 +173,14 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       latex.includes('\\begin{array}') &&
       latex.includes('\\enclose{longdiv}')
     ) {
-      console.log('called');
       const divisionMatch = latex.match(/\\enclose{longdiv}{(\d+)}/) || [];
       const quotientMatch = latex.match(/(\d+)\s*\\phantom/) || [];
 
       if (divisionMatch[1] && quotientMatch[1]) {
-        console.log('called');
         return `${quotientMatch[1]} \\div ${divisionMatch[1]}`;
       }
     }
     if (latex.includes('\\begin{array}')) {
-      console.log('called');
       return latex
         .replace(/\\begin{array}{[^}]*}/, '\\begin{array}{r}')
         .replace(/\\\\/g, '\\\\ ')
@@ -205,12 +188,10 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     }
 
     if (latex.includes('\\begin{aligned}')) {
-      console.log('called');
       const alignedMatch = latex.match(
         /\\begin{aligned}([\s\S]*?)\\end{aligned}/,
       );
       if (alignedMatch) {
-        console.log('called');
         return alignedMatch[1]
           .replace(/&=/g, '=')
           .replace(/&/g, '')
@@ -224,32 +205,28 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       }
     }
 
-    let cleanedLatex = latex
-      .split('')
-      .filter((c) => c.charCodeAt(0) !== 8)
-      .join('');
+    // let cleanedLatex = latex
+    //   .split('')
+    //   .filter((c) => c.charCodeAt(0) !== 8)
+    //   .join('');
 
-    if (latex.includes('\b')) {
-      cleanedLatex = cleanedLatex.replace('oxed', '');
-    }
+    // if (latex.includes('\b')) {
+    //   cleanedLatex = cleanedLatex.replace('oxed', '');
+    // }
 
-    return cleanedLatex
-      .replace(
-        /\\boxed(?:\{([^{}]*(?:\{[^{}]*\})*[^{}]*)\}|(\d+\.?\d*))/g,
-        '$1$2',
-      )
-      .replace(/\\$/, '')
-      .trim();
+    // return cleanedLatex
+    //   .replace(
+    //     /\\boxed(?:\{([^{}]*(?:\{[^{}]*\})*[^{}]*)\}|(\d+\.?\d*))/g,
+    //     '$1$2',
+    //   )
+    //   .replace(/\\$/, '')
+    //   .trim();
 
-    // return latex.replace(/\\$/, '').trim();
+    return latex.replace(/\\$/, '').trim();
   };
 
   const renderText = (text: string): JSX.Element => {
-    console.log({ text });
-
     if (text.match(/^\[(.*)\]$/)) {
-      console.log('called');
-
       const innerContent = text.slice(1, -1).trim().replace(/\t/, '\\t');
 
       return <InlineMath key={currentIndex} math={innerContent} />;
@@ -275,30 +252,23 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       })
       .replace(/\$(\d+(?:\.\d+)?)\$(?!\s*[a-zA-Z{}\\])/g, '$1');
 
-    console.log({ text });
-
     if (text.includes('$\\boxed{None}$')) {
       return <></>;
     }
     const displayMathRegex =
-      /((?:\n?\\[[\s\S]*?\\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([^)]*\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$[^$\n]+?\$))/gs;
+      /((?:\n?\\[[\s\S]*?\\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([^)]*\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$(?:\d+\.\d+|[^$\n,.])+?\$))/gs;
     if (text.includes('$') || text.includes('\\[') || text.includes('\\(')) {
-      console.log({ text });
-
       const parts = text
         .split(displayMathRegex)
         .filter(
           (part, index, arr) => !(index === arr.length - 1 && part === ''),
         );
-      console.log({ parts });
       return (
         <span key={currentIndex}>
           {parts.map((part, idx) => {
             if (
               part?.match(/^\\\([^)]+\\\)(?:\s+[^\\]+)?(?:\n\\[[^\]]+\\])?$/)
             ) {
-              console.log({ part });
-
               try {
                 let latex = part.replace(/^\\\(|\\\)$/g, '').trim();
 
@@ -326,7 +296,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
                 !part?.match(/\\\\[\\(\\[][\s\S]*?\\\\[\\)\\]]/)) ||
               part?.match(/\\\\[\\(\\[][\s\S]*?\\\\[\\)\\]]/)
             ) {
-              console.log({ part });
               try {
                 let equations;
 
@@ -359,8 +328,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
                 const content = part.slice(1, -1);
                 if (content.includes('\\boxed{')) {
-                  console.log('boxed contain');
-
                   const boxedMatch = content.match(/\\boxed{([^]*)}/);
                   if (boxedMatch) {
                     const innerContent = boxedMatch[1]
@@ -398,7 +365,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
               }
             }
             if (part?.startsWith('$$')) {
-              console.log({ part });
               try {
                 const latex = processLatex(part);
                 return <InlineMath key={idx} math={latex} />;
@@ -409,7 +375,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
             }
 
             if (part?.startsWith('$') && part?.endsWith('$')) {
-              console.log({ part });
               const content = part.slice(1, -1);
               // if (content.includes('\\boxed{')) {
               //   const boxedMatch = content.match(/\\boxed{([^]*)}/);
@@ -452,8 +417,6 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     return processNonLatexText(text, currentIndex);
   };
   const processNonLatexText = (text: string, idx: number): JSX.Element => {
-    console.log({ text });
-
     text = text
       .replace(/\\/g, '')
       .replace(/\((\d+)\)\s*/g, (_, num) => `\n(${num}) `);
