@@ -37,6 +37,7 @@ import '../../assets/css/newstyle.scss';
 import '../../assets/css/main.scss';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import { useTheme } from '@mui/material/styles';
+import { ImageModal } from '../../Components/ImageModal';
 
 const Chat = () => {
   const userid = localStorage.getItem('_id') || '';
@@ -97,6 +98,8 @@ const Chat = () => {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const theme = useTheme();
   const [university_list_data, setUniversity_List_Data] = useState([]);
+  const [imageOpen, setImageOpen] = useState(false);
+  const [image, setImage] = useState('');
 
   synth.onvoiceschanged = () => {
     getVoices();
@@ -174,6 +177,40 @@ const Chat = () => {
       }
     }, 500);
   }, [Id]);
+
+  const handleMediaClick = (event: MouseEvent) => {
+    event.stopPropagation();
+    const target = event.target as HTMLElement;
+    const svgElement = target.closest('svg');
+
+    if (svgElement) {
+      const content = svgElement.outerHTML;
+      setImage(content);
+      setImageOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    const container = document.querySelector('.diagram-container');
+
+    if (container) {
+      const mediaElements = container.querySelectorAll('svg, img');
+      mediaElements.forEach((element: any) => {
+        element.style.cursor = 'pointer';
+        element.addEventListener('click', handleMediaClick);
+      });
+    }
+
+    return () => {
+      const container = document.querySelector('.diagram-container');
+      if (container) {
+        const mediaElements = container.querySelectorAll('svg, img');
+        mediaElements.forEach((element: any) => {
+          element.removeEventListener('click', handleMediaClick);
+        });
+      }
+    };
+  }, [chat]);
 
   const handleUpIconClick = (index: number) => {
     if (selectedchat[index].like_dislike !== null) {
@@ -2189,20 +2226,29 @@ const Chat = () => {
                                     />
                                   </p>
                                   {chat?.diagram_code && (
-                                    <div
-                                      style={{
-                                        width: '100%',
-                                        height: '400px',
-                                        overflow: 'hidden',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                      }}
-                                      key={index}
-                                      dangerouslySetInnerHTML={{
-                                        __html: chat?.diagram_code,
-                                      }}
-                                    />
+                                    <>
+                                      {' '}
+                                      <div
+                                        className="diagram-container"
+                                        style={{
+                                          width: '100%',
+                                          height: '400px',
+                                          overflow: 'hidden',
+                                          display: 'flex',
+                                          justifyContent: 'center',
+                                          alignItems: 'center',
+                                        }}
+                                        key={index}
+                                        dangerouslySetInnerHTML={{
+                                          __html: chat?.diagram_code,
+                                        }}
+                                      />
+                                      <ImageModal
+                                        isOpen={imageOpen}
+                                        onClose={() => setImageOpen(false)}
+                                        content={image}
+                                      />
+                                    </>
                                   )}
                                 </div>
                                 <ul className="ansfooter">
@@ -2376,7 +2422,7 @@ const Chat = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete chat ?"
+        title="chat"
       />
     </>
   );

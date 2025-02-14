@@ -9,8 +9,6 @@ interface IChatBot {
 }
 
 const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
-  console.log({ answer });
-
   const hasLatex = Array.isArray(answer)
     ? answer.some(
         (text) =>
@@ -207,13 +205,24 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       }
     }
 
-    return latex
-      .replace(
-        /\\boxed(?:\{([^{}]*(?:\{[^{}]*\})*[^{}]*)\}|(\d+\.?\d*))/g,
-        '$1$2',
-      )
-      .replace(/\\$/, '')
-      .trim();
+    // let cleanedLatex = latex
+    //   .split('')
+    //   .filter((c) => c.charCodeAt(0) !== 8)
+    //   .join('');
+
+    // if (latex.includes('\b')) {
+    //   cleanedLatex = cleanedLatex.replace('oxed', '');
+    // }
+
+    // return cleanedLatex
+    //   .replace(
+    //     /\\boxed(?:\{([^{}]*(?:\{[^{}]*\})*[^{}]*)\}|(\d+\.?\d*))/g,
+    //     '$1$2',
+    //   )
+    //   .replace(/\\$/, '')
+    //   .trim();
+
+    return latex.replace(/\\$/, '').trim();
   };
 
   const renderText = (text: string): JSX.Element => {
@@ -230,7 +239,13 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
         }
 
         if (inner.includes('\\frac')) {
-          return '(' + inner.replace(/(\\frac{[^}]+}{[^}]+})/g, '$$$1$') + ')';
+          if (inner.match(/\\frac{[^}]+}{[^}]+},/)) {
+            return match;
+          } else {
+            return (
+              '(' + inner.replace(/(\\frac{[^}]+}{[^}]+})/g, '$$$1$') + ')'
+            );
+          }
         }
 
         return match;
@@ -241,14 +256,13 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       return <></>;
     }
     const displayMathRegex =
-      /((?:\n?\\[[\s\S]*?\\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([^)]*\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$[^$\n]+?\$))/gs;
+      /((?:\n?\\[[\s\S]*?\\]\n?)|(?:\$\$[\s\S]*?\$\$)|(?:\\\([^)]*\\\))|(?:\$[^$\n]*?\\boxed\{[^}]*\}[^$\n]*?\$)|(?:\$(?:\d+\.\d+|[^$\n,.])+?\$))/gs;
     if (text.includes('$') || text.includes('\\[') || text.includes('\\(')) {
       const parts = text
         .split(displayMathRegex)
         .filter(
           (part, index, arr) => !(index === arr.length - 1 && part === ''),
         );
-
       return (
         <span key={currentIndex}>
           {parts.map((part, idx) => {
@@ -362,33 +376,33 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
 
             if (part?.startsWith('$') && part?.endsWith('$')) {
               const content = part.slice(1, -1);
-              if (content.includes('\\boxed{')) {
-                const boxedMatch = content.match(/\\boxed{([^]*)}/);
-                if (boxedMatch) {
-                  const innerContent = boxedMatch[1];
+              // if (content.includes('\\boxed{')) {
+              //   const boxedMatch = content.match(/\\boxed{([^]*)}/);
+              //   if (boxedMatch) {
+              //     const innerContent = boxedMatch[1];
 
-                  if (/^[a-zA-Z\s-]+$/.test(innerContent)) {
-                    return (
-                      <span
-                        key={idx}
-                        style={{
-                          fontWeight: '500',
-                        }}
-                      >
-                        {innerContent}
-                      </span>
-                    );
-                  }
-                  const processedContent = innerContent
-                    .replace(/\\pi/g, '\\pi ')
-                    .replace(/\^{(\d+)}/g, '^{$1}')
-                    .replace(/=/g, ' = ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
+              //     if (/^[a-zA-Z\s-]+$/.test(innerContent)) {
+              //       return (
+              //         <span
+              //           key={idx}
+              //           style={{
+              //             fontWeight: '500',
+              //           }}
+              //         >
+              //           {innerContent}
+              //         </span>
+              //       );
+              //     }
+              //     const processedContent = innerContent
+              //       .replace(/\\pi/g, '\\pi ')
+              //       .replace(/\^{(\d+)}/g, '^{$1}')
+              //       .replace(/=/g, ' = ')
+              //       .replace(/\s+/g, ' ')
+              //       .trim();
 
-                  return <InlineMath key={idx} math={processedContent} />;
-                }
-              }
+              //     return <InlineMath key={idx} math={processedContent} />;
+              //   }
+              // }
 
               const latex = processLatex(content);
 

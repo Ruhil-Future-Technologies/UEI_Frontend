@@ -1,0 +1,48 @@
+.image-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 1000;
+
+  &.show {
+    display: flex;
+    opacity: 1;
+
+    .image-modal-content {
+      transform: scale(1);
+    }
+  }
+
+  &-content {
+    border-radius: 8px;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.3s ease-in-out;
+
+    img,
+    svg {
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+}
