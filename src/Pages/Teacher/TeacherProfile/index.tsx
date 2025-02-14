@@ -235,11 +235,12 @@ const TeacherProfile = () => {
                         const allsemesters:SemesterRep0oDTO[]= await getSemester();
                         setSelectedEntity('College');
                         getCourses(data.data.institution_id);
+                        console.log(data.data.course_semester_subjects);
                         const output: Boxes[] = Object.keys(data.data.course_semester_subjects).flatMap(CourseKey =>
-                            Object.keys(data.data.class_stream_subjects[CourseKey]).map(semester_number => ({
+                            Object.keys(data.data.course_semester_subjects[CourseKey]).map(semester_number => ({
                                 course_id: CourseKey,
                                 semester_number: semester_number,
-                                subjects: data.data.class_stream_subjects[CourseKey][semester_number],
+                                subjects: data.data.course_semester_subjects[CourseKey][semester_number],
                                 filteredSemesters: allsemesters.filter((item) => item.semester_number === semester_number),
                                 filteredSubjects: allSubject.filter((item) => item.semester_number === semester_number && item.course_id === CourseKey)
 
