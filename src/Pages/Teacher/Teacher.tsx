@@ -107,6 +107,8 @@ const Teacher = () => {
   }, [dataTeacher, columns11]);
 
   const callAPI = async () => {
+    console.log('callAPI called');
+
     getData('/entity/list').then((data) => {
       setEntity(data.data);
     });
