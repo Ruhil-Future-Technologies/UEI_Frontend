@@ -498,20 +498,38 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Teachers"></Tab>
-                    <Tab label="Pending Teachers" />
+                    <Tab
+                      label="Total Teachers"
+                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                    ></Tab>
+                    <Tab
+                      label="Pending Teachers"
+                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                    />
                   </Tabs>
 
                   {activeTab === 0 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab label="College" />
-                      <Tab label="School" />
+                      <Tab
+                        label="College"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
+                      <Tab
+                        label="School"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
                     </Tabs>
                   )}
                   {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab label="College" />
-                      <Tab label="School" />
+                      <Tab
+                        label="College"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
+                      <Tab
+                        label="School"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
                     </Tabs>
                   )}
                   <Box marginTop="10px">

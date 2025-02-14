@@ -308,7 +308,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
     accessorKey: 'institution_name',
-    header: 'Institute name ',
+    header: 'Institution name ',
     size: 150,
   },
   {
