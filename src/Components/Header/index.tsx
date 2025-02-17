@@ -50,12 +50,13 @@ const Header = () => {
   const user_type = localStorage.getItem('user_type');
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
-  const [profileUrl, setProfileUrl] = useState('')
+  const [profileUrl, setProfileUrl] = useState('');
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const { getData } = useApi();
-  const [dashboardURL, setDashboardURL] = useState('')
+  const [dashboardURL, setDashboardURL] = useState('');
   const handlogout = () => {
     setProPercentage(0);
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('chatData');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
@@ -106,13 +107,13 @@ const Header = () => {
                 .then((imgdata: any) => {
                   setProImage(imgdata.data);
                 })
-                .catch(() => { });
+                .catch(() => {});
             }
           }
           sessionStorage.setItem('profileData', JSON.stringify(data.data));
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   };
   const getAdminDetails = () => {
     getData(`${adminProfileURL}/${StudentId}`)
@@ -129,14 +130,15 @@ const Header = () => {
             });
             if (response?.data?.basic_info?.pic_path !== '') {
               getData(
-                `${'upload_file/get_image/' +
-                response?.data?.basic_info?.pic_path
+                `${
+                  'upload_file/get_image/' +
+                  response?.data?.basic_info?.pic_path
                 }`,
               )
                 .then((imgdata) => {
                   setProImage(imgdata.data);
                 })
-                .catch(() => { });
+                .catch(() => {});
             }
           }
         }
@@ -151,18 +153,18 @@ const Header = () => {
   useEffect(() => {
     if (user_type === 'admin') {
       getAdminDetails();
-      setProfileUrl('/main/adminprofile')
-      setDashboardURL('/main/DashBoard')
+      setProfileUrl('/main/adminprofile');
+      setDashboardURL('/main/DashBoard');
     } else if (user_type === 'institute') {
-      setProfileUrl("/institution-dashboard/profile")
-      setDashboardURL('/institution-dashboard')
+      setProfileUrl('/institution-dashboard/profile');
+      setDashboardURL('/institution-dashboard');
     } else if (user_type === 'teacher') {
       setProfileUrl('/teacher-dashboard/profile');
-      setDashboardURL('/teacher-dashboard')
+      setDashboardURL('/teacher-dashboard');
     } else {
       callAPI();
-      setProfileUrl('/main/StudentProfile')
-      setDashboardURL('/main/DashBoard')
+      setProfileUrl('/main/StudentProfile');
+      setDashboardURL('/main/DashBoard');
     }
   }, []);
 
