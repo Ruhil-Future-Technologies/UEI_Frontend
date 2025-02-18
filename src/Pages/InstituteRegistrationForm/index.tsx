@@ -19,7 +19,7 @@ import DialogActions from '@mui/material/DialogActions';
 import useApi from '../../hooks/useAPI';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
+import { BackArrowCircle } from '../../assets';
 import {
   IEntity,
   InstituteRep0oDTO,
@@ -28,7 +28,7 @@ import {
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
 
-import { Step, StepLabel, Stepper, Typography, Box } from '@mui/material';
+import { Step, StepLabel, Stepper, Typography, Box, FormControlLabel, Checkbox } from '@mui/material';
 
 import {
   fieldIcon,
@@ -536,13 +536,7 @@ const InstituteRegistrationForm = () => {
           </Link>
         </div>
       </div>
-
-      <Box>
-        {activeStep === steps.length ? (
-          <Typography>All steps completed!</Typography>
-        ) : (
-          <>
-            {/* <Typography sx={{ mb: 2 }}>This is {steps[activeStep]}</Typography> */}
+      <Box>       
             {activeStep === 0 && (
               <Box>
                 <div className="without-login p-3">
@@ -855,7 +849,6 @@ const InstituteRegistrationForm = () => {
                 </div>
               </Box>
             )}
-
             {activeStep === 1 && (
               <Box>
                 <div className="without-login p-3">
@@ -863,7 +856,15 @@ const InstituteRegistrationForm = () => {
                     <div className="card-body">
                       <div className="row d-flex justify-content-center g-4 mb-4">
                         <div className="col-12">
-                          <h5 className="mb-0 fw-bold">Address Details</h5>
+                          
+                          <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <BackArrowCircle
+                          onClick={handleBack}
+                          role="button"
+                          fontSize="small"
+                        />
+                        Address Details
+                      </h5>
                         </div>
                         <div className="col-md-6 col-12 ">
                           <label className={`col-form-label`}>
@@ -1019,14 +1020,8 @@ const InstituteRegistrationForm = () => {
                                 : 'Next'}
                             </Button>
 
-                            <Button
-                              onClick={handleBack}
-                              variant="text"
-                              
-                              className="text-center outsecbtn w-100 text-secondary"
-                            >
-                              Back
-                            </Button>
+                           
+                           
                           </Box>
                         </div>
                       </div>
@@ -1035,7 +1030,6 @@ const InstituteRegistrationForm = () => {
                 </div>
               </Box>
             )}
-
             {activeStep === 2 && (
               <Box>
                 <div className="without-login p-3">
@@ -1043,7 +1037,14 @@ const InstituteRegistrationForm = () => {
                     <div className="card-body">
                       <div className="row d-flex justify-content-center g-4">
                       <div className="col-12">
-                          <h5 className="mb-0 fw-bold">Documents & Logo</h5>
+                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <BackArrowCircle
+                          onClick={handleBack}
+                          role="button"
+                          fontSize="small"
+                        />{' '}
+                        Documents & Logo
+                      </h5>
                         </div>
                         <div className="col-md-6 col-12 ">
                           <Card>
@@ -1061,26 +1062,10 @@ const InstituteRegistrationForm = () => {
                               />
                             </CardContent>
                           </Card>
-                          <div className="my-4">
-                            {allselectedfiles.length > 0 && (
-                              <ul className="mt-4">
-                                {allselectedfiles.map((file, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex items-center justify-between"
-                                  >
-                                    {file.name}
-                                    <DeleteOutlinedIcon
-                                      className="m-2 cursor-pointer"
-                                      onClick={() => handleRemoveFile(index)}
-                                    />
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
+                          
                         </div>
-                        <div className="col-md-6 col-12 mb-3">
+                        
+                        <div className="col-md-6 col-12 ">
                           <Card>
                             <CardContent>
                               <label className="col-form-label">
@@ -1100,9 +1085,71 @@ const InstituteRegistrationForm = () => {
                             <ul>{valueInstitute.icon}</ul>
                           </div>
                         </div>
+                        <div className="col-12">
+                        <div className="">
+                            {allselectedfiles.length > 0 && (
+                              <ul className="doclist">
+                                {allselectedfiles.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-center justify-between"
+                                  >
+                                    {file.name}
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() => handleRemoveFile(index)}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        </div>
+                        <div className="col-lg-12">
+                        <FormControlLabel
+                        control={
+                          <Checkbox
+                            data-testid="checkbox"
+                            onChange={handleTermandCondi}
+                          />
+                        }
+                        label={
+                          <Typography variant="body2">
+                            By registering your account you have to agree with
+                            our{' '}
+                            <Link
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleTACpopup();
+                              }}
+                              sx={{ fontSize: '0.85rem' }} // Adjusts font size of the link
+                            >
+                              Terms & Conditions
+                            </Link>
+                          </Typography>
+                        }
+                        sx={{
+                          '& .MuiTypography-root': { fontSize: '0.85rem' },
+                        }} // Adjusts font size of the entire label
+                      />
+                        </div>
+                        <div className="col-12">
+                        <div className=" d-flex justify-content-center  flex-column">
+                        <Button
+                          variant="contained"
+                          disabled={CheckTermandcondi}
+                          onClick={openPopupOtp}
+                          className="py-3"
+                        >
+                          Submit
+                        </Button>
+                       
+                      </div>
+                        </div>
                       </div>
 
-                      <div className="form-check mb-3 fs-14">
+                      {/* <div className="form-check mb-3 fs-14">
                         <input
                           data-testid="checkbox"
                           className="form-check-input"
@@ -1127,25 +1174,8 @@ const InstituteRegistrationForm = () => {
                             Terms & Conditions
                           </a>
                         </label>
-                      </div>
-                      <div className=" d-flex justify-content-center m-2 flex-column">
-                        <Button
-                          variant="contained"
-                          disabled={CheckTermandcondi}
-                          onClick={openPopupOtp}
-                          className="py-3"
-                        >
-                          Submit
-                        </Button>
-                        <Button
-                          onClick={handleBack}
-                          className="outsecbtn mt-2 text-secondary"
-                          variant="text"
-                          color="primary"
-                        >
-                          Back
-                        </Button>
-                      </div>
+                      </div> */}
+                      
                       <Dialog open={popupTermandCondi} onClose={handleClose}>
                         <DialogTitle>{'Terms and Condition'}</DialogTitle>
                         <DialogContent>
@@ -1165,8 +1195,6 @@ const InstituteRegistrationForm = () => {
                 </div>
               </Box>
             )}
-          </>
-        )}
       </Box>
     </Box>
   );

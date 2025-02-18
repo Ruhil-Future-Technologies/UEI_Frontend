@@ -1820,3 +1820,19 @@ form select.error:focus {
     }
   }
 }
+.doclist{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 1rem;
+ 
+  li{
+    background-color: rgba($primary, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: .1rem .7rem;
+    border-radius: .2rem;
+  }
+}
