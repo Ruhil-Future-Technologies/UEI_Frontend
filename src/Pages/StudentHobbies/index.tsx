@@ -50,7 +50,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [hobbiesAll, setHobbiesAll] = useState<any>([]);
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
 
   useEffect(() => {
     if (save) {

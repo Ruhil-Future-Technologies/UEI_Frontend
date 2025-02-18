@@ -155,6 +155,7 @@ const SuperAdmin = () => {
       user_type: value,
       userid: menuData?.userid,
       password: menuData?.password,
+      "X-api-secret":"SjSf2@aj24@De$5_haw18&-kjfDE(oP^"
     } as any;
 
     Object.keys(payload).forEach((key) => {

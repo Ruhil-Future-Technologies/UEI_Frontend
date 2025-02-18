@@ -27,7 +27,7 @@ const AdminProfession: React.FC<PropsItem> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   const { getData, postData, putData } = useApi();
   const [institude, setInstitude] = React.useState<
     [{ id: string; institution_name: string }]

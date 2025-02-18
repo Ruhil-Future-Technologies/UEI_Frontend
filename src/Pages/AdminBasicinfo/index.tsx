@@ -155,7 +155,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   };
   const getBasicInfo = async () => {
     try {
-      const response = await getData(`${'admin_basicinfo/edit/' + adminId}`);
+      const response = await getData(`${'admin/edit/' + adminId}`);
+      console.log(response);
       if (response?.status) {
         setadmin((prevState) => ({
           ...prevState,
@@ -219,7 +220,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
 
       if (response?.status) {
         setAllDepartment(
-          response?.data?.filter((item: any) => item.is_active === 1),
+          response?.data?.departments_data.filter((item: any) => item.is_active === true),
         );
       }
     } catch (error: any) {
@@ -244,7 +245,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
 
   useEffect(() => {
-    getData(`${'admin_basicinfo/edit/' + adminId}`).then((response) => {
+    getData(`${'admin/edit/' + adminId}`).then((response) => {
       if (response?.status) {
         setEditable(false);
       } else if (response?.code == 404) {
@@ -370,7 +371,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     if (!admin?.father_name) setFathername_col1(true);
     if (!admin?.mother_name) setMothername_col1(true);
     const payload = {
-      admin_login_id: adminId,
+      user_uuid: adminId,
       department_id: adminDepartment,
       first_name: admin?.first_name,
       last_name: admin?.last_name,
@@ -412,7 +413,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     if (editable) {
       const seveData = async () => {
         try {
-          const response = await postData('admin_basicinfo/add', formData);
+          const response = await postData('admin/add', formData);
           if (response?.status) {
             toast.success('Admin basic information saved successfully', {
               hideProgressBar: true,
@@ -479,7 +480,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       const editData = async () => {
         try {
           const response = await putData(
-            'admin_basicinfo/edit/' + adminId,
+            'admin/edit/' + adminId,
             formData,
           );
 

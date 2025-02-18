@@ -52,9 +52,9 @@ const AddEditEntity = () => {
   const callAPI = async () => {
     if (id) {
       getData(`${EntityEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { status: boolean, data: { entity_type: string } }) => {
+        .then((data) => {
           if (data.status) {
-            setEntity(data?.data?.entity_type);
+            setEntity(data?.data?.entity_data?.entity_type);
           }
         })
         .catch((e) => {

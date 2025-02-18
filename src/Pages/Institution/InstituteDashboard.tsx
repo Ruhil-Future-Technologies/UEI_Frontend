@@ -37,7 +37,7 @@ import { Teacher } from '../TeacherRgistrationForm';
 
 
 const InstitutionDash = () => {
-  const instituteLoginId = localStorage.getItem('_id');
+  const instituteLoginId = localStorage.getItem('user_uuid');
 
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<InstituteRep0oDTO>({

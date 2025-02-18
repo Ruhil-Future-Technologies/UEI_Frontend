@@ -94,7 +94,7 @@ const Uploadpdf = () => {
   const { namecolor }: any = context;
   const navigator = useNavigate();
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
-  let AdminId: string | null = localStorage.getItem('_id');
+  let AdminId: string | null = localStorage.getItem('user_uuid');
   if (AdminId) {
     AdminId = String(AdminId);
   }

@@ -18,7 +18,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
 
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState('+91');
@@ -87,7 +87,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 
   const getContact = async () => {
     try {
-      const response = await getData('admin_contact/edit/' + adminId);
+      const response = await getData('admin_contact/get/' + adminId);
       if (!response) {
         // Handle case where response is undefined or null
         console.error('No response received from Data');
@@ -121,7 +121,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           theme: 'colored',
           position: 'top-center',
         });
-      } else {
+      } else if(error.code !== 404){
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',

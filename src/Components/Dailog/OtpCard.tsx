@@ -10,10 +10,13 @@ interface OtpCardProps {
     email: string;
 }
 
-const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess,email }) => {
+const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess, email }) => {
+    const { postData } = useApi();
+
+
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-    const {postData}=useApi()
-    const [viewBtn,setViewBtn]=useState(true);
+   // const [viewBtn, setViewBtn] = useState(true);
+    const [timeLeft, setTimeLeft] = useState(0);
 
     const handleOtpChange = (index: number, value: string) => {
         if (/^\d?$/.test(value)) {
@@ -28,7 +31,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
         }
     };
 
-
+  
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData("text").trim();
@@ -42,22 +45,29 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
         document.getElementById(`otp-0`)?.focus();
     }
 
-    const handleOtpResend =()=>{
-        setViewBtn(false);
-        let payload={
-            email:email
+    const handleOtpResend = () => {
+        setTimeLeft(120);
+        
+        let payload = {
+            email: email
         }
         try {
-            postData(`/auth/send-otp`,payload).then((response)=>{
-             console.log(response);
-                   setTimeout(()=>{
-                     setViewBtn(true);
-                   },2000)
+            postData(`/auth/send-otp`, payload).then((response) => {
+                console.log(response);
+                const timer = setInterval(() => {
+                    setTimeLeft((prev) => {
+                        if (prev <= 1) {
+                            clearInterval(timer);
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }, 1000);
             })
         } catch (error) {
-            
+
         }
-           console.log(email)
+        console.log(email)
     }
 
     const isOtpComplete = otp.every((digit) => digit !== "");
@@ -94,10 +104,15 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button className="content-left" 
-                   disabled={!viewBtn} onClick={handleOtpResend} color="primary">
-                        resend Otp
-                    </Button>
+                    {timeLeft > 0 ? (
+                        <span style={{color:"red"}}>{`${Math.floor(timeLeft / 60)
+                            .toString()
+                            .padStart(2, "0")}:${(timeLeft % 60).toString().padStart(2, "0")}`}</span>
+                    ) : (
+                        <Button className="content-left" onClick={handleOtpResend} color="primary">
+                            Resend OTP
+                        </Button>
+                    )}
                     <Button onClick={handleOtpReset} color="primary">
                         reset
                     </Button>

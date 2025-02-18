@@ -77,7 +77,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
 
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const addRow = () => {
     const newBox: Box = {
       id: 0,

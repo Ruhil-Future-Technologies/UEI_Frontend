@@ -118,7 +118,10 @@ const Teacher = () => {
 
   const callAPI = async () => {
     getData('/entity/list').then((data) => {
-      setEntity(data.data);
+      if(data.status){
+        setEntity(data.data);
+      }
+      
     });
     getData(`${GET_COURSE}`).then((data) => setDataCourses(data.data));
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {

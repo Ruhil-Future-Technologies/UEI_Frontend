@@ -427,6 +427,7 @@ function MainContent() {
 
   useEffect(() => {
     if (usertype === 'admin') {
+      console.log("admin loged in here" )
       setUserName('admin');
       setDataCompleted(false);
     } else if (usertype === 'student') {
@@ -435,7 +436,7 @@ function MainContent() {
     } else if (usertype === 'teacher') {
       setUserName('teacher');
     } else {
-      setUserName('admin');
+      setUserName('institute');
     }
   }, [usertype]);
 
@@ -904,7 +905,7 @@ function MainContent() {
   };
 
   const callAPIStudent = async () => {
-    console.log(StudentId);
+
     if (usertype === 'student' &&  StudentId !== null) {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {

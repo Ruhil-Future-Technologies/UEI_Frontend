@@ -13,7 +13,7 @@ import useApi from '../../hooks/useAPI';
 import NameContext from '../Context/NameContext';
 
 export default function AdminProfile() {
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   const [isProComplete, setIsProComplete] = React.useState(0);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const context = React.useContext(NameContext);
@@ -73,27 +73,28 @@ export default function AdminProfile() {
   const adminAPI = async () => {
     getData(`${profileURL}/${adminId}`)
       .then((data: any) => {
-        if (data.data) {
+        if (data.data.admin_data) {
+          console.log(data.data.admin_data);
           const basic_info = {
-            first_name: data?.data?.basic_info?.first_name,
-            last_name: data?.data?.basic_info?.last_name,
-            gender: data?.data?.basic_info?.gender,
-            dob: data?.data?.basic_info?.dob,
-            father_name: data?.data?.basic_info?.father_name,
-            mother_name: data?.data?.basic_info?.mother_name,
-            department_id: data?.data?.basic_info?.department_id,
-            guardian_name: data?.data?.basic_info?.guardian_name,
+            first_name: data?.data?.admin_data?.basic_info?.first_name,
+            last_name: data?.data?.admin_data?.basic_info?.last_name,
+            gender: data?.data?.admin_data?.basic_info?.gender,
+            dob: data?.data?.admin_data?.basic_info?.dob,
+            father_name: data?.data?.admin_data?.basic_info?.father_name,
+            mother_name: data?.data?.admin_data?.basic_info?.mother_name,
+            department_id: data?.data?.admin_data?.basic_info?.department_id,
+            guardian_name: data?.data?.admin_data?.basic_info?.guardian_name,
           };
-          const address = data?.data?.address;
-          const language = data?.data?.language_known;
-          const description = data?.data?.admin_description;
+          const address = data?.data?.admin_data?.address;
+          const language = data?.data?.admin_data?.language_known;
+          const description = data?.data?.admin_data?.admin_description;
           // let contact = data.data.contact
           const contact = {
-            mobile_no_call: data?.data?.contact?.mobile_no_call,
-            mobile_isd_call: data?.data?.contact?.mobile_isd_call,
-            mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
+            mobile_no_call: data?.data?.admin_data?.contact?.mobile_no_call,
+            mobile_isd_call: data?.data?.admin_data?.contact?.mobile_isd_call,
+            mobile_no_watsapp: data?.data?.admin_data?.contact?.mobile_no_watsapp,
           };
-          const profession = data.data.profession;
+          const profession = data.data.admin_data?.profession;
           // let hobby = data.data.hobby
 
           let totalPercentage = 0;

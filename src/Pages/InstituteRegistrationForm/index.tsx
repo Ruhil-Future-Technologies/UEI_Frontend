@@ -116,9 +116,9 @@ const InstituteRegistrationForm = () => {
 
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
-      .then((data: {status:boolean, data: IUniversity[] }) => {
+      .then((data) => {
         if (data.status) {
-          setDataUniversity(data?.data);
+          setDataUniversity(data?.data?.universities_data);
         }
       })
       .catch((e) => {
@@ -135,9 +135,9 @@ const InstituteRegistrationForm = () => {
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
-      .then((data: {status:boolean, data: IEntity[] }) => {
+      .then((data) => {
         if(data.status){
-          setDataEntity(data?.data);
+          setDataEntity(data.data.entityes_data);
         }
       })
       .catch((e) => {
@@ -562,7 +562,7 @@ const InstituteRegistrationForm = () => {
                   >
                     {dataUniversity?.map((item, idx) => (
                       <MenuItem
-                        value={item.university_id}
+                        value={item.id}
                         key={`${item.university_name}-${idx + 1}`}
                         sx={{
                           backgroundColor: inputfield(namecolor),

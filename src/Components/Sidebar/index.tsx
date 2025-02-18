@@ -33,7 +33,7 @@ const Sidebar = () => {
   const MenuListURL1 = QUERY_KEYS_MENU.GET_MENULIST;
 
   const { getData } = useApi();
-  const profileData: any = sessionStorage.getItem('profileData');
+  const profileData: any = sessionStorage.getItem('userdata');
   let basicinfo: any = {};
   if (profileData !== null) {
     basicinfo = JSON.parse(profileData);

@@ -39,7 +39,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import { useTheme } from '@mui/material/styles';
 
 const Chat = () => {
-  const userid = localStorage.getItem('_id') || '';
+  const userid = localStorage.getItem('user_uuid') || '';
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [studentDetail, setStudentData] = useState<any>();

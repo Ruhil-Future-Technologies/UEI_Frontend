@@ -163,7 +163,7 @@ const Signup = () => {
 
   const handleSuccessfulLogin = (data: any) => {
     console.log(data)
-    localStorage.setItem('token', data?.token);
+    localStorage.setItem('token', "Bearer "+data?.access_token);
     localStorage.setItem('userid', data?.data?.userid);
     localStorage.setItem('lastRoute', window.location.pathname);
 

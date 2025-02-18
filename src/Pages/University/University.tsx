@@ -35,9 +35,9 @@ const University = () => {
 
   const callAPI = async () => {
     getData(`${UniversityURL}`)
-      .then((data: { data: UniversityRep0oDTO[] }) => {
+      .then((data) => {
         if (data.data) {
-          setDataUniversity(data?.data);
+          setDataUniversity(data?.data?.universities_data);
         }
       })
       .catch((e) => {

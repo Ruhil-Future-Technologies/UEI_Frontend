@@ -31,7 +31,7 @@ interface Language {
 }
 
 const AdminLanguage: React.FC<ChildComponentProps> = () => {
-  const AdminId = localStorage.getItem('_id');
+  const AdminId = localStorage.getItem('user_uuid');
   interface Box {
     id: number;
     language_id: any;
@@ -100,7 +100,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           position: 'top-center',
         });
       });
-    getData(`${'admin_language_known/edit/' + AdminId}`)
+    getData(`${'admin_language_known/get/' + AdminId}`)
       .then((data: any) => {
         if (data?.status ) {
           data.data.map((item: any) => {
@@ -134,7 +134,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   }, []);
   console.log(initialAdminState);
   useEffect(() => {
-    getData(`${'admin_language_known/edit/' + AdminId}`).then(
+    getData(`${'admin_language_known/get/' + AdminId}`).then(
       (response: any) => {
         if (response?.status) {
           const newLanageage = response?.data?.filter((items: any) =>

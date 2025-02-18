@@ -78,7 +78,7 @@ describe('StudentProfileManagement Component', () => {
     render(<StudentProfileManagement />);
 
     // Check the value in localStorage
-    const studentId = localStorage.getItem('_id');
+    const studentId = localStorage.getItem('user_uuid');
 
     // Ensure StudentId is available
     expect(studentId).toBe('12345');

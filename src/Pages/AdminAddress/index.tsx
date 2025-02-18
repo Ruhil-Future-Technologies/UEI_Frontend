@@ -42,7 +42,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
 
   const { activeForm, setActiveForm }: any = context;
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
 
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
@@ -159,8 +159,10 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   };
 
   const listData = async () => {
-    getData(`${'admin_address/edit/' + adminId}`)
+   
+    getData(`${'admin_address/get/' + adminId}`)
       .then((response: any) => {
+        console.log(response);
         if (response?.status) {
           let add1: any;
           let add2: any;
@@ -220,11 +222,15 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
         }
       })
       .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        console.log("erorr occure while run time")
+        if(e.code !== 404){
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
+       
       });
   };
   useEffect(() => {
@@ -232,7 +238,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   }, []);
 
   useEffect(() => {
-    getData(`${'admin_address/edit/' + adminId}`).then((response: any) => {
+    getData(`${'admin_address/get/' + adminId}`).then((response: any) => {
       if (response?.status) {
         response?.data.forEach((address: any) => {
           if (address?.address_type === 'permanent_address') {

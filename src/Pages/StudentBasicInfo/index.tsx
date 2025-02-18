@@ -55,7 +55,7 @@ interface StudentBasicInformation {
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { setNamepro, setProImage, namecolor }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const { getData, postData, putData, postFileData } = useApi();
   // const [gender, setGender] = useState("Male");
   // const [name, setName] = useState();

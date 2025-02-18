@@ -32,7 +32,7 @@ interface Institute {
 const InstitutionProfile = () => {
     const context = useContext(NameContext);
     const { namecolor }: any = context;
-    const instituttionLoginId = localStorage.getItem("_id");
+    const instituttionLoginId = localStorage.getItem("user_uuid");
     const { postFileData, getData, putData } = useApi();
 
     const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST
@@ -80,10 +80,10 @@ const InstitutionProfile = () => {
     }, [])
     const getEntity = () => {
         getData(`${InstituteEntityURL}`)
-            .then((data: {status:boolean, data: IEntity[] }) => {
+            .then((data) => {
                 if(data?.status){
-                    const filteredData = data?.data.filter(
-                        (entity) => entity.is_active === 1,
+                    const filteredData = data?.data?.entityes_data.filter(
+                        (entity:any) => entity.is_active === 1,
                     );
                     setEntityData(filteredData);
                 }
@@ -99,9 +99,9 @@ const InstitutionProfile = () => {
     };
     const getUniversity = () => {
         getData(`${UniversityURL}`)
-            .then((data: {status:boolean, data: IUniversity[] }) => {
+            .then((data) => {
                 if (data.status) {
-                    setUniversityData(data?.data);
+                    setUniversityData(data?.data?.universities_data);
                 }
             })
             .catch((e) => {
@@ -478,7 +478,7 @@ const InstitutionProfile = () => {
                                                         >
                                                             {universityData?.map((item, idx) => (
                                                                 <MenuItem
-                                                                    value={item.university_id}
+                                                                    value={item.id}
                                                                     key={`${item.university_name}-${idx + 1}`}
                                                                     sx={{
                                                                         backgroundColor: inputfield(namecolor),

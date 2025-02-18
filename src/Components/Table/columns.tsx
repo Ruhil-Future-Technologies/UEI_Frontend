@@ -940,7 +940,7 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
             isChecked={Show}
             label={Show ? 'Active' : 'Deactive'}
             onChange={() => {
-              active(row?.original?.university_id, Showvalue);
+              active(row?.original?.id, Showvalue);
             }}
           />
         </Box>

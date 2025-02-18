@@ -61,7 +61,7 @@ const AddEditDepartment = () => {
       getData(`${DepartmentEditURL}${id ? `/${id}` : ''}`)
         .then((data) => {
           if(data.status){
-            setDepartment(data?.data?.department_name);
+            setDepartment(data?.data?.department_data?.department_name);
           }
         })
         .catch((e) => {

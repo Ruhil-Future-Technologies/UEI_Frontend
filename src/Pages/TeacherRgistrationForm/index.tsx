@@ -340,7 +340,7 @@ const TeacherRegistrationPage = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -353,15 +353,16 @@ const TeacherRegistrationPage = () => {
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        const filteredData = data?.data.filter(
-          (entity) => entity.is_active === 1,
+      .then((data) => {
+        console.log(data.data.entityes_data);
+        const filteredData = data?.data?.entityes_data.filter(
+          (entity:any) => entity.is_active === true,
         );
         setDataEntity(filteredData);
         // setDataEntity(data?.data)
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -382,7 +383,7 @@ const TeacherRegistrationPage = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -396,12 +397,12 @@ const TeacherRegistrationPage = () => {
   const getClasslist = () => {
     getForRegistration(`${ClassURL}`)
       .then((data) => {
-        if (data.data) {
-          setDataClass(data?.data);
+        if (data.status) {
+          setDataClass(data?.data?.classes_data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -415,15 +416,14 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        console.log(data.data)
-        if (data.data) {
+        if (data.status) {
           const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
           console.log(filerRoleId);
           setRoleId(filerRoleId) // setRoleData(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -438,12 +438,12 @@ const TeacherRegistrationPage = () => {
     if (type === 'College') {
       getForRegistration(`${getSubjectCollege}`)
         .then((data) => {
-          if (data.data) {
+          if (data.status) {
             setTotleSubject(data?.data);
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigate('/');
           }
           toast.error(e?.message, {
@@ -454,12 +454,12 @@ const TeacherRegistrationPage = () => {
     } else {
       getForRegistration(`${getsubjectSchool}`)
         .then((data) => {
-          if (data.data) {
+          if (data.status) {
             setTotleSubject(data?.data);
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigate('/');
           }
           toast.error(e?.message, {
@@ -474,7 +474,7 @@ const TeacherRegistrationPage = () => {
   const getSemester = () => {
     try {
       getForRegistration(`/semester/list`).then((data) => {
-        if (data.status === 200) {
+        if (data.status) {
           setSemesterData(data.data);
         }
       }).catch((e) => {
@@ -770,7 +770,7 @@ const TeacherRegistrationPage = () => {
     }
     postRegisterData(getTeacherURL, formData)
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status) {
           toast.success('Teacher registration request sent successfully', {
             hideProgressBar: true,
             theme: 'colored',

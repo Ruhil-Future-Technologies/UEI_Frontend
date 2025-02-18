@@ -44,7 +44,7 @@ const steps = [
   'Admin Profession',
 ];
 
-const adminId = localStorage.getItem('_id');
+const adminId = localStorage.getItem('user_uuid');
 console.log(adminId);
 export default function AdminProfileMgt() {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -309,11 +309,11 @@ function AdminBasicInfo() {
     { id: 0, department_name: '' },
   ]);
   const [adminDepartment, setAdminDepartment] = useState<string>('');
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   console.log(adminId);
 
   useEffect(() => {
-    getData(`${'admin_basicinfo/edit/' + adminId}`).then((data: any) => {
+    getData(`${'admin/edit/' + adminId}`).then((data: any) => {
       console.log(data);
       if (data?.status) {
         setAdminFName(data?.data.first_name);
@@ -366,7 +366,7 @@ function AdminBasicInfo() {
           formData.append(key, value as string);
       }
   });
-    postData('admin_basicinfo/add', formData).then((data: any) => {
+    postData('admin/add', formData).then((data: any) => {
       console.log(data);
       if (data?.status) {
         toast.success('info saved successfully', {

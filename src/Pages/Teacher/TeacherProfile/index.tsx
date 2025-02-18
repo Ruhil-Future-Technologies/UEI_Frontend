@@ -64,7 +64,7 @@ const MenuProps = {
 const TeacherProfile = () => {
   const stream = ['Science', 'Commerce', 'Arts'];
   const navigate = useNavigate();
-  const teacherLoginId = localStorage.getItem('_id');
+  const teacherLoginId = localStorage.getItem('user_uuid');
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postFileData, putData } = useApi();
@@ -150,8 +150,8 @@ const TeacherProfile = () => {
   const getClasslist = () => {
     getData(`${ClassURL}`)
       .then((data) => {
-        if (data.data) {
-          setDataClass(data?.data);
+        if (data.status) {
+          setDataClass(data?.data?.classes_data);
         }
       })
       .catch((e) => {
@@ -236,9 +236,9 @@ const TeacherProfile = () => {
   };
   const getEntity = () => {
     getData(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        const filteredData = data?.data.filter(
-          (entity) => entity.is_active === 1,
+      .then((data) => {
+        const filteredData = data?.data?.entityes_data.filter(
+          (entity:any) => entity.is_active === 1,
         );
         setDataEntity(filteredData);
         // setDataEntity(data?.data)

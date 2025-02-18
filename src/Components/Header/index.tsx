@@ -73,6 +73,8 @@ const Header = () => {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('eamil');
+    localStorage.removeItem('phone');
     synth.cancel();
     navigator('/');
     logoutpro();

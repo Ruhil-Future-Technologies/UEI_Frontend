@@ -201,10 +201,10 @@ export const QUERY_KEYS_STUDENT_FEEDBACK = {
   GET_FEEDBACK_DEACTIVE: '/feedback/deactivate',
 };
 export const QUERY_KEYS_ADMIN_BASIC_INFO = {
-  GET_ADMIN_BASIC_INFO: '/admin_basicinfo/list',
-  ADMIN_ADD_BASIC_INFO: '/admin_basicinfo/add',
-  ADMIN_EDIT_BASIC_INFO: '/admin_basicinfo/edit',
-  ADMIN_GET_PROFILE: '/admin_basicinfo/getProfile',
+  GET_ADMIN_BASIC_INFO: '/admin/list',
+  ADMIN_ADD_BASIC_INFO: '/admin/add',
+  ADMIN_EDIT_BASIC_INFO: '/admin/edit',
+  ADMIN_GET_PROFILE: '/admin/getProfile',
 };
 export const QUERY_KEYS_STUDENT_ADDRESS = {
   GET_ADMIN_STUDENT_ADDRESS: '/student_address/list',

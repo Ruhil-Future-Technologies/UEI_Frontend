@@ -54,7 +54,7 @@ interface Teacher {
 }
 
 const TeacherDash = () => {
-  const teacherId = localStorage.getItem('_id');
+  const teacherId = localStorage.getItem('user_uuid');
   const [activeTab, setActiceTab] = useState(0);
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();

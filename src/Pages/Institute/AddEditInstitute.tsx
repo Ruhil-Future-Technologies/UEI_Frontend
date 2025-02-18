@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import {
-  IEntity,
   InstituteRep0oDTO,
   IUniversity,
   MenuListinter,
@@ -131,10 +130,10 @@ const AddEditInstitute = () => {
 
   const callAPI = async () => {
     getData(`${InstituteEntityURL}`)
-      .then((data: {status:boolean, data: IEntity[] }) => {
+      .then((data) => {
         if(data.status){
-          const filteredData = data?.data.filter(
-            (entity) => entity.is_active === 1,
+          const filteredData = data?.data?.entityes_data.filter(
+            (entity:any) => entity.is_active === 1,
           );
           setDataEntity(filteredData);
         }
@@ -151,9 +150,9 @@ const AddEditInstitute = () => {
         });
       });
     getData(`${UniversityURL}`)
-      .then((data: {status:boolean, data: IUniversity[] }) => {
+      .then((data) => {
         if (data.status) {
-          setDataUniversity(data?.data);
+          setDataUniversity(data?.data?.universities_data);
         }
       })
       .catch((e) => {
@@ -789,7 +788,7 @@ const AddEditInstitute = () => {
                           >
                             {dataUniversity?.map((item, idx) => (
                               <MenuItem
-                                value={item.university_id}
+                                value={item.id}
                                 key={`${item.university_name}-${idx + 1}`}
                                 sx={{
                                   backgroundColor: inputfield(namecolor),

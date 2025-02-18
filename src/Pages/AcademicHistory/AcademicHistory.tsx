@@ -118,7 +118,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   const [editAcademicHistory, setEditAcademicHistory] = useState(false);
   const [updateBoxes, setUpdateBoxes] = useState(false);
   const currentYear = dayjs().year();
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const menuItems = [
     { value: 'school', label: 'School' },
     { value: 'college', label: 'College' },

@@ -20,7 +20,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   };
   const context = React.useContext(NameContext);
   const { namecolor, activeForm, setActiveForm }: any = context;
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   const { getData, postData, putData } = useApi();
   const [description, setDesctiption] = useState(initialState);
   const [editFalg, setEditFlag] = useState<boolean>(false);
@@ -33,7 +33,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   const getDescription = async () => {
     try {
       const response = await getData(
-        'admin_profile_description/edit/' + adminId,
+        'admin_profile_description/get/' + adminId,
       );
 
       if (response && response?.status) {
@@ -51,7 +51,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
           theme: 'colored',
           position: 'top-center',
         });
-      } else {
+      } else if(error.code !== 404) {
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',
@@ -65,7 +65,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
 
   useEffect(() => {
-    getData('admin_profile_description/edit/' + adminId).then((response) => {
+    getData('admin_profile_description/get/' + adminId).then((response) => {
       if (response && response?.status) {
         setEditable(false);
       } else if (response && response?.code === 404) {

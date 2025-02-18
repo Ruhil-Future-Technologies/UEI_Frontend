@@ -31,7 +31,7 @@ const PDFList = () => {
   const { namecolor }: any = context;
   const navigate = useNavigate();
   const usertype: any = localStorage.getItem('user_type');
-  let AdminId: string | null = localStorage.getItem('_id');
+  let AdminId: string | null = localStorage.getItem('user_uuid');
   if (AdminId) {
     AdminId = String(AdminId);
   }

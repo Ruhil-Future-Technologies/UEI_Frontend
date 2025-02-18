@@ -41,9 +41,9 @@ const Department = () => {
   }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${DepartmentURL}`)
-      .then((data: {status:boolean, data: DepartmentRep0oDTO[] }) => {
+      .then((data) => {
         if (data.status) {
-          setDepartment(data?.data);
+          setDepartment(data?.data?.departments_data);
         }
       })
       .catch((e) => {

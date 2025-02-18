@@ -47,9 +47,9 @@ const Class = () => {
 
   const callAPI = async () => {
     getData(`${ClassURL}`)
-      .then((data: { data: IClass[] }) => {
-        if (data.data) {
-          setDataClass(data?.data);
+      .then((data) => {
+        if (data.status) {
+          setDataClass(data?.data?.classes_data);
         }
       })
       .catch((e) => {

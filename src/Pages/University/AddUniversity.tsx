@@ -26,7 +26,7 @@ const AddUniversity = () => {
     if (id) {
       getData(`${UniversityeditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setUnivesity(data?.data);
+          setUnivesity(data?.data?.universities_data);
         })
         .catch((e) => {
           toast.error(e?.message, {
