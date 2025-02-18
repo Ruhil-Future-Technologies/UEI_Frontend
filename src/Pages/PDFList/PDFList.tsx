@@ -45,7 +45,6 @@ const PDFList = () => {
   const schoolColumns = PDF_LIST_FOR_SCHOOL_COLUMNS;
 
   useEffect(() => {
-
     getData('/class/list')
       .then((response: any) => {
         if (response.status === 200) {
@@ -152,8 +151,7 @@ const PDFList = () => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}
-                  >
-                  </div>
+                  ></div>
                   <div
                     style={{
                       display: 'flex',
@@ -179,7 +177,7 @@ const PDFList = () => {
                       >
                         School
                       </button>
-                    </div>                    
+                    </div>
                   </div>
                   <Box marginTop="10px">
                     <MaterialReactTable
@@ -256,7 +254,7 @@ const PDFList = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={handleDelete}
-        title="Delete documents?"
+        title="PDF List"
       />
     </>
   );
