@@ -101,8 +101,8 @@ interface Institute {
   institution_id: string;
   institution_name: string;
   university_id: string;
-  is_active:number;
-  is_approve:boolean;
+  is_active: number;
+  is_approve: boolean;
 }
 
 interface Course {
@@ -242,6 +242,10 @@ export const ProfileDialog: FunctionComponent<{
     [key: string]: string[];
   }>({});
 
+  const [mobile, setMobile] = useState('');
+  const user_id = localStorage.getItem('userid');
+  const isEmail = (id: any) => /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(id);
+
   // const [open, setOpen] = useState(true);
 
   const errordata = [
@@ -286,6 +290,12 @@ export const ProfileDialog: FunctionComponent<{
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
     if (usertype === 'student') {
+      const user_id = localStorage.getItem('userid');
+
+      if (!isEmail(user_id)) {
+        setMobile(user_id ? user_id : '');
+      }
+
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.status === 200) {
@@ -518,6 +528,12 @@ export const ProfileDialog: FunctionComponent<{
       const fetchProfileData = async () => {
         try {
           const data = await getData(`${profileURL}/${StudentId}`);
+
+          if (!isEmail(user_id)) {
+            filteredQuestions.basic = filteredQuestions.basic.filter(
+              (question) => !['What is your mobile number?'].includes(question),
+            );
+          }
           if (data.status === 200) {
             setAnsweredData(data.data);
 
@@ -698,7 +714,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1  && item.is_approve==true,
+            (item: any) => item?.is_active === 1 && item.is_approve == true,
           );
           setInstitutes(filteredData || []);
         }
@@ -906,32 +922,50 @@ export const ProfileDialog: FunctionComponent<{
     // let phoneNum = contfullPhone?.split(' ');
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(' ');
-    const email = localStorage.getItem('userid');
-    const payload = {
-      student_id: StudentId,
-      mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call:
-        answeredData?.contact?.mobile_no_call ||
-        answer[answer.length - 1] === ''
-          ? answer[answer.length - 2]
-          : answer[answer.length - 3],
-      mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
-      mobile_no_watsapp:
-        answeredData?.contact?.mobile_no_watsapp ||
-        answer[answer.length - 1] === ''
-          ? answer[answer.length - 1]
-          : answer[answer.length - 2],
 
-      email_id: answeredData?.contact?.email_id || email,
-    };
+    const checkEmail = isEmail(user_id);
+
+    let payload = {};
+    if (checkEmail) {
+      payload = {
+        student_id: StudentId,
+        mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
+        mobile_no_call:
+          answeredData?.contact?.mobile_no_call ||
+          answer[answer.length - 1] === ''
+            ? answer[answer.length - 2]
+            : answer[answer.length - 3],
+        mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
+        mobile_no_watsapp:
+          answeredData?.contact?.mobile_no_watsapp ||
+          answer[answer.length - 1] === ''
+            ? answer[answer.length - 1]
+            : answer[answer.length - 2],
+
+        email_id: answeredData?.contact?.email_id || user_id,
+      };
+    } else {
+      payload = {
+        student_id: StudentId,
+        mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
+        mobile_no_call: answeredData?.contact?.mobile_no_call || mobile,
+        mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
+        mobile_no_watsapp:
+          answeredData?.contact?.mobile_no_watsapp ||
+          answer[answer.length - 1] === ''
+            ? answer[answer.length - 1]
+            : answer[answer.length - 2],
+        email_id: answeredData?.contact?.email_id || user_id,
+      };
+    }
 
     postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
-          // toast.success(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: 'colored',
-          // });
+          toast.success(data?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -997,7 +1031,11 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
     const length = answers.length;
-    const classname=classes.find((item)=>String(item.id) === answers[answers.length - 1] || String(item.id) === answers[answers.length - 2])?.class_name;
+    const classname = classes.find(
+      (item) =>
+        String(item.id) === answers[answers.length - 1] ||
+        String(item.id) === answers[answers.length - 2],
+    )?.class_name;
     const payload = {
       student_id: StudentId,
       institution_type:
@@ -1036,7 +1074,8 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'school'
           ? answeredData?.academic_history?.class_id ||
-          classname=="class_11" ||classname=="class_12"
+            classname == 'class_11' ||
+            classname == 'class_12'
             ? answers[length - 2]?.toString()
             : answers[length - 1]?.toString()
           : null,
@@ -1055,7 +1094,8 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'school'
           ? answeredData?.academic_history?.stream ||
-            classname=="class_11" ||classname=="class_12"
+            classname == 'class_11' ||
+            classname == 'class_12'
             ? answers[length - 1]
             : null
           : null,
@@ -1560,7 +1600,6 @@ export const ProfileDialog: FunctionComponent<{
       setgName(false);
     }
 
-    //console.log(checkChanges);
     const updatedAnswers = [...answers, ''];
     const filteredAnswers = updatedAnswers.filter((item) => item !== undefined);
     setAnswers(filteredAnswers);
@@ -2552,7 +2591,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeuniversity = (e: any) => {
     const filteredInstitution = institutes.filter(
-      (item) => item.university_id === e.value  && item.is_active===1 && item.is_approve==true,
+      (item) =>
+        item.university_id === e.value &&
+        item.is_active === 1 &&
+        item.is_approve == true,
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];

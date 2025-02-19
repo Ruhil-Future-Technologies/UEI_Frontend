@@ -434,7 +434,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               : null,
         state_for_stateboard:
           box.institute_type.toLowerCase() === 'school' &&
-            box.state_for_stateboard !== null
+          box.state_for_stateboard !== null
             ? String(box.state_for_stateboard)
             : box.id
               ? ''
@@ -473,7 +473,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             : '', // Assuming 'year' is a string
         stream:
           (particularClass === 'class_11' || particularClass === 'class_12') &&
-            box.institute_type.toLowerCase() === 'school'
+          box.institute_type.toLowerCase() === 'school'
             ? box?.stream
             : '',
       };
@@ -545,11 +545,13 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
     if (field === 'university_id') {
-      
       const filterDataInstitute = institutesAll.filter(
-        (item) => (item.university_id === value && item.is_active===1 && item.is_approve==true),
+        (item) =>
+          item.university_id === value &&
+          item.is_active === 1 &&
+          item.is_approve == true,
       );
-      console.log(filterDataInstitute,'filtered institute 552')
+
       setInstitutes(filterDataInstitute);
     }
     if (field === 'institute_id') {
@@ -615,7 +617,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     if (boxes[0]?.institute_type === 'college') {
       const filterDataInstitute = institutesAll.filter(
-        (item) => item.university_id === boxes[0].university_id  && item.is_active===1 && item.is_approve==true,
+        (item) =>
+          item.university_id === boxes[0].university_id &&
+          item.is_active === 1 &&
+          item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
       const filterDataCourse = coursesAll.filter(
@@ -643,7 +648,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   //     setMaxSemester(0);
   //   }
   // }, [totalSemester]);
-  console.log(institutes);
   return (
     <div className="mt-5">
       <form>
@@ -960,17 +964,17 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                     label="Class"
                   >
                     {// classes.map((classes) => (
-                      classes
-                        ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                        ?.map((classes) => (
-                          <MenuItem
-                            key={classes.id}
-                            value={classes.id}
-                            sx={commonStyle(namecolor)}
-                          >
-                            {classes.class_name}
-                          </MenuItem>
-                        ))}
+                    classes
+                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                      ?.map((classes) => (
+                        <MenuItem
+                          key={classes.id}
+                          value={classes.id}
+                          sx={commonStyle(namecolor)}
+                        >
+                          {classes.class_name}
+                        </MenuItem>
+                      ))}
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1080,8 +1084,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type === 'college' && (
               <div
-                className={`${box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
-                  } form_field_wrapper`}
+                className={`${
+                  box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
+                } form_field_wrapper`}
               >
                 <FormControl
                   required

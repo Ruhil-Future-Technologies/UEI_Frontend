@@ -56,12 +56,17 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
+
+  const validateMobile = (id: string) => /^\+?\d{10,15}$/.test(id);
+
   const [initialState, setInitialState] = useState<any | null>({});
   const phoneCodes = [
     { value: '+91', label: '+91' },
     { value: '+971', label: '+971' },
     { value: '+1', label: '+1' },
   ];
+  const user_id = localStorage.getItem('userid');
+
   const handleChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -117,14 +122,20 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
           setPhoneNum(data?.data.mobile_no_call);
-          setEmail(data?.data.email_id);
+          if (validateEmail(data?.data.email_id)) {
+            setEmail(data?.data.email_id);
+          } else {
+            setEmail('');
+          }
 
           setInitialState({
             mobile_isd_watsapp: data?.data.mobile_isd_watsapp,
             mobile_no_watsapp: data?.data.mobile_no_watsapp,
             mobile_isd_call: data?.data.mobile_isd_call,
             mobile_no_call: data?.data.mobile_no_call,
-            email_id: data?.data.email_id,
+            email_id: validateEmail(data?.data.email_id)
+              ? data?.data.email_id
+              : '',
             student_id: StudentId,
           });
           setEditFlag(false);
@@ -135,8 +146,10 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           //     theme: "colored",
           //   });
           const userId = localStorage.getItem('userid');
-          if (userId !== null) {
+          if (userId && validateEmail(userId)) {
             setEmail(userId);
+          } else if (userId && validateMobile(userId)) {
+            setPhoneNum(userId);
           } else {
             console.error('No user ID found in localStorage.');
           }
@@ -204,6 +217,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           } else {
             if (data?.message === 'Email Already exist') {
               setEditFlag(false);
+
               putData(`${'student_contact/edit/'}${StudentId}`, payload)
                 .then((data: any) => {
                   if (data.status === 200) {
@@ -318,6 +332,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               placeholder="Enter Mobile number"
               name="phoneNum"
               value={phoneNum}
+              disabled={user_id ? !validateEmail(user_id) : false}
               onChange={handleChange}
               sx={{
                 backgroundColor: '#f5f5f5',
@@ -409,10 +424,10 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             data-testid="email_id"
             // placeholder='Enter Email Id'
             name="email"
-            value={email?.includes('@') ? email : ''}
+            value={email}
             onChange={handleChange}
             // required
-            disabled
+            disabled={user_id ? validateEmail(user_id) : false}
             error={!!errors.email}
             helperText={errors.email}
             sx={{
