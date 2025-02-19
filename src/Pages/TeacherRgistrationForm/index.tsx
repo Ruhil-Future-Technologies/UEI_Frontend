@@ -174,7 +174,7 @@ const TeacherRegistrationPage = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const navigate = useNavigate();
-  const {  getForRegistration } = useApi();
+  const {  getForRegistration ,postRegisterData} = useApi();
 
 
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
@@ -182,7 +182,7 @@ const TeacherRegistrationPage = () => {
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
   const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const Rolelist = QUERY_KEYS_ROLE.GET_ROLE;
- // const getTeacherURL = QUERY_KEYS.GET_TEACHER;
+  const getTeacherURL = QUERY_KEYS.GET_TEACHER;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const UniversityURL=QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
@@ -804,27 +804,27 @@ const TeacherRegistrationPage = () => {
       formData.append("course_semester_subjects", JSON.stringify(course_semester_subjects));
       console.log(course_semester_subjects);
     }
-    // postRegisterData(getTeacherURL, formData)
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       toast.success('Teacher registration request sent successfully', {
-    //         hideProgressBar: true,
-    //         theme: 'colored',
-    //       });
-    //       alert(
-    //         'Teacher registered request sended successfully please wait for 24-48 hours',
-    //       );
-    //       window.location.reload();
-    //     } else {
-    //       toast.error(response.message, {
-    //         hideProgressBar: true,
-    //         theme: 'colored',
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    postRegisterData(getTeacherURL, formData)
+      .then((response) => {
+        if (response.status === 200) {
+          toast.success('Teacher registration request sent successfully', {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+          alert(
+            'Teacher registered request sended successfully please wait for 24-48 hours',
+          );
+          window.location.reload();
+        } else {
+          toast.error(response.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
   }
 

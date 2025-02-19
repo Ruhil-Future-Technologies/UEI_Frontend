@@ -17,7 +17,7 @@ import {
 } from '../../../utils/helpers';
 import { CourseRep0oDTO, IClass, IEntity, InstituteRep0oDTO, SemesterRep0oDTO, SubjectRep0oDTO } from "../../../Components/Table/columns";
 import { toast } from "react-toastify";
-import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL } from "../../../utils/const";
+import { QUERY_KEYS, QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_ROLE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL } from "../../../utils/const";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { useNavigate } from "react-router-dom";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -41,7 +41,7 @@ const TeacherProfile = () => {
     const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
     const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
     const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
-
+    const Rolelist = QUERY_KEYS_ROLE.GET_ROLE;
     const [teacherData, setTeacherData] = useState<Teacher>(
         {
             first_name: '',
@@ -85,7 +85,7 @@ const TeacherProfile = () => {
     const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
     const exactYearsAgo = dayjs()?.subtract(18, 'year');
     const minSelectableDate = dayjs('01/01/1920');
-    //const [filePreview, setFilePreview] = useState(null);
+    const [roleId, setRoleId] = useState("c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
     const [selectedClassName, setSelectedClassName] = useState("col-12");
     // const [selectedFile, setSelectedFile] = useState('');
     const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
@@ -124,7 +124,28 @@ const TeacherProfile = () => {
         //getCourses();
         getSemester();
         getClasslist();
+        getRole();
     }, [])
+    const getRole = () => {
+        getData(`${Rolelist}`)
+          .then((data) => {
+            console.log(data.data)
+            if (data.data) {
+              const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
+              console.log(filerRoleId);
+              setRoleId(filerRoleId);
+            }
+          })
+          .catch((e) => {
+            if (e?.response?.status === 401) {
+              navigate('/');
+            }
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }
     const getClasslist = () => {
         getData(`${ClassURL}`)
             .then((data) => {
@@ -233,6 +254,7 @@ const TeacherProfile = () => {
                     if (data.data.university_id !== "None") {
                         const allSubject: SubjectRep0oDTO[] = await getSubjects('College');
                         const allsemesters:SemesterRep0oDTO[]= await getSemester();
+                        console.log(allsemesters, allSubject);
                         setSelectedEntity('College');
                         getCourses(data.data.institution_id);
                         console.log(data.data.course_semester_subjects);
@@ -241,8 +263,8 @@ const TeacherProfile = () => {
                                 course_id: CourseKey,
                                 semester_number: semester_number,
                                 subjects: data.data.course_semester_subjects[CourseKey][semester_number],
-                                filteredSemesters: allsemesters.filter((item) => item.semester_number === semester_number),
-                                filteredSubjects: allSubject.filter((item) => item.semester_number === semester_number && item.course_id === CourseKey)
+                                filteredSemesters: allsemesters.filter((item) => item.course_id == CourseKey ),
+                                filteredSubjects: allSubject.filter((item) => item.semester_number == semester_number && item.course_id === CourseKey)
 
                             }))
                         );
@@ -579,7 +601,7 @@ const TeacherProfile = () => {
         if (!valid) return;
 
         const formData = new FormData();
-
+        console.log(teacherData.institution_id)
         formData.append("first_name", teacherData.first_name);
         formData.append("last_name", teacherData.last_name);
         formData.append("email_id", teacherData.email_id);
@@ -589,7 +611,7 @@ const TeacherProfile = () => {
         formData.append("city", teacherData.city);
         formData.append("pincode", teacherData.pincode);
         formData.append("dob", teacherData.dob ? dayjs(teacherData.dob).format("YYYY-MM-DD") : "");
-        formData.append("role_id", "c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
+        formData.append("role_id", roleId);
         formData.append("gender", teacherData.gender);
         formData.append("entity_id", teacherData.entity_id);
         formData.append("institution_id", teacherData.institution_id || "");
@@ -781,7 +803,7 @@ const TeacherProfile = () => {
         }
 
     }
-    console.log(selectedClassName);
+    console.log(selectedClassName,boxes);
     return (
         <div className="main-wrapper">
             <div className="main-content">
@@ -1487,7 +1509,8 @@ const TeacherProfile = () => {
                                                 {allselectedfiles.length > 0 && (
                                                     <ul>
                                                         {allselectedfiles.map((file, index) => (
-                                                            <li key={index}>{file.name}</li>
+                                                            
+                                                            <li key={index}>{file.name? file.name : String(file)}</li>
                                                         ))}
                                                     </ul>
                                                 )}

@@ -52,6 +52,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
             // } catch (error) {
                 
             // }
+            console.log("kfjghfdsgdfkgjhgfd")
             handleOtpSuccess();
         } else {
             alert("Invalid OTP");
