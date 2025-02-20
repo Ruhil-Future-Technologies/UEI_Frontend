@@ -191,24 +191,24 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const container = document.querySelector('.diagram-container');
+    const containers = document.querySelectorAll('.diagram-container');
 
-    if (container) {
+    containers.forEach((container) => {
       const mediaElements = container.querySelectorAll('svg, img');
       mediaElements.forEach((element: any) => {
         element.style.cursor = 'pointer';
         element.addEventListener('click', handleMediaClick);
       });
-    }
+    });
 
     return () => {
-      const container = document.querySelector('.diagram-container');
-      if (container) {
+      const containers = document.querySelectorAll('.diagram-container');
+      containers.forEach((container) => {
         const mediaElements = container.querySelectorAll('svg, img');
         mediaElements.forEach((element: any) => {
           element.removeEventListener('click', handleMediaClick);
         });
-      }
+      });
     };
   }, [chat]);
 
