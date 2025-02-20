@@ -551,7 +551,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           item.is_active === 1 &&
           item.is_approve == true,
       );
-
       setInstitutes(filterDataInstitute);
     }
     if (field === 'institute_id') {

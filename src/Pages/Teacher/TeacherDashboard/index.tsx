@@ -54,7 +54,7 @@ interface Teacher {
 }
 
 const TeacherDash = () => {
-  const teacherId=localStorage.getItem('_id');
+  const teacherId = localStorage.getItem('_id');
   const [activeTab, setActiceTab] = useState(0);
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
@@ -104,11 +104,11 @@ const TeacherDash = () => {
         if (data?.status === 200) {
           setTeacherData(data.data);
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   useEffect(() => {
     getTeacherInfo();
   }, []);
@@ -152,7 +152,9 @@ const TeacherDash = () => {
                         alt="user"
                       />
                       <div className="w-100">
-                        <h4 className="fw-semibold  fs-18 ">{teacherData?.first_name} {teacherData?.last_name}</h4>
+                        <h4 className="fw-semibold  fs-18 ">
+                          {teacherData?.first_name} {teacherData?.last_name}
+                        </h4>
                         <small className=" d-block">24 Course</small>
                         <small className=" d-block mb-2">
                           18 Certification
@@ -218,7 +220,7 @@ const TeacherDash = () => {
                 <img src={consultantimg} alt="" />
                 <h6 className="fs-18  fw-bold">Get Consultation</h6>
                 <small className="d-block mb-3">
-                  Take help from our expert AI to Prepare Lactures
+                  Take help from our expert AI to Prepare Lectures
                 </small>
                 <button className="btn btn-outline-secondary rounded-pill btn-sm px-lg-3">
                   Start

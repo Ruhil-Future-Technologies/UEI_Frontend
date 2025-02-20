@@ -148,7 +148,7 @@ const Login = () => {
   };
 
   const handleSuccessfulLogin = (data: any, password: string) => {
-    console.log(data)
+    console.log(data);
     localStorage.setItem('token', data?.token);
     localStorage.setItem('user_type', data?.data?.user_type);
     localStorage.setItem('userid', data?.data?.userid);

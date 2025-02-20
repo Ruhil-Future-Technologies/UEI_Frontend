@@ -517,7 +517,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setBoxes(newBoxes);
         return;
       }
-    
+
       // Ensure value is properly formatted as a string
       const trimmedValue = String(value).trim();
 
@@ -529,7 +529,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         }
         newValidationErrors[index][field] = true;
         setValidationErrors(newValidationErrors);
-       // return;
+        // return;
       } else {
         if (newValidationErrors[index]) {
           delete newValidationErrors[index][field];
@@ -540,8 +540,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setValidationErrors(newValidationErrors);
       }
     }
-    
-    
+
     newBoxes[index][field] = value;
     setBoxes(newBoxes);
     validateFields(index, field);
@@ -576,7 +575,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       id: 0,
       course_id: boxes[0]?.course_id || '',
       // subject_id: boxes[0]?.subject_id || '',
-      subject_id:'',
+      subject_id: '',
       preference: '',
       score_in_percentage: '',
       sem_id: boxes[0]?.sem_id || '',
@@ -999,31 +998,33 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   onBlur={() => validateFields(index, 'subject_id')}
                 >
                   {subjects
-                  ?.filter((subject) => subject.subject_id === box.subject_id)
-                  ?.map((subject) => (
-                    <MenuItem
-                      key={subject.subject_id}
-                      value={subject.subject_id}
-                      disabled
-                      sx={commonStyle(namecolor)}
-                    >
-                      {subject.subject_name}
-                    </MenuItem>
-                  ))}
-                   {subjects
-                   ?.filter(
-                    (subject) => 
-                      !boxes?.some((b) => b.subject_id === subject.subject_id)
-                  )
-                  ?.map((subject) => (
-                    <MenuItem
-                      key={subject.subject_id}
-                      value={subject.subject_id}
-                      sx={commonStyle(namecolor)}
-                    >
-                      {subject.subject_name}
-                    </MenuItem>
-                  ))}
+                    ?.filter((subject) => subject.subject_id === box.subject_id)
+                    ?.map((subject) => (
+                      <MenuItem
+                        key={subject.subject_id}
+                        value={subject.subject_id}
+                        disabled
+                        sx={commonStyle(namecolor)}
+                      >
+                        {subject.subject_name}
+                      </MenuItem>
+                    ))}
+                  {subjects
+                    ?.filter(
+                      (subject) =>
+                        !boxes?.some(
+                          (b) => b.subject_id === subject.subject_id,
+                        ),
+                    )
+                    ?.map((subject) => (
+                      <MenuItem
+                        key={subject.subject_id}
+                        value={subject.subject_id}
+                        sx={commonStyle(namecolor)}
+                      >
+                        {subject.subject_name}
+                      </MenuItem>
+                    ))}
                 </Select>
                 {error[index]?.subject_error && box?.subject_id == '' && (
                   <FormHelperText style={{ color: 'red' }}>

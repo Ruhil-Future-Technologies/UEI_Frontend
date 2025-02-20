@@ -193,7 +193,9 @@ function App() {
           />
           <Route
             path="/institution-dashboard/profile"
-            element={<Protected Component={InstitutionProfile} menuName="Chat" />}
+            element={
+              <Protected Component={InstitutionProfile} menuName="Chat" />
+            }
           />
           <Route
             path="/institution-dashboard/feedback"
