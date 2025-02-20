@@ -43,7 +43,18 @@ const Department = () => {
     getData(`${DepartmentURL}`)
       .then((data: { data: DepartmentRep0oDTO[] }) => {
         if (data.data) {
-          setDepartment(data?.data);
+          const deparmentData = data.data.map((deparment: any) => {
+            const createdDateTime = deparment?.created_at;
+            const updatedDateTime = deparment?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            deparment.created_at = created_time.toLocaleString();
+            deparment.updated_at = updated_time.toLocaleString();
+            return deparment;
+          });
+
+          setDepartment(deparmentData);
         }
       })
       .catch((e) => {
@@ -201,7 +212,7 @@ const Department = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Department"
       />
     </>
   );

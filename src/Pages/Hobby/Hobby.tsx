@@ -44,7 +44,17 @@ const Hobby = () => {
     getData(`${HobbyURL}`)
       .then((data: { data: HobbyRep0oDTO[] }) => {
         if (data.data) {
-          setDataHobby(data?.data);
+          const hobbyData = data.data.map((hobby: any) => {
+            const createdDateTime = hobby?.created_at;
+            const updatedDateTime = hobby?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            hobby.created_at = created_time.toLocaleString();
+            hobby.updated_at = updated_time.toLocaleString();
+            return hobby;
+          });
+          setDataHobby(hobbyData);
         }
       })
       .catch((e) => {
@@ -198,7 +208,7 @@ const Hobby = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Hobby"
       />
     </>
   );

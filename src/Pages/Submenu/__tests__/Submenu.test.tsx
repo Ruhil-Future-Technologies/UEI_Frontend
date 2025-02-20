@@ -76,15 +76,16 @@ describe('Submenu Component', () => {
         isOpen={true}
         onCancel={mockOnCancel}
         onDeleteClick={mockOnDeleteClick}
-        title="Delete documents?"
+        title="Delete"
       />,
     );
 
     // Assert that the dialog is rendered
-    expect(screen.getByText('Delete documents?')).toBeInTheDocument();
+    expect(screen.getByText('Delete')).toBeInTheDocument();
+
     expect(
       screen.getByText(
-        'Are you sure you want to delete this file? This action cannot be undone.',
+        'Are you sure you want to delete this Delete? This action cannot be undone.',
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();

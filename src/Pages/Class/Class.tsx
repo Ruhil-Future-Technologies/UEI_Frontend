@@ -49,7 +49,17 @@ const Class = () => {
     getData(`${ClassURL}`)
       .then((data: { data: IClass[] }) => {
         if (data.data) {
-          setDataClass(data?.data);
+          const classData = data.data.map((cls: any) => {
+            const createdDateTime = cls?.created_at;
+            const updatedDateTime = cls?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            cls.created_at = created_time.toLocaleString();
+            cls.updated_at = updated_time.toLocaleString();
+            return cls;
+          });
+          setDataClass(classData);
         }
       })
       .catch((e) => {
@@ -213,7 +223,7 @@ const Class = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Class"
       />
     </>
   );

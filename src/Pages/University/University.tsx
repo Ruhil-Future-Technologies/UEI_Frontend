@@ -37,7 +37,17 @@ const University = () => {
     getData(`${UniversityURL}`)
       .then((data: { data: UniversityRep0oDTO[] }) => {
         if (data.data) {
-          setDataUniversity(data?.data);
+          const universityData = data.data.map((universtiy: any) => {
+            const createdDateTime = universtiy?.created_at;
+            const updatedDateTime = universtiy?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            universtiy.created_at = created_time.toLocaleString();
+            universtiy.updated_at = updated_time.toLocaleString();
+            return universtiy;
+          });
+          setDataUniversity(universityData);
         }
       })
       .catch((e) => {
@@ -197,7 +207,7 @@ const University = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="University"
       />
     </>
   );

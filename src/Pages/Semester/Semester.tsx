@@ -33,7 +33,17 @@ const Semester = () => {
     try {
       const data = await getData(`${SemesterURL}`);
       if (data?.data) {
-        setdataSemester(data.data);
+        const semesterData = data.data.map((semester: any) => {
+          const createdDateTime = semester?.created_at;
+          const updatedDateTime = semester?.updated_at;
+          const created_time = new Date(createdDateTime);
+          const updated_time = new Date(updatedDateTime);
+
+          semester.created_at = created_time.toLocaleString();
+          semester.updated_at = updated_time.toLocaleString();
+          return semester;
+        });
+        setdataSemester(semesterData);
       }
     } catch (e: any) {
       if (e?.response?.status === 401) {
@@ -194,7 +204,7 @@ const Semester = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Semester"
       />
     </>
   );

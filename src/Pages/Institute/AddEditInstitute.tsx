@@ -890,6 +890,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'institute-name' }}
                           fullWidth
                           component={TextField}
                           type="text"
@@ -907,9 +908,7 @@ const AddEditInstitute = () => {
                         {touched?.institution_name &&
                         errors?.institution_name ? (
                           <p style={{ color: 'red' }}>
-                            {isSchoolEntity(values?.entity_id)
-                              ? 'Please enter School name'
-                              : errors?.institution_name}
+                            {errors?.institution_name}
                           </p>
                         ) : (
                           <></>
@@ -919,6 +918,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'address' }}
                           fullWidth
                           component={TextField}
                           label="Address *"
@@ -938,6 +938,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'email' }}
                           fullWidth
                           component={TextField}
                           type="email"
@@ -973,6 +974,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'mobile' }}
                           component={TextField}
                           type="text"
                           name="mobile_no"
@@ -992,6 +994,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'city' }}
                           component={TextField}
                           label="City *"
                           name="city"
@@ -1024,6 +1027,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'district' }}
                           component={TextField}
                           label="District *"
                           name="district"
@@ -1042,6 +1046,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'pincode' }}
                           component={TextField}
                           label="Pincode *"
                           name="pincode"
@@ -1060,6 +1065,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'website' }}
                           component={TextField}
                           label="Website"
                           name="website_url"
