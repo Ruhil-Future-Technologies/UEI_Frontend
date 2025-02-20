@@ -408,7 +408,7 @@ const Chat = () => {
       const chatDataString: any = localStorage?.getItem('chatData');
       const chatmodify = JSON.parse(chatDataString);
 
-      if (chatmodify && chatmodify[0].question !== '') {
+      if (chatmodify && chatmodify[0] && chatmodify[0].question !== '') {
         const todaysChat = getTodaysData(sortedChatHistory);
         const newArray = [...todaysChat];
 
