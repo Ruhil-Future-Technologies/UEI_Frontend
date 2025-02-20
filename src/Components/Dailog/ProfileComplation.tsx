@@ -101,8 +101,8 @@ interface Institute {
   institution_id: string;
   institution_name: string;
   university_id: string;
-  is_active:number;
-  is_approve:boolean;
+  is_active: number;
+  is_approve: boolean;
 }
 
 interface Course {
@@ -698,7 +698,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1  && item.is_approve==true,
+            (item: any) => item?.is_active === 1 && item.is_approve == true,
           );
           setInstitutes(filteredData || []);
         }
@@ -997,7 +997,11 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
     const length = answers.length;
-    const classname=classes.find((item)=>String(item.id) === answers[answers.length - 1] || String(item.id) === answers[answers.length - 2])?.class_name;
+    const classname = classes.find(
+      (item) =>
+        String(item.id) === answers[answers.length - 1] ||
+        String(item.id) === answers[answers.length - 2],
+    )?.class_name;
     const payload = {
       student_id: StudentId,
       institution_type:
@@ -1036,7 +1040,8 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'school'
           ? answeredData?.academic_history?.class_id ||
-          classname=="class_11" ||classname=="class_12"
+            classname == 'class_11' ||
+            classname == 'class_12'
             ? answers[length - 2]?.toString()
             : answers[length - 1]?.toString()
           : null,
@@ -1055,7 +1060,8 @@ export const ProfileDialog: FunctionComponent<{
         answeredData?.academic_history?.institution_type?.toLowerCase() ||
         selectedInstituteType?.toLowerCase() === 'school'
           ? answeredData?.academic_history?.stream ||
-            classname=="class_11" ||classname=="class_12"
+            classname == 'class_11' ||
+            classname == 'class_12'
             ? answers[length - 1]
             : null
           : null,
@@ -2552,7 +2558,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeuniversity = (e: any) => {
     const filteredInstitution = institutes.filter(
-      (item) => item.university_id === e.value  && item.is_active===1 && item.is_approve==true,
+      (item) =>
+        item.university_id === e.value &&
+        item.is_active === 1 &&
+        item.is_approve == true,
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];

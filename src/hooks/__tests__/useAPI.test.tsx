@@ -206,8 +206,8 @@ describe('useApi putData Hook', () => {
     expect(httpClient.put).toHaveBeenCalledTimes(1); // Ensure putData was called once
     expect(httpClient.put).toHaveBeenCalledWith(
       'https://api.example.com/menu',
-      '{"name":"Test Menu"}', // Expect stringified data here
-      { headers: expect.any(Object) }, // Ensure correct headers were passed
+      { name: 'Test Menu' }, // Expect plain object instead of stringified JSON
+      { headers: expect.any(Object) },
     );
 
     // Assert: Ensure there was no error
