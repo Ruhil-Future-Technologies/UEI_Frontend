@@ -907,7 +907,9 @@ const AddEditInstitute = () => {
                         {touched?.institution_name &&
                         errors?.institution_name ? (
                           <p style={{ color: 'red' }}>
-                            {isSchoolEntity(values?.entity_id) ?"Please enter School name":errors?.institution_name}
+                            {isSchoolEntity(values?.entity_id)
+                              ? 'Please enter School name'
+                              : errors?.institution_name}
                           </p>
                         ) : (
                           <></>

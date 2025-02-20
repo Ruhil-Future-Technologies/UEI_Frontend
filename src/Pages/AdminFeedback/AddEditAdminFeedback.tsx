@@ -167,7 +167,7 @@ const AddEditAdminFeedback = () => {
                         />
                       </div>
                       <div>
-                        <FieldArray  name="options">
+                        <FieldArray name="options">
                           {({ push, remove }) => (
                             <div>
                               {values.options.length > 0 &&

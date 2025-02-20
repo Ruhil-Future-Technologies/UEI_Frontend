@@ -45,7 +45,7 @@ import {
   QUERY_KEYS_COURSE,
   QUERY_KEYS_ROLE,
   QUERY_KEYS_SUBJECT,
-  QUERY_KEYS_SUBJECT_SCHOOL, /* QUERY_KEYS_ROLE*/
+  QUERY_KEYS_SUBJECT_SCHOOL /* QUERY_KEYS_ROLE*/,
   QUERY_KEYS_UNIVERSITY,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
@@ -57,10 +57,9 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs/AdapterDayjs';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
-import OtpCard from "../../Components/Dailog/OtpCard";
+import OtpCard from '../../Components/Dailog/OtpCard';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
 
 export interface Teacher {
   first_name: string;
@@ -146,36 +145,30 @@ export const qualifications = [
   'Doctor of Pharmacy (Pharm.D)',
   'Doctor of Business Administration (DBA)',
 ];
-const stream = [
-  "Science",
-  "Commerce",
-  "Arts",
-]
+const stream = ['Science', 'Commerce', 'Arts'];
 
 export interface Boxes {
-  semester_number: string,
-  subjects: string[],
-  course_id: string,
+  semester_number: string;
+  subjects: string[];
+  course_id: string;
   filteredSemesters?: any[];
   filteredSubjects?: any[];
 }
 export interface BoxesForSchool {
-  stream?: string,
-  subjects: string[],
-  class_id: string,
+  stream?: string;
+  subjects: string[];
+  class_id: string;
   filteredStream?: any[];
   filteredSubjects?: any[];
   is_Stream?: boolean;
   selected_class_name?: string;
 }
 
-
 const TeacherRegistrationPage = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const navigate = useNavigate();
-  const {  getForRegistration ,postRegisterData} = useApi();
-
+  const { getForRegistration, postRegisterData } = useApi();
 
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
@@ -185,12 +178,14 @@ const TeacherRegistrationPage = () => {
   const getTeacherURL = QUERY_KEYS.GET_TEACHER;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
-  const UniversityURL=QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
+  const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
 
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
-  const [filteredInstitute, setFiteredInstitute] = useState<InstituteRep0oDTO[]>([]);
+  const [filteredInstitute, setFiteredInstitute] = useState<
+    InstituteRep0oDTO[]
+  >([]);
   const [dataCourse, setDataCourse] = useState<CourseRep0oDTO[]>([]);
   const [filteredCourse, FilteredDataCourse] = useState<CourseRep0oDTO[]>([]);
   const [dataClass, setDataClass] = useState<IClass[]>([]);
@@ -202,26 +197,31 @@ const TeacherRegistrationPage = () => {
   const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [selectedSchool, setSelectedSchool] = useState('');
-  const [selectedClassName, setSelectedClassName] = useState("col-6");
+  const [selectedClassName, setSelectedClassName] = useState('col-6');
   const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
-  const [universityData,setUniversityData]= useState<UniversityRep0oDTO[]>([]);
-  const [universityError, setUniversityError] =useState<boolean>(false);
+  const [universityData, setUniversityData] = useState<UniversityRep0oDTO[]>(
+    [],
+  );
+  const [universityError, setUniversityError] = useState<boolean>(false);
 
-  const [boxes, setBoxes] = useState<Boxes[]>([{
-    semester_number: '',
-    subjects: [],
-    course_id: '',
-  }]);
-  const [boxesForSchool, setBoxesForSchool] = useState<BoxesForSchool[]>([{
-    stream: '',
-    subjects: [],
-    class_id: '',
-    is_Stream: false,
-    selected_class_name: "col-6"
-  }]);
+  const [boxes, setBoxes] = useState<Boxes[]>([
+    {
+      semester_number: '',
+      subjects: [],
+      course_id: '',
+    },
+  ]);
+  const [boxesForSchool, setBoxesForSchool] = useState<BoxesForSchool[]>([
+    {
+      stream: '',
+      subjects: [],
+      class_id: '',
+      is_Stream: false,
+      selected_class_name: 'col-6',
+    },
+  ]);
 
-
-  const [roleId, setRoleId] = useState("c848bc42-0e62-46b1-ab2e-2dd4f9bef546");
+  const [roleId, setRoleId] = useState('c848bc42-0e62-46b1-ab2e-2dd4f9bef546');
   const [teacher, setTeacher] = useState<Teacher>({
     first_name: '',
     last_name: '',
@@ -245,7 +245,7 @@ const TeacherRegistrationPage = () => {
     class_id: '',
     course_id: '',
     institution_id: '',
-    university_id:'',
+    university_id: '',
     school_name: '',
     documents: [],
     is_verified: false,
@@ -283,58 +283,70 @@ const TeacherRegistrationPage = () => {
     teaching_experience_error: false,
     designation_role_error: false,
     entity_error: false,
-    institution_id_error: false
+    institution_id_error: false,
   });
 
-
-  const exactSixYearsAgo = dayjs().subtract(18, 'year').subtract(1, 'day').endOf('day');
+  const exactSixYearsAgo = dayjs()
+    .subtract(18, 'year')
+    .subtract(1, 'day')
+    .endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
 
-
-  const [errorForClass_stream_subject, setErrorForClass_stream_subject] = useState<{
-    [key: number]: { class_id_error: boolean; stream_error: boolean; subjects_error: boolean };
-  }>({});
-  const [errorForCourse_semester_subject, setErrorForCourse_semester_subject] = useState<{
-    [key: number]: { course_id_error: boolean; semester_number_error: boolean; subjects_error: boolean };
-  }>({});
-  const validateFields = (index: number, field: string, boxesForSchool: BoxesForSchool) => {
+  const [errorForClass_stream_subject, setErrorForClass_stream_subject] =
+    useState<{
+      [key: number]: {
+        class_id_error: boolean;
+        stream_error: boolean;
+        subjects_error: boolean;
+      };
+    }>({});
+  const [errorForCourse_semester_subject, setErrorForCourse_semester_subject] =
+    useState<{
+      [key: number]: {
+        course_id_error: boolean;
+        semester_number_error: boolean;
+        subjects_error: boolean;
+      };
+    }>({});
+  const validateFields = (
+    index: number,
+    field: string,
+    boxesForSchool: BoxesForSchool,
+  ) => {
     setErrorForClass_stream_subject((prevError) => ({
       ...prevError,
       [index]: {
         ...prevError[index],
-        ...(field === "class_id" && {
+        ...(field === 'class_id' && {
           class_id_error: !boxesForSchool.class_id,
         }),
-        ...(field === "stream" && {
+        ...(field === 'stream' && {
           stream_error: !boxesForSchool.stream, // Fix: stream_error should check stream
         }),
-        ...(field === "subjects" && {
+        ...(field === 'subjects' && {
           subjects_error: !boxesForSchool.subjects?.length, // Fix: Check if subjects array is empty
         }),
       },
     }));
   };
 
-
-
   const validateCourseFields = (index: number, field: string, boxes: Boxes) => {
     setErrorForCourse_semester_subject((prevError) => ({
       ...prevError,
       [index]: {
         ...prevError[index],
-        ...(field === "course_id" && {
+        ...(field === 'course_id' && {
           course_id_error: !boxes.course_id, // Fixed key name
         }),
-        ...(field === "semester_number" && {
+        ...(field === 'semester_number' && {
           semester_number_error: !boxes.semester_number, // Fixed key name
         }),
-        ...(field === "subjects" && {
+        ...(field === 'subjects' && {
           subjects_error: !boxes.subjects?.length, // Ensuring subjects is not empty
         }),
       },
     }));
   };
-
 
   const getCourses = () => {
     getForRegistration(`${CourseURL}`)
@@ -353,7 +365,6 @@ const TeacherRegistrationPage = () => {
         });
       });
   };
-
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
@@ -375,12 +386,13 @@ const TeacherRegistrationPage = () => {
       });
   };
 
-
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
         const fiteredInstitutedata = data.data.filter(
-          (institute: any) => institute.is_active === 1 && institute.is_approve === true);
+          (institute: any) =>
+            institute.is_active === 1 && institute.is_approve === true,
+        );
         if (data.data) {
           setDataInstitute(fiteredInstitutedata);
         }
@@ -395,7 +407,6 @@ const TeacherRegistrationPage = () => {
         });
       });
   };
-
 
   const getClasslist = () => {
     getForRegistration(`${ClassURL}`)
@@ -415,15 +426,14 @@ const TeacherRegistrationPage = () => {
       });
   };
 
-
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        console.log(data.data)
         if (data.data) {
-          const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
-          console.log(filerRoleId);
-          setRoleId(filerRoleId) // setRoleData(data?.data);
+          const filerRoleId = data.data.find(
+            (role: any) => role.role_name === 'Teacher',
+          ).id;
+          setRoleId(filerRoleId); // setRoleData(data?.data);
         }
       })
       .catch((e) => {
@@ -435,8 +445,7 @@ const TeacherRegistrationPage = () => {
           theme: 'colored',
         });
       });
-  }
-
+  };
 
   const getSubjects = (type: string) => {
     if (type === 'College') {
@@ -474,29 +483,30 @@ const TeacherRegistrationPage = () => {
     }
   };
 
-
   const getSemester = () => {
     try {
-      getForRegistration(`/semester/list`).then((data) => {
-        if (data.status === 200) {
-          setSemesterData(data.data);
-        }
-      }).catch((e) => {
-        console.error(e)
-      })
+      getForRegistration(`/semester/list`)
+        .then((data) => {
+          if (data.status === 200) {
+            setSemesterData(data.data);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const getUniversity=()=>{
+  const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
-     .then((data) => {
+      .then((data) => {
         if (data.data) {
           setUniversityData(data?.data);
         }
       })
-     .catch((e) => {
+      .catch((e) => {
         if (e?.response?.status === 401) {
           navigate('/');
         }
@@ -505,7 +515,7 @@ const TeacherRegistrationPage = () => {
           theme: 'colored',
         });
       });
-  }
+  };
 
   useEffect(() => {
     getInstitutelist();
@@ -517,10 +527,8 @@ const TeacherRegistrationPage = () => {
     getUniversity();
   }, []);
 
-
   const handleSelect = (event: SelectChangeEvent) => {
     const { name, value } = event.target;
-    console.log( name, value)
     setTeacher({ ...teacher, [name]: value });
     if (name === 'entity_id') {
       dataEntity.map((item) => {
@@ -539,7 +547,6 @@ const TeacherRegistrationPage = () => {
     }
 
     if (name === 'entity_id') {
-
       const filteredInstitute = dataInstitute.filter(
         (item) => String(item.entity_id) === value,
       );
@@ -552,10 +559,10 @@ const TeacherRegistrationPage = () => {
       )?.institution_name;
       setSelectedSchool(String(selectedSchool));
     }
-    if(name==='university_id'){
-      const filteredInstitute = dataInstitute.filter((item)=>
-        item.university_id ===value
-      )
+    if (name === 'university_id') {
+      const filteredInstitute = dataInstitute.filter(
+        (item) => item.university_id === value,
+      );
       setUniversityError(false);
       setFiteredInstitute(filteredInstitute);
     }
@@ -574,7 +581,9 @@ const TeacherRegistrationPage = () => {
       email_id_error:
         name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
       phone_no_error: name === 'phone' && !/^(?!0{10})[0-9]{10}$/.test(value),
-      address_error: name === 'address' && !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value),
+      address_error:
+        name === 'address' &&
+        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value),
       country_error: name === 'country' && value === '',
       state_error: name === 'state' && value === '',
       district_error:
@@ -587,14 +596,13 @@ const TeacherRegistrationPage = () => {
       qualifications_error: name === 'qualifications' && value == '',
       teaching_experience_error: name === 'experience' && !/^\d+$/.test(value),
       designation_role_error: name === 'designation_role' && value == '',
-      entity_error: name === 'entity_id' && value === "",
-      institution_id_error: name === 'institution_id' && value === ""
+      entity_error: name === 'entity_id' && value === '',
+      institution_id_error: name === 'institution_id' && value === '',
     });
     if (name === 'dob') {
       setdobset_col(teacher.dob === dayjs('dd-mm-yyyy'));
     }
   };
-
 
   const handelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.name === 'gender') {
@@ -606,9 +614,7 @@ const TeacherRegistrationPage = () => {
     validation(name, value);
   };
 
-
   const openPopupOtp = () => {
-
     setError({
       first_name_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
@@ -618,7 +624,9 @@ const TeacherRegistrationPage = () => {
       ),
       email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id),
       phone_no_error: !/^(?!0{10})[0-9]{10}$/.test(teacher.phone),
-      address_error: !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address),
+      address_error: !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
+        teacher.address,
+      ),
       country_error: teacher.country == '',
       state_error: teacher.state == '',
       district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
@@ -635,12 +643,14 @@ const TeacherRegistrationPage = () => {
       institution_id_error: teacher.institution_id === '',
     });
 
-
-
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
-        if (!box.class_id || (box.stream === '' ? false : !box.stream) || !box.subjects?.length) {
+        if (
+          !box.class_id ||
+          (box.stream === '' ? false : !box.stream) ||
+          !box.subjects?.length
+        ) {
           valid = false;
           setErrorForClass_stream_subject((prevError) => ({
             ...prevError,
@@ -666,15 +676,13 @@ const TeacherRegistrationPage = () => {
           }));
         }
       });
-      console.log(teacher.university_id ==='')
-      if(teacher.university_id ===''){
-        console.log("unversity")
-        setUniversityError(true)
+
+      if (teacher.university_id === '') {
+        valid = true;
+        setUniversityError(true);
       }
     }
 
-
-    console.log(valid)
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -682,7 +690,6 @@ const TeacherRegistrationPage = () => {
     }
     if (
       !error.first_name_error &&
-
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
       ) &&
@@ -690,27 +697,24 @@ const TeacherRegistrationPage = () => {
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.last_name.trim(),
       ) &&
-
       !error.email_id_error &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id) &&
       !error.phone_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(teacher.phone) &&
       !error.address_error &&
-
-      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
-        teacher.address.trim(),
-      ) &&
-
+      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address.trim()) &&
       !error.country_error &&
       !(teacher.country === '') &&
       !error.state_error &&
       !(teacher.state === '') &&
       !error.district_error &&
-
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.district.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.district.trim(),
+      ) &&
       !error.city_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.city.trim()) &&
-
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        teacher.city.trim(),
+      ) &&
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(teacher.pincode) &&
       !error.qualifications_error &&
@@ -718,91 +722,105 @@ const TeacherRegistrationPage = () => {
       !error.teaching_experience_error &&
       /^\d+$/.test(teacher.experience) &&
       !error.institution_id_error &&
-      !(teacher.institution_id === '') &&
-      teacher.university_id
+      !(teacher.institution_id === '')
     ) {
-      setPopupOtpCard(true)
+      setPopupOtpCard(true);
     } else {
       toast.error('validation error', {
         hideProgressBar: true,
         theme: 'colored',
-      })
+      });
     }
   };
   const handleSubmit = () => {
-
     const formData = new FormData();
     allselectedfiles.forEach((file) => {
-      formData.append("documents", file);
+      formData.append('documents', file);
     });
 
+    formData.append('first_name', teacher.first_name);
+    formData.append('last_name', teacher.last_name);
+    formData.append('gender', genderData);
+    formData.append(
+      'dob',
+      teacher.dob ? dayjs(teacher.dob).format('YYYY-MM-DD') : '',
+    );
+    formData.append('phone', teacher.phone);
+    formData.append('email_id', teacher.email_id);
+    formData.append('qualification', teacher.qualification);
+    formData.append('entity_id', teacher.entity_id);
+    formData.append('role_id', roleId);
+    formData.append('experience', teacher.experience);
+    formData.append('address', teacher.address);
+    formData.append('country', teacher.country);
+    formData.append('state', teacher.state);
+    formData.append('district', teacher.district);
+    formData.append('city', teacher.city);
+    formData.append('pincode', teacher.pincode);
 
-    formData.append("first_name", teacher.first_name);
-    formData.append("last_name", teacher.last_name);
-    formData.append("gender", genderData);
-    formData.append("dob", teacher.dob ? dayjs(teacher.dob).format("YYYY-MM-DD") : "");
-    formData.append("phone", teacher.phone);
-    formData.append("email_id", teacher.email_id);
-    formData.append("qualification", teacher.qualification);
-    formData.append("entity_id", teacher.entity_id);
-    formData.append("role_id", roleId);
-    formData.append("experience", teacher.experience);
-    formData.append("address", teacher.address);
-    formData.append("country", teacher.country);
-    formData.append("state", teacher.state);
-    formData.append("district", teacher.district);
-    formData.append("city", teacher.city);
-    formData.append("pincode", teacher.pincode);
+    if (selectedEntity.toLowerCase() === 'school') {
+      const class_stream_subjects = boxesForSchool.reduce(
+        (acc, boxesForSchool) => {
+          const { class_id, stream, subjects } = boxesForSchool;
+          const streamKey = stream === '' ? 'general' : stream || 'general';
+          if (!acc[class_id]) {
+            acc[class_id] = {};
+          }
 
+          if (!acc[class_id][streamKey]) {
+            acc[class_id][streamKey] = [];
+          }
 
+          acc[class_id][streamKey] = [
+            ...new Set([...acc[class_id][streamKey], ...subjects]),
+          ];
 
-    if (selectedEntity.toLowerCase() === "school") {
-      const class_stream_subjects = boxesForSchool.reduce((acc, boxesForSchool) => {
-        const { class_id, stream, subjects } = boxesForSchool;
-        const streamKey = stream === '' ? "general" : stream || "general";
-        if (!acc[class_id]) {
-          acc[class_id] = {};
-        }
-
-        if (!acc[class_id][streamKey]) {
-          acc[class_id][streamKey] = [];
-        }
-
-        acc[class_id][streamKey] = [
-          ...new Set([...acc[class_id][streamKey], ...subjects]),
-        ];
-
-        return acc;
-      }, {} as Record<string, Record<string, string[]>>);
-      console.log(class_stream_subjects);
-      formData.append("class_stream_subjects", JSON.stringify(class_stream_subjects));
-      formData.append("school_name", selectedSchool);
-      formData.append("institution_id", teacher.institution_id?.toString() || '');
-      if (selectedClassName === "col-6") {
-        formData.append("stream", teacher.stream);
+          return acc;
+        },
+        {} as Record<string, Record<string, string[]>>,
+      );
+      formData.append(
+        'class_stream_subjects',
+        JSON.stringify(class_stream_subjects),
+      );
+      formData.append('school_name', selectedSchool);
+      formData.append(
+        'institution_id',
+        teacher.institution_id?.toString() || '',
+      );
+      if (selectedClassName === 'col-6') {
+        formData.append('stream', teacher.stream);
       }
     } else {
-      formData.append("university_id", teacher.university_id ||'');
-      formData.append("institution_id", teacher.institution_id?.toString() || '');
-      const course_semester_subjects = boxes.reduce((acc, box) => {
-        const { course_id, semester_number, subjects } = box;
+      formData.append('university_id', teacher.university_id || '');
+      formData.append(
+        'institution_id',
+        teacher.institution_id?.toString() || '',
+      );
+      const course_semester_subjects = boxes.reduce(
+        (acc, box) => {
+          const { course_id, semester_number, subjects } = box;
 
-        if (!acc[course_id]) {
-          acc[course_id] = {};
-        }
+          if (!acc[course_id]) {
+            acc[course_id] = {};
+          }
 
-        if (!acc[course_id][semester_number]) {
-          acc[course_id][semester_number] = [];
-        }
+          if (!acc[course_id][semester_number]) {
+            acc[course_id][semester_number] = [];
+          }
 
-        acc[course_id][semester_number] = [
-          ...new Set([...acc[course_id][semester_number], ...subjects]),
-        ];
+          acc[course_id][semester_number] = [
+            ...new Set([...acc[course_id][semester_number], ...subjects]),
+          ];
 
-        return acc;
-      }, {} as Record<string, Record<string, string[]>>);
-      formData.append("course_semester_subjects", JSON.stringify(course_semester_subjects));
-      console.log(course_semester_subjects);
+          return acc;
+        },
+        {} as Record<string, Record<string, string[]>>,
+      );
+      formData.append(
+        'course_semester_subjects',
+        JSON.stringify(course_semester_subjects),
+      );
     }
     postRegisterData(getTeacherURL, formData)
       .then((response) => {
@@ -825,8 +843,7 @@ const TeacherRegistrationPage = () => {
       .catch((error) => {
         console.log(error);
       });
-
-  }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -850,8 +867,15 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleDate = (newDate: Dayjs | null) => {
-    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
-      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
+    if (
+      newDate &&
+      newDate.isValid() &&
+      newDate.isAfter(minSelectableDate, 'day')
+    ) {
+      if (
+        newDate.isBefore(exactSixYearsAgo, 'day') ||
+        newDate.isSame(exactSixYearsAgo, 'day')
+      ) {
         setTeacher((values) => ({ ...values, dob: newDate }));
         setdobset_col(false);
       } else {
@@ -864,36 +888,45 @@ const TeacherRegistrationPage = () => {
 
   const handelSubjectBoxChange = (
     event: SelectChangeEvent<string[]>,
-    index: number
+    index: number,
   ) => {
     const { value, name } = event.target;
-
 
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) => {
         if (i !== index) return box;
-           console.log(value)
         let updatedBox = { ...box, [name]: value };
 
-        if (name === "course_id") {
-          const filteredSemesters = semesterData.filter(item => item.course_id === value);
-          updatedBox = { ...updatedBox, filteredSemesters, semester_number: "", subjects: [], filteredSubjects: [] };
+        if (name === 'course_id') {
+          const filteredSemesters = semesterData.filter(
+            (item) => item.course_id === value,
+          );
+          updatedBox = {
+            ...updatedBox,
+            filteredSemesters,
+            semester_number: '',
+            subjects: [],
+            filteredSubjects: [],
+          };
         }
 
-        if (name === "semester_number") {
-          const filteredSubjects = totleSubject.filter(item => item.semester_number === value && item.course_id === boxes[index].course_id);
+        if (name === 'semester_number') {
+          const filteredSubjects = totleSubject.filter(
+            (item) =>
+              item.semester_number === value &&
+              item.course_id === boxes[index].course_id,
+          );
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
         }
 
         validateCourseFields(index, name, updatedBox);
         return updatedBox;
-      })
+      }),
     );
-
   };
   const handelSchoolBoxChange = (
     event: SelectChangeEvent<string[]>,
-    index: number
+    index: number,
   ) => {
     const { value, name } = event.target;
 
@@ -903,53 +936,61 @@ const TeacherRegistrationPage = () => {
 
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
 
-        if (name === "class_id") {
+        if (name === 'class_id') {
           const selectedClass = dataClass.find(
-            (item) => String(item.id) === value
+            (item) => String(item.id) === value,
           )?.class_name;
 
-
           setSelectedClassName(
-            selectedClass === "class_11" || selectedClass === "class_12"
-              ? "col-4"
-              : "col-6"
+            selectedClass === 'class_11' || selectedClass === 'class_12'
+              ? 'col-4'
+              : 'col-6',
           );
 
-          if (selectedClass === "class_11" || selectedClass === "class_12") {
-
-            updatedBox = { ...updatedBox, stream: "", is_Stream: true, selected_class_name: 'col-4', subjects: [], filteredSubjects: [] }; // Reset stream & subjects
+          if (selectedClass === 'class_11' || selectedClass === 'class_12') {
+            updatedBox = {
+              ...updatedBox,
+              stream: '',
+              is_Stream: true,
+              selected_class_name: 'col-4',
+              subjects: [],
+              filteredSubjects: [],
+            }; // Reset stream & subjects
           } else {
-
-
             // Filter subjects immediately based on the selected class
             const filteredSubjects = totleSubject.filter(
-              (item) => item.class_id === value
+              (item) => item.class_id === value,
             );
-            console.log("Filtered Subjects:", filteredSubjects);
 
-            updatedBox = { ...updatedBox, is_Stream: false, stream: "", selected_class_name: 'col-6', filteredSubjects, subjects: [] };
+            updatedBox = {
+              ...updatedBox,
+              is_Stream: false,
+              stream: '',
+              selected_class_name: 'col-6',
+              filteredSubjects,
+              subjects: [],
+            };
           }
         }
 
-        if (name === "stream") {
-          console.log(totleSubject, value);
+        if (name === 'stream') {
           const filteredSubjects = totleSubject.filter(
-            (item) => String(item.stream).toLowerCase() === value.toString().toLowerCase()
+            (item) =>
+              String(item.stream).toLowerCase() ===
+              value.toString().toLowerCase(),
           );
-          console.log("Filtered Subjects by Stream:", filteredSubjects);
-
-          updatedBox = { ...updatedBox, stream: value.toString(), filteredSubjects, subjects: [] };
-
+          updatedBox = {
+            ...updatedBox,
+            stream: value.toString(),
+            filteredSubjects,
+            subjects: [],
+          };
         }
         validateFields(index, name, updatedBox);
         return updatedBox;
-      })
+      }),
     );
-
   };
-
-
-
 
   const handleClose = () => {
     setPopupTermandcondi(false);
@@ -965,29 +1006,36 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleAddmore = (eneity: string) => {
-    if (eneity.toLowerCase() === "school") {
-      const newBox =
-        { stream: '', class_id: '', selected_class_name: "col-6", subjects: [] }
-      setBoxesForSchool([...boxesForSchool, newBox])
+    if (eneity.toLowerCase() === 'school') {
+      const newBox = {
+        stream: '',
+        class_id: '',
+        selected_class_name: 'col-6',
+        subjects: [],
+      };
+      setBoxesForSchool([...boxesForSchool, newBox]);
     } else {
-      const newbox: Boxes =
-        { semester_number: '', course_id: '', subjects: [] }
+      const newbox: Boxes = {
+        semester_number: '',
+        course_id: '',
+        subjects: [],
+      };
 
       setBoxes([...boxes, newbox]);
     }
-
-  }
+  };
   const handleRemove = (entity: string, index: number) => {
-    if (entity.toLowerCase() === "school") {
+    if (entity.toLowerCase() === 'school') {
       setBoxesForSchool(boxesForSchool.filter((_, i) => i !== index));
     } else {
       setBoxes(boxes.filter((_, i) => i !== index));
     }
   };
   const handleRemoveFile = (index: number) => {
-    setAllSelectedfiles((previous) => previous.filter((_, ind) => ind !== index));
-  }
-  console.log(boxes);
+    setAllSelectedfiles((previous) =>
+      previous.filter((_, ind) => ind !== index),
+    );
+  };
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -1094,11 +1142,7 @@ const TeacherRegistrationPage = () => {
               </LocalizationProvider>
               {dobset_col === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-
-                    Please enter a valid Date of Birth.
-
-                  </small>
+                  <small>Please enter a valid Date of Birth.</small>
                 </p>
               )}
             </div>
@@ -1191,11 +1235,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.district_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-
-                  <small>
-                    Please enter a valid District name.
-                  </small>
-
+                  <small>Please enter a valid District name.</small>
                 </p>
               )}
             </div>
@@ -1212,9 +1252,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.city_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-
                   <small>Please enter a valid City name.</small>
-
                 </p>
               )}
             </div>
@@ -1304,9 +1342,7 @@ const TeacherRegistrationPage = () => {
               </FormControl>
               {error.entity_error && (
                 <p className="error-text " style={{ color: 'red' }}>
-                  <small>
-                    Please select an Entity.
-                  </small>
+                  <small>Please select an Entity.</small>
                 </p>
               )}
             </div>
@@ -1362,7 +1398,7 @@ const TeacherRegistrationPage = () => {
                   </p>
                 )}
               </div>
-            ) :
+            ) : (
               <div className="col-md-6 col-12 mb-3">
                 <label className="col-form-label">
                   Institution Name<span>*</span>
@@ -1413,7 +1449,8 @@ const TeacherRegistrationPage = () => {
                     <small>Please select an Institute name.</small>
                   </p>
                 )}
-              </div>}
+              </div>
+            )}
           </div>
           {selectedEntity.toLowerCase() === 'college' && (
             <div className="row d-flex justify-content-center">
@@ -1485,11 +1522,7 @@ const TeacherRegistrationPage = () => {
               />
               {error.teaching_experience_error === true && (
                 <p className="error-text " style={{ color: 'red' }}>
-
-                  <small>
-                    Please enter a valid Teaching Experience.
-                  </small>
-
+                  <small>Please enter a valid Teaching Experience.</small>
                 </p>
               )}
             </div>
@@ -1517,16 +1550,14 @@ const TeacherRegistrationPage = () => {
                 </Select>
               </FormControl>
               {error.qualifications_error && (
-                <p className='error-text' style={{ color: 'red' }}>
+                <p className="error-text" style={{ color: 'red' }}>
                   <small>Please select a Qualification.</small>
                 </p>
-              )
-
-              }
+              )}
             </div>
-
           </div>
-          {selectedEntity.toLowerCase() === 'college' && boxes.length > 0 &&
+          {selectedEntity.toLowerCase() === 'college' &&
+            boxes.length > 0 &&
             boxes.map((box, index) => (
               <div key={index} className="row d-flex justify-content-center">
                 {/* Course Selection */}
@@ -1541,8 +1572,10 @@ const TeacherRegistrationPage = () => {
                       id={`demo3-multiple-name-${index}`}
                       name="course_id"
                       label="Course"
-                      onChange={(event: any) => handelSubjectBoxChange(event, index)}
-                      value={box.course_id || ""}
+                      onChange={(event: any) =>
+                        handelSubjectBoxChange(event, index)
+                      }
+                      value={box.course_id || ''}
                     >
                       {filteredCourse.map((course) => (
                         <MenuItem key={course.id} value={course.id}>
@@ -1551,8 +1584,9 @@ const TeacherRegistrationPage = () => {
                       ))}
                     </Select>
                   </FormControl>
-                  {errorForCourse_semester_subject[index]?.course_id_error === true && (
-                    <p className="error-text" style={{ color: "red" }}>
+                  {errorForCourse_semester_subject[index]?.course_id_error ===
+                    true && (
+                    <p className="error-text" style={{ color: 'red' }}>
                       <small>Please select Course name.</small>
                     </p>
                   )}
@@ -1564,24 +1598,32 @@ const TeacherRegistrationPage = () => {
                     Semester <span>*</span>
                   </label>
                   <FormControl fullWidth>
-                    <InputLabel id={`semester_id_${index}`}>Semester</InputLabel>
+                    <InputLabel id={`semester_id_${index}`}>
+                      Semester
+                    </InputLabel>
                     <Select
                       labelId={`semester_id_${index}`}
                       id={`semester_select_${index}`}
                       name="semester_number"
                       label="Semester"
-                      onChange={(event: any) => handelSubjectBoxChange(event, index)}
-                      value={box.semester_number || ""}
+                      onChange={(event: any) =>
+                        handelSubjectBoxChange(event, index)
+                      }
+                      value={box.semester_number || ''}
                     >
                       {box.filteredSemesters?.map((item) => (
-                        <MenuItem key={item.id} value={item.semester_number || ""}>
+                        <MenuItem
+                          key={item.id}
+                          value={item.semester_number || ''}
+                        >
                           {item.semester_number}
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
-                  {errorForCourse_semester_subject[index]?.semester_number_error && (
-                    <p className="error-text" style={{ color: "red" }}>
+                  {errorForCourse_semester_subject[index]
+                    ?.semester_number_error && (
+                    <p className="error-text" style={{ color: 'red' }}>
                       <small>Please select a Semester.</small>
                     </p>
                   )}
@@ -1593,30 +1635,39 @@ const TeacherRegistrationPage = () => {
                     Subjects Taught<span>*</span>
                   </label>
                   <FormControl fullWidth>
-                    <InputLabel id={`subject_label_${index}`}>Subject</InputLabel>
+                    <InputLabel id={`subject_label_${index}`}>
+                      Subject
+                    </InputLabel>
                     <Select
                       labelId={`subject_label_${index}`}
                       id={`subject_select_${index}`}
                       multiple
                       name="subjects"
                       value={box.subjects || []}
-                      onChange={(event: any) => handelSubjectBoxChange(event, index)}
+                      onChange={(event: any) =>
+                        handelSubjectBoxChange(event, index)
+                      }
                       input={<OutlinedInput label="Subject" />}
                       renderValue={(selected) =>
                         (selected as string[])
                           .map((id) => {
                             const subject = totleSubject.find(
-                              (subject: any) => subject.subject_name === id
+                              (subject: any) => subject.subject_name === id,
                             );
-                            return subject ? subject.subject_name : "";
+                            return subject ? subject.subject_name : '';
                           })
-                          .join(", ")
+                          .join(', ')
                       }
                     >
                       {box.filteredSubjects?.map((subject: any) => (
-                        <MenuItem key={subject.subject_id} value={subject.subject_name}>
+                        <MenuItem
+                          key={subject.subject_id}
+                          value={subject.subject_name}
+                        >
                           <Checkbox
-                            checked={box.subjects?.includes(subject.subject_name.toString())}
+                            checked={box.subjects?.includes(
+                              subject.subject_name.toString(),
+                            )}
                           />
                           <ListItemText primary={subject.subject_name} />
                         </MenuItem>
@@ -1624,27 +1675,33 @@ const TeacherRegistrationPage = () => {
                     </Select>
                   </FormControl>
                   {errorForCourse_semester_subject[index]?.subjects_error && (
-                    <p className="error-text" style={{ color: "red" }}>
+                    <p className="error-text" style={{ color: 'red' }}>
                       <small>Please select at least one subject.</small>
                     </p>
                   )}
                 </div>
                 <div>
-                  { }
-                  {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
+                  {}
+                  {(selectedEntity.toLowerCase() === 'college' ||
+                    selectedEntity.toLowerCase() === 'school') &&
                     ((boxes.length === 1 && index === 0) ||
-                      (boxes.length > 1 && index === boxes.length - 1))) && (
-                      <AddCircleIcon className="m-2 cursor-pointer" onClick={() => handleAddmore(selectedEntity)} />
+                      (boxes.length > 1 && index === boxes.length - 1)) && (
+                      <AddCircleIcon
+                        className="m-2 cursor-pointer"
+                        onClick={() => handleAddmore(selectedEntity)}
+                      />
                     )}
                   {index > 0 && (
-                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2 cursor-pointer' />
+                    <DeleteOutlinedIcon
+                      onClick={() => handleRemove(selectedEntity, index)}
+                      className="m-2 cursor-pointer"
+                    />
                   )}
-
                 </div>
               </div>
-
             ))}
-          {selectedEntity.toLowerCase() === 'school' && boxesForSchool.length > 0 &&
+          {selectedEntity.toLowerCase() === 'school' &&
+            boxesForSchool.length > 0 &&
             boxesForSchool.map((box, index) => (
               <div key={index} className="row d-flex justify-content-center">
                 {/* Class Selection */}
@@ -1658,8 +1715,10 @@ const TeacherRegistrationPage = () => {
                       labelId={`class_id_${index}`}
                       id={`class_select_${index}`}
                       name="class_id"
-                      onChange={(event: any) => handelSchoolBoxChange(event, index)}
-                      value={box.class_id || ""}
+                      onChange={(event: any) =>
+                        handelSchoolBoxChange(event, index)
+                      }
+                      value={box.class_id || ''}
                       input={<OutlinedInput label="Class" />}
                     >
                       {dataClass.map((item) => (
@@ -1681,13 +1740,17 @@ const TeacherRegistrationPage = () => {
                       Stream Name<span>*</span>
                     </label>
                     <FormControl fullWidth>
-                      <InputLabel id={`stream_id_${index}`}>Stream Name</InputLabel>
+                      <InputLabel id={`stream_id_${index}`}>
+                        Stream Name
+                      </InputLabel>
                       <Select
                         labelId={`stream_id_${index}`}
                         id={`stream_select_${index}`}
                         name="stream"
-                        onChange={(event: any) => handelSchoolBoxChange(event, index)}
-                        value={box.stream || ""}
+                        onChange={(event: any) =>
+                          handelSchoolBoxChange(event, index)
+                        }
+                        value={box.stream || ''}
                         sx={{
                           backgroundColor: inputfield(namecolor),
                           color: inputfieldtext(namecolor),
@@ -1709,7 +1772,9 @@ const TeacherRegistrationPage = () => {
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
-                              '&:hover': { backgroundColor: inputfieldhover(namecolor) },
+                              '&:hover': {
+                                backgroundColor: inputfieldhover(namecolor),
+                              },
                             }}
                           >
                             {item}
@@ -1718,7 +1783,7 @@ const TeacherRegistrationPage = () => {
                       </Select>
                     </FormControl>
                     {errorForClass_stream_subject[index]?.stream_error && (
-                      <p className="error-text" style={{ color: "red" }}>
+                      <p className="error-text" style={{ color: 'red' }}>
                         <small>Please select a Stream.</small>
                       </p>
                     )}
@@ -1729,30 +1794,39 @@ const TeacherRegistrationPage = () => {
                     Subjects Taught<span>*</span>
                   </label>
                   <FormControl fullWidth>
-                    <InputLabel id={`subject_label_${index}`}>Subject</InputLabel>
+                    <InputLabel id={`subject_label_${index}`}>
+                      Subject
+                    </InputLabel>
                     <Select
                       labelId={`subject_label_${index}`}
                       id={`subject_select_${index}`}
                       multiple
                       name="subjects"
                       value={box.subjects || []}
-                      onChange={(event: any) => handelSchoolBoxChange(event, index)}
+                      onChange={(event: any) =>
+                        handelSchoolBoxChange(event, index)
+                      }
                       input={<OutlinedInput label="Subject" />}
                       renderValue={(selected) =>
                         (selected as string[])
                           .map((id) => {
                             const subject = totleSubject.find(
-                              (subject: any) => subject.subject_name === id
+                              (subject: any) => subject.subject_name === id,
                             );
-                            return subject ? subject.subject_name : "";
+                            return subject ? subject.subject_name : '';
                           })
-                          .join(", ")
+                          .join(', ')
                       }
                     >
                       {box.filteredSubjects?.map((subject: any) => (
-                        <MenuItem key={subject.subject_id} value={subject.subject_name}>
+                        <MenuItem
+                          key={subject.subject_id}
+                          value={subject.subject_name}
+                        >
                           <Checkbox
-                            checked={box.subjects?.includes(subject.subject_name.toString())}
+                            checked={box.subjects?.includes(
+                              subject.subject_name.toString(),
+                            )}
                           />
                           <ListItemText primary={subject.subject_name} />
                         </MenuItem>
@@ -1760,45 +1834,52 @@ const TeacherRegistrationPage = () => {
                     </Select>
                   </FormControl>
                   {errorForClass_stream_subject[index]?.subjects_error && (
-                    <p className="error-text" style={{ color: "red" }}>
+                    <p className="error-text" style={{ color: 'red' }}>
                       <small>Please select at least one subject.</small>
                     </p>
                   )}
                 </div>
 
                 <div>
-                  {((selectedEntity.toLowerCase() === "college" || selectedEntity.toLowerCase() === "school") &&
+                  {(selectedEntity.toLowerCase() === 'college' ||
+                    selectedEntity.toLowerCase() === 'school') &&
                     ((boxesForSchool.length === 1 && index === 0) ||
-                      (boxesForSchool.length > 1 && index === boxesForSchool.length - 1))) && (
-                      <AddCircleIcon className="m-2 cursor-pointer" onClick={() => handleAddmore(selectedEntity)} />
-
+                      (boxesForSchool.length > 1 &&
+                        index === boxesForSchool.length - 1)) && (
+                      <AddCircleIcon
+                        className="m-2 cursor-pointer"
+                        onClick={() => handleAddmore(selectedEntity)}
+                      />
                     )}
                   {index > 0 && (
-                    <DeleteOutlinedIcon onClick={() => handleRemove(selectedEntity, index)} className='m-2 cursor-pointer' />
+                    <DeleteOutlinedIcon
+                      onClick={() => handleRemove(selectedEntity, index)}
+                      className="m-2 cursor-pointer"
+                    />
                   )}
                 </div>
-
-
               </div>
             ))}
           <div className="row d-flex justify-content-between">
             <div className="col-md-6 col-12 ">
               <label className="col-form-label">
                 {' '}
-                Document<span>*   </span>
+                Document<span>* </span>
               </label>
               <UploadBtn
                 label="Upload Documents"
                 name="document"
                 accept=".pdf, .jpg, .jpeg, .png, .gif"
                 handleFileChange={handleFileChange}
-                
               />
               <div>
                 {allselectedfiles.length > 0 && (
                   <ul>
                     {allselectedfiles.map((file, index) => (
-                      <li key={index} className="flex items-center justify-between">
+                      <li
+                        key={index}
+                        className="flex items-center justify-between"
+                      >
                         {file.name}
                         <DeleteOutlinedIcon
                           className="m-2 cursor-pointer"
@@ -1857,7 +1938,11 @@ const TeacherRegistrationPage = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} />
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={handleSubmit}
+        />
       </div>
     </div>
   );
