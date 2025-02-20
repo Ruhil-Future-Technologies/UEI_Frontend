@@ -16,7 +16,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import useApi from '../../hooks/useAPI';
-import { IEntity, InstituteRep0oDTO, IUniversity } from '../../Components/Table/columns';
+import {
+  IEntity,
+  InstituteRep0oDTO,
+  IUniversity,
+} from '../../Components/Table/columns';
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
 import {
@@ -56,7 +60,6 @@ const InstituteRegistrationForm = () => {
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
-
 
   const { postRegisterData, getForRegistration } = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
@@ -108,7 +111,7 @@ const InstituteRegistrationForm = () => {
     pincode_error: false,
     document_error: false,
   });
-  const [emailExist, setEmailExist] = useState<boolean>(false)
+  const [emailExist, setEmailExist] = useState<boolean>(false);
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
   const [selectedEntity, setSelectedEntity] = useState('');
   const [popupOtpCard, setPopupOtpCard] = useState(false);
@@ -116,7 +119,6 @@ const InstituteRegistrationForm = () => {
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
-
 
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
@@ -136,10 +138,9 @@ const InstituteRegistrationForm = () => {
       });
   };
 
-
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
+      .then((data) => {
         // const filteredData = data?.data.filter(
         //     (entity) => entity.is_active === 1,
         // );
@@ -157,7 +158,6 @@ const InstituteRegistrationForm = () => {
       });
   };
 
-
   useEffect(() => {
     getUniversity();
     getEntity();
@@ -168,7 +168,9 @@ const InstituteRegistrationForm = () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
         const fiteredInstitutedata = data.data.filter(
-          (institute: any) => institute.is_active === 1 && institute.is_approve === true);
+          (institute: any) =>
+            institute.is_active === 1 && institute.is_approve === true,
+        );
         if (data.data) {
           setDataInstitute(fiteredInstitutedata);
         }
@@ -187,23 +189,20 @@ const InstituteRegistrationForm = () => {
     setPopupTermandcondi(false);
   };
 
-
   const handleTermandCondi = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
 
     setCheckTermandcondi(!isChecked);
   };
 
-
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
 
-
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    console.log(files, typeof files)
+    console.log(files, typeof files);
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
       setAllSelectedfiles((prevFiles) => [
@@ -219,7 +218,7 @@ const InstituteRegistrationForm = () => {
     setError({
       institute_name_error:
         name === 'institute_name' &&
-          !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)
+        !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)
           ? true
           : false,
       university_id_error: false,
@@ -239,16 +238,18 @@ const InstituteRegistrationForm = () => {
       country_error: false,
       state_error: false,
       city_error:
-        name === 'city' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
+        name === 'city' &&
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
           ? true
           : false,
       district_error:
-        name === 'district' && !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
+        name === 'district' &&
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
           ? true
           : false,
       address_error:
         name === 'address' &&
-          !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
+        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
           ? true
           : false,
       pincode_error:
@@ -277,29 +278,31 @@ const InstituteRegistrationForm = () => {
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
   const openPopupOtp = () => {
-
-    const emailExists = dataInstitute.some((item) => item.email_id === valueInstitute.email_id);
-    setEmailExist(emailExists)
+    const emailExists = dataInstitute.some(
+      (item) => item.email_id === valueInstitute.email_id,
+    );
+    setEmailExist(emailExists);
     if (emailExists) {
-      return
+      return;
     }
     setError({
       institute_name_error:
         selectedEntity === 'College' &&
-          !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
+        !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
           ? true
           : false,
       university_id_error:
         selectedEntity === 'College' &&
-          valueInstitute.university_id.trim() === ''
+        valueInstitute.university_id.trim() === ''
           ? true
           : false,
       institute_type_error:
         valueInstitute.entity_id.trim() === '' ? true : false,
-      email_id_error:
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id.trim())
-          ? true
-          : false,
+      email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+        valueInstitute.email_id.trim(),
+      )
+        ? true
+        : false,
       mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(
         valueInstitute.mobile_no.trim(),
       )
@@ -312,7 +315,9 @@ const InstituteRegistrationForm = () => {
         selectedEntity === 'School' && valueInstitute.school_name === ''
           ? true
           : false,
-      city_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.city.trim())
+      city_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        valueInstitute.city.trim(),
+      )
         ? true
         : false,
       district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
@@ -331,27 +336,23 @@ const InstituteRegistrationForm = () => {
       document_error: valueInstitute.document === null ? true : false,
     });
 
-
     const isSchoolValid =
       selectedEntity === 'School'
         ? !error.school_name_error &&
-        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-          valueInstitute.school_name,
-        )
+          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+            valueInstitute.school_name,
+          )
         : true;
-
 
     const isCollegeValid =
       selectedEntity === 'College'
         ? !error.institute_name_error &&
-        /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-          valueInstitute.institute_name,
-        ) &&
-        !error.university_id_error &&
-        valueInstitute.university_id !== ''
+          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+            valueInstitute.institute_name,
+          ) &&
+          !error.university_id_error &&
+          valueInstitute.university_id !== ''
         : true;
-
-
 
     if (
       !error.institute_type_error &&
@@ -366,11 +367,17 @@ const InstituteRegistrationForm = () => {
       !error.state_error &&
       !(valueInstitute.state === '') &&
       !error.city_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.city.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        valueInstitute.city.trim(),
+      ) &&
       !error.district_error &&
-      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.district.trim()) &&
+      /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+        valueInstitute.district.trim(),
+      ) &&
       !error.address_error &&
-      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(valueInstitute.address.trim()) &&
+      /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
+        valueInstitute.address.trim(),
+      ) &&
       !error.pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
       !error.document_error &&
@@ -379,19 +386,16 @@ const InstituteRegistrationForm = () => {
       isSchoolValid &&
       !emailExists
     ) {
-      setPopupOtpCard(true)
+      setPopupOtpCard(true);
     } else {
       toast.error('validation error', {
         hideProgressBar: true,
         theme: 'colored',
-      })
-
+      });
     }
-  }
+  };
   const handleSubmit = () => {
     // setPopupOtpCard(true);
-
-
 
     const formData = new FormData();
 
@@ -403,32 +407,33 @@ const InstituteRegistrationForm = () => {
     //   }
     // });
     allselectedfiles.forEach((file) => {
-      formData.append("documents", file);  // Use same key for all files
+      formData.append('documents', file); // Use same key for all files
     });
 
     // Append text fields to FormData
-    formData.append("institution_name", valueInstitute.school_name || valueInstitute.institute_name);
-    formData.append("entity_id", valueInstitute.entity_id);
-    formData.append("address", valueInstitute.address);
-    formData.append("country", valueInstitute.country);
-    formData.append("state", valueInstitute.state);
-    formData.append("city", valueInstitute.city);
-    formData.append("district", valueInstitute.district);
-    formData.append("pincode", valueInstitute.pincode);
-    formData.append("website_url", valueInstitute.website_url);
-    formData.append("mobile_no", valueInstitute.mobile_no);
-    formData.append("email_id", valueInstitute.email_id);
-    formData.append("icon", valueInstitute.icon);
-
+    formData.append(
+      'institution_name',
+      valueInstitute.school_name || valueInstitute.institute_name,
+    );
+    formData.append('entity_id', valueInstitute.entity_id);
+    formData.append('address', valueInstitute.address);
+    formData.append('country', valueInstitute.country);
+    formData.append('state', valueInstitute.state);
+    formData.append('city', valueInstitute.city);
+    formData.append('district', valueInstitute.district);
+    formData.append('pincode', valueInstitute.pincode);
+    formData.append('website_url', valueInstitute.website_url);
+    formData.append('mobile_no', valueInstitute.mobile_no);
+    formData.append('email_id', valueInstitute.email_id);
+    formData.append('icon', valueInstitute.icon);
 
     if (selectedEntity !== 'School') {
-      formData.append("university_id", valueInstitute.university_id);
+      formData.append('university_id', valueInstitute.university_id);
     }
-
 
     try {
       postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
-        console.log(response)
+        console.log(response);
         if (response.status === 200) {
           toast.success('Institute registration request sent successfully', {
             hideProgressBar: true,
@@ -446,7 +451,6 @@ const InstituteRegistrationForm = () => {
     } catch (error) {
       console.error(error);
     }
-
   };
   const handleInputChangecountry = (val: string, name: string) => {
     setValueInstitute({ ...valueInstitute, [name]: val });
@@ -455,9 +459,11 @@ const InstituteRegistrationForm = () => {
     }
     validation(name, val);
   };
-const handleRemoveFile=(index:number)=>{
-  setAllSelectedfiles((previous)=>previous.filter((_,ind)=>ind!==index));
-}
+  const handleRemoveFile = (index: number) => {
+    setAllSelectedfiles((previous) =>
+      previous.filter((_, ind) => ind !== index),
+    );
+  };
   return (
     <div className="without-login">
       <header className="container-fluid  py-3 d-none d-lg-block">
@@ -827,20 +833,21 @@ const handleRemoveFile=(index:number)=>{
               />
               <div>
                 {allselectedfiles.length > 0 && (
-                  <ul className='mt-4'>
+                  <ul className="mt-4">
                     {allselectedfiles.map((file, index) => (
-                      <li key={index} className="flex items-center justify-between">
+                      <li
+                        key={index}
+                        className="flex items-center justify-between"
+                      >
                         {file.name}
                         <DeleteOutlinedIcon
                           className="m-2 cursor-pointer"
                           onClick={() => handleRemoveFile(index)}
-                          />
-                        
+                        />
                       </li>
                     ))}
                   </ul>
                 )}
-
               </div>
             </div>
             <div className="col-md-6 col-12 mb-3">
@@ -906,7 +913,11 @@ const handleRemoveFile=(index:number)=>{
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} />
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={handleSubmit}
+        />
       </div>
     </div>
   );

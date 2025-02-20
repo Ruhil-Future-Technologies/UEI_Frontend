@@ -79,7 +79,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [editBasicInfo, setEditBasicInfo] = useState(false);
   //const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs()?.subtract(6, 'year').subtract(1, 'day').endOf('day');
+  const exactSixYearsAgo = dayjs()
+    ?.subtract(6, 'year')
+    .subtract(1, 'day')
+    .endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
 
@@ -302,11 +305,17 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   //     handleChange(event.target.value as Date | null);
   //   };
 
-
   const handleDateChange = (newDate: Dayjs | null) => {
     setEditBasicInfo(true);
-    if (newDate && newDate.isValid() && newDate.isAfter(minSelectableDate, 'day')) {
-      if (newDate.isBefore(exactSixYearsAgo, 'day') || newDate.isSame(exactSixYearsAgo, 'day')) {
+    if (
+      newDate &&
+      newDate.isValid() &&
+      newDate.isAfter(minSelectableDate, 'day')
+    ) {
+      if (
+        newDate.isBefore(exactSixYearsAgo, 'day') ||
+        newDate.isSame(exactSixYearsAgo, 'day')
+      ) {
         setBasicInfo((values) => ({ ...values, dob: newDate }));
         setError(null);
         setdobset_col(false);
