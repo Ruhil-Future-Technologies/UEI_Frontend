@@ -31,7 +31,8 @@ interface Language {
 }
 
 const AdminLanguage: React.FC<ChildComponentProps> = () => {
-  const AdminId = localStorage.getItem('user_uuid');
+  const AdminId = localStorage.getItem('_id');
+  const UuId = localStorage.getItem('user_uuid');
   interface Box {
     id: number;
     language_id: any;
@@ -86,9 +87,10 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   useEffect(() => {
     getData(`${'language/list'}`)
       .then((data: any) => {
+        console.log(data)
         if (data?.status) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = data?.data?.languagees_data?.filter(
+            (item: any) => item?.is_active === true,
           );
           setAllLanguage(filteredData || []);
         }
@@ -100,10 +102,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           position: 'top-center',
         });
       });
-    getData(`${'admin_language_known/get/' + AdminId}`)
+    getData(`${'admin_language_known/get/' + UuId}`)
       .then((data: any) => {
+        console.log(data);
         if (data?.status ) {
-          data.data.map((item: any) => {
+          data.data.admin_language_known_data.map((item: any) => {
             const newBox: Box = {
               id: item.id,
               language_id: item.language_id,
@@ -117,6 +120,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
           setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
           // setEditFlag(true);
         } else {
+          setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
           toast.error(data?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -134,41 +138,44 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   }, []);
   console.log(initialAdminState);
   useEffect(() => {
-    getData(`${'admin_language_known/get/' + AdminId}`).then(
-      (response: any) => {
-        if (response?.status) {
-          const newLanageage = response?.data?.filter((items: any) =>
-            boxes.some((box: Box) => box.id === items.id || box.id == 0),
-          );
-
-          const newBoxes: Box[] = newLanageage.map((item: any) => ({
-            id: item.id,
-            language_id: item.language_id,
-            proficiency: item.proficiency,
-          }));
-
-          if (newBoxes.length > 0) {
-            setBoxes((preBoxes: Box[]) => [
-              ...preBoxes.filter((box: Box) => box.id != 0),
-              ...newBoxes.filter(
-                (newbox: Box) =>
-                  !preBoxes.some((item: Box) => item.id === newbox.id),
-              ),
-            ]);
-            setInitialState((prevBoxes: Box[]) => [
-              ...prevBoxes,
-              ...newBoxes.filter(
-                (newBox: Box) =>
-                  !prevBoxes.some((box: Box) => box.id === newBox.id),
-              ),
-            ]);
+    if(AdminId){
+      getData(`${'admin_language_known/get/' + AdminId}`).then(
+        (response: any) => {
+          if (response?.status) {
+            const newLanageage = response?.data?.filter((items: any) =>
+              boxes.some((box: Box) => box.id === items.id || box.id == 0),
+            );
+  
+            const newBoxes: Box[] = newLanageage.map((item: any) => ({
+              id: item.id,
+              language_id: item.language_id,
+              proficiency: item.proficiency,
+            }));
+  
+            if (newBoxes.length > 0) {
+              setBoxes((preBoxes: Box[]) => [
+                ...preBoxes.filter((box: Box) => box.id != 0),
+                ...newBoxes.filter(
+                  (newbox: Box) =>
+                    !preBoxes.some((item: Box) => item.id === newbox.id),
+                ),
+              ]);
+              setInitialState((prevBoxes: Box[]) => [
+                ...prevBoxes,
+                ...newBoxes.filter(
+                  (newBox: Box) =>
+                    !prevBoxes.some((box: Box) => box.id === newBox.id),
+                ),
+              ]);
+            }
+            setEditable(false);
+          } else if (response?.code == 401) {
+            setEditable(true);
           }
-          setEditable(false);
-        } else if (response?.code == 401) {
-          setEditable(true);
-        }
-      },
-    );
+        },
+      );
+    }
+   
   }, [activeForm]);
 
   const saveLanguage = async (event: React.FormEvent<HTMLFormElement>) => {

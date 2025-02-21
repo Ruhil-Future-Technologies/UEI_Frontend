@@ -113,7 +113,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   };
   const listData = async () => {
     return new Promise((resolve) => {
-      getData('/institution/list')
+      getData('/institute/list')
         .then(async (response: any) => {
           if (response.status) {
             const filteredData = await response?.data?.filter(

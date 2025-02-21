@@ -123,7 +123,7 @@ const Signup = () => {
               theme: 'colored',
             });
             localStorage.setItem('user_uuid', data?.data.user_uuid)
-            localStorage.setItem('eamil', data?.data.email)
+            localStorage.setItem('email', data?.data.email)
             localStorage.setItem('phone', data?.data.phone)
             localStorage.setItem('user_type', data?.data.user_type)
           } else {

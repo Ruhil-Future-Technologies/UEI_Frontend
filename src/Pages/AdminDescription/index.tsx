@@ -20,25 +20,29 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   };
   const context = React.useContext(NameContext);
   const { namecolor, activeForm, setActiveForm }: any = context;
-  const adminId = localStorage.getItem('user_uuid');
+  const adminId = localStorage.getItem('_id');
+  const UuId = localStorage.getItem('user_uuid');
   const { getData, postData, putData } = useApi();
   const [description, setDesctiption] = useState(initialState);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [editable, setEditable] = useState(true);
   const [chaged, setChaged] = useState(false);
   const navigator = useNavigate();
+  const [descriptionId,setDescriptionId] =useState();
   // const formRef = useRef() as any
   const formRef = useRef<FormikProps<IAdminDescription>>(null);
 
   const getDescription = async () => {
     try {
       const response = await getData(
-        'admin_profile_description/get/' + adminId,
+        'admin_profile_description/get/' + UuId,
       );
-
-      if (response && response?.status) {
-        setDesctiption(response?.data);
+      console.log(response);
+      if (response && response?.status && response?.code !== 404) {
+        setDesctiption(response?.data.admin_profile_description_data);
+        setDescriptionId(response?.data.admin_profile_description_data.id)
       } else if (response && response?.code === 404) {
+        console.log(response);
         setEditFlag(true);
       } else {
         console.error('Unexpected response:', response);
@@ -65,8 +69,9 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
 
   useEffect(() => {
-    getData('admin_profile_description/get/' + adminId).then((response) => {
+    getData('admin_profile_description/get/' + UuId).then((response) => {
       if (response && response?.status) {
+        console.log("success lijhsfds gdkdhgk hkhgkjdfg ")
         setEditable(false);
       } else if (response && response?.code === 404) {
         setEditable(true);
@@ -103,9 +108,10 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
     const eq = deepEqual(description1, formRef?.current?.initialValues);
     // event.preventDefault();
     const paylod = {
-      admin_id: adminId,
+      admin_id:adminId,
       description: description1?.description,
     };
+    console.log(paylod);
     const formData=new FormData();
     Object.entries(paylod).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
@@ -119,7 +125,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
             'admin_profile_description/add',
             formData,
           );
-
+      console.log(response);
           if (response?.status) {
             toast.success('Admin description saved successfully', {
               hideProgressBar: true,
@@ -154,7 +160,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
       const editData = async () => {
         try {
           const response = await putData(
-            'admin_profile_description/edit/' + adminId,
+            'admin_profile_description/edit/' + descriptionId,
             formData,
           );
 

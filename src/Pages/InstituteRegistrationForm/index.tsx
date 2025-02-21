@@ -56,7 +56,7 @@ const InstituteRegistrationForm = () => {
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
 
 
-  const { postRegisterData, getForRegistration } = useApi();
+  const { postRegisterData, getForRegistration,postData } = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
     institute_name: '',
@@ -251,7 +251,7 @@ const InstituteRegistrationForm = () => {
     validation(name, value);
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
-  const openPopupOtp = () => {
+  const handleSubmit = () => {
     setError({
       institute_name_error:
         selectedEntity === 'College' &&
@@ -260,11 +260,11 @@ const InstituteRegistrationForm = () => {
           : false,
       university_id_error:
         selectedEntity === 'College' &&
-          valueInstitute.university_id.trim() === ''
+          valueInstitute.university_id === ''
           ? true
           : false,
       institute_type_error:
-        valueInstitute.entity_id.trim() === '' ? true : false,
+        valueInstitute.entity_id === '' ? true : false,
       email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
         valueInstitute.email_id.trim(),
       )
@@ -345,35 +345,14 @@ const InstituteRegistrationForm = () => {
       isCollegeValid &&
       isSchoolValid
     ) {
-      setPopupOtpCard(true)
-    } else {
-      toast.error('validation error', {
-        hideProgressBar: true,
-        theme: 'colored',
-      })
-
-    }
-  }
-  const handleSubmit = () => {
-    // setPopupOtpCard(true);
-
-
-
-    const formData = new FormData();
-
-    // allselectedfiles.forEach((file, index) => {
-    //   if (file instanceof File) {
-    //     formData.append(`documents[${index}]`, file);
-    //   } else {
-    //     console.error(`Invalid file at index ${index}`, file);
-    //   }
-    // });
-    allselectedfiles.forEach((file) => {
-      formData.append("documents", file);  // Use same key for all files
+      const formData = new FormData();
+      
+      allselectedfiles.forEach((file) => {
+        formData.append("documents[]", file); // Backend reads it as an array
     });
 
     // Append text fields to FormData
-    formData.append("institution_name", valueInstitute.school_name || valueInstitute.institute_name);
+    formData.append("institute_name", valueInstitute.school_name || valueInstitute.institute_name);
     formData.append("entity_id", valueInstitute.entity_id);
     formData.append("address", valueInstitute.address);
     formData.append("country", valueInstitute.country);
@@ -382,8 +361,8 @@ const InstituteRegistrationForm = () => {
     formData.append("district", valueInstitute.district);
     formData.append("pincode", valueInstitute.pincode);
     formData.append("website_url", valueInstitute.website_url);
-    formData.append("mobile_no", valueInstitute.mobile_no);
-    formData.append("email_id", valueInstitute.email_id);
+    formData.append("phone", valueInstitute.mobile_no);
+    formData.append("email", valueInstitute.email_id);
     formData.append("icon", valueInstitute.icon);
 
 
@@ -391,17 +370,16 @@ const InstituteRegistrationForm = () => {
       formData.append("university_id", valueInstitute.university_id);
     }
 
-
     try {
       postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
         console.log(response)
         if (response.status ) {
+
           toast.success(response.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
-          alert('Wait for 24-48 hours, the Administrator will inform you.');
-          window.location.reload();
+          setPopupOtpCard(true);
         } else {
           toast.error(response.message, {
             hideProgressBar: true,
@@ -412,6 +390,27 @@ const InstituteRegistrationForm = () => {
     } catch (error) {
       console.error(error);
     }
+    } else {
+      toast.error('validation error', {
+        hideProgressBar: true,
+        theme: 'colored',
+      })
+
+    }
+  }
+  const handleOtpSubmit = (otp:string) => {
+
+    let payload = {
+      email: valueInstitute.email_id,
+      otp: otp
+    }
+    postData(`/auth/verify-otp`, payload).then((data) => {
+      console.log(data);
+      if (data.status === true) {
+        alert('Wait for 24-48 hours, the Administrator will inform you.');
+        window.location.reload();
+      }
+    })
 
   };
   const handleInputChangecountry = (val: string, name: string) => {
@@ -838,7 +837,7 @@ const InstituteRegistrationForm = () => {
             <Button
               variant="contained"
               disabled={CheckTermandcondi}
-              onClick={openPopupOtp}
+              onClick={handleSubmit}
             >
               Submit
             </Button>
@@ -857,7 +856,7 @@ const InstituteRegistrationForm = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} email={valueInstitute.email_id}/>
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string)=>handleOtpSubmit(otp)} email={valueInstitute.email_id}/>
       </div>
     </div>
   );

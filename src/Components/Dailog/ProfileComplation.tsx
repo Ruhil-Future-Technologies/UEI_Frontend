@@ -694,7 +694,7 @@ export const ProfileDialog: FunctionComponent<{
           theme: 'colored',
         });
       });
-    getData('/institution/list')
+    getData('/institute/list')
       .then(async (response: any) => {
         if (response.status) {
           const filteredData = await response?.data?.filter(
@@ -827,7 +827,7 @@ export const ProfileDialog: FunctionComponent<{
     const nameParts: string[] = fullName?.split(' ');
     const firstname = nameParts?.[0];
     const lastname = nameParts?.[1];
-    const email=localStorage.getItem('eamil');
+    const email=localStorage.getItem('email');
     const phone=localStorage.getItem('phone');
     const payload = {
       student_login_id: StudentId,

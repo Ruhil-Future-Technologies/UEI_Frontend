@@ -48,12 +48,13 @@ const Sidebar = () => {
   const callAPI = async () => {
     getData(`${MenuListURL}/${user_type}`)
       .then((data: any) => {
-        if (data.data) {
+        if (data.data.sorted_menus) {
           // setMenuList(data.data);
-          localStorage.setItem('menulist', JSON.stringify(data?.data));
+          localStorage.setItem('menulist', JSON.stringify(data?.data.sorted_menus));
         }
       })
       .catch((e: any) => {
+        console.log("slider")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -63,10 +64,11 @@ const Sidebar = () => {
 
   const callAPI1 = async () => {
     if (basicinfo?.basic_info !== null) {
-      getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
+      getData(`${MenuListURL1}/${basicinfo?.id}`)
         .then((data: any) => {
           if (data.data) {
-            const menuData = data.data;
+            console.log(data.data);
+            const menuData = data.data.menus_data_list;
             setMenuList1(menuData);
             localStorage.setItem('menulist1', JSON.stringify(menuData));
             const saved = localStorage.getItem('menulist1');
@@ -76,6 +78,7 @@ const Sidebar = () => {
           }
         })
         .catch((e: any) => {
+          console.log("slider 2")
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -84,7 +87,7 @@ const Sidebar = () => {
     }
   };
   useEffect(() => {
-    if (profileData !== null && basicinfo?.basic_info !== null) {
+    if (profileData !== null && basicinfo?.id !== null) {
       callAPI1();
     }
   }, [profileData]);

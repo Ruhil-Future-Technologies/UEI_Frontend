@@ -5,7 +5,7 @@ import AdminBasicInfo from '../AdminBasicinfo';
 import AdminAddress from '../AdminAddress';
 import AdminDescription from '../AdminDescription';
 import AdminLanguage from '../AdminLanguage';
-import AdminProfession from '../AdminProfession';
+//import AdminProfession from '../AdminProfession';
 import AdminContactDetails from '../AdminContact';
 import { toast } from 'react-toastify';
 import { QUERY_KEYS_ADMIN_BASIC_INFO } from '../../utils/const';
@@ -15,6 +15,7 @@ import NameContext from '../Context/NameContext';
 export default function AdminProfile() {
   const adminId = localStorage.getItem('user_uuid');
   const [isProComplete, setIsProComplete] = React.useState(0);
+  console.log(isProComplete);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const context = React.useContext(NameContext);
 
@@ -40,30 +41,30 @@ export default function AdminProfile() {
     };
   }, []);
 
-  const handleReset = async () => {
-    if ((await isProComplete) !== 100 && (await isProComplete1)) {
-      toast.success(
-        'Your profile is incomplete. Please complete your profile.',
-        {
-          hideProgressBar: true,
-          theme: 'colored',
-        },
-      );
-    } else if ((await isProComplete) === 100 && (await isProComplete1)) {
-      toast.success('You have completed your profile', {
-        hideProgressBar: true,
-        theme: 'colored',
-      });
-    } else {
-      toast.success(
-        'Your profile is incomplete. Please complete your profile.',
-        {
-          hideProgressBar: true,
-          theme: 'colored',
-        },
-      );
-    }
-  };
+  // const handleReset = async () => {
+  //   if ((await isProComplete) !== 100 && (await isProComplete1)) {
+  //     toast.success(
+  //       'Your profile is incomplete. Please complete your profile.',
+  //       {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //       },
+  //     );
+  //   } else if ((await isProComplete) === 100 && (await isProComplete1)) {
+  //     toast.success('You have completed your profile', {
+  //       hideProgressBar: true,
+  //       theme: 'colored',
+  //     });
+  //   } else {
+  //     toast.success(
+  //       'Your profile is incomplete. Please complete your profile.',
+  //       {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //       },
+  //     );
+  //   }
+  // };
 
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
@@ -73,6 +74,7 @@ export default function AdminProfile() {
   const adminAPI = async () => {
     getData(`${profileURL}/${adminId}`)
       .then((data: any) => {
+        
         if (data.data.admin_data) {
           console.log(data.data.admin_data);
           const basic_info = {
@@ -456,10 +458,11 @@ export default function AdminProfile() {
                               >
                                 <div>
                                   <div>
-                                    <AdminProfession
+                                    {/* <AdminProfession
                                       handleReset={handleReset}
                                       setActiveForm={setActiveForm}
-                                    />
+                                    /> */}
+                                    
                                   </div>
                                 </div>
                               </div>

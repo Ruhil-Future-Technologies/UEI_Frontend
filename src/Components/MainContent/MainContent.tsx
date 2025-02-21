@@ -1014,6 +1014,7 @@ function MainContent() {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) =>
+                      
                       setStudentClass(
                         response.data.class_name
                           .replace('_', ' ')
@@ -1115,6 +1116,7 @@ function MainContent() {
           }
         })
         .catch((e) => {
+          console.log("1");
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1148,62 +1150,69 @@ function MainContent() {
     if (usertype === 'admin') {
       getData(`${profileURLadmin}/${StudentId}`)
         .then((data: any) => {
+          if(data.code===404){
+            navigate('/main/adminprofile')
+          }
           if (data?.data) {
+            if(data?.data?.admin_data?.basic_info){
+              sessionStorage.setItem('userdata', JSON.stringify(data?.data?.admin_data?.basic_info));
+            }
+
             // setProfileData(data?.data)
             // let basic_info = data?.data?.basic_info
             const basic_info = {
-              dob: data?.data?.basic_info?.dob,
-              father_name: data?.data?.basic_info?.father_name,
-              first_name: data?.data?.basic_info?.first_name,
-              gender: data?.data?.basic_info?.gender,
-              id: data?.data?.basic_info?.id,
+              dob: data?.data?.admin_data?.basic_info?.dob,
+              father_name: data?.data?.admin_data?.basic_info?.father_name,
+              first_name: data?.data?.admin_data?.basic_info?.first_name,
+              gender: data?.data?.admin_data?.basic_info?.gender,
+              id: data?.data?.admin_data?.basic_info?.id,
               last_modified_datetime:
-                data?.data.basic_info?.last_modified_datetime,
-              last_name: data?.data?.basic_info?.last_name,
-              mother_name: data?.data?.basic_info?.mother_name,
+                data?.data?.admin_data?.basic_info?.last_modified_datetime,
+              last_name: data?.data?.admin_data?.basic_info?.last_name,
+              mother_name: data?.data?.admin_data?.basic_info?.mother_name,
               admin_registration_no:
-                data?.data?.basic_info?.admin_registration_no,
-              department_id: data?.data?.basic_info?.department_id,
-              guardian_name: data?.data?.basic_info?.guardian_name,
+                data?.data?.admin_data?.basic_info?.admin_registration_no,
+              department_id: data?.data?.admin_data?.basic_info?.department_id,
+              guardian_name: data?.data?.admin_data?.basic_info?.guardian_name,
             };
             // let address = data?.data?.address
             const address = {
-              address1: data?.data?.address?.address1,
-              country: data?.data?.address?.country,
-              state: data?.data?.address?.state,
-              city: data?.data?.address?.city,
-              district: data?.data?.address?.district,
-              pincode: data?.data?.address?.pincode,
+              address1: data?.data?.admin_data?.address?.address1,
+              country: data?.data?.admin_data?.address?.country,
+              state: data?.data?.admin_data?.address?.state,
+              city: data?.data?.admin_data?.address?.city,
+              district: data?.data?.admin_data?.address?.district,
+              pincode: data?.data?.admin_data?.address?.pincode,
             };
             // let language = data?.data?.language_known
             const language = {
-              language_id: data?.data?.language_known?.language_id,
-              proficiency: data?.data?.language_known?.proficiency,
+              language_id: data?.data?.admin_data?.language_known?.language_id,
+              proficiency: data?.data?.admin_data?.language_known?.proficiency,
             };
-            const description = data?.data?.admin_description;
+            const description = data?.data?.admin_data?.admin_description;
             // let contact = data?.data?.contact
             const contact = {
               // email_id: data?.data?.contact?.email_id,
-              id: data?.data?.contact?.id,
+              id: data?.data?.admin_data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
-              mobile_isd_call: data?.data?.contact?.mobile_isd_call,
-              mobile_no_call: data?.data?.contact?.mobile_no_call,
+              mobile_isd_call: data?.data?.admin_data?.contact?.mobile_isd_call,
+              mobile_no_call: data?.data?.admin_data?.contact?.mobile_no_call,
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
             // let profession = data?.data?.profession
             const profession = {
-              course_id: data?.data?.profession?.course_id,
-              subject_id: data?.data?.profession?.subject_id,
-              institution_id: data?.data?.profession?.institution_id,
+              course_id: data?.data?.admin_data?.profession?.course_id,
+              subject_id: data?.data?.admin_data?.profession?.subject_id,
+              institution_id: data?.data?.admin_data?.profession?.institution_id,
             };
-            const hobby = data?.data?.hobby;
+            const hobby = data?.data?.admin_data?.hobby;
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.admin_data?.basic_info?.pic_path !== '') {
                 getData(
                   `${
-                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                    'upload_file/get_image/' + data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
@@ -1335,7 +1344,7 @@ function MainContent() {
             collegeRes,
             teacherRes,
           ] = await Promise.allSettled([
-            getData('/institution/list'),
+            getData('/institute/list'),
             getData('/student/list'),
             // getData("/subject/list"),
             getData('/entity/list'),
@@ -1345,6 +1354,7 @@ function MainContent() {
             getData('/college_subject/list'),
             getData('./teacher/list'),
           ]);
+          console.log(studentRes,institutionRes,entityRes,departmentRes,courseRes,schoolRes,collegeRes,teacherRes)
           const institutionCount =
             institutionRes?.status === 'fulfilled'
               ? institutionRes?.value?.data?.length || 0
@@ -1359,23 +1369,23 @@ function MainContent() {
           //     : 0;
           const entityCount =
             entityRes?.status === 'fulfilled'
-              ? entityRes?.value?.data?.length || 0
+              ? entityRes?.value?.data?.entityes_data?.length || 0
               : 0;
           const departmentCount =
             departmentRes?.status === 'fulfilled'
-              ? departmentRes?.value?.data?.length || 0
+              ? departmentRes?.value?.data?.departments_data?.length || 0
               : 0;
           const courseCount =
             courseRes?.status === 'fulfilled'
-              ? courseRes?.value?.data?.length || 0
+              ? courseRes?.value?.data?.course_data?.length || 0
               : 0;
           const schoolsubjectCount =
             schoolRes?.status === 'fulfilled'
-              ? schoolRes?.value?.data?.length || 0
+              ? schoolRes?.value?.data?.subjects_data?.length || 0
               : 0;
           const collegesubjectCount =
             collegeRes?.status === 'fulfilled'
-              ? collegeRes?.value?.data?.length || 0
+              ? collegeRes?.value?.data?.subjects_data?.length || 0
               : 0;
           const teacherCount =
             teacherRes?.status === 'fulfilled'
@@ -1440,7 +1450,8 @@ function MainContent() {
           ]);
           const studentCoursedata =
             studentCoursecount?.status === 'fulfilled'
-              ? studentCoursecount?.value?.data || 0
+              ? studentCoursecount?.value?.data?.result
+              || 0
               : 0;
 
           setStatsCourse(studentCoursedata);
@@ -1553,6 +1564,7 @@ function MainContent() {
         // setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
       })
       .catch((e) => {
+        console.log("4")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -1573,6 +1585,7 @@ function MainContent() {
       | undefined;
   }) => {
     setChatLoader(false);
+    console.log("5");
     toast.error(e?.message, {
       hideProgressBar: true,
       theme: 'colored',
@@ -1654,6 +1667,7 @@ function MainContent() {
           // );
         })
         .catch((e) => {
+          console.log(6)
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -2351,6 +2365,7 @@ function MainContent() {
         localStorage.removeItem('chatsaved');
       })
       .catch((e) => {
+        console.log("7")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -2378,7 +2393,7 @@ function MainContent() {
         console.error('Error copying text: ', err);
       });
   };
-
+console.log(stats);
   return (
     <>
       {loader && !chatLoader && <FullScreenLoader />}

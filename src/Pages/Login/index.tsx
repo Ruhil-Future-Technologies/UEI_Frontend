@@ -166,9 +166,9 @@ const Login = () => {
     localStorage.setItem('user_type', value);
     localStorage.setItem('user_uuid', data?.data?.user_uuid);
     localStorage.setItem('pd', password || '');
-    localStorage.setItem('userdata', JSON.stringify(data?.data));
+
     localStorage.setItem('lastRoute', window.location.pathname);
-    localStorage.setItem('eamil', data?.data.email)
+    localStorage.setItem('email', data?.data.email)
     localStorage.setItem('phone', data?.data.phone)
 
     const tokenLifespan = 7100; // token lifespan in seconds (1 hour)

@@ -42,8 +42,8 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
 
   const { activeForm, setActiveForm }: any = context;
-  const adminId = localStorage.getItem('user_uuid');
-
+  const adminId = localStorage.getItem('_id');
+  const UuId = localStorage.getItem('user_uuid');
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
@@ -160,13 +160,14 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
   const listData = async () => {
    
-    getData(`${'admin_address/get/' + adminId}`)
+    try {
+      getData(`${'admin_address/get/' + UuId}`)
       .then((response: any) => {
         console.log(response);
         if (response?.status) {
           let add1: any;
           let add2: any;
-          response?.data.forEach((address: any) => {
+          response?.data.admin_addresses_data.forEach((address: any) => {
             if (address?.address_type === 'permanent_address') {
               setPermanentAddress(address);
 
@@ -221,26 +222,26 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           });
         }
       })
-      .catch((e) => {
-        console.log("erorr occure while run time")
-        if(e.code !== 404){
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-        }
-       
-      });
+    } catch (error:any) {
+      console.log("erorr occure while run time")
+      if(error.code !== 404){
+        toast.error(error?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
+    }
+  
   };
   useEffect(() => {
     listData();
   }, []);
 
   useEffect(() => {
-    getData(`${'admin_address/get/' + adminId}`).then((response: any) => {
+    getData(`${'admin_address/get/' + UuId}`).then((response: any) => {
       if (response?.status) {
-        response?.data.forEach((address: any) => {
+        response?.data.admin_addresses_data.forEach((address: any) => {
           if (address?.address_type === 'permanent_address') {
             //setPermanentAddress(address);
             //setPermanentAddress1(address);
@@ -554,9 +555,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
     ) {
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
-
           const formData = new FormData();
-
           // Loop through each key in the payload and append it if it's not null or undefined
           Object.entries(addressPayload).forEach(([key, value]) => {
               if (value !== null && value !== undefined) {

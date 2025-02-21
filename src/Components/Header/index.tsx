@@ -73,8 +73,9 @@ const Header = () => {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
-    localStorage.removeItem('eamil');
+    localStorage.removeItem('email');
     localStorage.removeItem('phone');
+    localStorage.removeItem('_id');
     synth.cancel();
     navigator('/');
     logoutpro();
@@ -146,6 +147,7 @@ const Header = () => {
         }
       })
       .catch((e) => {
+        console.log("header")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',

@@ -55,7 +55,7 @@ const AdminProfession: React.FC<PropsItem> = ({
 
   const getinstitutes = async () => {
     try {
-      const response = await getData('institution/list');
+      const response = await getData('institute/list');
 
       if (response?.status) {
         const filteredData = response?.data?.filter(

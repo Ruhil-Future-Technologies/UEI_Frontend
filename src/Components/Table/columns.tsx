@@ -445,7 +445,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       const institute_id = cell.getValue();
 
       useEffect(() => {
-        getData('/institution/list')
+        getData('/institute/list')
           .then((response: any) => {
             if (response.status === 200) {
               const matchingEntity = response.data.find(
@@ -478,7 +478,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
 
       useEffect(() => {
         if (institution_id) {
-          getData('/institution/list')
+          getData('/institute/list')
             .then((response: any) => {
               if (response.status === 200) {
                 const matchingEntity = response.data.find(

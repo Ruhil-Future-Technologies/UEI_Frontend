@@ -25,7 +25,7 @@ const UserChangePassword = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const user_type = localStorage.getItem('user_type');
-  const email = localStorage.getItem('eamil');
+  const email = localStorage.getItem('email');
   const { postData } = useApi();
 
   const [password, setPassword] = useState('');
