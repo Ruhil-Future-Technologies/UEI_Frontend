@@ -317,6 +317,9 @@ img {
 }
 
 @media (max-width: 1024px) {
+  .search-filter{
+    margin-right: 0!important;
+  }
   .chat-panel .left-side-history .history-list li ul li {
     opacity: 1 !important;
   }
@@ -388,6 +391,7 @@ img {
               max-width: 100% !important;
               width: 100% !important;
               box-shadow: none !important;
+              border-radius: 8px!important;
             }
 
             .profile-icon {
@@ -398,6 +402,17 @@ img {
           .right-chat {
             .chat-card {
               max-width: 100%;
+              border-radius: 8px!important;
+            }
+          }
+          ul{
+            li{
+              padding: 1rem 0!important;
+              ul.ansfooter{
+                li{
+                  padding: 0!important;
+                }
+              }
             }
           }
         }
@@ -1983,9 +1998,9 @@ body .desk-card {
   position: relative;
 
   .left-side-history {
-   padding: 1rem 0 1rem 1rem;
-   background-color: rgba($primary, 0.05);
-    height: 100%;
+   padding: 1rem 0 0rem 1rem;
+   background-color: rgba($primary, 0.02);
+  border-right: 1px solid rgba($primary, 0.1);
     
 
     .search-filter {
@@ -2023,7 +2038,7 @@ body .desk-card {
       padding: 0;
       margin: 0;
       overflow: auto;
-      height: 74vh;
+      height: calc(100vh - 186px);
       li {
         padding-left: 48px;
         position: relative;
@@ -2146,13 +2161,12 @@ body .desk-card {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding-bottom: 1rem;
-
+     
       .chat-result {
         
        height: 100%;
       max-height: calc(100vh - 210px);
-        
+      margin-bottom: 5px;
         position: relative;
 
         
@@ -2316,8 +2330,7 @@ body .desk-card {
 
         &::placeholder {
           font-size: 15px;
-          color: #000;
-          opacity: 1;
+         
         }
       }
 
@@ -2707,7 +2720,7 @@ a {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
   background-color: rgba($primary, 0.0);
 }
 
