@@ -63,8 +63,8 @@ const AddEditLanguage = () => {
       try {
         if (id) {
           const data = await getData(`${LanguageEditURL}/${id}`);
-          if(data?.status){
-            setLanguage(data?.data || initialState);
+          if (data?.status) {
+            setLanguage(data?.data?.language_data || initialState);
           }
         }
       } catch (e: any) {
@@ -80,15 +80,13 @@ const AddEditLanguage = () => {
 
   const callAPILanguage = async () => {
     try {
-  
       const data = await getData(`${LanguageURL}`);
-      console.log(data.data)
-      if (data?.status) {
-        if(!data?.data){
 
-          setDataLanguage(data?.data);  
+      if (data?.status) {
+        if (!data?.data) {
+          setDataLanguage(data?.data?.languagees_data);
         }
-        setDataLanguage(data?.data);
+        setDataLanguage(data?.data?.languagees_data);
       }
     } catch (e) {
       console.error('Error fetching data:', e);
@@ -132,7 +130,7 @@ const AddEditLanguage = () => {
     if (id) {
       putData(`${LanguageEditURL}/${id}`, languageData)
         .then((data) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigate('/main/Language');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -149,7 +147,7 @@ const AddEditLanguage = () => {
     } else {
       postData(LanguageAddURL, languageData)
         .then((data) => {
-          if (data.status === 200) {
+          if (data.status) {
             // navigate('/main/Language');
             callAPILanguage();
             toast.success(data.message, {

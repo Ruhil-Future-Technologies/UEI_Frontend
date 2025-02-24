@@ -42,7 +42,7 @@ const Language = () => {
     getData(`${LanguageURL}`)
       .then((data: any) => {
         if (data.status) {
-          setDataLanguage(data?.data);
+          setDataLanguage(data?.data?.languagees_data);
         }
       })
       .catch((e) => {
@@ -75,10 +75,10 @@ const Language = () => {
           hideProgressBar: true,
           theme: 'colored',
         });
-        if(data.status){
+        if (data.status) {
           callAPI();
         }
-       
+
         setDataDelete(false);
       })
       .catch((e) => {

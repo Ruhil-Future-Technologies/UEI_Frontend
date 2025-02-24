@@ -11,7 +11,7 @@ const useApi = () => {
   const token = localStorage.getItem('token');
   const headers = {
     Authorization: `${token}`,
-    'Content-Type': 'multipart/form-data'
+    'Content-Type': 'multipart/form-data',
   };
   const STATIC_JWT_TOKEN =
     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MDEyMjUyNSwianRpIjoiOTVjYmRkMTEtZTdkMC00YzBhLWEzZTctYmI2YjZmYWIxNjQ2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjA0MzZhZTM0LTFhZWYtNDExYi1iZDJlLTk0NTcxNTA4OGM5ZCIsIm5iZiI6MTc0MDEyMjUyNSwiY3NyZiI6ImQzNzA3YWU4LTk1ODEtNDMzOS05N2M4LWEzZjUxYmM0NzQwOCIsImV4cCI6MTc0MDEyOTcyNSwiZW1haWwiOiJyYWh1bGsxMjNAeW9wbWFpbC5jb20iLCJwaG9uZSI6Ijk4Nzg5ODc4OTgiLCJ1c2VyX3V1aWQiOiIwNDM2YWUzNC0xYWVmLTQxMWItYmQyZS05NDU3MTUwODhjOWQiLCJ1c2VyX3R5cGUiOiJhZG1pbiIsInVzZXJfc2VjcmV0Ijoic2NyeXB0OjMyNzY4Ojg6MSRPUlZmT2R1bTRoQXZROTd4JDQwYzFiMzA3NGZmYzc0YTc2N2VlODIzZDAwMjdiYjhmMzY1NmY2ZDk4YzU0ZDFlZWJiZGNhNmQ1YzkyNTUwM2I4OTg5OTA1MmM1MzYzNjZhZDA5ZTAzNTk5NTlhNmU4NDJmOGMyMzljYTc4MGVlZmVmZTY5NzZjYjEwZmRjZTM0In0.QV02nAiYm7FnngGHO25qGPdXqW0WUy-jeVtJRm3_52o';
@@ -71,10 +71,10 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      
-      if (error.response?.status === 404 ||error.response?.status === 401) {
-        console.warn("Data not found, returning empty object.");
-        return { data: [],code:404 };  // Prevents UI from breaking
+
+      if (error.response?.status === 404 || error.response?.status === 401) {
+        console.warn('Data not found, returning empty object.');
+        return { data: [], code: 404 }; // Prevents UI from breaking
       }
       throw error; // Re-throw other errors
     }
@@ -87,7 +87,7 @@ const useApi = () => {
     }
     const headers = {
       Authorization: `${STATIC_JWT_TOKEN}`,
-     "ngrok-skip-browser-warning":1
+      'ngrok-skip-browser-warning': 1,
     };
     setLoading(true);
     setError(null);
@@ -128,7 +128,7 @@ const useApi = () => {
       throw error;
     }
   };
-  
+
   const postDataJson = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
       handlogout();
@@ -163,8 +163,8 @@ const useApi = () => {
     }
     const headers = {
       Authorization: `${STATIC_JWT_TOKEN}`,
-      "ngrok-skip-browser-warning":1,
-      'Content-Type': 'multipart/form-data'
+      'ngrok-skip-browser-warning': 1,
+      'Content-Type': 'multipart/form-data',
     };
     setLoading(true);
     setError(null);
@@ -197,6 +197,35 @@ const useApi = () => {
       console.log(headers);
       const response = await httpClient.put(requestUrl, data, {
         headers,
+      });
+      setLoading(false);
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
+
+  const putFileData = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const requestUrl = url;
+
+      const response = await httpClient.put(requestUrl, data, {
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
       setLoading(false);
       if (redirectUrl) {
@@ -308,6 +337,7 @@ const useApi = () => {
     getForRegistration,
     postData,
     putData,
+    putFileData,
     postRegisterData,
     deleteData,
     postDataJson,
