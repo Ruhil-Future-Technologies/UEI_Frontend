@@ -52,9 +52,9 @@ const AddEditHobby = () => {
   const callAPI = async () => {
     if (id) {
       getData(`${HobbyEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { status: boolean, data: IHobbyForm }) => {
+        .then((data) => {
           if (data.status) {
-            setHobby(data?.data);
+            setHobby(data?.data?.hobby_data);
           }
 
         })
@@ -71,9 +71,9 @@ const AddEditHobby = () => {
   };
   const callAPIHobby = async () => {
     getData(`${HobbyURL}`)
-      .then((data: { status: boolean, data: HobbyRep0oDTO[] }) => {
+      .then((data) => {
         if (data.status) {
-          setDataHobby(data?.data);
+          setDataHobby(data?.data?.hobby_data);
         }
       })
       .catch(() => {

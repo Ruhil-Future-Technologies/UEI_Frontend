@@ -55,9 +55,9 @@ const Entity = () => {
 
   const callAPI = async () => {
     getData(`${EntityURL}`)
-      .then((data: {status:boolean, data: IEntity[] }) => {
+      .then((data) => {
         if (data.status) {
-          setDataEntity(data?.data);
+          setDataEntity(data?.data?.entityes_data);
         }
       })
       .catch((e) => {

@@ -82,7 +82,12 @@ const AddEditLanguage = () => {
     try {
   
       const data = await getData(`${LanguageURL}`);
+      console.log(data.data)
       if (data?.status) {
+        if(!data?.data){
+
+          setDataLanguage(data?.data);  
+        }
         setDataLanguage(data?.data);
       }
     } catch (e) {

@@ -42,9 +42,9 @@ const Hobby = () => {
 
   const callAPI = async () => {
     getData(`${HobbyURL}`)
-      .then((data: {status:boolean, data: HobbyRep0oDTO[] }) => {
+      .then((data) => {
         if (data.status) {
-          setDataHobby(data?.data);
+          setDataHobby(data?.data?.hobby_data);
         }
       })
       .catch((e) => {

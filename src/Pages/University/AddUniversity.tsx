@@ -23,6 +23,7 @@ const AddUniversity = () => {
   const [univesity, setUnivesity] = useState<any>(initialState);
 
   const callAPI = async () => {
+    console.log(id)
     if (id) {
       getData(`${UniversityeditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
