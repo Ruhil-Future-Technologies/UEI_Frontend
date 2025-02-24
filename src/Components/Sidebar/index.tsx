@@ -68,9 +68,11 @@ const Sidebar = () => {
         .then((data: any) => {
           if (data.data) {
             console.log(data.data);
-            const menuData = data.data.menus_data_list;
-            setMenuList1(menuData);
-            localStorage.setItem('menulist1', JSON.stringify(menuData));
+            if(data.data.menus_data_list){
+              const menuData = data.data.menus_data_list;
+              setMenuList1(menuData);
+              localStorage.setItem('menulist1', JSON.stringify(menuData));
+            }
             const saved = localStorage.getItem('menulist1');
             if (!saved) {
               console.warn('Failed to save menulist1');

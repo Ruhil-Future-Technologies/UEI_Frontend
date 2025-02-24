@@ -513,6 +513,7 @@ export const ProfileDialog: FunctionComponent<{
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const filteredQuestions = initialQuestions;
   useEffect(() => {
+    if(usertype ==='student'){
     setAnswers([]);
     if (currentSection) {
       const fetchProfileData = async () => {
@@ -762,6 +763,7 @@ export const ProfileDialog: FunctionComponent<{
       });
 
     getSubject();
+  }
   }, [currentSection, isOpen]);
 
   useEffect(() => {

@@ -46,7 +46,7 @@ const Login = () => {
     }
   }, []);
 
-  const { postData } = useApi();
+  const { postData,postDataJson } = useApi();
 
   const navigator = useNavigate();
   const [password, setPassword] = useState('');
@@ -147,7 +147,7 @@ const Login = () => {
       email: emailphone,
       otp: otp,
     };
-    postData(`/auth/verify-otp`, payload).then((data) => {
+    postDataJson(`/auth/verify-otp`, payload).then((data) => {
       console.log(data);
       if (data.status === true) {
         handleSuccessfulLogin(data);

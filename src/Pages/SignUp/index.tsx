@@ -38,7 +38,7 @@ import OtpCard from '../../Components/Dailog/OtpCard';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
-  const { postData, loading } = useApi();
+  const { postData,postDataJson, loading } = useApi();
   const [password, setPassword] = useState('');
 
   const [emailphone, setEmailphone] = useState('');
@@ -153,7 +153,7 @@ const Signup = () => {
       email: emailphone,
       otp: otp
     }
-    postData(`/auth/verify-otp`, payload).then((data) => {
+    postDataJson(`/auth/verify-otp`, payload).then((data) => {
       console.log(data);
       if (data.status === true) {
         handleSuccessfulLogin(data.data,);

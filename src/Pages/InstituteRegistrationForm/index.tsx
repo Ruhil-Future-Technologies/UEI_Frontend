@@ -56,7 +56,7 @@ const InstituteRegistrationForm = () => {
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
 
 
-  const { postRegisterData, getForRegistration,postData } = useApi();
+  const { postRegisterData, getForRegistration,postDataJson } = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
     institute_name: '',
@@ -404,7 +404,7 @@ const InstituteRegistrationForm = () => {
       email: valueInstitute.email_id,
       otp: otp
     }
-    postData(`/auth/verify-otp`, payload).then((data) => {
+    postDataJson(`/auth/verify-otp`, payload).then((data) => {
       console.log(data);
       if (data.status === true) {
         alert('Wait for 24-48 hours, the Administrator will inform you.');
@@ -484,7 +484,6 @@ const InstituteRegistrationForm = () => {
                 </Select>
               </FormControl>
             </div>
-
             <div className="col-md-6 col-12 mb-3">
               <label className="col-form-label">
                 Website<span>*</span>

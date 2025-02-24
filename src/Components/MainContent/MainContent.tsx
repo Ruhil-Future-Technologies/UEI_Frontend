@@ -1827,9 +1827,10 @@ function MainContent() {
             //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
             // )
             const university: any =
-              university_list_data.filter(
+              university_list_data?.filter(
                 (university: any) => university.university_id == university_id,
               ) || null;
+              console.log(university);
             const queryParams = {
               user_query: search,
               student_id: StudentId,
@@ -2328,6 +2329,7 @@ function MainContent() {
         (chatitem: { chat_title: any }) =>
           chatitem?.chat_title === chatData?.[0]?.question,
       );
+      console.log(datatest);
     }
 
     let chat_payload;

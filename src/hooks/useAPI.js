@@ -128,6 +128,33 @@ const useApi = () => {
       throw error;
     }
   };
+  
+  const postDataJson = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    const headers = {
+      Authorization: `${token}`,
+    };
+    setLoading(true);
+    setError(null);
+
+    try {
+      //console.log(loginUrl)
+      const response = await httpClient.post(url, data, { headers });
+      setLoading(false);
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
   const postRegisterData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
       handlogout();
@@ -282,6 +309,7 @@ const useApi = () => {
     putData,
     postRegisterData,
     deleteData,
+    postDataJson,
     postFileData,
     deleteFileData,
     loading,
