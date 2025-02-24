@@ -83,7 +83,7 @@ const Class = () => {
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteClassURL}/${id}`)
       .then((data: { message: string; status: any }) => {
-        if (data.status === 200) {
+        if (data.status) {
           toast.success('Class deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',

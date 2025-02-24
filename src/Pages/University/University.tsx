@@ -157,9 +157,7 @@ const University = () => {
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
-                                handleEditFile(
-                                  row?.row?.original?.university_id,
-                                );
+                                handleEditFile(row?.row?.original?.id);
                               }}
                             >
                               <EditIcon />
@@ -175,9 +173,7 @@ const University = () => {
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
-                                handleDeleteFiles(
-                                  row?.row?.original?.university_id,
-                                );
+                                handleDeleteFiles(row?.row?.original?.id);
                               }}
                             >
                               <TrashIcon />
