@@ -800,7 +800,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           <div>
             {' '}
             {contry_col && (
-              <p style={{ color: 'red' }}>Please select Country Name.</p>
+              <p style={{ color: 'red' }}>Please select Country name.</p>
             )}
           </div>
         </div>

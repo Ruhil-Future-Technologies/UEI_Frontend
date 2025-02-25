@@ -41,8 +41,19 @@ const Language = () => {
   const callAPI = async () => {
     getData(`${LanguageURL}`)
       .then((data: any) => {
-        if (data.status) {
-          setDataLanguage(data?.data?.languagees_data);
+        if (data.data) {
+          const languageData = data.data.map((language: any) => {
+            const createdDateTime = language?.created_at;
+            const updatedDateTime = language?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            language.created_at = created_time.toLocaleString();
+            language.updated_at = updated_time.toLocaleString();
+            return language;
+          });
+
+          setDataLanguage(languageData);
         }
       })
       .catch((e) => {
@@ -196,7 +207,7 @@ const Language = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Language"
       />
     </>
   );

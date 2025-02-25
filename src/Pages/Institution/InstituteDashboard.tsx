@@ -34,8 +34,6 @@ import {
 } from '../../Components/Table/columns';
 import { Teacher } from '../TeacherRgistrationForm';
 
-
-
 const InstitutionDash = () => {
   const instituteLoginId = localStorage.getItem('user_uuid');
 
@@ -54,7 +52,7 @@ const InstitutionDash = () => {
     website_url: '',
     id: 0, // Assuming `id` is required, initialize with 0
     university_id: '',
-    is_active:0
+    is_active: 0,
   });
   const [totelStudents, setTotelStudent] = useState(0);
   const [totleCourse, setTotleCourse] = useState(0);
@@ -68,8 +66,8 @@ const InstitutionDash = () => {
    
     // eslint-disable-next-line
   }, []);
- 
-  const getCourseCount = async (instituteId:any) => {
+
+  const getCourseCount = async (instituteId: any) => {
     console.log(totleCourse);
     try {
       await getData(`course/course-count/${instituteId}`).then((response) => {
@@ -82,7 +80,7 @@ const InstitutionDash = () => {
       console.log(error);
     }
   };
-  const getCountTeacher = async (instituteId:any) => {
+  const getCountTeacher = async (instituteId: any) => {
     try {
       await getData(`/teacher/count/${instituteId}`).then((response) => {
         if (response?.status) {
@@ -94,7 +92,7 @@ const InstitutionDash = () => {
       console.log(error);
     }
   };
-  const getStudentsCount = async (instituteId:any) => {
+  const getStudentsCount = async (instituteId: any) => {
     try {
       await getData(`/institution/get-student-count/${instituteId}`).then(
         (response) => {
@@ -128,7 +126,7 @@ const InstitutionDash = () => {
     }
   };
 
-  const getStudentsData = async (instituteId:any) => {
+  const getStudentsData = async (instituteId: any) => {
     try {
       await getData(`/student/list/${instituteId}`).then((response) => {
         if (response?.status) {
@@ -140,7 +138,7 @@ const InstitutionDash = () => {
     }
   };
 
-  const getTeahcersData = async (instituteId:any) => {
+  const getTeahcersData = async (instituteId: any) => {
     try {
       await getData(`/teacher/list/${instituteId}`).then((response) => {
         if (response?.status) {
@@ -151,7 +149,7 @@ const InstitutionDash = () => {
       console.log(error);
     }
   };
-  const getCoursesData = async (instituteId:any) => {
+  const getCoursesData = async (instituteId: any) => {
     try {
       await getData(`/course/list/${instituteId}`).then((response) => {
         if (response?.status) {
@@ -163,7 +161,6 @@ const InstitutionDash = () => {
     }
   };
 
- 
   const slides = [
     { subject: 'English', totalStudents: 30, image: courseImg },
     { subject: 'Math', totalStudents: 25, image: courseImg },
@@ -309,12 +306,19 @@ const InstitutionDash = () => {
                       <th>Name</th>
                       <th>Subject</th>
                     </tr>
-                    {dataTeachers.slice(0,4).map((teacher, index) => (
+                    {dataTeachers.slice(0, 4).map((teacher, index) => (
                       <tr key={index}>
                         <td>
-                          <img src={teacher.pic_path==null?studentimg:teacher.pic_path} alt="" />
+                          <img
+                            src={
+                              teacher.pic_path == null
+                                ? studentimg
+                                : teacher.pic_path
+                            }
+                            alt=""
+                          />
                         </td>
-                        <td>{teacher.first_name+' '+teacher.last_name}</td>
+                        <td>{teacher.first_name + ' ' + teacher.last_name}</td>
                         <td>{teacher.subjects}</td>
                       </tr>
                     ))}
@@ -336,9 +340,9 @@ const InstitutionDash = () => {
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <h5 className="mb-0 fw-semibold fs-6">Total Students</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
-                  {totelStudents}
+                    {totelStudents}
                     <span className="text-primary d-inline-flex align-items-center gap-1">
-                    (2.5%)
+                      (2.5%)
                       <ArrowUpwardOutlinedIcon />
                     </span>
                   </div>
@@ -350,7 +354,7 @@ const InstitutionDash = () => {
                       <th>Name</th>
                       <th>className</th>
                     </tr>
-                    {dataStudents.slice(0,4).map((student, index) => (
+                    {dataStudents.slice(0, 4).map((student, index) => (
                       <tr key={index}>
                         <td>
                           <img src={String(student?.pic_path)} alt="" />
@@ -388,12 +392,16 @@ const InstitutionDash = () => {
                       <th>semester count</th>
                       <th>Enrollment Status</th>
                     </tr>
-                    {dataCourses.slice(0,4).map((course, index) => (
+                    {dataCourses.slice(0, 4).map((course, index) => (
                       <tr key={index}>
                         <td>{course.course_name}</td>
                         <td>{course.duration}</td>
                         <td>{course.semester_count}</td>
-                        <td>{course.enrollment_status==null?"NA":course.enrollment_status}</td>
+                        <td>
+                          {course.enrollment_status == null
+                            ? 'NA'
+                            : course.enrollment_status}
+                        </td>
                       </tr>
                     ))}
                   </table>

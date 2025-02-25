@@ -45,7 +45,6 @@ const PDFList = () => {
   const schoolColumns = PDF_LIST_FOR_SCHOOL_COLUMNS;
 
   useEffect(() => {
-
     getData('/class/list')
       .then((response: any) => {
         if (response.status) {
@@ -153,8 +152,7 @@ const PDFList = () => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}
-                  >
-                  </div>
+                  ></div>
                   <div
                     style={{
                       display: 'flex',
@@ -170,7 +168,7 @@ const PDFList = () => {
                         onClick={() => handlefilter('college')}
                         disabled={buttenView}
                       >
-                        college
+                        College
                       </button>
                       <button
                         name="school"
@@ -178,9 +176,9 @@ const PDFList = () => {
                         disabled={!buttenView}
                         onClick={() => handlefilter('school')}
                       >
-                        school
+                        School
                       </button>
-                    </div>                    
+                    </div>
                   </div>
                   <Box marginTop="10px">
                     <MaterialReactTable

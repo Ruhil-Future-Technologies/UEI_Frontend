@@ -63,7 +63,17 @@ const Subject = () => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
         if (data.data) {
-          setDataSubject(data?.data);
+          const subjectData = data.data.map((subject: any) => {
+            const createdDateTime = subject?.created_at;
+            const updatedDateTime = subject?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            subject.created_at = created_time.toLocaleString();
+            subject.updated_at = updated_time.toLocaleString();
+            return subject;
+          });
+          setDataSubject(subjectData);
         }
       })
       .catch((e) => {
@@ -330,7 +340,7 @@ const Subject = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Subject"
       />
     </>
   );

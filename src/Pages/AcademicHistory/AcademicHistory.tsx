@@ -166,7 +166,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     const errors = { ...initialErrors };
     if (box?.institute_type === '') {
       if (!box?.institute_type)
-        errors.institute_type = 'institute type name is required';
+        errors.institute_type = 'Please select Institute type';
     }
 
     // Validation logic for "college"
@@ -517,11 +517,13 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     const newBoxes = [...boxes];
     newBoxes[index] = { ...newBoxes[index], [field]: value };
     if (field === 'university_id') {
-      
       const filterDataInstitute = institutesAll.filter(
-        (item) => (item.university_id === value && item.is_active===1 && item.is_approve==true),
+        (item) =>
+          item.university_id === value &&
+          item.is_active === 1 &&
+          item.is_approve == true,
       );
-      console.log(filterDataInstitute,'filtered institute 552')
+      console.log(filterDataInstitute, 'filtered institute 552');
       setInstitutes(filterDataInstitute);
     }
     if (field === 'institute_id') {
@@ -587,7 +589,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     if (boxes[0]?.institute_type === 'college') {
       const filterDataInstitute = institutesAll.filter(
-        (item) => item.university_id === boxes[0].university_id  && item.is_active===1 && item.is_approve==true,
+        (item) =>
+          item.university_id === boxes[0].university_id &&
+          item.is_active === 1 &&
+          item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
       const filterDataCourse = coursesAll.filter(
@@ -932,17 +937,17 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                     label="Class"
                   >
                     {// classes.map((classes) => (
-                      classes
-                        ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                        ?.map((classes) => (
-                          <MenuItem
-                            key={classes.id}
-                            value={classes.id}
-                            sx={commonStyle(namecolor)}
-                          >
-                            {classes.class_name}
-                          </MenuItem>
-                        ))}
+                    classes
+                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                      ?.map((classes) => (
+                        <MenuItem
+                          key={classes.id}
+                          value={classes.id}
+                          sx={commonStyle(namecolor)}
+                        >
+                          {classes.class_name}
+                        </MenuItem>
+                      ))}
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1052,8 +1057,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type === 'college' && (
               <div
-                className={`${box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
-                  } form_field_wrapper`}
+                className={`${
+                  box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
+                } form_field_wrapper`}
               >
                 <FormControl
                   required

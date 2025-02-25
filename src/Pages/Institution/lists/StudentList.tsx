@@ -4,7 +4,6 @@ import useApi from '../../../hooks/useAPI';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import Box from '@mui/material/Box';
 
-
 interface Student {
   id: string;
   name: string;
@@ -12,25 +11,25 @@ interface Student {
   class_name: string;
 }
 const StudentListingByInstitution = () => {
-  const instituteId = localStorage.getItem("institute_id");
+  const instituteId = localStorage.getItem('institute_id');
   const { getData } = useApi();
-  const collumns:MRT_ColumnDef<Student>[]=[
+  const collumns: MRT_ColumnDef<Student>[] = [
     {
-      accessorKey:"name",
-      header:"Name",
+      accessorKey: 'name',
+      header: 'Name',
       size: 150,
     },
     {
-      accessorKey:"class_name",
-      header:"Class Name",
+      accessorKey: 'class_name',
+      header: 'Class Name',
       size: 150,
     },
     {
-      accessorKey:"image",
-      header:"Image",
-      size:150
-    }
-  ]
+      accessorKey: 'image',
+      header: 'Image',
+      size: 150,
+    },
+  ];
   const [dataStudents, setDataStudents] = useState<Student[]>([]);
   const getStudentsData = async () => {
     try {
@@ -55,15 +54,13 @@ const StudentListingByInstitution = () => {
               <div className="table-inner">
                 <Box>
                   <MaterialReactTable
-                  columns={collumns}
-                  data={dataStudents}
-                  enableRowVirtualization
-                  positionActionsColumn='first'
-                  muiTablePaperProps={{
-                    elevation:0
-                  }}
-                 
-
+                    columns={collumns}
+                    data={dataStudents}
+                    enableRowVirtualization
+                    positionActionsColumn="first"
+                    muiTablePaperProps={{
+                      elevation: 0,
+                    }}
                   />
                 </Box>
               </div>

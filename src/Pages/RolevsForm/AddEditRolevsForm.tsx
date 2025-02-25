@@ -280,8 +280,8 @@ const AddEditRolevsForm = () => {
     }
   };
   const rolevsformSchema = Yup.object().shape({
-    role_master_id: Yup.string().required('Please select Role master'),
-    form_master_id: Yup.string().required('Please select Form master'),
+    role_master_id: Yup.string().required('Please select Role Master'),
+    form_master_id: Yup.string().required('Please select Form Master'),
     is_save: Yup.string().required('Please select form is save'),
     is_update: Yup.string().required('Please select form is update'),
     is_search: Yup.string().required('Please select form is search'),

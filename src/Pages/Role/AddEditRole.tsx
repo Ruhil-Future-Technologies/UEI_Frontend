@@ -203,7 +203,7 @@ const AddEditRole = () => {
                             inputProps={{ 'data-testid': 'role_name' }}
                             component={TextField}
                             type="text"
-                            label="Role Name *"
+                            label="Role name *"
                             name="role_name"
                             value={values.role_name}
                             variant="outlined"

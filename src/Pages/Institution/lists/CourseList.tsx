@@ -4,25 +4,22 @@ import useApi from '../../../hooks/useAPI';
 import Box from '@mui/material/Box';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 
-
 interface Course {
   id: string;
   course_name: string;
   duration: string;
-  semester_count:number;
+  semester_count: number;
   enrollment_status: string;
 }
 const CourseListingByInstitution = () => {
-  const instituteId = localStorage.getItem("institute_id");
+  const instituteId = localStorage.getItem('institute_id');
   const collmns: MRT_ColumnDef<Course>[] = [
     {
-
       accessorKey: 'course_name',
       header: 'Course Name',
       size: 150,
     },
     {
-
       accessorKey: 'duration',
       header: 'Duration(yr)',
       size: 150,
@@ -36,10 +33,9 @@ const CourseListingByInstitution = () => {
       accessorKey: 'enrollment_status',
       header: 'Enrollment Status',
       size: 150,
-      Cell:({row})=>(
-        row.original.enrollment_status?row.original.enrollment_status:"NA"
-      )
-    }
+      Cell: ({ row }) =>
+        row.original.enrollment_status ? row.original.enrollment_status : 'NA',
+    },
   ];
   const [dataCourses, setDataCourses] = useState<Course[]>([]);
   const { getData } = useApi();
@@ -70,12 +66,10 @@ const CourseListingByInstitution = () => {
                     columns={collmns}
                     data={dataCourses}
                     enableRowVirtualization
-                    positionActionsColumn='first'
+                    positionActionsColumn="first"
                     muiTablePaperProps={{
-                      elevation: 0
+                      elevation: 0,
                     }}
-
-
                   />
                 </Box>
               </div>

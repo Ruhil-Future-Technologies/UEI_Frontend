@@ -205,7 +205,7 @@ const Student = () => {
         onDeleteClick={() =>
           dataDeleteId !== null && handleDelete(dataDeleteId)
         }
-        title="Delete documents?"
+        title="Student"
       />
     </>
   );

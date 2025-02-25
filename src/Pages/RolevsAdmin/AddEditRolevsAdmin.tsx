@@ -214,7 +214,7 @@ const AddEditRoleVsAdmin = () => {
     }
   };
   const rolevsadminSchema = Yup.object().shape({
-    role_master_id: Yup.string().required('Please select Role matser'),
+    role_master_id: Yup.string().required('Please select Role Matser'),
     admin_id: Yup.string().required('Please select Admin'),
   });
   return (

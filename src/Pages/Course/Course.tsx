@@ -44,7 +44,18 @@ const Course = () => {
     getData(`${CourseURL}`)
       .then((data: { data: CourseRep0oDTO[] }) => {
         if (data.data) {
-          setDataCourse(data?.data);
+          const courseData = data.data.map((course: any) => {
+            const createdDateTime = course?.created_at;
+            const updatedDateTime = course?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            course.created_at = created_time.toLocaleString();
+            course.updated_at = updated_time.toLocaleString();
+            return course;
+          });
+
+          setDataCourse(courseData);
         }
       })
       .catch((e) => {
@@ -201,7 +212,7 @@ const Course = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Course"
       />
     </>
   );

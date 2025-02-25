@@ -1,5 +1,13 @@
-import { Dialog, DialogTitle, DialogContent, Box, TextField, DialogActions, Button } from "@mui/material";
-import React, { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Box,
+  TextField,
+  DialogActions,
+  Button,
+} from '@mui/material';
+import React, { useState } from 'react';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import useApi from "../../hooks/useAPI";
 
@@ -18,11 +26,11 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
    // const [viewBtn, setViewBtn] = useState(true);
     const [timeLeft, setTimeLeft] = useState(0);
 
-    const handleOtpChange = (index: number, value: string) => {
-        if (/^\d?$/.test(value)) {
-            const newOtp = [...otp];
-            newOtp[index] = value;
-            setOtp(newOtp);
+  const handleOtpChange = (index: number, value: string) => {
+    if (/^\d?$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
 
             // Auto-focus to next field
             if (value && index < 5) {

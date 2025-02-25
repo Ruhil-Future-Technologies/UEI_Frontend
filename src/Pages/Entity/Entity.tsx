@@ -55,9 +55,19 @@ const Entity = () => {
 
   const callAPI = async () => {
     getData(`${EntityURL}`)
-      .then((data) => {
-        if (data.status) {
-          setDataEntity(data?.data?.entityes_data);
+      .then((data: { data: IEntity[] }) => {
+        if (data.data) {
+          const entityData = data.data.map((entity: any) => {
+            const createdDateTime = entity?.created_at;
+            const updatedDateTime = entity?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            entity.created_at = created_time.toLocaleString();
+            entity.updated_at = updated_time.toLocaleString();
+            return entity;
+          });
+          setDataEntity(entityData);
         }
       })
       .catch((e) => {
@@ -227,7 +237,7 @@ const Entity = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Entity"
       />
     </>
   );

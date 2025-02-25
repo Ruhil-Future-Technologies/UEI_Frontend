@@ -91,7 +91,6 @@ const AddEditInstitute = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
-  const [isSchool, setIsSchool] = useState(false);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
@@ -260,7 +259,7 @@ const AddEditInstitute = () => {
         (entity) => entity.id === e.target.value,
       );
       const isSchoolEntity = selectedEntity?.entity_type === 'School';
-      setIsSchool(isSchoolEntity);
+
       if (isSchoolEntity) {
         setInstitute((prev) => ({
           ...prev,
@@ -758,7 +757,7 @@ const AddEditInstitute = () => {
                             name="university_id"
                             value={values?.university_id}
                             variant="outlined"
-                            disabled={isSchool}
+                            disabled={isSchoolEntity(values?.entity_id)}
                             style={{
                               backgroundColor: isSchoolEntity(values?.entity_id)
                                 ? '#f0f0f0'
@@ -895,11 +894,16 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'institute-name' }}
                           fullWidth
                           component={TextField}
                           type="text"
                           name="institution_name"
-                          label="Institute name *"
+                          label={
+                            isSchoolEntity(values?.entity_id)
+                              ? 'School Name *'
+                              : 'Institute name *'
+                          }
                           value={values?.institution_name}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'institution_name')
@@ -918,6 +922,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'address' }}
                           fullWidth
                           component={TextField}
                           label="Address *"
@@ -937,6 +942,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'email' }}
                           fullWidth
                           component={TextField}
                           type="email"
@@ -972,6 +978,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'mobile' }}
                           component={TextField}
                           type="text"
                           name="mobile_no"
@@ -991,6 +998,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'city' }}
                           component={TextField}
                           label="City *"
                           name="city"
@@ -1023,6 +1031,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'district' }}
                           component={TextField}
                           label="District *"
                           name="district"
@@ -1041,6 +1050,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'pincode' }}
                           component={TextField}
                           label="Pincode *"
                           name="pincode"
@@ -1059,6 +1069,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'website' }}
                           component={TextField}
                           label="Website"
                           name="website_url"

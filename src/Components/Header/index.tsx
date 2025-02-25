@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
+  QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_STUDENT,
 } from '../../utils/const';
@@ -50,14 +51,55 @@ const Header = () => {
   const user_type = localStorage.getItem('user_type');
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
-  const [profileUrl, setProfileUrl] = useState('');
+  const [profileUrl, setProfileUrl] = useState('');;
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const { getData } = useApi();
+  const { getData, postData } = useApi();
   const [dashboardURL, setDashboardURL] = useState('');
-  const handlogout = () => {
+
+  const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
+
+  const saveChat = async () => {
+    const chatDataString = localStorage?.getItem('chatData');
+
+    let chatData: any;
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
+
+    let chat_payload;
+
+    if (Array.isArray(chatData)) {
+      chat_payload = {
+        student_id: userdata.id,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
+      };
+
+      try {
+        await postData(`${chataddconversationurl}`, chat_payload);
+
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
+      } catch (e: any) {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      }
+    }
+  };
+
+  const handlogout = async () => {
+    await saveChat();
     setProPercentage(0);
-    localStorage.removeItem('user_uuid');
-    localStorage.removeItem('chatData');
+    localStorage.removeItem('theme');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
     localStorage.removeItem('user_uuid');

@@ -105,10 +105,12 @@ const TeacherDash = () => {
           setTeacherData(data.data);
         }
       });
+     
     } catch (error) {
       console.log(error);
     }
   };
+ 
   useEffect(() => {
     getTeacherInfo();
   }, []);
@@ -220,7 +222,7 @@ const TeacherDash = () => {
                 <img src={consultantimg} alt="" />
                 <h6 className="fs-18  fw-bold">Get Consultation</h6>
                 <small className="d-block mb-3">
-                  Take help from our expert AI to Prepare Lactures
+                  Take help from our expert AI to Prepare Lectures
                 </small>
                 <button className="btn btn-outline-secondary rounded-pill btn-sm px-lg-3">
                   Start

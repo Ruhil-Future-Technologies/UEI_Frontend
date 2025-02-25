@@ -72,7 +72,7 @@ describe('Header Component', () => {
     const logoutButton = getByTestId('logout-btn');
     expect(logoutButton).toBeInTheDocument();
 
-    act(() => {
+    await act(async () => {
       fireEvent.click(logoutButton);
     });
     expect(localStorage.removeItem).toHaveBeenCalledWith('token');

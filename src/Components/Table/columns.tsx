@@ -121,7 +121,7 @@ export interface InstituteRep0oDTO {
   website_url: MaybeNull<string>;
   id: number;
   university_id?: MaybeNull<string>;
-  is_active?:MaybeNull<number>;
+  is_active?: MaybeNull<number>;
   documents?: MaybeNull<File[]>;
 }
 export interface DepartmentRep0oDTO {
@@ -137,7 +137,7 @@ export interface CourseRep0oDTO {
   is_active: number;
   updated_at: MaybeNull<string>;
   institution_id?: MaybeNull<string>;
-  duration?:MaybeNull<string>;
+  duration?: MaybeNull<string>;
   semester_count?: MaybeNull<string>;
   enrollment_status?: MaybeNull<string>;
 }
@@ -159,7 +159,7 @@ export interface SemesterRep0oDTO {
   icon?: MaybeNull<string>;
   semester_id: number;
   semester_number?: MaybeNull<string>;
-  course_id?:MaybeNull<string>;
+  course_id?: MaybeNull<string>;
 }
 
 export interface FormRep0oDTO {
@@ -308,7 +308,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
     accessorKey: 'institution_name',
-    header: 'Institute name ',
+    header: 'Institution name ',
     size: 150,
   },
   {
@@ -505,11 +505,11 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     accessorKey: 'class_id',
     header: 'Class',
     size: 150,
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ row }: any) => {
       const { getData } = useApi();
       const [className, setClassName] = useState<string>('-');
-      const class_id = cell.getValue();
       const entity_id = row.original.entity_id;
+      const classes = row.original.class_stream_subjects;
 
       useEffect(() => {
         if (entity_id) {
@@ -519,30 +519,16 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
                 (e: any) => e.id === entity_id,
               );
 
-              if (entity?.entity_type === 'School') {
-                getData('/class/list')
-                  .then((response: any) => {
-                    if (response.status === 200) {
-                      const matchingClass = response.data.find(
-                        (cls: any) => cls.id === class_id,
-                      );
+              if (entity?.entity_type === 'School' && classes) {
+                const keysArray = Object.keys(classes);
+                const result = keysArray.join(', ');
 
-                      if (matchingClass) {
-                        setClassName(matchingClass.class_name);
-                      }
-                    }
-                  })
-                  .catch((error) => {
-                    toast.error(error?.message, {
-                      hideProgressBar: true,
-                      theme: 'colored',
-                    });
-                  });
+                setClassName(result);
               }
             }
           });
         }
-      }, [class_id, entity_id]);
+      }, [entity_id]);
 
       return <span>{className}</span>;
     },
@@ -551,10 +537,10 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     accessorKey: 'course_id',
     header: 'Course',
     size: 150,
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ row }: any) => {
       const { getData } = useApi();
       const [courseName, setCourseName] = useState<string>('-');
-      const course_id = cell.getValue();
+      const courses = row?.original?.course_semester_subjects;
       const entity_id = row.original.entity_id;
 
       useEffect(() => {
@@ -564,30 +550,16 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
               const entity = entityResponse.data.find(
                 (e: any) => e.id === entity_id,
               );
-              if (entity?.entity_type === 'College') {
-                getData('/course/list')
-                  .then((response: any) => {
-                    if (response.status === 200) {
-                      const matchingCourse = response.data.find(
-                        (course: any) => course.id === course_id,
-                      );
+              if (entity?.entity_type === 'College' && courses) {
+                const keysArray = Object.keys(courses);
+                const result = keysArray.join(', ');
 
-                      if (matchingCourse) {
-                        setCourseName(matchingCourse.course_name);
-                      }
-                    }
-                  })
-                  .catch((error) => {
-                    toast.error(error?.message, {
-                      hideProgressBar: true,
-                      theme: 'colored',
-                    });
-                  });
+                setCourseName(result);
               }
             }
           });
         }
-      }, [course_id, entity_id]);
+      }, [entity_id]);
 
       return <span>{courseName}</span>;
     },

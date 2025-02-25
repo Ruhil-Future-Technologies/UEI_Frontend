@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Box from '@mui/material/Box';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
@@ -15,34 +14,33 @@ interface Teacher {
 }
 
 const TeacherListingByInstitution = () => {
-  const instituteId = localStorage.getItem("institute_id");
+  const instituteId = localStorage.getItem('institute_id');
 
   const columns: MRT_ColumnDef<Teacher>[] = [
     {
-      accessorKey: "pic_path",
-      header: "Profile pic",
+      accessorKey: 'pic_path',
+      header: 'Profile pic',
       size: 150,
-      Cell: ({ row }: { row: { original: Teacher } }) => ( 
+      Cell: ({ row }: { row: { original: Teacher } }) => (
         <img
           src={row.original.pic_path ? row.original.pic_path : studentimg}
           alt="Teacher"
-          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+          style={{ width: '50px', height: '50px', borderRadius: '50%' }}
         />
       ),
     },
     {
       accessorKey: 'first_name', // Still keep the key for sorting/searching, if needed
-      header: "Full Name",
+      header: 'Full Name',
       size: 150,
-      Cell: ({ row }: { row: { original: Teacher } }) => ( 
-        `${row.original.first_name} ${row.original.last_name}`
-      ),
+      Cell: ({ row }: { row: { original: Teacher } }) =>
+        `${row.original.first_name} ${row.original.last_name}`,
     },
     {
-      accessorKey: "subject",
-      header: "Subject",
-      size: 150
-    }
+      accessorKey: 'subject',
+      header: 'Subject',
+      size: 150,
+    },
   ];
 
   const [dataTeachers, setDataTeachers] = React.useState<Teacher[]>([]);
@@ -76,7 +74,7 @@ const TeacherListingByInstitution = () => {
                     columns={columns}
                     data={dataTeachers}
                     enableRowVirtualization
-                    positionActionsColumn='first'
+                    positionActionsColumn="first"
                     muiTablePaperProps={{ elevation: 0 }}
                   />
                 </Box>
