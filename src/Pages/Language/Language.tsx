@@ -41,8 +41,8 @@ const Language = () => {
   const callAPI = async () => {
     getData(`${LanguageURL}`)
       .then((data: any) => {
-        if (data.data) {
-          const languageData = data.data.map((language: any) => {
+        if (data.status) {
+          const languageData = data?.data?.languagees_data?.map((language: any) => {
             const createdDateTime = language?.created_at;
             const updatedDateTime = language?.updated_at;
             const created_time = new Date(createdDateTime);

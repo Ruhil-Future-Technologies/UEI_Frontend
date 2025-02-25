@@ -41,9 +41,9 @@ const Department = () => {
   }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${DepartmentURL}`)
-      .then((data: { data: DepartmentRep0oDTO[] }) => {
-        if (data.data) {
-          const deparmentData = data.data.map((deparment: any) => {
+      .then((data) => {
+        if (data.status) {
+          const deparmentData = data?.data?.departments_data?.map((deparment: any) => {
             const createdDateTime = deparment?.created_at;
             const updatedDateTime = deparment?.updated_at;
             const created_time = new Date(createdDateTime);

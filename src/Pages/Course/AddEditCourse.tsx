@@ -81,7 +81,7 @@ const AddEditCourse = () => {
     getData(`${InstituteListURL}`)
       .then((data) => {
         if(data?.status){
-          const filteredData = data?.data.filter((item:any) => item.is_active === 1);
+          const filteredData = data?.data.filter((item:any) => item.is_active === 1  && item.is_approve === true);
           setinstituteList(filteredData);
         }
         

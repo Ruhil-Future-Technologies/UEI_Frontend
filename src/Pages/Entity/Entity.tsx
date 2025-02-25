@@ -55,9 +55,9 @@ const Entity = () => {
 
   const callAPI = async () => {
     getData(`${EntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        if (data.data) {
-          const entityData = data.data.map((entity: any) => {
+      .then((data) => {
+        if (data.status) {
+          const entityData = data.data.entityes_data.map((entity: any) => {
             const createdDateTime = entity?.created_at;
             const updatedDateTime = entity?.updated_at;
             const created_time = new Date(createdDateTime);

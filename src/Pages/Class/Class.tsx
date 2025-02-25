@@ -47,8 +47,8 @@ const Class = () => {
 
   const callAPI = async () => {
     getData(`${ClassURL}`)
-      .then((data: { data: IClass[] }) => {
-        if (data.data) {
+      .then((data) => {
+        if (data.status) {
           const classData = data.data.map((cls: any) => {
             const createdDateTime = cls?.created_at;
             const updatedDateTime = cls?.updated_at;

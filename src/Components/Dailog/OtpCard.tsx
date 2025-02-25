@@ -20,17 +20,15 @@ interface OtpCardProps {
 
 const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSuccess, email }) => {
     const { postData } = useApi();
-
-
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
    // const [viewBtn, setViewBtn] = useState(true);
     const [timeLeft, setTimeLeft] = useState(0);
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (/^\d?$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+    const handleOtpChange = (index: number, value: string) => {
+        if (/^\d?$/.test(value)) {
+            const newOtp = [...otp];
+            newOtp[index] = value;
+            setOtp(newOtp);
 
             // Auto-focus to next field
             if (value && index < 5) {
@@ -86,6 +84,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
         }
 
     }
+  
     return (
         <div>
             <Dialog open={open} onClose={handleOtpClose}>
@@ -130,7 +129,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                 </DialogActions>
             </Dialog>
         </div>
-    )
-}
+  );
+};
 
 export default OtpCard;

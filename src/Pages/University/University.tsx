@@ -35,9 +35,9 @@ const University = () => {
 
   const callAPI = async () => {
     getData(`${UniversityURL}`)
-      .then((data: { data: UniversityRep0oDTO[] }) => {
-        if (data.data) {
-          const universityData = data.data.map((universtiy: any) => {
+      .then((data) => {
+        if (data.status) {
+          const universityData = data?.data?.universities_data?.map((universtiy: any) => {
             const createdDateTime = universtiy?.created_at;
             const updatedDateTime = universtiy?.updated_at;
             const created_time = new Date(createdDateTime);

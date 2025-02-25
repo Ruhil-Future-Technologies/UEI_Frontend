@@ -756,6 +756,7 @@ const AddEditTeacher = () => {
     teacherData: ITeacherForm,
     { resetForm }: FormikHelpers<ITeacherForm>,
   ) => {
+    const formData = new FormData();
     const transformCollegeData = (originalData: any) => {
       const transformedData = { ...originalData };
 
