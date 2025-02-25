@@ -94,8 +94,8 @@ const AddEditRolevsForm = () => {
   const callAPI = async () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.rolees_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataRole(filteredData || []);
         // setDataRole(data?.data||[])
@@ -111,8 +111,8 @@ const AddEditRolevsForm = () => {
       });
     getData(`${FormURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.formes_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataForm(filteredData || []);
         // setDataForm(data?.data||[])

@@ -81,8 +81,8 @@ const AddEditRoleVsAdmin = () => {
   const callAPI = async () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.rolees_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataRole(filteredData || []);
         // setDataRole(data?.data||[])
@@ -98,10 +98,15 @@ const AddEditRoleVsAdmin = () => {
       });
     getData(`${AdminURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
-        );
-        setDataAdmin(filteredData || []);
+        if(data.status){
+          console.log(data?.data)
+          const filteredData = data?.data?.admines_data?.filter(
+            (item: any) => item?.is_active,
+          );
+          console.log(filteredData)
+          setDataAdmin(filteredData || []);
+        }
+        
         // setDataAdmin(data?.data||[])
       })
       .catch((e) => {

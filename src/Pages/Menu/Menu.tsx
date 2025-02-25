@@ -40,7 +40,7 @@ const Menu = () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
         if (data.status) {
-          setDataMenu(data?.data);
+          setDataMenu(data?.data?.menues_data);
         }
       })
       .catch((e) => {

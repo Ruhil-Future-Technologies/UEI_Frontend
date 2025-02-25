@@ -48,7 +48,7 @@ const AddEditMenu = () => {
       getData(`${MenuEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           if(data.status){
-            setMenu(data?.data);
+            setMenu(data?.data?.menu_data);
           }
         })
         .catch((e) => {

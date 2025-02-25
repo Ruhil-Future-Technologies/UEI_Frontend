@@ -1844,7 +1844,7 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
 export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: 'menu_name',
+    accessorKey: 'sub_menu_name',
     header: 'Submenu Name',
     size: 150,
   },
