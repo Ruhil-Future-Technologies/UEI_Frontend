@@ -29,11 +29,9 @@ const AdminFeedback = () => {
 
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
-      .then((data: { data: IFeedback[] }) => {
+      .then((data) => {
         if (data.data) {
-          console.log('FeedBack Data', data.data);
-
-          setDataFeedback(data?.data);
+          setDataFeedback(data?.data?.feedbacks_data);
         }
       })
       .catch((e) => {

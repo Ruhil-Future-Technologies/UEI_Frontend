@@ -23,11 +23,10 @@ const AddUniversity = () => {
   const [univesity, setUnivesity] = useState<any>(initialState);
 
   const callAPI = async () => {
-    console.log(id)
     if (id) {
       getData(`${UniversityeditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setUnivesity(data?.data?.universities_data);
+          setUnivesity(data?.data?.university_data);
         })
         .catch((e) => {
           toast.error(e?.message, {

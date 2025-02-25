@@ -39,7 +39,7 @@ const Role = () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
         if (data.data) {
-          setDataRole(data?.data);
+          setDataRole(data?.data?.rolees_data);
         }
       })
       .catch((e) => {

@@ -39,8 +39,8 @@ const InstitutionDash = () => {
 
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<InstituteRep0oDTO>({
-    institution_name: '',
-    email_id: '',
+    institute_name: '',
+    email: '',
     address: '',
     city: '',
     country: '',
@@ -48,7 +48,7 @@ const InstitutionDash = () => {
     district: '',
     pincode: '',
     entity_id: '',
-    mobile_no: '',
+    phone: '',
     website_url: '',
     id: 0, // Assuming `id` is required, initialize with 0
     university_id: '',
@@ -63,7 +63,7 @@ const InstitutionDash = () => {
 
   useEffect(() => {
     getInstitutionInfo();
-   
+
     // eslint-disable-next-line
   }, []);
 
@@ -94,9 +94,9 @@ const InstitutionDash = () => {
   };
   const getStudentsCount = async (instituteId: any) => {
     try {
-      await getData(`/institute/get-student-count/${instituteId}`).then(
+      await getData(`/institution/get-student-count/${instituteId}`).then(
         (response) => {
-          if(response.status) {
+          if (response.status) {
             setTotelStudent(response.student_count);
           }
         },
@@ -109,7 +109,6 @@ const InstitutionDash = () => {
     try {
       await getData(`institute/edit/${instituteLoginId}`).then((response) => {
         if (response?.status) {
-
           setInstituteInfo(response?.data);
           getCourseCount(response?.data?.id);
           getStudentsCount(response?.data?.id);
@@ -117,7 +116,7 @@ const InstitutionDash = () => {
           getStudentsData(response?.data?.id);
           getTeahcersData(response?.data?.id);
           getCoursesData(response?.data?.id);
-          localStorage.setItem("institute_id", response?.data?.id);
+          localStorage.setItem('institute_id', response?.data?.id);
           console.log(response);
         }
       });
@@ -169,7 +168,7 @@ const InstitutionDash = () => {
     { subject: 'Geography', totalStudents: 40, image: courseImg },
   ];
 
-   return (
+  return (
     <div className="main-wrapper">
       <div className="main-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">

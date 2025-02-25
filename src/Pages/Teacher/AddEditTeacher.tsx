@@ -352,10 +352,10 @@ const AddEditTeacher = () => {
 
   useEffect(() => {
     getData(`${GET_UNIVERSITY}`).then((data) => {
-      setDataUniversity(data.data);
+      setDataUniversity(data.data?.universities_data);
     });
     getData(`${GET_ENTITIES}`).then((data) => {
-      setDataEntity(data.data);
+      setDataEntity(data.data?.entityes_data);
     });
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
       const allInstitutes = data.data;

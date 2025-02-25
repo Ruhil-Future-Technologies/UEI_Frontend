@@ -59,13 +59,9 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 //import axios from "axios";
 
 const TeacherProfile = () => {
-  const stream = [
-    "Science",
-    "Commerce",
-    "Arts",
-  ]
+  const stream = ['Science', 'Commerce', 'Arts'];
   const navigate = useNavigate();
-  const teacherLoginId = localStorage.getItem("_id");
+  const teacherLoginId = localStorage.getItem('user_uuid');
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, putData } = useApi();
@@ -78,36 +74,34 @@ const TeacherProfile = () => {
   const Rolelist = QUERY_KEYS_ROLE.GET_ROLE;
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
 
-  const [teacherData, setTeacherData] = useState<Teacher>(
-    {
-      first_name: '',
-      last_name: '',
-      gender: '',
-      dob: dayjs('dd-mm-yyyy'),
-      email_id: '',
-      phone: '',
-      address: '',
-      country: '',
-      state: '',
-      stream: '',
-      district: '',
-      city: '',
-      pincode: '',
-      qualification: '',
-      experience: '',
-      subjects: [''],
-      role_id: '',
-      entity_id: '',
-      class_id: '',
-      course_id: '',
-      institution_id: '',
-      school_name: '',
-      documents: [],
-      is_verified: false,
-      is_kyc_verified: false,
-      pic_path: '',
-    }
-  );
+  const [teacherData, setTeacherData] = useState<Teacher>({
+    first_name: '',
+    last_name: '',
+    gender: '',
+    dob: dayjs('dd-mm-yyyy'),
+    email_id: '',
+    phone: '',
+    address: '',
+    country: '',
+    state: '',
+    stream: '',
+    district: '',
+    city: '',
+    pincode: '',
+    qualification: '',
+    experience: '',
+    subjects: [''],
+    role_id: '',
+    entity_id: '',
+    class_id: '',
+    course_id: '',
+    institution_id: '',
+    school_name: '',
+    documents: [],
+    is_verified: false,
+    is_kyc_verified: false,
+    pic_path: '',
+  });
 
   const [genderData, setGenderData] = useState('male');
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
@@ -332,7 +326,7 @@ const TeacherProfile = () => {
                   semester_number: semester_number,
                   subjects:
                     data.data.course_semester_subjects[CourseKey][
-                    semester_number
+                      semester_number
                     ],
                   filteredSemesters: allsemesters.filter(
                     (item) => item.course_id == CourseKey,
@@ -364,10 +358,10 @@ const TeacherProfile = () => {
                     stream == 'general'
                       ? allSubject.filter((item) => item.class_id === classKey)
                       : allSubject.filter(
-                        (item) =>
-                          item.class_id === classKey &&
-                          item.stream === stream,
-                      ),
+                          (item) =>
+                            item.class_id === classKey &&
+                            item.stream === stream,
+                        ),
                 }),
               ),
             );
@@ -1365,7 +1359,7 @@ const TeacherProfile = () => {
                                   },
                                 }}
                               >
-                                {item.institution_name}
+                                {item.institute_name}
                               </MenuItem>
                             ))}
                           </Select>
@@ -1421,7 +1415,7 @@ const TeacherProfile = () => {
                                   },
                                 }}
                               >
-                                {item.institution_name}
+                                {item.institute_name}
                               </MenuItem>
                             ))}
                           </Select>
@@ -1523,10 +1517,10 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForCourse_semester_subject[index]
                             ?.course_id_error === true && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please enter a valid Course.</small>
-                              </p>
-                            )}
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please enter a valid Course.</small>
+                            </p>
+                          )}
                         </div>
 
                         {/* Semester Selection */}
@@ -1560,10 +1554,10 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForCourse_semester_subject[index]
                             ?.semester_number_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a Semester.</small>
-                              </p>
-                            )}
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a Semester.</small>
+                            </p>
+                          )}
                         </div>
 
                         {/* Subjects Selection */}
@@ -1616,13 +1610,13 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForCourse_semester_subject[index]
                             ?.subjects_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select at least one subject.</small>
-                              </p>
-                            )}
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select at least one subject.</small>
+                            </p>
+                          )}
                         </div>
                         <div>
-                          { }
+                          {}
                           {(selectedEntity.toLowerCase() === 'college' ||
                             selectedEntity.toLowerCase() === 'school') &&
                             ((boxes.length === 1 && index === 0) ||
@@ -1679,10 +1673,10 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForClass_stream_subject[index]
                             ?.class_id_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a Class.</small>
-                              </p>
-                            )}
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a Class.</small>
+                            </p>
+                          )}
                         </div>
                         {box.is_Stream && (
                           <div className="col-md-4 col-12 mb-3">
@@ -1738,13 +1732,13 @@ const TeacherProfile = () => {
                             </FormControl>
                             {errorForClass_stream_subject[index]
                               ?.stream_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Stream.</small>
-                                </p>
-                              )}
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Stream.</small>
+                              </p>
+                            )}
                           </div>
                         )}
                         <div className={box.selected_class_name}>
@@ -1796,10 +1790,10 @@ const TeacherProfile = () => {
                           </FormControl>
                           {errorForClass_stream_subject[index]
                             ?.subjects_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select at least one subject.</small>
-                              </p>
-                            )}
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select at least one subject.</small>
+                            </p>
+                          )}
                         </div>
 
                         <div>

@@ -107,13 +107,10 @@ const Teacher = () => {
   }, [dataTeacher, columns11]);
 
   const callAPI = async () => {
-    console.log('callAPI called');
-
     getData('/entity/list').then((data) => {
-      if(data.status){
-        setEntity(data?.data?.entityes_data);
+      if (data.status) {
+        setEntity(data.data?.entityes_data);
       }
-      
     });
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
       const allInstitutes = data.data;

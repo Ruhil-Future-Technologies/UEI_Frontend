@@ -36,9 +36,9 @@ import {
 } from '@mui/icons-material';
 
 interface InstituteDetails {
-  institution_name?: string;
+  institute_name?: string;
   university_name?: string;
-  email_id?: string;
+  email?: string;
   mobile_no?: string;
   entity_type?: string;
   is_active?: 0 | 1;
@@ -89,17 +89,17 @@ const Institute = () => {
   // Calculate and update column widths based on content length
   useEffect(() => {
     const updatedColumns = columns11.map((column) => {
-      if (column.accessorKey === 'email_id') {
-        // Calculate the maximum width needed for 'email_id' column based on data
+      if (column.accessorKey === 'email') {
+        // Calculate the maximum width needed for 'email' column based on data
         const maxWidth = Math.max(
           ...dataInstitute.map((item) =>
-            item?.email_id ? item?.email_id?.length * 10 : 0,
+            item?.email ? item?.email?.length * 10 : 0,
           ),
         ); // Adjust multiplier as needed
         return { ...column, size: maxWidth };
       }
       if (column.accessorKey === 'website_url') {
-        // Calculate the maximum width needed for 'email_id' column based on data
+        // Calculate the maximum width needed for 'email' column based on data
         const maxWidth = Math.max(
           ...dataInstitute.map((item) =>
             item?.website_url ? item?.website_url?.length * 7 : 0,
@@ -115,7 +115,7 @@ const Institute = () => {
 
   const callAPI = async () => {
     getData(`${InstituteURL}`)
-      .then((data: {status:boolean, data: InstituteRep0oDTO[] }) => {
+      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
         if (data.status) {
           setDataInstitute(data?.data);
         }
@@ -188,14 +188,13 @@ const Institute = () => {
   const handleApproveInstitute = (id: number) => {
     putData(`${QUERY_KEYS.INSITUTE_APPROVE}/${id}`)
       .then((data) => {
-        if(data.status){
+        if (data.status) {
           callAPI();
         }
         toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
-        
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -207,14 +206,13 @@ const Institute = () => {
   const handleRejectInstitute = (id: number) => {
     putData(`${QUERY_KEYS.INSITUTE_DISAPPROVE}/${id}`)
       .then((data) => {
-        if(data.status){
+        if (data.status) {
           callAPI();
         }
         toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
-      
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -329,7 +327,9 @@ const Institute = () => {
                                       color: tabletools(namecolor),
                                     }}
                                     onClick={() => {
-                                      handleEditFile(row?.row?.original?.id);
+                                      handleEditFile(
+                                        row?.row?.original?.user_uuid,
+                                      );
                                     }}
                                   >
                                     <EditIcon />
@@ -379,7 +379,7 @@ const Institute = () => {
                                   }}
                                   onClick={() => {
                                     handleApproveInstitute(
-                                      row?.row?.original?.id,
+                                      row?.row?.original?.user_uuid,
                                     );
                                   }}
                                 >
@@ -445,9 +445,9 @@ const Institute = () => {
                             <DialogContent>
                               <div className="insitute-details">
                                 {[
-                                  'institution_name',
+                                  'institute_name',
                                   'university_name',
-                                  'email_id',
+                                  'email',
                                   'mobile_no',
                                   'entity_type',
 
@@ -466,9 +466,9 @@ const Institute = () => {
                                   ...Object.keys(selectedInstitute).filter(
                                     (key) =>
                                       ![
-                                        'institution_name',
+                                        'institute_name',
                                         'university_name',
-                                        'email_id',
+                                        'email',
                                         'mobile_no',
                                         'entity_type',
 

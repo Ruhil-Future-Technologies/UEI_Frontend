@@ -83,7 +83,7 @@ export interface TeacherRepoDTO {
   gender: string;
   dob: string;
   phone: string;
-  email_id: string;
+  email: string;
   qualification: string;
   role_id: string;
   subjects: string[];
@@ -108,9 +108,8 @@ export interface TeacherRepoDTO {
   updated_at: string;
 }
 export interface InstituteRep0oDTO {
-  institution_name: MaybeNull<string>;
-  institute_name?: MaybeNull<string>;
-  email_id: MaybeNull<string>;
+  institute_name: MaybeNull<string>;
+  email: MaybeNull<string>;
   address: MaybeNull<string>;
   city: MaybeNull<string>;
   country: MaybeNull<string>;
@@ -118,7 +117,7 @@ export interface InstituteRep0oDTO {
   district: MaybeNull<string>;
   pincode: MaybeNull<string>;
   entity_id: MaybeNull<string>;
-  mobile_no: MaybeNull<string>;
+  phone: MaybeNull<string>;
   website_url: MaybeNull<string>;
   id: number;
   university_id?: MaybeNull<string>;
@@ -376,13 +375,11 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
         putData(
-          `${
-            valueset === 1 ? MenuInstituteDeactive : MenuInstituteActive
-          }/${id}`,
+          `${valueset ? MenuInstituteDeactive : MenuInstituteActive}/${id}`,
         )
           .then((data: any) => {
             if (data.status === 200) {
@@ -435,7 +432,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     size: 200,
   },
   { accessorKey: 'phone', header: 'Phone', size: 200, minSize: 200 },
-  { accessorKey: 'email_id', header: 'Email', size: 200 },
+  { accessorKey: 'email', header: 'Email', size: 200 },
   {
     accessorKey: 'institution_id',
     header: 'Institute Name',
@@ -453,7 +450,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
                 (institute: any) => institute.id === institute_id,
               );
               if (matchingEntity) {
-                setInstituteName(matchingEntity.institution_name);
+                setInstituteName(matchingEntity.institute_name);
               }
             }
           })
@@ -774,7 +771,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'institution_name',
+    accessorKey: 'institute_name',
     header: 'Institute Name',
     size: 150,
   },
@@ -888,15 +885,19 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
+      console.log({ Show, value, Showvalue, row: row?.original });
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        console.log({ valueset });
+
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue === 1 ? 0 : 1);
               // window.location.reload();
+              toast.success(data?.message);
             }
           })
           .catch((e) => {
@@ -1130,13 +1131,13 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'email_id',
+    accessorKey: 'email',
     header: 'Email',
     size: 150,
   },
 
   {
-    accessorKey: 'mobile_no_call',
+    accessorKey: 'phone_call',
     header: 'Mobile No',
     size: 150,
   },
@@ -1972,16 +1973,17 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue === 1 ? 0 : 1);
               // window.location.reload();
             }
+            toast.success(data.message);
           })
           .catch((e) => {
             toast.error(e?.message, {

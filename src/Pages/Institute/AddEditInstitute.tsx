@@ -29,7 +29,7 @@ import NameContext from '../Context/NameContext';
 
 interface IInstituteForm {
   institute_name: string;
-  email_id: string;
+  email: string;
   address: string;
   city: string;
   country: string;
@@ -37,7 +37,7 @@ interface IInstituteForm {
   district: string;
   pincode: string;
   entity_id: string;
-  mobile_no: string;
+  phone: string;
   website_url: string;
   university_id?: string;
 }
@@ -61,7 +61,7 @@ const AddEditInstitute = () => {
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const initialState = {
     institute_name: '',
-    email_id: '',
+    email: '',
     address: '',
     city: '',
     country: '',
@@ -69,7 +69,7 @@ const AddEditInstitute = () => {
     district: '',
     pincode: '',
     entity_id: '',
-    mobile_no: '',
+    phone: '',
     website_url: '',
     university_id: '',
   };
@@ -99,7 +99,7 @@ const AddEditInstitute = () => {
 
   const callAPIfilter = async () => {
     getData(`${InstituteURL}`)
-      .then((data: {status:boolean, data: InstituteRep0oDTO[] }) => {
+      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
         if (data.status) {
           setDataInstitute(data?.data);
         }
@@ -130,13 +130,13 @@ const AddEditInstitute = () => {
   const callAPI = async () => {
     getData(`${InstituteEntityURL}`)
       .then((data) => {
-        if(data.status){
+        if (data.status) {
           const filteredData = data?.data?.entityes_data.filter(
-            (entity:any) => entity.is_active === true,
+            (entity: any) => entity.is_active === true,
           );
           setDataEntity(filteredData);
         }
-        
+
         // setDataEntity(data?.data)
       })
       .catch((e) => {
@@ -165,8 +165,8 @@ const AddEditInstitute = () => {
       });
     if (id) {
       getData(`${InstituteEditURL}${id ? `/${id}` : ''}`)
-        .then((data: {status:boolean, data: any }) => {
-          if(data.status){
+        .then((data: { status: boolean; data: any }) => {
+          if (data.status) {
             setInstitute(data?.data);
           }
         })
@@ -429,22 +429,22 @@ const AddEditInstitute = () => {
             return !exists;
           }),
 
-        email_id: Yup.string()
+        email: Yup.string()
           .required('Please enter Email id')
           .matches(emailPattern, 'Please enter a valid Email format.')
           .test('unique', 'Email already exists', function (value) {
             if (!value) return true;
 
             // Check if the value matches the current institute name
-            if (value.toLowerCase() === institute?.email_id.toLowerCase()) {
+            if (value.toLowerCase() === institute?.email.toLowerCase()) {
               return true;
             }
 
             // Check for uniqueness against dataInstitute
             const exists = dataInstitute?.some(
               (inst) =>
-                inst?.email_id &&
-                inst?.email_id?.toLowerCase() === value?.toLowerCase(),
+                inst?.email &&
+                inst?.email?.toLowerCase() === value?.toLowerCase(),
             );
 
             return !exists;
@@ -504,7 +504,7 @@ const AddEditInstitute = () => {
           then: () => Yup.string().required('Please select University'),
           otherwise: () => Yup.string(),
         }),
-        mobile_no: Yup.string()
+        phone: Yup.string()
           .required('Please enter Mobile number')
           .matches(
             mobilePattern,
@@ -514,15 +514,15 @@ const AddEditInstitute = () => {
             if (!value) return true;
 
             // Check if the value matches the current institute name
-            if (value?.toLowerCase() === institute?.mobile_no?.toLowerCase()) {
+            if (value?.toLowerCase() === institute?.phone?.toLowerCase()) {
               return true;
             }
 
             // Check for uniqueness against dataInstitute
             const exists = dataInstitute?.some(
               (inst) =>
-                inst?.mobile_no &&
-                inst?.mobile_no?.toLowerCase() === value?.toLowerCase(),
+                inst?.phone &&
+                inst?.phone?.toLowerCase() === value?.toLowerCase(),
             );
 
             return !exists;
@@ -554,15 +554,15 @@ const AddEditInstitute = () => {
             );
             return !exists;
           }),
-        email_id: Yup.string()
+        email: Yup.string()
           .required('Please enter Email id')
           .matches(emailPattern, 'Please enter a valid Email format.')
           .test('unique', 'Email already exists', (value) => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
-                inst?.email_id &&
-                inst?.email_id.toLowerCase() === value?.toLowerCase(),
+                inst?.email &&
+                inst?.email.toLowerCase() === value?.toLowerCase(),
             );
             return !exists;
           }),
@@ -620,7 +620,7 @@ const AddEditInstitute = () => {
           then: () => Yup.string().required('Please select University'),
           otherwise: () => Yup.string(),
         }),
-        mobile_no: Yup.string()
+        phone: Yup.string()
           .required('Please enter Mobile number')
           .matches(
             mobilePattern,
@@ -630,8 +630,8 @@ const AddEditInstitute = () => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
-                inst?.mobile_no &&
-                inst?.mobile_no.toLowerCase() === value?.toLowerCase(),
+                inst?.phone &&
+                inst?.phone.toLowerCase() === value?.toLowerCase(),
             );
             return !exists;
           }),
@@ -670,7 +670,7 @@ const AddEditInstitute = () => {
               }
               initialValues={{
                 institute_name: institute?.institute_name,
-                email_id: institute?.email_id,
+                email: institute?.email,
                 address: institute?.address,
                 city: institute?.city,
                 country: institute?.country,
@@ -678,7 +678,7 @@ const AddEditInstitute = () => {
                 district: institute?.district,
                 pincode: institute?.pincode,
                 entity_id: institute?.entity_id,
-                mobile_no: institute?.mobile_no,
+                phone: institute?.phone,
                 website_url: institute?.website_url,
                 university_id: institute?.university_id,
               }}
@@ -909,8 +909,7 @@ const AddEditInstitute = () => {
                             handleChange(e, 'institute_name')
                           }
                         />
-                        {touched?.institute_name &&
-                        errors?.institute_name ? (
+                        {touched?.institute_name && errors?.institute_name ? (
                           <p style={{ color: 'red' }}>
                             {errors?.institute_name}
                           </p>
@@ -947,14 +946,14 @@ const AddEditInstitute = () => {
                           component={TextField}
                           type="email"
                           label="Email Id*"
-                          name="email_id"
-                          value={values?.email_id}
+                          name="email"
+                          value={values?.email}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'email_id')
+                            handleChange(e, 'email')
                           }
                         />
-                        {touched?.email_id && errors?.email_id ? (
-                          <p style={{ color: 'red' }}>{errors?.email_id}</p>
+                        {touched?.email && errors?.email ? (
+                          <p style={{ color: 'red' }}>{errors?.email}</p>
                         ) : (
                           <></>
                         )}
@@ -981,15 +980,15 @@ const AddEditInstitute = () => {
                           inputProps={{ className: 'mobile' }}
                           component={TextField}
                           type="text"
-                          name="mobile_no"
+                          name="phone"
                           label="Mobile Number *"
-                          value={values?.mobile_no}
+                          value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'mobile_no')
+                            handleChange(e, 'phone')
                           }
                         />
-                        {touched?.mobile_no && errors?.mobile_no ? (
-                          <p style={{ color: 'red' }}>{errors?.mobile_no}</p>
+                        {touched?.phone && errors?.phone ? (
+                          <p style={{ color: 'red' }}>{errors?.phone}</p>
                         ) : (
                           <></>
                         )}

@@ -145,23 +145,19 @@ export const qualifications = [
   'Doctor of Pharmacy (Pharm.D)',
   'Doctor of Business Administration (DBA)',
 ];
-const stream = [
-  "Science",
-  "Commerce",
-  "Arts",
-]
+const stream = ['Science', 'Commerce', 'Arts'];
 
 export interface Boxes {
-  semester_number: string,
-  subjects: string[],
-  course_id: string,
+  semester_number: string;
+  subjects: string[];
+  course_id: string;
   filteredSemesters?: any[];
   filteredSubjects?: any[];
 }
 export interface BoxesForSchool {
-  stream?: string,
-  subjects: string[],
-  class_id: string,
+  stream?: string;
+  subjects: string[];
+  class_id: string;
   filteredStream?: any[];
   filteredSubjects?: any[];
   is_Stream?: boolean;
@@ -375,7 +371,7 @@ const TeacherRegistrationPage = () => {
       .then((data) => {
         console.log(data.data.entityes_data);
         const filteredData = data?.data?.entityes_data.filter(
-          (entity:any) => entity.is_active === true,
+          (entity: any) => entity.is_active === true,
         );
         setDataEntity(filteredData);
         // setDataEntity(data?.data)
@@ -394,8 +390,7 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        console.log(data)
-        const fiteredInstitutedata = data?.data?.filter(
+        const fiteredInstitutedata = data.data.filter(
           (institute: any) =>
             institute.is_active === 1 && institute.is_approve === true,
         );
@@ -435,11 +430,11 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        console.log(data.data)
-        if (data.status) {
-          const filerRoleId = data?.data?.rolees_data?.find((role: any) => (role.role_name).toLowerCase() === "teacher").id
-          console.log(filerRoleId);
-          setRoleId(filerRoleId) // setRoleData(data?.data);
+        if (data.data) {
+          const filerRoleId = data.data.find(
+            (role: any) => role.role_name === 'Teacher',
+          ).id;
+          setRoleId(filerRoleId); // setRoleData(data?.data);
         }
       })
       .catch((e) => {
@@ -457,7 +452,6 @@ const TeacherRegistrationPage = () => {
     if (type === 'College') {
       getForRegistration(`${getSubjectCollege}`)
         .then((data) => {
-          console.log(data);
           if (data.status) {
             setTotleSubject(data?.data);
           }
@@ -492,13 +486,15 @@ const TeacherRegistrationPage = () => {
 
   const getSemester = () => {
     try {
-      getForRegistration(`/semester/list`).then((data) => {
-        if (data.status) {
-          setSemesterData(data.data);
-        }
-      }).catch((e) => {
-        console.error(e)
-      })
+      getForRegistration(`/semester/list`)
+        .then((data) => {
+          if (data.status) {
+            setSemesterData(data.data);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -561,7 +557,7 @@ const TeacherRegistrationPage = () => {
     if (name === 'school_name') {
       const selectedSchool = dataInstitute.find(
         (item) => String(item.id) === value,
-      )?.institution_name;
+      )?.institute_name;
       setSelectedSchool(String(selectedSchool));
     }
     if (name === 'university_id') {
@@ -1444,7 +1440,7 @@ const TeacherRegistrationPage = () => {
                           },
                         }}
                       >
-                        {item.institution_name}
+                        {item.institute_name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -1499,7 +1495,7 @@ const TeacherRegistrationPage = () => {
                           },
                         }}
                       >
-                        {item.institution_name}
+                        {item.institute_name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -1943,7 +1939,12 @@ const TeacherRegistrationPage = () => {
             </DialogActions>
           </Dialog>
         </div>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={handleSubmit} email={teacher.email_id} />
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={handleSubmit}
+          email={teacher.email_id}
+        />
       </div>
     </div>
   );

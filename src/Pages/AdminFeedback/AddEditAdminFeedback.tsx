@@ -43,7 +43,7 @@ const AddEditAdminFeedback = () => {
   useEffect(() => {
     if (id) {
       getData(`${GetFeedbackURL}`).then((data: any) => {
-        const datavalue = data?.data;
+        const datavalue = data?.data?.feedbacks_data;
 
         const getByIdFeedbackData = datavalue.filter(
           (data: any) => data.id == id,
@@ -76,12 +76,12 @@ const AddEditAdminFeedback = () => {
       options: stringifyOptions,
     };
 
-    const formData1=new FormData();
+    const formData1 = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         formData1.append(key, value);
       }
-  });
+    });
 
     if (id) {
       putData(`${FeedbackEditURL}/${id}`, formData1).then((response) => {

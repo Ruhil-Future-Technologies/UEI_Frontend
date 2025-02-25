@@ -54,7 +54,7 @@ const AddEditRole = () => {
     if (id) {
       getData(`${RoleEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          const datavalue = data?.data;
+          const datavalue = data?.data?.role_data;
           setRole({
             role_name: datavalue.role_name,
           });

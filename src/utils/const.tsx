@@ -5,8 +5,8 @@ export const QUERY_KEYS = {
   GET_TEACHER: '/teacher/add',
   ENTITY_LIST: '/entity/list',
   INSTITUTE_ADD: '/institute/add',
-  INSTITUTE_EDIT: '/institution/edit',
-  INSTITUTE_DELETE: '/institutiondelete',
+  INSTITUTE_EDIT: '/institute/edit',
+  INSTITUTE_DELETE: '/institutedelete',
   FORGOT_PASSWORD: '/auth/forgotpassword',
   CHANGE_PASSWORD: '/auth/changepassword',
   RESET_PASSWORD: '/auth/resetpassword',
@@ -23,8 +23,8 @@ export const QUERY_KEYS = {
   GET_INSTITUTEACTIVE: '/institution/activate',
   GET_INSTITUTEDEACTIVE: '/institution/deactivate',
   CHAT_LISTGETALL: '/Chatbot/getalldata',
-  INSITUTE_APPROVE: './institution/approve',
-  INSITUTE_DISAPPROVE: './institution/disapprove',
+  INSITUTE_APPROVE: './institute/approve',
+  INSITUTE_DISAPPROVE: './institute/disapprove',
 };
 export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
