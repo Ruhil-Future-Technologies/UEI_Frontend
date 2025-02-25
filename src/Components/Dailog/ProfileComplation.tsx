@@ -242,6 +242,10 @@ export const ProfileDialog: FunctionComponent<{
     [key: string]: string[];
   }>({});
 
+  const [mobile, setMobile] = useState('');
+  const user_id = localStorage.getItem('userid');
+  const isEmail = (id: any) => /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(id);
+
   // const [open, setOpen] = useState(true);
 
   const errordata = [
@@ -286,6 +290,12 @@ export const ProfileDialog: FunctionComponent<{
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
     if (usertype === 'student') {
+      const user_id = localStorage.getItem('userid');
+
+      if (!isEmail(user_id)) {
+        setMobile(user_id ? user_id : '');
+      }
+
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.status === 200) {
@@ -518,6 +528,12 @@ export const ProfileDialog: FunctionComponent<{
       const fetchProfileData = async () => {
         try {
           const data = await getData(`${profileURL}/${StudentId}`);
+
+          if (!isEmail(user_id)) {
+            filteredQuestions.basic = filteredQuestions.basic.filter(
+              (question) => !['What is your mobile number?'].includes(question),
+            );
+          }
           if (data.status === 200) {
             setAnsweredData(data.data);
 
@@ -906,32 +922,50 @@ export const ProfileDialog: FunctionComponent<{
     // let phoneNum = contfullPhone?.split(' ');
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(' ');
-    const email = localStorage.getItem('userid');
-    const payload = {
-      student_id: StudentId,
-      mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call:
-        answeredData?.contact?.mobile_no_call ||
-        answer[answer.length - 1] === ''
-          ? answer[answer.length - 2]
-          : answer[answer.length - 3],
-      mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
-      mobile_no_watsapp:
-        answeredData?.contact?.mobile_no_watsapp ||
-        answer[answer.length - 1] === ''
-          ? answer[answer.length - 1]
-          : answer[answer.length - 2],
 
-      email_id: answeredData?.contact?.email_id || email,
-    };
+    const checkEmail = isEmail(user_id);
+
+    let payload = {};
+    if (checkEmail) {
+      payload = {
+        student_id: StudentId,
+        mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
+        mobile_no_call:
+          answeredData?.contact?.mobile_no_call ||
+          answer[answer.length - 1] === ''
+            ? answer[answer.length - 2]
+            : answer[answer.length - 3],
+        mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
+        mobile_no_watsapp:
+          answeredData?.contact?.mobile_no_watsapp ||
+          answer[answer.length - 1] === ''
+            ? answer[answer.length - 1]
+            : answer[answer.length - 2],
+
+        email_id: answeredData?.contact?.email_id || user_id,
+      };
+    } else {
+      payload = {
+        student_id: StudentId,
+        mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
+        mobile_no_call: answeredData?.contact?.mobile_no_call || mobile,
+        mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
+        mobile_no_watsapp:
+          answeredData?.contact?.mobile_no_watsapp ||
+          answer[answer.length - 1] === ''
+            ? answer[answer.length - 1]
+            : answer[answer.length - 2],
+        email_id: answeredData?.contact?.email_id || user_id,
+      };
+    }
 
     postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
         if (data?.status === 200) {
-          // toast.success(data?.message, {
-          //   hideProgressBar: true,
-          //   theme: 'colored',
-          // });
+          toast.success(data?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -1566,7 +1600,6 @@ export const ProfileDialog: FunctionComponent<{
       setgName(false);
     }
 
-    //console.log(checkChanges);
     const updatedAnswers = [...answers, ''];
     const filteredAnswers = updatedAnswers.filter((item) => item !== undefined);
     setAnswers(filteredAnswers);

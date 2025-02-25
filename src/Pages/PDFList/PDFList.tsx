@@ -254,7 +254,7 @@ const PDFList = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={handleDelete}
-        title="Delete documents?"
+        title="PDF List"
       />
     </>
   );

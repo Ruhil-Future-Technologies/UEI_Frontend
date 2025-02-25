@@ -551,7 +551,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           item.is_active === 1 &&
           item.is_approve == true,
       );
-      console.log(filterDataInstitute, 'filtered institute 552');
       setInstitutes(filterDataInstitute);
     }
     if (field === 'institute_id') {
@@ -648,7 +647,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   //     setMaxSemester(0);
   //   }
   // }, [totalSemester]);
-  console.log(institutes);
   return (
     <div className="mt-5">
       <form>

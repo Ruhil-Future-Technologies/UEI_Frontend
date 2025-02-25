@@ -371,8 +371,7 @@ const AddSemester = () => {
 
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
-                        {' '}
-                        Save
+                        {id ? 'Update' : 'Save'}
                       </button>
                     </div>
                   </Form>

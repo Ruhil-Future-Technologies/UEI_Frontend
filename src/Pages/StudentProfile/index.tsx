@@ -173,7 +173,7 @@ const StudentProfile = () => {
             const academic_history = data.data.academic_history;
             //   let contact = data.data.contact;
             const contact = {
-              // email_id: data?.data?.contact?.email_id,
+              email_id: data?.data?.contact?.email_id,
               id: data?.data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
               mobile_isd_call: data?.data?.contact?.mobile_isd_call,
