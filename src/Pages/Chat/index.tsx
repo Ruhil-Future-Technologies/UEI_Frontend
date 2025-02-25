@@ -191,24 +191,24 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const container = document.querySelector('.diagram-container');
+    const containers = document.querySelectorAll('.diagram-container');
 
-    if (container) {
+    containers.forEach((container) => {
       const mediaElements = container.querySelectorAll('svg, img');
       mediaElements.forEach((element: any) => {
         element.style.cursor = 'pointer';
         element.addEventListener('click', handleMediaClick);
       });
-    }
+    });
 
     return () => {
-      const container = document.querySelector('.diagram-container');
-      if (container) {
+      const containers = document.querySelectorAll('.diagram-container');
+      containers.forEach((container) => {
         const mediaElements = container.querySelectorAll('svg, img');
         mediaElements.forEach((element: any) => {
           element.removeEventListener('click', handleMediaClick);
         });
-      }
+      });
     };
   }, [chat]);
 
@@ -408,7 +408,7 @@ const Chat = () => {
       const chatDataString: any = localStorage?.getItem('chatData');
       const chatmodify = JSON.parse(chatDataString);
 
-      if (chatmodify && chatmodify[0].question !== '') {
+      if (chatmodify && chatmodify[0] && chatmodify[0].question !== '') {
         const todaysChat = getTodaysData(sortedChatHistory);
         const newArray = [...todaysChat];
 

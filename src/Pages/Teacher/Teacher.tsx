@@ -596,7 +596,7 @@ const Teacher = () => {
                                     )
                                   }
                                 >
-                                  <EditIcon />
+                                  <EditIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Delete">
@@ -612,7 +612,7 @@ const Teacher = () => {
                                     )
                                   }
                                 >
-                                  <TrashIcon />
+                                  <TrashIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Details">
@@ -628,7 +628,7 @@ const Teacher = () => {
                                     )
                                   }
                                 >
-                                  <Visibility />
+                                  <Visibility style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                             </>
@@ -647,7 +647,7 @@ const Teacher = () => {
                                     )
                                   }
                                 >
-                                  <CheckIcon />
+                                  <CheckIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Reject">
@@ -655,7 +655,7 @@ const Teacher = () => {
                                   sx={{
                                     width: '35px',
                                     height: '35px',
-                                    color: tabletools(namecolor),
+                                    // color: tabletools(namecolor),
                                   }}
                                   onClick={() =>
                                     handleRejectTeacher(
@@ -663,7 +663,7 @@ const Teacher = () => {
                                     )
                                   }
                                 >
-                                  <CloseIcon />
+                                  <CloseIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Details">
@@ -679,7 +679,7 @@ const Teacher = () => {
                                     )
                                   }
                                 >
-                                  <Visibility />
+                                  <Visibility style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                             </>

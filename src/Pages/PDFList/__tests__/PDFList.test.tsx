@@ -1,20 +1,20 @@
-import { render, renderHook, screen} from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
-import React, { act, useState } from "react";
-import PDFList from "../PDFList";
-import NameContext from "../../Context/NameContext";
-import { contextValue } from "../../../MockStorage/mockstorage";
-import useApi from "../../../hooks/useAPI";
-import { toast } from "react-toastify";
+import { render, renderHook, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import '@testing-library/jest-dom';
+import React, { act, useState } from 'react';
+import PDFList from '../PDFList';
+import NameContext from '../../Context/NameContext';
+import { contextValue } from '../../../MockStorage/mockstorage';
+import useApi from '../../../hooks/useAPI';
+import { toast } from 'react-toastify';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-jest.mock("../../../hooks/useAPI", () => ({
+jest.mock('../../../hooks/useAPI', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
 const mockPostData = jest.fn();
 const mockPutData = jest.fn();
-describe("PDF LIST COMPONENT", () => {
+describe('PDF LIST COMPONENT', () => {
   beforeEach(() => {
     (useApi as jest.Mock).mockReturnValue({
       postData: mockPostData,
@@ -25,15 +25,15 @@ describe("PDF LIST COMPONENT", () => {
       useNavigate: jest.fn(),
     });
   });
-   it('renders PDFList component', async () => {
+  it('renders PDFList component', async () => {
     render(
-              <NameContext.Provider value={contextValue}>
-                <BrowserRouter>
-                  <PDFList />
-                </BrowserRouter>
-              </NameContext.Provider>
-            );
-    
+      <NameContext.Provider value={contextValue}>
+        <BrowserRouter>
+          <PDFList />
+        </BrowserRouter>
+      </NameContext.Provider>,
+    );
+
     expect(screen.getByText('College')).toBeInTheDocument();
     expect(screen.getByText('School')).toBeInTheDocument();
   });
@@ -65,20 +65,32 @@ describe("PDF LIST COMPONENT", () => {
 
       const handleDelete = () => {
         const payload = { file_id: selectedFile?.pdf_id };
-        mockDeleteFileData.mockResolvedValue({ status: 200, message: 'Deleted Successfully' });
+        mockDeleteFileData.mockResolvedValue({
+          status: 200,
+          message: 'Deleted Successfully',
+        });
 
-        return mockDeleteFileData('https://dbllm.gyansetu.ai/delete-files', payload)
-          .then((data:any) => {
+        return mockDeleteFileData(
+          'https://dbllm.gyansetu.ai/delete-files',
+          payload,
+        )
+          .then((data: any) => {
             if (data.status === 200) {
               setDataDelete(false);
-              toast.success(data.message, { hideProgressBar: true, theme: 'colored' });
+              toast.success(data.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
             }
           })
-          .catch((e:any) => {
+          .catch((e: any) => {
             if (e?.response?.status === 401) {
               mockNavigate('/');
             }
-            toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           });
       };
 
@@ -89,7 +101,10 @@ describe("PDF LIST COMPONENT", () => {
       await result.current.handleDelete();
     });
 
-    expect(mockDeleteFileData).toHaveBeenCalledWith('https://dbllm.gyansetu.ai/delete-files', { file_id: 123 });
+    expect(mockDeleteFileData).toHaveBeenCalledWith(
+      'https://dbllm.gyansetu.ai/delete-files',
+      { file_id: 123 },
+    );
     // expect(toast.success).toHaveBeenCalledWith('Deleted Successfully', { hideProgressBar: true, theme: 'colored' });
     expect(result.current.dataDelete).toBe(false);
   });
@@ -97,7 +112,10 @@ describe("PDF LIST COMPONENT", () => {
   it('handleDelete handles error and redirects on 401', async () => {
     const mockDeleteFileData = jest.fn();
     const mockNavigate = jest.fn();
-    mockDeleteFileData.mockRejectedValue({ response: { status: 401 }, message: 'Unauthorized' });
+    mockDeleteFileData.mockRejectedValue({
+      response: { status: 401 },
+      message: 'Unauthorized',
+    });
 
     const { result } = renderHook(() => {
       const [selectedFile] = useState({ pdf_id: 123 });
@@ -105,13 +123,15 @@ describe("PDF LIST COMPONENT", () => {
 
       const handleDelete = () => {
         const payload = { file_id: selectedFile?.pdf_id };
-        return mockDeleteFileData('https://dbllm.gyansetu.ai/delete-files', payload)
-          .catch((e:any) => {
-            if (e?.response?.status === 401) {
-              mockNavigate('/');
-            }
-            toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
-          });
+        return mockDeleteFileData(
+          'https://dbllm.gyansetu.ai/delete-files',
+          payload,
+        ).catch((e: any) => {
+          if (e?.response?.status === 401) {
+            mockNavigate('/');
+          }
+          toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
+        });
       };
 
       return { dataDelete, handleDelete };
@@ -124,6 +144,4 @@ describe("PDF LIST COMPONENT", () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
     // expect(toast.error).toHaveBeenCalledWith('Unauthorized', { hideProgressBar: true, theme: 'colored' });
   });
-  
 });
-

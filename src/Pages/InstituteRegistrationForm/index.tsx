@@ -151,7 +151,7 @@ const InstituteRegistrationForm = () => {
 
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
+      .then((data) => {
         // const filteredData = data?.data.filter(
         //     (entity) => entity.is_active === 1,
         // );
@@ -1197,6 +1197,280 @@ const InstituteRegistrationForm = () => {
             )}
       </Box>
     </Box>
+              </div>
+            </div>
+          )}
+
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                Mobile Number<span>*</span>
+              </label>
+
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="mobile_no"
+                onChange={handleChange}
+                value={valueInstitute.mobile_no}
+              />
+              <div>
+                {error.mobile_no_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please enter a valid Mobile Number.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                Email Id<span>*</span>
+              </label>
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="email_id"
+                value={valueInstitute.email_id}
+                onChange={handleChange}
+              />
+              <div>
+                {error.email_id_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small> Please enter a valid Email Id.</small>
+                  </p>
+                )}
+                {emailExist === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Email ID already exists.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 mb-3">
+              <label className={`col-form-label`}>
+                Country<span>*</span>
+              </label>
+              <CountryDropdown
+                classes="form-select custom-dropdown"
+                defaultOptionLabel={valueInstitute.country}
+                value={valueInstitute.country || ''}
+                onChange={(e: string) => handleInputChangecountry(e, 'country')}
+              />
+              {error.country_error === true && (
+                <p className="error-text " style={{ color: 'red' }}>
+                  <small>Please select a Country.</small>
+                </p>
+              )}
+            </div>
+
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                State<span>*</span>
+              </label>
+              <RegionDropdown
+                data-testid="perStateDropdown"
+                classes="form-select custom-dropdown"
+                defaultOptionLabel={valueInstitute.state || ''}
+                country={valueInstitute.country || ''}
+                value={valueInstitute.state || ''}
+                // onChange={(val) => setRegion(val)}
+                onChange={(e: string) => handleInputChangecountry(e, 'state')}
+              />
+              {error.state_error === true && (
+                <p className="error-text " style={{ color: 'red' }}>
+                  <small>Please select a State.</small>
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                District<span>*</span>
+              </label>
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="district"
+                onChange={handleChange}
+                value={valueInstitute.district}
+              />
+              <div>
+                {error.district_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small> Please enter a valid District name.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                City<span>*</span>
+              </label>
+
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="city"
+                onChange={handleChange}
+                value={valueInstitute.city}
+              />
+              <div>
+                {error.city_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please enter a valid City name.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                Address<span>*</span>
+              </label>
+
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="address"
+                onChange={handleChange}
+                value={valueInstitute.address}
+              />
+              <div>
+                {error.address_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small>Please enter a valid Address.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                Pincode<span>*</span>
+              </label>
+
+              <TextField
+                autoComplete="off"
+                className="form-control"
+                name="pincode"
+                onChange={handleChange}
+                value={valueInstitute.pincode}
+              />
+              <div>
+                {error.pincode_error === true && (
+                  <p className="error-text " style={{ color: 'red' }}>
+                    <small> Please enter a valid Pincode.</small>
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-12 ">
+              <label className="col-form-label">
+                {' '}
+                Document<span></span>
+              </label>
+              <br />
+              <UploadBtn
+                label="Upload Documents"
+                name="document"
+                accept=".pdf, .jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
+              <div>
+                {allselectedfiles.length > 0 && (
+                  <ul className="mt-4">
+                    {allselectedfiles.map((file, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center justify-between"
+                      >
+                        {file.name}
+                        <DeleteOutlinedIcon
+                          className="m-2 cursor-pointer"
+                          onClick={() => handleRemoveFile(index)}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="col-form-label">
+                {' '}
+                Logo<span></span>
+              </label>
+              <br />
+              <UploadBtn
+                label="Upload Logo"
+                name="icon"
+                accept=".jpg, .jpeg, .png, .gif"
+                handleFileChange={handleFileChange}
+              />
+              <div>
+                <ul>{valueInstitute.icon}</ul>
+              </div>
+            </div>
+          </div>
+          <div className="form-check mb-3 fs-14">
+            <input
+              data-testid="checkbox"
+              className="form-check-input"
+              type="checkbox"
+              value=""
+              id="flexCheckDefault"
+              onChange={handleTermandCondi}
+            />
+            <label className="form-check-label" htmlFor="flexCheckDefault">
+              By registering your account you have to agree with our{' '}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleTACpopup();
+                }}
+              >
+                {' '}
+                Terms & Conditions
+              </a>
+            </label>
+          </div>
+          <div className=" d-flex justify-content-center m-2">
+            <Button
+              variant="contained"
+              disabled={CheckTermandcondi}
+              onClick={openPopupOtp}
+            >
+              Submit
+            </Button>
+          </div>
+          <Dialog open={popupTermandCondi} onClose={handleClose}>
+            <DialogTitle>{'Terms and Condition'}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Content of Gyansetu Terms and Conditions...... will come soon
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={handleSubmit}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -97,6 +97,9 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
       )
       .replace(/(\$\$[\s\S]*?\$\$)/g, (match) =>
         match.replace(/\n/g, 'LATEXBREAK'),
+      )
+      .replace(/(\[\$[\s\S]*?\$\])/g, (match) =>
+        match.replace(/\n/g, 'LATEXBREAK'),
       );
 
     const sections = preservedElement.split(/\n\n+/);
@@ -141,7 +144,21 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
     latex = latex.replace(/\\round\(([^)]+)\)/g, '\\lceil$1\\rceil');
     latex = latex.replace(/^\\\[|\\\]$/g, '');
 
+    if (latex.includes('\\ce{')) {
+      return latex
+        .replace(/\\ce{([^}]+)}/g, '$1')
+        .replace(/_{(\d+)}/g, '$1')
+        .replace(/\\rightarrow/g, '→');
+    }
+
+    latex = latex.replace(/^\$\$|\$\$$/g, '');
+
     if (latex.includes('\\times') || latex.includes('\\div')) {
+      latex = latex
+        .replace(/^\\\[|\\\]$/g, '')
+        .replace(/\\(\[|\])/g, '$1')
+        .replace(/\\round\(([^)]+)\)/g, '\\lceil$1\\rceil');
+
       return latex.trim();
     }
 
@@ -226,8 +243,8 @@ const Chatbot: React.FC<IChatBot> = ({ answer, index }) => {
   };
 
   const renderText = (text: string): JSX.Element => {
-    if (text.match(/^\[(.*)\]$/)) {
-      const innerContent = text.slice(1, -1).trim().replace(/\t/, '\\t');
+    if (text.match(/^\[\$(.*)\$\]$/)) {
+      const innerContent = text.slice(2, -2).trim().replace(/\t/, '\\t');
 
       return <InlineMath key={currentIndex} math={innerContent} />;
     }

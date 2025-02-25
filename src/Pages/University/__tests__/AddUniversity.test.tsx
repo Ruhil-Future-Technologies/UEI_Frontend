@@ -60,7 +60,7 @@ describe('AddUniversity Component', () => {
         </Routes>
       </MemoryRouter>,
     );
-    fireEvent.click(screen.getByText(/Save/i));
+    fireEvent.click(screen.getByText(/Save|Update/i));
 
     await waitFor(() => {
       expect(
@@ -85,7 +85,7 @@ describe('AddUniversity Component', () => {
     fireEvent.change(screen.getByLabelText(/University Name/i), {
       target: { value: 'University A' },
     });
-    fireEvent.click(screen.getByText(/Save/i));
+    fireEvent.click(screen.getByText(/Save|Update/i));
 
     await waitFor(() => {
       expect(mockPostData).toHaveBeenCalledWith(
@@ -118,7 +118,7 @@ describe('AddUniversity Component', () => {
     fireEvent.change(screen.getByLabelText(/University Name/i), {
       target: { value: 'University A Updated' },
     });
-    fireEvent.click(screen.getByText(/Save/i));
+    fireEvent.click(screen.getByText(/Save|Update/i));
 
     await waitFor(() => {
       expect(mockPutData).toHaveBeenCalledWith(
@@ -146,7 +146,7 @@ describe('AddUniversity Component', () => {
     fireEvent.change(screen.getByLabelText(/University Name/i), {
       target: { value: 'University A' },
     });
-    fireEvent.click(screen.getByText(/Save/i));
+    fireEvent.click(screen.getByText(/Save|Update/i));
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(

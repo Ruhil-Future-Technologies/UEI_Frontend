@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-} from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import UserChangePassword from '..';
 import NameContext from '../../Context/NameContext';
@@ -58,8 +53,9 @@ describe('UserChangePassword Component', () => {
     await act(async () => {
       fireEvent.click(submitButton);
     });
-    expect(screen.getAllByText(/Please enter a Password/i).length).toBeGreaterThan(0);
-
+    expect(
+      screen.getAllByText(/Please enter a Password/i).length,
+    ).toBeGreaterThan(0);
   });
 
   it('toggles password visibility when the visibility icon is clicked', () => {

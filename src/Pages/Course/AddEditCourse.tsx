@@ -80,7 +80,9 @@ const AddEditCourse = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+        const filteredData = data?.data.filter(
+          (item) => item.is_active === 1 && item.is_approve === true,
+        );
         setinstituteList(filteredData);
         // setDataEntity(data?.data)
       })

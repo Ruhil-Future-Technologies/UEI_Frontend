@@ -49,7 +49,9 @@ const AddSemester = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+        const filteredData = data?.data.filter(
+          (item) => item.is_active === 1 && item.is_approve === true,
+        );
         setinstituteList(filteredData);
       })
       .catch((e) => {
@@ -369,8 +371,7 @@ const AddSemester = () => {
 
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
-                        {' '}
-                        Save
+                        {id ? 'Update' : 'Save'}
                       </button>
                     </div>
                   </Form>
