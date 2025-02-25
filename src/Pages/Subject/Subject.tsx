@@ -62,8 +62,8 @@ const Subject = () => {
       .then((data: any) => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
-        if (data.data) {
-          const subjectData = data.data.map((subject: any) => {
+        if (data.status) {
+          const subjectData = data?.data?.subjects_data?.map((subject: any) => {
             const createdDateTime = subject?.created_at;
             const updatedDateTime = subject?.updated_at;
             const created_time = new Date(createdDateTime);
@@ -84,8 +84,9 @@ const Subject = () => {
       });
     getData(`${SubjectSchoolURL}`)
       .then((data: any) => {
-        if (data.data) {
-          setDataSubjectSchool(data?.data);
+        console.log(data);
+        if (data.status) {
+          setDataSubjectSchool(data?.data?.subjects_data);
         }
       })
       .catch((e) => {

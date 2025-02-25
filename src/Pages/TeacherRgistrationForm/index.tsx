@@ -354,8 +354,8 @@ const TeacherRegistrationPage = () => {
 
   const getCourses = () => {
     getForRegistration(`${CourseURL}`)
-      .then((data: { data: CourseRep0oDTO[] }) => {
-        if (data.data) {
+      .then((data) => {
+        if (data.status) {
           setDataCourse(data?.data);
         }
       })
@@ -394,11 +394,12 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        const fiteredInstitutedata = data.data.filter(
+        console.log(data)
+        const fiteredInstitutedata = data?.data?.filter(
           (institute: any) =>
             institute.is_active === 1 && institute.is_approve === true,
         );
-        if (data.data) {
+        if (data.status) {
           setDataInstitute(fiteredInstitutedata);
         }
       })
@@ -435,8 +436,8 @@ const TeacherRegistrationPage = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
         console.log(data.data)
-        if (data.data) {
-          const filerRoleId = data.data.find((role: any) => role.role_name === "Teacher").id
+        if (data.status) {
+          const filerRoleId = data?.data?.rolees_data?.find((role: any) => (role.role_name).toLowerCase() === "teacher").id
           console.log(filerRoleId);
           setRoleId(filerRoleId) // setRoleData(data?.data);
         }
@@ -456,6 +457,7 @@ const TeacherRegistrationPage = () => {
     if (type === 'College') {
       getForRegistration(`${getSubjectCollege}`)
         .then((data) => {
+          console.log(data);
           if (data.status) {
             setTotleSubject(data?.data);
           }
@@ -491,7 +493,7 @@ const TeacherRegistrationPage = () => {
   const getSemester = () => {
     try {
       getForRegistration(`/semester/list`).then((data) => {
-        if (data.status === 200) {
+        if (data.status) {
           setSemesterData(data.data);
         }
       }).catch((e) => {
@@ -505,8 +507,8 @@ const TeacherRegistrationPage = () => {
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
       .then((data) => {
-        if (data.data) {
-          setUniversityData(data?.data);
+        if (data.status) {
+          setUniversityData(data?.data?.universities_data);
         }
       })
       .catch((e) => {

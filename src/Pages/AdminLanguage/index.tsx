@@ -142,7 +142,8 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       getData(`${'admin_language_known/get/' + AdminId}`).then(
         (response: any) => {
           if (response?.status) {
-            const newLanageage = response?.data?.filter((items: any) =>
+            console.log(response);
+            const newLanageage = response?.data?.admin_language_known_data?.filter((items: any) =>
               boxes.some((box: Box) => box.id === items.id || box.id == 0),
             );
   

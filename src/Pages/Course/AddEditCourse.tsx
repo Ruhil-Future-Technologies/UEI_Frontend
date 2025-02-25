@@ -80,8 +80,9 @@ const AddEditCourse = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data) => {
+        console.log(data)
         if(data?.status){
-          const filteredData = data?.data.filter((item:any) => item.is_active === 1  && item.is_approve === true);
+          const filteredData = data?.data.filter((item:any) => item.is_active  && item.is_approve);
           setinstituteList(filteredData);
         }
         
@@ -99,8 +100,10 @@ const AddEditCourse = () => {
     if (id) {
       getData(`${CourseEditURL}${id ? `/${id}` : ''}`)
         .then((data) => {
+          console.log(data);
           if(data?.status){
-            setInstitute(data?.data);
+            setInstitute(data?.data?.
+              course_data);
           }
         })
         .catch((e) => {
@@ -253,7 +256,7 @@ const AddEditCourse = () => {
                               {instituteList.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
-                                  key={`${item.institution_name}-${idx + 1}`}
+                                  key={`${item.institute_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
@@ -263,7 +266,7 @@ const AddEditCourse = () => {
                                     },
                                   }}
                                 >
-                                  {item.institution_name}
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>

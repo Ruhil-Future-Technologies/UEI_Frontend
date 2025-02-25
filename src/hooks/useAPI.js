@@ -14,7 +14,7 @@ const useApi = () => {
     'Content-Type': 'multipart/form-data',
   };
   const STATIC_JWT_TOKEN =
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MDEyMjUyNSwianRpIjoiOTVjYmRkMTEtZTdkMC00YzBhLWEzZTctYmI2YjZmYWIxNjQ2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjA0MzZhZTM0LTFhZWYtNDExYi1iZDJlLTk0NTcxNTA4OGM5ZCIsIm5iZiI6MTc0MDEyMjUyNSwiY3NyZiI6ImQzNzA3YWU4LTk1ODEtNDMzOS05N2M4LWEzZjUxYmM0NzQwOCIsImV4cCI6MTc0MDEyOTcyNSwiZW1haWwiOiJyYWh1bGsxMjNAeW9wbWFpbC5jb20iLCJwaG9uZSI6Ijk4Nzg5ODc4OTgiLCJ1c2VyX3V1aWQiOiIwNDM2YWUzNC0xYWVmLTQxMWItYmQyZS05NDU3MTUwODhjOWQiLCJ1c2VyX3R5cGUiOiJhZG1pbiIsInVzZXJfc2VjcmV0Ijoic2NyeXB0OjMyNzY4Ojg6MSRPUlZmT2R1bTRoQXZROTd4JDQwYzFiMzA3NGZmYzc0YTc2N2VlODIzZDAwMjdiYjhmMzY1NmY2ZDk4YzU0ZDFlZWJiZGNhNmQ1YzkyNTUwM2I4OTg5OTA1MmM1MzYzNjZhZDA5ZTAzNTk5NTlhNmU4NDJmOGMyMzljYTc4MGVlZmVmZTY5NzZjYjEwZmRjZTM0In0.QV02nAiYm7FnngGHO25qGPdXqW0WUy-jeVtJRm3_52o';
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MDQ3OTQwNCwianRpIjoiMjdmMDYxN2EtMWM3NC00OTM0LTliOTEtNGExNDVhMDQzMzYzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjBlMjI1ZTAzLTliNDYtNGNiNC1hNjUyLWY4NzYzZjA3YzY3NiIsIm5iZiI6MTc0MDQ3OTQwNCwiY3NyZiI6IjE4MmIxNWU3LWE1MjctNDc3NS05MmI2LTQ4ZTA0ZTM0ZGJhYyIsImV4cCI6MTc0MDQ4NjYwNCwiZW1haWwiOiJzdXBlcmFkbWluQGdtYWlsLmNvbSIsInBob25lIjoiKzExMjM0MyIsInVzZXJfdXVpZCI6IjBlMjI1ZTAzLTliNDYtNGNiNC1hNjUyLWY4NzYzZjA3YzY3NiIsInVzZXJfdHlwZSI6ImFkbWluIiwidXNlcl9zZWNyZXQiOiJzY3J5cHQ6MzI3Njg6ODoxJGVSeXMyN1ZnTlVNZm4wRlgkZDE3MzFmZWY3YzUxOGRhNTgzMTNiMGJlNGY5YmViZmIyMGRmMmIzMDhlYTM4Y2IxN2RlOWVhNGZkZTc3NmU5OGJiOTcwYTYzNzFjNjNjYTQ0OTU1Mjk5NDE5ZDlkMzkzNmU1YTZiODFjMzJmYzkzNjJkN2NmMjJlNDE3NjI1MGUifQ.fgVUCFtonyhwav3JpQ5VAriew7X04ifteWtaKGGkAqs';
   const context = useContext(NameContext);
   const { setProPercentage } = context;
   const synth = window?.speechSynthesis;
@@ -97,8 +97,13 @@ const useApi = () => {
       // console.log("requestUrl", requestUrl);
       const response = await httpClient.get(requestUrl, { headers });
       setLoading(false);
+     
       return response?.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        console.warn('Data not found, returning empty object.');
+        return { data: [], code: 404 }; // Prevents UI from breaking
+      }
       setError(error);
       setLoading(false);
       throw error; // Re-throw the error for the caller to handle
@@ -190,6 +195,33 @@ const useApi = () => {
       navigate('/');
       return;
     }
+    setLoading(true);
+    setError(null);
+    try {
+      const requestUrl = url;
+      const response = await httpClient.put(requestUrl, data, {
+        headers,
+      });
+      setLoading(false);
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
+  const putDataJson = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    const headers = {
+      Authorization: `${token}`,
+    };
     setLoading(true);
     setError(null);
     try {
@@ -336,6 +368,7 @@ const useApi = () => {
     getForRegistration,
     postData,
     putData,
+    putDataJson,
     putFileData,
     postRegisterData,
     deleteData,

@@ -28,7 +28,7 @@ import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
 
 interface IInstituteForm {
-  institution_name: string;
+  institute_name: string;
   email_id: string;
   address: string;
   city: string;
@@ -60,7 +60,7 @@ const AddEditInstitute = () => {
 
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const initialState = {
-    institution_name: '',
+    institute_name: '',
     email_id: '',
     address: '',
     city: '',
@@ -132,7 +132,7 @@ const AddEditInstitute = () => {
       .then((data) => {
         if(data.status){
           const filteredData = data?.data?.entityes_data.filter(
-            (entity:any) => entity.is_active === 1,
+            (entity:any) => entity.is_active === true,
           );
           setDataEntity(filteredData);
         }
@@ -398,7 +398,7 @@ const AddEditInstitute = () => {
   {
     if (id) {
       instituteSchema = Yup.object().shape({
-        institution_name: Yup.string()
+        institute_name: Yup.string()
           .required('Please enter Institute name')
           .test(
             'not-whitespace',
@@ -414,7 +414,7 @@ const AddEditInstitute = () => {
 
             // Check if the value matches the current institute name
             if (
-              value.toLowerCase() === institute.institution_name.toLowerCase()
+              value.toLowerCase() === institute.institute_name.toLowerCase()
             ) {
               return true;
             }
@@ -422,8 +422,8 @@ const AddEditInstitute = () => {
             // Check for uniqueness against dataInstitute
             const exists = dataInstitute.some(
               (inst) =>
-                inst.institution_name &&
-                inst.institution_name.toLowerCase() === value.toLowerCase(),
+                inst.institute_name &&
+                inst.institute_name.toLowerCase() === value.toLowerCase(),
             );
 
             return !exists;
@@ -534,7 +534,7 @@ const AddEditInstitute = () => {
       });
     } else {
       instituteSchema = Yup.object().shape({
-        institution_name: Yup.string()
+        institute_name: Yup.string()
           .required('Please enter Institute name')
           .test(
             'not-whitespace',
@@ -549,8 +549,8 @@ const AddEditInstitute = () => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
-                inst.institution_name &&
-                inst.institution_name.toLowerCase() === value.toLowerCase(),
+                inst.institute_name &&
+                inst.institute_name.toLowerCase() === value.toLowerCase(),
             );
             return !exists;
           }),
@@ -669,7 +669,7 @@ const AddEditInstitute = () => {
                 handleSubmit(formData, formikHelpers)
               }
               initialValues={{
-                institution_name: institute?.institution_name,
+                institute_name: institute?.institute_name,
                 email_id: institute?.email_id,
                 address: institute?.address,
                 city: institute?.city,
@@ -898,21 +898,21 @@ const AddEditInstitute = () => {
                           fullWidth
                           component={TextField}
                           type="text"
-                          name="institution_name"
+                          name="institute_name"
                           label={
                             isSchoolEntity(values?.entity_id)
                               ? 'School Name *'
                               : 'Institute name *'
                           }
-                          value={values?.institution_name}
+                          value={values?.institute_name}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'institution_name')
+                            handleChange(e, 'institute_name')
                           }
                         />
-                        {touched?.institution_name &&
-                        errors?.institution_name ? (
+                        {touched?.institute_name &&
+                        errors?.institute_name ? (
                           <p style={{ color: 'red' }}>
-                            {errors?.institution_name}
+                            {errors?.institute_name}
                           </p>
                         ) : (
                           <></>

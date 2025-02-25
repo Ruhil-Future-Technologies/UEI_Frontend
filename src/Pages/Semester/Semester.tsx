@@ -33,7 +33,8 @@ const Semester = () => {
     try {
       const data = await getData(`${SemesterURL}`);
       if (data?.data) {
-        const semesterData = data.data.map((semester: any) => {
+        console.log(data);
+        const semesterData = data?.data?.semesters_data?.map((semester: any) => {
           const createdDateTime = semester?.created_at;
           const updatedDateTime = semester?.updated_at;
           const created_time = new Date(createdDateTime);

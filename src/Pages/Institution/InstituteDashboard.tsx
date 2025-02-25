@@ -94,7 +94,7 @@ const InstitutionDash = () => {
   };
   const getStudentsCount = async (instituteId: any) => {
     try {
-      await getData(`/institution/get-student-count/${instituteId}`).then(
+      await getData(`/institute/get-student-count/${instituteId}`).then(
         (response) => {
           if(response.status) {
             setTotelStudent(response.student_count);
@@ -107,7 +107,7 @@ const InstitutionDash = () => {
   };
   const getInstitutionInfo = async () => {
     try {
-      await getData(`institution/getbyloginid/${instituteLoginId}`).then((response) => {
+      await getData(`institute/edit/${instituteLoginId}`).then((response) => {
         if (response?.status) {
 
           setInstituteInfo(response?.data);
@@ -209,7 +209,7 @@ const InstitutionDash = () => {
                       />
                       <div className="w-100">
                         <h4 className="fw-semibold mb-0 fs-18 mb-0">
-                          {instituteInfo.institution_name}
+                          {instituteInfo.institute_name}
                         </h4>
                         <small className="mb-3 d-block">
                           {instituteInfo.address + ' '}

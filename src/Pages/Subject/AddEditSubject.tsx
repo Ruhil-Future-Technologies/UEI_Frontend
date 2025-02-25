@@ -47,13 +47,14 @@ const AddEditSubject = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  //const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  const user_uuid=localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z0-9\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
 
   const initialState = {
     subject_name: '',
     institution_id: '',
-    created_by: userdata?.id,
+    created_by: user_uuid,
     semester_id: '',
     course_id: '',
     menu_image: '',
@@ -93,8 +94,9 @@ const AddEditSubject = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
+        console.log(data);
         const filteredData = data?.data.filter(
-          (item) => item.is_active === 1 && item.is_approve === true,
+          (item) => item.is_active  && item.is_approve,
         );
         setinstituteList(filteredData);
       })
@@ -108,8 +110,8 @@ const AddEditSubject = () => {
         });
       });
     getData(`${CourseListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+      .then((data) => {
+        const filteredData = data?.data?.course_data?.filter((item:any) => item.is_active);
         setCourseList(filteredData);
         setCourseListAll(filteredData);
       })
@@ -125,8 +127,8 @@ const AddEditSubject = () => {
     getData('/semester/list')
       .then((response: any) => {
         if (response.code === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active ,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -142,7 +144,11 @@ const AddEditSubject = () => {
     if (id) {
       getData(`${SubjectGETURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSubject(data?.data);
+          console.log(data);
+          if(data.status){
+            setSubject(data?.data?.subject_data);
+          }
+         
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -179,6 +185,7 @@ const AddEditSubject = () => {
     fieldName: string,
   ) => {
     if (fieldName === 'institution_id') {
+      console.log(courseListAll)
       const courses = courseListAll.filter(
         (item: any) => item.institution_id === e.target.value,
       );
@@ -416,7 +423,7 @@ const AddEditSubject = () => {
                               {instituteList.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
-                                  key={`${item.institution_name}-${idx + 1}`}
+                                  key={`${item.institute_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
@@ -426,7 +433,7 @@ const AddEditSubject = () => {
                                     },
                                   }}
                                 >
-                                  {item.institution_name}
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>

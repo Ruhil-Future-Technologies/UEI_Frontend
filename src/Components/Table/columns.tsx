@@ -109,6 +109,7 @@ export interface TeacherRepoDTO {
 }
 export interface InstituteRep0oDTO {
   institution_name: MaybeNull<string>;
+  institute_name?: MaybeNull<string>;
   email_id: MaybeNull<string>;
   address: MaybeNull<string>;
   city: MaybeNull<string>;
@@ -307,7 +308,7 @@ export interface IPDFList {
 export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: 'institution_name',
+    accessorKey: 'institute_name',
     header: 'Institution name ',
     size: 150,
   },
@@ -317,7 +318,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'email_id',
+    accessorKey: 'email',
     header: 'Email ',
     size: 150,
   },
@@ -328,7 +329,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'mobile_no',
+    accessorKey: 'phone',
     header: 'Mobile ',
     size: 150,
   },
@@ -929,7 +930,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'institution_name',
+    accessorKey: 'institute_name',
     header: 'Institute',
     size: 150,
   },

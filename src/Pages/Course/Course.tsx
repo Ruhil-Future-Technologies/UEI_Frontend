@@ -42,9 +42,10 @@ const Course = () => {
   }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${CourseURL}`)
-      .then((data: { data: CourseRep0oDTO[] }) => {
-        if (data.data) {
-          const courseData = data.data.map((course: any) => {
+      .then((data) => {
+        console.log(data?.data);
+        if (data.status) {
+          const courseData = data?.data?.course_data?.map((course: any) => {
             const createdDateTime = course?.created_at;
             const updatedDateTime = course?.updated_at;
             const created_time = new Date(createdDateTime);

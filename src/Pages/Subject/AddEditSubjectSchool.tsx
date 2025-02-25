@@ -42,15 +42,16 @@ const AddEditSubjectSchool = () => {
   const SubjectEditURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_EDIT;
   const SubjectEditgetURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_GET;
   //   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
-  const { getData, postData, putData } = useApi();
+  const { getData, postDataJson, putDataJson } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  //const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  const user_uuid = localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z\s]*$/;
 
   const initialState = {
     subject_name: '',
-    created_by: userdata?.id,
+    created_by: user_uuid,
     class_id: '',
     stream: '',
     menu_image: '',
@@ -91,7 +92,7 @@ const AddEditSubjectSchool = () => {
     getData('/class/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -122,7 +123,7 @@ const AddEditSubjectSchool = () => {
     getData('/semester/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.semesters_data?.filter(
             (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);
@@ -139,8 +140,9 @@ const AddEditSubjectSchool = () => {
     if (id) {
       getData(`${SubjectEditgetURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSubject(data?.data);
-          getData(`/class/get/${data?.data?.class_id}`).then(
+          setSubject(data?.data?.subject_data);
+          console.log(data);
+          getData(`/class/get/${data?.data?.subject_data?.class_id}`).then(
             (response: any) => {
               if (response.status) {
                 setParticularClass(response.data.class_name);
@@ -229,7 +231,7 @@ const AddEditSubjectSchool = () => {
       Object.keys(submitData).forEach((key) => {
         formData.append(key, submitData[key]);
       });
-      putData(`${SubjectEditURL}/${id}`, formData)
+      putDataJson(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
@@ -258,7 +260,7 @@ const AddEditSubjectSchool = () => {
   const handleSubmit = async () => {
     // e.preventDefault();
     // e.target.reset()
-    const formData = new FormData();
+    //const formData = new FormData();
     const submitData = {
       subject_name: subject[''] as string,
       pdf_content: subject?.menu_image || '',
@@ -275,10 +277,10 @@ const AddEditSubjectSchool = () => {
       return;
     }
     if (id) {
-      Object.keys(submitData).forEach((key) => {
-        formData.append(key, submitData[key]);
-      });
-      putData(`${SubjectEditURL}/${id}`, formData)
+      // Object.keys(submitData).forEach((key) => {
+      //   formData.append(key, submitData[key]);
+      // });
+      putDataJson(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
           if (data.status) {
             navigator('/main/Subject');
@@ -300,10 +302,10 @@ const AddEditSubjectSchool = () => {
           });
         });
     } else {
-      Object.keys(submitData).forEach((key) => {
-        formData.append(key, submitData[key]);
-      });
-      postData(`${SubjectAddURL}`, formData)
+      // Object.keys(submitData).forEach((key) => {
+      //   formData.append(key, submitData[key]);
+      // });
+      postDataJson(`${SubjectAddURL}`, submitData)
         .then((data: any) => {
           if (data.status) {
             toast.success(data?.message, {

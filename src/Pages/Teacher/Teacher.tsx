@@ -111,7 +111,7 @@ const Teacher = () => {
 
     getData('/entity/list').then((data) => {
       if(data.status){
-        setEntity(data.data);
+        setEntity(data?.data?.entityes_data);
       }
       
     });

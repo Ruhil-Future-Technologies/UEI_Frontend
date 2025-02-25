@@ -49,7 +49,7 @@ const Class = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.status) {
-          const classData = data.data.map((cls: any) => {
+          const classData = data?.data?.classes_data?.map((cls: any) => {
             const createdDateTime = cls?.created_at;
             const updatedDateTime = cls?.updated_at;
             const created_time = new Date(createdDateTime);
