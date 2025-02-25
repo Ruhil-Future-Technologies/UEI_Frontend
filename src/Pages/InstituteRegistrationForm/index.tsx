@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import gLogo from '../../assets/img/logo-white.svg';
 import { useNavigate } from 'react-router-dom';
+import Link from '@mui/material/Link';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -16,6 +17,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import useApi from '../../hooks/useAPI';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { BackArrowCircle } from '../../assets';
 import {
   IEntity,
   InstituteRep0oDTO,
@@ -23,6 +27,9 @@ import {
 } from '../../Components/Table/columns';
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
+
+import { Step, StepLabel, Stepper, Typography, Box, FormControlLabel, Checkbox } from '@mui/material';
+
 import {
   fieldIcon,
   inputfield,
@@ -33,6 +40,10 @@ import NameContext from '../Context/NameContext';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from '../../Components/Dailog/OtpCard';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import BusinessIcon from '@mui/icons-material/Business';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
+import WestIcon from '@mui/icons-material/West';
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -464,188 +475,728 @@ const InstituteRegistrationForm = () => {
       previous.filter((_, ind) => ind !== index),
     );
   };
+
+  const steps = [
+    {
+      label: 'Personal Details',
+      subline: 'Enter your entity details here',
+      icon: <SchoolOutlinedIcon />,
+    },
+    {
+      label: 'Address Details',
+      subline: 'Enter your complete address',
+      icon: <BusinessIcon />,
+    },
+    {
+      label: 'Upload Documents',
+      subline: 'Upload your documnets & logo',
+      icon: <DriveFolderUploadIcon />,
+    },
+  ];
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevStep) => prevStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
+
   return (
-    <div className="without-login">
-      <header className="container-fluid  py-3 d-none d-lg-block">
-        <div className="row align-items-center">
-          <div className="col-6">
-            <div className="logoui">
-              <img src={gLogo} alt="" onClick={() => navigate('/signup')} />
-              <span>Gyansetu</span>
-            </div>
-          </div>
+    <Box sx={{ width: '100%' }} className="Stepperform">
+      <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
+        <div className="logoui mb-4">
+          <img src={gLogo} alt="" onClick={() => navigate('/signup')} />
+          <span>Gyansetu</span>
         </div>
-      </header>
-      <div className="access1-card">
-        <div className="card-body">
-          <h3 className="text-center fw-bold">Register As Institution</h3>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Entity<span>*</span>
-              </label>
 
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Entity *</InputLabel>
-                <Select
-                  onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
-                  label="Entity"
-                  name="entity_id"
-                  value={valueInstitute?.entity_id}
-                  variant="outlined"
-                  sx={{
-                    backgroundColor: inputfield(namecolor),
-                    color: inputfieldtext(namecolor),
-                    '& .MuiSelect-icon': {
-                      color: fieldIcon(namecolor),
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                      },
-                    },
-                  }}
-                >
-                  {dataEntity.map((item, idx) => (
-                    <MenuItem
-                      value={item.id}
-                      key={`${item.entity_type}-${idx + 1}`}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        '&:hover': {
-                          backgroundColor: inputfieldhover(namecolor),
-                        },
-                      }}
-                    >
-                      {item.entity_type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
+        <Stepper
+          className="mt-5"
+          activeStep={activeStep}
+          orientation="vertical"
+        >
+          {steps.map(({ label, subline, icon }, index) => (
+            <Step key={index}>
+              <StepLabel icon={icon}>
+                {label}
+                <Typography variant="body2" className="opacity-50">
+                  {subline}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <div className="mt-auto d-flex justify-content-between ">
+          <Link
+            href="/"
+            className="text-dark opacity-75 text-capitalize fs-14 d-flex align-items-center gap-2"
+          >
+            <WestIcon /> Back to login
+          </Link>
+        </div>
+      </div>
+      <Box>       
+            {activeStep === 0 && (
+              <Box>
+                <div className="without-login p-3">
+                  <div className="access1-card">
+                    <div className="card-body">
+                      <div className="logoui mb-4 justify-content-center d-lg-none">
+                        <img
+                          src={gLogo}
+                          alt=""
+                          onClick={() => navigate('/signup')}
+                        />
+                        <span>Gyansetu</span>
+                      </div>
+                      <h3 className="text-center fw-bold">
+                        Register As Institution
+                      </h3>
+                      <p className="mb-lg-5 mb-4 text-center text-black-50">
+                        Empower your institution—get started today!
+                      </p>
+                      <div className="row d-flex justify-content-center g-4 mb-4">
+                        <div className="col-md-6 col-12">
+                          {/* <label className="col-form-label">
+                            Entity<span>*</span>
+                          </label> */}
 
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Website<span></span>
-              </label>
-              <TextField
-                autoComplete="off"
-                className="form-control"
-                name="website_url"
-                onChange={handleChange}
-                value={valueInstitute.website_url}
-              />
-              <div>
-                {error.website_error === true && (
-                  <p className="error-text" style={{ color: 'red' }}>
-                    <small>Please enter a valid Website.</small>
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-          {selectedEntity === 'School' ? (
-            <div className="row d-flex justify-content-center">
-              <div className="col-12">
-                <label className="col-form-label">
-                  School Name<span>*</span>
-                </label>
-                <TextField
-                  autoComplete="off"
-                  className="form-control"
-                  name="school_name"
-                  value={valueInstitute.school_name}
-                  onChange={handleChange}
-                />
-                <div>
-                  {error.school_name_error === true && (
-                    <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please enter a valid School name.</small>
-                    </p>
-                  )}
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">
+                              Entity *
+                            </InputLabel>
+                            <Select
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleSelect(e)
+                              }
+                              label="Entity"
+                              name="entity_id"
+                              value={valueInstitute?.entity_id}
+                              variant="outlined"
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                  },
+                                },
+                              }}
+                            >
+                              {dataEntity.map((item, idx) => (
+                                <MenuItem
+                                  value={item.id}
+                                  key={`${item.entity_type}-${idx + 1}`}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >
+                                  {item.entity_type}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </div>
+
+                        <div className="col-md-6 col-12">
+                          {/* <label className="col-form-label">
+                            Website<span></span>
+                          </label> */}
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="website_url"
+                            onChange={handleChange}
+                            value={valueInstitute.website_url}
+                            label="Website"
+                            variant="outlined"
+                          />
+
+                          <div>
+                            {error.website_error === true && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please enter a valid Website.</small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      {selectedEntity === 'School' ? (
+                        <div className="row d-flex justify-content-center mb-4">
+                          <div className="col-12">
+                            {/* <label className="col-form-label">
+                              School Name<span>*</span>
+                            </label> */}
+                            <TextField
+                              autoComplete="off"
+                              className="form-control"
+                              name="school_name"
+                              value={valueInstitute.school_name}
+                              onChange={handleChange}
+                              label="School Name"
+                            />
+                            <div>
+                              {error.school_name_error === true && (
+                                <p
+                                  className="error-text "
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please enter a valid School name.
+                                  </small>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="row d-flex justify-content-center mb-4 g-4">
+                          <div className="col-md-6 col-12 ">
+                            {/* <label className="col-form-label">
+                              University Name<span>*</span>
+                            </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">
+                                University *
+                              </InputLabel>
+                              <Select
+                                onChange={(e: SelectChangeEvent<string>) =>
+                                  handleSelect(e)
+                                }
+                                label="University*"
+                                name="university_id"
+                                value={valueInstitute?.university_id}
+                                variant="outlined"
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '& .MuiSelect-icon': {
+                                    color: fieldIcon(namecolor),
+                                  },
+                                }}
+                                MenuProps={{
+                                  PaperProps: {
+                                    style: {
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                    },
+                                  },
+                                }}
+                              >
+                                {dataUniversity?.map((item, idx) => (
+                                  <MenuItem
+                                    value={item.university_id}
+                                    key={`${item.university_name}-${idx + 1}`}
+                                    sx={{
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                      '&:hover': {
+                                        backgroundColor:
+                                          inputfieldhover(namecolor),
+                                      },
+                                    }}
+                                  >
+                                    {item.university_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <div>
+                              {error.university_id_error === true && (
+                                <p
+                                  className="error-text "
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please select a University name.
+                                  </small>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="col-md-6 col-12 ">
+                            {/* <label className="col-form-label">
+                              Institute Name<span>*</span>
+                            </label> */}
+
+                            <TextField
+                              label="Institute Name *"
+                              autoComplete="off"
+                              className="form-control"
+                              name="institute_name"
+                              onChange={handleChange}
+                              value={valueInstitute.institute_name}
+                            />
+                            <div>
+                              {error.institute_name_error === true && (
+                                <p
+                                  className="error-text "
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please enter a valid Institute name.
+                                  </small>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="row d-flex justify-content-center">
+                        <div className="col-md-6 col-12 mb-3">
+                          {/* <label className="col-form-label">
+                            Mobile Number<span>*</span>
+                          </label> */}
+
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="mobile_no"
+                            onChange={handleChange}
+                            value={valueInstitute.mobile_no}
+                            variant="outlined"
+                            label="Mobile Number"
+                          />
+                          <div>
+                            {error.mobile_no_error === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please enter a valid Mobile Number.
+                                </small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="col-md-6 col-12 mb-3">
+                          {/* <label className="col-form-label">
+                            Email Id<span>*</span>
+                          </label> */}
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="email_id"
+                            value={valueInstitute.email_id}
+                            onChange={handleChange}
+                            variant="outlined"
+                            label="Email Id"
+                          />
+                          <div>
+                            {error.email_id_error === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small> Please enter a valid Email Id.</small>
+                              </p>
+                            )}
+                            {emailExist === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small>Email ID already exists.</small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="col-12">
+                          <Button
+                            className="btn btn-secondary w-100 mt-4 outsecbtn "
+                            variant="contained"
+                            onClick={handleNext}
+                          >
+                            {activeStep === steps.length - 1
+                              ? 'Finish'
+                              : 'Next'}
+                          </Button>
+
+                          <Link
+                            href="/"
+                            className="text-dark opacity-75 d-lg-none text-capitalize mt-3 fs-14 d-flex align-items-center gap-2 justify-content-center"
+                          >
+                            <WestIcon /> Back to login
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                    <OtpCard
+                      open={popupOtpCard}
+                      handleOtpClose={() => setPopupOtpCard(false)}
+                      handleOtpSuccess={handleSubmit}
+                    />
+                  </div>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="row d-flex justify-content-center">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
-                  University Name<span>*</span>
-                </label>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    University *
-                  </InputLabel>
-                  <Select
-                    onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
-                    label="University"
-                    name="university_id"
-                    value={valueInstitute?.university_id}
-                    variant="outlined"
-                    sx={{
-                      backgroundColor: inputfield(namecolor),
-                      color: inputfieldtext(namecolor),
-                      '& .MuiSelect-icon': {
-                        color: fieldIcon(namecolor),
-                      },
-                    }}
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                        },
-                      },
-                    }}
-                  >
-                    {dataUniversity?.map((item, idx) => (
-                      <MenuItem
-                        value={item.university_id}
-                        key={`${item.university_name}-${idx + 1}`}
+              </Box>
+            )}
+            {activeStep === 1 && (
+              <Box>
+                <div className="without-login p-3">
+                  <div className="access1-card">
+                    <div className="card-body">
+                      <div className="row d-flex justify-content-center g-4 mb-4">
+                        <div className="col-12">
+                          
+                          <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <BackArrowCircle
+                          onClick={handleBack}
+                          role="button"
+                          fontSize="small"
+                        />
+                        Address Details
+                      </h5>
+                        </div>
+                        <div className="col-md-6 col-12 ">
+                          <label className={`col-form-label`}>
+                            Country<span>*</span>
+                          </label>
+                          <CountryDropdown
+                            classes="form-select custom-dropdown"
+                            defaultOptionLabel={valueInstitute.country}
+                            value={valueInstitute.country || ''}
+                            onChange={(e: string) =>
+                              handleInputChangecountry(e, 'country')
+                            }
+                          />
+                          {error.country_error === true && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small>Please select a Country.</small>
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="col-md-6 col-12 ">
+                          <label className="col-form-label">
+                            State<span>*</span>
+                          </label>
+                          <RegionDropdown
+                            data-testid="perStateDropdown"
+                            classes="form-select custom-dropdown"
+                            defaultOptionLabel={valueInstitute.state || ''}
+                            country={valueInstitute.country || ''}
+                            value={valueInstitute.state || ''}
+                            // onChange={(val) => setRegion(val)}
+                            onChange={(e: string) =>
+                              handleInputChangecountry(e, 'state')
+                            }
+                          />
+                          {error.state_error === true && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small>Please select a State.</small>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="row d-flex justify-content-center g-4 mb-4">
+                        <div className="col-md-6 col-12 ">
+                          {/* <label className="col-form-label">
+                            District<span>*</span>
+                          </label> */}
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="district"
+                            onChange={handleChange}
+                            value={valueInstitute.district}
+                            label="District *"
+                          />
+                          <div>
+                            {error.district_error === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  {' '}
+                                  Please enter a valid District name.
+                                </small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="col-md-6 col-12">
+                          {/* <label className="col-form-label">
+                            City<span>*</span>
+                          </label> */}
+
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="city"
+                            onChange={handleChange}
+                            value={valueInstitute.city}
+                            label="City"
+                          />
+                          <div>
+                            {error.city_error === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please enter a valid City name.</small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row d-flex justify-content-center mb-4 g-4">
+                        <div className="col-md-6 col-12">
+                          {/* <label className="col-form-label">
+                            Address<span>*</span>
+                          </label> */}
+
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="address"
+                            onChange={handleChange}
+                            value={valueInstitute.address}
+                            label="Address"
+                          />
+                          <div>
+                            {error.address_error === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please enter a valid Address.</small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="col-md-6 col-12">
+                          {/* <label className="col-form-label">
+                            Pincode<span>*</span>
+                          </label> */}
+
+                          <TextField
+                            autoComplete="off"
+                            className="form-control"
+                            name="pincode"
+                            onChange={handleChange}
+                            value={valueInstitute.pincode}
+                            label="Pincode"
+                          />
+                          <div>
+                            {error.pincode_error === true && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small> Please enter a valid Pincode.</small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="col-12">
+                          <Box>
+                            <Button
+                              variant="contained"
+                              className="btn btn-secondary w-100 outsecbtn mb-2"
+                              onClick={handleNext}
+                            >
+                              {activeStep === steps.length - 1
+                                ? 'Finish'
+                                : 'Next'}
+                            </Button>
+
+                           
+                           
+                          </Box>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Box>
+            )}
+            {activeStep === 2 && (
+              <Box>
+                <div className="without-login p-3">
+                  <div className="access1-card">
+                    <div className="card-body">
+                      <div className="row d-flex justify-content-center g-4">
+                      <div className="col-12">
+                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <BackArrowCircle
+                          onClick={handleBack}
+                          role="button"
+                          fontSize="small"
+                        />{' '}
+                        Documents & Logo
+                      </h5>
+                        </div>
+                        <div className="col-md-6 col-12 ">
+                          <Card>
+                            <CardContent>
+                              <label className="col-form-label">
+                                {' '}
+                                Document<span></span>
+                              </label>
+                              <br />
+                              <UploadBtn
+                                label="Upload Documents"
+                                name="document"
+                                accept=".pdf, .jpg, .jpeg, .png, .gif"
+                                handleFileChange={handleFileChange}
+                              />
+                            </CardContent>
+                          </Card>
+                          
+                        </div>
+                        
+                        <div className="col-md-6 col-12 ">
+                          <Card>
+                            <CardContent>
+                              <label className="col-form-label">
+                                {' '}
+                                Logo<span></span>
+                              </label>
+                              <br />
+                              <UploadBtn
+                                label="Upload Logo"
+                                name="icon"
+                                accept=".jpg, .jpeg, .png, .gif"
+                                handleFileChange={handleFileChange}
+                              />
+                            </CardContent>
+                          </Card>
+                          <div>
+                            <ul>{valueInstitute.icon}</ul>
+                          </div>
+                        </div>
+                        <div className="col-12">
+                        <div className="">
+                            {allselectedfiles.length > 0 && (
+                              <ul className="doclist">
+                                {allselectedfiles.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex items-center justify-between"
+                                  >
+                                    {file.name}
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() => handleRemoveFile(index)}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        </div>
+                        <div className="col-lg-12">
+                        <FormControlLabel
+                        control={
+                          <Checkbox
+                            data-testid="checkbox"
+                            onChange={handleTermandCondi}
+                          />
+                        }
+                        label={
+                          <Typography variant="body2">
+                            By registering your account you have to agree with
+                            our{' '}
+                            <Link
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleTACpopup();
+                              }}
+                              sx={{ fontSize: '0.85rem' }} // Adjusts font size of the link
+                            >
+                              Terms & Conditions
+                            </Link>
+                          </Typography>
+                        }
                         sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          '&:hover': {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        {item.university_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <div>
-                  {error.university_id_error === true && (
-                    <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please select a University name.</small>
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="col-form-label">
-                  Institute Name<span>*</span>
-                </label>
+                          '& .MuiTypography-root': { fontSize: '0.85rem' },
+                        }} // Adjusts font size of the entire label
+                      />
+                        </div>
+                        <div className="col-12">
+                        <div className=" d-flex justify-content-center  flex-column">
+                        <Button
+                          variant="contained"
+                          disabled={CheckTermandcondi}
+                          onClick={openPopupOtp}
+                          className="py-3"
+                        >
+                          Submit
+                        </Button>
+                       
+                      </div>
+                        </div>
+                      </div>
 
-                <TextField
-                  autoComplete="off"
-                  className="form-control"
-                  name="institute_name"
-                  onChange={handleChange}
-                  value={valueInstitute.institute_name}
-                />
-                <div>
-                  {error.institute_name_error === true && (
-                    <p className="error-text " style={{ color: 'red' }}>
-                      <small>Please enter a valid Institute name.</small>
-                    </p>
-                  )}
+                      {/* <div className="form-check mb-3 fs-14">
+                        <input
+                          data-testid="checkbox"
+                          className="form-check-input"
+                          type="checkbox"
+                          value=""
+                          id="flexCheckDefault"
+                          onChange={handleTermandCondi}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="flexCheckDefault"
+                        >
+                          By registering your account you have to agree with our{' '}
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleTACpopup();
+                            }}
+                          >
+                            {' '}
+                            Terms & Conditions
+                          </a>
+                        </label>
+                      </div> */}
+                      
+                      <Dialog open={popupTermandCondi} onClose={handleClose}>
+                        <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Content of Gyansetu Terms and Conditions...... will
+                            come soon
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose} color="primary">
+                            Close
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </div>
+                  </div>
                 </div>
+              </Box>
+            )}
+      </Box>
+    </Box>
               </div>
             </div>
           )}
