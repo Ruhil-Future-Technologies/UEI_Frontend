@@ -14,8 +14,8 @@ import MetisMenu from '@metismenu/react';
 import useApi from '../../hooks/useAPI';
 import gyansetuLogo from '../../assets/img/logo-white.svg';
 import { QUERY_KEYS_MENU } from '../../utils/const';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import 'react-perfect-scrollbar/dist/css/styles.css';
+//import PerfectScrollbar from 'react-perfect-scrollbar';
+//import 'react-perfect-scrollbar/dist/css/styles.css';
 import '../../../node_modules/metismenujs/dist/metismenujs.css';
 import 'simplebar-react/dist/simplebar.min.css';
 
@@ -129,7 +129,7 @@ const Sidebar = () => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <PerfectScrollbar>
+       
           <div className="sidebar-header">
             <div className="logo-icon">
               <img src={gyansetuLogo} className="logo-img" alt="" />
@@ -366,7 +366,7 @@ const Sidebar = () => {
               </div>
             </div>
           )}
-        </PerfectScrollbar>
+        
       </aside>
     </>
   );
