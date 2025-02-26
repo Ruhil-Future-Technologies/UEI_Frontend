@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TeacherGraoh from '../TeacherGraphs';
 import profile from '../../../assets/img/profile.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
 import consultantimg from '../../../assets/img/consultant.png';
 import goaling from '../../../assets/img/goal.png';
@@ -65,6 +65,7 @@ const TeacherDash = () => {
   const [activeTab, setActiceTab] = useState(0);
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
+  const navigate = useNavigate();
   const tabContent = [
     {
       label: 'All',
@@ -245,7 +246,6 @@ const TeacherDash = () => {
                   1440: { slidesPerView: 3 }, // Large Screens
                 }}
               >
-               
                 <SwiperSlide>
                   <div className="card mb-0">
                     <div className="card-body">
@@ -255,12 +255,12 @@ const TeacherDash = () => {
                         </span>
                         <div className="">
                           <h6 className="fs-4">Grade 11</h6>
-                          <p>  Physics</p>
+                          <p> Physics</p>
                         </div>
                       </div>
 
                       <div className="row g-2">
-                      <div className="col-lg-6">
+                        <div className="col-lg-6">
                           <div className="totallist">
                             <span>
                               <SupervisedUserCircleIcon />
@@ -280,12 +280,14 @@ const TeacherDash = () => {
                             </div>
                           </div>
                         </div>
-                        
                       </div>
 
-                      
-
-                      <button className="btn btn-outline-primary mt-4 w-100">
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
                         View Students
                       </button>
                     </div>
@@ -313,7 +315,12 @@ const TeacherDash = () => {
                         </div>
                       </div>
 
-                      <button className="btn btn-outline-primary mt-4 w-100">
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
                         View Students
                       </button>
                     </div>
@@ -341,7 +348,12 @@ const TeacherDash = () => {
                         </div>
                       </div>
 
-                      <button className="btn btn-outline-primary mt-4 w-100">
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
                         View Students
                       </button>
                     </div>
@@ -369,7 +381,12 @@ const TeacherDash = () => {
                         </div>
                       </div>
 
-                      <button className="btn btn-outline-primary mt-4 w-100">
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
                         View Students
                       </button>
                     </div>
@@ -397,14 +414,17 @@ const TeacherDash = () => {
                         </div>
                       </div>
 
-                      <button className="btn btn-outline-primary mt-4 w-100">
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
                         View Students
                       </button>
                     </div>
                   </div>
                 </SwiperSlide>
-               
-               
               </Swiper>
               <div className="swiper-button-prev"></div>
               <div className="swiper-button-next"></div>

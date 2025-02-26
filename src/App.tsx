@@ -91,6 +91,7 @@ import Teacher from './Pages/Teacher/Teacher';
 import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
 import InstitutionProfile from './Pages/Institution/InstitutionProfile';
 import TeacherProfile from './Pages/Teacher/TeacherProfile';
+import { StudentDetails } from './Pages/Teacher/StudentDetails';
 
 function App() {
   const navigate = useNavigate();
@@ -249,6 +250,10 @@ function App() {
           <Route
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
+          />
+          <Route
+            path="/teacher-dashboard/student-details"
+            element={<Protected Component={StudentDetails} />}
           />
         </Route>
 
