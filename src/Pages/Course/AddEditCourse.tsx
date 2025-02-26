@@ -327,7 +327,7 @@ const AddEditCourse = () => {
                               }}
                             >
                               {/* Generate menu items for semesters 1 to 8 */}
-                              {[...Array(4)].map((_, index) => (
+                              {[...Array(7)].map((_, index) => (
                                 <MenuItem
                                   key={`${index + 1}`}
                                   value={index + 1}
