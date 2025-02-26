@@ -22,8 +22,15 @@ import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-
+import PercentIcon from '@mui/icons-material/Percent';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import StreamIcon from '@mui/icons-material/Stream';
+import AttractionsIcon from '@mui/icons-material/Attractions';
+//import SubjectIcon from '@mui/icons-material/Subject';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 import {
   Box,
   Card,
@@ -137,13 +144,13 @@ const TeacherDash = () => {
           </div>
         </div>
 
-        <div className="row">
+        <div className="row  g-4 mb-4">
           <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
-            <div className="card w-100 overflow-hidden rounded-4">
-              <div className="card-header bg-primary-20">
+            <div className="card ">
+              <div className="card-body position-relative p-4">
                 <div className="row">
                   <div className="col-12">
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center gap-3 flex-column">
                       <img
                         src={profile}
                         className="rounded-circle bg-grd-info p-1"
@@ -151,25 +158,26 @@ const TeacherDash = () => {
                         height="94"
                         alt="user"
                       />
-                      <div className="w-100">
-                        <h4 className="fw-semibold  fs-18 ">
+                      <div className="w-100 text-center">
+                        <h4 className="fw-bold mb-1 fs-4">
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
-                        <small className=" d-block">24 Course</small>
-                        <small className=" d-block mb-2">
-                          18 Certification
-                        </small>
-                        <strong className="d-block text-dark fs-12">
-                          {' '}
-                          260 Students
-                        </strong>
+                        <p className="opacity-75 mb-1">Stanford University</p>
+                        <p className="planbg">Senior Professor</p>
+                      </div>
+                      <div className="curcc">
+                        <h6>CURRENT COURSES</h6>
+                        <ul>
+                          <li>Advanced Mathematics</li>
+                          <li>Data Structures</li>
+                          <li>Algorithm Design</li>
+                          <li>Machine Learning</li>
+                        </ul>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="card-body position-relative p-4">
-                <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
+                {/* <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
                   <div>
                     <h6 className="mb-0 fw-normal">Status</h6>
                   </div>
@@ -209,11 +217,201 @@ const TeacherDash = () => {
                   <div>
                     <a href="profile.html">90%</a>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
 
+          <div className="col-12">
+            <h5 className="mb-1 fw-bold fs-4">Your Classes</h5>
+            <p className="text-secondary">
+              Manage your classes and view student information
+            </p>
+
+            <div className="swiper-container">
+              <Swiper
+                spaceBetween={24}
+                slidesPerView={3}
+                loop={true}
+                navigation={{
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
+                modules={[Navigation]}
+                breakpoints={{
+                  320: { slidesPerView: 1 }, // Mobile
+                  640: { slidesPerView: 1 }, // Tablets
+                  1024: { slidesPerView: 2 }, // Laptops
+                  1440: { slidesPerView: 3 }, // Large Screens
+                }}
+              >
+               
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <AttractionsIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 11</h6>
+                          <p>  Physics</p>
+                        </div>
+                      </div>
+
+                      <div className="row g-2">
+                      <div className="col-lg-6">
+                          <div className="totallist">
+                            <span>
+                              <SupervisedUserCircleIcon />
+                            </span>
+                            <div className="">
+                              <h6>Total Students</h6> <p>50</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <div className="totallist">
+                            <span>
+                              <StreamIcon />
+                            </span>
+                            <div className="">
+                              <h6>Streem</h6> <p>Science</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                      </div>
+
+                      
+
+                      <button className="btn btn-outline-primary mt-4 w-100">
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button className="btn btn-outline-primary mt-4 w-100">
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button className="btn btn-outline-primary mt-4 w-100">
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button className="btn btn-outline-primary mt-4 w-100">
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button className="btn btn-outline-primary mt-4 w-100">
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+               
+               
+              </Swiper>
+              <div className="swiper-button-prev"></div>
+              <div className="swiper-button-next"></div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
           <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
