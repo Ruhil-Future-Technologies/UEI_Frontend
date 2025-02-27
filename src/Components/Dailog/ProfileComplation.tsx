@@ -290,6 +290,7 @@ export const ProfileDialog: FunctionComponent<{
         .then((data: any) => {
           if (data.status) {
             //  navigate('/main/Dashboard');
+            console.log(data.data);
             setAnsweredData(data.data);
 
             if (data?.data?.academic_history?.institution_type === 'school') {
@@ -468,14 +469,14 @@ export const ProfileDialog: FunctionComponent<{
             if (answeredData?.academic_history?.class_id) {
               const filteredData = response?.data?.subjects_data?.filter(
                 (item: any) =>
-                  item?.is_active === 1 &&
+                  item?.is_active  &&
                   item?.class_id === answeredData?.academic_history?.class_id,
               );
 
               setSubjects(filteredData || []);
             } else {
               const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1,
+                (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
             }
@@ -494,7 +495,7 @@ export const ProfileDialog: FunctionComponent<{
           if (response.status) {
             const filteredData = response?.data?.subjects_data?.filter(
               (item: any) =>
-                item?.is_active === 1 &&
+                item?.is_active &&
                 item.course_id === answeredData?.academic_history?.course_id &&
                 item.semester_id === answeredData?.academic_history?.sem_id,
             );
@@ -912,9 +913,9 @@ export const ProfileDialog: FunctionComponent<{
     // let phoneNum = contfullPhone?.split(' ');
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(' ');
-    const email = localStorage.getItem('userid');
+    const email = localStorage.getItem('email');
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
       mobile_no_call:
         answeredData?.contact?.mobile_no_call ||
@@ -955,7 +956,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswerforAddress = (answers: string[]) => {
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
 
       address1:
         answeredData?.address?.address1 || answers[answers.length - 1] === ''
@@ -1101,7 +1102,7 @@ export const ProfileDialog: FunctionComponent<{
   const saveAnswerforsubjectpreference = (answers: string[]) => {
     const length = answers.length;
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       subject_id: answeredData?.subject_preference?.id || selectSubject,
       preference:
         answeredData?.subject_preference?.preference || answers[length - 3],
@@ -1304,7 +1305,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveanswerForHobbeis = () => {
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
     };
 
@@ -1327,7 +1328,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswerForLanguage = () => {
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       language_id:
         answeredData?.language_known?.language_id || selectedLanguage,
       proficiency:

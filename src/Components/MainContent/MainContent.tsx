@@ -1013,15 +1013,18 @@ function MainContent() {
               if (academic_history?.institution_type === 'school') {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
-                    (response) =>
-                      
+                    (response) =>{
+                      console.log(response);
                       setStudentClass(
-                        response.data.class_name
+                        response.data.class_data.class_name
+
                           .replace('_', ' ')
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace('_', ' ').slice(1),
-                      ),
+                          response.data.class_data.class_name
+                          .replace('_', ' ').slice(1),
+                      )
+                    }
                   );
                 }
                 delete academic_history?.course_id;

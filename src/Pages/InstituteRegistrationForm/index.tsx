@@ -287,7 +287,24 @@ const InstituteRegistrationForm = () => {
     validation(name, value);
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
+
+  const loginSuperUser=()=>{
+    let payload={
+      email: process.env.REACT_APP_SUPER_USER_EMAIL,
+      password: process.env.REACT_APP_SUPER_USER_PASSWORD,
+      type: "super_admin"
+    }
+    postDataJson(`auth/login`,payload).then((data)=>{
+       if(data.status){
+        
+       }
+    })
+  };
+console.log()
   const openPopupOtp = () => {
+      loginSuperUser();
+
+
     const emailExists = dataInstitute.some(
       (item) => item.email === valueInstitute.email_id,
     );

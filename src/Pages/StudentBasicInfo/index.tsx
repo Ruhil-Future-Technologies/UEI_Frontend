@@ -106,7 +106,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const getStudentBasicInfo = async () => {
     // getData(`${'student/get/' + StudentId}`, StudentId)
-    getData(`${'student/getbylogin/' + StudentId}`)
+    getData(`${'student/get/' + StudentId}`)
       .then((data: any) => {
         if (data?.status) {
           // console.log(data);
