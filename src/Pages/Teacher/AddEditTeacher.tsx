@@ -193,11 +193,11 @@ const AddEditTeacher = () => {
     let all_classes: any = [];
 
     await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      all_classes = data?.data;
+      all_classes = data?.data.classes_data;
       setDataClasses(data.data?.classes_data);
     });
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      all_courses = data.data;
+      all_courses = data.data.course_data;
       setDataCourses(data?.data?.course_data);
     });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
@@ -223,7 +223,7 @@ const AddEditTeacher = () => {
           return;
         }
         const teacherDetail = await getData(
-          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_LOGIN_ID}/${currentTeacher.user_uuid}`,
+          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_UUID}/${currentTeacher.user_uuid}`,
         );
 
         const filterTeacherCourses = (
@@ -234,32 +234,37 @@ const AddEditTeacher = () => {
             courses: [],
           } as any;
 
-          const teacherCoursesObj = teacherDetail.data.course_semester_subjects;
-          for (const [courseName, semesterData] of Object.entries(
-            teacherCoursesObj as any,
-          )) {
-            const matchingCourse = allCourses.find(
-              (course: any) =>
-                course.course_name === courseName &&
-                course.institute_id === teacherDetail.data.institute_id,
-            );
+          const teacherCoursesObj =
+            teacherDetail?.data?.course_semester_subjects;
 
-            if (matchingCourse) {
-              for (const [semester, subjects] of Object.entries(
-                semesterData as any,
-              )) {
-                result.courses.push({
-                  course_id: matchingCourse.id,
-                  semester:
-                    semester.charAt(0).toUpperCase() + semester.slice(1),
-                  subjects: subjects,
-                });
+          if (teacherCoursesObj) {
+            for (const [courseId, semesterData] of Object.entries(
+              teacherCoursesObj as any,
+            )) {
+              const matchingCourse = allCourses.find(
+                (course: any) =>
+                  course.id === Number(courseId) &&
+                  course.institution_id === teacherDetail?.data?.institute_id,
+              );
+
+              if (matchingCourse) {
+                for (const [semester, subjects] of Object.entries(
+                  semesterData as any,
+                )) {
+                  result.courses.push({
+                    course_id: matchingCourse.id,
+                    semester:
+                      semester.charAt(0).toUpperCase() + semester.slice(1),
+                    subjects: subjects,
+                  });
+                }
               }
             }
           }
 
           return result;
         };
+
         const course_semester_subjects_arr: any = filterTeacherCourses(
           teacherDetail,
           all_courses,
@@ -275,22 +280,24 @@ const AddEditTeacher = () => {
 
           const teacherClassesObj = teacherDetail.data.class_stream_subjects;
 
-          for (const [className, streamData] of Object.entries(
-            teacherClassesObj as any,
-          )) {
-            const matchingClass = all_classes.find(
-              (cls: any) => cls.class_name === className,
-            );
+          if (teacherClassesObj) {
+            for (const [classId, streamData] of Object.entries(
+              teacherClassesObj as any,
+            )) {
+              const matchingClass = all_classes.find(
+                (cls: any) => cls.id === Number(classId),
+              );
 
-            if (matchingClass) {
-              for (const [stream, subjects] of Object.entries(
-                streamData as any,
-              )) {
-                result.classes.push({
-                  class_id: matchingClass.id,
-                  stream: stream.toLowerCase(),
-                  subjects: subjects,
-                });
+              if (matchingClass) {
+                for (const [stream, subjects] of Object.entries(
+                  streamData as any,
+                )) {
+                  result.classes.push({
+                    class_id: matchingClass.id,
+                    stream: stream.toLowerCase(),
+                    subjects: subjects,
+                  });
+                }
               }
             }
           }
@@ -425,8 +432,6 @@ const AddEditTeacher = () => {
   useEffect(() => {
     const institutionId =
       formRef.current?.values?.institute_id || selectedInstitutionId;
-    console.log({ institutionId });
-    console.log({ dataCourses });
 
     if (institutionId) {
       const filtered = dataCourses.filter(
@@ -894,10 +899,6 @@ const AddEditTeacher = () => {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
-      formData.forEach((v, k) => {
-        console.log({ v, k });
-      });
-      console.log({ resetForm, postData });
 
       postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formData)
         .then((data: any) => {
@@ -1689,7 +1690,7 @@ const AddEditTeacher = () => {
                           </InputLabel>
                           <Select
                             name="institute_id"
-                            value={values?.institute_id}
+                            value={values?.institute_id || ''}
                             label={
                               isSchoolEntity(values?.entity_id)
                                 ? 'School Name *'
