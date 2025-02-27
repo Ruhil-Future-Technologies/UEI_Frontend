@@ -466,7 +466,7 @@ export const ProfileDialog: FunctionComponent<{
         .then((response: any) => {
           if (response.status) {
             if (answeredData?.academic_history?.class_id) {
-              const filteredData = response?.data?.filter(
+              const filteredData = response?.data?.subjects_data?.filter(
                 (item: any) =>
                   item?.is_active === 1 &&
                   item?.class_id === answeredData?.academic_history?.class_id,
@@ -492,7 +492,7 @@ export const ProfileDialog: FunctionComponent<{
       getData('college_subject/list')
         .then((response: any) => {
           if (response.status) {
-            const filteredData = response?.data?.filter(
+            const filteredData = response?.data?.subjects_data?.filter(
               (item: any) =>
                 item?.is_active === 1 &&
                 item.course_id === answeredData?.academic_history?.course_id &&
@@ -521,7 +521,7 @@ export const ProfileDialog: FunctionComponent<{
           const data = await getData(`${profileURL}/${StudentId}`);
           if (data.status) {
             setAnsweredData(data.data);
-
+            localStorage.setItem('student_id',data?.data?.basic_info?.id);
             // Get the values from the fetched data
             const guardianName = data?.data?.basic_info?.father_name || '';
             const subjectPref =
@@ -652,7 +652,7 @@ export const ProfileDialog: FunctionComponent<{
     getData('/class/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active,
           );
           setClasses(filteredData || []);
@@ -667,8 +667,8 @@ export const ProfileDialog: FunctionComponent<{
     getData('/university/list')
       .then(async (response: any) => {
         if (response.status) {
-          const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = await response?.data?.universities_data?.filter(
+            (item: any) => item?.is_active,
           );
           setUniversity(filteredData || []);
         }
@@ -682,8 +682,8 @@ export const ProfileDialog: FunctionComponent<{
     getData('/semester/list')
       .then(async (response: any) => {
         if (response.status) {
-          const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = await response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
           setSemesterpre(filteredData || []);
@@ -699,7 +699,7 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status) {
           const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1 && item.is_approve == true,
+            (item: any) => item?.is_active && item.is_approve,
           );
           setInstitutes(filteredData || []);
         }
@@ -714,8 +714,8 @@ export const ProfileDialog: FunctionComponent<{
     getData('/course/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.course_data?.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -731,8 +731,8 @@ export const ProfileDialog: FunctionComponent<{
     getData('hobby/list')
       .then((data: any) => {
         if (data?.status) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = data?.data?.hobby_data?.filter(
+            (item: any) => item?.is_active,
           );
           setAllHobbies(filteredData || []);
           // setAllHobbies(data?.data);
@@ -748,8 +748,8 @@ export const ProfileDialog: FunctionComponent<{
     getData('language/list')
       .then((data: any) => {
         if (data?.status) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = data?.data?.languagees_data?.filter(
+            (item: any) => item?.is_active ,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
@@ -832,7 +832,7 @@ export const ProfileDialog: FunctionComponent<{
     const email=localStorage.getItem('email');
     const phone=localStorage.getItem('phone');
     const payload = {
-      student_login_id: StudentId,
+      user_uuid: StudentId,
       first_name: answeredData?.basic_info?.first_name || firstname,
       last_name: answeredData?.basic_info?.last_name || lastname,
       // gender: answers[1],
@@ -1009,7 +1009,7 @@ export const ProfileDialog: FunctionComponent<{
         String(item.id) === answers[answers.length - 2],
     )?.class_name;
     const payload = {
-      student_id: StudentId,
+      student_id:localStorage.getItem('student_id'),
       institution_type:
         answeredData?.academic_history?.institution_type ||
         selectedInstituteType,
@@ -2271,8 +2271,8 @@ export const ProfileDialog: FunctionComponent<{
         getData('school_subject/list')
           .then((response: any) => {
             if (response.status) {
-              const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1,
+              const filteredData = response?.data?.subjects_data?.filter(
+                (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
               // setSubjects(response.data);
@@ -2305,7 +2305,7 @@ export const ProfileDialog: FunctionComponent<{
           .then((response: any) => {
             if (response.status) {
               const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1,
+                (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
               // setSubjects(response.data);

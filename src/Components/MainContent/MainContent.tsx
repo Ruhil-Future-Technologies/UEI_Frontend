@@ -909,7 +909,7 @@ function MainContent() {
     if (usertype === 'student' &&  StudentId !== null) {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
-         // console.log(data);
+          console.log(data);
           if (data.data) {
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
@@ -1116,6 +1116,9 @@ function MainContent() {
           }
         })
         .catch((e) => {
+          if(e.response.code===404){
+            setDataCompleted(true);
+          }
           console.log("1");
           toast.error(e?.message, {
             hideProgressBar: true,
