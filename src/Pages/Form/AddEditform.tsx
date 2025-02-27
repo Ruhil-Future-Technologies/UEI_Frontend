@@ -575,6 +575,7 @@ const AddEditForm = () => {
                         <button
                           data-testid="save_btn"
                           className="btn btn-primary mainbutton"
+                          type="submit"
                         >
                           {id ? 'Update' : 'Save'}
                         </button>
@@ -584,6 +585,7 @@ const AddEditForm = () => {
 
                           onClick={privewurl}
                           className="btn btn-outline-primary ms-3"
+                          type="button"
                         >
                           Preivew
                         </button>
