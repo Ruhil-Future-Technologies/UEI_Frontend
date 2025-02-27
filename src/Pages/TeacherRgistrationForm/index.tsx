@@ -4,6 +4,13 @@ import gLogo from '../../assets/img/logo-white.svg';
 import { useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { Step, StepLabel, Stepper, Typography, Box } from '@mui/material';
+import Link from '@mui/material/Link';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import BusinessIcon from '@mui/icons-material/Business';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
+import WestIcon from '@mui/icons-material/West';
+
 import {
   Button,
   Checkbox,
@@ -60,6 +67,7 @@ import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from '../../Components/Dailog/OtpCard';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { BackArrowCircle } from '../../assets';
 
 export interface Teacher {
   first_name: string;
@@ -168,7 +176,7 @@ const TeacherRegistrationPage = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const navigate = useNavigate();
-  const { getForRegistration, postRegisterData } = useApi();
+  const { postRegisterData, getForRegistration } = useApi();
 
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
@@ -430,10 +438,12 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
+        console.log(data.data)
         if (data.data) {
           const filerRoleId = data.data.find(
             (role: any) => role.role_name === 'Teacher',
           ).id;
+          console.log(filerRoleId);
           setRoleId(filerRoleId); // setRoleData(data?.data);
         }
       })
@@ -961,6 +971,7 @@ const TeacherRegistrationPage = () => {
             // Filter subjects immediately based on the selected class
             const filteredSubjects = totleSubject.filter(
               (item) => item.class_id === value,
+              (item) => item.class_id === value,
             );
 
             updatedBox = {
@@ -1037,268 +1048,409 @@ const TeacherRegistrationPage = () => {
       previous.filter((_, ind) => ind !== index),
     );
   };
+
+  const steps = [
+    {
+      label: 'Personal Details',
+      subline: 'Enter your entity details here',
+      icon: <SchoolOutlinedIcon />,
+    },
+    {
+      label: 'Address Details',
+      subline: 'Enter your complete address',
+      icon: <BusinessIcon />,
+    },
+    {
+      label: 'Upload Documents',
+      subline: 'Upload your documnets & logo',
+      icon: <DriveFolderUploadIcon />,
+    },
+  ];
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevStep) => prevStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevStep) => prevStep - 1);
+  };
   return (
-    <div className="without-login">
-      <header className="container-fluid  py-3 d-none d-lg-block">
-        <div className="row align-items-center">
-          <div className="col-6">
-            <div className="logoui">
-              <img src={gLogo} alt="" onClick={() => navigate('/signup')} />
-              <span>Gyansetu</span>
-            </div>
-          </div>
+    <Box sx={{ width: '100%' }} className="Stepperform">
+      <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
+        <div className="logoui mb-4">
+          <img src={gLogo} alt="" onClick={() => navigate('/signup')} />
+          <span>Gyansetu</span>
         </div>
-      </header>
-      <div className="access1-card">
-        <div className="card-body">
-          <h3 className="text-center fw-bold">Register As Teacher</h3>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                First Name<span>*</span>
-              </label>
 
-              <TextField
-                autoComplete="off"
-                name="first_name"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.first_name_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid First name.</small>
-                </p>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Last Name<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="last_name"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.last_name_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Last name.</small>
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Gender<span>*</span>
-              </label>
-              <br />
-              <FormControl>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="gender"
-                  value={genderData}
-                  onChange={handelChange}
-                >
-                  <FormControlLabel
-                    value="male"
-                    control={<Radio />}
-                    label="Male"
-                  />
-                  <FormControlLabel
-                    value="female"
-                    control={<Radio />}
-                    label="Female"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Date Of Birth<span>*</span>
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  components={[
-                    'DatePicker',
-                    'MobileDatePicker',
-                    'DesktopDatePicker',
-                    'StaticDatePicker',
-                  ]}
-                >
-                  <DemoItem>
-                    <DatePicker
-                      name="dob"
-                      value={dayjs(teacher?.dob)}
-                      onChange={handleDate}
-                      format="DD/MM/YYYY"
-                      minDate={minSelectableDate}
-                      maxDate={exactSixYearsAgo}
+        <Stepper
+          className="mt-5"
+          activeStep={activeStep}
+          orientation="vertical"
+        >
+          {steps.map(({ label, subline, icon }, index) => (
+            <Step key={index}>
+              <StepLabel icon={icon}>
+                {label}
+                <Typography variant="body2" className="opacity-50">
+                  {subline}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <div className="mt-auto d-flex justify-content-between ">
+          <Link
+            href="/"
+            className="text-dark opacity-75 text-capitalize fs-14 d-flex align-items-center gap-2"
+          >
+            <WestIcon /> Back to login
+          </Link>
+        </div>
+      </div>
+      <Box>
+        {activeStep === 0 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="logoui mb-4 justify-content-center d-lg-none">
+                    <img
+                      src={gLogo}
+                      alt=""
+                      onClick={() => navigate('/signup')}
                     />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
-              {dobset_col === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Date of Birth.</small>
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Mobile Number<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="phone"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.phone_no_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small> Please enter a valid Mobile number.</small>
-                </p>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Email Id<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="email_id"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.email_id_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Email Id.</small>
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className={`col-form-label`}>
-                Country<span>*</span>
-              </label>
-              <CountryDropdown
-                classes="form-select custom-dropdown"
-                defaultOptionLabel={teacher.country}
-                value={teacher.country || ''}
-                onChange={(e: string) => handleInputChangecountry(e, 'country')}
-              />
-              {error.country_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a Country.</small>
-                </p>
-              )}
-            </div>
+                    <span>Gyansetu</span>
+                  </div>
+                  <h3 className="text-center fw-bold">Register As Teacher</h3>
+                  <p className="mb-lg-5 mb-4 text-center text-black-50">
+                    Empower your institution—get started today!
+                  </p>
 
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                State<span>*</span>
-              </label>
-              <RegionDropdown
-                data-testid="perStateDropdown"
-                classes="form-select custom-dropdown"
-                defaultOptionLabel={teacher.state || ''}
-                country={teacher.country || ''}
-                value={teacher.state || ''}
-                // onChange={(val) => setRegion(val)}
-                onChange={(e: string) => handleInputChangecountry(e, 'state')}
-              />
-              {error.state_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please select a State.</small>
-                </p>
-              )}
+                  <div className="row d-flex justify-content-center g-4">
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        First Name<span>*</span>
+                      </label> */}
+
+                      <TextField
+                        autoComplete="off"
+                        name="first_name"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="First Name *"
+                      />
+                      {error.first_name_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small> Please enter a valid First name.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        Last Name<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="last_name"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="Last Name *"
+                      />
+                      {error.last_name_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid Last name.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      <label className="col-form-label">
+                        Gender<span>*</span>
+                      </label>
+                      <br />
+                      <FormControl>
+                        <RadioGroup
+                          row
+                          aria-labelledby="demo-controlled-radio-buttons-group"
+                          name="gender"
+                          value={genderData}
+                          onChange={handelChange}
+                        >
+                          <FormControlLabel
+                            value="male"
+                            control={<Radio />}
+                            label="Male"
+                          />
+                          <FormControlLabel
+                            value="female"
+                            control={<Radio />}
+                            label="Female"
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      <label className="col-form-label">
+                        Date Of Birth<span>*</span>
+                      </label>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer
+                          components={[
+                            'DatePicker',
+                            'MobileDatePicker',
+                            'DesktopDatePicker',
+                            'StaticDatePicker',
+                          ]}
+                        >
+                          <DemoItem>
+                            <DatePicker
+                              name="dob"
+                              value={dayjs(teacher?.dob)}
+                              onChange={handleDate}
+                              format="DD/MM/YYYY"
+                              minDate={minSelectableDate}
+                              maxDate={exactSixYearsAgo}
+                            />
+                          </DemoItem>
+                        </DemoContainer>
+                      </LocalizationProvider>
+                      {dobset_col === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid Date of Birth.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
+                        Mobile Number<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="phone"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="Mobile Number*"
+                      />
+                      {error.phone_no_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small> Please enter a valid Mobile number.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
+                        Email Id<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="email_id"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="Email Id *"
+                      />
+                      {error.email_id_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid Email Id.</small>
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="col-12">
+                      <Button
+                        className="btn btn-secondary w-100 mt-4 outsecbtn "
+                        variant="contained"
+                        onClick={handleNext}
+                      >
+                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                      </Button>
+
+                      <Link
+                        href="/"
+                        className="text-dark opacity-75 d-lg-none text-capitalize mt-3 fs-14 d-flex align-items-center gap-2 justify-content-center"
+                      >
+                        <WestIcon /> Back to login
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                District<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="district"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.district_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid District name.</small>
-                </p>
-              )}
+          </Box>
+        )}
+
+        {activeStep === 1 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="row d-flex justify-content-center g-4 mb-4">
+                    <div className="col-12">
+                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <BackArrowCircle
+                          onClick={handleBack}
+                          role="button"
+                          fontSize="small"
+                        />{' '}
+                        Address Details
+                      </h5>
+                    </div>
+                  </div>
+
+                  <div className="row d-flex justify-content-center g-4">
+                    <div className="col-md-6 col-12 ">
+                      <label className={`col-form-label`}>
+                        Country<span>*</span>
+                      </label>
+                      <CountryDropdown
+                        classes="form-select custom-dropdown"
+                        defaultOptionLabel={teacher.country}
+                        value={teacher.country || ''}
+                        onChange={(e: string) =>
+                          handleInputChangecountry(e, 'country')
+                        }
+                      />
+                      {error.country_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please select a Country.</small>
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="col-md-6 col-12 ">
+                      <label className="col-form-label">
+                        State<span>*</span>
+                      </label>
+                      <RegionDropdown
+                        data-testid="perStateDropdown"
+                        classes="form-select custom-dropdown"
+                        defaultOptionLabel={teacher.state || ''}
+                        country={teacher.country || ''}
+                        value={teacher.state || ''}
+                        // onChange={(val) => setRegion(val)}
+                        onChange={(e: string) =>
+                          handleInputChangecountry(e, 'state')
+                        }
+                      />
+                      {error.state_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please select a State.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        District<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="district"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="District *"
+                      />
+                      {error.district_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid District name.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        City<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="city"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="City *"
+                      />
+                      {error.city_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid City name.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        Address<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="address"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="Address"
+                      />
+                      {error.address_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid Address.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        Pincode<span>*</span>
+                      </label> */}
+                      <TextField
+                        autoComplete="off"
+                        name="pincode"
+                        className="form-control"
+                        type="text"
+                        onChange={handelChange}
+                        label="pincode"
+                      />
+                      {error.pincode_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please enter a valid Pincode.</small>
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="col-12">
+                      <Box>
+                        <Button
+                          variant="contained"
+                          className="btn btn-secondary w-100 outsecbtn mb-2"
+                          onClick={handleNext}
+                        >
+                          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                        </Button>
+                      </Box>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                City<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="city"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.city_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid City name.</small>
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Address<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="address"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.address_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Address.</small>
-                </p>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Pincode<span>*</span>
-              </label>
-              <TextField
-                autoComplete="off"
-                name="pincode"
-                className="form-control"
-                type="text"
-                onChange={handelChange}
-              />
-              {error.pincode_error === true && (
-                <p className="error-text " style={{ color: 'red' }}>
-                  <small>Please enter a valid Pincode.</small>
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="col-form-label">
-                Entity<span>*</span>
-              </label>
+          </Box>
+        )}
+        {activeStep === 2 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="row d-flex justify-content-center g-4">
+                    <div className="col-12">
+                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                        <BackArrowCircle
+                          onClick={handleBack}
+                          role="button"
+                          fontSize="small"
+                        />{' '}
+                        Documents & Logo
+                      </h5>
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
+                        Entity<span>*</span>
+                      </label> */}
 
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Entity *</InputLabel>
@@ -1593,360 +1745,428 @@ const TeacherRegistrationPage = () => {
                   )}
                 </div>
 
-                {/* Semester Selection */}
-                <div className="col-md-4 col-12 mb-3">
-                  <label className="col-form-label">
-                    Semester <span>*</span>
-                  </label>
-                  <FormControl fullWidth>
-                    <InputLabel id={`semester_id_${index}`}>
-                      Semester
-                    </InputLabel>
-                    <Select
-                      labelId={`semester_id_${index}`}
-                      id={`semester_select_${index}`}
-                      name="semester_number"
-                      label="Semester"
-                      onChange={(event: any) =>
-                        handelSubjectBoxChange(event, index)
-                      }
-                      value={box.semester_number || ''}
-                    >
-                      {box.filteredSemesters?.map((item) => (
-                        <MenuItem
-                          key={item.id}
-                          value={item.semester_number || ''}
-                        >
-                          {item.semester_number}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  {errorForCourse_semester_subject[index]
-                    ?.semester_number_error && (
-                    <p className="error-text" style={{ color: 'red' }}>
-                      <small>Please select a Semester.</small>
-                    </p>
-                  )}
-                </div>
+                        {/* Semester Selection */}
+                        <div className="col-md-4 col-12 ">
+                          {/* <label className="col-form-label">
+                            Semester <span>*</span>
+                          </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id={`semester_id_${index}`}>
+                              Semester
+                            </InputLabel>
+                            <Select
+                              labelId={`semester_id_${index}`}
+                              id={`semester_select_${index}`}
+                              name="semester_number"
+                              label="Semester"
+                              onChange={(event: any) =>
+                                handelSubjectBoxChange(event, index)
+                              }
+                              value={box.semester_number || ''}
+                            >
+                              {box.filteredSemesters?.map((item) => (
+                                <MenuItem
+                                  key={item.id}
+                                  value={item.semester_number || ''}
+                                >
+                                  {item.semester_number}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {errorForCourse_semester_subject[index]
+                            ?.semester_number_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a Semester.</small>
+                            </p>
+                          )}
+                        </div>
 
-                {/* Subjects Selection */}
-                <div className="col-md-4 col-12 mb-3">
-                  <label className="col-form-label">
-                    Subjects Taught<span>*</span>
-                  </label>
-                  <FormControl fullWidth>
-                    <InputLabel id={`subject_label_${index}`}>
-                      Subject
-                    </InputLabel>
-                    <Select
-                      labelId={`subject_label_${index}`}
-                      id={`subject_select_${index}`}
-                      multiple
-                      name="subjects"
-                      value={box.subjects || []}
-                      onChange={(event: any) =>
-                        handelSubjectBoxChange(event, index)
-                      }
-                      input={<OutlinedInput label="Subject" />}
-                      renderValue={(selected) =>
-                        (selected as string[])
-                          .map((id) => {
-                            const subject = totleSubject.find(
-                              (subject: any) => subject.subject_name === id,
-                            );
-                            return subject ? subject.subject_name : '';
-                          })
-                          .join(', ')
-                      }
-                    >
-                      {box.filteredSubjects?.map((subject: any) => (
-                        <MenuItem
-                          key={subject.subject_id}
-                          value={subject.subject_name}
-                        >
-                          <Checkbox
-                            checked={box.subjects?.includes(
-                              subject.subject_name.toString(),
+                        {/* Subjects Selection */}
+                        <div className="col-md-4 col-12 ">
+                          {/* <label className="col-form-label">
+                            Subjects Taught<span>*</span>
+                          </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id={`subject_label_${index}`}>
+                              Subject
+                            </InputLabel>
+                            <Select
+                              labelId={`subject_label_${index}`}
+                              id={`subject_select_${index}`}
+                              multiple
+                              name="subjects"
+                              value={box.subjects || []}
+                              onChange={(event: any) =>
+                                handelSubjectBoxChange(event, index)
+                              }
+                              input={<OutlinedInput label="Subject" />}
+                              renderValue={(selected) =>
+                                (selected as string[])
+                                  .map((id) => {
+                                    const subject = totleSubject.find(
+                                      (subject: any) =>
+                                        subject.subject_name === id,
+                                    );
+                                    return subject ? subject.subject_name : '';
+                                  })
+                                  .join(', ')
+                              }
+                            >
+                              {box.filteredSubjects?.map((subject: any) => (
+                                <MenuItem
+                                  key={subject.subject_id}
+                                  value={subject.subject_name}
+                                >
+                                  <Checkbox
+                                    checked={box.subjects?.includes(
+                                      subject.subject_name.toString(),
+                                    )}
+                                  />
+                                  <ListItemText
+                                    primary={subject.subject_name}
+                                  />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {errorForCourse_semester_subject[index]
+                            ?.subjects_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select at least one subject.</small>
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          {(selectedEntity.toLowerCase() === 'college' ||
+                            selectedEntity.toLowerCase() === 'school') &&
+                            ((boxes.length === 1 && index === 0) ||
+                              (boxes.length > 1 &&
+                                index === boxes.length - 1)) && (
+                              <AddCircleIcon
+                                className="m-2 cursor-pointer"
+                                onClick={() => handleAddmore(selectedEntity)}
+                              />
                             )}
-                          />
-                          <ListItemText primary={subject.subject_name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  {errorForCourse_semester_subject[index]?.subjects_error && (
-                    <p className="error-text" style={{ color: 'red' }}>
-                      <small>Please select at least one subject.</small>
-                    </p>
-                  )}
-                </div>
-                <div>
-                  {}
-                  {(selectedEntity.toLowerCase() === 'college' ||
-                    selectedEntity.toLowerCase() === 'school') &&
-                    ((boxes.length === 1 && index === 0) ||
-                      (boxes.length > 1 && index === boxes.length - 1)) && (
-                      <AddCircleIcon
-                        className="m-2 cursor-pointer"
-                        onClick={() => handleAddmore(selectedEntity)}
-                      />
-                    )}
-                  {index > 0 && (
-                    <DeleteOutlinedIcon
-                      onClick={() => handleRemove(selectedEntity, index)}
-                      className="m-2 cursor-pointer"
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          {selectedEntity.toLowerCase() === 'school' &&
-            boxesForSchool.length > 0 &&
-            boxesForSchool.map((box, index) => (
-              <div key={index} className="row d-flex justify-content-center">
-                {/* Class Selection */}
-                <div className={box.selected_class_name}>
-                  <label className="col-form-label">
-                    Class<span>*</span>
-                  </label>
-                  <FormControl fullWidth>
-                    <InputLabel id={`class_id_${index}`}>Class</InputLabel>
-                    <Select
-                      labelId={`class_id_${index}`}
-                      id={`class_select_${index}`}
-                      name="class_id"
-                      onChange={(event: any) =>
-                        handelSchoolBoxChange(event, index)
-                      }
-                      value={box.class_id || ''}
-                      input={<OutlinedInput label="Class" />}
-                    >
-                      {dataClass.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.class_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  {errorForClass_stream_subject[index]?.class_id_error && (
-                    <p className="error-text" style={{ color: 'red' }}>
-                      <small>Please select a Class.</small>
-                    </p>
-                  )}
-                </div>
-                {box.is_Stream && (
-                  <div className="col-md-4 col-12 mb-3">
-                    <label className="col-form-label">
-                      Stream Name<span>*</span>
-                    </label>
-                    <FormControl fullWidth>
-                      <InputLabel id={`stream_id_${index}`}>
-                        Stream Name
-                      </InputLabel>
-                      <Select
-                        labelId={`stream_id_${index}`}
-                        id={`stream_select_${index}`}
-                        name="stream"
-                        onChange={(event: any) =>
-                          handelSchoolBoxChange(event, index)
-                        }
-                        value={box.stream || ''}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          '& .MuiSelect-icon': { color: fieldIcon(namecolor) },
-                        }}
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                            },
-                          },
-                        }}
-                      >
-                        {stream.map((item) => (
-                          <MenuItem
-                            key={item}
-                            value={item}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '&:hover': {
-                                backgroundColor: inputfieldhover(namecolor),
-                              },
-                            }}
-                          >
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    {errorForClass_stream_subject[index]?.stream_error && (
-                      <p className="error-text" style={{ color: 'red' }}>
-                        <small>Please select a Stream.</small>
-                      </p>
-                    )}
-                  </div>
-                )}
-                <div className={box.selected_class_name}>
-                  <label className="col-form-label">
-                    Subjects Taught<span>*</span>
-                  </label>
-                  <FormControl fullWidth>
-                    <InputLabel id={`subject_label_${index}`}>
-                      Subject
-                    </InputLabel>
-                    <Select
-                      labelId={`subject_label_${index}`}
-                      id={`subject_select_${index}`}
-                      multiple
-                      name="subjects"
-                      value={box.subjects || []}
-                      onChange={(event: any) =>
-                        handelSchoolBoxChange(event, index)
-                      }
-                      input={<OutlinedInput label="Subject" />}
-                      renderValue={(selected) =>
-                        (selected as string[])
-                          .map((id) => {
-                            const subject = totleSubject.find(
-                              (subject: any) => subject.subject_name === id,
-                            );
-                            return subject ? subject.subject_name : '';
-                          })
-                          .join(', ')
-                      }
-                    >
-                      {box.filteredSubjects?.map((subject: any) => (
-                        <MenuItem
-                          key={subject.subject_id}
-                          value={subject.subject_name}
-                        >
-                          <Checkbox
-                            checked={box.subjects?.includes(
-                              subject.subject_name.toString(),
-                            )}
-                          />
-                          <ListItemText primary={subject.subject_name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  {errorForClass_stream_subject[index]?.subjects_error && (
-                    <p className="error-text" style={{ color: 'red' }}>
-                      <small>Please select at least one subject.</small>
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  {(selectedEntity.toLowerCase() === 'college' ||
-                    selectedEntity.toLowerCase() === 'school') &&
-                    ((boxesForSchool.length === 1 && index === 0) ||
-                      (boxesForSchool.length > 1 &&
-                        index === boxesForSchool.length - 1)) && (
-                      <AddCircleIcon
-                        className="m-2 cursor-pointer"
-                        onClick={() => handleAddmore(selectedEntity)}
-                      />
-                    )}
-                  {index > 0 && (
-                    <DeleteOutlinedIcon
-                      onClick={() => handleRemove(selectedEntity, index)}
-                      className="m-2 cursor-pointer"
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          <div className="row d-flex justify-content-between">
-            <div className="col-md-6 col-12 ">
-              <label className="col-form-label">
-                {' '}
-                Document<span>* </span>
-              </label>
-              <UploadBtn
-                label="Upload Documents"
-                name="document"
-                accept=".pdf, .jpg, .jpeg, .png, .gif"
-                handleFileChange={handleFileChange}
-              />
-              <div>
-                {allselectedfiles.length > 0 && (
-                  <ul>
-                    {allselectedfiles.map((file, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        {file.name}
-                        <DeleteOutlinedIcon
-                          className="m-2 cursor-pointer"
-                          onClick={() => handleRemoveFile(index)}
-                        />
-                      </li>
+                          {index > 0 && (
+                            <DeleteOutlinedIcon
+                              onClick={() =>
+                                handleRemove(selectedEntity, index)
+                              }
+                              className="m-2 cursor-pointer"
+                            />
+                          )}
+                        </div>
+                      </div>
                     ))}
-                  </ul>
-                )}
+                  {selectedEntity.toLowerCase() === 'school' &&
+                    boxesForSchool.length > 0 &&
+                    boxesForSchool.map((box, index) => (
+                      <div
+                        key={index}
+                        className="row d-flex justify-content-center mt-0 g-4"
+                      >
+                        {/* Class Selection */}
+                        <div
+                          // className={box.selected_class_name}
+                          className="col-md-6 col-12"
+                        >
+                          {/* <label className="col-form-label">
+                            Class<span>*</span>
+                          </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id={`class_id_${index}`}>
+                              Class
+                            </InputLabel>
+                            <Select
+                              labelId={`class_id_${index}`}
+                              id={`class_select_${index}`}
+                              name="class_id"
+                              onChange={(event: any) =>
+                                handelSchoolBoxChange(event, index)
+                              }
+                              value={box.class_id || ''}
+                              input={<OutlinedInput label="Class" />}
+                            >
+                              {dataClass.map((item) => (
+                                <MenuItem key={item.id} value={item.id}>
+                                  {item.class_name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {errorForClass_stream_subject[index]
+                            ?.class_id_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a Class.</small>
+                            </p>
+                          )}
+                        </div>
+                        {box.is_Stream && (
+                          <div className="col-md-4 col-12 ">
+                            {/* <label className="col-form-label">
+                              Stream Name<span>*</span>
+                            </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`stream_id_${index}`}>
+                                Stream Name
+                              </InputLabel>
+                              <Select
+                                labelId={`stream_id_${index}`}
+                                id={`stream_select_${index}`}
+                                name="stream"
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
+                                }
+                                value={box.stream || ''}
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '& .MuiSelect-icon': {
+                                    color: fieldIcon(namecolor),
+                                  },
+                                }}
+                                MenuProps={{
+                                  PaperProps: {
+                                    style: {
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                    },
+                                  },
+                                }}
+                              >
+                                {stream.map((item) => (
+                                  <MenuItem
+                                    key={item}
+                                    value={item}
+                                    sx={{
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                      '&:hover': {
+                                        backgroundColor:
+                                          inputfieldhover(namecolor),
+                                      },
+                                    }}
+                                  >
+                                    {item}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.stream_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Stream.</small>
+                              </p>
+                            )}
+                          </div>
+                        )}
+                        <div className={box.selected_class_name}>
+                          {/* <label className="col-form-label">
+                            Subjects Taught<span>*</span>
+                          </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id={`subject_label_${index}`}>
+                              Subject
+                            </InputLabel>
+                            <Select
+                              labelId={`subject_label_${index}`}
+                              id={`subject_select_${index}`}
+                              multiple
+                              name="subjects"
+                              value={box.subjects || []}
+                              onChange={(event: any) =>
+                                handelSchoolBoxChange(event, index)
+                              }
+                              input={<OutlinedInput label="Subject" />}
+                              renderValue={(selected) =>
+                                (selected as string[])
+                                  .map((id) => {
+                                    const subject = totleSubject.find(
+                                      (subject: any) =>
+                                        subject.subject_name === id,
+                                    );
+                                    return subject ? subject.subject_name : '';
+                                  })
+                                  .join(', ')
+                              }
+                            >
+                              {box.filteredSubjects?.map((subject: any) => (
+                                <MenuItem
+                                  key={subject.subject_id}
+                                  value={subject.subject_name}
+                                >
+                                  <Checkbox
+                                    checked={box.subjects?.includes(
+                                      subject.subject_name.toString(),
+                                    )}
+                                  />
+                                  <ListItemText
+                                    primary={subject.subject_name}
+                                  />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {errorForClass_stream_subject[index]
+                            ?.subjects_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select at least one subject.</small>
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          {(selectedEntity.toLowerCase() === 'college' ||
+                            selectedEntity.toLowerCase() === 'school') &&
+                            ((boxesForSchool.length === 1 && index === 0) ||
+                              (boxesForSchool.length > 1 &&
+                                index === boxesForSchool.length - 1)) && (
+                              <AddCircleIcon
+                                className="m-2 cursor-pointer"
+                                onClick={() => handleAddmore(selectedEntity)}
+                              />
+                            )}
+                          {index > 0 && (
+                            <DeleteOutlinedIcon
+                              onClick={() =>
+                                handleRemove(selectedEntity, index)
+                              }
+                              className="m-2 cursor-pointer"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  <div className="row d-flex justify-content-between mt-0 g-4">
+                    <div className="col-12 ">
+                      <label className="col-form-label">
+                        Document<span>* </span>
+                      </label>
+                      <UploadBtn
+                        label="Upload Documents"
+                        name="document"
+                        accept=".pdf, .jpg, .jpeg, .png, .gif"
+                        handleFileChange={handleFileChange}
+                      />
+                      <div>
+                        {allselectedfiles.length > 0 && (
+                          <ul className='doclist'>
+                            {allselectedfiles.map((file, index) => (
+                              <li
+                                key={index}
+                                className="flex items-center justify-between"
+                              >
+                                {file.name}
+                                <DeleteOutlinedIcon
+                                  className="m-2 cursor-pointer"
+                                  onClick={() => handleRemoveFile(index)}
+                                />
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-lg-12">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            data-testid="checkbox"
+                            onChange={handleTermandCondi}
+                          />
+                        }
+                        label={
+                          <Typography variant="body2">
+                            By registering your account you have to agree with
+                            our{' '}
+                            <Link
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleTACpopup();
+                              }}
+                              sx={{ fontSize: '0.85rem' }} // Adjusts font size of the link
+                            >
+                              Terms & Conditions
+                            </Link>
+                          </Typography>
+                        }
+                        sx={{
+                          '& .MuiTypography-root': { fontSize: '0.85rem' },
+                        }} // Adjusts font size of the entire label
+                      />
+                    </div>
+                    <div className="col-12">
+                      <div className=" d-flex justify-content-center">
+                        <Button
+                          variant="contained"
+                          onClick={openPopupOtp}
+                          disabled={CheckTermandcondi}
+                          className="outsecbtn"
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div className="form-check my-3 fs-14">
+                    <input
+                      data-testid="checkbox"
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="flexCheckDefault"
+                      onChange={handleTermandCondi}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="flexCheckDefault"
+                    >
+                      By registering your account you have to agree with our{' '}
+                      <a
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleTACpopup();
+                        }}
+                      >
+                        {' '}
+                        Terms & Conditions
+                      </a>
+                    </label>
+                  </div> */}
+
+                  <Dialog open={popupTermandCondi} onClose={handleClose}>
+                    <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Content of Gyanshetu Terms and Conditions...... will
+                        come soon
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose} color="primary">
+                        Close
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+
+                  <OtpCard
+                    open={popupOtpCard}
+                    handleOtpClose={() => setPopupOtpCard(false)}
+                    handleOtpSuccess={handleSubmit}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="form-check mb-3 mt-2 fs-14">
-            <input
-              data-testid="checkbox"
-              className="form-check-input"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-              onChange={handleTermandCondi}
-            />
-            <label className="form-check-label " htmlFor="flexCheckDefault">
-              By registering your account you have to agree with our{' '}
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleTACpopup();
-                }}
-              >
-                {' '}
-                Terms & Conditions
-              </a>
-            </label>
-          </div>
-          <div className=" d-flex justify-content-center m-2">
-            <Button
-              variant="contained"
-              onClick={openPopupOtp}
-              disabled={CheckTermandcondi}
-            >
-              Submit
-            </Button>
-          </div>
-          <Dialog open={popupTermandCondi} onClose={handleClose}>
-            <DialogTitle>{'Terms and Condition'}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Content of Gyanshetu Terms and Conditions...... will come soon
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-        <OtpCard
-          open={popupOtpCard}
-          handleOtpClose={() => setPopupOtpCard(false)}
-          handleOtpSuccess={handleSubmit}
-          email={teacher.email_id}
-        />
-      </div>
-    </div>
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 };
 

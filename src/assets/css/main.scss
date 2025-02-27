@@ -642,6 +642,7 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
 }
 
 @media screen and (min-width: 1199px) {
+  
   body.toggled {
     .sidebar-wrapper {
       &:hover {
@@ -1757,4 +1758,81 @@ form select.error:focus {
   }
 
   position: relative;
+}
+
+
+.Stepperform{
+
+  @media(min-width: 1024px){
+  
+      display: grid;
+      height: 100vh;
+      .access1-card{
+        margin-top: 4rem;
+       
+        
+      }
+  }
+  
+  grid-template-columns: 400px 1fr;
+  height: 100vh;
+  
+
+  .MuiStepper-vertical{
+    height: max-content;
+  }
+  .without-login{
+    
+    
+    .access1-card{
+      
+      background-color: transparent;
+      box-shadow: none;
+      
+    }
+  }
+  .MuiStepLabel-iconContainer{
+    background-color: white;
+    border: 1px solid rgba($primary, 0.35);
+    margin-right: .8rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: .35rem;
+  }
+  .MuiStepLabel-vertical{
+    padding: 0!important;
+  }
+  .css-1pe7n21-MuiStepConnector-root{
+    margin-left: 20px;
+  }
+  .Mui-active{
+    opacity: 1;
+  }
+  .Mui-disabled{
+    opacity: 0.9;
+
+    svg{
+      opacity: 0.7;
+    }
+  }
+}
+.doclist{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 1rem;
+ 
+  li{
+    background-color: rgba($primary, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: .1rem .7rem;
+    border-radius: .2rem;
+  }
 }
