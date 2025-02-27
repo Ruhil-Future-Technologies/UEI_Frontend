@@ -5,10 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
 import consultantimg from '../../../assets/img/consultant.png';
 import goaling from '../../../assets/img/goal.png';
-import classimg from '../../../assets/img/class.png';
+//import classimg from '../../../assets/img/class.png';
 
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+//import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
+//import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
 import MicIcon from '@mui/icons-material/Mic';
 import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
@@ -31,19 +31,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Tabs,
-  Typography,
-} from '@mui/material';
+
 import useApi from '../../../hooks/useAPI';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
@@ -62,48 +50,10 @@ interface Teacher {
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('_id');
-  const [activeTab, setActiceTab] = useState(0);
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
   const navigate = useNavigate();
-  const tabContent = [
-    {
-      label: 'All',
-      lessons: 21,
-      duration: '45 min',
-      assignments: 2,
-      students: 256,
-      image: classimg,
-      title: 'Microbiology Society',
-    },
-    {
-      label: 'Design',
-      lessons: 18,
-      duration: '50 min',
-      assignments: 3,
-      students: 198,
-      image: classimg,
-      title: 'Creative Design Hub',
-    },
-    {
-      label: 'Science',
-      lessons: 25,
-      duration: '60 min',
-      assignments: 4,
-      students: 300,
-      image: classimg,
-      title: 'Advanced Science Course',
-    },
-    {
-      label: 'Coding',
-      lessons: 30,
-      duration: '90 min',
-      assignments: 5,
-      students: 400,
-      image: classimg,
-      title: 'Full-Stack Coding Bootcamp',
-    },
-  ];
+  
 
   const getTeacherInfo = () => {
     try {
@@ -431,8 +381,15 @@ const TeacherDash = () => {
             </div>
           </div>
         </div>
+
+
+        
+        
         <div className="row">
-          <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
+         
+
+          
+        <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
                 <img src={consultantimg} alt="" />
@@ -447,7 +404,7 @@ const TeacherDash = () => {
             </div>
           </div>
 
-          <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
+          <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
                 <img src={goaling} alt="" />
@@ -462,316 +419,6 @@ const TeacherDash = () => {
             </div>
           </div>
 
-          <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
-            <div className="card w-100">
-              <div className="card-body ">
-                <h6 className="fs-18 fw-bold mb-3">Your className</h6>
-
-                {/* <ul className="nav nav-pills  classtabs" id="pills-tab" role="tablist">
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">All</button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Design</button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Science</button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false">Coding</button>
-                                    </li>
-                                </ul> */}
-                <Box>
-                  <Tabs
-                    value={activeTab}
-                    onChange={(_, newValue) => setActiceTab(newValue)}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    aria-label="Navigation Pills"
-                  >
-                    {tabContent.map((tab, index) => (
-                      <Tab key={index} label={tab.label} />
-                    ))}
-                  </Tabs>
-                  <Box sx={{ mt: 3 }}>
-                    {tabContent.map((tab, index) => (
-                      <Box
-                        key={index}
-                        role="tabpanel"
-                        hidden={activeTab !== index}
-                        id={`tabpanel-${index}`}
-                        aria-labelledby={`tab-${index}`}
-                      >
-                        {activeTab === index && (
-                          <Card
-                            sx={{
-                              boxShadow: 2,
-                              borderRadius: 2,
-                              mb: 2,
-                              p: 2,
-                              '&:hover': { boxShadow: 4 },
-                              // backgroundColor: "primary.main"
-                            }}
-                            className="card bg-primary-20 rounded-3 mb-0"
-                          >
-                            <CardContent>
-                              <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={12} md={3}>
-                                  <img
-                                    src={tab.image}
-                                    alt={tab.title}
-                                    style={{
-                                      width: '100%',
-                                      borderRadius: '8px',
-                                    }}
-                                  />
-                                </Grid>
-                                <Grid item xs={12} md={9}>
-                                  <Typography variant="h6" sx={{ mb: 1 }}>
-                                    {tab.title}
-                                  </Typography>
-                                  <Table size="small">
-                                    <TableBody>
-                                      <TableRow>
-                                        <TableCell>
-                                          {tab.lessons} Lessons
-                                        </TableCell>
-                                        <TableCell align="right">
-                                          {tab.duration}
-                                        </TableCell>
-                                      </TableRow>
-                                      <TableRow>
-                                        <TableCell>
-                                          {tab.assignments} Assignments
-                                        </TableCell>
-                                        <TableCell align="right">
-                                          {tab.students} Students
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableBody>
-                                  </Table>
-                                </Grid>
-                              </Grid>
-                            </CardContent>
-                          </Card>
-                        )}
-                      </Box>
-                    ))}
-                  </Box>
-                </Box>
-                {/* <div className="tab-content clstabcontent" id="pills-tabContent">
-                                    <div className="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src={classimg} alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src=classimg alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src=classimg alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src=classimg alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> */}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-lg-8">
-            <div className="d-flex mb-3 justify-content-between align-items-center">
-              <h5 className="mb-0 fw-bold fs-18">Subject Wise Students</h5>
-              <div className="d-flex align-items-center gap-3">
-                <div className="swiper-next d-flex">
-                  <ArrowBackOutlinedIcon />
-                </div>
-                <div className="swiper-prev d-flex">
-                  <ArrowForwardOutlinedIcon />
-                </div>
-                <a
-                  href=""
-                  className="d-block text-dark btn btn-light rounded-3 btn-sm"
-                >
-                  See All
-                </a>
-              </div>
-            </div>
-            <div className="card">
-              <div className="card-body">
-                <div className="swiper studentslider ">
-                  <div className="swiper-wrapper">
-                    <Swiper spaceBetween={10} slidesPerView={2} loop={true}>
-                      <SwiperSlide>
-                        <div className="card crcard">
-                          <div className="card-body">
-                            <div className="row g-3 align-items-center">
-                              <div className="col-lg-4">
-                                <div className="chart-container2 h-auto">
-                                  <div id="chart9"></div>
-                                </div>
-                              </div>
-                              <div className="col-lg-8">
-                                <h6 className=" fw-semibold mb-3">
-                                  Biology Molecular
-                                </h6>
-
-                                <table className="table table-sm table-borderless">
-                                  <tr>
-                                    <td>21 Lesson</td>
-                                    <td>45 min</td>
-                                  </tr>
-                                  <tr>
-                                    <td>2 Assignments</td>
-                                    <td>256 Students</td>
-                                  </tr>
-                                </table>
-
-                                <div className="d-flex gap-3">
-                                  <button className="btn btn-outline-primary rounded-pill w-100">
-                                    Skip
-                                  </button>
-                                  <button className="btn-primary btn rounded-pill w-100">
-                                    Continue
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <div className="card crcard">
-                          <div className="card-body">
-                            <div className="row g-3 align-items-center">
-                              <div className="col-lg-4">
-                                <div className="chart-container2 h-auto">
-                                  <div id="chart9"></div>
-                                </div>
-                              </div>
-                              <div className="col-lg-8">
-                                <h6 className=" fw-semibold mb-3">
-                                  Color Theory
-                                </h6>
-
-                                <table className="table table-sm table-borderless">
-                                  <tr>
-                                    <td>21 Lesson</td>
-                                    <td>45 min</td>
-                                  </tr>
-                                  <tr>
-                                    <td>2 Assignments</td>
-                                    <td>256 Students</td>
-                                  </tr>
-                                </table>
-
-                                <div className="d-flex gap-3">
-                                  <button className="btn btn-outline-primary rounded-pill w-100">
-                                    Skip
-                                  </button>
-                                  <button className="btn-primary btn rounded-pill w-100">
-                                    Continue
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <div className="card crcard">
-                          <div className="card-body">
-                            <div className="row g-3 align-items-center">
-                              <div className="col-lg-4">
-                                <div className="chart-container2 h-auto">
-                                  <div id="chart9"></div>
-                                </div>
-                              </div>
-                              <div className="col-lg-8">
-                                <h6 className=" fw-semibold mb-3">
-                                  Biology Molecular
-                                </h6>
-
-                                <table className="table table-sm table-borderless">
-                                  <tr>
-                                    <td>21 Lesson</td>
-                                    <td>45 min</td>
-                                  </tr>
-                                  <tr>
-                                    <td>2 Assignments</td>
-                                    <td>256 Students</td>
-                                  </tr>
-                                </table>
-
-                                <div className="d-flex gap-3">
-                                  <button className="btn btn-outline-primary rounded-pill w-100">
-                                    Skip
-                                  </button>
-                                  <button className="btn-primary btn rounded-pill w-100">
-                                    Continue
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                    </Swiper>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <TeacherGraoh />
           <div
             className="col-xxl-8 d-flex align-items-stretch"

@@ -59,7 +59,7 @@ $max-items: 100;
 @import 'responsive';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-body {
+body, a, p {
   font-family: 'Inter', system-ui !important;
 }
 .mh-56 {
