@@ -176,7 +176,7 @@ const TeacherRegistrationPage = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const navigate = useNavigate();
-  const { postRegisterData, getForRegistration } = useApi();
+  const { postRegisterData, getForRegistration,postDataJson } = useApi();
 
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
@@ -360,7 +360,7 @@ const TeacherRegistrationPage = () => {
     getForRegistration(`${CourseURL}`)
       .then((data) => {
         if (data.status) {
-          setDataCourse(data?.data);
+          setDataCourse(data?.data?.course_data);
         }
       })
       .catch((e) => {
@@ -440,8 +440,8 @@ const TeacherRegistrationPage = () => {
       .then((data) => {
         console.log(data.data)
         if (data.data) {
-          const filerRoleId = data.data.find(
-            (role: any) => role.role_name === 'Teacher',
+          const filerRoleId = data?.data?.rolees_data?.find(
+            (role: any) => (role.role_name).toLowerCase() === 'teacher',
           ).id;
           console.log(filerRoleId);
           setRoleId(filerRoleId); // setRoleData(data?.data);
@@ -499,7 +499,7 @@ const TeacherRegistrationPage = () => {
       getForRegistration(`/semester/list`)
         .then((data) => {
           if (data.status) {
-            setSemesterData(data.data);
+            setSemesterData(data.data?.semesters_data);
           }
         })
         .catch((e) => {
@@ -625,7 +625,7 @@ const TeacherRegistrationPage = () => {
     validation(name, value);
   };
 
-  const openPopupOtp = () => {
+  const handleSubmit = () => {
     setError({
       first_name_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         teacher.first_name.trim(),
@@ -735,7 +735,113 @@ const TeacherRegistrationPage = () => {
       !error.institution_id_error &&
       !(teacher.institution_id === '')
     ) {
-      setPopupOtpCard(true);
+      const formData = new FormData();
+      allselectedfiles.forEach((file) => {
+        formData.append('documents[]', file);
+      });
+  
+      formData.append('first_name', teacher.first_name);
+      formData.append('last_name', teacher.last_name);
+      formData.append('gender', genderData);
+      formData.append(
+        'dob',
+        teacher.dob ? dayjs(teacher.dob).format('YYYY-MM-DD') : '',
+      );
+      formData.append('phone', teacher.phone);
+      formData.append('email_id', teacher.email_id);
+      formData.append('qualification', teacher.qualification);
+      formData.append('entity_id', teacher.entity_id);
+      formData.append('role_id', roleId);
+      formData.append('experience', teacher.experience);
+      formData.append('address', teacher.address);
+      formData.append('country', teacher.country);
+      formData.append('state', teacher.state);
+      formData.append('district', teacher.district);
+      formData.append('city', teacher.city);
+      formData.append('pincode', teacher.pincode);
+  
+      if (selectedEntity.toLowerCase() === 'school') {
+        const class_stream_subjects = boxesForSchool.reduce(
+          (acc, boxesForSchool) => {
+            const { class_id, stream, subjects } = boxesForSchool;
+            const streamKey = stream === '' ? 'general' : stream || 'general';
+            if (!acc[class_id]) {
+              acc[class_id] = {};
+            }
+  
+            if (!acc[class_id][streamKey]) {
+              acc[class_id][streamKey] = [];
+            }
+  
+            acc[class_id][streamKey] = [
+              ...new Set([...acc[class_id][streamKey], ...subjects]),
+            ];
+  
+            return acc;
+          },
+          {} as Record<string, Record<string, string[]>>,
+        );
+        formData.append(
+          'class_stream_subjects',
+          JSON.stringify(class_stream_subjects),
+        );
+        formData.append('school_name', selectedSchool);
+        formData.append(
+          'institution_id',
+          teacher.institution_id?.toString() || '',
+        );
+        if (selectedClassName === 'col-6') {
+          formData.append('stream', teacher.stream);
+        }
+      } else {
+        formData.append('university_id', teacher.university_id || '');
+        formData.append(
+          'institution_id',
+          teacher.institution_id?.toString() || '',
+        );
+        const course_semester_subjects = boxes.reduce(
+          (acc, box) => {
+            const { course_id, semester_number, subjects } = box;
+  
+            if (!acc[course_id]) {
+              acc[course_id] = {};
+            }
+  
+            if (!acc[course_id][semester_number]) {
+              acc[course_id][semester_number] = [];
+            }
+  
+            acc[course_id][semester_number] = [
+              ...new Set([...acc[course_id][semester_number], ...subjects]),
+            ];
+  
+            return acc;
+          },
+          {} as Record<string, Record<string, string[]>>,
+        );
+        formData.append(
+          'course_semester_subjects',
+          JSON.stringify(course_semester_subjects),
+        );
+      }
+      postRegisterData(getTeacherURL, formData)
+        .then((response) => {
+          if (response.status) {
+            toast.success('Teacher registration request sent successfully', {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+            setPopupOtpCard(true);
+          } else {
+            toast.error(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       toast.error('validation error', {
         hideProgressBar: true,
@@ -743,119 +849,7 @@ const TeacherRegistrationPage = () => {
       });
     }
   };
-  const handleSubmit = () => {
-    const formData = new FormData();
-    allselectedfiles.forEach((file) => {
-      formData.append('documents', file);
-    });
-
-    formData.append('first_name', teacher.first_name);
-    formData.append('last_name', teacher.last_name);
-    formData.append('gender', genderData);
-    formData.append(
-      'dob',
-      teacher.dob ? dayjs(teacher.dob).format('YYYY-MM-DD') : '',
-    );
-    formData.append('phone', teacher.phone);
-    formData.append('email_id', teacher.email_id);
-    formData.append('qualification', teacher.qualification);
-    formData.append('entity_id', teacher.entity_id);
-    formData.append('role_id', roleId);
-    formData.append('experience', teacher.experience);
-    formData.append('address', teacher.address);
-    formData.append('country', teacher.country);
-    formData.append('state', teacher.state);
-    formData.append('district', teacher.district);
-    formData.append('city', teacher.city);
-    formData.append('pincode', teacher.pincode);
-
-    if (selectedEntity.toLowerCase() === 'school') {
-      const class_stream_subjects = boxesForSchool.reduce(
-        (acc, boxesForSchool) => {
-          const { class_id, stream, subjects } = boxesForSchool;
-          const streamKey = stream === '' ? 'general' : stream || 'general';
-          if (!acc[class_id]) {
-            acc[class_id] = {};
-          }
-
-          if (!acc[class_id][streamKey]) {
-            acc[class_id][streamKey] = [];
-          }
-
-          acc[class_id][streamKey] = [
-            ...new Set([...acc[class_id][streamKey], ...subjects]),
-          ];
-
-          return acc;
-        },
-        {} as Record<string, Record<string, string[]>>,
-      );
-      formData.append(
-        'class_stream_subjects',
-        JSON.stringify(class_stream_subjects),
-      );
-      formData.append('school_name', selectedSchool);
-      formData.append(
-        'institution_id',
-        teacher.institution_id?.toString() || '',
-      );
-      if (selectedClassName === 'col-6') {
-        formData.append('stream', teacher.stream);
-      }
-    } else {
-      formData.append('university_id', teacher.university_id || '');
-      formData.append(
-        'institution_id',
-        teacher.institution_id?.toString() || '',
-      );
-      const course_semester_subjects = boxes.reduce(
-        (acc, box) => {
-          const { course_id, semester_number, subjects } = box;
-
-          if (!acc[course_id]) {
-            acc[course_id] = {};
-          }
-
-          if (!acc[course_id][semester_number]) {
-            acc[course_id][semester_number] = [];
-          }
-
-          acc[course_id][semester_number] = [
-            ...new Set([...acc[course_id][semester_number], ...subjects]),
-          ];
-
-          return acc;
-        },
-        {} as Record<string, Record<string, string[]>>,
-      );
-      formData.append(
-        'course_semester_subjects',
-        JSON.stringify(course_semester_subjects),
-      );
-    }
-    postRegisterData(getTeacherURL, formData)
-      .then((response) => {
-        if (response.status) {
-          toast.success('Teacher registration request sent successfully', {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-          alert(
-            'Teacher registered request sended successfully please wait for 24-48 hours',
-          );
-          window.location.reload();
-        } else {
-          toast.error(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
+ 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
@@ -971,7 +965,6 @@ const TeacherRegistrationPage = () => {
             // Filter subjects immediately based on the selected class
             const filteredSubjects = totleSubject.filter(
               (item) => item.class_id === value,
-              (item) => item.class_id === value,
             );
 
             updatedBox = {
@@ -1074,6 +1067,21 @@ const TeacherRegistrationPage = () => {
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
+  };
+  const handleOtpSubmit = (otp:string) => {
+
+    let payload = {
+      email: teacher.email_id,
+      otp: otp
+    }
+    postDataJson(`/auth/verify-otp`, payload).then((data) => {
+      console.log(data);
+      if (data.status === true) {
+        alert('Wait for 24-48 hours, the Administrator will inform you.');
+        window.location.reload();
+      }
+    })
+
   };
   return (
     <Box sx={{ width: '100%' }} className="Stepperform">
@@ -2104,7 +2112,7 @@ const TeacherRegistrationPage = () => {
                       <div className=" d-flex justify-content-center">
                         <Button
                           variant="contained"
-                          onClick={openPopupOtp}
+                          onClick={handleSubmit}
                           disabled={CheckTermandcondi}
                           className="outsecbtn"
                         >
@@ -2154,12 +2162,7 @@ const TeacherRegistrationPage = () => {
                       </Button>
                     </DialogActions>
                   </Dialog>
-
-                  <OtpCard
-                    open={popupOtpCard}
-                    handleOtpClose={() => setPopupOtpCard(false)}
-                    handleOtpSuccess={handleSubmit}
-                  />
+                   <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string)=>handleOtpSubmit(otp)} email={teacher.email_id}/>
                 </div>
               </div>
             </div>

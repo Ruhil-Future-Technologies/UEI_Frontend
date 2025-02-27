@@ -170,6 +170,7 @@ const InstituteRegistrationForm = () => {
   useEffect(() => {
     getUniversity();
     getEntity();
+    getInstitutelist();
   }, []);
 
   const getInstitutelist = async () => {
@@ -214,7 +215,7 @@ const InstituteRegistrationForm = () => {
     console.log(files, typeof files);
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
-      handleFileChanges((prevFiles) => [
+      setAllSelectedfiles((prevFiles) => [
         ...prevFiles, // Keep previously selected files
         ...filesArray, // Add newly selected files
       ]);
@@ -288,7 +289,7 @@ const InstituteRegistrationForm = () => {
   };
   const openPopupOtp = () => {
     const emailExists = dataInstitute.some(
-      (item) => item.email_id === valueInstitute.email_id,
+      (item) => item.email === valueInstitute.email_id,
     );
     setEmailExist(emailExists);
     if (emailExists) {
@@ -842,11 +843,7 @@ const InstituteRegistrationForm = () => {
                         </div>
                       </div>
                     </div>
-                    <OtpCard
-                      open={popupOtpCard}
-                      handleOtpClose={() => setPopupOtpCard(false)}
-                      handleOtpSuccess={handleSubmit}
-                    />
+                    <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string)=>handleOtpSubmit(otp)} email={valueInstitute.email_id}/>
                   </div>
                 </div>
               </Box>
