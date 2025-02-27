@@ -48,7 +48,7 @@ const AddEditSubject = () => {
   const navigator = useNavigate();
   const { id } = useParams();
   //const userdata = JSON.parse(localStorage.getItem('userdata') || '');
-  const user_uuid=localStorage.getItem('user_uuid');
+  const user_uuid = localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z0-9\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
 
   const initialState = {
@@ -94,9 +94,9 @@ const AddEditSubject = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
-        console.log(data);
         const filteredData = data?.data.filter(
-          (item) => item.is_active  && item.is_approve,
+          (item) =>
+            item.is_active && item.is_approve && item.entity_type == 'College',
         );
         setinstituteList(filteredData);
       })
@@ -111,7 +111,9 @@ const AddEditSubject = () => {
       });
     getData(`${CourseListURL}`)
       .then((data) => {
-        const filteredData = data?.data?.course_data?.filter((item:any) => item.is_active);
+        const filteredData = data?.data?.course_data?.filter(
+          (item: any) => item.is_active,
+        );
         setCourseList(filteredData);
         setCourseListAll(filteredData);
       })
@@ -128,7 +130,7 @@ const AddEditSubject = () => {
       .then((response: any) => {
         if (response.code === 200) {
           const filteredData = response?.data?.semesters_data?.filter(
-            (item: any) => item?.is_active ,
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -145,10 +147,9 @@ const AddEditSubject = () => {
       getData(`${SubjectGETURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           console.log(data);
-          if(data.status){
+          if (data.status) {
             setSubject(data?.data?.subject_data);
           }
-         
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -185,7 +186,6 @@ const AddEditSubject = () => {
     fieldName: string,
   ) => {
     if (fieldName === 'institution_id') {
-      console.log(courseListAll)
       const courses = courseListAll.filter(
         (item: any) => item.institution_id === e.target.value,
       );

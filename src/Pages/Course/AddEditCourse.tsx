@@ -80,12 +80,17 @@ const AddEditCourse = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data) => {
-        console.log(data)
-        if(data?.status){
-          const filteredData = data?.data.filter((item:any) => item.is_active  && item.is_approve);
+        if (data?.status) {
+          const filteredData = data?.data.filter(
+            (item: any) =>
+              item.is_active &&
+              item.is_approve &&
+              item.entity_type == 'College',
+          );
+
           setinstituteList(filteredData);
         }
-        
+
         // setDataEntity(data?.data)
       })
       .catch((e) => {
@@ -100,10 +105,8 @@ const AddEditCourse = () => {
     if (id) {
       getData(`${CourseEditURL}${id ? `/${id}` : ''}`)
         .then((data) => {
-          console.log(data);
-          if(data?.status){
-            setInstitute(data?.data?.
-              course_data);
+          if (data?.status) {
+            setInstitute(data?.data?.course_data);
           }
         })
         .catch((e) => {

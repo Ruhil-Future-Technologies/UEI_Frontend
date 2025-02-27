@@ -47,7 +47,7 @@ interface ITeacherForm {
   gender: string;
   dob: string;
   phone: string;
-  email_id: string;
+  email: string;
   qualification: string;
   role_id?: string;
   subjects?: string[];
@@ -55,7 +55,7 @@ interface ITeacherForm {
   class_id?: string;
   university_id?: string;
   experience: number;
-  institution_id: string;
+  institute_id: string;
   stream?: string;
   address: string;
   country: string;
@@ -132,7 +132,7 @@ const AddEditTeacher = () => {
     gender: '',
     dob: '',
     phone: '',
-    email_id: '',
+    email: '',
     qualification: '',
     role_id: '',
     subjects: [],
@@ -140,7 +140,7 @@ const AddEditTeacher = () => {
     class_id: '',
     university_id: '',
     experience: 0,
-    institution_id: '',
+    institute_id: '',
     address: '',
     country: '',
     state: '',
@@ -194,35 +194,36 @@ const AddEditTeacher = () => {
 
     await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
       all_classes = data?.data;
-      setDataClasses(data.data);
+      setDataClasses(data.data?.classes_data);
     });
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data;
-      setDataCourses(data.data);
+      setDataCourses(data?.data?.course_data);
     });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data);
+      setCollegeSubjects(data.data.subjects_data);
     });
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data);
+      setSchoolSubjects(data.data.subjects_data);
     });
     if (id) {
       const teacherData = await getData(`${TeacherURL}`);
+
       try {
         if (!teacherData?.data) {
           return;
         }
         const currentTeacher = teacherData?.data.find((teacher: any) => {
-          if (teacher.teacher_id == id) {
-            return teacher.teacher_login_id;
+          if (teacher.user_uuid == id) {
+            return teacher.user_uuid;
           }
         });
 
-        if (!currentTeacher?.teacher_login_id) {
+        if (!currentTeacher?.user_uuid) {
           return;
         }
         const teacherDetail = await getData(
-          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_LOGIN_ID}/${currentTeacher.teacher_login_id}`,
+          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_LOGIN_ID}/${currentTeacher.user_uuid}`,
         );
 
         const filterTeacherCourses = (
@@ -240,7 +241,7 @@ const AddEditTeacher = () => {
             const matchingCourse = allCourses.find(
               (course: any) =>
                 course.course_name === courseName &&
-                course.institution_id === teacherDetail.data.institution_id,
+                course.institute_id === teacherDetail.data.institute_id,
             );
 
             if (matchingCourse) {
@@ -309,7 +310,7 @@ const AddEditTeacher = () => {
               teacherDetail?.data?.gender.slice(1) || '',
           dob: teacherDetail?.data?.dob || '',
           phone: teacherDetail?.data?.phone || '',
-          email_id: teacherDetail?.data?.email_id || '',
+          email: teacherDetail?.data?.email || '',
           qualification: teacherDetail?.data?.qualification || '',
           role_id: teacherDetail?.data?.role_id || '',
 
@@ -324,7 +325,7 @@ const AddEditTeacher = () => {
           university_id: teacherDetail.data?.university_id || '',
 
           experience: Number(teacherDetail?.data?.experience) || 0,
-          institution_id: teacherDetail?.data?.institution_id || '',
+          institute_id: teacherDetail?.data?.institute_id || '',
           address: teacherDetail?.data?.address || '',
           country: teacherDetail?.data?.country || '',
           state: teacherDetail?.data?.state || '',
@@ -375,19 +376,19 @@ const AddEditTeacher = () => {
       setCollegeInstitutes(collegeInstitutes);
     });
     getData(`${QUERY_KEYS_ROLE.GET_ROLE}`).then((data) => {
-      setRole(data.data);
+      setRole(data.data.rolees_data);
     });
     getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data);
+      setDataClasses(data.data.classes_data);
     });
     getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      setDataCourses(data.data);
+      setDataCourses(data.data.course_data);
     });
     getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data);
+      setCollegeSubjects(data.data.subjects_data);
     });
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data);
+      setSchoolSubjects(data.data.subjects_data);
     });
   }, []);
 
@@ -423,7 +424,9 @@ const AddEditTeacher = () => {
 
   useEffect(() => {
     const institutionId =
-      formRef.current?.values?.institution_id || selectedInstitutionId;
+      formRef.current?.values?.institute_id || selectedInstitutionId;
+    console.log({ institutionId });
+    console.log({ dataCourses });
 
     if (institutionId) {
       const filtered = dataCourses.filter(
@@ -435,7 +438,7 @@ const AddEditTeacher = () => {
       setFilteredCourses([]);
     }
   }, [
-    formRef.current?.values?.institution_id,
+    formRef.current?.values?.institute_id,
     dataCourses,
     selectedInstitutionId,
   ]);
@@ -638,7 +641,7 @@ const AddEditTeacher = () => {
       .required('Please enter last Name')
       .matches(charPattern, 'Please enter valid name, only characters allowed'),
     gender: Yup.string().required('Please select Gender'),
-    email_id: Yup.string()
+    email: Yup.string()
       .required('Please enter Email Id')
       .matches(emailPattern, 'Please enter a valid Email format'),
     dob: Yup.date().required('Please enter Date of Birth'),
@@ -724,11 +727,17 @@ const AddEditTeacher = () => {
       .typeError('Experience must be a number'),
     entity_id: Yup.string().required('Please select Entity'),
     university_id: Yup.string().when('entity_id', {
-      is: (val: string) => !isSchoolEntity(val),
-      then: () => Yup.string().required('Please select University'),
-      otherwise: () => Yup.string(),
+      is: (entity_id: string) => {
+        const selectedEntity = dataEntity.find(
+          (entity) => entity.id === Number(entity_id),
+        );
+
+        return selectedEntity?.entity_type !== 'School';
+      },
+      then: (schema) => schema.required('Please select University'),
+      otherwise: (schema) => schema.notRequired(),
     }),
-    institution_id: Yup.string().when('entity_id', {
+    institute_id: Yup.string().when('entity_id', {
       is: (val: string) => isCollegeEntity(val),
       then: () =>
         Yup.string()
@@ -885,6 +894,11 @@ const AddEditTeacher = () => {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
+      formData.forEach((v, k) => {
+        console.log({ v, k });
+      });
+      console.log({ resetForm, postData });
+
       postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formData)
         .then((data: any) => {
           if (data.status) {
@@ -894,16 +908,12 @@ const AddEditTeacher = () => {
             });
             resetForm({ values: initialState });
             setDob(null);
-          } else {
-            toast.error(data.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
+            setTeacher(initialState);
           }
         })
         .catch((e: any) => {
-          navigator('/');
-          toast.error(e?.message, {
+          // navigator('/');
+          toast.error(e?.response?.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -1034,7 +1044,7 @@ const AddEditTeacher = () => {
   ) => {
     const value = e.target.value;
 
-    if (fieldName === 'institution_id') {
+    if (fieldName === 'institute_id') {
       setSelectedInstitutionId(value as string);
     }
     if (fieldName.startsWith('courses.')) {
@@ -1255,7 +1265,7 @@ const AddEditTeacher = () => {
       if (fieldName === 'entity_id' && typeof value === 'string') {
         if (isSchoolEntity(value)) {
           newState.university_id = '';
-          newState.institution_id = '';
+          newState.institute_id = '';
         }
         if (isCollegeEntity(value)) {
           newState.class_id = '';
@@ -1263,7 +1273,7 @@ const AddEditTeacher = () => {
       }
 
       if (fieldName === 'university_id') {
-        newState.institution_id = '';
+        newState.institute_id = '';
 
         const filtered = dataInstitutes?.filter(
           (institute) => institute.university_id === value,
@@ -1279,13 +1289,13 @@ const AddEditTeacher = () => {
     if (fieldName === 'entity_id' && typeof value === 'string') {
       if (isSchoolEntity(value)) {
         formRef?.current?.setFieldValue('university_id', '');
-        formRef?.current?.setFieldValue('institution_id', '');
+        formRef?.current?.setFieldValue('institute_id', '');
         setFilteredInstitutes([]);
       }
     }
 
     if (fieldName === 'university_id') {
-      formRef?.current?.setFieldValue('institution_id', '');
+      formRef?.current?.setFieldValue('institute_id', '');
     }
 
     if (fieldName === 'class_id') {
@@ -1446,15 +1456,15 @@ const AddEditTeacher = () => {
                           fullWidth
                           component={TextField}
                           label="Email Id*"
-                          name="email_id"
+                          name="email"
                           type="email"
-                          value={values?.email_id}
+                          value={values?.email}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'email_id')
+                            handleChange(e, 'email')
                           }
                         />
-                        {touched?.email_id && errors?.email_id && (
-                          <p className="error">{String(errors.email_id)}</p>
+                        {touched?.email && errors?.email && (
+                          <p className="error">{String(errors.email)}</p>
                         )}
                       </div>
                     </div>
@@ -1535,6 +1545,7 @@ const AddEditTeacher = () => {
                           label="Experience (years) *"
                           name="experience"
                           type="number"
+                          inputProps={{ min: 0 }}
                           value={values?.experience}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'experience')
@@ -1645,7 +1656,7 @@ const AddEditTeacher = () => {
                             {dataUniversity?.map((university: any) => (
                               <MenuItem
                                 key={university.id}
-                                value={university.university_id}
+                                value={university.id}
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
                                   color: inputfieldtext(namecolor),
@@ -1677,8 +1688,8 @@ const AddEditTeacher = () => {
                                 : 'Institute *'}
                           </InputLabel>
                           <Select
-                            name="institution_id"
-                            value={values?.institution_id}
+                            name="institute_id"
+                            value={values?.institute_id}
                             label={
                               isSchoolEntity(values?.entity_id)
                                 ? 'School Name *'
@@ -1687,7 +1698,7 @@ const AddEditTeacher = () => {
                                   : 'Institute *'
                             }
                             onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'institution_id')
+                              handleChange(e, 'institute_id')
                             }
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1717,14 +1728,14 @@ const AddEditTeacher = () => {
                                   },
                                 }}
                               >
-                                {institute?.institution_name}
+                                {institute?.institute_name}
                               </MenuItem>
                             ))}
                           </Select>
                         </FormControl>
-                        {touched?.institution_id && errors?.institution_id && (
+                        {touched?.institute_id && errors?.institute_id && (
                           <p className="error">
-                            {String(errors?.institution_id)}
+                            {String(errors?.institute_id)}
                           </p>
                         )}
                       </div>
@@ -1751,7 +1762,7 @@ const AddEditTeacher = () => {
                                           `courses.${index}.course_id`,
                                         )
                                       }
-                                      disabled={!values?.institution_id}
+                                      disabled={!values?.institute_id}
                                       sx={{
                                         backgroundColor: inputfield(namecolor),
                                         color: inputfieldtext(namecolor),
@@ -1989,7 +2000,7 @@ const AddEditTeacher = () => {
                                           `classes.${index}.class_id`,
                                         )
                                       }
-                                      disabled={!values?.institution_id}
+                                      disabled={!values?.institute_id}
                                       sx={{
                                         backgroundColor: inputfield(namecolor),
                                         color: inputfieldtext(namecolor),

@@ -345,7 +345,9 @@ const Institute = () => {
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
-                                    handleDeleteFiles(row?.row?.original?.id);
+                                    handleDeleteFiles(
+                                      row?.row?.original?.user_uuid,
+                                    );
                                   }}
                                 >
                                   <TrashIcon />

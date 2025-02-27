@@ -46,7 +46,7 @@ const Login = () => {
     }
   }, []);
 
-  const { postData,postDataJson } = useApi();
+  const { postData, postDataJson } = useApi();
 
   const navigator = useNavigate();
   const [password, setPassword] = useState('');
@@ -115,13 +115,11 @@ const Login = () => {
       }
       try {
         const data = await postData(loginUrl, UserSignUp);
-        console.log(data);
-        if (data?.status === true) {
+        if (data?.status) {
           setLoading(false);
           localStorage.setItem('token', 'Bearer ' + data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
         } else {
-          console.log(data.message);
           if (data?.message === 'User is not verified') {
             setPopupOtpCard(true);
           }
@@ -148,8 +146,7 @@ const Login = () => {
       otp: otp,
     };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
-      console.log(data);
-      if (data.status === true) {
+      if (data.status) {
         handleSuccessfulLogin(data);
         toast.success(data.message, {
           hideProgressBar: true,
@@ -168,8 +165,8 @@ const Login = () => {
     localStorage.setItem('pd', password || '');
 
     localStorage.setItem('lastRoute', window.location.pathname);
-    localStorage.setItem('email', data?.data.email)
-    localStorage.setItem('phone', data?.data.phone)
+    localStorage.setItem('email', data?.data.email);
+    localStorage.setItem('phone', data?.data.phone);
 
     const tokenLifespan = 7100; // token lifespan in seconds (1 hour)
     // Calculate the expiry time

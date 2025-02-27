@@ -190,7 +190,7 @@ const Teacher = () => {
             class_stream_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'College Name',
@@ -220,7 +220,7 @@ const Teacher = () => {
             course_semester_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'School Name',
@@ -263,7 +263,7 @@ const Teacher = () => {
             class_stream_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'College Name',
@@ -293,7 +293,7 @@ const Teacher = () => {
             course_semester_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'School Name',
@@ -592,7 +592,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleEditFile(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
@@ -608,7 +608,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleDeleteFiles(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
@@ -643,7 +643,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleApproveTeacher(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
@@ -659,7 +659,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleRejectTeacher(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >

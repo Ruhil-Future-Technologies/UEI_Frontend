@@ -43,8 +43,8 @@ const Hobby = () => {
   const callAPI = async () => {
     getData(`${HobbyURL}`)
       .then((data) => {
-        if (data.data) {
-          const hobbyData = data.data.hobby_data.map((hobby: any) => {
+        if (data.status) {
+          const hobbyData = data?.data?.hobby_data?.map((hobby: any) => {
             const createdDateTime = hobby?.created_at;
             const updatedDateTime = hobby?.updated_at;
             const created_time = new Date(createdDateTime);
@@ -60,11 +60,12 @@ const Hobby = () => {
       .catch((e) => {
         if (e?.response?.code === 401) {
           navigate('/');
+        } else {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
       });
   };
 

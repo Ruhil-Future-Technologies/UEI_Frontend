@@ -497,12 +497,12 @@ const AddEditInstitute = () => {
         university_id: Yup.string().when('entity_id', {
           is: (entity_id: string) => {
             const selectedEntity = dataEntity.find(
-              (entity) => entity.id === entity_id,
+              (entity) => entity.id === Number(entity_id),
             );
             return selectedEntity?.entity_type !== 'School';
           },
-          then: () => Yup.string().required('Please select University'),
-          otherwise: () => Yup.string(),
+          then: (schema) => schema.required('Please select University'),
+          otherwise: (schema) => schema.notRequired(),
         }),
         phone: Yup.string()
           .required('Please enter Mobile number')
@@ -613,12 +613,12 @@ const AddEditInstitute = () => {
         university_id: Yup.string().when('entity_id', {
           is: (entity_id: string) => {
             const selectedEntity = dataEntity.find(
-              (entity) => entity.id === entity_id,
+              (entity) => entity.id === Number(entity_id),
             );
             return selectedEntity?.entity_type !== 'School';
           },
-          then: () => Yup.string().required('Please select University'),
-          otherwise: () => Yup.string(),
+          then: (schema) => schema.required('Please select University'),
+          otherwise: (schema) => schema.notRequired(),
         }),
         phone: Yup.string()
           .required('Please enter Mobile number')

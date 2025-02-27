@@ -103,7 +103,6 @@ const AddEditSubjectSchool = () => {
               return {
                 id: item?.id,
                 class_name: getModifyClassMane(item?.class_name),
-                class_id: item?.class_id,
               };
             })
             .sort((a: { class_name: string }, b: { class_name: any }) =>
@@ -145,7 +144,7 @@ const AddEditSubjectSchool = () => {
           getData(`/class/get/${data?.data?.subject_data?.class_id}`).then(
             (response: any) => {
               if (response.status) {
-                setParticularClass(response.data.class_name);
+                setParticularClass(response.data.classes_data.class_name);
               } else setParticularClass('');
             },
           );
@@ -179,7 +178,7 @@ const AddEditSubjectSchool = () => {
     if (fieldName === 'class_id') {
       getData(`/class/get/${e.target.value}`).then((response: any) => {
         if (response.status) {
-          setParticularClass(response.data.class_name);
+          setParticularClass(response.data.class_data.class_name);
         } else setParticularClass('');
       });
     }

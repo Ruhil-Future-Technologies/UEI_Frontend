@@ -39,7 +39,7 @@ const AddSemester = () => {
 
   const initialState = {
     course_id: '',
-    institution_id: '',
+    institute_id: '',
     semester_number: '',
   };
   const [semester, setSemester] = useState<any>(initialState);
@@ -50,7 +50,8 @@ const AddSemester = () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
         const filteredData = data?.data.filter(
-          (item) => item.is_active && item.is_approve ,
+          (item) =>
+            item.is_active && item.is_approve && item.entity_type == 'College',
         );
         setinstituteList(filteredData);
       })
@@ -66,11 +67,12 @@ const AddSemester = () => {
     getData(`${CourseListURL}`)
       .then((data) => {
         console.log(data);
-        if(data.status){
-          const filteredData = data?.data?.course_data?.filter((item:any) => item.is_active);
+        if (data.status) {
+          const filteredData = data?.data?.course_data?.filter(
+            (item: any) => item.is_active,
+          );
           setCourseList(filteredData);
         }
-       
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -84,7 +86,7 @@ const AddSemester = () => {
     if (id) {
       getData(`${SemestereditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSemester(data?.data);
+          setSemester(data?.data?.semester_data);
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -101,15 +103,15 @@ const AddSemester = () => {
     const formData = new FormData();
     const semPayload = {
       course_id: semesterData.course,
-      institution_id: semesterData.institute,
+      institute_id: semesterData.institute,
       semester_number: Number(semesterData?.semester_name),
     } as any;
-    console.log(typeof (semPayload.semester_number) );
+    console.log(typeof semPayload.semester_number);
     if (id) {
       Object.keys(semPayload).forEach((key) => {
         formData.append(key, semPayload[key]);
       });
-     
+
       putData(`${semesterUpdateURL}/${id}`, semPayload)
         .then((data: any) => {
           if (data.status) {
@@ -183,7 +185,7 @@ const AddSemester = () => {
                 }
                 initialValues={{
                   semester_name: semester?.semester_number,
-                  institute: semester?.institution_id,
+                  institute: semester?.institute_id,
                   course: semester?.course_id,
                 }}
                 enableReinitialize
@@ -383,8 +385,7 @@ const AddSemester = () => {
 
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
-                        {' '}
-                        Save
+                        {id ? 'Update' : 'Save'}
                       </button>
                     </div>
                   </Form>
