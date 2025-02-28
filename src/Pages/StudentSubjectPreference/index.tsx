@@ -72,7 +72,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const { getData, postData, putData, deleteData } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
   // const [boxes11, setBoxes11] = useState<Box[]>([]);
-  const StudentId = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
   // const [subjectPreferences, setSubjectPreferences] = useState([]);
   const [editFlag, setEditFlag] = useState(false);
   //const [preferenceValidations, setPreferenceValidations] = useState(false)
@@ -163,7 +163,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getData('/class/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active === true,
           );
 
@@ -207,7 +207,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getData('/course/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.course_data?.filter(
             (item: any) => item?.is_active === 1,
           );
           setCourses(filteredData || []);
@@ -227,7 +227,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       getData('school_subject/list')
         .then((response: any) => {
           if (response.status) {
-            const filteredData = response?.data?.filter(
+            const filteredData = response?.data?.subjects_data?.filter(
               (item: any) => item?.is_active === 1,
             );
             // setSubjects(filteredData || []);
@@ -263,7 +263,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       getData('college_subject/list')
         .then((response: any) => {
           if (response.status) {
-            const filteredData = response?.data?.filter(
+            const filteredData = response?.data?.subjects_data?.filter(
               (item: any) => item?.is_active === 1,
             );
             // setSubjects(filteredData || []);
@@ -387,7 +387,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getData('/semester/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.semesters_data?.filter(
             (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);

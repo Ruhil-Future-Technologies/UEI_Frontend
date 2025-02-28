@@ -73,7 +73,7 @@ interface Box {
 const StudentLanguage: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
   const { namecolor, activeForm, setActiveForm }: any = context;
-  const StudentId = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
   const { getData, postData, putData, deleteData } = useApi();
 
   //const theme = useTheme();
@@ -156,8 +156,8 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
     getData('language/list')
       .then((data: any) => {
         if (data?.status) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = data?.data?.languagees_data?.filter(
+            (item: any) => item?.is_active ,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);

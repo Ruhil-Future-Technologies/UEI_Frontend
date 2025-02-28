@@ -55,7 +55,7 @@ interface StudentBasicInformation {
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { setNamepro, setProImage, namecolor }: any = context;
-  const StudentId = localStorage.getItem('user_uuid');
+  const userUUID = localStorage.getItem('user_uuid');
   const { getData, postData, putData, postFileData } = useApi();
   // const [gender, setGender] = useState("Male");
   // const [name, setName] = useState();
@@ -106,10 +106,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const getStudentBasicInfo = async () => {
     // getData(`${'student/get/' + StudentId}`, StudentId)
-    getData(`${'student/get/' + StudentId}`)
+    getData(`${'student/get/' + userUUID}`)
       .then((data: any) => {
         if (data?.status) {
-          // console.log(data);
+           console.log(data);
           // setBasicInfo(data);
           if (data?.data?.pic_path !== '') {
             getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
@@ -118,9 +118,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               })
               .catch(() => {});
           }
+          localStorage.setItem('_id',data?.data?.id)
           setBasicInfo(data?.data);
           setInitialState({
-            student_login_id: StudentId,
+            student_login_id: userUUID,
             first_name: data?.data?.first_name,
             last_name: data?.data?.last_name,
             gender: data?.data?.gender,
@@ -419,7 +420,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     const formData = new FormData();
 
     const payload = {
-      student_login_id: StudentId,
+      user_uuid: userUUID,
       first_name: basicInfo?.first_name,
       last_name: basicInfo?.last_name,
       gender: basicInfo?.gender,
@@ -507,7 +508,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           });
 
           const editData = async () => {
-            putData(`${'student/edit/'}${StudentId}`, formData)
+            putData(`${'student/edit/'}${userUUID}`, formData)
               .then((data: any) => {
                 // console.log("----- res ----", data);
                 if (data.status) {

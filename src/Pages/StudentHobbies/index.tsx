@@ -22,6 +22,7 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import { QUERY_KEYS_STUDENT } from '../../utils/const';
 
 interface Hobby {
   hobby_name: string;
@@ -42,6 +43,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+ const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
+
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
   const [ishobbiestuch, setIshobbiestuch] = useState(false);
@@ -50,7 +53,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [initialAdminState, setInitialState] = useState<any | null>([]);
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [hobbiesAll, setHobbiesAll] = useState<any>([]);
-  const StudentId = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
+  const userUUID=localStorage.getItem('user_uuid');
 
   useEffect(() => {
     if (save) {
@@ -64,23 +68,22 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         const hobbyListData = await getData('hobby/list');
 
         if (hobbyListData?.status) {
-          const filteredData = hobbyListData?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = hobbyListData?.data?.hobby_data?.filter(
+            (item: any) => item?.is_active,
           );
           setAllHobbies(filteredData || []);
         }
 
-        const studentHobbyData = await getData(
-          'student_hobby/edit/' + StudentId,
-        );
-
+        const studentHobbyData = await getData(`${profileURL}/${userUUID}`)
+    
+   console.log(studentHobbyData.data?.hobby)
         if (studentHobbyData?.status) {
-          const hobbyIds = studentHobbyData.data.map(
+          const hobbyIds = studentHobbyData.data?.hobby?.map(
             (selecthobby: any) => selecthobby.hobby_id,
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
-          setHobbiesAll(studentHobbyData?.data || []);
+          setHobbiesAll(studentHobbyData?.data?.hobby || []);
         } else if (studentHobbyData?.code === 404) {
           setEditFlag(true);
         }

@@ -97,7 +97,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const { getData, postData, putData } = useApi();
+  const { getData, postData, putDataJson } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
   // const [checkBoxes, setCheckBoxes] = useState<Box[]>([]);
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
@@ -118,7 +118,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   const [editAcademicHistory, setEditAcademicHistory] = useState(false);
   const [updateBoxes, setUpdateBoxes] = useState(false);
   const currentYear = dayjs().year();
-  const StudentId = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
   const menuItems = [
     { value: 'school', label: 'School' },
     { value: 'college', label: 'College' },
@@ -247,8 +247,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     getData('university/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.universities_data?.filter(
+            (item: any) => item?.is_active,
           );
           setUniversity(filteredData || []);
           // setCourses(response.data);
@@ -264,8 +264,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     getData('/semester/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -282,8 +282,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     getData('/course/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.course_data?.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -301,7 +301,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       .then((response: any) => {
         if (response.status) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -423,41 +423,52 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
     // If validation passes, proceed with form submission
     const promises = updatedBoxes.map((box) => {
-      const formData = new FormData();
-
-      // Common fields
-      formData.append('student_id', StudentId || '');
-      formData.append('institution_type', box.institute_type);
-      formData.append('year', box?.year?.$y && box.institute_type.toLowerCase() === 'college' ? String(box.year.$y) : '');
-      
-      // School-specific fields
-      if (box.institute_type.toLowerCase() === 'school') {
-          formData.append('board', box.board);
-          formData.append('class_id', String(box.class_id));
-          formData.append('state_for_stateboard', box.state_for_stateboard !== null ? String(box.state_for_stateboard) : '');
-          if (['class_11', 'class_12'].includes(particularClass)) {
-              formData.append('stream', box?.stream || '');
+      // Filter out null, empty string, and 'errors' field
+      const filteredBox = Object.fromEntries(
+          Object.entries(box).filter(([key, value]) => 
+              value !== null && value !== "" && key !== 'errors'
+          )
+      );
+  
+      // Rename institute_type to institution_type
+      filteredBox.institution_type = filteredBox.institute_type;
+      delete filteredBox.institute_type;
+  
+      // Add student_id
+      filteredBox.student_id = StudentId || '';
+  
+      // Handle college-specific fields
+      if (filteredBox.institution_type.toLowerCase() === 'college') {
+          if (filteredBox.year?.$y) {
+              filteredBox.year = String(filteredBox.year.$y);
+          }
+          filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
+          if (filteredBox.sem_id) {
+              filteredBox.sem_id = String(filteredBox.sem_id);
+          }
+          if (filteredBox.university_id) {
+              filteredBox.university_id = String(filteredBox.university_id);
           }
       }
-      
-      // College-specific fields
-      if (box.institute_type.toLowerCase() === 'college') {
-          formData.append('institute_id', String(instituteId || box.institute_id));
-          formData.append('course_id', String(box.course_id));
-          formData.append('learning_style', box.learning_style);
-          if (box.sem_id) formData.append('sem_id', String(box.sem_id));
-          if (box.university_id) formData.append('university_id', String(box.university_id));
+  
+      // Handle school-specific fields
+      if (filteredBox.institution_type.toLowerCase() === 'school') {
+          if (['class_11', 'class_12'].includes(particularClass)) {
+              filteredBox.stream = filteredBox.stream || '';
+          }
+          if (filteredBox.state_for_stateboard !== undefined) {
+              filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
+          }
+          filteredBox.class_id= String(filteredBox.class_id);
       }
-      
-
-      // Submit the form data (handle POST/PUT request here)
-
-      if (editFlag && box.id === 0) {
-        return postData('/new_student_academic_history/add', formData);
+  console.log(filteredBox)
+      // Determine API request type
+      if (editFlag && filteredBox.id === 0) {
+          return postData('/new_student_academic_history/add', filteredBox);
       } else {
-        return putData(`/new_student_academic_history/edit/${box.id}`, formData);
+          return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, filteredBox);
       }
-    });
+  });
 
     // Handle all promises
     Promise.all(promises)

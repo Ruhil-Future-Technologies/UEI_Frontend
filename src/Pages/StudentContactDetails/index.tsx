@@ -51,7 +51,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     email: '',
     whatsappNum: '',
   });
-  const StudentId = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
   const validateEmail = (email: string) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);

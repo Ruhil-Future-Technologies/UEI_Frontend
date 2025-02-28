@@ -199,6 +199,7 @@ const useApi = () => {
     setError(null);
     try {
       const requestUrl = url;
+      console.log(data);
       const response = await httpClient.put(requestUrl, data, {
         headers,
       });

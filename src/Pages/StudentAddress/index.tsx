@@ -504,7 +504,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
 
     validatinforperm();
 
-    const formData = new FormData();
+    
     const currentAddressPayload = {
       student_id: StudentId,
       ...studentAddress,
@@ -539,6 +539,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
+            const formData = new FormData();
             Object.keys(addressPayload).forEach((key) => {
               formData.append(key, addressPayload[key]);
             });
@@ -591,16 +592,28 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           addressType: string,
           addressPayload: any,
         ) => {
+          console.log(addressPayload);
           try {
             const formData = new FormData();
 
-            Object.keys(addressPayload).forEach((key) => {
-              formData.append(key, addressPayload[key]);
-            });
+            // Object.keys(addressPayload).forEach((key) => {
+            //   console.log(key,addressPayload[key]);
+            //   formData.append(key, addressPayload[key]);
+            // });
+            console.log(addressPayload.pincode,addressPayload?.address1,addressPayload?.address1)
             formData.append('pincode', addressPayload?.pincode || 0);
-            const data = await putData('/student_address/edit/' + StudentId, {
+            formData.append('address1', addressPayload?.address1 || '');
+            formData.append('address2', addressPayload?.address1 || '');
+            formData.append('country', addressPayload?.country || '');
+            formData.append('state', addressPayload?.state || '');
+            formData.append('city', addressPayload?.city || '');
+            formData.append('district', addressPayload?.district || '');
+            formData.append('address_type',addressPayload?.address_type ||'')
+            formData.append('student_id',StudentId || '')
+            console.log(formData);
+            const data = await putData('/student_address/edit/' + StudentId, 
               formData,
-            });
+            );
 
             if (data?.status) {
               toast.success(`${addressType} address updated successfully`, {
