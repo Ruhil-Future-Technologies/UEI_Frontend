@@ -13,7 +13,8 @@ import { inputfield, inputfieldtext } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 
 interface IMenuForm {
-  userid: string;
+  email: string;
+  phone: string;
   password: string;
 }
 const SuperAdmin = () => {
@@ -38,7 +39,8 @@ const SuperAdmin = () => {
   const value = 'admin';
 
   const initialState = {
-    userid: '',
+    email: '',
+    phone: '',
     password: '',
   };
   const [menu, setMenu] = useState(initialState);
@@ -118,7 +120,7 @@ const SuperAdmin = () => {
     fieldName: string,
   ) => {
     const email = e.target.value.includes('@');
-    if (email && e.target.name === 'userid') {
+    if (email && e.target.name === 'email') {
       //   setIsEmail(true);
     } else {
       //   setIsEmail(false);
@@ -153,9 +155,10 @@ const SuperAdmin = () => {
     const formData = new FormData();
     const payload = {
       user_type: value,
-      userid: menuData?.userid,
+      email: menuData?.email,
+      phone: menuData?.phone,
       password: menuData?.password,
-      "X-api-secret":"SjSf2@aj24@De$5_haw18&-kjfDE(oP^"
+      X_api_secret: 'SjSf2@aj24@De$5_haw18&-kjfDE(oP^',
     } as any;
 
     Object.keys(payload).forEach((key) => {
@@ -189,13 +192,13 @@ const SuperAdmin = () => {
   };
 
   const menuSchema = Yup.object().shape({
-    userid: Yup.string().test(
+    email: Yup.string().test(
       'is-email-or-phone',
-      'Please enter a valid Email Id or Mobile Number',
+      'Please enter a valid Email Id ',
       function (value) {
         if (!value) {
           return this.createError({
-            message: 'Please enter Email Id or Mobile Number',
+            message: 'Please enter Email Id ',
           });
         }
         if (emailRegex.test(value)) {
@@ -207,6 +210,9 @@ const SuperAdmin = () => {
         return false;
       },
     ),
+    phone: Yup.string()
+      .required('Please enter a Mobile number')
+      .min(10, 'Mobile number must be 10 numbers'),
     password: Yup.string()
       .required('Please enter a Password')
       .min(
@@ -246,7 +252,8 @@ const SuperAdmin = () => {
                   handleSubmit(formData, formikHelpers)
                 }
                 initialValues={{
-                  userid: menu?.userid,
+                  email: menu?.email,
+                  phone: menu?.phone,
                   password: menu?.password,
                 }}
                 enableReinitialize
@@ -259,15 +266,15 @@ const SuperAdmin = () => {
                       <div className="col-md-4">
                         <div className="form_field_wrapper mb-4">
                           <Field
-                            data-testid="userid"
+                            data-testid="email"
                             component={TextField}
                             type="text"
-                            name="userid"
-                            label="Email Id or Mobile Number *"
-                            value={values?.userid}
+                            name="email"
+                            label="Email Id *"
+                            value={values?.email}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
-                            ) => handleChange(e, 'userid')}
+                            ) => handleChange(e, 'email')}
                             // required
                             InputProps={{
                               style: {
@@ -281,8 +288,38 @@ const SuperAdmin = () => {
                               },
                             }}
                           />
-                          {touched?.userid && errors?.userid ? (
-                            <p style={{ color: 'red' }}>{errors?.userid}</p>
+                          {touched?.email && errors?.email ? (
+                            <p style={{ color: 'red' }}>{errors?.email}</p>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                        <div className="form_field_wrapper mb-4">
+                          <Field
+                            data-testid="phone"
+                            component={TextField}
+                            type="text"
+                            name="userid"
+                            label=" Mobile Number *"
+                            value={values?.phone}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) => handleChange(e, 'phone')}
+                            // required
+                            InputProps={{
+                              style: {
+                                backgroundColor: inputfield(namecolor),
+                                // backgroundColor:'red' ,
+                              },
+                            }}
+                            InputLabelProps={{
+                              style: {
+                                color: inputfieldtext(namecolor),
+                              },
+                            }}
+                          />
+                          {touched?.phone && errors?.phone ? (
+                            <p style={{ color: 'red' }}>{errors?.phone}</p>
                           ) : (
                             <></>
                           )}
