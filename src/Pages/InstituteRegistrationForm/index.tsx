@@ -72,7 +72,7 @@ const InstituteRegistrationForm = () => {
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
 
-  const { postRegisterData, getForRegistration,postDataJson } = useApi();
+  const { postRegisterData, getForRegistration, postDataJson } = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
     institute_name: '',
@@ -91,37 +91,21 @@ const InstituteRegistrationForm = () => {
     icon: '',
     document: [], // Initialize as an empty array
   });
-  const [error, setError] = useState<{
-    institute_name_error: boolean;
-    university_id_error: boolean;
-    institute_type_error: boolean;
-    school_name_error: boolean;
-    email_id_error: boolean;
-    mobile_no_error: boolean;
-    website_error: boolean;
-    country_error: boolean;
-    state_error: boolean;
-    city_error: boolean;
-    district_error: boolean;
-    address_error: boolean;
-    pincode_error: boolean;
-    document_error: boolean;
-  }>({
-    institute_name_error: false,
-    university_id_error: false,
-    institute_type_error: false,
-    school_name_error: false,
-    email_id_error: false,
-    mobile_no_error: false,
-    website_error: false,
-    country_error: false,
-    state_error: false,
-    city_error: false,
-    district_error: false,
-    address_error: false,
-    pincode_error: false,
-    document_error: false,
-  });
+  const [institute_name_error, setInstitute_name_error] = useState(false);
+  const [university_id_error, setUniversity_id_error] = useState(false);
+  const [institute_type_error, setInstitute_type_error] = useState(false);
+  const [school_name_error, setSchool_name_error] = useState(false);
+  const [email_id_error, setEmail_id_error] = useState(false);
+  const [mobile_no_error, setMobile_no_error] = useState(false);
+  // const [website_error, setWebsite_error] = useState(false);
+  const [country_error, setCountry_error] = useState(false);
+  const [state_error, setState_error] = useState(false);
+  const [city_error, setCity_error] = useState(false);
+  const [district_error, setDistrict_error] = useState(false);
+  const [address_error, setAddress_error] = useState(false);
+  const [pincode_error, setPincode_error] = useState(false);
+  const [document_error, setDocument_error] = useState(false);
+
   const [emailExist, setEmailExist] = useState<boolean>(false);
   const [dataEntity, setDataEntity] = useState<IEntity[]>([]);
   const [selectedEntity, setSelectedEntity] = useState('');
@@ -152,7 +136,7 @@ const InstituteRegistrationForm = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        if(data.status){
+        if (data.status) {
           setDataEntity(data.data.entityes_data);
         }
       })
@@ -213,6 +197,7 @@ const InstituteRegistrationForm = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     console.log(files, typeof files);
+    setDocument_error(false)
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files); // Convert FileList to an array
       setAllSelectedfiles((prevFiles) => [
@@ -225,47 +210,78 @@ const InstituteRegistrationForm = () => {
   };
 
   const validation = (name: string, value: string) => {
-    setError({
-      institute_name_error:
-        name === 'institute_name' &&
-        !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)
-          ? true
-          : false,
-      university_id_error: false,
-      institute_type_error: false,
-      school_name_error:
-        name === 'school_name' &&
-        !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value),
-      email_id_error:
-        name === 'email_id' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
-          ? true
-          : false,
-      mobile_no_error:
-        name === 'mobile_no' && !/^(?!0{10})[0-9]{10}$/.test(value.trim())
-          ? true
-          : false,
-      website_error:false,
-      country_error: false,
-      state_error: false,
-      city_error:
-        name === 'city' &&
-        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
-          ? true
-          : false,
-      district_error:
-        name === 'district' &&
-        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())
-          ? true
-          : false,
-      address_error:
-        name === 'address' &&
-        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())
-          ? true
-          : false,
-      pincode_error:
-        name === 'pincode' && !/^(?!0{6})[0-9]{6}$/.test(value.trim()),
-      document_error: false,
-    });
+
+    if (name === 'institute_name' &&
+      !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(value)) {
+      setInstitute_name_error(true);
+    } else {
+      setInstitute_name_error(false);
+    }
+
+    if (name === 'school_name' &&
+      !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(value)) {
+      setSchool_name_error(true);
+    } else {
+      setSchool_name_error(false);
+    }
+
+    if (name === 'email_id' &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
+      setEmail_id_error(true);
+    } else {
+      setEmail_id_error(false);
+    }
+
+    if (name === 'mobile_no' &&
+      !/^(?!0{10})[0-9]{10}$/.test(value.trim())) {
+      setMobile_no_error(true);
+    } else {
+      setMobile_no_error(false);
+    }
+
+    if (name === 'city' &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())) {
+      setCity_error(true);
+    } else {
+      setCity_error(false);
+    }
+
+    if (name === 'district' &&
+      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(value.trim())) {
+      setDistrict_error(true);
+    } else {
+      setDistrict_error(false);
+    }
+
+    if (name === 'address' &&
+      !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(value.trim())) {
+      setAddress_error(true);
+    } else {
+      setAddress_error(false);
+    }
+
+    if (name === 'pincode' &&
+      !/^(?!0{6})[0-9]{6}$/.test(value.trim())) {
+      setPincode_error(true);
+    } else {
+      setPincode_error(false);
+    }
+    if (name === 'entity_id' && value == '') {
+      setInstitute_type_error(true);
+    } else {
+      setInstitute_type_error(false);
+    }
+    if (name === 'university_id' && value === '') {
+      setUniversity_id_error(true);
+    } else {
+      setUniversity_id_error(false);
+    }
+    if (name === 'country') {
+      setCountry_error(value === '' ? true : false);
+    }
+    if (name === 'state') {
+      setState_error(value === '' ? true : false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -277,6 +293,7 @@ const InstituteRegistrationForm = () => {
   };
   const handleSelect = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
+    console.log(name, value);
     if (name === 'entity_id') {
       dataEntity.map((item) => {
         if (String(item.id) == value) {
@@ -288,21 +305,20 @@ const InstituteRegistrationForm = () => {
     setValueInstitute({ ...valueInstitute, [name]: value });
   };
 
-  const loginSuperUser=()=>{
-    let payload={
-      email: process.env.REACT_APP_SUPER_USER_EMAIL,
-      password: process.env.REACT_APP_SUPER_USER_PASSWORD,
-      type: "super_admin"
-    }
-    postDataJson(`auth/login`,payload).then((data)=>{
-       if(data.status){
-        
-       }
-    })
-  };
-console.log()
+  // const loginSuperUser=()=>{
+  //   let payload={
+  //     email: process.env.REACT_APP_SUPER_USER_EMAIL,
+  //     password: process.env.REACT_APP_SUPER_USER_PASSWORD,
+  //     type: "super_admin"
+  //   }
+  //   postDataJson(`auth/login`,payload).then((data)=>{
+  //      if(data.status){
+
+  //      }
+  //   })
+  // };
   const openPopupOtp = () => {
-      loginSuperUser();
+    //  loginSuperUser();
 
 
     const emailExists = dataInstitute.some(
@@ -312,154 +328,179 @@ console.log()
     if (emailExists) {
       return;
     }
-    setError({
-      institute_name_error:
-        selectedEntity === 'College' &&
-        !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
-          ? true
-          : false,
-      university_id_error:
-        selectedEntity === 'College' &&
-          valueInstitute.university_id === ''
-          ? true
-          : false,
-      institute_type_error:
-        valueInstitute.entity_id === '' ? true : false,
-      email_id_error: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-        valueInstitute.email_id.trim(),
-      )
-        ? true
-        : false,
-      mobile_no_error: !/^(?!0{10})[0-9]{10}$/.test(
-        valueInstitute.mobile_no.trim(),
-      )
-        ? true
-        : false,
-      website_error: false,
-      country_error: valueInstitute.country.trim() === '' ? true : false,
-      state_error: valueInstitute.state.trim() === '' ? true : false,
-      school_name_error:
-        selectedEntity === 'School' && valueInstitute.school_name === ''
-          ? true
-          : false,
-      city_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
-        valueInstitute.city.trim(),
-      )
-        ? true
-        : false,
-      district_error: !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
-        valueInstitute.district.trim(),
-      )
-        ? true
-        : false,
-      address_error: !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
-        valueInstitute.address.trim(),
-      )
-        ? true
-        : false,
-      pincode_error: !/^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode.trim())
-        ? true
-        : false,
-      document_error: valueInstitute.document === null ? true : false,
-    });
+    // setInstitute_name_error(
+    //   selectedEntity === 'College' &&
+    //     !/^[a-zA-Z0-9 .,'()& -]+$/.test(valueInstitute.institute_name)
+    //     ? true
+    //     : false
+    // );
+
+    // setUniversity_id_error(
+    //   selectedEntity === 'College' && valueInstitute.university_id === ''
+    //     ? true
+    //     : false
+    // );
+
+    // setInstitute_type_error(valueInstitute.entity_id === '' ? true : false);
+
+    // setEmail_id_error(
+    //   !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id.trim())
+    //     ? true
+    //     : false
+    // );
+
+    // setMobile_no_error(
+    //   !/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim()) ? true : false
+    // );
+
+    // setWebsite_error(false);
+
+    // setCountry_error(valueInstitute.country.trim() === '' ? true : false);
+
+    // setState_error(valueInstitute.state.trim() === '' ? true : false);
+
+    // setSchool_name_error(
+    //   selectedEntity === 'School' && valueInstitute.school_name === ''
+    //     ? true
+    //     : false
+    // );
+
+    // setCity_error(
+    //   !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+    //     valueInstitute.city.trim()
+    //   )
+    //     ? true
+    //     : false
+    // );
+
+    // setDistrict_error(
+    //   !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+    //     valueInstitute.district.trim()
+    //   )
+    //     ? true
+    //     : false
+    // );
+
+    // setAddress_error(
+    //   !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(valueInstitute.address.trim())
+    //     ? true
+    //     : false
+    // );
+
+    // setPincode_error(
+    //   !/^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode.trim()) ? true : false
+    // );
+
+    // setDocument_error(valueInstitute.document === null ? true : false);
 
 
-    const isSchoolValid =
-      selectedEntity === 'School'
-        ? !error.school_name_error &&
-          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-            valueInstitute.school_name,
-          )
-        : true;
+    // const isSchoolValid =
+    //   selectedEntity === 'School'
+    //     ? !school_name_error &&
+    //     /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+    //       valueInstitute.school_name,
+    //     )
+    //     : true;
 
-    const isCollegeValid =
-      selectedEntity === 'College'
-        ? !error.institute_name_error &&
-          /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-            valueInstitute.institute_name,
-          ) &&
-          !error.university_id_error &&
-          valueInstitute.university_id !== ''
-        : true;
-
-
+    // const isCollegeValid =
+    //   selectedEntity === 'College'
+    //     ? !institute_name_error &&
+    //     /^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+    //       valueInstitute.institute_name,
+    //     ) &&
+    //     !university_id_error &&
+    //     valueInstitute.university_id !== ''
+    //     : true;
+    if (allselectedfiles.length > 0) {
+      setDocument_error(false);
+    } else {
+      setDocument_error(true);
+      return
+    }
 
     if (
-      !error.institute_type_error &&
+      !institute_type_error &&
       !(valueInstitute.entity_id === '') &&
-      !error.email_id_error &&
+      !email_id_error &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id) &&
-      !error.mobile_no_error &&
+      !mobile_no_error &&
       /^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no) &&
-      !error.website_error  &&
-      !error.country_error &&
+      !country_error &&
       !(valueInstitute.country === '') &&
-      !error.state_error &&
+      !state_error &&
       !(valueInstitute.state === '') &&
-      !error.city_error &&
+      !city_error &&
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         valueInstitute.city.trim(),
       ) &&
-      !error.district_error &&
+      !district_error &&
       /^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
         valueInstitute.district.trim(),
       ) &&
-      !error.address_error &&
+      !address_error &&
       /^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(
         valueInstitute.address.trim(),
       ) &&
-      !error.pincode_error &&
+      !pincode_error &&
       /^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode) &&
-      !error.document_error &&
-      valueInstitute.document &&
-      isCollegeValid &&
-      isSchoolValid
+      !document_error
+
     ) {
       const formData = new FormData();
-      
+
       allselectedfiles.forEach((file) => {
         formData.append("documents[]", file); // Backend reads it as an array
-    });
-
-    // Append text fields to FormData
-    formData.append("institute_name", valueInstitute.school_name || valueInstitute.institute_name);
-    formData.append("entity_id", valueInstitute.entity_id);
-    formData.append("address", valueInstitute.address);
-    formData.append("country", valueInstitute.country);
-    formData.append("state", valueInstitute.state);
-    formData.append("city", valueInstitute.city);
-    formData.append("district", valueInstitute.district);
-    formData.append("pincode", valueInstitute.pincode);
-    formData.append("website_url", valueInstitute.website_url);
-    formData.append("phone", valueInstitute.mobile_no);
-    formData.append("email", valueInstitute.email_id);
-    formData.append("icon", valueInstitute.icon);
-
-
-    if (selectedEntity !== 'School') {
-      formData.append('university_id', valueInstitute.university_id);
-    }
-
-    try {
-      postRegisterData(`${InstituteAddURL}`, formData).then((response) => {
-        console.log(response)
-        if (response.status ) {
-
-          toast.success(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-          setPopupOtpCard(true);
-        } else {
-          toast.error(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-        }
       });
-    } catch (error) {
-      console.error(error);
-    }
+
+      // Append text fields to FormData
+      formData.append("institute_name", valueInstitute.school_name || valueInstitute.institute_name);
+      formData.append("entity_id", valueInstitute.entity_id);
+      formData.append("address", valueInstitute.address);
+      formData.append("country", valueInstitute.country);
+      formData.append("state", valueInstitute.state);
+      formData.append("city", valueInstitute.city);
+      formData.append("district", valueInstitute.district);
+      formData.append("pincode", valueInstitute.pincode);
+      formData.append("website_url", valueInstitute.website_url);
+      formData.append("phone", valueInstitute.mobile_no);
+      formData.append("email", valueInstitute.email_id);
+      formData.append("icon", valueInstitute.icon);
+
+      if (selectedEntity !== 'School') {
+        formData.append('university_id', valueInstitute.university_id);
+      }
+      let payload = {
+        email: process.env.REACT_APP_SUPER_USER_EMAIL,
+        password: process.env.REACT_APP_SUPER_USER_PASSWORD,
+        user_type: "super_admin"
+      }
+      postDataJson(`auth/login`, payload).then((data) => {
+        if (data.status) {
+          const token = data.data.access_token;
+          // console.log(token);
+
+          try {
+            postRegisterData(`${InstituteAddURL}`, formData, token).then((response) => {
+              console.log(response)
+              if (response.status) {
+                toast.success(response.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+                setPopupOtpCard(true);
+              } else {
+                toast.error(response.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+              }
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      })
+
     } else {
       toast.error('validation error', {
         hideProgressBar: true,
@@ -468,7 +509,7 @@ console.log()
 
     }
   }
-  const handleOtpSubmit = (otp:string) => {
+  const handleOtpSubmit = (otp: string) => {
 
     let payload = {
       email: valueInstitute.email_id,
@@ -516,13 +557,113 @@ console.log()
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    if (activeStep == 0) {
+      let valid = false;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueInstitute.email_id.trim())) {
+        setEmail_id_error(true);
+        valid = true;
+      } else {
+        setEmail_id_error(false);
+      }
+
+
+      if (!/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())) {
+        setMobile_no_error(true);
+        valid = true;
+      } else {
+        setMobile_no_error(false);
+      }
+
+
+      if (valueInstitute.entity_id == '') {
+        setInstitute_type_error(true)
+        setUniversity_id_error(true)
+        setInstitute_name_error(true)
+        valid = true;
+      } else {
+        setInstitute_type_error(false)
+      }
+
+      if (selectedEntity === 'College' && !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.institute_name)) {
+        setInstitute_name_error(true);
+        valid = true;
+      } else {
+        setInstitute_name_error(false);
+      }
+
+
+      if (selectedEntity === 'College' && valueInstitute.university_id == '') {
+        setUniversity_id_error(true);
+        valid = true;
+      } else {
+        setUniversity_id_error(false);
+      }
+
+
+      if (selectedEntity === 'School' &&
+        !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(valueInstitute.school_name)) {
+        setSchool_name_error(true);
+        valid = true;
+      } else {
+        setSchool_name_error(false);
+      }
+
+      if (!valid) {
+        setActiveStep((prevStep) => prevStep + 1);
+      }
+
+    } else if (activeStep == 1) {
+      let valid = false;
+      if (!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.city.trim())) {
+        setCity_error(true);
+        valid = true;
+      } else {
+        setCity_error(false);
+      }
+
+      if (!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(valueInstitute.district.trim())) {
+        setDistrict_error(true);
+        valid = true;
+      } else {
+        setDistrict_error(false);
+      }
+
+      if (!/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(valueInstitute.address.trim())) {
+        setAddress_error(true);
+        valid = true;
+      } else {
+        setAddress_error(false);
+      }
+
+      if (!/^(?!0{6})[0-9]{6}$/.test(valueInstitute.pincode.trim())) {
+        setPincode_error(true);
+        valid = true;
+      } else {
+        setPincode_error(false);
+      }
+      if (valueInstitute.country.trim() === '') {
+        setCountry_error(true);
+      } else {
+        setCountry_error(false);
+      }
+      if (valueInstitute.state.trim() === '') {
+        setState_error(true);
+      } else {
+        setState_error(false);
+      }
+      if (!valid) {
+        setActiveStep((prevStep) => prevStep + 1);
+      }
+    } else {
+      setActiveStep((prevStep) => prevStep + 1)
+    }
+
   };
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
-
+  console.log(dataUniversity)
   return (
     <Box sx={{ width: '100%' }} className="Stepperform">
       <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
@@ -556,324 +697,333 @@ console.log()
           </Link>
         </div>
       </div>
-      <Box>       
-            {activeStep === 0 && (
-              <Box>
-                <div className="without-login p-3">
-                  <div className="access1-card">
-                    <div className="card-body">
-                      <div className="logoui mb-4 justify-content-center d-lg-none">
-                        <img
-                          src={gLogo}
-                          alt=""
-                          onClick={() => navigate('/signup')}
-                        />
-                        <span>Gyansetu</span>
-                      </div>
-                      <h3 className="text-center fw-bold">
-                        Register As Institution
-                      </h3>
-                      <p className="mb-lg-5 mb-4 text-center text-black-50">
-                        Empower your institution—get started today!
-                      </p>
-                      <div className="row d-flex justify-content-center g-4 mb-4">
-                        <div className="col-md-6 col-12">
-                          {/* <label className="col-form-label">
+      <Box>
+        {activeStep === 0 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="logoui mb-4 justify-content-center d-lg-none">
+                    <img
+                      src={gLogo}
+                      alt=""
+                      onClick={() => navigate('/signup')}
+                    />
+                    <span>Gyansetu</span>
+                  </div>
+                  <h3 className="text-center fw-bold">
+                    Register As Institution
+                  </h3>
+                  <p className="mb-lg-5 mb-4 text-center text-black-50">
+                    Empower your institution—get started today!
+                  </p>
+                  <div className="row d-flex justify-content-center g-4 mb-4">
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
                             Entity<span>*</span>
                           </label> */}
 
-                          <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">
-                              Entity *
-                            </InputLabel>
-                            <Select
-                              onChange={(e: SelectChangeEvent<string>) =>
-                                handleSelect(e)
-                              }
-                              label="Entity"
-                              name="entity_id"
-                              value={valueInstitute?.entity_id}
-                              variant="outlined"
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Entity *
+                        </InputLabel>
+                        <Select
+                          onChange={(e: SelectChangeEvent<string>) =>
+                            handleSelect(e)
+                          }
+                          label="Entity"
+                          name="entity_id"
+                          value={valueInstitute?.entity_id}
+                          variant="outlined"
+                          sx={{
+                            backgroundColor: inputfield(namecolor),
+                            color: inputfieldtext(namecolor),
+                            '& .MuiSelect-icon': {
+                              color: fieldIcon(namecolor),
+                            },
+                          }}
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                              },
+                            },
+                          }}
+                        >
+                          {dataEntity.map((item, idx) => (
+                            <MenuItem
+                              value={item.id}
+                              key={`${item.entity_type}-${idx + 1}`}
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
+                                '&:hover': {
+                                  backgroundColor:
+                                    inputfieldhover(namecolor),
                                 },
                               }}
                             >
-                              {dataEntity.map((item, idx) => (
-                                <MenuItem
-                                  value={item.id}
-                                  key={`${item.entity_type}-${idx + 1}`}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
-                                >
-                                  {item.entity_type}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
+                              {item.entity_type}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        <div>
+                          {institute_type_error === true && (
+                            <p
+                              className="error-text"
+                              style={{ color: 'red' }}
+                            >
+                              <small>Please select a Entity.</small>
+                            </p>
+                          )}
                         </div>
+                      </FormControl>
+                    </div>
 
-                        <div className="col-md-6 col-12">
-                          {/* <label className="col-form-label">
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
                             Website<span></span>
                           </label> */}
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="website_url"
-                            onChange={handleChange}
-                            value={valueInstitute.website_url}
-                            label="Website"
-                            variant="outlined"
-                          />
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="website_url"
+                        onChange={handleChange}
+                        value={valueInstitute.website_url}
+                        label="Website"
+                        variant="outlined"
+                      />
 
-                          <div>
-                            {error.website_error === true && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please enter a valid Website.</small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      {selectedEntity === 'School' ? (
-                        <div className="row d-flex justify-content-center mb-4">
-                          <div className="col-12">
-                            {/* <label className="col-form-label">
+                      {/* <div>
+                        {website_error === true && (
+                          <p
+                            className="error-text"
+                            style={{ color: 'red' }}
+                          >
+                            <small>Please enter a valid Website.</small>
+                          </p>
+                        )}
+                      </div> */}
+                    </div>
+                  </div>
+                  {selectedEntity === 'School' ? (
+                    <div className="row d-flex justify-content-center mb-4">
+                      <div className="col-12">
+                        {/* <label className="col-form-label">
                               School Name<span>*</span>
                             </label> */}
-                            <TextField
-                              autoComplete="off"
-                              className="form-control"
-                              name="school_name"
-                              value={valueInstitute.school_name}
-                              onChange={handleChange}
-                              label="School Name"
-                            />
-                            <div>
-                              {error.school_name_error === true && (
-                                <p
-                                  className="error-text "
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please enter a valid School name.
-                                  </small>
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="row d-flex justify-content-center mb-4 g-4">
-                          <div className="col-md-6 col-12 ">
-                            {/* <label className="col-form-label">
-                              University Name<span>*</span>
-                            </label> */}
-                            <FormControl fullWidth>
-                              <InputLabel id="demo-simple-select-label">
-                                University *
-                              </InputLabel>
-                              <Select
-                                onChange={(e: SelectChangeEvent<string>) =>
-                                  handleSelect(e)
-                                }
-                                label="University*"
-                                name="university_id"
-                                value={valueInstitute?.university_id}
-                                variant="outlined"
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '& .MuiSelect-icon': {
-                                    color: fieldIcon(namecolor),
-                                  },
-                                }}
-                                MenuProps={{
-                                  PaperProps: {
-                                    style: {
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                    },
-                                  },
-                                }}
-                              >
-                                {dataUniversity?.map((item, idx) => (
-                                  <MenuItem
-                                    value={item.university_id}
-                                    key={`${item.university_name}-${idx + 1}`}
-                                    sx={{
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                      '&:hover': {
-                                        backgroundColor:
-                                          inputfieldhover(namecolor),
-                                      },
-                                    }}
-                                  >
-                                    {item.university_name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                            <div>
-                              {error.university_id_error === true && (
-                                <p
-                                  className="error-text "
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select a University name.
-                                  </small>
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="col-md-6 col-12 ">
-                            {/* <label className="col-form-label">
-                              Institute Name<span>*</span>
-                            </label> */}
-
-                            <TextField
-                              label="Institute Name *"
-                              autoComplete="off"
-                              className="form-control"
-                              name="institute_name"
-                              onChange={handleChange}
-                              value={valueInstitute.institute_name}
-                            />
-                            <div>
-                              {error.institute_name_error === true && (
-                                <p
-                                  className="error-text "
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please enter a valid Institute name.
-                                  </small>
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="row d-flex justify-content-center">
-                        <div className="col-md-6 col-12 mb-3">
-                          {/* <label className="col-form-label">
-                            Mobile Number<span>*</span>
-                          </label> */}
-
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="mobile_no"
-                            onChange={handleChange}
-                            value={valueInstitute.mobile_no}
-                            variant="outlined"
-                            label="Mobile Number"
-                          />
-                          <div>
-                            {error.mobile_no_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please enter a valid Mobile Number.
-                                </small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="col-md-6 col-12 mb-3">
-                          {/* <label className="col-form-label">
-                            Email Id<span>*</span>
-                          </label> */}
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="email_id"
-                            value={valueInstitute.email_id}
-                            onChange={handleChange}
-                            variant="outlined"
-                            label="Email Id"
-                          />
-                          <div>
-                            {error.email_id_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small> Please enter a valid Email Id.</small>
-                              </p>
-                            )}
-                            {emailExist === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small>Email ID already exists.</small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="col-12">
-                          <Button
-                            className="btn btn-secondary w-100 mt-4 outsecbtn "
-                            variant="contained"
-                            onClick={handleNext}
-                          >
-                            {activeStep === steps.length - 1
-                              ? 'Finish'
-                              : 'Next'}
-                          </Button>
-
-                          <Link
-                            href="/"
-                            className="text-dark opacity-75 d-lg-none text-capitalize mt-3 fs-14 d-flex align-items-center gap-2 justify-content-center"
-                          >
-                            <WestIcon /> Back to login
-                          </Link>
+                        <TextField
+                          autoComplete="off"
+                          className="form-control"
+                          name="school_name"
+                          value={valueInstitute.school_name}
+                          onChange={handleChange}
+                          label="School Name"
+                        />
+                        <div>
+                          {school_name_error === true && (
+                            <p
+                              className="error-text "
+                              style={{ color: 'red' }}
+                            >
+                              <small>
+                                Please enter a valid School name.
+                              </small>
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string)=>handleOtpSubmit(otp)} email={valueInstitute.email_id}/>
+                  ) : (
+                    <div className="row d-flex justify-content-center mb-4 g-4">
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
+                              University Name<span>*</span>
+                            </label> */}
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            University *
+                          </InputLabel>
+                          <Select
+                            onChange={(e: SelectChangeEvent<string>) =>
+                              handleSelect(e)
+                            }
+                            label="University*"
+                            name="university_id"
+                            value={valueInstitute?.university_id}
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              '& .MuiSelect-icon': {
+                                color: fieldIcon(namecolor),
+                              },
+                            }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                },
+                              },
+                            }}
+                          >
+                            {dataUniversity?.map((item, idx) => (
+                              <MenuItem
+                                value={item.id}
+                                key={`${item.university_name}-${idx + 1}`}
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '&:hover': {
+                                    backgroundColor:
+                                      inputfieldhover(namecolor),
+                                  },
+                                }}
+                              >
+                                {item.university_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <div>
+                          {university_id_error === true && (
+                            <p
+                              className="error-text "
+                              style={{ color: 'red' }}
+                            >
+                              <small>
+                                Please select a University name.
+                              </small>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
+                              Institute Name<span>*</span>
+                            </label> */}
+
+                        <TextField
+                          label="Institute Name *"
+                          autoComplete="off"
+                          className="form-control"
+                          name="institute_name"
+                          onChange={handleChange}
+                          value={valueInstitute.institute_name}
+                        />
+                        <div>
+                          {institute_name_error === true && (
+                            <p
+                              className="error-text "
+                              style={{ color: 'red' }}
+                            >
+                              <small>
+                                Please enter a valid Institute name.
+                              </small>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="row d-flex justify-content-center">
+                    <div className="col-md-6 col-12 mb-3">
+                      {/* <label className="col-form-label">
+                            Mobile Number<span>*</span>
+                          </label> */}
+
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="mobile_no"
+                        onChange={handleChange}
+                        value={valueInstitute.mobile_no}
+                        variant="outlined"
+                        label="Mobile Number"
+                      />
+                      <div>
+                        {mobile_no_error === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small>
+                              Please enter a valid Mobile Number.
+                            </small>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 col-12 mb-3">
+                      {/* <label className="col-form-label">
+                            Email Id<span>*</span>
+                          </label> */}
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="email_id"
+                        value={valueInstitute.email_id}
+                        onChange={handleChange}
+                        variant="outlined"
+                        label="Email Id"
+                      />
+                      <div>
+                        {email_id_error === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small> Please enter a valid Email Id.</small>
+                          </p>
+                        )}
+                        {emailExist === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small>Email ID already exists.</small>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-12">
+                      <Button
+                        className="btn btn-secondary w-100 mt-4 outsecbtn "
+                        variant="contained"
+                        onClick={handleNext}
+                      >
+                        {activeStep === steps.length - 1
+                          ? 'Finish'
+                          : 'Next'}
+                      </Button>
+
+                      <Link
+                        href="/"
+                        className="text-dark opacity-75 d-lg-none text-capitalize mt-3 fs-14 d-flex align-items-center gap-2 justify-content-center"
+                      >
+                        <WestIcon /> Back to login
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </Box>
-            )}
-            {activeStep === 1 && (
-              <Box>
-                <div className="without-login p-3">
-                  <div className="access1-card">
-                    <div className="card-body">
-                      <div className="row d-flex justify-content-center g-4 mb-4">
-                        <div className="col-12">
-                          
-                          <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+              </div>
+            </div>
+          </Box>
+        )}
+        {activeStep === 1 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="row d-flex justify-content-center g-4 mb-4">
+                    <div className="col-12">
+
+                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
                         <BackArrowCircle
                           onClick={handleBack}
                           role="button"
@@ -881,178 +1031,178 @@ console.log()
                         />
                         Address Details
                       </h5>
-                        </div>
-                        <div className="col-md-6 col-12 ">
-                          <label className={`col-form-label`}>
-                            Country<span>*</span>
-                          </label>
-                          <CountryDropdown
-                            classes="form-select custom-dropdown"
-                            defaultOptionLabel={valueInstitute.country}
-                            value={valueInstitute.country || ''}
-                            onChange={(e: string) =>
-                              handleInputChangecountry(e, 'country')
-                            }
-                          />
-                          {error.country_error === true && (
-                            <p className="error-text " style={{ color: 'red' }}>
-                              <small>Please select a Country.</small>
-                            </p>
-                          )}
-                        </div>
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      <label className={`col-form-label`}>
+                        Country<span>*</span>
+                      </label>
+                      <CountryDropdown
+                        classes="form-select custom-dropdown"
+                        defaultOptionLabel={valueInstitute.country}
+                        value={valueInstitute.country || ''}
+                        onChange={(e: string) =>
+                          handleInputChangecountry(e, 'country')
+                        }
+                      />
+                      {country_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please select a Country.</small>
+                        </p>
+                      )}
+                    </div>
 
-                        <div className="col-md-6 col-12 ">
-                          <label className="col-form-label">
-                            State<span>*</span>
-                          </label>
-                          <RegionDropdown
-                            data-testid="perStateDropdown"
-                            classes="form-select custom-dropdown"
-                            defaultOptionLabel={valueInstitute.state || ''}
-                            country={valueInstitute.country || ''}
-                            value={valueInstitute.state || ''}
-                            // onChange={(val) => setRegion(val)}
-                            onChange={(e: string) =>
-                              handleInputChangecountry(e, 'state')
-                            }
-                          />
-                          {error.state_error === true && (
-                            <p className="error-text " style={{ color: 'red' }}>
-                              <small>Please select a State.</small>
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="row d-flex justify-content-center g-4 mb-4">
-                        <div className="col-md-6 col-12 ">
-                          {/* <label className="col-form-label">
+                    <div className="col-md-6 col-12 ">
+                      <label className="col-form-label">
+                        State<span>*</span>
+                      </label>
+                      <RegionDropdown
+                        data-testid="perStateDropdown"
+                        classes="form-select custom-dropdown"
+                        defaultOptionLabel={valueInstitute.state || ''}
+                        country={valueInstitute.country || ''}
+                        value={valueInstitute.state || ''}
+                        // onChange={(val) => setRegion(val)}
+                        onChange={(e: string) =>
+                          handleInputChangecountry(e, 'state')
+                        }
+                      />
+                      {state_error === true && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>Please select a State.</small>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="row d-flex justify-content-center g-4 mb-4">
+                    <div className="col-md-6 col-12 ">
+                      {/* <label className="col-form-label">
                             District<span>*</span>
                           </label> */}
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="district"
-                            onChange={handleChange}
-                            value={valueInstitute.district}
-                            label="District *"
-                          />
-                          <div>
-                            {error.district_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  {' '}
-                                  Please enter a valid District name.
-                                </small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="col-md-6 col-12">
-                          {/* <label className="col-form-label">
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="district"
+                        onChange={handleChange}
+                        value={valueInstitute.district}
+                        label="District *"
+                      />
+                      <div>
+                        {district_error === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small>
+                              {' '}
+                              Please enter a valid District name.
+                            </small>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
                             City<span>*</span>
                           </label> */}
 
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="city"
-                            onChange={handleChange}
-                            value={valueInstitute.city}
-                            label="City"
-                          />
-                          <div>
-                            {error.city_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please enter a valid City name.</small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row d-flex justify-content-center mb-4 g-4">
-                        <div className="col-md-6 col-12">
-                          {/* <label className="col-form-label">
-                            Address<span>*</span>
-                          </label> */}
-
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="address"
-                            onChange={handleChange}
-                            value={valueInstitute.address}
-                            label="Address"
-                          />
-                          <div>
-                            {error.address_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please enter a valid Address.</small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="col-md-6 col-12">
-                          {/* <label className="col-form-label">
-                            Pincode<span>*</span>
-                          </label> */}
-
-                          <TextField
-                            autoComplete="off"
-                            className="form-control"
-                            name="pincode"
-                            onChange={handleChange}
-                            value={valueInstitute.pincode}
-                            label="Pincode"
-                          />
-                          <div>
-                            {error.pincode_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small> Please enter a valid Pincode.</small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="col-12">
-                          <Box>
-                            <Button
-                              variant="contained"
-                              className="btn btn-secondary w-100 outsecbtn mb-2"
-                              onClick={handleNext}
-                            >
-                              {activeStep === steps.length - 1
-                                ? 'Finish'
-                                : 'Next'}
-                            </Button>
-
-                           
-                           
-                          </Box>
-                        </div>
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="city"
+                        onChange={handleChange}
+                        value={valueInstitute.city}
+                        label="City"
+                      />
+                      <div>
+                        {city_error === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small>Please enter a valid City name.</small>
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
+                  <div className="row d-flex justify-content-center mb-4 g-4">
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
+                            Address<span>*</span>
+                          </label> */}
+
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="address"
+                        onChange={handleChange}
+                        value={valueInstitute.address}
+                        label="Address"
+                      />
+                      <div>
+                        {address_error === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small>Please enter a valid Address.</small>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-6 col-12">
+                      {/* <label className="col-form-label">
+                            Pincode<span>*</span>
+                          </label> */}
+
+                      <TextField
+                        autoComplete="off"
+                        className="form-control"
+                        name="pincode"
+                        onChange={handleChange}
+                        value={valueInstitute.pincode}
+                        label="Pincode"
+                      />
+                      <div>
+                        {pincode_error === true && (
+                          <p
+                            className="error-text "
+                            style={{ color: 'red' }}
+                          >
+                            <small> Please enter a valid Pincode.</small>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <Box>
+                        <Button
+                          variant="contained"
+                          className="btn btn-secondary w-100 outsecbtn mb-2"
+                          onClick={handleNext}
+                        >
+                          {activeStep === steps.length - 1
+                            ? 'Finish'
+                            : 'Next'}
+                        </Button>
+
+
+
+                      </Box>
+                    </div>
+                  </div>
                 </div>
-              </Box>
-            )}
-            {activeStep === 2 && (
-              <Box>
-                <div className="without-login p-3">
-                  <div className="access1-card">
-                    <div className="card-body">
-                      <div className="row d-flex justify-content-center g-4">
-                      <div className="col-12">
+              </div>
+            </div>
+          </Box>
+        )}
+        {activeStep === 2 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="row d-flex justify-content-center g-4">
+                    <div className="col-12">
                       <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
                         <BackArrowCircle
                           onClick={handleBack}
@@ -1061,68 +1211,81 @@ console.log()
                         />{' '}
                         Documents & Logo
                       </h5>
-                        </div>
-                        <div className="col-md-6 col-12 ">
-                          <Card>
-                            <CardContent>
-                              <label className="col-form-label">
-                                {' '}
-                                Document<span></span>
-                              </label>
-                              <br />
-                              <UploadBtn
-                                label="Upload Documents"
-                                name="document"
-                                accept=".pdf, .jpg, .jpeg, .png, .gif"
-                                handleFileChange={handleFileChange}
-                              />
-                            </CardContent>
-                          </Card>
-                          
-                        </div>
-                        
-                        <div className="col-md-6 col-12 ">
-                          <Card>
-                            <CardContent>
-                              <label className="col-form-label">
-                                {' '}
-                                Logo<span></span>
-                              </label>
-                              <br />
-                              <UploadBtn
-                                label="Upload Logo"
-                                name="icon"
-                                accept=".jpg, .jpeg, .png, .gif"
-                                handleFileChange={handleFileChange}
-                              />
-                            </CardContent>
-                          </Card>
+                    </div>
+                    <div className="col-md-6 col-12 ">
+                      <Card>
+                        <CardContent>
+                          <label className="col-form-label">
+                            {' '}
+                            Document<span></span>
+                          </label>
+                          <br />
+                          <UploadBtn
+                            label="Upload Documents"
+                            name="document"
+                            accept=".pdf, .jpg, .jpeg, .png, .gif"
+                            handleFileChange={handleFileChange}
+                          />
                           <div>
-                            <ul>{valueInstitute.icon}</ul>
-                          </div>
-                        </div>
-                        <div className="col-12">
-                        <div className="">
-                            {allselectedfiles.length > 0 && (
-                              <ul className="doclist">
-                                {allselectedfiles.map((file, index) => (
-                                  <li
-                                    key={index}
-                                    className="flex items-center justify-between"
-                                  >
-                                    {file.name}
-                                    <DeleteOutlinedIcon
-                                      className="m-2 cursor-pointer"
-                                      onClick={() => handleRemoveFile(index)}
-                                    />
-                                  </li>
-                                ))}
-                              </ul>
+                            {document_error && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small >
+                                  {' '}
+                                  Please select at least a Document file.
+                                </small>
+                              </p>
                             )}
                           </div>
-                        </div>
-                        <div className="col-lg-12">
-                        <FormControlLabel
+                        </CardContent>
+                      </Card>
+
+                    </div>
+
+                    <div className="col-md-6 col-12 ">
+                      <Card>
+                        <CardContent>
+                          <label className="col-form-label">
+                            {' '}
+                            Logo<span></span>
+                          </label>
+                          <br />
+                          <UploadBtn
+                            label="Upload Logo"
+                            name="icon"
+                            accept=".jpg, .jpeg, .png, .gif"
+                            handleFileChange={handleFileChange}
+                          />
+                        </CardContent>
+                      </Card>
+                      <div>
+                        <ul>{valueInstitute.icon}</ul>
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="">
+                        {allselectedfiles.length > 0 && (
+                          <ul className="doclist">
+                            {allselectedfiles.map((file, index) => (
+                              <li
+                                key={index}
+                                className="flex items-center justify-between"
+                              >
+                                {file.name}
+                                <DeleteOutlinedIcon
+                                  className="m-2 cursor-pointer"
+                                  onClick={() => handleRemoveFile(index)}
+                                />
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-lg-12">
+                      <FormControlLabel
                         control={
                           <Checkbox
                             data-testid="checkbox"
@@ -1149,9 +1312,9 @@ console.log()
                           '& .MuiTypography-root': { fontSize: '0.85rem' },
                         }} // Adjusts font size of the entire label
                       />
-                        </div>
-                        <div className="col-12">
-                        <div className=" d-flex justify-content-center  flex-column">
+                    </div>
+                    <div className="col-12">
+                      <div className=" d-flex justify-content-center  flex-column">
                         <Button
                           variant="contained"
                           disabled={CheckTermandcondi}
@@ -1160,12 +1323,12 @@ console.log()
                         >
                           Submit
                         </Button>
-                       
-                      </div>
-                        </div>
-                      </div>
 
-                      {/* <div className="form-check mb-3 fs-14">
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="form-check mb-3 fs-14">
                         <input
                           data-testid="checkbox"
                           className="form-check-input"
@@ -1191,26 +1354,29 @@ console.log()
                           </a>
                         </label>
                       </div> */}
-                      
-                      <Dialog open={popupTermandCondi} onClose={handleClose}>
-                        <DialogTitle>{'Terms and Condition'}</DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Content of Gyansetu Terms and Conditions...... will
-                            come soon
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button onClick={handleClose} color="primary">
-                            Close
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </div>
-                  </div>
+
+                  <Dialog open={popupTermandCondi} onClose={handleClose}>
+                    <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Content of Gyansetu Terms and Conditions...... will
+                        come soon
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose} color="primary">
+                        Close
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </div>
-              </Box>
-            )}
+              </div>
+            </div>
+          </Box>
+
+        )}
+        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string) => handleOtpSubmit(otp)} email={valueInstitute.email_id} />
+
       </Box>
     </Box>
   );

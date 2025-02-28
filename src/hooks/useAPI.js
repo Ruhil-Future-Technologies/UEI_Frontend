@@ -160,17 +160,28 @@ const useApi = () => {
       throw error;
     }
   };
-  const postRegisterData = async (url, data, redirectUrl = null) => {
+  const postRegisterData = async (url, data, token = null) => {
     if (isTokenExpired()) {
       handlogout();
       navigate('/');
       return;
     }
-    const headers = {
+    console.log(token)
+    let headers;
+    if(token !=null){
+       headers = {
+        Authorization: `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 1,
+        'Content-Type': 'multipart/form-data',
+      };
+      console.log(headers)
+    }else{
+     headers = {
       Authorization: `${STATIC_JWT_TOKEN}`,
       'ngrok-skip-browser-warning': 1,
       'Content-Type': 'multipart/form-data',
     };
+  }
     setLoading(true);
     setError(null);
 
@@ -178,9 +189,7 @@ const useApi = () => {
       //console.log(loginUrl)
       const response = await httpClient.post(url, data, { headers });
       setLoading(false);
-      if (redirectUrl) {
-        navigate(redirectUrl);
-      }
+     
       return response.data;
     } catch (error) {
       setError(error);
@@ -199,7 +208,6 @@ const useApi = () => {
     setError(null);
     try {
       const requestUrl = url;
-      console.log(data);
       const response = await httpClient.put(requestUrl, data, {
         headers,
       });
