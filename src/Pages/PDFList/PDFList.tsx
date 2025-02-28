@@ -49,7 +49,7 @@ const PDFList = () => {
       .then((response: any) => {
         if (response.status) {
           const filteredData: any[] = [];
-          response?.data?.forEach((item: any) => {
+          response?.data?.classes_data.forEach((item: any) => {
             if (item?.is_active) {
               const updatedClassName = item.class_name.split('_').join(' ');
               item.new_class_name =
@@ -73,7 +73,7 @@ const PDFList = () => {
       const apiUrl = `https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(apiUrl)
         .then((response: any) => {
-          if(response.status){
+          if (response.status) {
             setFileList(response);
           }
         })

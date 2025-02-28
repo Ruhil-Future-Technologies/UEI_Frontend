@@ -57,7 +57,7 @@ interface Box {
 interface Institute {
   // id: number;
   institute_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: any;
   id: string | number;
 }
@@ -173,7 +173,7 @@ const Uploadpdf = () => {
       .then((response: any) => {
         if (response.status) {
           const filteredData: any[] = [];
-          response?.data?.forEach((item: any) => {
+          response?.data?.classes_data.forEach((item: any) => {
             if (item?.is_active) {
               const updatedClassName = item.class_name.split('_').join(' ');
               item.new_class_name =
@@ -199,8 +199,10 @@ const Uploadpdf = () => {
         .then(async (response: any) => {
           if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+              (item: any) => item?.is_active,
             );
+            console.log({ filteredData });
+
             setInstitutes(filteredData || []);
             setInstitutesAll(filteredData || []);
             resolve(true);
@@ -224,8 +226,8 @@ const Uploadpdf = () => {
       getData('school_subject/list')
         .then((response: any) => {
           if (response.status) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+            const filteredData = response?.data?.subjects_data.filter(
+              (item: any) => item?.is_active,
             );
             setSubjects(filteredData || []);
             setSubjectsAll(filteredData || []);
@@ -242,8 +244,8 @@ const Uploadpdf = () => {
       getData('college_subject/list')
         .then((response: any) => {
           if (response.status) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+            const filteredData = response?.data?.subjects_data.filter(
+              (item: any) => item?.is_active,
             );
             setSubjects(filteredData || []);
             setSubjectsAll(filteredData || []);
@@ -264,9 +266,11 @@ const Uploadpdf = () => {
     getData('university/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.universities_data.filter(
+            (item: any) => item?.is_active,
           );
+          console.log({ filteredData });
+
           setUniversity(filteredData || []);
         }
       })
@@ -280,8 +284,8 @@ const Uploadpdf = () => {
     getData('/semester/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.semesters_data.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
         }
@@ -297,8 +301,8 @@ const Uploadpdf = () => {
     getData('/course/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+          const filteredData = response?.data?.course_data.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -314,7 +318,7 @@ const Uploadpdf = () => {
     getData('/class/list')
       .then((response: any) => {
         if (response.status) {
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.classes_data.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -448,7 +452,7 @@ const Uploadpdf = () => {
             (item) =>
               item.university_id === university_id && item?.id === institute_id,
           )
-          ?.map((item) => item.institution_name);
+          ?.map((item) => item.institute_name);
         const filterCourse = await coursesAll
           .filter(
             (item) =>
@@ -811,8 +815,8 @@ const Uploadpdf = () => {
                                 >
                                   {university.map((item) => (
                                     <MenuItem
-                                      key={item?.university_id}
-                                      value={item?.university_id}
+                                      key={item?.id}
+                                      value={item?.id}
                                       sx={commonStyle(namecolor)}
                                     >
                                       {item.university_name}
@@ -851,7 +855,7 @@ const Uploadpdf = () => {
                                       value={institute.id}
                                       sx={commonStyle(namecolor)}
                                     >
-                                      {institute.institution_name}
+                                      {institute.institute_name}
                                     </MenuItem>
                                   ))}
                                 </Select>

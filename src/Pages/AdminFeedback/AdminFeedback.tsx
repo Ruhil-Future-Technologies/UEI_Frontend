@@ -30,7 +30,7 @@ const AdminFeedback = () => {
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           setDataFeedback(data?.data?.feedbacks_data);
         }
       })

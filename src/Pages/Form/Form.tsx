@@ -40,7 +40,7 @@ const Form = () => {
     getData(`${FormURL}`)
       .then((data: any) => {
         if (data.status) {
-          setDataForm(data?.data);
+          setDataForm(data?.data?.formes_data);
         }
       })
       .catch((e) => {

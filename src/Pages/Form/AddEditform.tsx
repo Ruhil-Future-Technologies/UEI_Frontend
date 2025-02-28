@@ -93,9 +93,9 @@ const AddEditForm = () => {
   const callAPI = async () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
-        if(data?.status){
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (data?.status) {
+          const filteredData = data?.data?.menues_data.filter(
+            (item: any) => item?.is_active,
           );
           setDataMenu(filteredData || []);
         }
@@ -111,13 +111,12 @@ const AddEditForm = () => {
       });
     getData(`${SubMenuURL}`)
       .then((data: any) => {
-        if(data?.status)
-          {
-            const filteredData = data?.data?.filter(
-              (item: any) => item?.is_active === 1,
-            );
-            setDataSubMenu(filteredData || []);
-          }
+        if (data?.status) {
+          const filteredData = data?.data?.submenus_data.filter(
+            (item: any) => item?.is_active,
+          );
+          setDataSubMenu(filteredData || []);
+        }
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -130,8 +129,8 @@ const AddEditForm = () => {
       });
     if (id) {
       getData(`${FormEditURL}${id ? `/${id}` : ''}`).then((data: any) => {
-        if(data?.status){
-          const datavalue = data?.data;
+        if (data?.status) {
+          const datavalue = data?.data?.form_data;
           setForm({
             form_name: datavalue?.form_name,
             menu_master_id: datavalue?.menu_master_id,
@@ -438,7 +437,7 @@ const AddEditForm = () => {
                                     },
                                   }}
                                 >
-                                  {item.menu_name}
+                                  {item?.sub_menu_name}
                                 </MenuItem>
                               ))}
                             </Select>
