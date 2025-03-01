@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import '../Uploadpdf/Uploadpdf.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -551,6 +551,34 @@ const Uploadpdf = () => {
         });
       });
   };
+  const isDisabled = useMemo(() => {
+    const box = boxes[0];
+    if (!box || Object.keys(box)?.length === 0 || box.institute_type?.toLowerCase() === "") return true;
+    if (box.institute_type?.toLowerCase() === 'college') {
+      const { institute_id, university_id, course_id, sem_id } = box;
+      if (!institute_id || !university_id || !course_id || !sem_id) {
+        return true;
+      }
+    }
+    if (box.institute_type?.toLowerCase() === 'school') {
+      const { board, class_id, state_for_stateboard, stream } = box;
+
+      if (!board || !class_id) return true;
+
+      if (board.toLowerCase() === 'state_board' && !state_for_stateboard) {
+        return true;
+      }
+      if (
+        (particularClass === 'class_11' || particularClass === 'class_12') &&
+        !stream
+      ) {
+        return true;
+      }
+    }
+    if (selectedFiles.length === 0) return true;
+    return false;
+  }, [selectedFiles, boxes, particularClass]);
+
   const usertype: any = localStorage.getItem('user_type');
 
   if (usertype !== 'admin') {
@@ -1185,27 +1213,15 @@ const Uploadpdf = () => {
                     </div>
                   )}
                   <Button
-                    className={`${
-                      selectedFiles.length === 0
-                        ? 'disabled-mainbutton'
-                        : 'mainbutton'
-                    }`}
+                    className={isDisabled ? 'disabled-mainbutton' : 'mainbutton'}
                     sx={{ marginTop: 5 }}
                     variant="contained"
                     onClick={handleFileUpload}
-                    disabled={selectedFiles.length === 0}
+                    disabled={isDisabled}
                   >
                     Submit
                   </Button>
                 </div>
-                {/* {selectedPdf && (
-                                    <div className='pdfView'>
-                                    <button onClick={handleClose} className='closeButton'>
-                                      &times; 
-                                    </button>
-                                    <iframe src={selectedPdf} width="100%" height="800px" />
-                                  </div>
-                                     )} */}
               </div>
             </div>
           </div>
