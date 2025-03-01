@@ -1665,7 +1665,7 @@ function MainContent() {
         // } else if (data.status === 404) {
         if (data.status === 200 || data.status === 404) {
           // setLoaderMsg('Searching result from knowledge base');
-          setLoaderMsg('Searching result from Rag model');
+          setLoaderMsg('Searching from AI');
 
           if (profileDatas?.academic_history?.institution_type === 'school') {
             postData(`${ChatRAGURL}`, {
@@ -1730,7 +1730,7 @@ function MainContent() {
                   }
                   handleResponse(formattedResponse);
                 } else {
-                  setLoaderMsg('Fetching Data from Ollama model.');
+                  setLoaderMsg('Searching from AI.');
                   // getData(
                   //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                   //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
@@ -1876,7 +1876,7 @@ function MainContent() {
                   }
                   handleResponse(formattedResponse);
                 } else {
-                  setLoaderMsg('Fetching Data from Ollama model.');
+                  setLoaderMsg('Searching from AI.');
                   // getData(
                   //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                   //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
@@ -1909,7 +1909,7 @@ function MainContent() {
                 }
               })
               .catch(() => {
-                setLoaderMsg('Fetching Data from Ollama model.');
+                setLoaderMsg('Searching from AI.');
                 // getData(
                 //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
                 //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
@@ -1969,7 +1969,7 @@ function MainContent() {
           //   user_query: search,
           // };
           // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
-          setLoaderMsg('Fetching Data from Ollama model.');
+          setLoaderMsg('Searching from AI.');
           // return getData(
           //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
           //     search
@@ -2192,7 +2192,7 @@ function MainContent() {
 
   const regenerateChat = () => {
     setChatLoader(true);
-    setLoaderMsg('Fetching Data from Ollama model.');
+    setLoaderMsg('Searching from AI.');
     setSearchErr(false);
 
     const prompt = profileDatas?.prompt?.replace('**question**', 'answer');
