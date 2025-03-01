@@ -911,6 +911,9 @@ function MainContent() {
         .then((data: any) => {
           console.log(data);
           if (data.data) {
+            if(data?.data?.basic_info?.id){
+              localStorage.setItem('_id', data?.data?.basic_info.id)
+            }
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
             const basic_info = {
@@ -1162,6 +1165,7 @@ function MainContent() {
           if (data?.data) {
             if(data?.data?.admin_data?.basic_info){
               sessionStorage.setItem('userdata', JSON.stringify(data?.data?.admin_data?.basic_info));
+              localStorage.setItem('_id', data?.data?.admin_data?.basic_info.id)
             }
 
             // setProfileData(data?.data)
