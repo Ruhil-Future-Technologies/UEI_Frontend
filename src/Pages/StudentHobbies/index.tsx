@@ -22,7 +22,6 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-import { QUERY_KEYS_STUDENT } from '../../utils/const';
 
 interface Hobby {
   hobby_name: string;
@@ -43,7 +42,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
- const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
 
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
@@ -54,7 +52,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [hobbiesAll, setHobbiesAll] = useState<any>([]);
   const StudentId = localStorage.getItem('_id');
-  const userUUID=localStorage.getItem('user_uuid');
+  //const userUUID=localStorage.getItem('user_uuid');
 
   useEffect(() => {
     if (save) {
@@ -74,7 +72,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           setAllHobbies(filteredData || []);
         }
 
-        const studentHobbyData = await getData(`${profileURL}/${userUUID}`)
+        const studentHobbyData = await getData(`student_hobby/edit/${StudentId}`)
     
    console.log(studentHobbyData.data?.hobby)
         if (studentHobbyData?.status) {
@@ -96,7 +94,10 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       }
     };
 
-    fetchData();
+    if(StudentId){
+      fetchData();
+    }
+   
   }, []);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {

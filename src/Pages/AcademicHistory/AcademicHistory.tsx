@@ -325,70 +325,73 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           position: 'top-center',
         });
       });
-    getData(`${'new_student_academic_history/get/' + StudentId}`)
-      .then((data: any) => {
-        if (data?.status) {
-          if (data?.data?.[0]?.class_id) {
-            getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
-              (response: any) => {
-                if (response.status) {
-                  setParticularClass(response.data.class_name);
-                } else setParticularClass('');
-              },
-            );
-          }
-          data?.data?.forEach((item: any) => {
-            const newBox = {
-              id: item?.id,
-              institute_type: item?.institution_type,
-              board: item?.board,
-              state_for_stateboard: item?.state_for_stateboard,
-              institute_id: item?.institute_id,
-              course_id: item?.course_id,
-              learning_style: item?.learning_style,
-              class_id: item?.class_id,
-              year: item?.year ? dayjs(item?.year) : null,
-              stream: item?.stream,
-              university_id: item?.university_id,
-              sem_id: item?.sem_id,
-              errors: undefined,
-            };
-
-            if (!boxes.some((box) => box.id === newBox.id)) {
-              setBoxes((prevBoxes) => [...prevBoxes, newBox]);
-              // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
+    if (StudentId) {
+      console.log("222"+StudentId)
+      getData(`${'new_student_academic_history/get/' + StudentId}`)
+        .then((data: any) => {
+          if (data?.status) {
+            if (data?.data?.[0]?.class_id) {
+              getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
+                (response: any) => {
+                  if (response.status) {
+                    setParticularClass(response.data.class_name);
+                  } else setParticularClass('');
+                },
+              );
             }
+            data?.data?.forEach((item: any) => {
+              const newBox = {
+                id: item?.id,
+                institute_type: item?.institution_type,
+                board: item?.board,
+                state_for_stateboard: item?.state_for_stateboard,
+                institute_id: item?.institute_id,
+                course_id: item?.course_id,
+                learning_style: item?.learning_style,
+                class_id: item?.class_id,
+                year: item?.year ? dayjs(item?.year) : null,
+                stream: item?.stream,
+                university_id: item?.university_id,
+                sem_id: item?.sem_id,
+                errors: undefined,
+              };
+
+              if (!boxes.some((box) => box.id === newBox.id)) {
+                setBoxes((prevBoxes) => [...prevBoxes, newBox]);
+                // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
+              }
+            });
+          } else if (data?.code === 404) {
+            setBoxes([
+              {
+                id: 0,
+                institute_type: '',
+                board: '',
+                state_for_stateboard: '',
+                institute_id: '',
+                course_id: '',
+                learning_style: '',
+                class_id: '',
+                year: null,
+                stream: '',
+                university_id: '',
+                sem_id: '',
+                errors: undefined,
+              },
+            ]);
+            setEditFlag(true);
+          } else {
+            console.error('Unexpected response:', data);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
           });
-        } else if (data?.code === 404) {
-          setBoxes([
-            {
-              id: 0,
-              institute_type: '',
-              board: '',
-              state_for_stateboard: '',
-              institute_id: '',
-              course_id: '',
-              learning_style: '',
-              class_id: '',
-              year: null,
-              stream: '',
-              university_id: '',
-              sem_id: '',
-              errors: undefined,
-            },
-          ]);
-          setEditFlag(true);
-        } else {
-          console.error('Unexpected response:', data);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
         });
-      });
+    }
     listData();
   }, [updateBoxes]);
   const [errors, setErrors] = useState(initialErrors);
@@ -425,56 +428,56 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     const promises = updatedBoxes.map((box) => {
       // Filter out null, empty string, and 'errors' field
       const filteredBox = Object.fromEntries(
-          Object.entries(box).filter(([key, value]) => 
-              value !== null && value !== "" && key !== 'errors'
-          )
+        Object.entries(box).filter(([key, value]) =>
+          value !== null && value !== "" && key !== 'errors'
+        )
       );
-  
+
       // Rename institute_type to institution_type
       filteredBox.institution_type = filteredBox.institute_type;
       delete filteredBox.institute_type;
-  
+
       // Add student_id
       filteredBox.student_id = StudentId || '';
-  
+
       // Handle college-specific fields
       if (filteredBox.institution_type.toLowerCase() === 'college') {
-          if (filteredBox.year?.$y) {
-              filteredBox.year = String(filteredBox.year.$y);
-          }
-          filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
-          if (filteredBox.sem_id) {
-              filteredBox.sem_id = String(filteredBox.sem_id);
-          }
-          if (filteredBox.university_id) {
-              filteredBox.university_id = String(filteredBox.university_id);
-          }
+        if (filteredBox.year?.$y) {
+          filteredBox.year = String(filteredBox.year.$y);
+        }
+        filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
+        if (filteredBox.sem_id) {
+          filteredBox.sem_id = String(filteredBox.sem_id);
+        }
+        if (filteredBox.university_id) {
+          filteredBox.university_id = String(filteredBox.university_id);
+        }
       }
-  
+
       // Handle school-specific fields
       if (filteredBox.institution_type.toLowerCase() === 'school') {
-          if (['class_11', 'class_12'].includes(particularClass)) {
-              filteredBox.stream = filteredBox.stream || '';
-          }
-          if (filteredBox.state_for_stateboard !== undefined) {
-              filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
-          }
-          filteredBox.class_id= String(filteredBox.class_id);
+        if (['class_11', 'class_12'].includes(particularClass)) {
+          filteredBox.stream = filteredBox.stream || '';
+        }
+        if (filteredBox.state_for_stateboard !== undefined) {
+          filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
+        }
+        filteredBox.class_id = String(filteredBox.class_id);
       }
-  console.log(filteredBox)
+      console.log(filteredBox)
       // Determine API request type
       if (editFlag && filteredBox.id === 0) {
-          return postData('/new_student_academic_history/add', filteredBox);
+        return postData('/new_student_academic_history/add', filteredBox);
       } else {
-          return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, filteredBox);
+        return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, filteredBox);
       }
-  });
+    });
 
     // Handle all promises
     Promise.all(promises)
       .then((responses) => {
         const allSuccessful = responses.every(
-          (response) => response?.status ,
+          (response) => response?.status,
         );
         if (allSuccessful) {
           if (editAcademicHistory) {
@@ -948,17 +951,17 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                     label="Class"
                   >
                     {// classes.map((classes) => (
-                    classes
-                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                      ?.map((classes) => (
-                        <MenuItem
-                          key={classes.id}
-                          value={classes.id}
-                          sx={commonStyle(namecolor)}
-                        >
-                          {classes.class_name}
-                        </MenuItem>
-                      ))}
+                      classes
+                        ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                        ?.map((classes) => (
+                          <MenuItem
+                            key={classes.id}
+                            value={classes.id}
+                            sx={commonStyle(namecolor)}
+                          >
+                            {classes.class_name}
+                          </MenuItem>
+                        ))}
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1068,9 +1071,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type === 'college' && (
               <div
-                className={`${
-                  box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
-                } form_field_wrapper`}
+                className={`${box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
+                  } form_field_wrapper`}
               >
                 <FormControl
                   required

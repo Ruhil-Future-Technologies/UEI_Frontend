@@ -192,7 +192,7 @@ const AddEditForm = () => {
     sub_menu_master_id: string;
     form_url: string;
     form_description: string;
-    is_menu_visible: boolean;
+    is_menu_visible: boolean |string ;
   }) => {
     formData.menu_master_id = String(formData.menu_master_id);
     formData.sub_menu_master_id = String(formData.sub_menu_master_id);
@@ -201,15 +201,17 @@ const AddEditForm = () => {
     const isPathAvailable = routes.some((route) => route.path === pathToCheck);
     let formdata1 = {};
     if (formData.sub_menu_master_id === '') {
+      console.log(formData.is_menu_visible);
       formdata1 = {
         form_name: formData.form_name,
         menu_master_id: formData.menu_master_id,
 
         form_url: formData.form_url,
         form_description: formData.form_description,
-        is_menu_visibl: formData.is_menu_visible,
+        is_menu_visibl: formData.is_menu_visible==true ? 'True':'False',
       };
     } else {
+      formData.is_menu_visible=formData.is_menu_visible==true?'True':'False'
       formdata1 = formData;
     }
 

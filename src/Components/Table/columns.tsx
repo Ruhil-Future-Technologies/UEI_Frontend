@@ -874,7 +874,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1036,7 +1036,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.semester_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1114,7 +1114,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1247,7 +1247,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, value);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1347,7 +1347,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1441,7 +1441,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1529,7 +1529,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1607,7 +1607,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1685,7 +1685,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1701,22 +1701,26 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'options',
-    header: 'Options',
+    accessorKey: "options",
+    header: "Options",
     size: 150,
     Cell: ({ cell }: { cell: any }) => {
-      const options = cell.getValue();
-      return (
+      let options = cell.getValue();
+      options = typeof options === "string" ? JSON.parse(options) : options;
+
+     // const safeOptions = Array.isArray(options) ? options : [];
+      return Array.isArray(options) ? (
         <ul className="table-unordered-list">
           {options.map((option: string, index: number) => (
-            <li key={index} value={option}>
-              {option}
-            </li>
+            <li key={index}>{option}</li>
           ))}
         </ul>
+      ) : (
+        <span>No options available</span>
       );
     },
-  },
+  }
+  ,
   {
     accessorKey: 'created_by',
     header: 'Created By',
@@ -1955,7 +1959,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2035,7 +2039,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2170,7 +2174,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2312,7 +2316,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2395,7 +2399,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );

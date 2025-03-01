@@ -467,6 +467,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   theme: 'colored',
                   position: 'top-center',
                 });
+                localStorage.setItem('_id',data?.data?.id);
                 setActiveForm((prev) => prev + 1);
                 setNamepro({
                   first_name: basicInfo?.first_name,

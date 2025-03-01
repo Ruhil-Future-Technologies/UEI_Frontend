@@ -151,7 +151,10 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       });
   };
   useEffect(() => {
-    getContacInfo();
+    if(StudentId){
+      getContacInfo();
+    }
+  
   }, []);
   const submitHandel = () => {
     // event: React.FormEvent<HTMLFormElement>

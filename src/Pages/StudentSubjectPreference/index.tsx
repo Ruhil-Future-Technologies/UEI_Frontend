@@ -199,7 +199,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   };
   useEffect(() => {
     if (activeForm === 5) {
-      getacademic();
+      if(StudentId){
+        console.log("555"+StudentId);
+        getacademic();
+      }
+      
       getclass();
     }
   }, [activeForm]);
@@ -407,7 +411,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     getSemester();
     getPrefrence();
     getacademic();
-    getPrefrencelist();
+    if(StudentId){
+      getPrefrencelist();
+    }
+    
     // getSubject();
   }, []);
 

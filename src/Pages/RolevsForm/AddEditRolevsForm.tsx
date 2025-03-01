@@ -229,39 +229,34 @@ const AddEditRolevsForm = () => {
 
   const handleSubmit = async (rolevsformData: any) => {
     const formData = new FormData();
+  
     rolevsformData.role_master_id = String(rolevsformData.role_master_id);
     rolevsformData.form_master_id = String(rolevsformData.form_master_id);
-
-    if (id) {
-      Object.keys(rolevsformData).forEach((key) => {
+  
+    const booleanFields = ["is_search", "is_save", "is_update", "is_active", "is_deleted"];
+    
+    Object.keys(rolevsformData).forEach((key) => {
+      if (booleanFields.includes(key)) {
+        formData.append(key, rolevsformData[key]==true ? "True" : "False");
+      } else {
         formData.append(key, rolevsformData[key]);
-      });
+      }
+    });
+  
+    if (id) {
       putData(`${RolevsFormEditURL}/${id}`, formData).then((data: any) => {
         if (data?.status) {
           navigator('/main/RoleVsForm');
-          toast.success(data.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
+          toast.success(data.message, { hideProgressBar: true, theme: 'colored' });
           callAPIMenuList();
         } else {
-          toast.error(data.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
+          toast.error(data.message, { hideProgressBar: true, theme: 'colored' });
         }
       });
     } else {
-      Object.keys(rolevsformData).forEach((key) => {
-        formData.append(key, rolevsformData[key]);
-      });
       postData(`${RolevsFormAddURL}`, formData).then((data: any) => {
         if (data?.status) {
-          // navigator('/main/RoleVsForm')
-          toast.success(data.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
+          toast.success(data.message, { hideProgressBar: true, theme: 'colored' });
           setRoleVsForm({
             role_master_id: '',
             form_master_id: '',
@@ -271,14 +266,14 @@ const AddEditRolevsForm = () => {
           });
           callAPIMenuList();
         } else {
-          toast.error(data.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
+          toast.error(data.message, { hideProgressBar: true, theme: 'colored' });
         }
       });
     }
   };
+  
+  
+  
   const rolevsformSchema = Yup.object().shape({
     role_master_id: Yup.string().required('Please select Role Master'),
     form_master_id: Yup.string().required('Please select Form Master'),

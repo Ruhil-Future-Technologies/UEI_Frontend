@@ -73,7 +73,8 @@ const PDFList = () => {
       const apiUrl = `https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(apiUrl)
         .then((response: any) => {
-          if (response.status) {
+          if (response) {
+            console.log(response)
             setFileList(response);
           }
         })
@@ -135,7 +136,7 @@ const PDFList = () => {
       setSchoolOrcollFile('college');
     }
   };
-
+console.log(fileList);
   return (
     <>
       {loading && <FullScreenLoader />}

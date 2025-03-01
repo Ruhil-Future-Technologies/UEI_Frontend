@@ -220,30 +220,36 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       });
   };
   useEffect(() => {
-    listData();
+    if(StudentId){
+      listData();
+    }
+   
   }, []);
 
   useEffect(() => {
-    getData(`${'student_address/edit/' + StudentId}`).then((response: any) => {
-      if (response?.status) {
-        response?.data.forEach((address: any) => {
-          if (address?.address_type === 'permanent') {
-            //setPermanentAddress(address);
-            //setPermanentAddress1(address);
-            setEditableCurrectPerm(true);
-            setTuchedPram(false);
-          } else if (address?.address_type === 'current') {
-            // setStudentAddress(address);
-            // setStudentAddress1(address);
-            setEditableCurrect(true);
-            setTuchedCurrent(false);
-          } else {
-            setEditableCurrect(false);
-            setEditableCurrectPerm(false);
-          }
-        });
-      }
-    });
+    if(StudentId){
+      getData(`${'student_address/edit/' + StudentId}`).then((response: any) => {
+        if (response?.status) {
+          response?.data.forEach((address: any) => {
+            if (address?.address_type === 'permanent') {
+              //setPermanentAddress(address);
+              //setPermanentAddress1(address);
+              setEditableCurrectPerm(true);
+              setTuchedPram(false);
+            } else if (address?.address_type === 'current') {
+              // setStudentAddress(address);
+              // setStudentAddress1(address);
+              setEditableCurrect(true);
+              setTuchedCurrent(false);
+            } else {
+              setEditableCurrect(false);
+              setEditableCurrectPerm(false);
+            }
+          });
+        }
+      });
+    }
+    
   }, [activeForm]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,

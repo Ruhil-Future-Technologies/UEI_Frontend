@@ -26,7 +26,6 @@ const AdminFeedback = () => {
   const [dataFeedback, setDataFeedback] = useState<IFeedback[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
       .then((data) => {

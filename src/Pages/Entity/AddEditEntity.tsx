@@ -103,6 +103,7 @@ const AddEditEntity = () => {
               theme: 'colored',
             });
           } else {
+            console.log(data.message)
             toast.error(data.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -110,10 +111,12 @@ const AddEditEntity = () => {
           }
         })
         .catch((e) => {
+
           if (e?.response?.code === 401) {
             navigator('/');
           }
-          toast.error(e?.message, {
+          console.log(e)
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });

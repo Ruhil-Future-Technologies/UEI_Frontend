@@ -2253,7 +2253,7 @@ const AddEditTeacher = () => {
                       <label
                         className={`floating-label ${isFocused || values?.country || isCountryOpen ? 'focused' : 'focusedempty'}`}
                       >
-                        Country <span>*</span>
+                        <InputLabel>Country <span>*</span></InputLabel>
                       </label>
                       <div
                         className="form_field_wrapper"
@@ -2285,7 +2285,7 @@ const AddEditTeacher = () => {
                       <label
                         className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? 'focused' : 'focusedempty'}`}
                       >
-                        State <span>*</span>
+                      <InputLabel>State <span>*</span></InputLabel>
                       </label>
                       <div
                         className="form_field_wrapper"

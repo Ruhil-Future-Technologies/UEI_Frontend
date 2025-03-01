@@ -170,43 +170,49 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
           position: 'top-center',
         });
       });
-    getdatalanguage();
+      if(StudentId){
+        getdatalanguage();
+      }
+   
   }, []);
 
   useEffect(() => {
-    getData(`student_language_known/edit/${StudentId}`).then((data: any) => {
-      if (data?.status) {
-        //   const lenduageIds = data.data.language_id;
-        //setSelectedLeng(lenduageIds);
-
-        const newLanageage = data?.data?.filter((items: any) =>
-          boxes.some((box: Box) => box.id === items.id || box.id == 0),
-        );
-
-        const newBoxes: Box[] = newLanageage.map((item: any) => ({
-          id: item.id,
-          language_id: item.language_id,
-          proficiency: item.proficiency,
-        }));
-
-        if (newBoxes.length > 0) {
-          setBoxes((prevBoxes: Box[]) => [
-            ...prevBoxes.filter((box: Box) => box.id != 0),
-            ...newBoxes.filter(
-              (newBox: Box) =>
-                !prevBoxes.some((box: Box) => box.id === newBox.id),
-            ),
-          ]);
-          setInitialState((prevBoxes: Box[]) => [
-            ...prevBoxes,
-            ...newBoxes.filter(
-              (newBox: Box) =>
-                !prevBoxes.some((box: Box) => box.id === newBox.id),
-            ),
-          ]);
+    if(StudentId){
+      getData(`student_language_known/edit/${StudentId}`).then((data: any) => {
+        if (data?.status) {
+          //   const lenduageIds = data.data.language_id;
+          //setSelectedLeng(lenduageIds);
+  
+          const newLanageage = data?.data?.filter((items: any) =>
+            boxes.some((box: Box) => box.id === items.id || box.id == 0),
+          );
+  
+          const newBoxes: Box[] = newLanageage.map((item: any) => ({
+            id: item.id,
+            language_id: item.language_id,
+            proficiency: item.proficiency,
+          }));
+  
+          if (newBoxes.length > 0) {
+            setBoxes((prevBoxes: Box[]) => [
+              ...prevBoxes.filter((box: Box) => box.id != 0),
+              ...newBoxes.filter(
+                (newBox: Box) =>
+                  !prevBoxes.some((box: Box) => box.id === newBox.id),
+              ),
+            ]);
+            setInitialState((prevBoxes: Box[]) => [
+              ...prevBoxes,
+              ...newBoxes.filter(
+                (newBox: Box) =>
+                  !prevBoxes.some((box: Box) => box.id === newBox.id),
+              ),
+            ]);
+          }
         }
-      }
-    });
+      });
+    }
+   
   }, [activeForm]);
 
   const saveLanguage = async () => {
