@@ -22,11 +22,14 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
+import { QUERY_KEYS_STUDENT_HOBBY } from '../../utils/const';
 
 interface Hobby {
+  hobby_id: number;
   hobby_name: string;
   id: number;
-  is_active: number;
+  is_active: boolean;
+  student_id: string;
 }
 interface StudentHobbiesProps {
   save: boolean;
@@ -42,6 +45,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+  const studenthobbyURL = QUERY_KEYS_STUDENT_HOBBY.GET_STUDENT_HOBBY;
 
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
@@ -52,7 +56,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [hobbiesAll, setHobbiesAll] = useState<any>([]);
   const StudentId = localStorage.getItem('_id');
-  //const userUUID=localStorage.getItem('user_uuid');
+  // const userUUID = localStorage.getItem('user_uuid');
 
   useEffect(() => {
     if (save) {
@@ -64,7 +68,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     const fetchData = async () => {
       try {
         const hobbyListData = await getData('hobby/list');
-
         if (hobbyListData?.status) {
           const filteredData = hobbyListData?.data?.hobby_data?.filter(
             (item: any) => item?.is_active,
@@ -72,20 +75,20 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           setAllHobbies(filteredData || []);
         }
 
-        const studentHobbyData = await getData(`student_hobby/edit/${StudentId}`)
-    
-   console.log(studentHobbyData.data?.hobby)
-        if (studentHobbyData?.status) {
-          const hobbyIds = studentHobbyData.data?.hobby?.map(
+        const studentHobbyData = await getData(`${studenthobbyURL}/${StudentId}`)
+
+        if (!studentHobbyData?.status) {
+          const hobbyIds = studentHobbyData.data?.map(
             (selecthobby: any) => selecthobby.hobby_id,
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
-          setHobbiesAll(studentHobbyData?.data?.hobby || []);
+          setHobbiesAll(studentHobbyData?.data || []);
         } else if (studentHobbyData?.code === 404) {
           setEditFlag(true);
         }
-      } catch (e: any) {
+      }
+      catch (e: any) {
         toast.error(e?.message || 'An error occurred', {
           hideProgressBar: true,
           theme: 'colored',
@@ -94,10 +97,10 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       }
     };
 
-    if(StudentId){
+    if (StudentId) {
       fetchData();
     }
-   
+
   }, []);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
@@ -138,7 +141,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         if (editFlag || !hobbyExists) {
           return postData('student_hobby/add', formData);
         } else if (!eq) {
-          return putData('student_hobby/edit/' + StudentId, formData);
+          return putData('student_hobby/edit/' + hobbyid, formData);
         } else {
           return Promise.resolve({ code: 204 }); // Skip update
         }
@@ -187,7 +190,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       });
     }
     setSave(false);
-    // >>>>>>> Stashed changes
+
   };
 
   const ITEM_HEIGHT = 48;

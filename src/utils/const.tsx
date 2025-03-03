@@ -215,6 +215,7 @@ export const QUERY_KEYS_STUDENT_HOBBY = {
   GET_ADMIN_STUDENT_HOBBY: '/student_hobby/list',
   ADMIN_ADD_STUDENT_HOBBY: '/student_hobby/add',
   ADMIN_EDIT_STUDENT_HOBBY: '/student_hobby/edit',
+   GET_STUDENT_HOBBY:'student_hobby/get'
 };
 export const QUERY_KEYS_STUDENT_LANGAUGE = {
   GET_ADMIN_STUDENT_LANGAUGE: '/student_language_known/list',
