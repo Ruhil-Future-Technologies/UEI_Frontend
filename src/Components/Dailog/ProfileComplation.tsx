@@ -1006,9 +1006,10 @@ export const ProfileDialog: FunctionComponent<{
     const length = answers.length;
     const classname = classes.find(
       (item) =>
-        String(item.id) === answers[answers.length - 1] ||
-        String(item.id) === answers[answers.length - 2],
+        String(item.id) === String(answers[answers.length - 1]) ||
+        String(item.id) === String(answers[answers.length - 2]),
     )?.class_name;
+    console.log(classes,answers[answers.length - 1],answers[answers.length - 2]);
     const payload = {
       student_id:localStorage.getItem('student_id'),
       institution_type:
@@ -1084,6 +1085,7 @@ export const ProfileDialog: FunctionComponent<{
           ? answeredData?.academic_history?.sem_id || answers[length - 3]
           : null,
     };
+    console.log(payload, classname);
     postData('/new_student_academic_history/add', payload).then((response) => {
       if (response.status) {
         // toast.success('Academic hinstory information saved successfully', {
