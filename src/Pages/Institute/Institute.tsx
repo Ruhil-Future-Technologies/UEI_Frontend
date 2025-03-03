@@ -118,6 +118,8 @@ const Institute = () => {
       .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
         if (data.status) {
           setDataInstitute(data?.data);
+        } else {
+          setDataInstitute([]);
         }
       })
       .catch((e) => {

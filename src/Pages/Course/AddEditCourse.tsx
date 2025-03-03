@@ -85,12 +85,13 @@ const AddEditCourse = () => {
             (item: any) =>
               item.is_active &&
               item.is_approve &&
-              item.entity_type == 'College',
+              item.entity_type == 'college',
           );
 
           setinstituteList(filteredData);
+        } else {
+          setinstituteList([]);
         }
-
         // setDataEntity(data?.data)
       })
       .catch((e) => {
@@ -135,7 +136,6 @@ const AddEditCourse = () => {
       institution_id: courseData.institute,
       duration: JSON.stringify(courseData.duration),
     };
-    console.log('test log ===', coursedata, courseData);
     if (id) {
       putData(`${CourseEditURL}/${id}`, coursedata)
         .then((data: { status: boolean; message: string }) => {

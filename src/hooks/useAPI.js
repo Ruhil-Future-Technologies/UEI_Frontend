@@ -74,7 +74,7 @@ const useApi = () => {
 
       if (error.response?.status === 404 || error.response?.status === 401) {
         console.warn('Data not found, returning empty object.');
-        return { data: [], code: 404 }; // Prevents UI from breaking
+        return { data: [], code: 404, status: false }; // Prevents UI from breaking
       }
       throw error; // Re-throw other errors
     }
@@ -97,7 +97,7 @@ const useApi = () => {
       // console.log("requestUrl", requestUrl);
       const response = await httpClient.get(requestUrl, { headers });
       setLoading(false);
-     
+
       return response?.data;
     } catch (error) {
       if (error.response?.status === 404) {
@@ -166,22 +166,20 @@ const useApi = () => {
       navigate('/');
       return;
     }
-    console.log(token)
     let headers;
-    if(token !=null){
-       headers = {
+    if (token != null) {
+      headers = {
         Authorization: `Bearer ${token}`,
         'ngrok-skip-browser-warning': 1,
         'Content-Type': 'multipart/form-data',
       };
-      console.log(headers)
-    }else{
-     headers = {
-      Authorization: `${STATIC_JWT_TOKEN}`,
-      'ngrok-skip-browser-warning': 1,
-      'Content-Type': 'multipart/form-data',
-    };
-  }
+    } else {
+      headers = {
+        Authorization: `${STATIC_JWT_TOKEN}`,
+        'ngrok-skip-browser-warning': 1,
+        'Content-Type': 'multipart/form-data',
+      };
+    }
     setLoading(true);
     setError(null);
 
@@ -189,7 +187,7 @@ const useApi = () => {
       //console.log(loginUrl)
       const response = await httpClient.post(url, data, { headers });
       setLoading(false);
-     
+
       return response.data;
     } catch (error) {
       setError(error);

@@ -33,18 +33,21 @@ const Semester = () => {
     try {
       const data = await getData(`${SemesterURL}`);
       if (data?.data) {
-        console.log(data);
-        const semesterData = data?.data?.semesters_data?.map((semester: any) => {
-          const createdDateTime = semester?.created_at;
-          const updatedDateTime = semester?.updated_at;
-          const created_time = new Date(createdDateTime);
-          const updated_time = new Date(updatedDateTime);
+        const semesterData = data?.data?.semesters_data?.map(
+          (semester: any) => {
+            const createdDateTime = semester?.created_at;
+            const updatedDateTime = semester?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
 
-          semester.created_at = created_time.toLocaleString();
-          semester.updated_at = updated_time.toLocaleString();
-          return semester;
-        });
+            semester.created_at = created_time.toLocaleString();
+            semester.updated_at = updated_time.toLocaleString();
+            return semester;
+          },
+        );
         setdataSemester(semesterData);
+      } else {
+        setdataSemester([]);
       }
     } catch (e: any) {
       if (e?.response?.code === 401) {

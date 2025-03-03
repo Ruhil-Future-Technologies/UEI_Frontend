@@ -45,11 +45,13 @@ const AddEditAdminFeedback = () => {
       getData(`${GetFeedbackURL}`).then((data: any) => {
         const datavalue = data?.data?.feedbacks_data;
 
-        const getByIdFeedbackData = datavalue.filter(
+        const getByIdFeedbackData = datavalue?.filter(
           (data: any) => data.id == id,
         );
-        const optionStringify = getByIdFeedbackData[0].options;
-        const optionData = optionStringify.map((str: any) => {
+        const optionStringify = getByIdFeedbackData[0]?.options
+          ? JSON.parse(getByIdFeedbackData[0]?.options)
+          : [];
+        const optionData = optionStringify?.map((str: any) => {
           return { option: str };
         });
 

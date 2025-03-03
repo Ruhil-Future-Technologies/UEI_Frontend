@@ -38,14 +38,14 @@ const AddStudentFeedback = () => {
   useEffect(() => {
     getData(`${'/feedback/list'}`).then((data) => {
       if (data.status) {
-        setQuestions(data.data);
-        setQuestion(data.data[0]);
+        setQuestions(data?.data?.feedbacks_data);
+        setQuestion(data?.data?.feedbacks_data[0]);
         // setOptions(data.data[0].options);
         // .replace(/{|}/g, '').split(',')
       }
     });
     getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
-      if (data.status ) {
+      if (data.status) {
         if (data.data.length > 0) {
           setAnsweredQuestions(data.data);
           setStudentFlag(false);
@@ -116,12 +116,12 @@ const AddStudentFeedback = () => {
         student_id: StudentId,
         feedbacks: updatedAnswers,
       };
-      const formData= new FormData();
+      const formData = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-            formData.append(key, value as string);
+          formData.append(key, value as string);
         }
-    });
+      });
       postData('/feedback/student_feedback', formData)
         .then((response) => {
           if (response.status) {

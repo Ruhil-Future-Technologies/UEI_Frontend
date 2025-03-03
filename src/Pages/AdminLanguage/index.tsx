@@ -45,12 +45,11 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   const [alllanguage, setAllLanguage] = React.useState<Language[]>([]);
   // const [editFalg, setEditFlag] = useState<boolean>(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
-  const [initialAdminState, setInitialState] = useState<any | null>([]);
+  const [, setInitialState] = useState<any | null>([]);
   const [error, setError] = useState<{
     [key: number]: { language_error: boolean; proficiency_error: boolean };
   }>({});
   const [checkChanges, setCheckChanges] = useState(false);
-
   const [editable, setEditable] = useState(true);
   const menuItems = ['read', 'write', 'both'];
 
@@ -87,7 +86,6 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
   useEffect(() => {
     getData(`${'language/list'}`)
       .then((data: any) => {
-        console.log(data)
         if (data?.status) {
           const filteredData = data?.data?.languagees_data?.filter(
             (item: any) => item?.is_active === true,
@@ -104,8 +102,7 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
       });
     getData(`${'admin_language_known/get/' + UuId}`)
       .then((data: any) => {
-        console.log(data);
-        if (data?.status ) {
+        if (data?.status) {
           data.data.admin_language_known_data.map((item: any) => {
             const newBox: Box = {
               id: item.id,
@@ -136,23 +133,22 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         });
       });
   }, []);
-  console.log(initialAdminState);
   useEffect(() => {
-    if(AdminId){
+    if (AdminId) {
       getData(`${'admin_language_known/get/' + AdminId}`).then(
         (response: any) => {
           if (response?.status) {
-            console.log(response);
-            const newLanageage = response?.data?.admin_language_known_data?.filter((items: any) =>
-              boxes.some((box: Box) => box.id === items.id || box.id == 0),
-            );
-  
+            const newLanageage =
+              response?.data?.admin_language_known_data?.filter((items: any) =>
+                boxes.some((box: Box) => box.id === items.id || box.id == 0),
+              );
+
             const newBoxes: Box[] = newLanageage.map((item: any) => ({
               id: item.id,
               language_id: item.language_id,
               proficiency: item.proficiency,
             }));
-  
+
             if (newBoxes.length > 0) {
               setBoxes((preBoxes: Box[]) => [
                 ...preBoxes.filter((box: Box) => box.id != 0),
@@ -176,7 +172,6 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
         },
       );
     }
-   
   }, [activeForm]);
 
   const saveLanguage = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -202,21 +197,22 @@ const AdminLanguage: React.FC<ChildComponentProps> = () => {
 
     const promises = boxes.map((box) => {
       const payload = {
+        id: box.id,
         admin_id: AdminId,
         language_id: box.language_id,
         proficiency: box.proficiency,
       };
-      const formData= new FormData();
+      const formData = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-            formData.append(key, value);
+          formData.append(key, value);
         }
-    });
+      });
       if (checkChanges) {
         if (box.id === 0) {
           return postData('admin_language_known/add', formData);
         } else {
-          return putData('admin_language_known/edit/' + AdminId, formData);
+          return putData('admin_language_known/edit/' + box.id, formData);
         }
       } else {
         return Promise.resolve({ status: 204 });

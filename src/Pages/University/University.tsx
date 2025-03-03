@@ -37,27 +37,33 @@ const University = () => {
     getData(`${UniversityURL}`)
       .then((data) => {
         if (data.status) {
-          const universityData = data?.data?.universities_data?.map((universtiy: any) => {
-            const createdDateTime = universtiy?.created_at;
-            const updatedDateTime = universtiy?.updated_at;
-            const created_time = new Date(createdDateTime);
-            const updated_time = new Date(updatedDateTime);
+          const universityData = data?.data?.universities_data?.map(
+            (universtiy: any) => {
+              const createdDateTime = universtiy?.created_at;
+              const updatedDateTime = universtiy?.updated_at;
+              const created_time = new Date(createdDateTime);
+              const updated_time = new Date(updatedDateTime);
 
-            universtiy.created_at = created_time.toLocaleString();
-            universtiy.updated_at = updated_time.toLocaleString();
-            return universtiy;
-          });
+              universtiy.created_at = created_time.toLocaleString();
+              universtiy.updated_at = updated_time.toLocaleString();
+              return universtiy;
+            },
+          );
+
           setDataUniversity(universityData);
+        } else {
+          setDataUniversity([]);
         }
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
           navigate('/');
+        } else {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
       });
   };
 

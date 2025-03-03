@@ -48,7 +48,7 @@ const RolevsForm = () => {
   const callAPI = async () => {
     getData(`${RolevsFormURL}`)
       .then((data: any) => {
-        if (data?.data) {
+        if (data?.status) {
           setDataROleVsForm(data?.data || []);
         }
       })

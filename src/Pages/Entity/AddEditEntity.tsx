@@ -90,7 +90,11 @@ const AddEditEntity = () => {
     // Append each key-value pair to FormData
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        formDataObject.append(key, value);
+        if (key == 'entity_type') {
+          formDataObject.append(key, value.toLowerCase());
+        } else {
+          formDataObject.append(key, value);
+        }
       }
     });
     if (id) {
@@ -103,7 +107,6 @@ const AddEditEntity = () => {
               theme: 'colored',
             });
           } else {
-            console.log(data.message)
             toast.error(data.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -111,12 +114,10 @@ const AddEditEntity = () => {
           }
         })
         .catch((e) => {
-
           if (e?.response?.code === 401) {
             navigator('/');
           }
-          console.log(e)
-          toast.error(e?.response.data.message, {
+          toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -205,9 +206,9 @@ const AddEditEntity = () => {
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e)
                           }
-                        // onChange={handleChange}
-                        //   error={touched.entity_type && !!errors.entity_type}
-                        //   helperText={touched.entity_type && errors.entity_type}
+                          // onChange={handleChange}
+                          //   error={touched.entity_type && !!errors.entity_type}
+                          //   helperText={touched.entity_type && errors.entity_type}
                         />
                         {touched?.entity_type && errors?.entity_type ? (
                           <p style={{ color: 'red' }}>{errors?.entity_type}</p>

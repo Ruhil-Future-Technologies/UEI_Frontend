@@ -525,7 +525,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
                   (e: any) => e.id === Number(entity_id),
                 );
 
-                if (entity?.entity_type === 'School' && class_id) {
+                if (entity?.entity_type === 'school' && class_id) {
                   const class_id_arr = Object.keys(class_id);
 
                   setClassList((prevClasses) => {
@@ -577,7 +577,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
                   (e: any) => e.id === Number(entity_id),
                 );
 
-                if (entity?.entity_type === 'College' && course_id) {
+                if (entity?.entity_type === 'college' && course_id) {
                   const course_id_arr = Object.keys(course_id);
 
                   setCourseList((prevCourses) => {
@@ -874,7 +874,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -928,7 +928,7 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
           .then((data: any) => {
             if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
               // window.location.reload();
               toast.success(data?.message);
             }
@@ -1036,7 +1036,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.semester_id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1114,7 +1114,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1242,12 +1242,12 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={value === 1 ? 'Active' : 'Deactive'}
+            label={value ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, value);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1347,7 +1347,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1441,7 +1441,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1529,7 +1529,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1607,7 +1607,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1685,7 +1685,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -1701,26 +1701,25 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: "options",
-    header: "Options",
+    accessorKey: 'options',
+    header: 'Options',
     size: 150,
     Cell: ({ cell }: { cell: any }) => {
-      let options = cell.getValue();
-      options = typeof options === "string" ? JSON.parse(options) : options;
+      const optionStr = cell.getValue();
 
-     // const safeOptions = Array.isArray(options) ? options : [];
-      return Array.isArray(options) ? (
+      const options = optionStr ? JSON.parse(optionStr) : [];
+
+      return (
         <ul className="table-unordered-list">
-          {options.map((option: string, index: number) => (
-            <li key={index}>{option}</li>
+          {options?.map((option: string, index: number) => (
+            <li key={index} value={option}>
+              {option}
+            </li>
           ))}
         </ul>
-      ) : (
-        <span>No options available</span>
       );
     },
-  }
-  ,
+  },
   {
     accessorKey: 'created_by',
     header: 'Created By',
@@ -1959,7 +1958,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -2017,7 +2016,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
           .then((data: any) => {
             if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
               // window.location.reload();
             }
             toast.success(data.message);
@@ -2039,7 +2038,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -2174,7 +2173,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -2288,14 +2287,14 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
               // window.location.reload();
             }
           })
@@ -2316,7 +2315,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );
@@ -2371,14 +2370,14 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
               // window.location.reload();
             }
           })
@@ -2399,7 +2398,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-          // disabled={true}
+            // disabled={true}
           />
         </Box>
       );

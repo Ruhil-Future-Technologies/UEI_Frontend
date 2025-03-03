@@ -142,6 +142,8 @@ const Teacher = () => {
           });
 
           setDataTeacher(teacherData);
+        } else {
+          setDataTeacher([]);
         }
       })
       .catch((e) => {
@@ -176,8 +178,8 @@ const Teacher = () => {
         (teacher) => teacher.is_approve === true,
       );
 
-      const college: any = entity.filter((ent) => ent.entity_type == 'College');
-      const school: any = entity.filter((ent) => ent.entity_type == 'School');
+      const college: any = entity.filter((ent) => ent.entity_type == 'college');
+      const school: any = entity.filter((ent) => ent.entity_type == 'school');
 
       setFilteredTeachers([]);
 
@@ -249,8 +251,8 @@ const Teacher = () => {
         (teacher) => teacher.is_approve === false,
       );
 
-      const college: any = entity.filter((ent) => ent.entity_type == 'College');
-      const school: any = entity.filter((ent) => ent.entity_type == 'School');
+      const college: any = entity.filter((ent) => ent.entity_type == 'college');
+      const school: any = entity.filter((ent) => ent.entity_type == 'school');
 
       setFilteredTeachers([]);
 
@@ -394,7 +396,7 @@ const Teacher = () => {
         (school) => school.id == teacherDetail?.institution_id,
       );
 
-      teacherDetail.entity_type = 'School';
+      teacherDetail.entity_type = 'school';
       teacherDetail.school_name = school?.institution_name;
       teacherDetail.classes = Object.create(
         null,
@@ -414,7 +416,7 @@ const Teacher = () => {
         (college) => college.id == teacherDetail.institution_id,
       );
 
-      teacherDetail.entity_type = 'College';
+      teacherDetail.entity_type = 'college';
       teacherDetail.college_name = college?.institution_name;
       teacherDetail.university_name = college?.university_name;
       teacherDetail.courses = teacherDetail?.course_semester_subjects;

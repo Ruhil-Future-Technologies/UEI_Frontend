@@ -140,11 +140,10 @@ const AddEditSubjectSchool = () => {
       getData(`${SubjectEditgetURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
           setSubject(data?.data?.subject_data);
-          console.log(data);
           getData(`/class/get/${data?.data?.subject_data?.class_id}`).then(
             (response: any) => {
               if (response.status) {
-                setParticularClass(response.data.classes_data.class_name);
+                setParticularClass(response?.data?.class_data?.class_name);
               } else setParticularClass('');
             },
           );

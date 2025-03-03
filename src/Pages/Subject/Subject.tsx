@@ -74,6 +74,8 @@ const Subject = () => {
             return subject;
           });
           setDataSubject(subjectData);
+        } else {
+          setDataSubject([]);
         }
       })
       .catch((e) => {

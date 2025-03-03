@@ -159,11 +159,8 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   };
 
   const listData = async () => {
-   
     try {
-      getData(`${'admin_address/get/' + UuId}`)
-      .then((response: any) => {
-        console.log(response);
+      getData(`${'admin_address/get/' + UuId}`).then((response: any) => {
         if (response?.status) {
           let add1: any;
           let add2: any;
@@ -221,10 +218,10 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
             position: 'top-center',
           });
         }
-      })
-    } catch (error:any) {
-      console.log("erorr occure while run time")
-      if(error.code !== 404){
+      });
+    } catch (error: any) {
+      console.log('erorr occure while run time');
+      if (error.code !== 404) {
         toast.error(error?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -232,7 +229,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
         });
       }
     }
-  
   };
   useEffect(() => {
     listData();
@@ -558,9 +554,9 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           const formData = new FormData();
           // Loop through each key in the payload and append it if it's not null or undefined
           Object.entries(addressPayload).forEach(([key, value]) => {
-              if (value !== null && value !== undefined) {
-                  formData.append(key, value as string);
-              }
+            if (value !== null && value !== undefined) {
+              formData.append(key, value as string);
+            }
           });
           try {
             const data = await postData('/admin_address/add', formData);
@@ -616,13 +612,13 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
           // Loop through each key in the payload and append it if it's not null or undefined
           Object.entries(addressPayload).forEach(([key, value]) => {
-              if (value !== null && value !== undefined) {
-                  formData.append(key, value as string);
-              }
+            if (value !== null && value !== undefined) {
+              formData.append(key, value as string);
+            }
           });
           try {
             const data = await putData(
-              '/admin_address/edit/' + adminId,
+              '/admin_address/edit/' + addressPayload.id,
               formData,
             );
 

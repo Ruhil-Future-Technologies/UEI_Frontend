@@ -96,7 +96,7 @@ const AddEditSubject = () => {
       .then((data: { data: any[] }) => {
         const filteredData = data?.data.filter(
           (item) =>
-            item.is_active && item.is_approve && item.entity_type == 'College',
+            item.is_active && item.is_approve && item.entity_type == 'college',
         );
         setinstituteList(filteredData);
       })

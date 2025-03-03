@@ -258,7 +258,7 @@ const AddEditInstitute = () => {
       const selectedEntity = dataEntity.find(
         (entity) => entity.id === e.target.value,
       );
-      const isSchoolEntity = selectedEntity?.entity_type === 'School';
+      const isSchoolEntity = selectedEntity?.entity_type === 'school';
 
       if (isSchoolEntity) {
         setInstitute((prev) => ({
@@ -499,7 +499,7 @@ const AddEditInstitute = () => {
             const selectedEntity = dataEntity.find(
               (entity) => entity.id === Number(entity_id),
             );
-            return selectedEntity?.entity_type !== 'School';
+            return selectedEntity?.entity_type !== 'school';
           },
           then: (schema) => schema.required('Please select University'),
           otherwise: (schema) => schema.notRequired(),
@@ -615,7 +615,7 @@ const AddEditInstitute = () => {
             const selectedEntity = dataEntity.find(
               (entity) => entity.id === Number(entity_id),
             );
-            return selectedEntity?.entity_type !== 'School';
+            return selectedEntity?.entity_type !== 'school';
           },
           then: (schema) => schema.required('Please select University'),
           otherwise: (schema) => schema.notRequired(),
@@ -819,7 +819,9 @@ const AddEditInstitute = () => {
                       <label
                         className={`floating-label ${isFocused || values?.country || isCountryOpen ? 'focused' : 'focusedempty'}`}
                       >
-                        <InputLabel>Country <span>*</span></InputLabel>
+                        <InputLabel>
+                          Country <span>*</span>
+                        </InputLabel>
                       </label>
                       <div
                         className="form_field_wrapper"
@@ -858,7 +860,9 @@ const AddEditInstitute = () => {
                       <label
                         className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? 'focused' : 'focusedempty'}`}
                       >
-                            <InputLabel>State <span>*</span></InputLabel>
+                        <InputLabel>
+                          State <span>*</span>
+                        </InputLabel>
                       </label>
                       <div
                         className="form_field_wrapper"

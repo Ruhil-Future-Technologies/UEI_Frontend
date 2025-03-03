@@ -434,7 +434,7 @@ const AddEditTeacher = () => {
       formRef.current?.values?.institute_id || selectedInstitutionId;
 
     if (institutionId) {
-      const filtered = dataCourses.filter(
+      const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
       );
 
@@ -737,7 +737,7 @@ const AddEditTeacher = () => {
           (entity) => entity.id === Number(entity_id),
         );
 
-        return selectedEntity?.entity_type !== 'School';
+        return selectedEntity?.entity_type !== 'school';
       },
       then: (schema) => schema.required('Please select University'),
       otherwise: (schema) => schema.notRequired(),
@@ -2253,7 +2253,7 @@ const AddEditTeacher = () => {
                       <label
                         className={`floating-label ${isFocused || values?.country || isCountryOpen ? 'focused' : 'focusedempty'}`}
                       >
-                        <InputLabel>Country <span>*</span></InputLabel>
+                        Country <span>*</span>
                       </label>
                       <div
                         className="form_field_wrapper"
@@ -2285,7 +2285,7 @@ const AddEditTeacher = () => {
                       <label
                         className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? 'focused' : 'focusedempty'}`}
                       >
-                      <InputLabel>State <span>*</span></InputLabel>
+                        State <span>*</span>
                       </label>
                       <div
                         className="form_field_wrapper"
