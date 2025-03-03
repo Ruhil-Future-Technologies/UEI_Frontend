@@ -2942,3 +2942,46 @@ a {
 .swiper-button-next{
   right: -10px!important;
 }
+.svgwhite{
+  path{
+    fill: white;
+  }
+}
+.uploadfile{
+  padding: 4rem 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content:center ;
+  border: 2px  dashed #D1D5DB;
+  border-radius: 8px;
+}
+.assignbtngrp{
+  display: flex;
+  gap: 10px;
+
+  button{
+    border: 1px solid #E5E7EB!important;
+    border-radius: 8px!important; 
+    color: #4B5563; 
+    min-height: 86px;  
+  }
+  button[aria-pressed="true"]{
+    background-color: rgba($primary, 0.1);
+    border: 1px solid rgba($primary, 0.7)!important;
+    color: $primary;
+  }
+}
+
+.fileslistitem{
+  background-color: #F9FAFB;
+}
+.pinwi-20{
+  svg{
+    width: 20px;
+    height: 20px;
+    path{
+      fill: #6B7280;
+    }
+  }
+}
