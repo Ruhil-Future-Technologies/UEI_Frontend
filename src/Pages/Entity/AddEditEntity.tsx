@@ -117,7 +117,7 @@ const AddEditEntity = () => {
           if (e?.response?.code === 401) {
             navigator('/');
           }
-          toast.error(e?.message, {
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
