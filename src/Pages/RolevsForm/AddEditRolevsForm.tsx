@@ -214,11 +214,11 @@ const AddEditRolevsForm = () => {
       .catch((e: any) => {
         console.error(e);
       });
-    if (basicinfo?.basic_info !== null) {
-      getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
+    if (basicinfo?.admin_data?.basic_info !== null) {
+      getData(`${MenuListURL1}/${basicinfo?.admin_data?.basic_info?.id}`)
         .then((data: any) => {
-          if (data.data) {
-            localStorage.setItem('menulist1', JSON.stringify(data?.data));
+          if (data?.data?.menus_data_list) {
+            localStorage.setItem('menulist1', JSON.stringify(data?.data?.menus_data_list));
           }
         })
         .catch((e: any) => {
