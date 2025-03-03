@@ -440,7 +440,7 @@ const TeacherRegistrationPage = () => {
   };
 
   const getSubjects = (type: string) => {
-    if (type === 'College') {
+    if (type === 'college') {
       getForRegistration(`${getSubjectCollege}`)
         .then((data) => {
           if (data.status) {
@@ -1671,9 +1671,9 @@ if(!valid1) return;
                     </div>
                     {selectedEntity.toLowerCase() === 'college' ? (
                       <div className="col-md-6 col-12 mb-3">
-                        <label className="col-form-label">
+                        {/* <label className="col-form-label">
                           University Name<span>*</span>
-                        </label>
+                        </label> */}
                         <FormControl fullWidth>
                           <InputLabel id="university_id">University Name</InputLabel>
                           <Select
@@ -1887,9 +1887,9 @@ if(!valid1) return;
                       <div key={index} className="row d-flex justify-content-center">
                         {/* Course Selection */}
                         <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
+                          {/* <label className="col-form-label">
                             Course<span>*</span>
-                          </label>
+                          </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`course_id_${index}`}>Course</InputLabel>
                             <Select

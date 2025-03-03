@@ -99,7 +99,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 interface Institute {
   id: number;
   institution_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: string;
   is_active: number;
   is_approve: boolean;
@@ -669,8 +669,9 @@ export const ProfileDialog: FunctionComponent<{
       .then(async (response: any) => {
         if (response.status) {
           const filteredData = await response?.data?.universities_data?.filter(
-            (item: any) => item?.is_active,
+            (item: any) => item?.is_active ,
           );
+          console.log(filteredData)
           setUniversity(filteredData || []);
         }
       })
@@ -856,6 +857,7 @@ export const ProfileDialog: FunctionComponent<{
           //   hideProgressBar: true,
           //   theme: 'colored',
           // });
+          localStorage.setItem('student_id',data?.data?.id);
           setNamepro(data?.first_name);
           const formData = new FormData();
           const nfile: any = uploadedFile;
@@ -1172,8 +1174,9 @@ export const ProfileDialog: FunctionComponent<{
     value: option.id,
     label: option.course_name,
   }));
+  console.log(courseSelectOptions,courses);
   const universitySelectOptions = university?.map((option) => ({
-    value: option.university_id,
+    value: option.id,
     label: option.university_name,
   }));
 
@@ -1203,7 +1206,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
-    label: option.institution_name,
+    label: option.institute_name,
   }));
   const languageOptions = alllanguage.map((option) => ({
     value: option.id,
@@ -1293,6 +1296,7 @@ export const ProfileDialog: FunctionComponent<{
             (item?.institution_name === answers[14] &&
               item.course_name === answers[15]),
         );
+        console.log(filteredCourse);
         setCourses(filteredCourse);
       }
     }
@@ -2307,7 +2311,7 @@ export const ProfileDialog: FunctionComponent<{
         getData('college_subject/list')
           .then((response: any) => {
             if (response.status) {
-              const filteredData = response?.data?.filter(
+              const filteredData = response?.data?.subjects_data?.filter(
                 (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
@@ -2569,9 +2573,11 @@ export const ProfileDialog: FunctionComponent<{
     const filteredInstitution = institutes.filter(
       (item) =>
         item.university_id === e.value &&
-        item.is_active === 1 &&
+        item.is_active  &&
         item.is_approve == true,
     );
+    console.log(e)
+    console.log(institutes, filteredInstitution, e.value)
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
@@ -2696,7 +2702,7 @@ export const ProfileDialog: FunctionComponent<{
     const filteredcourse = courses.filter(
       (item) => item.institution_id === e.value,
     );
-
+console.log(filteredcourse,courses,e.value);
     setCourses(filteredcourse);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;

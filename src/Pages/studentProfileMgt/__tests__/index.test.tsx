@@ -5,7 +5,7 @@ import React from 'react';
 
 describe('StudentProfileManagement Component', () => {
   beforeAll(() => {
-    localStorage.setItem('_id', '12345');
+    localStorage.setItem('user_uuid', '12345');
   });
 
   afterAll(() => {

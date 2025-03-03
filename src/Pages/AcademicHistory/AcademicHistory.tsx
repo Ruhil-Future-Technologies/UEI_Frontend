@@ -534,7 +534,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       const filterDataInstitute = institutesAll.filter(
         (item) =>
           item.university_id === value &&
-          item.is_active === 1 &&
+          item.is_active  &&
           item.is_approve == true,
       );
       console.log(filterDataInstitute, 'filtered institute 552');
@@ -605,7 +605,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       const filterDataInstitute = institutesAll.filter(
         (item) =>
           item.university_id === boxes[0].university_id &&
-          item.is_active === 1 &&
+          item.is_active  &&
           item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);

@@ -22,7 +22,6 @@ import {
   inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-import { QUERY_KEYS_STUDENT_HOBBY } from '../../utils/const';
 
 interface Hobby {
   hobby_id: number;
@@ -45,7 +44,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const studenthobbyURL = QUERY_KEYS_STUDENT_HOBBY.GET_STUDENT_HOBBY;
 
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
@@ -75,9 +73,10 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           setAllHobbies(filteredData || []);
         }
 
-        const studentHobbyData = await getData(`${studenthobbyURL}/${StudentId}`)
+        const studentHobbyData = await getData(`student_hobby/get/${StudentId}`)
 
-        if (!studentHobbyData?.status) {
+        
+        if (studentHobbyData?.code) {
           const hobbyIds = studentHobbyData.data?.map(
             (selecthobby: any) => selecthobby.hobby_id,
           );
@@ -235,6 +234,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       // console.log("Check", event.target.checked, hobbyId);
     }
   };
+
+  console.log(selectedHobbies,allHobbies);
   return (
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">

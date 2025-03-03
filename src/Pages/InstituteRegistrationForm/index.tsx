@@ -466,7 +466,7 @@ const InstituteRegistrationForm = () => {
       formData.append("email", valueInstitute.email_id);
       formData.append("icon", valueInstitute.icon);
 
-      if (selectedEntity !== 'School') {
+      if (selectedEntity.toLowerCase() !== 'school') {
         formData.append('university_id', valueInstitute.university_id);
       }
       let payload = {
@@ -600,7 +600,7 @@ const InstituteRegistrationForm = () => {
       }
 
 
-      if (selectedEntity === 'School' &&
+      if (selectedEntity.toLowerCase() === 'school' &&
         !/^(?=.*[a-zA-Z .,'()&-])[a-zA-Z0-9 .,'&()-]+$/.test(valueInstitute.school_name)) {
         setSchool_name_error(true);
         valid = true;
@@ -807,7 +807,7 @@ const InstituteRegistrationForm = () => {
                       </div> */}
                     </div>
                   </div>
-                  {selectedEntity === 'School' ? (
+                  {selectedEntity.toLowerCase() === 'school' ? (
                     <div className="row d-flex justify-content-center mb-4">
                       <div className="col-12">
                         {/* <label className="col-form-label">
