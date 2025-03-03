@@ -40,7 +40,7 @@ const PDFList = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [schoolOrcollFile, setSchoolOrcollFile] = useState('college');
   const [buttenView, setButtenView] = useState(true);
-  const { getData, loading, deleteFileData } = useApi();
+  const { getData, loading, deleteData } = useApi();
   const collageColumns = PDF_LIST_FOR_COLLAGE_COLUMNS;
   const schoolColumns = PDF_LIST_FOR_SCHOOL_COLUMNS;
 
@@ -74,7 +74,6 @@ const PDFList = () => {
       getData(apiUrl)
         .then((response: any) => {
           if (response) {
-            console.log(response)
             setFileList(response);
           }
         })
@@ -104,28 +103,28 @@ const PDFList = () => {
   const handleDelete = () => {
     console.log('Delete File', selectedFile);
 
-    const payload = {
-      file_id: selectedFile?.pdf_id,
-    };
-    deleteFileData(`https://dbllm.gyansetu.ai/delete-files`, payload)
-      .then((data: any) => {
-        if (data.status) {
-          setDataDelete(false);
-          toast.success(data?.message, {
+    if (selectedFile?.pdf_id) {
+      const payload: { file_id: string } = { file_id: selectedFile.pdf_id };
+      deleteData(`https://dbllm.gyansetu.ai/delete-files`, payload)
+        .then((data: any) => {
+          if (data.message) {
+            setDataDelete(false);
+            toast.success(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          }
+        })
+        .catch((e: any) => {
+          if (e?.response?.code === 401) {
+            navigate('/');
+          }
+          toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.code === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
         });
-      });
+    }
   };
   const handlefilter = (e: any) => {
     if (e == 'school') {
@@ -136,7 +135,7 @@ const PDFList = () => {
       setSchoolOrcollFile('college');
     }
   };
-console.log(fileList);
+  console.log(fileList);
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -256,7 +255,7 @@ console.log(fileList);
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={handleDelete}
-        title="Delete documents?"
+        title="PDF File"
       />
     </>
   );

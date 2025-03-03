@@ -807,7 +807,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'institute_name',
+    accessorKey: 'institution_name',
     header: 'Institute Name',
     size: 150,
   },
@@ -2595,7 +2595,7 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   },
   {
     accessorKey: 'course_name',
-    header: 'Courase Name',
+    header: 'Course Name',
     size: 150,
   },
   {

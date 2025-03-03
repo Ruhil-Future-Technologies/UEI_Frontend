@@ -306,7 +306,7 @@ const TeacherProfile = () => {
   };
   const getTeacherProfileInfo = async () => {
     try {
-      getData(`/teacher/getbyloginid/${teacherLoginId}`).then(async (data) => {
+      getData(`/teacher/edit/${teacherLoginId}`).then(async (data) => {
         if (data?.status === 200) {
           setTeacherData(data.data);
           setGenderData(data.data.gender);

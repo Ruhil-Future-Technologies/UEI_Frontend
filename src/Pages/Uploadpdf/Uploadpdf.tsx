@@ -201,7 +201,6 @@ const Uploadpdf = () => {
             const filteredData = await response?.data?.filter(
               (item: any) => item?.is_active,
             );
-            console.log({ filteredData });
 
             setInstitutes(filteredData || []);
             setInstitutesAll(filteredData || []);
@@ -269,7 +268,6 @@ const Uploadpdf = () => {
           const filteredData = response?.data?.universities_data.filter(
             (item: any) => item?.is_active,
           );
-          console.log({ filteredData });
 
           setUniversity(filteredData || []);
         }
@@ -445,7 +443,7 @@ const Uploadpdf = () => {
           subject_id,
         } = boxes[0];
         const universityNames = await university
-          ?.filter((item) => item.university_id === university_id)
+          ?.filter((item: any) => item?.id === university_id)
           ?.map((item) => item.university_name);
         const filterInstitute = await institutesAll
           ?.filter(
@@ -553,7 +551,12 @@ const Uploadpdf = () => {
   };
   const isDisabled = useMemo(() => {
     const box = boxes[0];
-    if (!box || Object.keys(box)?.length === 0 || box.institute_type?.toLowerCase() === "") return true;
+    if (
+      !box ||
+      Object.keys(box)?.length === 0 ||
+      box.institute_type?.toLowerCase() === ''
+    )
+      return true;
     if (box.institute_type?.toLowerCase() === 'college') {
       const { institute_id, university_id, course_id, sem_id } = box;
       if (!institute_id || !university_id || !course_id || !sem_id) {
@@ -1213,7 +1216,9 @@ const Uploadpdf = () => {
                     </div>
                   )}
                   <Button
-                    className={isDisabled ? 'disabled-mainbutton' : 'mainbutton'}
+                    className={
+                      isDisabled ? 'disabled-mainbutton' : 'mainbutton'
+                    }
                     sx={{ marginTop: 5 }}
                     variant="contained"
                     onClick={handleFileUpload}

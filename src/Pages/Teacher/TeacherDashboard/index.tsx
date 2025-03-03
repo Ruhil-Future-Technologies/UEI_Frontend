@@ -99,18 +99,17 @@ const TeacherDash = () => {
 
   const getTeacherInfo = () => {
     try {
-      getData(`/teacher/getbyloginid/${teacherId}`).then((data) => {
+      getData(`/teacher/edit/${teacherId}`).then((data) => {
         console.log(data);
         if (data?.status) {
           setTeacherData(data.data);
         }
       });
-     
     } catch (error) {
       console.log(error);
     }
   };
- 
+
   useEffect(() => {
     getTeacherInfo();
   }, []);

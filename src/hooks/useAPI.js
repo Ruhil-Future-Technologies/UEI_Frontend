@@ -294,7 +294,7 @@ const useApi = () => {
   //   }
   // };
 
-  const deleteData = async (url, redirectUrl = null) => {
+  const deleteData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
       handlogout();
       navigate('/');
@@ -305,7 +305,13 @@ const useApi = () => {
 
     try {
       // console.log("url", url);
-      const response = await httpClient.delete(url, { headers });
+      const response = await httpClient.delete(url, {
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json',
+        },
+        data,
+      });
       setLoading(false);
       if (redirectUrl) {
         navigate(redirectUrl);
