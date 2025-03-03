@@ -1170,7 +1170,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
   },
 
   {
-    accessorKey: 'phone_call',
+    accessorKey: 'mobile_no_call',
     header: 'Mobile No',
     size: 150,
   },
@@ -1245,7 +1245,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
             label={value ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.id, value);
+              active(row?.original?.user_uuid, value);
             }}
             // disabled={true}
           />
