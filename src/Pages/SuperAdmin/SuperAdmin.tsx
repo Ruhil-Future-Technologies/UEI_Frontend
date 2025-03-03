@@ -212,7 +212,8 @@ const SuperAdmin = () => {
     ),
     phone: Yup.string()
       .required('Please enter a Mobile number')
-      .min(10, 'Mobile number must be 10 numbers'),
+      .min(10, 'Mobile number must be 10 numbers')
+      .matches(/^\d{10}$/, 'Please enter a valid Mobile Number'),
     password: Yup.string()
       .required('Please enter a Password')
       .min(
@@ -299,8 +300,8 @@ const SuperAdmin = () => {
                             data-testid="phone"
                             component={TextField}
                             type="text"
-                            name="userid"
-                            label=" Mobile Number *"
+                            name="phone"
+                            label="Mobile Number *"
                             value={values?.phone}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,

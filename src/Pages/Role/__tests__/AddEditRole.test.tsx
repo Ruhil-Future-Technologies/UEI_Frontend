@@ -143,8 +143,8 @@ describe('AddEditRole Component', () => {
   });
   it('displays error message when role name already exists', async () => {
     mockPostData.mockResolvedValue({
-      status: 400,
-      message: 'Role name already exists',
+      code: 400,
+      message: 'Role with the same name already exists',
     });
 
     const { getByTestId } = render(

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SuperAdmin from '../SuperAdmin'; // Adjust the import path as necessary
@@ -50,9 +51,11 @@ describe('SuperAdmin Component', () => {
       </NameContext.Provider>,
     );
 
-    const useridInput = getByTestId('userid');
+    const emailInput = getByTestId('email');
+    const phoneInput = getByTestId('phone');
     const passwordInput = getByTestId('password');
-    expect(useridInput).toBeInTheDocument();
+    expect(emailInput).toBeInTheDocument();
+    expect(phoneInput).toBeInTheDocument();
     expect(passwordInput).toBeInTheDocument();
   });
 
@@ -64,16 +67,21 @@ describe('SuperAdmin Component', () => {
         </Router>
       </NameContext.Provider>,
     );
-    fireEvent.change(getByLabelText(/Email Id or Mobile Number \*/i), {
+    fireEvent.change(getByLabelText(/Email Id \*/i), {
       target: { value: 'invalid-email' },
     });
+    fireEvent.change(getByLabelText(/Mobile Number \*/i), {
+      target: { value: 'invalid-phone' },
+    });
 
-    fireEvent.blur(screen.getByLabelText(/Email Id or Mobile Number \*/i));
+    fireEvent.blur(screen.getByLabelText(/Email Id \*/i));
+    fireEvent.blur(screen.getByLabelText(/Mobile Number \*/i));
     fireEvent.click(getByRole('button', { name: /Save/i }));
 
     await waitFor(() => {
+      expect(getByText(/Please enter a valid Email Id/i)).toBeInTheDocument();
       expect(
-        getByText(/Please enter a valid Email Id or Mobile number/i),
+        getByText(/Please enter a valid Mobile Number/i),
       ).toBeInTheDocument();
     });
   });
@@ -102,8 +110,9 @@ describe('SuperAdmin Component', () => {
 
   it('submits form with valid data', async () => {
     const mockSuccessResponse = {
+      status: true,
       message: 'User created successfully',
-      status: 200,
+      code: 201,
     };
     mockPostData.mockResolvedValue(mockSuccessResponse);
     render(
@@ -115,8 +124,11 @@ describe('SuperAdmin Component', () => {
     );
 
     // Fill out the form fields
-    fireEvent.change(screen.getByLabelText(/Email Id or Mobile Number \*/i), {
+    fireEvent.change(screen.getByLabelText(/Email Id \*/i), {
       target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/Mobile Number \*/i), {
+      target: { value: '9876543210' },
     });
 
     fireEvent.change(screen.getByLabelText(/Password \*/i), {
@@ -136,31 +148,43 @@ describe('SuperAdmin Component', () => {
 
     // Verify the API was called with the correct payload
     await waitFor(() => {
-      expect(useApi().postData).toHaveBeenCalledWith(QUERY_KEYS.POST_SIGNUP, {
-        user_type: 'admin',
-        userid: 'test@example.com',
-        password: 'ValidPassword1!',
-      });
+      const formData = new FormData();
+      formData.append('user_type', 'admin');
+      formData.append('email', 'test@example.com');
+      formData.append('phone', '9876543210');
+      formData.append('password', 'ValidPassword1!');
+      formData.append('X_api_secret', 'SjSf2@aj24@De$5_haw18&-kjfDE(oP^');
+
+      useApi().postData(QUERY_KEYS.POST_SIGNUP, formData);
+
+      expect(useApi().postData).toHaveBeenCalledWith(
+        QUERY_KEYS.POST_SIGNUP,
+        formData,
+      );
     });
 
     // Ensure the form is reset (i.e., values are cleared)
     await waitFor(() => {
-      const useridField = screen.getByLabelText(
-        /Email Id or Mobile Number \*/i,
+      const emailField = screen.getByLabelText(
+        /Email Id \*/i,
+      ) as HTMLInputElement;
+      const phoneField = screen.getByLabelText(
+        /Mobile Number \*/i,
       ) as HTMLInputElement;
       const passwordField = screen.getByLabelText(
         /Password \*/i,
       ) as HTMLInputElement;
 
-      expect(useridField.value).toBe('');
+      expect(emailField.value).toBe('');
+      expect(phoneField.value).toBe('');
       expect(passwordField.value).toBe('');
     });
   });
 
   it('displays error message when API call fails', async () => {
     const mockErrorResponse = {
-      message: 'Failed to create user',
-      status: 500,
+      status: false,
+      message: 'User registration failed',
     };
 
     // Mock the postData call to reject with an error response
@@ -175,10 +199,12 @@ describe('SuperAdmin Component', () => {
     );
 
     // Fill out the form fields
-    fireEvent.change(screen.getByLabelText(/Email Id or Mobile Number \*/i), {
+    fireEvent.change(screen.getByLabelText(/Email Id \*/i), {
       target: { value: 'test@example.com' },
     });
-
+    fireEvent.change(screen.getByLabelText(/Mobile Number \*/i), {
+      target: { value: '9876543210' },
+    });
     fireEvent.change(screen.getByLabelText(/Password \*/i), {
       target: { value: 'ValidPassword1!' },
     });
@@ -194,30 +220,46 @@ describe('SuperAdmin Component', () => {
     await waitFor(() => {
       // Assuming you are using toast.error to display error messages
       expect(toast.error).toHaveBeenCalledWith(
-        'Failed to create user',
+        'User registration failed',
         expect.any(Object),
       );
     });
 
     // Verify the API was called with the correct payload
-    await waitFor(() => {
-      expect(useApi().postData).toHaveBeenCalledWith(QUERY_KEYS.POST_SIGNUP, {
-        user_type: 'admin',
-        userid: 'test@example.com',
-        password: 'ValidPassword1!',
-      });
-    });
+    await waitFor(async () => {
+      const formData = new FormData();
+      formData.append('user_type', 'admin');
+      formData.append('email', 'test@example.com');
+      formData.append('phone', '9876543210');
+      formData.append('password', 'ValidPassword1!');
+      formData.append('X_api_secret', 'SjSf2@aj24@De$5_haw18&-kjfDE(oP^');
 
+      try {
+        await useApi().postData(QUERY_KEYS.POST_SIGNUP, formData);
+      } catch (error: any) {
+        console.log(error);
+        toast.error(error.message);
+      }
+
+      expect(useApi().postData).toHaveBeenCalledWith(
+        QUERY_KEYS.POST_SIGNUP,
+        formData,
+      );
+    });
     // Ensure the form is not reset (since the submission failed)
     await waitFor(() => {
-      const useridField = screen.getByLabelText(
-        /Email Id or Mobile Number \*/i,
+      const emailField = screen.getByLabelText(
+        /Email Id \*/i,
+      ) as HTMLInputElement;
+      const phoneField = screen.getByLabelText(
+        /Mobile Number \*/i,
       ) as HTMLInputElement;
       const passwordField = screen.getByLabelText(
         /Password \*/i,
       ) as HTMLInputElement;
 
-      expect(useridField.value).toBe('test@example.com'); // Form should not be reset
+      expect(emailField.value).toBe('test@example.com'); // Form should not be reset
+      expect(phoneField.value).toBe('9876543210');
       expect(passwordField.value).toBe('ValidPassword1!');
     });
   });

@@ -38,18 +38,20 @@ import OtpCard from '../../Components/Dailog/OtpCard';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
-  const { postData,postDataJson, loading } = useApi();
+  const { postData, postDataJson, loading } = useApi();
   const [password, setPassword] = useState('');
 
-  const [emailphone, setEmailphone] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const value = 'student';
   const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [errorEmail, setEmailError] = useState('');
   const [errorPhone, setPhoneError] = useState('');
-  const [errorPhoneValidation, setErrorPhoneValidation] = useState<boolean>(false);
-  const [errorEmailValidation, setErrorEmailValidation] = useState<boolean>(false);
+  const [errorPhoneValidation, setErrorPhoneValidation] =
+    useState<boolean>(false);
+  const [errorEmailValidation, setErrorEmailValidation] =
+    useState<boolean>(false);
   const [errorPassword, setPasswordError] = useState('');
 
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
@@ -76,22 +78,26 @@ const Signup = () => {
   }, []);
 
   useEffect(() => {
-    if (emailphone && password) {
+    if (email && password) {
       setuserValue('');
     }
-  }, [emailphone, password]);
+  }, [email, password]);
 
   const register = async (e: React.FormEvent<HTMLFormElement>) => {
     // setIsLoading(true);
     e.preventDefault();
     // Validate email/phone and password
-    if (errorEmailValidation && errorPhoneValidation && validatePassword(password)) {
+    if (
+      errorEmailValidation &&
+      errorPhoneValidation &&
+      validatePassword(password)
+    ) {
       // setLoading(true);
       const UserSignUp = {
-        email: String(emailphone),
+        email: String(email),
         password: String(password),
         user_type: String(value),
-        phone: String(phone)
+        phone: String(phone),
       };
 
       const emptyKeys: string[] = [];
@@ -122,10 +128,10 @@ const Signup = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
-            localStorage.setItem('user_uuid', data?.data.user_uuid)
-            localStorage.setItem('email', data?.data.email)
-            localStorage.setItem('phone', data?.data.phone)
-            localStorage.setItem('user_type', data?.data.user_type)
+            localStorage.setItem('user_uuid', data?.data.user_uuid);
+            localStorage.setItem('email', data?.data.email);
+            localStorage.setItem('phone', data?.data.phone);
+            localStorage.setItem('user_type', data?.data.user_type);
           } else {
             toast.error(data?.message, {
               hideProgressBar: true,
@@ -149,21 +155,20 @@ const Signup = () => {
   };
 
   const handleSubmit = (otp: string) => {
-    let payload = {
-      email: emailphone,
-      otp: otp
-    }
+    const payload = {
+      email: email,
+      otp: otp,
+    };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
       console.log(data);
       if (data.status === true) {
-        handleSuccessfulLogin(data.data,);
+        handleSuccessfulLogin(data.data);
       }
-    })
-  }
+    });
+  };
 
   const handleSuccessfulLogin = (data: any) => {
-    console.log(data)
-    localStorage.setItem('token', "Bearer "+data?.access_token);
+    localStorage.setItem('token', 'Bearer ' + data?.access_token);
     localStorage.setItem('userid', data?.data?.userid);
     localStorage.setItem('lastRoute', window.location.pathname);
 
@@ -181,8 +186,7 @@ const Signup = () => {
     if (userType === 'student') {
       navigate('/main/Dashboard');
     }
-    ;
-  }
+  };
 
   const validateInput = (value: string, name: string): boolean => {
     const phoneRegex = /^(?!0{10})[0-9]{10}$/;
@@ -209,7 +213,7 @@ const Signup = () => {
       if (!value) {
         setPhoneError('Please enter valid Phone No');
         valid = false;
-        setErrorPhoneValidation(false)
+        setErrorPhoneValidation(false);
       }
       if (phoneRegex.test(value)) {
         setPhoneError('');
@@ -218,7 +222,7 @@ const Signup = () => {
       } else {
         setPhoneError('Invalid  phone number');
         valid = false;
-        setErrorPhoneValidation(false)
+        setErrorPhoneValidation(false);
       }
     }
 
@@ -229,16 +233,15 @@ const Signup = () => {
     const { value, name } = e.target;
 
     if (name == 'email_id') {
-      if (!emailphone) {
+      if (!email) {
         setEmailError('Please fill out this field test');
         // You can set your custom error message logic here if needed
       }
-      setEmailphone(value);
+      setEmail(value);
     }
     if (name == 'phone_no') {
       setPhone(value);
     }
-
 
     validateInput(value, name);
   };
@@ -392,10 +395,10 @@ const Signup = () => {
                           Email
                         </label>
                         <TextField
-                          data-testid="emailphone"
-                          id="emailphone"
-                          name='email_id'
-                          value={emailphone}
+                          data-testid="email"
+                          id="email"
+                          name="email_id"
+                          value={email}
                           onChange={handleChangeData}
                           placeholder="Enter your email"
                           error={!!errorEmail}
@@ -428,12 +431,12 @@ const Signup = () => {
                       </div>
                       <div className="mb-3">
                         <label htmlFor="" className="form-label">
-                          Phone N0.
+                          Phone NO.
                         </label>
                         <TextField
                           data-testid="phone"
                           id="phone"
-                          name='phone_no'
+                          name="phone_no"
                           value={phone}
                           onChange={handleChangeData}
                           placeholder="Mobile Number"
@@ -606,7 +609,12 @@ const Signup = () => {
             </div>
           </div>
         </section>
-        <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string) => handleSubmit(otp)} email={emailphone}/>
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={(otp: string) => handleSubmit(otp)}
+          email={email}
+        />
       </div>
     </>
   );

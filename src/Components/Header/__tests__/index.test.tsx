@@ -77,7 +77,6 @@ describe('Header Component', () => {
     });
     expect(localStorage.removeItem).toHaveBeenCalledWith('token');
     expect(localStorage.removeItem).toHaveBeenCalledWith('user_type');
-    expect(localStorage.removeItem).toHaveBeenCalledWith('userid');
     expect(localStorage.removeItem).toHaveBeenCalledWith('userdata');
     expect(localStorage.removeItem).toHaveBeenCalledWith('signupdata');
     expect(localStorage.removeItem).toHaveBeenCalledWith('user_uuid');

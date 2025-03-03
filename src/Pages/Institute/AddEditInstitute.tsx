@@ -350,9 +350,13 @@ const AddEditInstitute = () => {
         })
         .catch((e) => {
           if (e?.response?.code === 401) {
+            toast.error(e?.response.data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
             navigator('/');
           }
-          toast.error(e?.message, {
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -385,9 +389,13 @@ const AddEditInstitute = () => {
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
+            toast.error(e?.response.data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
             navigator('/');
           }
-          toast.error(e?.message, {
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
