@@ -681,6 +681,7 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleSubmit = () => {
+    console.log("fkjhsghghjsjgfs")
     let valid1=false;
     if (teacher.entity_id == '') {
       setEntity_error(true)
@@ -690,7 +691,6 @@ const TeacherRegistrationPage = () => {
     } else {
       setEntity_error(false)
     }
-
     if (!/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(teacher.institution_id || '')) {
       setInstitution_id_error(true);
       valid1 = true;
@@ -698,27 +698,27 @@ const TeacherRegistrationPage = () => {
       setInstitution_id_error(false);
     }
 
-
-    if (selectedEntity === 'College' && teacher.university_id == '') {
+    if (selectedEntity.toLowerCase() === 'college' && teacher.university_id == '') {
       setUniversityError(true);
       valid1 = true;
     } else {
       setUniversityError(false);
     }
- 
     if ( teacher.qualification === '') {
+      valid1 = true;
       setQualifications_error(true);
     } else {
       setQualifications_error(false);
     }
     if (!/^\d+$/.test(teacher.experience)) {
+      valid1 = true;
       setTeaching_experience_error(true);
     } else {
       setTeaching_experience_error(false);
     }
 
+if(valid1) return;
 
-if(!valid1) return;
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
@@ -758,10 +758,11 @@ if(!valid1) return;
         setUniversityError(true);
       }
     }
-
+console.log(valid,teacher.university_id)
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
+      console.log("8888888888")
       return;
     }
     if (
@@ -1677,7 +1678,7 @@ if(!valid1) return;
                         <FormControl fullWidth>
                           <InputLabel id="university_id">University Name</InputLabel>
                           <Select
-                            labelId="institution_id"
+                            labelId="university_id"
                             id="demo2-multiple-name"
                             name="university_id"
                             label="University Name"

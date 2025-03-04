@@ -52,7 +52,7 @@ interface Boxset {
 interface Institute {
   id: number;
   institute_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: string | number;
   is_active?: number;
   is_approve?: boolean;
@@ -212,9 +212,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         .then(async (response: any) => {
           if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+              (item: any) => item?.is_active,
             );
-
             if (boxes[0]?.institute_type === 'college') {
               const filterDataInstitute = filteredData?.filter(
                 (item: any) => item?.university_id === boxes[0]?.university_id,
@@ -451,6 +450,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         }
         if (filteredBox.university_id) {
           filteredBox.university_id = String(filteredBox.university_id);
+          filteredBox.course_id = String(filteredBox.course_id);
+
         }
       }
 
@@ -784,8 +785,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                   >
                     {university.map((item) => (
                       <MenuItem
-                        key={item?.university_id}
-                        value={item?.university_id}
+                        key={item?.id}
+                        value={item?.id}
                         sx={commonStyle(namecolor)}
                       >
                         {item.university_name}
@@ -828,7 +829,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                         value={institute.id}
                         sx={commonStyle(namecolor)}
                       >
-                        {institute.institution_name}
+                        {institute.institute_name}
                       </MenuItem>
                     ))}
                   </Select>

@@ -200,7 +200,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   useEffect(() => {
     if (activeForm === 5) {
       if(StudentId){
-        console.log("555"+StudentId);
         getacademic();
       }
       
@@ -289,23 +288,23 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         });
     }
   };
-  const getPrefrence = async () => {
-    getData('/subject_preference/list')
-      .then((response: any) => {
-        if (response.status) {
-          // setSubjectPreferences(response.data);
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
-      });
-  };
+  // const getPrefrence = async () => {
+  //   getData('/subject_preference/list')
+  //     .then((response: any) => {
+  //       if (response.status) {
+  //         // setSubjectPreferences(response.data);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       toast.error(e?.message, {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //         position: 'top-center',
+  //       });
+  //     });
+  // };
   const getPrefrencelist = async () => {
-    getData('/subject_preference/edit/' + StudentId)
+    getData('/subject_preference/get/' + StudentId)
       .then((data: any) => {
         if (data?.status) {
           data?.data.map((item: any, index: number) => {
@@ -409,7 +408,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   useEffect(() => {
     getCourse();
     getSemester();
-    getPrefrence();
+    //getPrefrence();
     getacademic();
     if(StudentId){
       getPrefrencelist();

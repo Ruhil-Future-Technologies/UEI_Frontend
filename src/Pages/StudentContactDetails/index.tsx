@@ -117,14 +117,14 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
           setPhoneNum(data?.data.mobile_no_call);
-          setEmail(data?.data.email_id);
+          setEmail(data?.data.email_id?data?.data.email:localStorage.getItem('email'));
 
           setInitialState({
             mobile_isd_watsapp: data?.data.mobile_isd_watsapp,
             mobile_no_watsapp: data?.data.mobile_no_watsapp,
             mobile_isd_call: data?.data.mobile_isd_call,
             mobile_no_call: data?.data.mobile_no_call,
-            email_id: data?.data.email_id,
+            email_id: data?.data.email_id?data?.data.email:localStorage.getItem('email'),
             student_id: StudentId,
           });
           setEditFlag(false);
