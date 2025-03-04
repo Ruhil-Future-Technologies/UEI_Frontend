@@ -115,6 +115,10 @@ function App() {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('_id');
     synth.cancel();
     // logoutpro();
   };

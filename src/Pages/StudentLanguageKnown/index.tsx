@@ -279,7 +279,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
       //   });
       // }
       const successfulResults = results.filter(
-        (res: { code: number }) => res.code === 200,
+        (res: { code: number }) => res.code === 201,
       );
 
       if (successfulResults?.length > 0) {

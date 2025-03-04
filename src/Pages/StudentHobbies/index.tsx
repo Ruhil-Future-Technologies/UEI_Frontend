@@ -150,7 +150,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     });
     try {
       const results = await Promise.all(payloadPromises);
-      const successfulResults = results.filter((res) => res.code === 200);
+      const successfulResults = results.filter((res) => res.code === 201);
 
       if (successfulResults?.length > 0) {
         if (!isLanguageUpdated && ishobbiestuch) {

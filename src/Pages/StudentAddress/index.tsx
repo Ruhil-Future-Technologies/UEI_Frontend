@@ -198,6 +198,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             setChecked(true);
           }
         } else if (response?.code === 404) {
+          console.log("inside 404")
           setEditFlag(true);
           // toast.error(response?.message, {
           //   hideProgressBar: true,
@@ -246,6 +247,9 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
               setEditableCurrectPerm(false);
             }
           });
+          if(response.code===404){
+            setEditFlag(true);
+          }
         }
       });
     }
@@ -542,6 +546,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       !city_col1 &&
       !contry_col1
     ) {
+      console.log(editFlag,tuched)
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
@@ -584,9 +589,11 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             }
           }
         };
-
+       
+        console.log(studentAddress?.address_type);
         // Add current address
         if (studentAddress?.address_type === 'current') {
+          console.log("issues");
           await addAddress('Current', currentAddressPayload);
         }
         // Add permanent address
@@ -687,11 +694,13 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
+            console.log(  studentAddress?.address_type === 'current' ,editableCurrent , tuchedCurrent)
             if (
               studentAddress?.address_type === 'current' &&
               editableCurrent &&
               tuchedCurrent
             )
+            console.log(  studentAddress?.address_type === 'current' &&editableCurrent && tuchedCurrent)
               await editAddress('Current', currentAddressPayload);
 
             console.log(editablePerm);

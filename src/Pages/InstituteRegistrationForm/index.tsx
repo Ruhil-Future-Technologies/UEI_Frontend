@@ -197,18 +197,23 @@ const InstituteRegistrationForm = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     console.log(files, typeof files);
-    setDocument_error(false)
-    if (files && event.target.name !== 'icon') {
-      const filesArray = Array.from(files); // Convert FileList to an array
+    setDocument_error(false);
+  
+    if (files && event.target.name !== "icon") {
+      const filesArray = Array.from(files);
+  
       setAllSelectedfiles((prevFiles) => [
         ...prevFiles, // Keep previously selected files
         ...filesArray, // Add newly selected files
       ]);
+  
+      // Reset the input field to allow selecting the same files again
+      event.target.value = "";
     } else {
       // setLogo(files);
     }
   };
-
+  
   const validation = (name: string, value: string) => {
 
     if (name === 'institute_name' &&
@@ -550,7 +555,7 @@ const InstituteRegistrationForm = () => {
     },
     {
       label: 'Upload Documents',
-      subline: 'Upload your documnets & logo',
+      subline: 'Upload your documents & logo',
       icon: <DriveFolderUploadIcon />,
     },
   ];
@@ -584,7 +589,7 @@ const InstituteRegistrationForm = () => {
         setInstitute_type_error(false)
       }
 
-      if (selectedEntity === 'College' && !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.institute_name)) {
+      if (selectedEntity.toLowerCase() === 'college' && !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(valueInstitute.institute_name)) {
         setInstitute_name_error(true);
         valid = true;
       } else {
@@ -592,7 +597,7 @@ const InstituteRegistrationForm = () => {
       }
 
 
-      if (selectedEntity === 'College' && valueInstitute.university_id == '') {
+      if (selectedEntity.toLowerCase() === 'college' && valueInstitute.university_id == '') {
         setUniversity_id_error(true);
         valid = true;
       } else {
@@ -725,7 +730,7 @@ const InstituteRegistrationForm = () => {
 
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
-                          Entity *
+                          Entity*
                         </InputLabel>
                         <Select
                           onChange={(e: SelectChangeEvent<string>) =>
@@ -819,7 +824,7 @@ const InstituteRegistrationForm = () => {
                           name="school_name"
                           value={valueInstitute.school_name}
                           onChange={handleChange}
-                          label="School Name"
+                          label="School Name*"
                         />
                         <div>
                           {school_name_error === true && (
@@ -843,7 +848,7 @@ const InstituteRegistrationForm = () => {
                             </label> */}
                         <FormControl fullWidth>
                           <InputLabel id="demo-simple-select-label">
-                            University *
+                            University*
                           </InputLabel>
                           <Select
                             onChange={(e: SelectChangeEvent<string>) =>
@@ -906,7 +911,7 @@ const InstituteRegistrationForm = () => {
                             </label> */}
 
                         <TextField
-                          label="Institute Name *"
+                          label="Institute Name*"
                           autoComplete="off"
                           className="form-control"
                           name="institute_name"
@@ -942,7 +947,7 @@ const InstituteRegistrationForm = () => {
                         onChange={handleChange}
                         value={valueInstitute.mobile_no}
                         variant="outlined"
-                        label="Mobile Number"
+                        label="Mobile Number*"
                       />
                       <div>
                         {mobile_no_error === true && (
@@ -969,7 +974,7 @@ const InstituteRegistrationForm = () => {
                         value={valueInstitute.email_id}
                         onChange={handleChange}
                         variant="outlined"
-                        label="Email Id"
+                        label="Email Id*"
                       />
                       <div>
                         {email_id_error === true && (
@@ -1084,7 +1089,7 @@ const InstituteRegistrationForm = () => {
                         name="district"
                         onChange={handleChange}
                         value={valueInstitute.district}
-                        label="District *"
+                        label="District*"
                       />
                       <div>
                         {district_error === true && (
@@ -1111,7 +1116,7 @@ const InstituteRegistrationForm = () => {
                         name="city"
                         onChange={handleChange}
                         value={valueInstitute.city}
-                        label="City"
+                        label="City*"
                       />
                       <div>
                         {city_error === true && (
@@ -1137,7 +1142,7 @@ const InstituteRegistrationForm = () => {
                         name="address"
                         onChange={handleChange}
                         value={valueInstitute.address}
-                        label="Address"
+                        label="Address*"
                       />
                       <div>
                         {address_error === true && (
@@ -1161,7 +1166,7 @@ const InstituteRegistrationForm = () => {
                         name="pincode"
                         onChange={handleChange}
                         value={valueInstitute.pincode}
-                        label="Pincode"
+                        label="Pincode*"
                       />
                       <div>
                         {pincode_error === true && (
@@ -1217,7 +1222,7 @@ const InstituteRegistrationForm = () => {
                         <CardContent>
                           <label className="col-form-label">
                             {' '}
-                            Document<span></span>
+                            Document<span>*</span>
                           </label>
                           <br />
                           <UploadBtn
@@ -1225,6 +1230,7 @@ const InstituteRegistrationForm = () => {
                             name="document"
                             accept=".pdf, .jpg, .jpeg, .png, .gif"
                             handleFileChange={handleFileChange}
+                         
                           />
                           <div>
                             {document_error && (

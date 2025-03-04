@@ -44,7 +44,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [phoneNumerror, setPhoneNumerror] = useState({
     phoneNum: '',
   });
-  const [email, setEmail] = useState(localStorage.getItem('userid'));
+  const [email, setEmail] = useState(localStorage.getItem('email'));
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [errors, setErrors] = useState({
     phoneNum: '',
@@ -134,7 +134,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           //     hideProgressBar: true,
           //     theme: "colored",
           //   });
-          const userId = localStorage.getItem('userid');
+          const userId = localStorage.getItem('email');
           if (userId !== null) {
             setEmail(userId);
           } else {

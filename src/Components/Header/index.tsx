@@ -118,6 +118,7 @@ const Header = () => {
     localStorage.removeItem('email');
     localStorage.removeItem('phone');
     localStorage.removeItem('_id');
+    localStorage.removeItem('student_id');
     synth.cancel();
     navigator('/');
     logoutpro();

@@ -274,6 +274,7 @@ const TeacherRegistrationPage = () => {
   const [teaching_experience_error, setTeaching_experience_error] = useState(false);
   const [entity_error, setEntity_error] = useState(false);
   const [institution_id_error, setInstitution_id_error] = useState(false);
+  const [document_error, setDocument_error] = useState(false);
 
   const exactSixYearsAgo = dayjs()
     .subtract(18, 'year')
@@ -762,7 +763,6 @@ console.log(valid,teacher.university_id)
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
-      console.log("8888888888")
       return;
     }
     if (
@@ -926,18 +926,26 @@ console.log(valid,teacher.university_id)
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      // Convert FileList to an array
-      const filesArray = Array.from(files);
-
-      setAllSelectedfiles((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
-    }
-  };
+  
+   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      console.log(files, typeof files);
+      setDocument_error(false);
+    
+      if (files && event.target.name !== "icon") {
+        const filesArray = Array.from(files);
+    
+        setAllSelectedfiles((prevFiles) => [
+          ...prevFiles, // Keep previously selected files
+          ...filesArray, // Add newly selected files
+        ]);
+    
+        // Reset the input field to allow selecting the same files again
+        event.target.value = "";
+      } else {
+        // setLogo(files);
+      }
+    };
 
   const handleInputChangecountry = (val: string, name: string) => {
     setTeacher({ ...teacher, [name]: val });
@@ -1018,8 +1026,9 @@ console.log(valid,teacher.university_id)
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
 
         if (name === 'class_id') {
+          console.log(dataClass,value)
           const selectedClass = dataClass.find(
-            (item) => String(item.id) === value,
+            (item) => String(item.id) == value,
           )?.class_name;
 
           setSelectedClassName(
@@ -1055,6 +1064,7 @@ console.log(valid,teacher.university_id)
         }
 
         if (name === 'stream') {
+          console.log(totleSubject);
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ===
@@ -1138,6 +1148,9 @@ console.log(valid,teacher.university_id)
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
+    if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
+      setdobset_col(true);
+    }
     if (activeStep == 0) {
       let valid = false;
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id.trim())) {
@@ -1557,7 +1570,7 @@ console.log(valid,teacher.university_id)
                         type="text"
                         value={teacher.address}
                         onChange={handelChange}
-                        label="Address"
+                        label="Address*"
                       />
                       {address_error === true && (
                         <p className="error-text " style={{ color: 'red' }}>
@@ -1576,7 +1589,7 @@ console.log(valid,teacher.university_id)
                         type="text"
                         value={teacher.pincode}
                         onChange={handelChange}
-                        label="pincode"
+                        label="pincode*"
                       />
                       {pincode_error === true && (
                         <p className="error-text " style={{ color: 'red' }}>
@@ -1624,7 +1637,7 @@ console.log(valid,teacher.university_id)
                       </label> */}
 
                       <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Entity *</InputLabel>
+                        <InputLabel id="demo-simple-select-label">Entity*</InputLabel>
                         <Select
                           onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
                           label="Entity"
@@ -1676,12 +1689,12 @@ console.log(valid,teacher.university_id)
                           University Name<span>*</span>
                         </label> */}
                         <FormControl fullWidth>
-                          <InputLabel id="university_id">University Name</InputLabel>
+                          <InputLabel id="university_id">University Name*</InputLabel>
                           <Select
                             labelId="university_id"
                             id="demo2-multiple-name"
                             name="university_id"
-                            label="University Name"
+                            label="University Name*"
                             onChange={handleSelect}
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1728,7 +1741,7 @@ console.log(valid,teacher.university_id)
                           Institution Name<span>*</span>
                         </label> */}
                         <FormControl fullWidth>
-                          <InputLabel id="institution_id">Institute</InputLabel>
+                          <InputLabel id="institution_id">Institute*</InputLabel>
                           <Select
                             labelId="institution_id"
                             id="demo2-multiple-name"
@@ -1783,12 +1796,12 @@ console.log(valid,teacher.university_id)
                   Institution Name<span>*</span>
                 </label> */}
                         <FormControl fullWidth>
-                          <InputLabel id="institution_id">Institute</InputLabel>
+                          <InputLabel id="institution_id">Institute*</InputLabel>
                           <Select
                             labelId="institution_id"
                             id="demo2-multiple-name"
                             name="institution_id"
-                            label="Institute"
+                            label="Institute*"
                             onChange={handleSelect}
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1843,6 +1856,7 @@ console.log(valid,teacher.university_id)
                         name="experience"
                         className="form-control"
                         type="number"
+                        label="Teaching Experience*"
                         onChange={handelChange}
                         inputProps={{ min: '0' }}
                       />
@@ -1858,7 +1872,7 @@ console.log(valid,teacher.university_id)
               </label> */}
                       <FormControl fullWidth>
                         <InputLabel id="demo-multiple-name-label">
-                          Qualification
+                          Qualification*
                         </InputLabel>
                         <Select
                           labelId="demo-multiple-name-label"
@@ -1892,12 +1906,12 @@ console.log(valid,teacher.university_id)
                             Course<span>*</span>
                           </label> */}
                           <FormControl fullWidth>
-                            <InputLabel id={`course_id_${index}`}>Course</InputLabel>
+                            <InputLabel id={`course_id_${index}`}>Course*</InputLabel>
                             <Select
                               labelId={`course_id_${index}`}
                               id={`demo3-multiple-name-${index}`}
                               name="course_id"
-                              label="Course"
+                              label="Course*"
                               onChange={(event: any) =>
                                 handelSubjectBoxChange(event, index)
                               }
@@ -1925,13 +1939,13 @@ console.log(valid,teacher.university_id)
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`semester_id_${index}`}>
-                              Semester
+                              Semester*
                             </InputLabel>
                             <Select
                               labelId={`semester_id_${index}`}
                               id={`semester_select_${index}`}
                               name="semester_number"
-                              label="Semester"
+                              label="Semester*"
                               onChange={(event: any) =>
                                 handelSubjectBoxChange(event, index)
                               }
@@ -1962,7 +1976,7 @@ console.log(valid,teacher.university_id)
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
-                              Subject
+                              Subject*
                             </InputLabel>
                             <Select
                               labelId={`subject_label_${index}`}
@@ -2041,15 +2055,15 @@ console.log(valid,teacher.university_id)
                       >
                         {/* Class Selection */}
                         <div
-                          // className={box.selected_class_name}
-                          className="col-md-6 col-12"
+                           className={box.selected_class_name}
+                          //className="col-md-6 col-12"
                         >
                           {/* <label className="col-form-label">
                             Class<span>*</span>
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`class_id_${index}`}>
-                              Class
+                              Class*
                             </InputLabel>
                             <Select
                               labelId={`class_id_${index}`}
@@ -2082,7 +2096,7 @@ console.log(valid,teacher.university_id)
                             </label> */}
                             <FormControl fullWidth>
                               <InputLabel id={`stream_id_${index}`}>
-                                Stream Name
+                                Stream Name*
                               </InputLabel>
                               <Select
                                 labelId={`stream_id_${index}`}
@@ -2143,7 +2157,7 @@ console.log(valid,teacher.university_id)
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
-                              Subject
+                              Subject*
                             </InputLabel>
                             <Select
                               labelId={`subject_label_${index}`}
@@ -2217,7 +2231,7 @@ console.log(valid,teacher.university_id)
                   <div className="row d-flex justify-content-between mt-0 g-4">
                     <div className="col-12 ">
                       <label className="col-form-label">
-                        Document<span>* </span>
+                        Document<span>*</span>
                       </label>
                       <UploadBtn
                         label="Upload Documents"
@@ -2243,6 +2257,19 @@ console.log(valid,teacher.university_id)
                           </ul>
                         )}
                       </div>
+                      <div>
+                            {document_error && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small >
+                                  {' '}
+                                  Please select at least a Document file.
+                                </small>
+                              </p>
+                            )}
+                          </div>
                     </div>
                     <div className="col-lg-12">
                       <FormControlLabel
