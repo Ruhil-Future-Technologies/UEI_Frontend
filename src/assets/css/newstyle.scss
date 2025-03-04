@@ -59,7 +59,7 @@ $max-items: 100;
 @import 'responsive';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-body {
+body, a, p {
   font-family: 'Inter', system-ui !important;
 }
 .mh-56 {
@@ -264,9 +264,7 @@ img {
 }
 
 @media (min-width: 1024px) {
-  .left-side-history {
-    border-right: 1px solid rgba($stroke-100, 0.5) !important;
-  }
+  
   .main-chat-panel {
     border: 0 !important;
   }
@@ -319,16 +317,22 @@ img {
 }
 
 @media (max-width: 1024px) {
+  .swiper-button-prev,
+.swiper-button-next{
+  opacity: 1!important;
+}
+  .search-filter{
+    margin-right: 0!important;
+  }
   .chat-panel .left-side-history .history-list li ul li {
     opacity: 1 !important;
   }
 
   .chat-panel {
-    min-height: 71vh !important;
-    max-height: 74vh;
+   
     //padding: 1rem;
-    margin-top: 2.5rem;
-
+  
+    grid-template-columns: 1fr!important;
     .left-side-history {
       position: fixed !important;
       background: white;
@@ -341,6 +345,8 @@ img {
 
       &.showhistory {
         left: 0;
+        padding: 1rem;
+        background-color: white;
       }
     }
 
@@ -381,12 +387,7 @@ img {
           display: none;
         }
 
-        .chat-input {
-          position: fixed;
-          bottom: 3rem;
-          left: 1rem;
-          right: 1rem;
-        }
+        
 
         .chat-result {
           .left-chat {
@@ -394,6 +395,7 @@ img {
               max-width: 100% !important;
               width: 100% !important;
               box-shadow: none !important;
+              border-radius: 8px!important;
             }
 
             .profile-icon {
@@ -404,6 +406,17 @@ img {
           .right-chat {
             .chat-card {
               max-width: 100%;
+              border-radius: 8px!important;
+            }
+          }
+          ul{
+            li{
+              padding: 1rem 0!important;
+              ul.ansfooter{
+                li{
+                  padding: 0!important;
+                }
+              }
             }
           }
         }
@@ -1980,23 +1993,23 @@ body .desk-card {
 }
 
 .chat-panel {
-  min-height: 85vh;
-  display: flex;
-  align-items: start;
-  justify-content: center;
+  height: calc(100vh - 75px);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  
   max-width: 100%;
   overflow: hidden;
   position: relative;
 
   .left-side-history {
-    width: 320px;
-
-    height: 100%;
-    padding-right: 1rem;
+   padding: 1rem 0 0rem 1rem;
+   background-color: rgba($primary, 0.02);
+  border-right: 1px solid rgba($primary, 0.1);
+    
 
     .search-filter {
       position: relative;
-
+      margin-right: 1rem;
       input {
         background-color: transparent;
         border: 1px solid $primary;
@@ -2028,9 +2041,8 @@ body .desk-card {
       list-style: none;
       padding: 0;
       margin: 0;
-      max-height: 550px;
-      height: 100%;
-      padding-right: 20px;
+      overflow: auto;
+      height: calc(100vh - 186px);
       li {
         padding-left: 48px;
         position: relative;
@@ -2095,7 +2107,7 @@ body .desk-card {
           align-items: center;
           gap: 5px;
           position: absolute;
-          right: 0;
+          right: 0.7rem;
           top: 50%;
           transform: translateY(-50%);
 
@@ -2145,22 +2157,24 @@ body .desk-card {
   }
 
   .main-chat-panel {
-    width: calc(100% - 320px);
-    padding-left: 1rem;
+   
+    padding: 1rem;
     height: 100%;
 
     .inner-panel {
-      max-width: 882px;
-      margin: 0 auto;
-
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+     
       .chat-result {
-        background-color: rgba(white, 0.4);
-        max-height: 70vh;
-        min-height: 65vh;
+        
+       height: 100%;
+      max-height: calc(100vh - 210px);
+      margin-bottom: 5px;
         position: relative;
 
-        margin-bottom: 1rem;
-        border-radius: 1rem;
+        
+        
         display: flex;
         overflow: auto;
         .welcome-box {
@@ -2309,17 +2323,18 @@ body .desk-card {
     .chat-input {
       border-radius: 100px;
 
-      margin-top: 2rem;
+      
       position: relative;
 
       input {
-        border-radius: 50px;
+       
         box-shadow: 0px 8px 16px 0px rgba(10, 5, 15, 0.08);
-        font-size: 14px;
-        min-height: 44px;
+        font-size: 15px;
+        min-height: 50px;
 
         &::placeholder {
-          font-size: 14px;
+          font-size: 15px;
+         
         }
       }
 
@@ -2327,13 +2342,11 @@ body .desk-card {
         position: absolute;
         right: 6px;
         top: 6px;
-        bottom: 3px;
-        width: 32px;
-        height: 32px;
-        border-radius: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        bottom: 6px;
+        width: 42px;
+        height: auto;
+        border-radius: 4px;
+       
 
         i {
           width: 24px;
@@ -2507,7 +2520,9 @@ a {
   display: flex;
   align-items: center;
   gap: 1rem;
+  justify-content: end;
   margin-bottom: 1rem;
+  flex-direction: row-reverse;
 }
 
 .ps__rail-y {
@@ -2699,24 +2714,24 @@ a {
 @-moz-document url-prefix() {
   * {
     scrollbar-width: auto;
-    scrollbar-color: rgba($primary, 0.3) rgba($primary, 0.03);
+    scrollbar-color: rgba($primary, 0.2) rgba($primary, 0.02);
   }
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background-color: rgba($primary, 0.03);
+  border-radius: 2px;
+  background-color: rgba($primary, 0.0);
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background-color: rgba($primary, 0.03);
+  background-color: rgba($primary, 0.0);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 2px;
 
-  background-color: rgba($primary, 0.3);
+  background-color: rgba($primary, 0.15);
 }
 
 .fix-btn-inline {
@@ -2875,7 +2890,7 @@ a {
   margin-bottom: 1.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   border: 0 !important;
-  border-radius: 2.5rem !important;
+  border-radius: 1rem !important;
   width: 100%;
   overflow: hidden;
   .card-header {
@@ -2887,10 +2902,86 @@ a {
   }
 }
 
-.scrollbar-container {
+// .scrollbar-container {
+//   display: flex;
+//   flex-direction: column;
+//   .sidebar-nav {
+//     height: 100%;
+//   }
+// }
+
+.swiper-container{
+  position: relative;
+}
+.swiper-button-prev,
+.swiper-button-next {
+   opacity: 0;
+  color: $secondary!important;
+  transition: opacity 0.3s ease;
+  width: 32px!important;
+  height: 32px!important;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid #f7f7f7;
   display: flex;
-  flex-direction: column;
-  .sidebar-nav {
-    height: 100%;
+  align-items: center;
+  justify-content: center;
+  box-shadow:  rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  &::after{
+    font-size: 1.2rem!important;
+  }
+}
+
+.swiper-container:hover .swiper-button-prev,
+.swiper-container:hover .swiper-button-next {
+  opacity: 1;
+}
+.swiper-button-prev{
+  left: -10px!important;
+}
+.swiper-button-next{
+  right: -10px!important;
+}
+.svgwhite{
+  path{
+    fill: white;
+  }
+}
+.uploadfile{
+  padding: 4rem 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content:center ;
+  border: 2px  dashed #D1D5DB;
+  border-radius: 8px;
+}
+.assignbtngrp{
+  display: flex;
+  gap: 10px;
+
+  button{
+    border: 1px solid #E5E7EB!important;
+    border-radius: 8px!important; 
+    color: #4B5563; 
+    min-height: 86px;  
+  }
+  button[aria-pressed="true"]{
+    background-color: rgba($primary, 0.1);
+    border: 1px solid rgba($primary, 0.7)!important;
+    color: $primary;
+  }
+}
+
+.fileslistitem{
+  background-color: #F9FAFB;
+}
+.pinwi-20{
+  svg{
+    width: 20px;
+    height: 20px;
+    path{
+      fill: #6B7280;
+    }
   }
 }
