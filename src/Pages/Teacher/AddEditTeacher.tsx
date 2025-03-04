@@ -989,24 +989,34 @@ const AddEditTeacher = () => {
 
   const handleDateChange = (newValue: any) => {
     setDob(newValue);
-    if (newValue) {
-      const formattedDate = dayjs(newValue).format('YYYY-MM-DD');
-      setTeacher((prevTeacher) => ({
-        ...prevTeacher,
-        dob: formattedDate,
-      }));
-
-      if (!formattedDate || formattedDate == 'Invalid Date') {
-        return;
-      }
-      formRef?.current?.setFieldValue('dob', formattedDate);
-    } else {
+    if (!newValue) {
       setTeacher((prevTeacher) => ({
         ...prevTeacher,
         dob: '',
       }));
       formRef?.current?.setFieldValue('dob', '');
+      return;
     }
+
+    const formattedDate = dayjs(newValue).format('YYYY-MM-DD');
+    const today = dayjs();
+    const minAgeDate = today.subtract(18, 'year');
+
+    if (
+      !formattedDate ||
+      formattedDate === 'Invalid Date' ||
+      dayjs(newValue).isAfter(minAgeDate)
+    ) {
+      toast.error('Teacher must be 18 years old');
+      setDob('');
+      return;
+    }
+
+    setTeacher((prevTeacher) => ({
+      ...prevTeacher,
+      dob: formattedDate,
+    }));
+    formRef?.current?.setFieldValue('dob', formattedDate);
   };
 
   const handleInputChangecountry = async (
