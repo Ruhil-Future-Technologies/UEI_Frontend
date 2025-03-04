@@ -88,7 +88,7 @@ const AddEditStudent = () => {
       if (response.data) {
         const allStudent = response?.data;
         const filteredStudent = allStudent.filter(
-          (std: any) => std.id == id,
+          (std: any) => std.user_uuid == id,
         )[0];
         if (filteredStudent?.pic_path) {
           setFilePreview(filteredStudent?.pic_path);

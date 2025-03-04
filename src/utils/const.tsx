@@ -30,10 +30,10 @@ export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
   STUDENT_ADD: '/student/add',
   STUDENT_EDIT: '/student/edit',
-  STUDENT_EDIT_BY_ID: '/student/editstudent',
+  STUDENT_EDIT_BY_ID: '/student/edit',
   STUDENT_GET_BY_LOGIN: '/student/get',
   STUDENT_GET_PROFILE: '/student/getProfile',
-  STUDENT_DELETE: '/studentdelete',
+  STUDENT_DELETE: '/student/delete',
   GET_STUDENTACTIVE: '/student/activate',
   GET_STUDENTDEACTIVE: '/student/deactivate',
 };
@@ -215,7 +215,7 @@ export const QUERY_KEYS_STUDENT_HOBBY = {
   GET_ADMIN_STUDENT_HOBBY: '/student_hobby/list',
   ADMIN_ADD_STUDENT_HOBBY: '/student_hobby/add',
   ADMIN_EDIT_STUDENT_HOBBY: '/student_hobby/edit',
-   GET_STUDENT_HOBBY:'student_hobby/get'
+  GET_STUDENT_HOBBY: 'student_hobby/get',
 };
 export const QUERY_KEYS_STUDENT_LANGAUGE = {
   GET_ADMIN_STUDENT_LANGAUGE: '/student_language_known/list',

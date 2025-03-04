@@ -255,6 +255,7 @@ export interface StudentRep0oDTO {
   is_kyc_verified: MaybeNull<boolean>;
   pic_path: MaybeNull<string>;
   id: number;
+  user_uuid: MaybeNull<string>;
 }
 export interface IEntity {
   created_at: string;
@@ -1123,7 +1124,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   },
 ];
 
-export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
+export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
   // const columns: any[] = [
   // {
   //     accessorKey: "aim",
