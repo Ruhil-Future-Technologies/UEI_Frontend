@@ -1151,11 +1151,13 @@ console.log(valid,teacher.university_id)
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
-    if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
-      setdobset_col(true);
-    }
+    
     if (activeStep == 0) {
       let valid = false;
+      if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
+        setdobset_col(true);
+        valid = true;
+      }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id.trim())) {
         setEmail_id_error(true);
         valid = true;
