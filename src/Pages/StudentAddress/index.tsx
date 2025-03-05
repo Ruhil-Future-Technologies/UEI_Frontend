@@ -224,7 +224,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
     if(StudentId){
       listData();
     }
-   
+
   }, []);
 
   useEffect(() => {
@@ -253,7 +253,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
         }
       });
     }
-    
   }, [activeForm]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,

@@ -1144,18 +1144,14 @@ export const ProfileDialog: FunctionComponent<{
     const length = answers.length;
     const payload = {
       student_id: localStorage.getItem('student_id'),
-      subject_id: answeredData?.subject_preference?.id || selectSubject,
-      preference:
-        answeredData?.subject_preference?.preference || answers[length - 3],
-      score_in_percentage:
-        answeredData?.subject_preference?.score_in_percentage ||
-        answers[length - 2],
+      subject_id: selectSubject,
+      preference:answers[length - 3],
+      score_in_percentage: answers[length - 2],
       sem_id:
-        selectedInstituteType?.toLowerCase() === 'college' ||
-          answeredData?.academic_history?.institution_type === 'college'
+        selectedInstituteType?.toLowerCase() === 'college'||
+        answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-
       ...(answeredData?.academic_history?.institution_type === 'school' &&
         answeredData?.academic_history?.stream && {
         stream: answeredData?.academic_history?.stream || answers[12],
@@ -1165,6 +1161,7 @@ export const ProfileDialog: FunctionComponent<{
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
     };
+    console.log(payload);
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status) {
         // toast.success('Subject Preference information saved successfully', {
@@ -1399,6 +1396,9 @@ export const ProfileDialog: FunctionComponent<{
     });
     onCancel();
     navigate('/main/StudentProfile');
+    setTimeout(() => {
+      window.location.reload();
+    }, 20);
   };
 
   const proceedToNextSection = (currentSection: string) => {

@@ -194,7 +194,7 @@ const TeacherProfile = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          setDataClass(data?.data);
+          setDataClass(data?.data.classes_data);
         }
       })
       .catch((e) => {
@@ -291,7 +291,7 @@ const TeacherProfile = () => {
     getData(`${UniversityURL}`)
       .then((data) => {
         if (data.data) {
-          setUniversityData(data?.data);
+          setUniversityData(data?.data?.universities_data);
         }
       })
       .catch((e) => {
