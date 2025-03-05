@@ -309,7 +309,7 @@ const AddEditTeacher = () => {
           all_classes,
         );
 
-        const processedData = {
+        const processedData = await {
           first_name: teacherDetail?.data?.first_name || '',
           last_name: teacherDetail?.data?.last_name || '',
           gender:
@@ -358,49 +358,72 @@ const AddEditTeacher = () => {
     }
   };
 
-  useEffect(() => {
-    getData(`${GET_UNIVERSITY}`).then((data) => {
-      setDataUniversity(data.data?.universities_data);
-    });
-    getData(`${GET_ENTITIES}`).then((data) => {
-      setDataEntity(data.data?.entityes_data);
-    });
-    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
-      const allInstitutes = data.data;
+  const fetchData = async () => {
+    const promises = [
+      getData(`${GET_UNIVERSITY}`)
+        .then((data) => setDataUniversity(data.data?.universities_data || []))
+        .catch(() => setDataUniversity([])),
+  
+      getData(`${GET_ENTITIES}`)
+        .then((data) => setDataEntity(data.data?.entityes_data || []))
+        .catch(() => setDataEntity([])),
+  
+      getData(`${QUERY_KEYS.GET_INSTITUTES}`)
+        .then((data) => {
+          const allInstitutes = data.data || [];
+  
+          const schoolInstitutes = allInstitutes.filter(
+            (institute: any) =>
+              institute.entity_type?.toLowerCase() === 'school' && institute.is_approve
+          );
+  
+          const collegeInstitutes = allInstitutes.filter(
+            (institute: any) =>
+              institute.entity_type?.toLowerCase() === 'college' && institute.is_approve
+          );
+  
+          setDataInstitutes(allInstitutes);
+          setSchoolInstitutes(schoolInstitutes);
+          setCollegeInstitutes(collegeInstitutes);
+        })
+        .catch(() => {
+          setDataInstitutes([]);
+          setSchoolInstitutes([]);
+          setCollegeInstitutes([]);
+        }),
+  
+      getData(`${QUERY_KEYS_ROLE.GET_ROLE}`)
+        .then((data) => setRole(data.data?.rolees_data || []))
+        .catch(() => setRole([])),
+  
+      getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
+        .then((data) => setDataClasses(data.data?.classes_data || []))
+        .catch(() => setDataClasses([])),
+  
+      getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
+        .then((data) => setDataCourses(data.data?.course_data || []))
+        .catch(() => setDataCourses([])),
+  
+      getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`)
+        .then((data) => setCollegeSubjects(data.data?.subjects_data || []))
+        .catch(() => setCollegeSubjects([])),
+  
+      getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`)
+        .then((data) => setSchoolSubjects(data.data?.subjects_data || []))
+        .catch(() => setSchoolSubjects([])),
+    ];
+  
+    await Promise.allSettled(promises); 
+  };
+  
 
-      const schoolInstitutes = allInstitutes?.filter(
-        (institute: any) =>
-          institute.entity_type?.toLowerCase() === 'school' &&
-          institute.is_approve,
-      );
-      const collegeInstitutes = allInstitutes?.filter(
-        (institute: any) =>
-          institute.entity_type?.toLowerCase() === 'college' &&
-          institute.is_approve,
-      );
-      setDataInstitutes(allInstitutes);
-      setSchoolInstitutes(schoolInstitutes);
-      setCollegeInstitutes(collegeInstitutes);
-    });
-    getData(`${QUERY_KEYS_ROLE.GET_ROLE}`).then((data) => {
-      setRole(data.data.rolees_data);
-    });
-    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data.classes_data);
-    });
-    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      setDataCourses(data.data.course_data);
-    });
-    getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data.subjects_data);
-    });
-    getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data.subjects_data);
-    });
-  }, []);
-
   useEffect(() => {
-    callAPI();
+    const fetchAndCallAPI = async () => {
+      await fetchData(); 
+      callAPI(); 
+    };
+  
+    fetchAndCallAPI();
   }, []);
 
   useEffect(() => {
