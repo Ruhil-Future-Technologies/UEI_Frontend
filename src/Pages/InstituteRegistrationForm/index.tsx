@@ -494,14 +494,19 @@ const InstituteRegistrationForm = () => {
                 });
                 setPopupOtpCard(true);
               } else {
+                console.log(response);
                 toast.error(response.message, {
                   hideProgressBar: true,
                   theme: 'colored',
                 });
               }
             });
-          } catch (error) {
-            console.error(error);
+          } catch (error:any) {
+            console.log(error);
+            toast.error(error.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           }
         }
       })

@@ -912,6 +912,7 @@ function MainContent() {
           console.log(data);
           if (data.data) {
             if(data?.data?.basic_info?.id){
+              localStorage.setItem('userdata', JSON.stringify(data.data))
               localStorage.setItem('_id', data?.data?.basic_info.id)
             }
             setProfileDatas(data?.data);

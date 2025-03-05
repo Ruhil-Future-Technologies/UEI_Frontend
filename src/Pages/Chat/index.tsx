@@ -322,7 +322,7 @@ const Chat = () => {
   };
 
   const callAPI = async () => {
-    getData(`${StudentGETURL}${userdata ? `/${userdata?.id}` : ''}`)
+    getData(`${StudentGETURL}${userdata ? `/${userdata?.user_uuid}` : ''}`)
       .then((data: any) => {
         setStudentData(data?.data);
         if (
@@ -359,7 +359,7 @@ const Chat = () => {
       });
     getData(`${university_list}`)
       .then((data: any) => {
-        setUniversity_List_Data(data?.data || '');
+        setUniversity_List_Data(data?.data.universities_data || '');
       })
       .catch((e) => {
         toast.error(e?.message, {

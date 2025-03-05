@@ -914,7 +914,10 @@ console.log(valid,teacher.university_id)
               }
             })
             .catch((error) => {
-              console.log(error);
+                toast.error(error.response.data.message, {
+                            hideProgressBar: true,
+                            theme: 'colored',
+                          });
             });
         }
       })
