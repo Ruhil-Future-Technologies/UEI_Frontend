@@ -314,18 +314,18 @@ const AddEditTeacher = () => {
           last_name: teacherDetail?.data?.last_name || '',
           gender:
             teacherDetail?.data?.gender.charAt(0).toUpperCase() +
-              teacherDetail?.data?.gender.slice(1) || '',
+            teacherDetail?.data?.gender.slice(1) || '',
           dob: teacherDetail?.data?.dob || '',
           phone: teacherDetail?.data?.phone || '',
           email: teacherDetail?.data?.email || '',
           qualification: teacherDetail?.data?.qualification || '',
           role_id: teacherDetail?.data?.role_id || '',
 
-          courses: course_semester_subjects_arr.courses || [
+          courses: course_semester_subjects_arr?.courses || [
             { course_id: '', Semester: '', subjects: [] },
           ],
           entity_id: teacherDetail?.data?.entity_id || '',
-          classes: class_stream_subjects_arr.classes || [
+          classes: class_stream_subjects_arr?.classes || [
             { class_id: '', stream: '', subjects: [] },
           ],
           school_name: teacherDetail?.data?.school_name || '',
@@ -343,8 +343,8 @@ const AddEditTeacher = () => {
 
         setTeacher(processedData);
 
-        if (teacherDetail.data?.dob) {
-          setDob(dayjs(teacherDetail.data.dob));
+        if (teacherDetail?.data?.dob) {
+          setDob(dayjs(teacherDetail?.data?.dob));
         }
       } catch (e: any) {
         if (e?.response?.code === 401) {
