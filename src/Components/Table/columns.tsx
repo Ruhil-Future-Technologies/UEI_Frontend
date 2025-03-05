@@ -387,6 +387,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -625,6 +626,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowValue(showValue ? 0 : 1);
+              toast.success(data?.message);
             }
           })
           .catch((e) => {
@@ -699,6 +701,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
             }
           })
           .catch((e) => {
@@ -855,6 +858,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1017,6 +1021,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1095,6 +1100,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1228,6 +1234,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
               //console.log(Showvalue);
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               window.location.reload();
             }
           })
@@ -1328,6 +1335,7 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1422,6 +1430,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1510,6 +1519,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1588,6 +1598,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1666,6 +1677,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1939,6 +1951,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -2018,6 +2031,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+
               // window.location.reload();
             }
             toast.success(data.message);
@@ -2154,6 +2168,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -2296,6 +2311,8 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
+
               // window.location.reload();
             }
           })
@@ -2379,6 +2396,8 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
+
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
