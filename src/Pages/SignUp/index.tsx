@@ -115,12 +115,9 @@ const Signup = () => {
           }
         }
       }
-      // If no empty fields, proceed with registration
-      console.log(UserSignUp);
       if (emptyKeys.length === 0) {
         try {
           const data = await postData(signupUrl, UserSignUp);
-          console.log(data);
           if (data?.status === true) {
             // setLoading(false);
             setPopupOtpCard(true);
@@ -141,10 +138,11 @@ const Signup = () => {
         } catch (error) {
           let errorMessage = 'An unexpected error occurred';
 
-          if (error instanceof Error) {
-            errorMessage = error?.message;
+          if ((error as any)?.response && (error as any)?.response.data && (error as any)?.response?.data?.message) {
+            errorMessage = (error as any)?.response?.data?.message;
+          } else if ((error as any)?.message) {
+            errorMessage = (error as Error)?.message;
           }
-          //  setLoading(false);
           toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
@@ -160,7 +158,6 @@ const Signup = () => {
       otp: otp,
     };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
-      console.log(data);
       if (data.status === true) {
         handleSuccessfulLogin(data.data);
       }
@@ -187,7 +184,6 @@ const Signup = () => {
       navigate('/main/Dashboard');
     }
   };
-
   const validateInput = (value: string, name: string): boolean => {
     const phoneRegex = /^(?!0{10})[0-9]{10}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -225,33 +221,27 @@ const Signup = () => {
         setErrorPhoneValidation(false);
       }
     }
-
     return valid;
   };
-
   const handleChangeData = (e: ChangeEvent<HTMLInputElement>): void => {
     const { value, name } = e.target;
 
     if (name == 'email_id') {
       if (!email) {
         setEmailError('Please fill out this field test');
-        // You can set your custom error message logic here if needed
       }
       setEmail(value);
     }
     if (name == 'phone_no') {
       setPhone(value);
     }
-
     validateInput(value, name);
   };
-
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setPasswordError(''); // Clear error message when password is changed
     validatePassword(e.target.value);
   };
-
   const validatePassword = (password: string) => {
     const uppercaseRegex = /[A-Z]/;
     const lowercaseRegex = /[a-z]/;
@@ -280,10 +270,8 @@ const Signup = () => {
   };
   const handleTermandCondi = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
-
     setCheckTermandcondi(!isChecked);
   };
-
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
