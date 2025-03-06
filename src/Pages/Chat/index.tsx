@@ -32,10 +32,10 @@ import FlagIcon from '@mui/icons-material/Flag';
 import searchWhite from '../../assets/icons/search-white.svg';
 import primaryLogo from '../../assets/icons/logo-primary.png';
 import chatLogo from '../../assets/img/chat-logo.svg';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+//import PerfectScrollbar from 'react-perfect-scrollbar';
 import '../../assets/css/newstyle.scss';
 import '../../assets/css/main.scss';
-import 'react-perfect-scrollbar/dist/css/styles.css';
+//import 'react-perfect-scrollbar/dist/css/styles.css';
 import { useTheme } from '@mui/material/styles';
 import { ImageModal } from '../../Components/ImageModal';
 
@@ -191,24 +191,24 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const container = document.querySelector('.diagram-container');
+    const containers = document.querySelectorAll('.diagram-container');
 
-    if (container) {
+    containers.forEach((container) => {
       const mediaElements = container.querySelectorAll('svg, img');
       mediaElements.forEach((element: any) => {
         element.style.cursor = 'pointer';
         element.addEventListener('click', handleMediaClick);
       });
-    }
+    });
 
     return () => {
-      const container = document.querySelector('.diagram-container');
-      if (container) {
+      const containers = document.querySelectorAll('.diagram-container');
+      containers.forEach((container) => {
         const mediaElements = container.querySelectorAll('svg, img');
         mediaElements.forEach((element: any) => {
           element.removeEventListener('click', handleMediaClick);
         });
-      }
+      });
     };
   }, [chat]);
 
@@ -408,7 +408,7 @@ const Chat = () => {
       const chatDataString: any = localStorage?.getItem('chatData');
       const chatmodify = JSON.parse(chatDataString);
 
-      if (chatmodify && chatmodify[0].question !== '') {
+      if (chatmodify && chatmodify[0] && chatmodify[0].question !== '') {
         const todaysChat = getTodaysData(sortedChatHistory);
         const newArray = [...todaysChat];
 
@@ -1952,7 +1952,7 @@ const Chat = () => {
         </div>
       </div> */}
       <main className="main-wrapper">
-        <div className="main-content">
+        <div className="main-content p-lg-0">
           <div
             className={`chat-panel ${!(filteredChats?.length > 0) ? '' : ''}`}
           >
@@ -1982,7 +1982,7 @@ const Chat = () => {
                   </button>
                 </div>
                 <div className="history-label">Today&apos;s Search</div>
-                <PerfectScrollbar className="history-list">
+                <div className="history-list">
                   <>
                     {filteredChats?.length > 0 &&
                       filteredChats?.map(
@@ -2043,7 +2043,7 @@ const Chat = () => {
                         ),
                       )}
                   </>
-                </PerfectScrollbar>
+                </div>
               </div>
             ) : (
               <div
@@ -2072,7 +2072,7 @@ const Chat = () => {
                 </div>
 
                 <div className="history-label">Chat History</div>
-                <PerfectScrollbar className="history-list">
+                <div className="history-list">
                   <>
                     {filteredChatsstarred?.length > 0 &&
                       filteredChatsstarred?.map(
@@ -2131,25 +2131,16 @@ const Chat = () => {
                         ),
                       )}
                   </>
-                </PerfectScrollbar>
+                </div>
               </div>
             )}
             <div className="main-chat-panel">
-              <div className="mobile-chat-header d-lg-none">
-                <ul>
-                  <li>
-                    <SyncAltOutlinedIcon
-                      onClick={() => setShowHistory(!showHistory)}
-                    />
-                  </li>
-                </ul>
-              </div>
               <div className="inner-panel">
                 {Id !== undefined ? (
                   <div className="chat-header2">
                     {!showInitialPage && (
                       <button
-                        className="btn btn-primary btn-sm d-flex align-items-center gap-1 rounded-pill"
+                        className="btn btn-primary  d-flex align-items-center gap-1"
                         onClick={newchat}
                       >
                         <AddOutlinedIcon /> New Chat
@@ -2167,6 +2158,12 @@ const Chat = () => {
                     ) : (
                       <></>
                     )}
+                    <div className="me-auto d-lg-none">
+                    <SyncAltOutlinedIcon 
+                      onClick={() => setShowHistory(!showHistory)}
+                    />
+                    </div>
+                    
                   </div>
                 ) : (
                   <></>

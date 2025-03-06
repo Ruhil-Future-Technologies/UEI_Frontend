@@ -242,6 +242,10 @@ export const ProfileDialog: FunctionComponent<{
     [key: string]: string[];
   }>({});
 
+  const [mobile, setMobile] = useState('');
+  const user_id = localStorage.getItem('userid');
+  const isEmail = (id: any) => /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(id);
+
   // const [open, setOpen] = useState(true);
 
   const errordata = [
@@ -286,6 +290,12 @@ export const ProfileDialog: FunctionComponent<{
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
     if (usertype === 'student') {
+      const user_id = localStorage.getItem('userid');
+
+      if (!isEmail(user_id)) {
+        setMobile(user_id ? user_id : '');
+      }
+
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.status) {
@@ -1619,7 +1629,6 @@ export const ProfileDialog: FunctionComponent<{
       setgName(false);
     }
 
-    //console.log(checkChanges);
     const updatedAnswers = [...answers, ''];
     const filteredAnswers = updatedAnswers.filter((item) => item !== undefined);
     setAnswers(filteredAnswers);

@@ -58,12 +58,17 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   };
+
+  const validateMobile = (id: string) => /^\+?\d{10,15}$/.test(id);
+
   const [initialState, setInitialState] = useState<any | null>({});
   const phoneCodes = [
     { value: '+91', label: '+91' },
     { value: '+971', label: '+971' },
     { value: '+1', label: '+1' },
   ];
+  const user_id = localStorage.getItem('userid');
+
   const handleChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -139,6 +144,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           const userId = localStorage.getItem('email');
           if (userId !== null) {
             setEmail(userId);
+          } else if (userId && validateMobile(userId)) {
+            setPhoneNum(userId);
           } else {
             console.error('No user ID found in localStorage.');
           }
@@ -330,6 +337,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               placeholder="Enter Mobile number"
               name="phoneNum"
               value={phoneNum}
+              disabled={user_id ? !validateEmail(user_id) : false}
               onChange={handleChange}
               sx={{
                 backgroundColor: '#f5f5f5',
@@ -421,10 +429,10 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             data-testid="email_id"
             // placeholder='Enter Email Id'
             name="email"
-            value={email?.includes('@') ? email : ''}
+            value={email}
             onChange={handleChange}
             // required
-            disabled
+            disabled={user_id ? validateEmail(user_id) : false}
             error={!!errors.email}
             helperText={errors.email}
             sx={{

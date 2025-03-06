@@ -4,13 +4,6 @@ import gLogo from '../../assets/img/logo-white.svg';
 import { useNavigate } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { Step, StepLabel, Stepper, Typography, Box } from '@mui/material';
-import Link from '@mui/material/Link';
-import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
-import BusinessIcon from '@mui/icons-material/Business';
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import WestIcon from '@mui/icons-material/West';
-
 import {
   Button,
   Checkbox,
@@ -68,6 +61,12 @@ import OtpCard from '../../Components/Dailog/OtpCard';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { BackArrowCircle } from '../../assets';
+import { Step, StepLabel, Stepper, Typography, Box } from '@mui/material';
+import Link from '@mui/material/Link';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import BusinessIcon from '@mui/icons-material/Business';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
+import WestIcon from '@mui/icons-material/West';
 
 export interface Teacher {
   first_name: string;
@@ -420,12 +419,10 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        console.log(data.data)
         if (data.data) {
           const filerRoleId = data?.data?.rolees_data?.find(
             (role: any) => (role.role_name).toLowerCase() === 'teacher',
           ).id;
-          console.log(filerRoleId);
           setRoleId(filerRoleId); // setRoleData(data?.data);
         }
       })
@@ -759,7 +756,7 @@ if(valid1) return;
         setUniversityError(true);
       }
     }
-console.log(valid,teacher.university_id)
+
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -1067,7 +1064,6 @@ console.log(valid,teacher.university_id)
         }
 
         if (name === 'stream') {
-          console.log(totleSubject);
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ===

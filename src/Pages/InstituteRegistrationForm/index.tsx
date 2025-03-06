@@ -27,9 +27,7 @@ import {
 } from '../../Components/Table/columns';
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
-
 import { Step, StepLabel, Stepper, Typography, Box, FormControlLabel, Checkbox } from '@mui/material';
-
 import {
   fieldIcon,
   inputfield,
