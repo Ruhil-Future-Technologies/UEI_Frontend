@@ -155,6 +155,10 @@ const useApi = () => {
       }
       return response.data;
     } catch (error) {
+      if (error.response?.status === 400 ) {
+        console.warn('Data not found, returning empty object.', error);
+        return { data: [], code: 400, status: false,message:error.response.data.message}; // Prevents UI from breaking
+      }
       setError(error);
       setLoading(false);
       throw error;
