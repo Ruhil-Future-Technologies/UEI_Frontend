@@ -43,7 +43,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   isLanguageUpdated,
 }) => {
   const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  const { namecolor, activeForm }: any = context;
 
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
@@ -100,7 +100,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       fetchData();
     }
 
-  }, []);
+  }, [activeForm]);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     Promise.resolve(setIsHobbiesUpdated(true));

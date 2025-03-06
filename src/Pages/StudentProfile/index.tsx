@@ -615,11 +615,11 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                ref={(el) => (stepsRef.current[1] = el!)}
+                                 ref={(el) => (stepsRef.current[1] = el!)}
                                 className={`step ${
                                   activeForm === 1 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(1)}
+                                // onClick={() => setActiveForm(1)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -632,11 +632,11 @@ const StudentProfile = () => {
                                 <div className="step-label">Address</div>
                               </div>
                               <div
-                                ref={(el) => (stepsRef.current[2] = el!)}
+                                 ref={(el) => (stepsRef.current[2] = el!)}
                                 className={`step ${
                                   activeForm === 2 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(2)}
+                                // onClick={() => setActiveForm(2)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -651,11 +651,11 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                ref={(el) => (stepsRef.current[3] = el!)}
+                                 ref={(el) => (stepsRef.current[3] = el!)}
                                 className={`step ${
                                   activeForm === 3 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(3)}
+                                // onClick={() => setActiveForm(3)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -675,7 +675,7 @@ const StudentProfile = () => {
                                 className={`step ${
                                   activeForm === 4 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(4)}
+                                //onClick={() => setActiveForm(4)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -695,7 +695,7 @@ const StudentProfile = () => {
                                 className={`step ${
                                   activeForm === 5 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(5)}
+                               // onClick={() => setActiveForm(5)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div

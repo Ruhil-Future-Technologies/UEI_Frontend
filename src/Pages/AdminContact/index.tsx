@@ -102,13 +102,13 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
         setWhatsappNum(response?.data.admin_contactes_data[0].mobile_no_watsapp);
         setContcodePhone(response?.data.admin_contactes_data[0].mobile_isd_call);
         setPhoneNum(response?.data.admin_contactes_data[0].mobile_no_call);
-        //setEmail(response?.data.admin_contactes_data[0].email_id);
+        setEmail(response?.data.email_id?response?.data.email:localStorage.getItem('email'));
         setInitialState({
           mobile_isd_watsapp: response?.data.admin_contactes_data[0].mobile_isd_watsapp,
           mobile_no_watsapp: response?.data.admin_contactes_data[0].mobile_no_watsapp,
           mobile_isd_call: response?.data.admin_contactes_data[0].mobile_isd_call,
           mobile_no_call: response?.data.admin_contactes_data[0].mobile_no_call,
-          email_id: response?.data.admin_contactes_data[0].email_id,
+          email_id:response?.data.email_id?response?.data.email:localStorage.getItem('email'),
           admin_id: adminId,
         });
         setEditFlag(false);
@@ -126,6 +126,12 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
           position: 'top-center',
         });
       } else if(error.code !== 404){
+        const userId = localStorage.getItem('email');
+        if (userId !== null) {
+          setEmail(userId);
+        } else {
+          console.error('No user ID found in localStorage.');
+        }
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',

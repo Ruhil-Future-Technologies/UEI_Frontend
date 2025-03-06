@@ -174,7 +174,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
         getdatalanguage();
       }
    
-  }, []);
+  }, [activeForm]);
 
   useEffect(() => {
     if(StudentId){

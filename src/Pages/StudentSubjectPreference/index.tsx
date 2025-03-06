@@ -128,6 +128,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           setAcademic(
             response?.data[0]?.institution_type === 'school' ? true : false,
           );
+        if(response?.data[0]?.institution_type){
+          getSubject(response?.data[0]?.institution_type);
+        }
           console.log(response);
           setBoxes((prevBoxes) =>
             prevBoxes.map((box) => ({
@@ -226,10 +229,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         });
       });
   };
-  const getSubject = async () => {
-    if (academic) {
+  const getSubject = async (type:any) => {
+    console.log(type)
+    if (type == 'school') {
       getData('school_subject/list')
         .then((response: any) => {
+          console.log(response)
           if (response.status) {
             const filteredData = response?.data?.subjects_data?.filter(
               (item: any) => item?.is_active,
@@ -245,6 +250,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 (item: any) => item?.class_id === boxes[0]?.class_id,
               );
               setSubjects(filterData || []);
+              console.log(filterData,filteredData)
             } else {
               const filterData = filteredData?.filter(
                 (item: any) =>
@@ -252,6 +258,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   item?.stream === boxes[0]?.stream,
               );
               setSubjects(filterData || []);
+              console.log(filterData,filteredData,boxes[0]?.class_id,boxes[0]?.stream)
             }
             setSubjectsAll(filteredData || []);
           }
@@ -418,11 +425,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     }
     
     // getSubject();
-  }, []);
+  }, [activeForm]);
 
-  useEffect(() => {
-    getSubject();
-  }, [academic]);
   useEffect(() => {
     // const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
     const semesterCount = semester?.filter(

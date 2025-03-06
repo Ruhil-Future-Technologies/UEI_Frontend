@@ -41,7 +41,12 @@ interface StudentAddress {
 const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
   const { activeForm, setActiveForm }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  let StudentId = localStorage.getItem('_id');
+  useEffect(()=>{
+     StudentId = localStorage.getItem('_id');
+     console.log("DFGDFGD")
+  },[activeForm])
+ 
 
   const { namecolor }: any = context;
 
@@ -225,7 +230,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       listData();
     }
 
-  }, []);
+  }, [activeForm]);
 
   useEffect(() => {
     if(StudentId){

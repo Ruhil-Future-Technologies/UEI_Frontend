@@ -35,6 +35,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+ 
+  const { activeForm, }: any = context;
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState('+91');
   const [whatsappNum, setWhatsappNum] = useState('');
@@ -155,7 +157,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       getContacInfo();
     }
   
-  }, []);
+  }, [activeForm]);
   const submitHandel = () => {
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();

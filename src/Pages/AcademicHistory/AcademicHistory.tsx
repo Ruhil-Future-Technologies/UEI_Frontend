@@ -392,7 +392,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         });
     }
     listData();
-  }, [updateBoxes]);
+  }, [updateBoxes,activeForm]);
   const [errors, setErrors] = useState(initialErrors);
 
   const saveAcademy = (instituteId: number = 0) => {

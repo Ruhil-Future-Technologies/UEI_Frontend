@@ -471,8 +471,14 @@ export const ProfileDialog: FunctionComponent<{
               const filteredData = response?.data?.subjects_data?.filter(
                 (item: any) =>
                   item?.is_active &&
-                  item?.class_id === answeredData?.academic_history?.class_id,
+                  item?.class_id === answeredData?.academic_history?.class_id &&
+                  (answeredData?.academic_history?.stream
+                    ? item.stream == answeredData?.academic_history?.stream
+                    : true)
               );
+              
+              console.log(filteredData,answeredData?.academic_history?.class_id,answeredData?.academic_history?.stream);
+              console.log(response?.data?.subjects_data);
               setSubjects(filteredData || []);
             } else {
               const filteredData = response?.data?.filter(
@@ -1396,9 +1402,6 @@ export const ProfileDialog: FunctionComponent<{
     });
     onCancel();
     navigate('/main/StudentProfile');
-    setTimeout(() => {
-      window.location.reload();
-    }, 20);
   };
 
   const proceedToNextSection = (currentSection: string) => {
