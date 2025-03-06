@@ -2306,12 +2306,12 @@ console.log(valid,teacher.university_id)
                       />
                     </div>
                     <div className="col-12">
-                      <div className=" d-flex justify-content-center">
+                      <div className=" d-flex justify-content-center  flex-column">
                         <Button
                           variant="contained"
                           onClick={handleSubmit}
                           disabled={CheckTermandcondi}
-                          className="outsecbtn"
+                          className="py-3"
                         >
                           Submit
                         </Button>

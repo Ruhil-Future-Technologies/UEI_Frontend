@@ -474,7 +474,7 @@ const InstituteRegistrationForm = () => {
       if (selectedEntity.toLowerCase() !== 'school') {
         formData.append('university_id', valueInstitute.university_id);
       }
-      let payload = {
+      const payload = {
         email: process.env.REACT_APP_SUPER_USER_EMAIL,
         password: process.env.REACT_APP_SUPER_USER_PASSWORD,
         user_type: "super_admin"
@@ -521,7 +521,7 @@ const InstituteRegistrationForm = () => {
   }
   const handleOtpSubmit = (otp: string) => {
 
-    let payload = {
+    const payload = {
       email: valueInstitute.email_id,
       otp: otp
     }
