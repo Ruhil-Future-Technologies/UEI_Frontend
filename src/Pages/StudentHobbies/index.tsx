@@ -88,11 +88,16 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         }
       }
       catch (e: any) {
-        toast.error(e?.message || 'An error occurred', {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        if(e.status !==400){
+          toast.error(e?.message || 'An error occurred', {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }else{
+
+        }
+        
       }
     };
 
@@ -135,7 +140,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       Object.keys(payload).forEach((key) => {
         formData.append(key, payload[key]);
       });
-
+console.log(ishobbiestuch, editFlag , hobbyExists,hobbyid)
       if (ishobbiestuch) {
         if (editFlag || !hobbyExists) {
           return postData('student_hobby/add', formData);
@@ -235,7 +240,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     }
   };
 
-  console.log(selectedHobbies,allHobbies);
+
   return (
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">

@@ -264,9 +264,6 @@ const Header = () => {
     getAdminDetails();
     navigator('/main/adminprofile')
     setDashboardURL('/main/DashBoard');
-    setTimeout(() => {
-      window.location.reload();
-    }, 20);
   } else if (user_type === 'institute') {
     navigator('/institution-dashboard/profile')
     setDashboardURL('/institution-dashboard');

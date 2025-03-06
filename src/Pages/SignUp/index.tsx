@@ -157,11 +157,20 @@ const Signup = () => {
       email: email,
       otp: otp,
     };
-    postDataJson(`/auth/verify-otp`, payload).then((data) => {
-      if (data.status === true) {
-        handleSuccessfulLogin(data.data);
-      }
-    });
+    try {
+      postDataJson(`/auth/verify-otp`, payload).then((data) => {
+        console.log(data);
+        if (data.status === true) {
+          handleSuccessfulLogin(data.data);
+        }
+      });
+    } catch (error:any) {
+      toast.error(error.message,{
+        hideProgressBar:true,
+        theme:'colored'
+      })
+    }
+   
   };
 
   const handleSuccessfulLogin = (data: any) => {

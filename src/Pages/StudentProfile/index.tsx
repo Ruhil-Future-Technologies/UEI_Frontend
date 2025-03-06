@@ -67,6 +67,7 @@ const StudentProfile = () => {
   const usertype: any = localStorage.getItem('user_type');
   const { getData } = useApi();
   const StudentId = localStorage.getItem('user_uuid');
+  const checkbasicinfo= localStorage.getItem('student_id')
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
@@ -619,7 +620,7 @@ const StudentProfile = () => {
                                 className={`step ${
                                   activeForm === 1 ? 'active' : ''
                                 }`}
-                                // onClick={() => setActiveForm(1)}
+                                onClick={checkbasicinfo ? () => setActiveForm(1) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -637,6 +638,7 @@ const StudentProfile = () => {
                                   activeForm === 2 ? 'active' : ''
                                 }`}
                                 // onClick={() => setActiveForm(2)}
+                                onClick={checkbasicinfo ? () => setActiveForm(2) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -655,7 +657,7 @@ const StudentProfile = () => {
                                 className={`step ${
                                   activeForm === 3 ? 'active' : ''
                                 }`}
-                                // onClick={() => setActiveForm(3)}
+                                onClick={checkbasicinfo ? () => setActiveForm(3) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -676,6 +678,7 @@ const StudentProfile = () => {
                                   activeForm === 4 ? 'active' : ''
                                 }`}
                                 //onClick={() => setActiveForm(4)}
+                                onClick={checkbasicinfo ? () => setActiveForm(4) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -696,6 +699,7 @@ const StudentProfile = () => {
                                   activeForm === 5 ? 'active' : ''
                                 }`}
                                // onClick={() => setActiveForm(5)}
+                               onClick={checkbasicinfo ? () => setActiveForm(5) : () => setActiveForm(1)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
