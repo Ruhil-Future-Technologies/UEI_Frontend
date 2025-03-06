@@ -593,7 +593,7 @@ const Header = () => {
                   onClick={gotoProfile}
                 >
                   <PersonOutlineOutlinedIcon />
-                  Profiles
+                  Profile
                 </button>
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"

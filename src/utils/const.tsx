@@ -33,7 +33,7 @@ export const QUERY_KEYS_STUDENT = {
   STUDENT_EDIT_BY_ID: '/student/edit',
   STUDENT_GET_BY_LOGIN: '/student/get',
   STUDENT_GET_PROFILE: '/student/getProfile',
-  STUDENT_DELETE: '/student/delete',
+  STUDENT_DELETE: '/studentdelete',
   GET_STUDENTACTIVE: '/student/activate',
   GET_STUDENTDEACTIVE: '/student/deactivate',
 };

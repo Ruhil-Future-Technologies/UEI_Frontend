@@ -1144,7 +1144,7 @@ console.log(valid,teacher.university_id)
     },
     {
       label: 'Upload Documents',
-      subline: 'Upload your documnets & logo',
+      subline: 'Upload your documents & logo',
       icon: <DriveFolderUploadIcon />,
     },
   ];
