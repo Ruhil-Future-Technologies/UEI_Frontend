@@ -103,7 +103,7 @@ export default function AdminProfile() {
           let sectionCount = 0;
 
           if (basic_info && Object.keys(basic_info)?.length > 0) {
-            if (data?.data?.pic_path !== '') {
+            if (data?.data?.pic_path !== null) {
               getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
                 .then(() => {
                   // setprofileImage(imgdata.data)

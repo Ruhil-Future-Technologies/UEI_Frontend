@@ -111,7 +111,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         if (data?.status) {
            console.log(data);
           // setBasicInfo(data);
-          if (data?.data?.pic_path !== '') {
+          if (data?.data?.pic_path !== null ) {
             getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
               .then((imgdata: any) => {
                 setFilePreview(imgdata.data);

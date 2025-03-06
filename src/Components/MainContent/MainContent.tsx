@@ -961,7 +961,7 @@ function MainContent() {
             let sectionCount = 0;
 
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.basic_info?.pic_path !== null) {
                 getData(
                   `${
                     'upload_file/get_image/' + data?.data?.basic_info?.pic_path
@@ -1220,7 +1220,7 @@ function MainContent() {
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.admin_data?.basic_info?.pic_path !== '') {
+              if (data?.data?.admin_data?.basic_info?.pic_path !== null) {
                 getData(
                   `${
                     'upload_file/get_image/' + data?.data?.admin_data?.basic_info?.pic_path

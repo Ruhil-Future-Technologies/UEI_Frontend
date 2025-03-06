@@ -146,11 +146,13 @@ const Header = () => {
               last_name: basic_info?.last_name,
               gender: basic_info?.gender,
             });
-            if (data?.data?.basic_info?.pic_path !== '') {
+            if (data?.data?.basic_info?.pic_path !== null) {
+
               getData(
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
                 .then((imgdata: any) => {
+                  console.log(imgdata);
                   setProImage(imgdata.data);
                 })
                 .catch(() => {});
@@ -174,7 +176,7 @@ const Header = () => {
               last_name: adminInfo?.last_name,
               gender: adminInfo?.gender,
             });
-            if (response?.data?.basic_info?.pic_path !== '') {
+            if (response?.data?.basic_info?.pic_path !== null) {
               getData(
                 `${
                   'upload_file/get_image/' +

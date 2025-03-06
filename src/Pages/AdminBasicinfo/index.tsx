@@ -185,7 +185,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
           department_id: response?.data?.admin_data.department_id,
           pic_path: response?.data?.admin_data.pic_path,
         });
-        if (response?.data?.admin_data.pic_path !== '') {
+        if (response?.data?.admin_data.pic_path !== null) {
           getData(`${'upload_file/get_image/' + response?.data?.admin_data.pic_path}`)
             .then((imgdata: any) => {
               setFilePreview(imgdata.data);
