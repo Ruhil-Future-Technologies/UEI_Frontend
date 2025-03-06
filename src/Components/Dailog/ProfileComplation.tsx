@@ -242,8 +242,8 @@ export const ProfileDialog: FunctionComponent<{
     [key: string]: string[];
   }>({});
 
-  const [mobile, setMobile] = useState('');
-  const user_id = localStorage.getItem('userid');
+  // const [mobile, setMobile] = useState('');
+  // const user_id = localStorage.getItem('userid');
   const isEmail = (id: any) => /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(id);
 
   // const [open, setOpen] = useState(true);
@@ -293,7 +293,7 @@ export const ProfileDialog: FunctionComponent<{
       const user_id = localStorage.getItem('userid');
 
       if (!isEmail(user_id)) {
-        setMobile(user_id ? user_id : '');
+        // setMobile(user_id ? user_id : '');
       }
 
       getData(`${profileURL}/${StudentId}`)

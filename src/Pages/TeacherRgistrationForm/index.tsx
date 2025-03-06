@@ -1140,7 +1140,7 @@ if(valid1) return;
     },
     {
       label: 'Upload Documents',
-      subline: 'Upload your documents & logo',
+      subline: 'Upload your documents',
       icon: <DriveFolderUploadIcon />,
     },
   ];
