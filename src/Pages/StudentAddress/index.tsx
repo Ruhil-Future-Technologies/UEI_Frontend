@@ -615,7 +615,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             console.log(addressPayload.pincode,addressPayload?.address1,addressPayload?.address1)
             formData.append('pincode', addressPayload?.pincode || 0);
             formData.append('address1', addressPayload?.address1 || '');
-            formData.append('address2', addressPayload?.address1 || '');
+            formData.append('address2', addressPayload?.address2 || '');
             formData.append('country', addressPayload?.country || '');
             formData.append('state', addressPayload?.state || '');
             formData.append('city', addressPayload?.city || '');

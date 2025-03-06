@@ -890,7 +890,7 @@ console.log(valid,teacher.university_id)
           JSON.stringify(course_semester_subjects),
         );
       }
-      let payload = {
+      const payload = {
         email: process.env.REACT_APP_SUPER_USER_EMAIL,
         password: process.env.REACT_APP_SUPER_USER_PASSWORD,
         user_type: "super_admin"
@@ -1243,7 +1243,7 @@ console.log(valid,teacher.university_id)
   };
   const handleOtpSubmit = (otp: string) => {
 
-    let payload = {
+    const payload = {
       email: teacher.email_id,
       otp: otp
     }
