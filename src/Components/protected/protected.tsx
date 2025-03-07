@@ -23,7 +23,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
     const parts = currentURL.split('/');
     const mName = parts[parts.length - 1];
     const uName = parts[parts.length - 2];
-    console.log(uName);
+
     const feedbackRoute =
       parts[parts.length - 2] + '/' + parts[parts.length - 1];
     const MnameExist =
@@ -37,6 +37,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'student'
         ? mName.toLowerCase() === 'studentprofile'
         : '') ||
+      (usertype === 'student' ? mName.toLowerCase() === 'content' : '') ||
       mName.toLowerCase() === 'changepassword' ||
       (usertype === 'student' ? mName.toLowerCase() === 'chat' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'uploadpdf' : '') ||

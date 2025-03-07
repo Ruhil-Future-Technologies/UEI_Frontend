@@ -94,6 +94,7 @@ import TeacherProfile from './Pages/Teacher/TeacherProfile';
 import { StudentDetails } from './Pages/Teacher/StudentDetails';
 import { Assignments } from './Pages/Teacher/Assignments';
 import { CreateAssignments } from './Pages/Teacher/Assignments/CreateAssignments';
+import { StudentContent } from './Pages/Content/StudentContent';
 
 function App() {
   const navigate = useNavigate();
@@ -281,6 +282,12 @@ function App() {
           <Route
             path="/main/chat"
             element={<Protected Component={Chat} menuName="Chat" />}
+          />
+          <Route
+            path="/main/student/content"
+            element={
+              <Protected Component={StudentContent} menuName="content" />
+            }
           />
           <Route
             path="/main/chat"
