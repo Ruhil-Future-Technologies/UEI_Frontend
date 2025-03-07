@@ -31,7 +31,7 @@ const PDFList = () => {
   const { namecolor }: any = context;
   const navigate = useNavigate();
   const usertype: any = localStorage.getItem('user_type');
-  let AdminId: string | null = localStorage.getItem('_id');
+  let AdminId: string | null = localStorage.getItem('user_uuid');
   if (AdminId) {
     AdminId = String(AdminId);
   }
@@ -40,16 +40,16 @@ const PDFList = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [schoolOrcollFile, setSchoolOrcollFile] = useState('college');
   const [buttenView, setButtenView] = useState(true);
-  const { getData, loading, deleteFileData } = useApi();
+  const { getData, loading, deleteData } = useApi();
   const collageColumns = PDF_LIST_FOR_COLLAGE_COLUMNS;
   const schoolColumns = PDF_LIST_FOR_SCHOOL_COLUMNS;
 
   useEffect(() => {
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData: any[] = [];
-          response?.data?.forEach((item: any) => {
+          response?.data?.classes_data.forEach((item: any) => {
             if (item?.is_active) {
               const updatedClassName = item.class_name.split('_').join(' ');
               item.new_class_name =
@@ -73,7 +73,9 @@ const PDFList = () => {
       const apiUrl = `https://dbllm.gyansetu.ai/display-files?admin_id=${AdminId}&school_college_selection=${schoolOrcollFile}`;
       getData(apiUrl)
         .then((response: any) => {
-          setFileList(response);
+          if (response) {
+            setFileList(response);
+          }
         })
         .catch((error) => {
           toast.error(error?.message, {
@@ -101,29 +103,28 @@ const PDFList = () => {
   const handleDelete = () => {
     console.log('Delete File', selectedFile);
 
-    const payload = {
-      file_id: selectedFile?.pdf_id,
-    };
-    deleteFileData(`https://dbllm.gyansetu.ai/delete-files`, payload)
-      .then((data: any) => {
-        console.log('DELETED FILES', data);
-        if (data.status === 200) {
-          setDataDelete(false);
-          toast.success(data?.message, {
+    if (selectedFile?.pdf_id) {
+      const payload: { file_id: string } = { file_id: selectedFile.pdf_id };
+      deleteData(`https://dbllm.gyansetu.ai/delete-files`, payload)
+        .then((data: any) => {
+          if (data.message) {
+            setDataDelete(false);
+            toast.success(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          }
+        })
+        .catch((e: any) => {
+          if (e?.response?.code === 401) {
+            navigate('/');
+          }
+          toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.status === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
         });
-      });
+    }
   };
   const handlefilter = (e: any) => {
     if (e == 'school') {
@@ -134,7 +135,7 @@ const PDFList = () => {
       setSchoolOrcollFile('college');
     }
   };
-
+  console.log(fileList);
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -254,7 +255,7 @@ const PDFList = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={handleDelete}
-        title="PDF List"
+        title="PDF File"
       />
     </>
   );

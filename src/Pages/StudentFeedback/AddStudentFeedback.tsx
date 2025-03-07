@@ -14,7 +14,7 @@ interface Question {
   answer?: string;
 }
 const AddStudentFeedback = () => {
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const { getData, postData } = useApi();
 
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -39,12 +39,12 @@ const AddStudentFeedback = () => {
 
   useEffect(() => {
     getData(`${'/feedback/list'}`).then((data) => {
-      if (data.status === 200) {
+      if (data.status) {
         setQuestions(data.data);
       }
     });
     getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
-      if (data.status === 200) {
+      if (data.status) {
         if (data.data.length > 0) {
           setAnsweredQuestions(data.data);
           setStudentFlag(false);
@@ -114,6 +114,7 @@ const AddStudentFeedback = () => {
   };
 
   const handleSubmit = () => {
+    const formData = new FormData();
     if (validateForm()) {
       const updatedAnswers = [
         ...answeredQuestions,
@@ -126,10 +127,14 @@ const AddStudentFeedback = () => {
       const payload = {
         student_id: StudentId,
         feedbacks: updatedAnswers,
-      };
-      postData('/feedback/student_feedback', payload)
+      } as any;
+      Object.keys(payload).forEach((key) => {
+        formData.append(key, payload[key]);
+      });
+
+      postData('/feedback/student_feedback', formData)
         .then((response) => {
-          if (response.status === 200) {
+          if (response.status) {
             toast.success('Feedback sent successfully', {
               hideProgressBar: true,
               theme: 'colored',

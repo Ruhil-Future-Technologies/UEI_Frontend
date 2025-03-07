@@ -90,8 +90,12 @@ describe('AddUniversity Component', () => {
     await waitFor(() => {
       expect(mockPostData).toHaveBeenCalledWith(
         QUERY_KEYS_UNIVERSITY.UNIVERSITY_ADD,
-        { university_name: 'University A' },
+        expect.any(FormData),
       );
+      const formDataArg = mockPostData.mock.calls[0][1];
+      expect(formDataArg instanceof FormData).toBe(true);
+      expect(formDataArg.get('university_name')).toBe('University A');
+
       expect(toast.success).toHaveBeenCalledWith(
         'University added successfully!',
         expect.any(Object),
@@ -115,21 +119,38 @@ describe('AddUniversity Component', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(screen.getByLabelText(/University Name/i), {
+    await waitFor(() => {
+      expect(mockGetData).toHaveBeenCalled();
+    });
+
+    const universityInput = screen.getByLabelText(
+      /University Name/i,
+    ) as HTMLInputElement;
+    fireEvent.change(universityInput, {
       target: { value: 'University A Updated' },
     });
-    fireEvent.click(screen.getByText(/Save|Update/i));
+
+    const updateButton = screen.getByText(/Update/i);
+
+    fireEvent.click(updateButton);
 
     await waitFor(() => {
-      expect(mockPutData).toHaveBeenCalledWith(
-        `${QUERY_KEYS_UNIVERSITY.UNIVERSITY_UPDATE}/1`,
-        { university_name: 'University A Updated' },
-      );
-      expect(toast.success).toHaveBeenCalledWith(
-        'University updated successfully!',
-        expect.any(Object),
-      );
+      expect(mockPutData).toHaveBeenCalled();
     });
+
+    const endpointCalled = mockPutData.mock.calls[0]?.[0];
+
+    expect(endpointCalled).toBe(`${QUERY_KEYS_UNIVERSITY.UNIVERSITY_UPDATE}/1`);
+
+    const formDataArg = mockPutData.mock.calls[0]?.[1];
+
+    expect(formDataArg instanceof FormData).toBe(true);
+    expect(formDataArg.get('university_name')).toBe('University A Updated');
+
+    expect(toast.success).toHaveBeenCalledWith(
+      'University updated successfully!',
+      expect.any(Object),
+    );
   });
 
   it('shows error toast when API call fails', async () => {

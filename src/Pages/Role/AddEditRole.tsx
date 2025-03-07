@@ -54,7 +54,7 @@ const AddEditRole = () => {
     if (id) {
       getData(`${RoleEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          const datavalue = data?.data;
+          const datavalue = data?.data?.role_data;
           setRole({
             role_name: datavalue.role_name,
           });
@@ -103,19 +103,23 @@ const AddEditRole = () => {
   });
 
   const handleSubmit = async (
-    roleData: IRoleForm,
+    roleData: any,
     { resetForm }: FormikHelpers<IRoleForm>,
   ) => {
+    const formData = new FormData();
+    Object.keys(roleData).forEach((key) => {
+      formData.append(key, roleData[key]);
+    });
     if (id) {
-      putData(`${RoleEditURL}/${id}`, roleData)
+      putData(`${RoleEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Role');
             toast.success(data.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-          } else if (data.status === 400) {
+          } else if (data.code === 400) {
             toast.error('Role name already exists', {
               hideProgressBar: true,
               theme: 'colored',
@@ -134,9 +138,9 @@ const AddEditRole = () => {
           });
         });
     } else {
-      postData(`${RoleAddURL}`, roleData)
+      postData(`${RoleAddURL}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             // navigator('/main/Role')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -144,7 +148,7 @@ const AddEditRole = () => {
             });
             resetForm({ values: initialState });
             // setRole({ role_name: ""})
-          } else if (data.status === 400) {
+          } else if (data.code === 400) {
             toast.error('Role name already exists', {
               hideProgressBar: true,
               theme: 'colored',
@@ -157,7 +161,7 @@ const AddEditRole = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });

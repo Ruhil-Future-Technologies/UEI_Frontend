@@ -11,9 +11,10 @@ const useApi = () => {
   const token = localStorage.getItem('token');
   const headers = {
     Authorization: `${token}`,
+    'Content-Type': 'multipart/form-data',
   };
   const STATIC_JWT_TOKEN =
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTczNzM3MDQxOCwianRpIjoiYjgxNDU1ZTYtYThmMC00YzkxLWE0YzEtNmY5NjU4YTIyZWIzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFzaGlzaDcwODBAZ21haWwuY29tIiwibmJmIjoxNzM3MzcwNDE4LCJjc3JmIjoiYjY3MzdjODQtNGU2Mi00MjNjLWFlMjMtYTczMDAwODBjNDRkIiwiZXhwIjoxNzM3Mzc3NjE4LCJjdXN0b21fdG9rZW4iOnRydWV9.-Efb2S1UsfBLeoiSaTPRDvgOnrprHsbGoPw3Xr85Gnw';
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MDY0OTkxMywianRpIjoiMTczYTYzZTUtZTk5ZC00MzI1LTgzMmQtN2RmMmY5MzMwYzAzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjQ3ZmY4MzJmLTZlNzctNGI1OC1hOGEwLTE0YzBlYWU5M2NmOSIsIm5iZiI6MTc0MDY0OTkxMywiY3NyZiI6IjUzNzcyNmYxLTRhOTctNGNmOC1hYTA5LWUyYzBjNjcyN2Y0MyIsImV4cCI6MTc0MDY1NzExMywiZW1haWwiOiJzdHVkZW50YXR1bDFAeW9wbWFpbC5jb20iLCJwaG9uZSI6Ijc4NDY5MzIyMjIiLCJ1c2VyX3V1aWQiOiI0N2ZmODMyZi02ZTc3LTRiNTgtYThhMC0xNGMwZWFlOTNjZjkiLCJ1c2VyX3R5cGUiOiJzdHVkZW50IiwidXNlcl9zZWNyZXQiOiJzY3J5cHQ6MzI3Njg6ODoxJEZFYkRCR1pMdlRVa3N6VmgkMjViMWM2MWQ1NTI0YTEyMGE0ZWZhZDU4NjAyYzJjN2JmNGE1NjgxNDZkNjFjNjY1ODcwOTY5M2E5ODg3NDEzYjk4YWIyZDRmMjQyZThhZmYxYzFhYTk1N2EwNmE0Mjc2NzU3M2M1MDU3OThlYzA2NGQwOWQyYjAxNTkzZDUyNzgifQ.HLYDD6g6l4OznGobu5eobmdaM5-IH-RI7Ctqw2mjDPU';
   const context = useContext(NameContext);
   const { setProPercentage } = context;
   const synth = window?.speechSynthesis;
@@ -25,7 +26,7 @@ const useApi = () => {
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');
@@ -70,7 +71,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error; // Re-throw the error for the caller to handle
+
+      if (error.response?.status === 404 || error.response?.status === 401) {
+        console.warn('Data not found, returning empty object.');
+        return { data: [], code: 404, status: false }; // Prevents UI from breaking
+      }
+      throw error; // Re-throw other errors
     }
   };
   const getForRegistration = async (url) => {
@@ -91,8 +97,13 @@ const useApi = () => {
       // console.log("requestUrl", requestUrl);
       const response = await httpClient.get(requestUrl, { headers });
       setLoading(false);
+
       return response?.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        console.warn('Data not found, returning empty object.');
+        return { data: [], code: 404 }; // Prevents UI from breaking
+      }
       setError(error);
       setLoading(false);
       throw error; // Re-throw the error for the caller to handle
@@ -122,16 +133,15 @@ const useApi = () => {
       throw error;
     }
   };
-  const postRegisterData = async (url, data, redirectUrl = null) => {
+
+  const postDataJson = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
       handlogout();
       navigate('/');
       return;
     }
     const headers = {
-      Authorization: `${STATIC_JWT_TOKEN}`,
-      'ngrok-skip-browser-warning': 1,
-      'Content-Type': 'multipart/form-data',
+      Authorization: `${token}`,
     };
     setLoading(true);
     setError(null);
@@ -145,6 +155,49 @@ const useApi = () => {
       }
       return response.data;
     } catch (error) {
+      if (error.response?.status === 400 ) {
+        console.warn('Data not found, returning empty object.', error);
+        return { data: [], code: 400, status: false,message:error.response.data.message}; // Prevents UI from breaking
+      }
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
+  const postRegisterData = async (url, data, token = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    let headers;
+    if (token != null) {
+      headers = {
+        Authorization: `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 1,
+        'Content-Type': 'multipart/form-data',
+      };
+    } else {
+      headers = {
+        Authorization: `${STATIC_JWT_TOKEN}`,
+        'ngrok-skip-browser-warning': 1,
+        'Content-Type': 'multipart/form-data',
+      };
+    }
+    setLoading(true);
+    setError(null);
+
+    try {
+      //console.log(loginUrl)
+      const response = await httpClient.post(url, data, { headers });
+      setLoading(false);
+
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 400 ) {
+        console.warn('Data not found, returning empty object.', error);
+        return { data: [], code: 400, status: false,message:error.response.data.message}; // Prevents UI from breaking
+      }
       setError(error);
       setLoading(false);
       throw error;
@@ -175,6 +228,62 @@ const useApi = () => {
       throw error;
     }
   };
+  const putDataJson = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    const headers = {
+      Authorization: `${token}`,
+    };
+    setLoading(true);
+    setError(null);
+    try {
+      const requestUrl = url;
+      const response = await httpClient.put(requestUrl, data, {
+        headers,
+      });
+      setLoading(false);
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
+
+  const putFileData = async (url, data, redirectUrl = null) => {
+    if (isTokenExpired()) {
+      handlogout();
+      navigate('/');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const requestUrl = url;
+
+      const response = await httpClient.put(requestUrl, data, {
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setLoading(false);
+      if (redirectUrl) {
+        navigate(redirectUrl);
+      }
+      return response.data;
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      throw error;
+    }
+  };
 
   // const patchData = async (url, data, redirectUrl = null) => {
   //   setLoading(true);
@@ -193,7 +302,7 @@ const useApi = () => {
   //   }
   // };
 
-  const deleteData = async (url, redirectUrl = null) => {
+  const deleteData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
       handlogout();
       navigate('/');
@@ -204,7 +313,13 @@ const useApi = () => {
 
     try {
       // console.log("url", url);
-      const response = await httpClient.delete(url, { headers });
+      const response = await httpClient.delete(url, {
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json',
+        },
+        data,
+      });
       setLoading(false);
       if (redirectUrl) {
         navigate(redirectUrl);
@@ -274,8 +389,11 @@ const useApi = () => {
     getForRegistration,
     postData,
     putData,
+    putDataJson,
+    putFileData,
     postRegisterData,
     deleteData,
+    postDataJson,
     postFileData,
     deleteFileData,
     loading,

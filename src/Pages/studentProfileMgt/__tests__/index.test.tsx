@@ -5,7 +5,7 @@ import React from 'react';
 
 describe('StudentProfileManagement Component', () => {
   beforeAll(() => {
-    localStorage.setItem('_id', '12345');
+    localStorage.setItem('user_uuid', '12345');
   });
 
   afterAll(() => {
@@ -78,7 +78,7 @@ describe('StudentProfileManagement Component', () => {
     render(<StudentProfileManagement />);
 
     // Check the value in localStorage
-    const studentId = localStorage.getItem('_id');
+    const studentId = localStorage.getItem('user_uuid');
 
     // Ensure StudentId is available
     expect(studentId).toBe('12345');

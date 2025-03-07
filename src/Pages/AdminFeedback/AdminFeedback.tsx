@@ -26,18 +26,15 @@ const AdminFeedback = () => {
   const [dataFeedback, setDataFeedback] = useState<IFeedback[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
-      .then((data: { data: IFeedback[] }) => {
-        if (data.data) {
-          console.log('FeedBack Data', data.data);
-
-          setDataFeedback(data?.data);
+      .then((data) => {
+        if (data.status) {
+          setDataFeedback(data?.data?.feedbacks_data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -75,7 +72,7 @@ const AdminFeedback = () => {
         setDataDelete(false);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {

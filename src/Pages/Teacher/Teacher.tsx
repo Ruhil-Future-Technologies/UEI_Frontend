@@ -107,10 +107,10 @@ const Teacher = () => {
   }, [dataTeacher, columns11]);
 
   const callAPI = async () => {
-    console.log('callAPI called');
-
     getData('/entity/list').then((data) => {
-      setEntity(data.data);
+      if (data.status) {
+        setEntity(data.data?.entityes_data);
+      }
     });
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
       const allInstitutes = data.data;
@@ -142,10 +142,12 @@ const Teacher = () => {
           });
 
           setDataTeacher(teacherData);
+        } else {
+          setDataTeacher([]);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -176,8 +178,8 @@ const Teacher = () => {
         (teacher) => teacher.is_approve === true,
       );
 
-      const college: any = entity.filter((ent) => ent.entity_type == 'College');
-      const school: any = entity.filter((ent) => ent.entity_type == 'School');
+      const college: any = entity.filter((ent) => ent.entity_type == 'college');
+      const school: any = entity.filter((ent) => ent.entity_type == 'school');
 
       setFilteredTeachers([]);
 
@@ -190,7 +192,7 @@ const Teacher = () => {
             class_stream_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'College Name',
@@ -220,7 +222,7 @@ const Teacher = () => {
             course_semester_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'School Name',
@@ -249,8 +251,8 @@ const Teacher = () => {
         (teacher) => teacher.is_approve === false,
       );
 
-      const college: any = entity.filter((ent) => ent.entity_type == 'College');
-      const school: any = entity.filter((ent) => ent.entity_type == 'School');
+      const college: any = entity.filter((ent) => ent.entity_type == 'college');
+      const school: any = entity.filter((ent) => ent.entity_type == 'school');
 
       setFilteredTeachers([]);
 
@@ -263,7 +265,7 @@ const Teacher = () => {
             class_stream_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'College Name',
@@ -293,7 +295,7 @@ const Teacher = () => {
             course_semester_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institution_id') {
+            if (column.accessorKey === 'institute_id') {
               return {
                 ...column,
                 header: 'School Name',
@@ -332,7 +334,7 @@ const Teacher = () => {
         callAPI();
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -352,7 +354,7 @@ const Teacher = () => {
         callAPI();
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -394,7 +396,7 @@ const Teacher = () => {
         (school) => school.id == teacherDetail?.institution_id,
       );
 
-      teacherDetail.entity_type = 'School';
+      teacherDetail.entity_type = 'school';
       teacherDetail.school_name = school?.institution_name;
       teacherDetail.classes = Object.create(
         null,
@@ -414,7 +416,7 @@ const Teacher = () => {
         (college) => college.id == teacherDetail.institution_id,
       );
 
-      teacherDetail.entity_type = 'College';
+      teacherDetail.entity_type = 'college';
       teacherDetail.college_name = college?.institution_name;
       teacherDetail.university_name = college?.university_name;
       teacherDetail.courses = teacherDetail?.course_semester_subjects;
@@ -459,7 +461,7 @@ const Teacher = () => {
         setDataDelete(false);
       })
       .catch((e: any) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -592,7 +594,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleEditFile(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
@@ -608,7 +610,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleDeleteFiles(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
@@ -643,7 +645,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleApproveTeacher(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
@@ -659,7 +661,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleRejectTeacher(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >

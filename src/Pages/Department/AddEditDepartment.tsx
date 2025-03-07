@@ -8,7 +8,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS_DEPARTMENT } from '../../utils/const';
 import { toast } from 'react-toastify';
 import {
-  DepartmentRep0oDTO,
   MenuListinter,
 } from '../../Components/Table/columns';
 import {
@@ -60,11 +59,13 @@ const AddEditDepartment = () => {
   const callAPI = async () => {
     if (id) {
       getData(`${DepartmentEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: DepartmentRep0oDTO }) => {
-          setDepartment(data?.data?.department_name);
+        .then((data) => {
+          if(data.status){
+            setDepartment(data?.data?.department_data?.department_name);
+          }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -94,10 +95,19 @@ const AddEditDepartment = () => {
       ...formData,
       created_by: userdata?.id,
     };
+
+    const formDataObject = new FormData();
+
+// Append each key-value pair to FormData
+Object.entries(payload).forEach(([key, value]) => {
+  if (value !== undefined && value !== null) {
+    formDataObject.append(key, value);
+  }
+});
     if (id) {
-      putData(`${DepartmentEditURL}/${id}`, payload)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      putData(`${DepartmentEditURL}/${id}`, formDataObject)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Department');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -111,7 +121,7 @@ const AddEditDepartment = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -120,9 +130,9 @@ const AddEditDepartment = () => {
           });
         });
     } else {
-      postData(`${DepartmentAddURL}`, payload)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      postData(`${DepartmentAddURL}`, formDataObject)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Department')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -137,7 +147,7 @@ const AddEditDepartment = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {

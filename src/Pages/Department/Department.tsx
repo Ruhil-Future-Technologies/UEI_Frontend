@@ -41,9 +41,9 @@ const Department = () => {
   }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${DepartmentURL}`)
-      .then((data: { data: DepartmentRep0oDTO[] }) => {
-        if (data.data) {
-          const deparmentData = data.data.map((deparment: any) => {
+      .then((data) => {
+        if (data.status) {
+          const deparmentData = data?.data?.departments_data?.map((deparment: any) => {
             const createdDateTime = deparment?.created_at;
             const updatedDateTime = deparment?.updated_at;
             const created_time = new Date(createdDateTime);
@@ -58,7 +58,7 @@ const Department = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -87,8 +87,8 @@ const Department = () => {
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteDepartmentURL}/${id}`)
-      .then(() => {
-        toast.success('Department deleted successfully', {
+      .then((response) => {
+        toast.success(response?.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
@@ -96,7 +96,7 @@ const Department = () => {
         setDataDelete(false);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {

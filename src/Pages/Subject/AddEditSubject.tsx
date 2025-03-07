@@ -47,13 +47,14 @@ const AddEditSubject = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  //const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  const user_uuid = localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z0-9\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
 
   const initialState = {
     subject_name: '',
     institution_id: '',
-    created_by: userdata?.id,
+    created_by: user_uuid,
     semester_id: '',
     course_id: '',
     menu_image: '',
@@ -94,12 +95,13 @@ const AddEditSubject = () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
         const filteredData = data?.data.filter(
-          (item) => item.is_active === 1 && item.is_approve === true,
+          (item) =>
+            item.is_active && item.is_approve && (item.entity_type).toLowerCase() == 'college',
         );
         setinstituteList(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -108,13 +110,15 @@ const AddEditSubject = () => {
         });
       });
     getData(`${CourseListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+      .then((data) => {
+        const filteredData = data?.data?.course_data?.filter(
+          (item: any) => item.is_active,
+        );
         setCourseList(filteredData);
         setCourseListAll(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -124,9 +128,9 @@ const AddEditSubject = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.code === 200) {
+          const filteredData = response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -142,7 +146,10 @@ const AddEditSubject = () => {
     if (id) {
       getData(`${SubjectGETURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSubject(data?.data);
+          console.log(data);
+          if (data.status) {
+            setSubject(data?.data?.subject_data);
+          }
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -224,19 +231,23 @@ const AddEditSubject = () => {
   };
 
   const handleSubmit1 = () => {
+    const formData = new FormData();
     const submitData = {
       subject_name: (subject[''] as string) || subject?.subject_name,
       pdf_content: subject?.pdf_content || '',
       semester_id: subject.semester_id,
       course_id: subject.course_id,
       institution_id: subject.institution_id,
-    };
+    } as any;
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -261,17 +272,21 @@ const AddEditSubject = () => {
     subjectData: ISubjectForm,
     { resetForm }: FormikHelpers<ISubjectForm>,
   ) => {
+    const formData = new FormData();
     const submitData = {
       subject_name: subjectData.subject_name,
       pdf_content: subjectData?.menu_image || '',
       semester_id: subjectData.semester_id,
       course_id: subjectData.course_id,
       institution_id: subjectData.institution_id,
-    };
+    } as any;
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -291,9 +306,12 @@ const AddEditSubject = () => {
           });
         });
     } else {
-      postData(`${SubjectAddURL}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      postData(`${SubjectAddURL}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -405,7 +423,7 @@ const AddEditSubject = () => {
                               {instituteList.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
-                                  key={`${item.institution_name}-${idx + 1}`}
+                                  key={`${item.institute_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
@@ -415,7 +433,7 @@ const AddEditSubject = () => {
                                     },
                                   }}
                                 >
-                                  {item.institution_name}
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>

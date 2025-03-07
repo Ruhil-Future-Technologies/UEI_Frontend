@@ -1,12 +1,12 @@
 export const QUERY_KEYS = {
-  GET_INSTITUTES: '/institution/list',
+  GET_INSTITUTES: '/institute/list',
   POST_SIGNUP: '/auth/signup',
   POST_LOGIN: '/auth/login',
   GET_TEACHER: '/teacher/add',
   ENTITY_LIST: '/entity/list',
-  INSTITUTE_ADD: '/institution/add',
-  INSTITUTE_EDIT: '/institution/edit',
-  INSTITUTE_DELETE: '/institutiondelete',
+  INSTITUTE_ADD: '/institute/add',
+  INSTITUTE_EDIT: '/institute/edit',
+  INSTITUTE_DELETE: '/institutedelete',
   FORGOT_PASSWORD: '/auth/forgotpassword',
   CHANGE_PASSWORD: '/auth/changepassword',
   RESET_PASSWORD: '/auth/resetpassword',
@@ -20,17 +20,17 @@ export const QUERY_KEYS = {
   CHAT_HISTORYCON: '/Chatbot/chat_data_store',
   CHAT_LIST: '/Chatbot/list_based_on_id',
   CHATDELETE: '/Chatbot/delete',
-  GET_INSTITUTEACTIVE: '/institution/activate',
-  GET_INSTITUTEDEACTIVE: '/institution/deactivate',
+  GET_INSTITUTEACTIVE: '/institute/activate',
+  GET_INSTITUTEDEACTIVE: '/institute/deactivate',
   CHAT_LISTGETALL: '/Chatbot/getalldata',
-  INSITUTE_APPROVE: './institution/approve',
-  INSITUTE_DISAPPROVE: './institution/disapprove',
+  INSITUTE_APPROVE: './institute/approve',
+  INSITUTE_DISAPPROVE: './institute/disapprove',
 };
 export const QUERY_KEYS_STUDENT = {
   GET_STUDENT: '/student/list',
   STUDENT_ADD: '/student/add',
   STUDENT_EDIT: '/student/edit',
-  STUDENT_EDIT_BY_ID: '/student/editstudent',
+  STUDENT_EDIT_BY_ID: '/student/edit',
   STUDENT_GET_BY_LOGIN: '/student/get',
   STUDENT_GET_PROFILE: '/student/getProfile',
   STUDENT_DELETE: '/studentdelete',
@@ -39,7 +39,7 @@ export const QUERY_KEYS_STUDENT = {
 };
 export const QUERY_KEYS_TEACHER = {
   GET_TEACHER: './teacher/list',
-  GET_TECHER_BY_LOGIN_ID: './teacher/getbyloginid',
+  GET_TECHER_BY_UUID: './teacher/edit',
   TEACHER_APPROVE: './teacher/approve',
   TEACHER_DISAPPROVE: './teacher/disapprove',
   TEACHER_ADD: './teacher/add',
@@ -201,10 +201,10 @@ export const QUERY_KEYS_STUDENT_FEEDBACK = {
   GET_FEEDBACK_DEACTIVE: '/feedback/deactivate',
 };
 export const QUERY_KEYS_ADMIN_BASIC_INFO = {
-  GET_ADMIN_BASIC_INFO: '/admin_basicinfo/list',
-  ADMIN_ADD_BASIC_INFO: '/admin_basicinfo/add',
-  ADMIN_EDIT_BASIC_INFO: '/admin_basicinfo/edit',
-  ADMIN_GET_PROFILE: '/admin_basicinfo/getProfile',
+  GET_ADMIN_BASIC_INFO: '/admin/list',
+  ADMIN_ADD_BASIC_INFO: '/admin/add',
+  ADMIN_EDIT_BASIC_INFO: '/admin/edit',
+  ADMIN_GET_PROFILE: '/admin/getProfile',
 };
 export const QUERY_KEYS_STUDENT_ADDRESS = {
   GET_ADMIN_STUDENT_ADDRESS: '/student_address/list',
@@ -215,6 +215,7 @@ export const QUERY_KEYS_STUDENT_HOBBY = {
   GET_ADMIN_STUDENT_HOBBY: '/student_hobby/list',
   ADMIN_ADD_STUDENT_HOBBY: '/student_hobby/add',
   ADMIN_EDIT_STUDENT_HOBBY: '/student_hobby/edit',
+  GET_STUDENT_HOBBY: 'student_hobby/get',
 };
 export const QUERY_KEYS_STUDENT_LANGAUGE = {
   GET_ADMIN_STUDENT_LANGAUGE: '/student_language_known/list',

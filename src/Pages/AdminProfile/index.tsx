@@ -5,7 +5,7 @@ import AdminBasicInfo from '../AdminBasicinfo';
 import AdminAddress from '../AdminAddress';
 import AdminDescription from '../AdminDescription';
 import AdminLanguage from '../AdminLanguage';
-import AdminProfession from '../AdminProfession';
+//import AdminProfession from '../AdminProfession';
 import AdminContactDetails from '../AdminContact';
 import { toast } from 'react-toastify';
 import { QUERY_KEYS_ADMIN_BASIC_INFO } from '../../utils/const';
@@ -13,8 +13,9 @@ import useApi from '../../hooks/useAPI';
 import NameContext from '../Context/NameContext';
 
 export default function AdminProfile() {
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   const [isProComplete, setIsProComplete] = React.useState(0);
+  console.log(isProComplete);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const context = React.useContext(NameContext);
 
@@ -40,30 +41,30 @@ export default function AdminProfile() {
     };
   }, []);
 
-  const handleReset = async () => {
-    if ((await isProComplete) !== 100 && (await isProComplete1)) {
-      toast.success(
-        'Your profile is incomplete. Please complete your profile.',
-        {
-          hideProgressBar: true,
-          theme: 'colored',
-        },
-      );
-    } else if ((await isProComplete) === 100 && (await isProComplete1)) {
-      toast.success('You have completed your profile', {
-        hideProgressBar: true,
-        theme: 'colored',
-      });
-    } else {
-      toast.success(
-        'Your profile is incomplete. Please complete your profile.',
-        {
-          hideProgressBar: true,
-          theme: 'colored',
-        },
-      );
-    }
-  };
+  // const handleReset = async () => {
+  //   if ((await isProComplete) !== 100 && (await isProComplete1)) {
+  //     toast.success(
+  //       'Your profile is incomplete. Please complete your profile.',
+  //       {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //       },
+  //     );
+  //   } else if ((await isProComplete) === 100 && (await isProComplete1)) {
+  //     toast.success('You have completed your profile', {
+  //       hideProgressBar: true,
+  //       theme: 'colored',
+  //     });
+  //   } else {
+  //     toast.success(
+  //       'Your profile is incomplete. Please complete your profile.',
+  //       {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //       },
+  //     );
+  //   }
+  // };
 
   const countKeysWithValue = (obj: any): number => {
     return Object.keys(obj).filter(
@@ -73,39 +74,41 @@ export default function AdminProfile() {
   const adminAPI = async () => {
     getData(`${profileURL}/${adminId}`)
       .then((data: any) => {
-        if (data.data) {
+
+        if (data.data.admin_data) {
+          console.log(data.data.admin_data);
           const basic_info = {
-            first_name: data?.data?.basic_info?.first_name,
-            last_name: data?.data?.basic_info?.last_name,
-            gender: data?.data?.basic_info?.gender,
-            dob: data?.data?.basic_info?.dob,
-            father_name: data?.data?.basic_info?.father_name,
-            mother_name: data?.data?.basic_info?.mother_name,
-            department_id: data?.data?.basic_info?.department_id,
-            guardian_name: data?.data?.basic_info?.guardian_name,
+            first_name: data?.data?.admin_data?.basic_info?.first_name,
+            last_name: data?.data?.admin_data?.basic_info?.last_name,
+            gender: data?.data?.admin_data?.basic_info?.gender,
+            dob: data?.data?.admin_data?.basic_info?.dob,
+            father_name: data?.data?.admin_data?.basic_info?.father_name,
+            mother_name: data?.data?.admin_data?.basic_info?.mother_name,
+            department_id: data?.data?.admin_data?.basic_info?.department_id,
+            guardian_name: data?.data?.admin_data?.basic_info?.guardian_name,
           };
-          const address = data?.data?.address;
-          const language = data?.data?.language_known;
-          const description = data?.data?.admin_description;
+          const address = data?.data?.admin_data?.address;
+          const language = data?.data?.admin_data?.language_known;
+          const description = data?.data?.admin_data?.admin_description;
           // let contact = data.data.contact
           const contact = {
-            mobile_no_call: data?.data?.contact?.mobile_no_call,
-            mobile_isd_call: data?.data?.contact?.mobile_isd_call,
-            mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
+            mobile_no_call: data?.data?.admin_data?.contact?.mobile_no_call,
+            mobile_isd_call: data?.data?.admin_data?.contact?.mobile_isd_call,
+            mobile_no_watsapp: data?.data?.admin_data?.contact?.mobile_no_watsapp,
           };
-          const profession = data.data.profession;
+          const profession = data.data.admin_data?.profession;
           // let hobby = data.data.hobby
 
           let totalPercentage = 0;
           let sectionCount = 0;
 
           if (basic_info && Object.keys(basic_info)?.length > 0) {
-            if (data?.data?.pic_path !== '') {
+            if (data?.data?.pic_path !== null) {
               getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
                 .then(() => {
                   // setprofileImage(imgdata.data)
                 })
-                .catch(() => {});
+                .catch(() => { });
             }
 
             const totalcount = Object.keys(basic_info)?.length;
@@ -199,19 +202,16 @@ export default function AdminProfile() {
     if (progressRef.current && progressLineRef.current) {
       if (isMobile) {
         // Horizontal progress for mobile
-        progressRef.current.style.width = `${
-          ((activeForm + 1) / totalSteps) * 100
-        }%`;
-        progressLineRef.current.style.width = `${
-          ((activeForm + 1) / totalSteps) * 100
-        }%`;
+        progressRef.current.style.width = `${((activeForm + 1) / totalSteps) * 100
+          }%`;
+        progressLineRef.current.style.width = `${((activeForm + 1) / totalSteps) * 100
+          }%`;
         progressLineRef.current.style.height = '2px';
         progressLineRef.current.style.top = 'auto';
       } else {
         // Vertical progress for desktop
-        progressRef.current.style.width = `${
-          ((activeForm + 1) / totalSteps) * 100
-        }%`;
+        progressRef.current.style.width = `${((activeForm + 1) / totalSteps) * 100
+          }%`;
 
         const stepHeight = stepsRef.current[activeForm]?.offsetHeight || 0;
         const computedStyle = window.getComputedStyle(
@@ -284,16 +284,14 @@ export default function AdminProfile() {
                               ></div>
                               <div
                                 ref={(el) => (stepsRef.current[0] = el!)}
-                                className={`step ${
-                                  activeForm === 0 ? 'active' : ''
-                                }`}
+                                className={`step ${activeForm === 0 ? 'active' : ''
+                                  }`}
                                 onClick={() => setActiveForm(0)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 0 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 0 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -303,16 +301,14 @@ export default function AdminProfile() {
                               </div>
                               <div
                                 ref={(el) => (stepsRef.current[1] = el!)}
-                                className={`step ${
-                                  activeForm === 1 ? 'active' : ''
-                                }`}
-                                onClick={() => setActiveForm(1)}
+                                className={`step ${activeForm === 1 ? 'active' : ''
+                                  }`}
+                               // onClick={() => setActiveForm(1)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 1 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 1 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -320,16 +316,14 @@ export default function AdminProfile() {
                               </div>
                               <div
                                 ref={(el) => (stepsRef.current[2] = el!)}
-                                className={`step ${
-                                  activeForm === 2 ? 'active' : ''
-                                }`}
-                                onClick={() => setActiveForm(2)}
+                                className={`step ${activeForm === 2 ? 'active' : ''
+                                  }`}
+                              //  onClick={() => setActiveForm(2)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 2 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 2 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -337,16 +331,14 @@ export default function AdminProfile() {
                               </div>
                               <div
                                 ref={(el) => (stepsRef.current[3] = el!)}
-                                className={`step ${
-                                  activeForm === 3 ? 'active' : ''
-                                }`}
-                                onClick={() => setActiveForm(3)}
+                                className={`step ${activeForm === 3 ? 'active' : ''
+                                  }`}
+                               // onClick={() => setActiveForm(3)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 3 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 3 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -355,16 +347,14 @@ export default function AdminProfile() {
 
                               <div
                                 ref={(el) => (stepsRef.current[4] = el!)}
-                                className={`step ${
-                                  activeForm === 4 ? 'active' : ''
-                                }`}
-                                onClick={() => setActiveForm(4)}
+                                className={`step ${activeForm === 4 ? 'active' : ''
+                                  }`}
+                               // onClick={() => setActiveForm(4)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 4 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 4 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
@@ -373,31 +363,28 @@ export default function AdminProfile() {
                                 </div>
                               </div>
 
-                              <div
+                              {/* <div
                                 ref={(el) => (stepsRef.current[5] = el!)}
-                                className={`step ${
-                                  activeForm === 5 ? 'active' : ''
-                                }`}
+                                className={`step ${activeForm === 5 ? 'active' : ''
+                                  }`}
                                 onClick={() => setActiveForm(5)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
-                                  className={`step-circle ${
-                                    activeForm >= 5 ? 'filled' : ''
-                                  }`}
+                                  className={`step-circle ${activeForm >= 5 ? 'filled' : ''
+                                    }`}
                                 >
                                   <CheckOutlinedIcon />
                                 </div>
                                 <div className="step-label">Profession</div>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                           <div className="wizard-content">
                             <form id="wizard-form">
                               <div
-                                className={`form-step ${
-                                  activeForm === 0 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 0 ? 'active' : ''
+                                  }`}
                               >
                                 <AdminBasicInfo
                                   setActiveForm={setActiveForm}
@@ -405,9 +392,8 @@ export default function AdminProfile() {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 1 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 1 ? 'active' : ''
+                                  }`}
                               >
                                 <AdminAddress
                                   setActiveForm={setActiveForm}
@@ -415,9 +401,8 @@ export default function AdminProfile() {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 2 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 2 ? 'active' : ''
+                                  }`}
                               >
                                 <AdminLanguage
                                   activeForm={activeForm}
@@ -425,9 +410,8 @@ export default function AdminProfile() {
                                 />
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 3 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 3 ? 'active' : ''
+                                  }`}
                               >
                                 <div>
                                   <div>
@@ -439,29 +423,30 @@ export default function AdminProfile() {
                                 </div>
                               </div>
                               <div
-                                className={`form-step ${
-                                  activeForm === 4 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 4 ? 'active' : ''
+                                  }`}
                               >
                                 <AdminContactDetails
                                   activeForm={activeForm}
                                   setActiveForm={setActiveForm}
                                 />
                               </div>
+                              {/*
                               <div
-                                className={`form-step ${
-                                  activeForm === 5 ? 'active' : ''
-                                }`}
+                                className={`form-step ${activeForm === 5 ? 'active' : ''
+                                  }`}
                               >
                                 <div>
                                   <div>
-                                    <AdminProfession
+                                     <AdminProfession
                                       handleReset={handleReset}
                                       setActiveForm={setActiveForm}
-                                    />
+                                    /> 
+
                                   </div>
                                 </div>
                               </div>
+                              */}
                             </form>
                           </div>
                         </div>

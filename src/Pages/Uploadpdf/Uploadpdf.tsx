@@ -57,7 +57,7 @@ interface Box {
 interface Institute {
   // id: number;
   institute_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: any;
   id: string | number;
 }
@@ -94,7 +94,7 @@ const Uploadpdf = () => {
   const { namecolor }: any = context;
   const navigator = useNavigate();
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
-  let AdminId: string | null = localStorage.getItem('_id');
+  let AdminId: string | null = localStorage.getItem('user_uuid');
   if (AdminId) {
     AdminId = String(AdminId);
   }
@@ -171,9 +171,9 @@ const Uploadpdf = () => {
 
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData: any[] = [];
-          response?.data?.forEach((item: any) => {
+          response?.data?.classes_data.forEach((item: any) => {
             if (item?.is_active) {
               const updatedClassName = item.class_name.split('_').join(' ');
               item.new_class_name =
@@ -195,12 +195,13 @@ const Uploadpdf = () => {
   }, []);
   const listData = async () => {
     return new Promise((resolve) => {
-      getData('/institution/list')
+      getData('/institute/list')
         .then(async (response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+              (item: any) => item?.is_active,
             );
+
             setInstitutes(filteredData || []);
             setInstitutesAll(filteredData || []);
             resolve(true);
@@ -223,9 +224,9 @@ const Uploadpdf = () => {
     if (boxes[0]?.institute_type?.toLowerCase() === 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data.filter(
+              (item: any) => item?.is_active,
             );
             setSubjects(filteredData || []);
             setSubjectsAll(filteredData || []);
@@ -241,9 +242,9 @@ const Uploadpdf = () => {
     } else {
       getData('college_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data.filter(
+              (item: any) => item?.is_active,
             );
             setSubjects(filteredData || []);
             setSubjectsAll(filteredData || []);
@@ -263,10 +264,11 @@ const Uploadpdf = () => {
     listData();
     getData('university/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.universities_data.filter(
+            (item: any) => item?.is_active,
           );
+
           setUniversity(filteredData || []);
         }
       })
@@ -279,9 +281,9 @@ const Uploadpdf = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.semesters_data.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
         }
@@ -296,9 +298,9 @@ const Uploadpdf = () => {
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.course_data.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -313,8 +315,8 @@ const Uploadpdf = () => {
       });
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
+        if (response.status) {
+          const filteredData = response?.data?.classes_data.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -441,14 +443,14 @@ const Uploadpdf = () => {
           subject_id,
         } = boxes[0];
         const universityNames = await university
-          ?.filter((item) => item.university_id === university_id)
+          ?.filter((item: any) => item?.id === university_id)
           ?.map((item) => item.university_name);
         const filterInstitute = await institutesAll
           ?.filter(
             (item) =>
               item.university_id === university_id && item?.id === institute_id,
           )
-          ?.map((item) => item.institution_name);
+          ?.map((item) => item.institute_name);
         const filterCourse = await coursesAll
           .filter(
             (item) =>
@@ -549,7 +551,12 @@ const Uploadpdf = () => {
   };
   const isDisabled = useMemo(() => {
     const box = boxes[0];
-    if (!box || Object.keys(box)?.length === 0 || box.institute_type?.toLowerCase() === "") return true;
+    if (
+      !box ||
+      Object.keys(box)?.length === 0 ||
+      box.institute_type?.toLowerCase() === ''
+    )
+      return true;
     if (box.institute_type?.toLowerCase() === 'college') {
       const { institute_id, university_id, course_id, sem_id } = box;
       if (!institute_id || !university_id || !course_id || !sem_id) {
@@ -663,7 +670,7 @@ const Uploadpdf = () => {
     setBoxes(newBoxes);
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           setParticularClass(response.data.class_name);
         } else setParticularClass('');
       });
@@ -839,8 +846,8 @@ const Uploadpdf = () => {
                                 >
                                   {university.map((item) => (
                                     <MenuItem
-                                      key={item?.university_id}
-                                      value={item?.university_id}
+                                      key={item?.id}
+                                      value={item?.id}
                                       sx={commonStyle(namecolor)}
                                     >
                                       {item.university_name}
@@ -879,7 +886,7 @@ const Uploadpdf = () => {
                                       value={institute.id}
                                       sx={commonStyle(namecolor)}
                                     >
-                                      {institute.institution_name}
+                                      {institute.institute_name}
                                     </MenuItem>
                                   ))}
                                 </Select>
@@ -1207,7 +1214,9 @@ const Uploadpdf = () => {
                     </div>
                   )}
                   <Button
-                    className={isDisabled ? 'disabled-mainbutton' : 'mainbutton'}
+                    className={
+                      isDisabled ? 'disabled-mainbutton' : 'mainbutton'
+                    }
                     sx={{ marginTop: 5 }}
                     variant="contained"
                     onClick={handleFileUpload}

@@ -37,6 +37,7 @@ import {
   QUERY_KEYS_SUBMENU,
   QUERY_KEYS_UNIVERSITY,
   QUERY_KEYS_TEACHER,
+  QUERY_KEYS_CLASS,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
@@ -83,7 +84,7 @@ export interface TeacherRepoDTO {
   gender: string;
   dob: string;
   phone: string;
-  email_id: string;
+  email: string;
   qualification: string;
   role_id: string;
   subjects: string[];
@@ -108,8 +109,8 @@ export interface TeacherRepoDTO {
   updated_at: string;
 }
 export interface InstituteRep0oDTO {
-  institution_name: MaybeNull<string>;
-  email_id: MaybeNull<string>;
+  institute_name: MaybeNull<string>;
+  email: MaybeNull<string>;
   address: MaybeNull<string>;
   city: MaybeNull<string>;
   country: MaybeNull<string>;
@@ -117,7 +118,7 @@ export interface InstituteRep0oDTO {
   district: MaybeNull<string>;
   pincode: MaybeNull<string>;
   entity_id: MaybeNull<string>;
-  mobile_no: MaybeNull<string>;
+  phone: MaybeNull<string>;
   website_url: MaybeNull<string>;
   id: number;
   university_id?: MaybeNull<string>;
@@ -254,6 +255,7 @@ export interface StudentRep0oDTO {
   is_kyc_verified: MaybeNull<boolean>;
   pic_path: MaybeNull<string>;
   id: number;
+  user_uuid: MaybeNull<string>;
 }
 export interface IEntity {
   created_at: string;
@@ -307,7 +309,7 @@ export interface IPDFList {
 export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: 'institution_name',
+    accessorKey: 'institute_name',
     header: 'Institution name ',
     size: 150,
   },
@@ -317,7 +319,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'email_id',
+    accessorKey: 'email',
     header: 'Email ',
     size: 150,
   },
@@ -328,7 +330,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'mobile_no',
+    accessorKey: 'phone',
     header: 'Mobile ',
     size: 150,
   },
@@ -375,18 +377,17 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
         putData(
-          `${
-            valueset === 1 ? MenuInstituteDeactive : MenuInstituteActive
-          }/${id}`,
+          `${valueset ? MenuInstituteDeactive : MenuInstituteActive}/${id}`,
         )
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -405,7 +406,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
             label={Show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.id, Showvalue);
+              active(row?.original?.user_uuid, Showvalue);
             }}
             // disabled={true}
             activeColor="#4CAF50"
@@ -434,9 +435,9 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     size: 200,
   },
   { accessorKey: 'phone', header: 'Phone', size: 200, minSize: 200 },
-  { accessorKey: 'email_id', header: 'Email', size: 200 },
+  { accessorKey: 'email', header: 'Email', size: 200 },
   {
-    accessorKey: 'institution_id',
+    accessorKey: 'institute_id',
     header: 'Institute Name',
     size: 200,
     Cell: ({ cell }: any) => {
@@ -445,14 +446,15 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       const institute_id = cell.getValue();
 
       useEffect(() => {
-        getData('/institution/list')
+        getData('/institute/list')
           .then((response: any) => {
-            if (response.status === 200) {
+            if (response.status) {
               const matchingEntity = response.data.find(
                 (institute: any) => institute.id === institute_id,
               );
+
               if (matchingEntity) {
-                setInstituteName(matchingEntity.institution_name);
+                setInstituteName(matchingEntity.institute_name);
               }
             }
           })
@@ -474,15 +476,15 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     Cell: ({ row }: any) => {
       const { getData } = useApi();
       const [university_name, setUniversityName] = useState('');
-      const institution_id = row.original.institution_id;
+      const institute_id = row.original.institute_id;
 
       useEffect(() => {
-        if (institution_id) {
-          getData('/institution/list')
+        if (institute_id) {
+          getData('/institute/list')
             .then((response: any) => {
-              if (response.status === 200) {
+              if (response.status) {
                 const matchingEntity = response.data.find(
-                  (institute: any) => institute.id === institution_id,
+                  (institute: any) => institute.id === institute_id,
                 );
                 if (matchingEntity) {
                   setUniversityName(matchingEntity.university_name);
@@ -496,7 +498,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
               });
             });
         }
-      }, [institution_id]);
+      }, [institute_id]);
 
       return <span>{university_name}</span>;
     },
@@ -508,25 +510,45 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     Cell: ({ row }: any) => {
       const { getData } = useApi();
       const [className, setClassName] = useState<string>('-');
+      const [, setClassList] = useState([]);
       const entity_id = row.original.entity_id;
-      const classes = row.original.class_stream_subjects;
+      const class_id = row.original.class_stream_subjects;
 
       useEffect(() => {
         if (entity_id) {
-          getData('/entity/list').then((entityResponse: any) => {
-            if (entityResponse.status === 200) {
-              const entity = entityResponse.data.find(
-                (e: any) => e.id === entity_id,
-              );
+          getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
+            .then((data) => {
+              setClassList(data?.data?.classes_data);
+              return getData('/entity/list');
+            })
+            .then((entityResponse: any) => {
+              if (entityResponse.status) {
+                const entity = entityResponse?.data?.entityes_data.find(
+                  (e: any) => e.id === Number(entity_id),
+                );
 
-              if (entity?.entity_type === 'School' && classes) {
-                const keysArray = Object.keys(classes);
-                const result = keysArray.join(', ');
+                if (entity?.entity_type === 'school' && class_id) {
+                  const class_id_arr = Object.keys(class_id);
 
-                setClassName(result);
+                  setClassList((prevClasses) => {
+                    const class_name_arr = prevClasses.filter((cls: any) => {
+                      const id = cls.id.toString();
+
+                      return class_id_arr.includes(id);
+                    });
+
+                    setClassName(
+                      class_name_arr.map((c: any) => c.class_name).join(', '),
+                    );
+
+                    return prevClasses;
+                  });
+                }
               }
-            }
-          });
+            })
+            .catch((error) => {
+              console.error('Error fetching data:', error);
+            });
         }
       }, [entity_id]);
 
@@ -540,24 +562,47 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     Cell: ({ row }: any) => {
       const { getData } = useApi();
       const [courseName, setCourseName] = useState<string>('-');
-      const courses = row?.original?.course_semester_subjects;
+      const [, setCourseList] = useState([]);
+      const course_id = row?.original?.course_semester_subjects;
       const entity_id = row.original.entity_id;
 
       useEffect(() => {
         if (entity_id) {
-          getData('/entity/list').then((entityResponse: any) => {
-            if (entityResponse.status === 200) {
-              const entity = entityResponse.data.find(
-                (e: any) => e.id === entity_id,
-              );
-              if (entity?.entity_type === 'College' && courses) {
-                const keysArray = Object.keys(courses);
-                const result = keysArray.join(', ');
+          getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
+            .then((data) => {
+              setCourseList(data?.data?.course_data);
+              return getData('/entity/list');
+            })
+            .then((entityResponse: any) => {
+              if (entityResponse.status) {
+                const entity = entityResponse?.data?.entityes_data.find(
+                  (e: any) => e.id === Number(entity_id),
+                );
 
-                setCourseName(result);
+                if (entity?.entity_type === 'college' && course_id) {
+                  const course_id_arr = Object.keys(course_id);
+
+                  setCourseList((prevCourses) => {
+                    const course_name_arr = prevCourses.filter(
+                      (course: any) => {
+                        const id = course.id.toString();
+
+                        return course_id_arr.includes(id);
+                      },
+                    );
+
+                    setCourseName(
+                      course_name_arr.map((c: any) => c.course_name).join(', '),
+                    );
+
+                    return prevCourses;
+                  });
+                }
               }
-            }
-          });
+            })
+            .catch((error) => {
+              console.error('Error fetching data:', error);
+            });
         }
       }, [entity_id]);
 
@@ -573,14 +618,15 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       const TeacherDeactive = QUERY_KEYS_TEACHER.TEACHER_DEACTIVATE;
       const value = cell?.getValue();
       const [showValue, setShowValue] = useState(value);
-      const [show, setShow] = useState(value === 1 ? true : false);
+      const [show, setShow] = useState(value ? true : false);
 
       const active = (id: string, valueSet: any) => {
-        putData(`${valueSet === 1 ? TeacherDeactive : TeacherActive}/${id}`)
+        putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowValue(showValue === 1 ? 0 : 1);
+              setShowValue(showValue ? 0 : 1);
+              toast.success(data?.message);
             }
           })
           .catch((e) => {
@@ -594,7 +640,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       return (
         <Switch
           isChecked={show}
-          onChange={() => active(row?.original?.teacher_id, showValue)}
+          onChange={() => active(row?.original?.user_uuid, showValue)}
           label={show ? 'Active' : 'Deactive'}
           activeColor="#4CAF50"
           inactiveColor="#f44336"
@@ -641,7 +687,7 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
       const MenuEntityDeactive = QUERY_KEYS_ENTITY.GET_ENTITYDEACTIVE;
       const value = cell?.getValue();
       const [Showvalue, setShowvalue] = useState(value);
-      const [Show, setShow] = useState(Showvalue === 1 ? true : false);
+      const [Show, setShow] = useState(Showvalue ? true : false);
 
       const containerStyle = {
         display: 'flex',
@@ -649,20 +695,13 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
         gap: '8px',
       };
 
-      const labelStyle = {
-        fontWeight: 500,
-        minWidth: '70px',
-        color: Show ? '#4CAF50' : '#f44336',
-      };
-
       const active = (id: number, valueset: any) => {
-        putData(
-          `${valueset === 1 ? MenuEntityDeactive : MenuEntityActive}/${id}`,
-        )
+        putData(`${valueset ? MenuEntityDeactive : MenuEntityActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
             }
           })
           .catch((e) => {
@@ -682,7 +721,6 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
             }}
             label={Show ? 'Active' : 'Deactive'}
           />
-          <span style={labelStyle}>{Show ? 'Active' : 'Deactive'}</span>
         </Box>
       );
     },
@@ -812,14 +850,15 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -887,15 +926,16 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
               // window.location.reload();
+              toast.success(data?.message);
             }
           })
           .catch((e) => {
@@ -912,7 +952,7 @@ export const UNIVERSITY_COLUMNS: MRT_ColumnDef<UniversityRep0oDTO>[] = [
             isChecked={Show}
             label={Show ? 'Active' : 'Deactive'}
             onChange={() => {
-              active(row?.original?.university_id, Showvalue);
+              active(row?.original?.id, Showvalue);
             }}
           />
         </Box>
@@ -929,7 +969,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'institution_name',
+    accessorKey: 'institute_name',
     header: 'Institute',
     size: 150,
   },
@@ -973,14 +1013,15 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1051,14 +1092,15 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1088,7 +1130,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
   },
 ];
 
-export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
+export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
   // const columns: any[] = [
   // {
   //     accessorKey: "aim",
@@ -1129,7 +1171,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
     size: 150,
   },
   {
-    accessorKey: 'email_id',
+    accessorKey: 'email',
     header: 'Email',
     size: 150,
   },
@@ -1182,16 +1224,17 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
       //  console.log(value);
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
       // console.log(Show,Showvalue);
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? StudentDeactive : StudentActive}/${id}`)
+        putData(`${valueset ? StudentDeactive : StudentActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               //console.log(Show);
               //console.log(Showvalue);
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               window.location.reload();
             }
           })
@@ -1207,10 +1250,10 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<StudentRep0oDTO>[] = [
         <Box>
           <Switch
             isChecked={Show}
-            label={value === 1 ? 'Active' : 'Deactive'}
+            label={value ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.id, value);
+              active(row?.original?.user_uuid, value);
             }}
             // disabled={true}
           />
@@ -1284,14 +1327,15 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1378,14 +1422,15 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: any, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1466,14 +1511,15 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: any, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1544,14 +1590,15 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1622,14 +1669,15 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1670,10 +1718,13 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     header: 'Options',
     size: 150,
     Cell: ({ cell }: { cell: any }) => {
-      const options = cell.getValue();
+      const optionStr = cell.getValue();
+
+      const options = optionStr ? JSON.parse(optionStr) : [];
+
       return (
         <ul className="table-unordered-list">
-          {options.map((option: string, index: number) => (
+          {options?.map((option: string, index: number) => (
             <li key={index} value={option}>
               {option}
             </li>
@@ -1842,7 +1893,7 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
 export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
   // const columns: any[] = [
   {
-    accessorKey: 'menu_name',
+    accessorKey: 'sub_menu_name',
     header: 'Submenu Name',
     size: 150,
   },
@@ -1892,14 +1943,15 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -1971,16 +2023,18 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+
               // window.location.reload();
             }
+            toast.success(data.message);
           })
           .catch((e) => {
             toast.error(e?.message, {
@@ -2106,14 +2160,15 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -2248,14 +2303,16 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
+
               // window.location.reload();
             }
           })
@@ -2331,14 +2388,16 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
-      const [Show, setShow] = useState(value === 1 ? true : false);
+      const [Show, setShow] = useState(value ? true : false);
 
       const active = (id: number, valueset: any) => {
-        putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
+        putData(`${valueset ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
-            if (data.status === 200) {
+            if (data.status) {
               setShow((prevState) => !prevState);
-              setShowvalue(Showvalue === 1 ? 0 : 1);
+              setShowvalue(Showvalue ? 0 : 1);
+
+              toast.success(data?.message);
               // window.location.reload();
             }
           })
@@ -2556,7 +2615,7 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   },
   {
     accessorKey: 'course_name',
-    header: 'Courase Name',
+    header: 'Course Name',
     size: 150,
   },
   {

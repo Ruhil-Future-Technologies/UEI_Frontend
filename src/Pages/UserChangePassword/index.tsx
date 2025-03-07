@@ -25,7 +25,7 @@ const UserChangePassword = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const user_type = localStorage.getItem('user_type');
-  const email = localStorage.getItem('userid');
+  const email = localStorage.getItem('email');
   const { postData } = useApi();
 
   const [password, setPassword] = useState('');
@@ -75,7 +75,7 @@ const UserChangePassword = () => {
     if (emptyKeys.length === 0) {
       postData(`${changepassUrl}`, UserSignUp)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             // navigator('/')
             toast.success(
               'Your Password has been changed successfuly! Please try to login again with new password',
@@ -89,7 +89,7 @@ const UserChangePassword = () => {
             setOldPassword('');
             setConfPassword('');
           } else if (
-            data?.status === 404 &&
+            data?.code === 404 &&
             data?.message === 'Invalid userid or password'
           ) {
             toast.error('Invalid userid or password', {

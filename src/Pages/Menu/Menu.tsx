@@ -39,8 +39,8 @@ const Menu = () => {
   const callAPI = async () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
-        if (data.data) {
-          setDataMenu(data?.data);
+        if (data.status) {
+          setDataMenu(data?.data?.menues_data);
         }
       })
       .catch((e) => {
@@ -68,8 +68,8 @@ const Menu = () => {
   const handleDelete = async (id: any) => {
     try {
       const response = await deleteData(`${DeleteMenuURL}/${id}`);
-      if (response.status === 200) {
-        toast.success('Menu deleted successfully', {
+      if (response.status) {
+        toast.success(response.message, {
           hideProgressBar: true,
           theme: 'colored',
         });

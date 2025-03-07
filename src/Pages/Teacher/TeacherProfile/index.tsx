@@ -61,7 +61,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 const TeacherProfile = () => {
   const stream = ['Science', 'Commerce', 'Arts'];
   const navigate = useNavigate();
-  const teacherLoginId = localStorage.getItem('_id');
+  const teacherLoginId = localStorage.getItem('user_uuid');
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, putData } = useApi();
@@ -73,6 +73,7 @@ const TeacherProfile = () => {
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const Rolelist = QUERY_KEYS_ROLE.GET_ROLE;
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
+
   const [teacherData, setTeacherData] = useState<Teacher>({
     first_name: '',
     last_name: '',
@@ -193,7 +194,7 @@ const TeacherProfile = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          setDataClass(data?.data);
+          setDataClass(data?.data.classes_data);
         }
       })
       .catch((e) => {
@@ -290,7 +291,7 @@ const TeacherProfile = () => {
     getData(`${UniversityURL}`)
       .then((data) => {
         if (data.data) {
-          setUniversityData(data?.data);
+          setUniversityData(data?.data?.universities_data);
         }
       })
       .catch((e) => {
@@ -305,7 +306,7 @@ const TeacherProfile = () => {
   };
   const getTeacherProfileInfo = async () => {
     try {
-      getData(`/teacher/getbyloginid/${teacherLoginId}`).then(async (data) => {
+      getData(`/teacher/edit/${teacherLoginId}`).then(async (data) => {
         if (data?.status === 200) {
           setTeacherData(data.data);
           setGenderData(data.data.gender);
@@ -1358,7 +1359,7 @@ const TeacherProfile = () => {
                                   },
                                 }}
                               >
-                                {item.institution_name}
+                                {item.institute_name}
                               </MenuItem>
                             ))}
                           </Select>
@@ -1414,7 +1415,7 @@ const TeacherProfile = () => {
                                   },
                                 }}
                               >
-                                {item.institution_name}
+                                {item.institute_name}
                               </MenuItem>
                             ))}
                           </Select>

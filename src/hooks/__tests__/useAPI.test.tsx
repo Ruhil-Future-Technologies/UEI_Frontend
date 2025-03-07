@@ -51,7 +51,10 @@ describe('useApi getData Hook', () => {
     expect(httpClient.get).toHaveBeenCalledWith(
       'https://example.com/api?id=1',
       {
-        headers: { Authorization: 'null' },
+        headers: {
+          Authorization: 'null',
+          'Content-Type': 'multipart/form-data', // Add this to match the received request
+        },
       },
     );
     expect(data).toEqual(mockData);
