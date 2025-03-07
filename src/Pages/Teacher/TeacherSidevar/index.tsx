@@ -78,6 +78,15 @@ const TeacherSideVar = () => {
                 <div className="menu-title">Feedback</div>
               </Link>
             </li>
+            <li>
+              <Link to="/teacher-dashboard/assignments">
+                <div className="parent-icon">
+                  <ChatOutlinedIcon />
+                </div>
+                <div className="menu-title">Assignments</div>
+              </Link>
+            </li>
+
             {/* <!-- <li>
                     <a href="javascript:;" className="has-arrow">
                         <div className="parent-icon"><i className="material-icons-outlined">home</i>
