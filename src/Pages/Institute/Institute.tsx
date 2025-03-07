@@ -88,7 +88,7 @@ const Institute = () => {
 
   // Calculate and update column widths based on content length
   useEffect(() => {
-    const updatedColumns = columns11.map((column) => {
+    const updatedColumns = columns11?.map((column) => {
       if (column.accessorKey === 'email') {
         // Calculate the maximum width needed for 'email' column based on data
         const maxWidth = Math.max(

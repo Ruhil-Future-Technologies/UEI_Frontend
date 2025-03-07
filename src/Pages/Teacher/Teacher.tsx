@@ -82,7 +82,7 @@ const Teacher = () => {
   };
 
   useEffect(() => {
-    const updatedColumns = columns11.map((column: any) => {
+    const updatedColumns = columns11?.map((column: any) => {
       if (column.accessorKey === 'email') {
         const maxWidth = Math.max(
           ...dataTeacher.map((item) =>
