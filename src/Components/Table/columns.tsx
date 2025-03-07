@@ -399,7 +399,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
           });
       };
 
-      return (
+      return row?.original?.is_approve ? (
         <Box>
           <Switch
             isChecked={Show}
@@ -413,7 +413,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
             inactiveColor="#f44336"
           />
         </Box>
-      );
+         ) : null;
     },
     size: 150,
   },
@@ -636,8 +636,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
             });
           });
       };
-
-      return (
+      return row?.original?.is_approve ? (
         <Switch
           isChecked={show}
           onChange={() => active(row?.original?.user_uuid, showValue)}
@@ -645,7 +644,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
           activeColor="#4CAF50"
           inactiveColor="#f44336"
         />
-      );
+      ) : null;
     },
     size: 150,
   },
