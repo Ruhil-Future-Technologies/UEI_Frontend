@@ -94,8 +94,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
             theme: 'colored',
             position: 'top-center',
           });
-        }else{
-
         }
         
       }

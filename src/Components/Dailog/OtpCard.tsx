@@ -54,7 +54,7 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
     const handleOtpResend = () => {
         setTimeLeft(120);
         
-        let payload = {
+        const payload = {
             email: email
         }
         try {
@@ -70,10 +70,11 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                     });
                 }, 1000);
             })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
 
+            console.log(email)
         }
-        console.log(email)
     }
 
     const isOtpComplete = otp.every((digit) => digit !== "");
