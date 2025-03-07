@@ -388,7 +388,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    console.log(adminDepartment);
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
@@ -485,14 +484,12 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       }
     }
     if (!editable) {
-      console.log("Some issue are occuring. in else")
       const editData = async () => {
         try {
           const response = await putData(
             'admin/edit/' + adminId,
             formData,
           );
-           console.log(response)
           if (response?.status) {
             toast.success('Admin basic information updated successfully', {
               hideProgressBar: true,

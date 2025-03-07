@@ -43,7 +43,6 @@ const useApi = () => {
   const isTokenExpired = () => {
     if (token && tokenExpiry) {
       const currentTime = Date.now();
-      // console.log("test expire time in",currentTime,tokenExpiry)
       if (currentTime > parseInt(tokenExpiry)) {
         return true;
       } else {
@@ -62,9 +61,7 @@ const useApi = () => {
     setLoading(true);
     setError(null);
     try {
-      // console.log(headers);
       const requestUrl = id ? `${url}?id=${id}` : url;
-      // console.log("requestUrl", requestUrl);
       const response = await httpClient.get(requestUrl, { headers });
       setLoading(false);
       return response?.data;
@@ -92,9 +89,7 @@ const useApi = () => {
     setLoading(true);
     setError(null);
     try {
-      // console.log(headers);
       const requestUrl = url;
-      // console.log("requestUrl", requestUrl);
       const response = await httpClient.get(requestUrl, { headers });
       setLoading(false);
 
@@ -120,7 +115,6 @@ const useApi = () => {
     setError(null);
 
     try {
-      //console.log(loginUrl)
       const response = await httpClient.post(url, data, { headers });
       setLoading(false);
       if (redirectUrl) {
@@ -147,7 +141,6 @@ const useApi = () => {
     setError(null);
 
     try {
-      //console.log(loginUrl)
       const response = await httpClient.post(url, data, { headers });
       setLoading(false);
       if (redirectUrl) {
@@ -188,7 +181,6 @@ const useApi = () => {
     setError(null);
 
     try {
-      //console.log(loginUrl)
       const response = await httpClient.post(url, data, { headers });
       setLoading(false);
 
@@ -284,24 +276,6 @@ const useApi = () => {
       throw error;
     }
   };
-
-  // const patchData = async (url, data, redirectUrl = null) => {
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     const response = await httpClient.patch(url, data, { headers });
-  //     setLoading(false);
-  //     if (redirectUrl) {
-  //       navigate(redirectUrl);
-  //     }
-  //     return response.data;
-  //   } catch (error) {
-  //     setError(error);
-  //     setLoading(false);
-  //     throw error;
-  //   }
-  // };
-
   const deleteData = async (url, data, redirectUrl = null) => {
     if (isTokenExpired()) {
       handlogout();
@@ -312,7 +286,6 @@ const useApi = () => {
     setError(null);
 
     try {
-      // console.log("url", url);
       const response = await httpClient.delete(url, {
         headers: {
           Authorization: `${token}`,
@@ -340,7 +313,6 @@ const useApi = () => {
     }
     setLoading(true);
     setError(null);
-    // console.log(data)
     try {
       const response = await httpClient.post(url, data, {
         headers: {
@@ -370,7 +342,6 @@ const useApi = () => {
     setError(null);
 
     try {
-      // console.log("url", url);
       const response = await httpClient.delete(url, {
         headers,
         data: JSON.stringify(payload),

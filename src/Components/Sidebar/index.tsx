@@ -54,7 +54,6 @@ const Sidebar = () => {
         }
       })
       .catch((e: any) => {
-        console.log("slider")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -67,7 +66,6 @@ const Sidebar = () => {
       getData(`${MenuListURL1}/${basicinfo?.id}`)
         .then((data: any) => {
           if (data.data) {
-            console.log(data.data);
             if(data.data.menus_data_list){
               const menuData = data.data.menus_data_list;
               setMenuList1(menuData);
@@ -80,7 +78,6 @@ const Sidebar = () => {
           }
         })
         .catch((e: any) => {
-          console.log("slider 2")
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',

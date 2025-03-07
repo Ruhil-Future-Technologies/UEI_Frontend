@@ -152,7 +152,6 @@ const Header = () => {
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
                 .then((imgdata: any) => {
-                  console.log(imgdata);
                   setProImage(imgdata.data);
                 })
                 .catch(() => {});
@@ -192,7 +191,6 @@ const Header = () => {
         }
       })
       .catch((e) => {
-        console.log("header")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',

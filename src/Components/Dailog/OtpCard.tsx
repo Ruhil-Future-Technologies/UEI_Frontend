@@ -70,10 +70,8 @@ const OtpCard: React.FC<OtpCardProps> = ({ open, handleOtpClose, handleOtpSucces
                     });
                 }, 1000);
             })
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-
-            console.log(email)
+            console.log(error);
         }
     }
 

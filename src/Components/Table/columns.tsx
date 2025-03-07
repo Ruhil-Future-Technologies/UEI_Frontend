@@ -1215,23 +1215,15 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
       const { putData } = useApi();
       const StudentActive = QUERY_KEYS_STUDENT.GET_STUDENTACTIVE;
       const StudentDeactive = QUERY_KEYS_STUDENT.GET_STUDENTDEACTIVE;
-      // console.log(StudentActive,StudentDeactive)
       const value = cell?.getValue();
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
-      //  console.log(value);
       const [Show, setShow] = useState(value ? true : false);
-      // console.log(Show,Showvalue);
       const active = (id: number, valueset: any) => {
         putData(`${valueset ? StudentDeactive : StudentActive}/${id}`)
           .then((data: any) => {
             if (data.status) {
-              //console.log(Show);
-              //console.log(Showvalue);
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
               toast.success(data?.message);
@@ -1251,36 +1243,18 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
           <Switch
             isChecked={Show}
             label={value ? 'Active' : 'Deactive'}
-            // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.user_uuid, value);
             }}
-            // disabled={true}
           />
         </Box>
       );
     },
     size: 150,
   },
-  // {
-  //     accessorKey: "father_name",
-  //     header: "Father Name",
-  //     size: 150,
-  // },
-  // {
-  //     accessorKey: "mother_name",
-  //     header: "Mother Name",
-  //     size: 150,
-  // },
-  // {
-  //     accessorKey: "guardian_name",
-  //     header: "Guardian Name",
-  //     size: 150,
-  // },
 ];
 
 export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
-  // const columns: any[] = [
   {
     accessorKey: 'menu_name',
     header: 'Menu Name',
@@ -1320,10 +1294,6 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
       const MenuActive = QUERY_KEYS_MENU.GET_MENUACTIVE;
       const MenuDeactive = QUERY_KEYS_MENU.GET_MENUDEACTIVE;
       const value = cell?.getValue();
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
@@ -1352,11 +1322,9 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
           <Switch
             isChecked={Show}
             label={Show ? 'Active' : 'Deactive'}
-            // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
           />
         </Box>
       );
@@ -1366,7 +1334,6 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
 ];
 
 export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
-  // const columns: any[] = [
   {
     accessorKey: 'institute_name',
     header: 'Institute Name',
@@ -1415,10 +1382,6 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
       const MenuActive = QUERY_KEYS_SUBJECT.GET_SUBJECTACTIVE;
       const MenuDeactive = QUERY_KEYS_SUBJECT.GET_SUBJECTDEACTIVE;
       const value = cell?.getValue();
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
@@ -1753,56 +1716,6 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     header: 'Last Updated at',
     size: 150,
   },
-  // {
-  //   accessorKey: "is_active",
-  //   header: "Active/DeActive",
-  //   Cell: ({ cell, row }) => {
-  //     const { putData } = useApi();
-  //     const MenuActive = QUERY_KEYS_FEEDBACK.GET_FEEDBACK_ACTIVE;
-  //     const MenuDeactive = QUERY_KEYS_FEEDBACK.GET_FEEDBACK_DEACTIVE;
-  //     const value = cell?.getValue();
-  //     // if (!value) {
-  //     //   return EMPTY_CELL_VALUE;
-  //     // }
-
-  //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //     const [Showvalue, setShowvalue] = useState(value);
-  //     // eslint-disable-next-line react-hooks/rules-of-hooks
-  //     const [Show, setShow] = useState(value === 1 ? true : false);
-
-  //     const active = (id: number, valueset: any) => {
-  //       putData(`${valueset === 1 ? MenuDeactive : MenuActive}/${id}`)
-  //         .then((data: any) => {
-  //           if (data.status === 200) {
-  //             setShow((prevState) => !prevState);
-  //             setShowvalue(Showvalue === 1 ? 0 : 1);
-  //             // window.location.reload();
-  //           }
-  //         })
-  //         .catch((e) => {
-  //           toast.error(e?.message, {
-  //             hideProgressBar: true,
-  //             theme: "colored",
-  //           });
-  //         });
-  //     };
-
-  //     return (
-  //       <Box>
-  //         <Switch
-  //           isChecked={Show}
-  //           label={Show ? "Active" : "Deactive"}
-  //           // onChange={() => setShow((prevState) => !prevState)}
-  //           onChange={() => {
-  //             active(row?.original?.id, Showvalue);
-  //           }}
-  //           // disabled={true}
-  //         />
-  //       </Box>
-  //     );
-  //   },
-  //   size: 150,
-  // },
 ];
 export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] =
   [
@@ -2016,10 +1929,6 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
       const MenuActive = QUERY_KEYS_ROLE.GET_ROLEACTIVE;
       const MenuDeactive = QUERY_KEYS_ROLE.GET_ROLEDEACTIVE;
       const value = cell?.getValue();
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
 
@@ -2031,8 +1940,6 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
-
-              // window.location.reload();
             }
             toast.success(data.message);
           })
@@ -2060,11 +1967,6 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
     },
     size: 150,
   },
-  //   {
-  //     accessorKey: "priority",
-  //     header: "Priority",
-  //     size: 150,
-  // }
 ];
 
 export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
@@ -2153,9 +2055,6 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
       const MenuActive = QUERY_KEYS_FORM.GET_FORMACTIVE;
       const MenuDeactive = QUERY_KEYS_FORM.GET_FORMDEACTIVE;
       const value = cell?.getValue();
-      // if (!value) {
-      //   return EMPTY_CELL_VALUE;
-      // }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [Showvalue, setShowvalue] = useState(value);
@@ -2441,37 +2340,6 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
     header: 'Chat Question',
     size: 150,
   },
-  //  {
-  //   // accessorKey: "response",
-  //   accessorKey: "chat_conversation",
-  //   header: "Response",
-  //   size: 150,
-  //   Cell: ({ cell }:any) => {
-  //     const value = cell?.getValue();
-
-  //   console.log("value ------", value);
-  //   let cleanedString = value?.replace(/\\"/g, '');
-
-  // // Step 2: Remove the curly braces
-  // cleanedString = cleanedString?.replace(/{|}/g, '');
-
-  // // Step 3: Remove any leading or trailing spaces around commas
-  // cleanedString = cleanedString?.replace(/\s*,\s*/g, ',');
-  // cleanedString = cleanedString?.slice(1, -1);
-
-  // // Step 4: Split the string by commas and then join with spaces for proper formatting
-  // const formattedMessage = cleanedString?.split(',').join(' ');
-  // // const words = cleanedString.split(',').map((word:any) => word.trim());
-  // // const formattedMessage = words.join(' ');
-
-  //     return (
-  //       <div>
-  //         {formattedMessage}
-  //       </div>
-
-  //     )
-  //   },
-  // },
 
   {
     // accessorKey: "response",
@@ -2490,18 +2358,11 @@ export const CHATLIST_COLUMNS: MRT_ColumnDef<ChatListRep0oDTO>[] = [
         return <div>&quot;&quot;</div>;
       }
 
-      // Extract the 'answer' arrays
       const dataset = parsedValue?.map((item: any) => item.answer);
-      // console.log("dataset ------", dataset);
-
-      // Flatten the dataset array (if it contains multiple arrays)
       let flattenedAnswers = dataset?.flat();
-
-      // Handle cases where dataset contains improperly formatted strings
       flattenedAnswers = flattenedAnswers
         ?.map((item: any) => {
           if (typeof item === 'string') {
-            // Remove unnecessary characters and split the string if needed
             item = item.replace(/[{}"]/g, '').trim();
             return item.split(',').map((subItem: string) => subItem.trim());
           }

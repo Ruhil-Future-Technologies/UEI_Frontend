@@ -427,7 +427,6 @@ function MainContent() {
 
   useEffect(() => {
     if (usertype === 'admin') {
-      console.log("admin loged in here" )
       setUserName('admin');
       setDataCompleted(false);
     } else if (usertype === 'student') {
@@ -909,7 +908,6 @@ function MainContent() {
     if (usertype === 'student' &&  StudentId !== null) {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
-          console.log(data);
           if (data.data) {
             if(data?.data?.basic_info?.id){
               localStorage.setItem('userdata', JSON.stringify(data.data))
@@ -1083,7 +1081,6 @@ function MainContent() {
               Object.keys(subject_preference)?.length > 0
             ) {
               if (academic_history?.institution_type === 'school') {
-                // console.log("test subject pref school",subject_preference)
                 delete subject_preference?.course_name;
                 delete subject_preference?.course_id;
                 delete subject_preference?.sem_id;
@@ -1126,7 +1123,6 @@ function MainContent() {
           if(e.response.code===404){
             setDataCompleted(true);
           }
-          console.log("1");
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1142,7 +1138,6 @@ function MainContent() {
     if (usertype === 'student') {
       try {
         const [chatCount] = await Promise.all([
-          // getData(`${chatlisturl}/${userdata?.id}`),
           getData('/chat/api/chat-summary'),
         ]);
         setStudent({
@@ -1292,23 +1287,14 @@ function MainContent() {
             } else {
               sectionCount++;
             }
-            // console.log("---- ddd eee",sectionCount)
             if (sectionCount > 0) {
               let overallPercentage = totalPercentage / sectionCount;
-              // setoverallProfilePercentage(overallPercentage); // Set the overall percentage
               overallPercentage = Math.round(overallPercentage);
-              // const nandata = 100 - overallPercentage;
-
-              // console.log("overallPercentage sss", nandata,overallPercentage);
               localStorage.setItem(
                 'Profile_completion',
                 JSON.stringify(overallPercentage),
               );
               setProPercentage(overallPercentage);
-              // console.log("---- ddd",overallPercentage)
-              // if(overallPercentage !== 100){
-              //     setDatacomplated(true)
-              // }
             }
           }
         })
@@ -1365,7 +1351,6 @@ function MainContent() {
             getData('/college_subject/list'),
             getData('./teacher/list'),
           ]);
-          console.log(studentRes,institutionRes,entityRes,departmentRes,courseRes,schoolRes,collegeRes,teacherRes)
           const institutionCount =
             institutionRes?.status === 'fulfilled'
               ? institutionRes?.value?.data?.length || 0
@@ -1575,7 +1560,6 @@ function MainContent() {
         // setchathistoryrecent(data?.data?.filter((chat: any) => !chat?.flagged));
       })
       .catch((e) => {
-        console.log("4")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -1596,7 +1580,6 @@ function MainContent() {
       | undefined;
   }) => {
     setChatLoader(false);
-    console.log("5");
     toast.error(e?.message, {
       hideProgressBar: true,
       theme: 'colored',
@@ -1678,7 +1661,6 @@ function MainContent() {
           // );
         })
         .catch((e) => {
-          console.log(6)
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1834,14 +1816,10 @@ function MainContent() {
             } = profileDatas?.academic_history || {};
             const { subject_name, course_name } =
               profileDatas?.subject_preference || {};
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
-            // )
             const university: any =
               university_list_data?.filter(
                 (university: any) => university.university_id == university_id,
               ) || null;
-              console.log(university);
             const queryParams = {
               user_query: search,
               student_id: StudentId,
@@ -1856,9 +1834,6 @@ function MainContent() {
               year: year || null,
               subject: subject_name || null,
             };
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            // )
             return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
@@ -2320,9 +2295,6 @@ function MainContent() {
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem('chatData');
-    // const chatflagged = localStorage?.getItem("chatsaved");
-    // console.log("chatData testing save",chatDataString);
-
     let chatData: any;
 
     if (chatDataString) {
@@ -2406,11 +2378,9 @@ function MainContent() {
         console.error('Error copying text: ', err);
       });
   };
-console.log(stats);
   return (
     <>
       {loader && !chatLoader && <FullScreenLoader />}
-      {/* {basicinfo!==null && basicinfo?.basic_info && userName === 'admin' ?  */}
       {userName === 'admin' ? (
         <>
           <div className="main-wrapper">

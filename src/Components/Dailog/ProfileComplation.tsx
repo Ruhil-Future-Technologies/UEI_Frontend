@@ -299,8 +299,6 @@ export const ProfileDialog: FunctionComponent<{
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.status) {
-            //  navigate('/main/Dashboard');
-            console.log(data.data);
             setAnsweredData(data.data);
 
             if (data?.data?.academic_history?.institution_type === 'school') {
@@ -472,7 +470,6 @@ export const ProfileDialog: FunctionComponent<{
   };
 
   const getSubject = async () => {
-    console.log(answeredData?.academic_history?.institution_type);
     if (answeredData?.academic_history?.institution_type === 'school') {
       getData('school_subject/list')
         .then((response: any) => {
@@ -486,9 +483,6 @@ export const ProfileDialog: FunctionComponent<{
                     ? item.stream == answeredData?.academic_history?.stream
                     : true)
               );
-              
-              console.log(filteredData,answeredData?.academic_history?.class_id,answeredData?.academic_history?.stream);
-              console.log(response?.data?.subjects_data);
               setSubjects(filteredData || []);
             } else {
               const filteredData = response?.data?.filter(
@@ -687,7 +681,6 @@ export const ProfileDialog: FunctionComponent<{
             const filteredData = await response?.data?.universities_data?.filter(
               (item: any) => item?.is_active,
             );
-            console.log(filteredData)
             setUniversity(filteredData || []);
           }
         })
@@ -1033,82 +1026,6 @@ export const ProfileDialog: FunctionComponent<{
         String(item.id) === String(answers[answers.length - 1]) ||
         String(item.id) === String(answers[answers.length - 2]),
     )?.class_name;
-    console.log(classes, answers[answers.length - 1], answers[answers.length - 2]);
-    // const payload = {
-    //   student_id:localStorage.getItem('student_id'),
-    //   institution_type:
-    //     answeredData?.academic_history?.institution_type ||
-    //     selectedInstituteType,
-    //   board:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'school'
-    //       ? answeredData?.academic_history?.board || selectedBoard
-    //       : null,
-    //   state_for_stateboard:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'school'
-    //       ? answeredData?.academic_history?.state_for_stateboard ||
-    //         selectedAcademicState?.toLowerCase()
-    //       : null,
-    //   institute_id:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'college'
-    //       ? answeredData?.academic_history?.institute_id ||
-    //         selectedInstitute?.toString()
-    //       : null,
-    //   course_id:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'college'
-    //       ? answeredData?.academic_history?.course_id ||
-    //         selectCourse?.toString()
-    //       : null,
-    //   learning_style:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'college'
-    //       ? answeredData?.academic_history?.learning_style ||
-    //         selectedLearningStyle
-    //       : null,
-    //   class_id:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'school'
-    //       ? answeredData?.academic_history?.class_id ||
-    //         classname == 'class_11' ||
-    //         classname == 'class_12'
-    //         ? answers[length - 2]?.toString()
-    //         : answers[length - 1]?.toString()
-    //       : null,
-    //   // year: answeredData?.academic_history?.year || answers[18] || '',
-    //   year:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'college'
-    //       ? answeredData?.academic_history?.year ||
-    //         (answers[length - 1]
-    //           ? dayjs(answers[length - 1], ['DD/MM/YYYY', 'YYYY'])
-    //               ?.year()
-    //               ?.toString()
-    //           : '')
-    //       : '',
-    //   stream:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'school'
-    //       ? answeredData?.academic_history?.stream ||
-    //         classname == 'class_11' ||
-    //         classname == 'class_12'
-    //         ? answers[length - 1]
-    //         : null
-    //       : null,
-    //   university_id:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'college'
-    //       ? answeredData?.academic_history?.university_id ||
-    //         answers[answers.length - 6]
-    //       : null,
-    //   sem_id:
-    //     answeredData?.academic_history?.institution_type?.toLowerCase() ||
-    //     selectedInstituteType?.toLowerCase() === 'college'
-    //       ? answeredData?.academic_history?.sem_id || answers[length - 3]
-    //       : null,
-    // };
     const selectedInstituteTypeLower = selectedInstituteType?.toLowerCase();
     const payload = {
       student_id: localStorage.getItem('student_id'),
@@ -1140,7 +1057,6 @@ export const ProfileDialog: FunctionComponent<{
         sem_id: answers[length - 3],
       }),
     };
-    console.log(payload, classname);
     postData('/new_student_academic_history/add', payload).then((response) => {
       if (response.status) {
         // toast.success('Academic hinstory information saved successfully', {
@@ -1177,7 +1093,6 @@ export const ProfileDialog: FunctionComponent<{
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
     };
-    console.log(payload);
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status) {
         // toast.success('Subject Preference information saved successfully', {
@@ -1224,7 +1139,6 @@ export const ProfileDialog: FunctionComponent<{
     value: option.id,
     label: option.course_name,
   }));
-  console.log(courseSelectOptions, courses);
   const universitySelectOptions = university?.map((option) => ({
     value: option.id,
     label: option.university_name,
@@ -1346,7 +1260,6 @@ export const ProfileDialog: FunctionComponent<{
             (item?.institution_name === answers[14] &&
               item.course_name === answers[15]),
         );
-        console.log(filteredCourse);
         setCourses(filteredCourse);
       }
     }
@@ -2625,8 +2538,6 @@ export const ProfileDialog: FunctionComponent<{
         item.is_active &&
         item.is_approve == true,
     );
-    console.log(e)
-    console.log(institutes, filteredInstitution, e.value)
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;

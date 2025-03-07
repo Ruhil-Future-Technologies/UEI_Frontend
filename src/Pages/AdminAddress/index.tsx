@@ -220,7 +220,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
         }
       });
     } catch (error: any) {
-      console.log('erorr occure while run time');
       if (error.code !== 404) {
         toast.error(error?.message, {
           hideProgressBar: true,
