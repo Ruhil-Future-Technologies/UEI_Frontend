@@ -388,11 +388,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         }
       })
       .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        if(e.status!==400 || e.status!==404){
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
+        
       });
   };
 

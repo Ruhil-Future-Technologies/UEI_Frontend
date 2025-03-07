@@ -329,11 +329,14 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       getData(`${'new_student_academic_history/get/' + StudentId}`)
         .then((data: any) => {
           if (data?.status) {
+            console.log(data?.data?.[0]?.class_id)
             if (data?.data?.[0]?.class_id) {
               getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
                 (response: any) => {
+                  console.log(response);
                   if (response.status) {
-                    setParticularClass(response.data.class_name);
+                    setParticularClass(response.data.
+                      class_data.class_name);
                   } else setParticularClass('');
                 },
               );
@@ -459,6 +462,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       if (filteredBox.institution_type.toLowerCase() === 'school') {
         if (['class_11', 'class_12'].includes(particularClass)) {
           filteredBox.stream = filteredBox.stream || '';
+        }else{
+          filteredBox.stream = '';
         }
         if (filteredBox.state_for_stateboard !== undefined) {
           filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
@@ -578,7 +583,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
         if (response.status) {
-          setParticularClass(response.data.class_name);
+          setParticularClass(response.data.
+            class_data
+            .class_name);
         } else setParticularClass('');
       });
     }
@@ -634,6 +641,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   //     setMaxSemester(0);
   //   }
   // }, [totalSemester]);
+  console.log(particularClass,boxes);
   return (
     <div className="mt-5">
       <form>

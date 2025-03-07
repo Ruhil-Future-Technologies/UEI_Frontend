@@ -72,9 +72,9 @@ const useApi = () => {
       setError(error);
       setLoading(false);
 
-      if (error.response?.status === 404 || error.response?.status === 401) {
+      if (error.response?.status === 404 || error.response?.status === 401 || error.response?.status === 400) {
         console.warn('Data not found, returning empty object.');
-        return { data: [], code: 404, status: false }; // Prevents UI from breaking
+        return { data: [], code: error.response?.status, status: false }; // Prevents UI from breaking
       }
       throw error; // Re-throw other errors
     }
@@ -155,7 +155,7 @@ const useApi = () => {
       }
       return response.data;
     } catch (error) {
-      if (error.response?.status === 400 ) {
+      if (error.response?.status === 400 || error.response?.status === 404 ) {
         console.warn('Data not found, returning empty object.', error);
         return { data: [], code: 400, status: false,message:error.response.data.message}; // Prevents UI from breaking
       }

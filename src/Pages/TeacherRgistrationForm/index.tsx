@@ -1246,6 +1246,7 @@ if(valid1) return;
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
       console.log(data);
       if (data.status === true) {
+        setPopupOtpCard(false);
         alert('Wait for 24-48 hours, the Administrator will inform you.');
         window.location.reload();
       }
@@ -1697,6 +1698,7 @@ if(valid1) return;
                             name="university_id"
                             label="University Name*"
                             onChange={handleSelect}
+                            value={teacher.university_id}
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
@@ -1749,6 +1751,7 @@ if(valid1) return;
                             name="institution_id"
                             label="Institute"
                             onChange={handleSelect}
+                            value={teacher.institution_id}
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
@@ -1804,6 +1807,7 @@ if(valid1) return;
                             name="institution_id"
                             label="Institute*"
                             onChange={handleSelect}
+                            value={teacher.institution_id}
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
@@ -1857,6 +1861,7 @@ if(valid1) return;
                         name="experience"
                         className="form-control"
                         type="number"
+                        value={teacher.experience}
                         label="Teaching Experience*"
                         onChange={handelChange}
                         inputProps={{ min: '0' }}

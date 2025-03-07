@@ -601,7 +601,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           await addAddress('Current', currentAddressPayload);
         }
         // Add permanent address
-        if (permanentAddress?.address_type === 'permanent') {
+        if (permanentAddress?.address_type === 'permanent' && permanentAddress.country) {
           await addAddress('Permanent', permanentAddressPayload);
         }
       } else {
