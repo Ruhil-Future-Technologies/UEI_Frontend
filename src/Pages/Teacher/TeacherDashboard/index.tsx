@@ -33,6 +33,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
+import { Boxes } from '../../TeacherRgistrationForm';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -41,6 +42,7 @@ interface Teacher {
   first_name: string;
   last_name: string;
   department: string;
+  university_id: string;
   qualifications: string;
   image: string;
   bio: string;
@@ -52,15 +54,37 @@ const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
+  const [boxes, setBoxes] = useState<Boxes[]>([
+    {
+      semester_number: '',
+      subjects: [],
+      course_id: '',
+    },
+  ]);
   const navigate = useNavigate();
-  
+
 
   const getTeacherInfo = () => {
     try {
       getData(`/teacher/edit/${teacherId}`).then((data) => {
         console.log(data);
-        if (data?.status === 200) {
+        if (data?.status) {
           setTeacherData(data.data);
+          const output: Boxes[] = Object.keys(
+            data.data.course_semester_subjects,
+          ).flatMap((CourseKey) =>
+            Object.keys(data.data.course_semester_subjects[CourseKey]).map(
+              (semester_number) => ({
+                course_id: CourseKey,
+                semester_number: semester_number,
+                subjects:
+                  data.data.course_semester_subjects[CourseKey][
+                    semester_number
+                  ],
+              }),
+            ),
+          );
+          setBoxes(output);
         }
       });
     } catch (error) {
@@ -70,7 +94,7 @@ const TeacherDash = () => {
   useEffect(() => {
     getTeacherInfo();
   }, []);
-
+  console.log(teacherData);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -113,17 +137,16 @@ const TeacherDash = () => {
                         <h4 className="fw-bold mb-1 fs-4">
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
-                        <p className="opacity-75 mb-1">Stanford University</p>
+                        <p className="opacity-75 mb-1">{teacherData?.university_id}</p>
                         <p className="planbg">Senior Professor</p>
                       </div>
                       <div className="curcc">
                         <h6>CURRENT COURSES</h6>
-                        <ul>
-                          <li>Advanced Mathematics</li>
-                          <li>Data Structures</li>
-                          <li>Algorithm Design</li>
-                          <li>Machine Learning</li>
-                        </ul>
+                          <ul>
+                            {boxes?.map((item, index) => (
+                              <li key={index}>{item.course_id}</li>
+                            ))}
+                          </ul>
                       </div>
                     </div>
                   </div>
@@ -383,13 +406,13 @@ const TeacherDash = () => {
         </div>
 
 
-        
-        
-        <div className="row">
-         
 
-          
-        <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
+
+        <div className="row">
+
+
+
+          <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
                 <img src={consultantimg} alt="" />

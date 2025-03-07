@@ -274,6 +274,7 @@ const TeacherRegistrationPage = () => {
   const [teaching_experience_error, setTeaching_experience_error] = useState(false);
   const [entity_error, setEntity_error] = useState(false);
   const [institution_id_error, setInstitution_id_error] = useState(false);
+  const [document_error, setDocument_error] = useState(false);
 
   const exactSixYearsAgo = dayjs()
     .subtract(18, 'year')
@@ -440,7 +441,7 @@ const TeacherRegistrationPage = () => {
   };
 
   const getSubjects = (type: string) => {
-    if (type === 'College') {
+    if (type === 'college') {
       getForRegistration(`${getSubjectCollege}`)
         .then((data) => {
           if (data.status) {
@@ -681,6 +682,7 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleSubmit = () => {
+    console.log("fkjhsghghjsjgfs")
     let valid1=false;
     if (teacher.entity_id == '') {
       setEntity_error(true)
@@ -690,7 +692,6 @@ const TeacherRegistrationPage = () => {
     } else {
       setEntity_error(false)
     }
-
     if (!/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(teacher.institution_id || '')) {
       setInstitution_id_error(true);
       valid1 = true;
@@ -698,27 +699,27 @@ const TeacherRegistrationPage = () => {
       setInstitution_id_error(false);
     }
 
-
-    if (selectedEntity === 'College' && teacher.university_id == '') {
+    if (selectedEntity.toLowerCase() === 'college' && teacher.university_id == '') {
       setUniversityError(true);
       valid1 = true;
     } else {
       setUniversityError(false);
     }
- 
     if ( teacher.qualification === '') {
+      valid1 = true;
       setQualifications_error(true);
     } else {
       setQualifications_error(false);
     }
     if (!/^\d+$/.test(teacher.experience)) {
+      valid1 = true;
       setTeaching_experience_error(true);
     } else {
       setTeaching_experience_error(false);
     }
 
+if(valid1) return;
 
-if(!valid1) return;
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
@@ -758,7 +759,7 @@ if(!valid1) return;
         setUniversityError(true);
       }
     }
-
+console.log(valid,teacher.university_id)
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -889,7 +890,7 @@ if(!valid1) return;
           JSON.stringify(course_semester_subjects),
         );
       }
-      let payload = {
+      const payload = {
         email: process.env.REACT_APP_SUPER_USER_EMAIL,
         password: process.env.REACT_APP_SUPER_USER_PASSWORD,
         user_type: "super_admin"
@@ -913,7 +914,10 @@ if(!valid1) return;
               }
             })
             .catch((error) => {
-              console.log(error);
+                toast.error(error.response.data.message, {
+                            hideProgressBar: true,
+                            theme: 'colored',
+                          });
             });
         }
       })
@@ -925,18 +929,26 @@ if(!valid1) return;
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      // Convert FileList to an array
-      const filesArray = Array.from(files);
-
-      setAllSelectedfiles((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
-    }
-  };
+  
+   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      console.log(files, typeof files);
+      setDocument_error(false);
+    
+      if (files && event.target.name !== "icon") {
+        const filesArray = Array.from(files);
+    
+        setAllSelectedfiles((prevFiles) => [
+          ...prevFiles, // Keep previously selected files
+          ...filesArray, // Add newly selected files
+        ]);
+    
+        // Reset the input field to allow selecting the same files again
+        event.target.value = "";
+      } else {
+        // setLogo(files);
+      }
+    };
 
   const handleInputChangecountry = (val: string, name: string) => {
     setTeacher({ ...teacher, [name]: val });
@@ -1017,8 +1029,9 @@ if(!valid1) return;
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
 
         if (name === 'class_id') {
+          console.log(dataClass,value)
           const selectedClass = dataClass.find(
-            (item) => String(item.id) === value,
+            (item) => String(item.id) == value,
           )?.class_name;
 
           setSelectedClassName(
@@ -1054,6 +1067,7 @@ if(!valid1) return;
         }
 
         if (name === 'stream') {
+          console.log(totleSubject);
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ===
@@ -1130,15 +1144,20 @@ if(!valid1) return;
     },
     {
       label: 'Upload Documents',
-      subline: 'Upload your documnets & logo',
+      subline: 'Upload your documents & logo',
       icon: <DriveFolderUploadIcon />,
     },
   ];
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
+    
     if (activeStep == 0) {
       let valid = false;
+      if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
+        setdobset_col(true);
+        valid = true;
+      }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(teacher.email_id.trim())) {
         setEmail_id_error(true);
         valid = true;
@@ -1224,7 +1243,7 @@ if(!valid1) return;
   };
   const handleOtpSubmit = (otp: string) => {
 
-    let payload = {
+    const payload = {
       email: teacher.email_id,
       otp: otp
     }
@@ -1286,7 +1305,7 @@ if(!valid1) return;
                   </div>
                   <h3 className="text-center fw-bold">Register As Teacher</h3>
                   <p className="mb-lg-5 mb-4 text-center text-black-50">
-                    Empower your institution—get started today!
+                  Empower your teaching journey—get started today!
                   </p>
 
                   <div className="row d-flex justify-content-center g-4">
@@ -1556,7 +1575,7 @@ if(!valid1) return;
                         type="text"
                         value={teacher.address}
                         onChange={handelChange}
-                        label="Address"
+                        label="Address*"
                       />
                       {address_error === true && (
                         <p className="error-text " style={{ color: 'red' }}>
@@ -1575,7 +1594,7 @@ if(!valid1) return;
                         type="text"
                         value={teacher.pincode}
                         onChange={handelChange}
-                        label="pincode"
+                        label="pincode*"
                       />
                       {pincode_error === true && (
                         <p className="error-text " style={{ color: 'red' }}>
@@ -1623,7 +1642,7 @@ if(!valid1) return;
                       </label> */}
 
                       <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Entity *</InputLabel>
+                        <InputLabel id="demo-simple-select-label">Entity*</InputLabel>
                         <Select
                           onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
                           label="Entity"
@@ -1671,16 +1690,16 @@ if(!valid1) return;
                     </div>
                     {selectedEntity.toLowerCase() === 'college' ? (
                       <div className="col-md-6 col-12 mb-3">
-                        <label className="col-form-label">
+                        {/* <label className="col-form-label">
                           University Name<span>*</span>
-                        </label>
+                        </label> */}
                         <FormControl fullWidth>
-                          <InputLabel id="university_id">University Name</InputLabel>
+                          <InputLabel id="university_id">University Name*</InputLabel>
                           <Select
-                            labelId="institution_id"
+                            labelId="university_id"
                             id="demo2-multiple-name"
                             name="university_id"
-                            label="University Name"
+                            label="University Name*"
                             onChange={handleSelect}
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1727,7 +1746,7 @@ if(!valid1) return;
                           Institution Name<span>*</span>
                         </label> */}
                         <FormControl fullWidth>
-                          <InputLabel id="institution_id">Institute</InputLabel>
+                          <InputLabel id="institution_id">Institute*</InputLabel>
                           <Select
                             labelId="institution_id"
                             id="demo2-multiple-name"
@@ -1782,12 +1801,12 @@ if(!valid1) return;
                   Institution Name<span>*</span>
                 </label> */}
                         <FormControl fullWidth>
-                          <InputLabel id="institution_id">Institute</InputLabel>
+                          <InputLabel id="institution_id">Institute*</InputLabel>
                           <Select
                             labelId="institution_id"
                             id="demo2-multiple-name"
                             name="institution_id"
-                            label="Institute"
+                            label="Institute*"
                             onChange={handleSelect}
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1842,6 +1861,7 @@ if(!valid1) return;
                         name="experience"
                         className="form-control"
                         type="number"
+                        label="Teaching Experience*"
                         onChange={handelChange}
                         inputProps={{ min: '0' }}
                       />
@@ -1857,7 +1877,7 @@ if(!valid1) return;
               </label> */}
                       <FormControl fullWidth>
                         <InputLabel id="demo-multiple-name-label">
-                          Qualification
+                          Qualification*
                         </InputLabel>
                         <Select
                           labelId="demo-multiple-name-label"
@@ -1887,16 +1907,16 @@ if(!valid1) return;
                       <div key={index} className="row d-flex justify-content-center">
                         {/* Course Selection */}
                         <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
+                          {/* <label className="col-form-label">
                             Course<span>*</span>
-                          </label>
+                          </label> */}
                           <FormControl fullWidth>
-                            <InputLabel id={`course_id_${index}`}>Course</InputLabel>
+                            <InputLabel id={`course_id_${index}`}>Course*</InputLabel>
                             <Select
                               labelId={`course_id_${index}`}
                               id={`demo3-multiple-name-${index}`}
                               name="course_id"
-                              label="Course"
+                              label="Course*"
                               onChange={(event: any) =>
                                 handelSubjectBoxChange(event, index)
                               }
@@ -1924,13 +1944,13 @@ if(!valid1) return;
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`semester_id_${index}`}>
-                              Semester
+                              Semester*
                             </InputLabel>
                             <Select
                               labelId={`semester_id_${index}`}
                               id={`semester_select_${index}`}
                               name="semester_number"
-                              label="Semester"
+                              label="Semester*"
                               onChange={(event: any) =>
                                 handelSubjectBoxChange(event, index)
                               }
@@ -1961,7 +1981,7 @@ if(!valid1) return;
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
-                              Subject
+                              Subject*
                             </InputLabel>
                             <Select
                               labelId={`subject_label_${index}`}
@@ -2040,15 +2060,15 @@ if(!valid1) return;
                       >
                         {/* Class Selection */}
                         <div
-                          // className={box.selected_class_name}
-                          className="col-md-6 col-12"
+                           className={box.selected_class_name}
+                          //className="col-md-6 col-12"
                         >
                           {/* <label className="col-form-label">
                             Class<span>*</span>
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`class_id_${index}`}>
-                              Class
+                              Class*
                             </InputLabel>
                             <Select
                               labelId={`class_id_${index}`}
@@ -2081,7 +2101,7 @@ if(!valid1) return;
                             </label> */}
                             <FormControl fullWidth>
                               <InputLabel id={`stream_id_${index}`}>
-                                Stream Name
+                                Stream Name*
                               </InputLabel>
                               <Select
                                 labelId={`stream_id_${index}`}
@@ -2142,7 +2162,7 @@ if(!valid1) return;
                           </label> */}
                           <FormControl fullWidth>
                             <InputLabel id={`subject_label_${index}`}>
-                              Subject
+                              Subject*
                             </InputLabel>
                             <Select
                               labelId={`subject_label_${index}`}
@@ -2216,7 +2236,7 @@ if(!valid1) return;
                   <div className="row d-flex justify-content-between mt-0 g-4">
                     <div className="col-12 ">
                       <label className="col-form-label">
-                        Document<span>* </span>
+                        Document<span>*</span>
                       </label>
                       <UploadBtn
                         label="Upload Documents"
@@ -2242,6 +2262,19 @@ if(!valid1) return;
                           </ul>
                         )}
                       </div>
+                      <div>
+                            {document_error && (
+                              <p
+                                className="error-text "
+                                style={{ color: 'red' }}
+                              >
+                                <small >
+                                  {' '}
+                                  Please select at least a Document file.
+                                </small>
+                              </p>
+                            )}
+                          </div>
                     </div>
                     <div className="col-lg-12">
                       <FormControlLabel
