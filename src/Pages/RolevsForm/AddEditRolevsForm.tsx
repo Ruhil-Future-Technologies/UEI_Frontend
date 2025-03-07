@@ -94,14 +94,14 @@ const AddEditRolevsForm = () => {
   const callAPI = async () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.rolees_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataRole(filteredData || []);
         // setDataRole(data?.data||[])
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -111,14 +111,14 @@ const AddEditRolevsForm = () => {
       });
     getData(`${FormURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.formes_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataForm(filteredData || []);
         // setDataForm(data?.data||[])
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -139,7 +139,7 @@ const AddEditRolevsForm = () => {
           });
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -214,11 +214,11 @@ const AddEditRolevsForm = () => {
       .catch((e: any) => {
         console.error(e);
       });
-    if (basicinfo?.basic_info !== null) {
-      getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
+    if (basicinfo?.admin_data?.basic_info !== null) {
+      getData(`${MenuListURL1}/${basicinfo?.admin_data?.basic_info?.id}`)
         .then((data: any) => {
-          if (data.data) {
-            localStorage.setItem('menulist1', JSON.stringify(data?.data));
+          if (data?.data?.menus_data_list) {
+            localStorage.setItem('menulist1', JSON.stringify(data?.data?.menus_data_list));
           }
         })
         .catch((e: any) => {
@@ -227,42 +227,37 @@ const AddEditRolevsForm = () => {
     }
   };
 
-  const handleSubmit = async (rolevsformData: {
-    role_master_id?: string;
-    form_master_id?: string;
-    is_search?: boolean;
-    is_save?: boolean;
-    is_update?: boolean;
-  }) => {
+  const handleSubmit = async (rolevsformData: any) => {
+    const formData = new FormData();
+
     rolevsformData.role_master_id = String(rolevsformData.role_master_id);
     rolevsformData.form_master_id = String(rolevsformData.form_master_id);
 
+    const booleanFields = ["is_search", "is_save", "is_update", "is_active", "is_deleted"];
+
+    Object.keys(rolevsformData).forEach((key) => {
+      if (booleanFields.includes(key)) {
+        formData.append(key, rolevsformData[key] == true ? "True" : "False");
+      } else {
+        formData.append(key, rolevsformData[key]);
+      }
+    });
+
     if (id) {
-      putData(`${RolevsFormEditURL}/${id}`, rolevsformData).then(
-        (data: any) => {
-          if (data?.status === 200) {
-            navigator('/main/RoleVsForm');
-            toast.success(data.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-            callAPIMenuList();
-          } else {
-            toast.error(data.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          }
-        },
-      );
+      putData(`${RolevsFormEditURL}/${id}`, formData).then((data: any) => {
+        if (data?.status) {
+          navigator('/main/RoleVsForm');
+          toast.success(data.message, { hideProgressBar: true, theme: 'colored' });
+          callAPIMenuList();
+        } else {
+          toast.error(data.message, { hideProgressBar: true, theme: 'colored' });
+        }
+      });
     } else {
-      postData(`${RolevsFormAddURL}`, rolevsformData).then((data: any) => {
-        if (data?.status === 200) {
-          // navigator('/main/RoleVsForm')
-          toast.success(data.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
+      try {
+        const data: any = await postData(`${RolevsFormAddURL}`, formData);
+        if (data?.status) {
+          toast.success(data.message, { hideProgressBar: true, theme: 'colored' });
           setRoleVsForm({
             role_master_id: '',
             form_master_id: '',
@@ -272,14 +267,24 @@ const AddEditRolevsForm = () => {
           });
           callAPIMenuList();
         } else {
-          toast.error(data.message, {
+          toast.error(data.message, { hideProgressBar: true, theme: 'colored' });
+        }
+      } catch (error: any) {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
+        } else {
+          toast.error("Something went wrong. Please try again later.", { hideProgressBar: true, theme: 'colored' });
         }
-      });
+      }
+
     }
   };
+
+
+
   const rolevsformSchema = Yup.object().shape({
     role_master_id: Yup.string().required('Please select Role Master'),
     form_master_id: Yup.string().required('Please select Form Master'),

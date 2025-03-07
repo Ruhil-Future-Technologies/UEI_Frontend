@@ -18,15 +18,16 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = React.useContext(NameContext);
   const { namecolor }: any = context;
-  const adminId = localStorage.getItem('_id');
-
+  const adminUuId = localStorage.getItem('user_uuid');
+  const adminId= localStorage.getItem('_id');
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState('+91');
   const [whatsappNum, setWhatsappNum] = useState('');
   const [contcodePhone, setContcodePhone] = useState('+91');
   const [phoneNum, setPhoneNum] = useState('');
-  const [email, setEmail] = useState(localStorage.getItem('userid'));
+  const [email, setEmail] = useState(localStorage.getItem('email'));
   const [editFlag, setEditFlag] = useState<boolean>(false);
+  const [contectId, setContectId] = useState();
   const [errors, setErrors] = useState({
     phoneNum: '',
     email: '',
@@ -87,41 +88,50 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
 
   const getContact = async () => {
     try {
-      const response = await getData('admin_contact/edit/' + adminId);
+      const response = await getData('admin_contact/get/' + adminUuId);
       if (!response) {
         // Handle case where response is undefined or null
         console.error('No response received from Data');
         return;
       }
-      if (response?.status === 200) {
-        setContcodeWtsap(response?.data.mobile_isd_watsapp);
-        setWhatsappNum(response?.data.mobile_no_watsapp);
-        setContcodePhone(response?.data.mobile_isd_call);
-        setPhoneNum(response?.data.mobile_no_call);
-        setEmail(response?.data.email_id);
+     
+      if (response?.status) {
+        console.log(response?.data.admin_contactes_data[0]);
+        setContectId(response?.data.admin_contactes_data[0].id);
+        setContcodeWtsap(response?.data.admin_contactes_data[0].mobile_isd_watsapp);
+        setWhatsappNum(response?.data.admin_contactes_data[0].mobile_no_watsapp);
+        setContcodePhone(response?.data.admin_contactes_data[0].mobile_isd_call);
+        setPhoneNum(response?.data.admin_contactes_data[0].mobile_no_call);
+        setEmail(response?.data.email_id?response?.data.email:localStorage.getItem('email'));
         setInitialState({
-          mobile_isd_watsapp: response?.data.mobile_isd_watsapp,
-          mobile_no_watsapp: response?.data.mobile_no_watsapp,
-          mobile_isd_call: response?.data.mobile_isd_call,
-          mobile_no_call: response?.data.mobile_no_call,
-          email_id: response?.data.email_id,
+          mobile_isd_watsapp: response?.data.admin_contactes_data[0].mobile_isd_watsapp,
+          mobile_no_watsapp: response?.data.admin_contactes_data[0].mobile_no_watsapp,
+          mobile_isd_call: response?.data.admin_contactes_data[0].mobile_isd_call,
+          mobile_no_call: response?.data.admin_contactes_data[0].mobile_no_call,
+          email_id:response?.data.email_id?response?.data.email:localStorage.getItem('email'),
           admin_id: adminId,
         });
         setEditFlag(false);
-      } else if (response?.status === 404) {
+      } else if (response?.code === 404) {
         setEditFlag(true);
       } else {
         // empty
         console.error('Unexpected response:', response);
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.code === 401) {
         toast.warning('Please login again', {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
         });
-      } else {
+      } else if(error.code !== 404){
+        const userId = localStorage.getItem('email');
+        if (userId !== null) {
+          setEmail(userId);
+        } else {
+          console.error('No user ID found in localStorage.');
+        }
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',
@@ -147,22 +157,29 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       });
     }
     const paylod = {
-      admin_id: adminId,
+      admin_address_admin_id: adminId,
       mobile_isd_call: contcodePhone,
       mobile_no_call: phoneNum,
       mobile_isd_watsapp: contcodeWtsap,
       mobile_no_watsapp: whatsappNum,
       email_id: email,
     };
+    console.log(paylod,email);
+    const formData = new FormData();
+    Object.entries(paylod).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+          formData.append(key, value);
+      }
+  });
 
     const eq = deepEqual(initialState, paylod);
 
     if (editFlag) {
       const saveData = async () => {
         try {
-          const response = await postData('admin_contact/add', paylod);
+          const response = await postData('admin_contact/add', formData);
 
-          if (response?.status === 200) {
+          if (response?.status) {
             setEditFlag(false);
             toast.success('Admin Contact details saved successfully', {
               hideProgressBar: true,
@@ -173,7 +190,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             setActiveForm((prev) => prev + 1);
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             toast.warning('Please login again', {
               hideProgressBar: true,
               theme: 'colored',
@@ -185,10 +202,10 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
               try {
                 const response = await putData(
                   'admin_contact/edit/' + adminId,
-                  paylod,
+                  formData,
                 );
 
-                if (response?.status === 200) {
+                if (response?.status) {
                   toast.success(response?.message, {
                     hideProgressBar: true,
                     theme: 'colored',
@@ -204,7 +221,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   });
                 }
               } catch (error: any) {
-                if (error?.response?.status === 401) {
+                if (error?.response?.code === 401) {
                   toast.warning('Please login again', {
                     hideProgressBar: true,
                     theme: 'colored',
@@ -233,11 +250,11 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       const editData = async () => {
         try {
           const response = await putData(
-            'admin_contact/edit/' + adminId,
-            paylod,
+            'admin_contact/edit/' + contectId,
+            formData,
           );
 
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success(response?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -253,7 +270,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             });
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             toast.warning('Please login again', {
               hideProgressBar: true,
               theme: 'colored',

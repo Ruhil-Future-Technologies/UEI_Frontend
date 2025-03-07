@@ -39,11 +39,11 @@ const Role = () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
         if (data.data) {
-          setDataRole(data?.data);
+          setDataRole(data?.data?.rolees_data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -68,7 +68,7 @@ const Role = () => {
   const handleDelete = (id: any) => {
     deleteData(`${DeleteRoleURL}/${id}`)
       .then((data: any) => {
-        if (data.status === 200) {
+        if (data.status) {
           toast.success('Role deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -83,7 +83,7 @@ const Role = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {

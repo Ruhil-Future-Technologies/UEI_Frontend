@@ -54,7 +54,7 @@ interface Teacher {
 }
 
 const TeacherDash = () => {
-  const teacherId = localStorage.getItem('_id');
+  const teacherId = localStorage.getItem('user_uuid');
   const [activeTab, setActiceTab] = useState(0);
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
@@ -99,9 +99,9 @@ const TeacherDash = () => {
 
   const getTeacherInfo = () => {
     try {
-      getData(`/teacher/getbyloginid/${teacherId}`).then((data) => {
+      getData(`/teacher/edit/${teacherId}`).then((data) => {
         console.log(data);
-        if (data?.status === 200) {
+        if (data?.status) {
           setTeacherData(data.data);
         }
       });
@@ -109,6 +109,7 @@ const TeacherDash = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getTeacherInfo();
   }, []);

@@ -35,6 +35,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+ 
+  const { activeForm, }: any = context;
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState('+91');
   const [whatsappNum, setWhatsappNum] = useState('');
@@ -44,7 +46,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [phoneNumerror, setPhoneNumerror] = useState({
     phoneNum: '',
   });
-  const [email, setEmail] = useState(localStorage.getItem('userid'));
+  const [email, setEmail] = useState(localStorage.getItem('email'));
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [errors, setErrors] = useState({
     phoneNum: '',
@@ -117,36 +119,30 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const getContacInfo = async () => {
     getData(`${'student_contact/edit/' + StudentId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
           setPhoneNum(data?.data.mobile_no_call);
-          if (validateEmail(data?.data.email_id)) {
-            setEmail(data?.data.email_id);
-          } else {
-            setEmail('');
-          }
+          setEmail(data?.data.email_id?data?.data.email:localStorage.getItem('email'));
 
           setInitialState({
             mobile_isd_watsapp: data?.data.mobile_isd_watsapp,
             mobile_no_watsapp: data?.data.mobile_no_watsapp,
             mobile_isd_call: data?.data.mobile_isd_call,
             mobile_no_call: data?.data.mobile_no_call,
-            email_id: validateEmail(data?.data.email_id)
-              ? data?.data.email_id
-              : '',
+            email_id: data?.data.email_id?data?.data.email:localStorage.getItem('email'),
             student_id: StudentId,
           });
           setEditFlag(false);
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setEditFlag(true);
           //   toast.warning("Please Add Your Information", {
           //     hideProgressBar: true,
           //     theme: "colored",
           //   });
-          const userId = localStorage.getItem('userid');
-          if (userId && validateEmail(userId)) {
+          const userId = localStorage.getItem('email');
+          if (userId !== null) {
             setEmail(userId);
           } else if (userId && validateMobile(userId)) {
             setPhoneNum(userId);
@@ -164,8 +160,11 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       });
   };
   useEffect(() => {
-    getContacInfo();
-  }, []);
+    if(StudentId){
+      getContacInfo();
+    }
+  
+  }, [activeForm]);
   const submitHandel = () => {
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
@@ -193,6 +192,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // });
       return;
     }
+    const formData = new FormData();
+
     const payload = {
       student_id: StudentId,
       mobile_isd_call: contcodePhone,
@@ -200,12 +201,17 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       mobile_isd_watsapp: contcodeWtsap,
       mobile_no_watsapp: whatsappNum,
       email_id: email,
-    };
+    } as any;
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
     const eq = deepEqual(initialState, payload);
     if (editFalg) {
-      postData(`${'student_contact/add'}`, payload)
+      postData(`${'student_contact/add'}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             setEditFlag(false);
             toast.success('Contact Details saved successfully', {
               hideProgressBar: true,
@@ -217,10 +223,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           } else {
             if (data?.message === 'Email Already exist') {
               setEditFlag(false);
-
-              putData(`${'student_contact/edit/'}${StudentId}`, payload)
+              putData(`${'student_contact/edit/'}${StudentId}`, formData)
                 .then((data: any) => {
-                  if (data.status === 200) {
+                  if (data.status) {
                     toast.success('Contact Details updated successfully', {
                       hideProgressBar: true,
                       theme: 'colored',
@@ -257,9 +262,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       // eslint-disable-next-line no-lone-blocks
       {
         if (!eq) {
-          putData(`${'student_contact/edit/'}${StudentId}`, payload)
+          putData(`${'student_contact/edit/'}${StudentId}`, formData)
             .then((data: any) => {
-              if (data.status === 200) {
+              if (data.status) {
                 toast.success('Contact Details updated successfully', {
                   hideProgressBar: true,
                   theme: 'colored',

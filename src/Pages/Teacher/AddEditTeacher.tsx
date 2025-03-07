@@ -47,7 +47,7 @@ interface ITeacherForm {
   gender: string;
   dob: string;
   phone: string;
-  email_id: string;
+  email: string;
   qualification: string;
   role_id?: string;
   subjects?: string[];
@@ -55,7 +55,7 @@ interface ITeacherForm {
   class_id?: string;
   university_id?: string;
   experience: number;
-  institution_id: string;
+  institute_id: string;
   stream?: string;
   address: string;
   country: string;
@@ -132,7 +132,7 @@ const AddEditTeacher = () => {
     gender: '',
     dob: '',
     phone: '',
-    email_id: '',
+    email: '',
     qualification: '',
     role_id: '',
     subjects: [],
@@ -140,7 +140,7 @@ const AddEditTeacher = () => {
     class_id: '',
     university_id: '',
     experience: 0,
-    institution_id: '',
+    institute_id: '',
     address: '',
     country: '',
     state: '',
@@ -193,36 +193,37 @@ const AddEditTeacher = () => {
     let all_classes: any = [];
 
     await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      all_classes = data?.data;
-      setDataClasses(data.data);
+      all_classes = data?.data.classes_data;
+      setDataClasses(data.data?.classes_data);
     });
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      all_courses = data.data;
-      setDataCourses(data.data);
+      all_courses = data.data.course_data;
+      setDataCourses(data?.data?.course_data);
     });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data);
+      setCollegeSubjects(data.data.subjects_data);
     });
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data);
+      setSchoolSubjects(data.data.subjects_data);
     });
     if (id) {
       const teacherData = await getData(`${TeacherURL}`);
+
       try {
         if (!teacherData?.data) {
           return;
         }
         const currentTeacher = teacherData?.data.find((teacher: any) => {
-          if (teacher.teacher_id == id) {
-            return teacher.teacher_login_id;
+          if (teacher.user_uuid == id) {
+            return teacher.user_uuid;
           }
         });
 
-        if (!currentTeacher?.teacher_login_id) {
+        if (!currentTeacher?.user_uuid) {
           return;
         }
         const teacherDetail = await getData(
-          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_LOGIN_ID}/${currentTeacher.teacher_login_id}`,
+          `${QUERY_KEYS_TEACHER.GET_TECHER_BY_UUID}/${currentTeacher.user_uuid}`,
         );
 
         const filterTeacherCourses = (
@@ -233,32 +234,37 @@ const AddEditTeacher = () => {
             courses: [],
           } as any;
 
-          const teacherCoursesObj = teacherDetail.data.course_semester_subjects;
-          for (const [courseName, semesterData] of Object.entries(
-            teacherCoursesObj as any,
-          )) {
-            const matchingCourse = allCourses.find(
-              (course: any) =>
-                course.course_name === courseName &&
-                course.institution_id === teacherDetail.data.institution_id,
-            );
+          const teacherCoursesObj =
+            teacherDetail?.data?.course_semester_subjects;
 
-            if (matchingCourse) {
-              for (const [semester, subjects] of Object.entries(
-                semesterData as any,
-              )) {
-                result.courses.push({
-                  course_id: matchingCourse.id,
-                  semester:
-                    semester.charAt(0).toUpperCase() + semester.slice(1),
-                  subjects: subjects,
-                });
+          if (teacherCoursesObj) {
+            for (const [courseId, semesterData] of Object.entries(
+              teacherCoursesObj as any,
+            )) {
+              const matchingCourse = allCourses.find(
+                (course: any) =>
+                  course.id === Number(courseId) &&
+                  course.institution_id === teacherDetail?.data?.institute_id,
+              );
+
+              if (matchingCourse) {
+                for (const [semester, subjects] of Object.entries(
+                  semesterData as any,
+                )) {
+                  result.courses.push({
+                    course_id: matchingCourse.id,
+                    semester:
+                      semester.charAt(0).toUpperCase() + semester.slice(1),
+                    subjects: subjects,
+                  });
+                }
               }
             }
           }
 
           return result;
         };
+
         const course_semester_subjects_arr: any = filterTeacherCourses(
           teacherDetail,
           all_courses,
@@ -274,22 +280,24 @@ const AddEditTeacher = () => {
 
           const teacherClassesObj = teacherDetail.data.class_stream_subjects;
 
-          for (const [className, streamData] of Object.entries(
-            teacherClassesObj as any,
-          )) {
-            const matchingClass = all_classes.find(
-              (cls: any) => cls.class_name === className,
-            );
+          if (teacherClassesObj) {
+            for (const [classId, streamData] of Object.entries(
+              teacherClassesObj as any,
+            )) {
+              const matchingClass = all_classes.find(
+                (cls: any) => cls.id === Number(classId),
+              );
 
-            if (matchingClass) {
-              for (const [stream, subjects] of Object.entries(
-                streamData as any,
-              )) {
-                result.classes.push({
-                  class_id: matchingClass.id,
-                  stream: stream.toLowerCase(),
-                  subjects: subjects,
-                });
+              if (matchingClass) {
+                for (const [stream, subjects] of Object.entries(
+                  streamData as any,
+                )) {
+                  result.classes.push({
+                    class_id: matchingClass.id,
+                    stream: stream.toLowerCase(),
+                    subjects: subjects,
+                  });
+                }
               }
             }
           }
@@ -301,30 +309,30 @@ const AddEditTeacher = () => {
           all_classes,
         );
 
-        const processedData = {
+        const processedData = await {
           first_name: teacherDetail?.data?.first_name || '',
           last_name: teacherDetail?.data?.last_name || '',
           gender:
             teacherDetail?.data?.gender.charAt(0).toUpperCase() +
-              teacherDetail?.data?.gender.slice(1) || '',
+            teacherDetail?.data?.gender.slice(1) || '',
           dob: teacherDetail?.data?.dob || '',
           phone: teacherDetail?.data?.phone || '',
-          email_id: teacherDetail?.data?.email_id || '',
+          email: teacherDetail?.data?.email || '',
           qualification: teacherDetail?.data?.qualification || '',
           role_id: teacherDetail?.data?.role_id || '',
 
-          courses: course_semester_subjects_arr.courses || [
+          courses: course_semester_subjects_arr?.courses || [
             { course_id: '', Semester: '', subjects: [] },
           ],
           entity_id: teacherDetail?.data?.entity_id || '',
-          classes: class_stream_subjects_arr.classes || [
+          classes: class_stream_subjects_arr?.classes || [
             { class_id: '', stream: '', subjects: [] },
           ],
           school_name: teacherDetail?.data?.school_name || '',
           university_id: teacherDetail.data?.university_id || '',
 
           experience: Number(teacherDetail?.data?.experience) || 0,
-          institution_id: teacherDetail?.data?.institution_id || '',
+          institute_id: teacherDetail?.data?.institute_id || '',
           address: teacherDetail?.data?.address || '',
           country: teacherDetail?.data?.country || '',
           state: teacherDetail?.data?.state || '',
@@ -335,11 +343,11 @@ const AddEditTeacher = () => {
 
         setTeacher(processedData);
 
-        if (teacherDetail.data?.dob) {
-          setDob(dayjs(teacherDetail.data.dob));
+        if (teacherDetail?.data?.dob) {
+          setDob(dayjs(teacherDetail?.data?.dob));
         }
       } catch (e: any) {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -350,49 +358,72 @@ const AddEditTeacher = () => {
     }
   };
 
-  useEffect(() => {
-    getData(`${GET_UNIVERSITY}`).then((data) => {
-      setDataUniversity(data.data);
-    });
-    getData(`${GET_ENTITIES}`).then((data) => {
-      setDataEntity(data.data);
-    });
-    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
-      const allInstitutes = data.data;
+  const fetchData = async () => {
+    const promises = [
+      getData(`${GET_UNIVERSITY}`)
+        .then((data) => setDataUniversity(data.data?.universities_data || []))
+        .catch(() => setDataUniversity([])),
+  
+      getData(`${GET_ENTITIES}`)
+        .then((data) => setDataEntity(data.data?.entityes_data || []))
+        .catch(() => setDataEntity([])),
+  
+      getData(`${QUERY_KEYS.GET_INSTITUTES}`)
+        .then((data) => {
+          const allInstitutes = data.data || [];
+  
+          const schoolInstitutes = allInstitutes.filter(
+            (institute: any) =>
+              institute.entity_type?.toLowerCase() === 'school' && institute.is_approve
+          );
+  
+          const collegeInstitutes = allInstitutes.filter(
+            (institute: any) =>
+              institute.entity_type?.toLowerCase() === 'college' && institute.is_approve
+          );
+  
+          setDataInstitutes(allInstitutes);
+          setSchoolInstitutes(schoolInstitutes);
+          setCollegeInstitutes(collegeInstitutes);
+        })
+        .catch(() => {
+          setDataInstitutes([]);
+          setSchoolInstitutes([]);
+          setCollegeInstitutes([]);
+        }),
+  
+      getData(`${QUERY_KEYS_ROLE.GET_ROLE}`)
+        .then((data) => setRole(data.data?.rolees_data || []))
+        .catch(() => setRole([])),
+  
+      getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
+        .then((data) => setDataClasses(data.data?.classes_data || []))
+        .catch(() => setDataClasses([])),
+  
+      getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
+        .then((data) => setDataCourses(data.data?.course_data || []))
+        .catch(() => setDataCourses([])),
+  
+      getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`)
+        .then((data) => setCollegeSubjects(data.data?.subjects_data || []))
+        .catch(() => setCollegeSubjects([])),
+  
+      getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`)
+        .then((data) => setSchoolSubjects(data.data?.subjects_data || []))
+        .catch(() => setSchoolSubjects([])),
+    ];
+  
+    await Promise.allSettled(promises); 
+  };
+  
 
-      const schoolInstitutes = allInstitutes?.filter(
-        (institute: any) =>
-          institute.entity_type?.toLowerCase() === 'school' &&
-          institute.is_approve,
-      );
-      const collegeInstitutes = allInstitutes?.filter(
-        (institute: any) =>
-          institute.entity_type?.toLowerCase() === 'college' &&
-          institute.is_approve,
-      );
-      setDataInstitutes(allInstitutes);
-      setSchoolInstitutes(schoolInstitutes);
-      setCollegeInstitutes(collegeInstitutes);
-    });
-    getData(`${QUERY_KEYS_ROLE.GET_ROLE}`).then((data) => {
-      setRole(data.data);
-    });
-    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data);
-    });
-    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      setDataCourses(data.data);
-    });
-    getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data);
-    });
-    getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data);
-    });
-  }, []);
-
   useEffect(() => {
-    callAPI();
+    const fetchAndCallAPI = async () => {
+      await fetchData(); 
+      callAPI(); 
+    };
+  
+    fetchAndCallAPI();
   }, []);
 
   useEffect(() => {
@@ -423,10 +454,10 @@ const AddEditTeacher = () => {
 
   useEffect(() => {
     const institutionId =
-      formRef.current?.values?.institution_id || selectedInstitutionId;
+      formRef.current?.values?.institute_id || selectedInstitutionId;
 
     if (institutionId) {
-      const filtered = dataCourses.filter(
+      const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
       );
 
@@ -435,7 +466,7 @@ const AddEditTeacher = () => {
       setFilteredCourses([]);
     }
   }, [
-    formRef.current?.values?.institution_id,
+    formRef.current?.values?.institute_id,
     dataCourses,
     selectedInstitutionId,
   ]);
@@ -638,7 +669,7 @@ const AddEditTeacher = () => {
       .required('Please enter last Name')
       .matches(charPattern, 'Please enter valid name, only characters allowed'),
     gender: Yup.string().required('Please select Gender'),
-    email_id: Yup.string()
+    email: Yup.string()
       .required('Please enter Email Id')
       .matches(emailPattern, 'Please enter a valid Email format'),
     dob: Yup.date().required('Please enter Date of Birth'),
@@ -724,11 +755,17 @@ const AddEditTeacher = () => {
       .typeError('Experience must be a number'),
     entity_id: Yup.string().required('Please select Entity'),
     university_id: Yup.string().when('entity_id', {
-      is: (val: string) => !isSchoolEntity(val),
-      then: () => Yup.string().required('Please select University'),
-      otherwise: () => Yup.string(),
+      is: (entity_id: string) => {
+        const selectedEntity = dataEntity.find(
+          (entity) => entity.id === Number(entity_id),
+        );
+
+        return selectedEntity?.entity_type !== 'school';
+      },
+      then: (schema) => schema.required('Please select University'),
+      otherwise: (schema) => schema.notRequired(),
     }),
-    institution_id: Yup.string().when('entity_id', {
+    institute_id: Yup.string().when('entity_id', {
       is: (val: string) => isCollegeEntity(val),
       then: () =>
         Yup.string()
@@ -756,6 +793,7 @@ const AddEditTeacher = () => {
     teacherData: ITeacherForm,
     { resetForm }: FormikHelpers<ITeacherForm>,
   ) => {
+    const formData = new FormData();
     const transformCollegeData = (originalData: any) => {
       const transformedData = { ...originalData };
 
@@ -855,12 +893,15 @@ const AddEditTeacher = () => {
     const formattedData = {
       ...transformedData,
       role_id: teacherRole?.id,
-    };
+    } as any;
 
     if (id) {
-      putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formattedData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      Object.keys(formattedData).forEach((key) => {
+        formData.append(key, formattedData[key]);
+      });
+      putData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${id}`, formData)
+        .then((data: any) => {
+          if (data.status) {
             navigator('/main/Teacher');
             toast.success('Teacher updated successfully', {
               hideProgressBar: true,
@@ -869,7 +910,7 @@ const AddEditTeacher = () => {
           }
         })
         .catch((e: any) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -878,25 +919,25 @@ const AddEditTeacher = () => {
           });
         });
     } else {
-      postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formattedData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      Object.keys(formattedData).forEach((key) => {
+        formData.append(key, formattedData[key]);
+      });
+
+      postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formData)
+        .then((data: any) => {
+          if (data.status) {
             toast.success('Teacher saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
             });
             resetForm({ values: initialState });
             setDob(null);
-          } else {
-            toast.error(data.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
+            setTeacher(initialState);
           }
         })
         .catch((e: any) => {
-          navigator('/');
-          toast.error(e?.message, {
+          // navigator('/');
+          toast.error(e?.response?.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -971,24 +1012,34 @@ const AddEditTeacher = () => {
 
   const handleDateChange = (newValue: any) => {
     setDob(newValue);
-    if (newValue) {
-      const formattedDate = dayjs(newValue).format('YYYY-MM-DD');
-      setTeacher((prevTeacher) => ({
-        ...prevTeacher,
-        dob: formattedDate,
-      }));
-
-      if (!formattedDate || formattedDate == 'Invalid Date') {
-        return;
-      }
-      formRef?.current?.setFieldValue('dob', formattedDate);
-    } else {
+    if (!newValue) {
       setTeacher((prevTeacher) => ({
         ...prevTeacher,
         dob: '',
       }));
       formRef?.current?.setFieldValue('dob', '');
+      return;
     }
+
+    const formattedDate = dayjs(newValue).format('YYYY-MM-DD');
+    const today = dayjs();
+    const minAgeDate = today.subtract(18, 'year');
+
+    if (
+      !formattedDate ||
+      formattedDate === 'Invalid Date' ||
+      dayjs(newValue).isAfter(minAgeDate)
+    ) {
+      toast.error('Teacher must be 18 years old');
+      setDob('');
+      return;
+    }
+
+    setTeacher((prevTeacher) => ({
+      ...prevTeacher,
+      dob: formattedDate,
+    }));
+    formRef?.current?.setFieldValue('dob', formattedDate);
   };
 
   const handleInputChangecountry = async (
@@ -1027,7 +1078,7 @@ const AddEditTeacher = () => {
   ) => {
     const value = e.target.value;
 
-    if (fieldName === 'institution_id') {
+    if (fieldName === 'institute_id') {
       setSelectedInstitutionId(value as string);
     }
     if (fieldName.startsWith('courses.')) {
@@ -1248,7 +1299,7 @@ const AddEditTeacher = () => {
       if (fieldName === 'entity_id' && typeof value === 'string') {
         if (isSchoolEntity(value)) {
           newState.university_id = '';
-          newState.institution_id = '';
+          newState.institute_id = '';
         }
         if (isCollegeEntity(value)) {
           newState.class_id = '';
@@ -1256,7 +1307,7 @@ const AddEditTeacher = () => {
       }
 
       if (fieldName === 'university_id') {
-        newState.institution_id = '';
+        newState.institute_id = '';
 
         const filtered = dataInstitutes?.filter(
           (institute) => institute.university_id === value,
@@ -1272,13 +1323,13 @@ const AddEditTeacher = () => {
     if (fieldName === 'entity_id' && typeof value === 'string') {
       if (isSchoolEntity(value)) {
         formRef?.current?.setFieldValue('university_id', '');
-        formRef?.current?.setFieldValue('institution_id', '');
+        formRef?.current?.setFieldValue('institute_id', '');
         setFilteredInstitutes([]);
       }
     }
 
     if (fieldName === 'university_id') {
-      formRef?.current?.setFieldValue('institution_id', '');
+      formRef?.current?.setFieldValue('institute_id', '');
     }
 
     if (fieldName === 'class_id') {
@@ -1439,15 +1490,15 @@ const AddEditTeacher = () => {
                           fullWidth
                           component={TextField}
                           label="Email Id*"
-                          name="email_id"
+                          name="email"
                           type="email"
-                          value={values?.email_id}
+                          value={values?.email}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'email_id')
+                            handleChange(e, 'email')
                           }
                         />
-                        {touched?.email_id && errors?.email_id && (
-                          <p className="error">{String(errors.email_id)}</p>
+                        {touched?.email && errors?.email && (
+                          <p className="error">{String(errors.email)}</p>
                         )}
                       </div>
                     </div>
@@ -1528,6 +1579,7 @@ const AddEditTeacher = () => {
                           label="Experience (years) *"
                           name="experience"
                           type="number"
+                          inputProps={{ min: 0 }}
                           value={values?.experience}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'experience')
@@ -1638,7 +1690,7 @@ const AddEditTeacher = () => {
                             {dataUniversity?.map((university: any) => (
                               <MenuItem
                                 key={university.id}
-                                value={university.university_id}
+                                value={university.id}
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
                                   color: inputfieldtext(namecolor),
@@ -1670,8 +1722,8 @@ const AddEditTeacher = () => {
                                 : 'Institute *'}
                           </InputLabel>
                           <Select
-                            name="institution_id"
-                            value={values?.institution_id}
+                            name="institute_id"
+                            value={values?.institute_id || ''}
                             label={
                               isSchoolEntity(values?.entity_id)
                                 ? 'School Name *'
@@ -1680,7 +1732,7 @@ const AddEditTeacher = () => {
                                   : 'Institute *'
                             }
                             onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'institution_id')
+                              handleChange(e, 'institute_id')
                             }
                             sx={{
                               backgroundColor: inputfield(namecolor),
@@ -1710,14 +1762,14 @@ const AddEditTeacher = () => {
                                   },
                                 }}
                               >
-                                {institute?.institution_name}
+                                {institute?.institute_name}
                               </MenuItem>
                             ))}
                           </Select>
                         </FormControl>
-                        {touched?.institution_id && errors?.institution_id && (
+                        {touched?.institute_id && errors?.institute_id && (
                           <p className="error">
-                            {String(errors?.institution_id)}
+                            {String(errors?.institute_id)}
                           </p>
                         )}
                       </div>
@@ -1744,7 +1796,7 @@ const AddEditTeacher = () => {
                                           `courses.${index}.course_id`,
                                         )
                                       }
-                                      disabled={!values?.institution_id}
+                                      disabled={!values?.institute_id}
                                       sx={{
                                         backgroundColor: inputfield(namecolor),
                                         color: inputfieldtext(namecolor),
@@ -1982,7 +2034,7 @@ const AddEditTeacher = () => {
                                           `classes.${index}.class_id`,
                                         )
                                       }
-                                      disabled={!values?.institution_id}
+                                      disabled={!values?.institute_id}
                                       sx={{
                                         backgroundColor: inputfield(namecolor),
                                         color: inputfieldtext(namecolor),

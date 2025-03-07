@@ -44,14 +44,13 @@ const Header = () => {
     setProPercentage,
     setActiveForm,
   }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const user_type = localStorage.getItem('user_type');
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
-  const [profileUrl, setProfileUrl] = useState('');
   const synth: SpeechSynthesis = window?.speechSynthesis;
   const { getData, postData } = useApi();
   const [dashboardURL, setDashboardURL] = useState('');
@@ -102,11 +101,10 @@ const Header = () => {
     localStorage.removeItem('theme');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
-    localStorage.removeItem('userid');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');
@@ -116,6 +114,11 @@ const Header = () => {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('hasReloaded')
     synth.cancel();
     navigator('/');
     logoutpro();
@@ -143,7 +146,8 @@ const Header = () => {
               last_name: basic_info?.last_name,
               gender: basic_info?.gender,
             });
-            if (data?.data?.basic_info?.pic_path !== '') {
+            if (data?.data?.basic_info?.pic_path !== null) {
+
               getData(
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
@@ -171,7 +175,7 @@ const Header = () => {
               last_name: adminInfo?.last_name,
               gender: adminInfo?.gender,
             });
-            if (response?.data?.basic_info?.pic_path !== '') {
+            if (response?.data?.basic_info?.pic_path !== null) {
               getData(
                 `${
                   'upload_file/get_image/' +
@@ -196,17 +200,13 @@ const Header = () => {
   useEffect(() => {
     if (user_type === 'admin') {
       getAdminDetails();
-      setProfileUrl('/main/adminprofile');
       setDashboardURL('/main/DashBoard');
     } else if (user_type === 'institute') {
-      setProfileUrl('/institution-dashboard/profile');
       setDashboardURL('/institution-dashboard');
     } else if (user_type === 'teacher') {
-      setProfileUrl('/teacher-dashboard/profile');
       setDashboardURL('/teacher-dashboard');
     } else {
       callAPI();
-      setProfileUrl('/main/StudentProfile');
       setDashboardURL('/main/DashBoard');
     }
   }, []);
@@ -248,6 +248,7 @@ const Header = () => {
     else if (theme === 'bordered-theme')
       document?.documentElement?.setAttribute('data-bs-theme', theme);
   }, [theme]);
+  
   const toggleTheme = () => {
     setTheme((prevTheme) => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
@@ -255,10 +256,28 @@ const Header = () => {
       return newTheme;
     });
   };
-  const handelStateofProfile = () => {
-    setActiveForm(0);
-  };
-
+ 
+ const gotoProfile=()=>{
+  if (user_type === 'admin') {
+    getAdminDetails();
+    navigator('/main/adminprofile')
+    setDashboardURL('/main/DashBoard');
+  } else if (user_type === 'institute') {
+    navigator('/institution-dashboard/profile')
+    setDashboardURL('/institution-dashboard');
+  } else if (user_type === 'teacher') {
+    navigator('/teacher-dashboard/profile')
+    setDashboardURL('/teacher-dashboard');
+  } else {
+    navigator('/main/StudentProfile')
+    callAPI();
+    setDashboardURL('/main/DashBoard');
+    setTimeout(() => {
+      window.location.reload();
+    }, 20);
+  }
+  setActiveForm(0);
+ }
   return (
     <>
       <header className="top-header">
@@ -566,14 +585,13 @@ const Header = () => {
                   </div>
                 </div>
                 <hr className="dropdown-divider" />
-                <Link
+                <button
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
-                  to={profileUrl}
-                  onClick={handelStateofProfile}
+                  onClick={gotoProfile}
                 >
                   <PersonOutlineOutlinedIcon />
                   Profile
-                </Link>
+                </button>
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
                   to={dashboardURL}

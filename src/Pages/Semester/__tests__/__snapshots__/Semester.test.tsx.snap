@@ -225,7 +225,7 @@ exports[`Semester component renders correctly 1`] = `
                   >
                     <table
                       class="MuiTable-root MuiTable-stickyHeader css-ts728e-MuiTable-root"
-                      style="--header-mrt_row_actions-size: 150; --col-mrt_row_actions-size: 150; --header-semester_number-size: 150; --col-semester_number-size: 150; --header-institution_name-size: 150; --col-institution_name-size: 150; --header-course_name-size: 150; --col-course_name-size: 150; --header-created_by-size: 150; --col-created_by-size: 150; --header-created_at-size: 150; --col-created_at-size: 150; --header-updated_by-size: 150; --col-updated_by-size: 150; --header-updated_at-size: 150; --col-updated_at-size: 150; --header-is_active-size: 150; --col-is_active-size: 150;"
+                      style="--header-mrt_row_actions-size: 150; --col-mrt_row_actions-size: 150; --header-semester_number-size: 150; --col-semester_number-size: 150; --header-institute_name-size: 150; --col-institute_name-size: 150; --header-course_name-size: 150; --col-course_name-size: 150; --header-created_by-size: 150; --col-created_by-size: 150; --header-created_at-size: 150; --col-created_at-size: 150; --header-updated_by-size: 150; --col-updated_by-size: 150; --header-updated_at-size: 150; --col-updated_at-size: 150; --header-is_active-size: 150; --col-is_active-size: 150;"
                     >
                       <thead
                         class="MuiTableHead-root css-q4cnup-MuiTableHead-root"
@@ -338,7 +338,7 @@ exports[`Semester component renders correctly 1`] = `
                           </th>
                           <th
                             aria-sort="none"
-                            class="MuiTableCell-root MuiTableCell-head MuiTableCell-stickyHeader MuiTableCell-alignLeft MuiTableCell-sizeMedium css-hzjdgl-MuiTableCell-root"
+                            class="MuiTableCell-root MuiTableCell-head MuiTableCell-stickyHeader MuiTableCell-alignLeft MuiTableCell-sizeMedium css-vgndm3-MuiTableCell-root"
                             colspan="1"
                             data-can-sort="true"
                             data-index="2"

@@ -75,7 +75,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const [selectedFile, setSelectedFile] = React.useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [adminFilePath, setAdminFilePath] = useState('');
-  const adminId = localStorage.getItem('_id');
+  const adminId = localStorage.getItem('user_uuid');
   const [editable, setEditable] = useState(true);
   const [editCheck, setEditCheck] = useState(false);
   const [admin, setadmin] = useState<AdminInformation>({
@@ -121,13 +121,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     }
     if (name === 'last_name') {
       setLname_col1(true);
-      // if (!/^[a-zA-Z\s]*$/.test(value)) {
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
         setLname_col(true);
       } else {
         setLname_col(false);
       }
     }
+
     if (name === 'father_name') {
       setFathername_col1(true);
       if (!/^[A-Za-z]+(?:[ A-Za-z]+)*$/.test(value)) {
@@ -155,39 +155,44 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   };
   const getBasicInfo = async () => {
     try {
-      const response = await getData(`${'admin_basicinfo/edit/' + adminId}`);
-      if (response?.status === 200) {
+      const response = await getData(`${'admin/edit/' + adminId}`);
+      console.log(response);
+      if (response?.status) {
+        if(response?.data?.admin_data.id){
+          sessionStorage.setItem('userdata', JSON.stringify(response?.data?.admin_data));
+          localStorage.setItem('_id' ,response?.data?.admin_data.id);
+        }
         setadmin((prevState) => ({
           ...prevState,
-          first_name: response?.data.first_name,
-          last_name: response?.data.last_name,
-          dob: response?.data.dob,
-          gender: response?.data.gender,
-          father_name: response?.data.father_name,
-          mother_name: response?.data.mother_name,
-          guardian_name: response?.data.guardian_name,
+          first_name: response?.data?.admin_data.first_name,
+          last_name: response?.data?.admin_data.last_name,
+          dob: response?.data.admin_data.dob,
+          gender: response?.data?.admin_data.gender,
+          father_name: response?.data?.admin_data.father_name,
+          mother_name: response?.data?.admin_data.mother_name,
+          guardian_name: response?.data?.admin_data.guardian_name,
         }));
-        setAdminDepartment(response?.data.department_id);
-        setAdminFilePath(response?.data.pic_path);
+        setAdminDepartment(response?.data?.admin_data.department_id);
+        setAdminFilePath(response?.data?.admin_data.pic_path);
         setInitialAdminState({
-          first_name: response?.data.first_name,
-          last_name: response?.data.last_name,
-          dob: response?.data.dob,
-          gender: response?.data.gender,
-          father_name: response?.data.father_name,
-          mother_name: response?.data.mother_name,
-          guardian_name: response?.data.guardian_name,
-          department_id: response?.data.department_id,
-          pic_path: response?.data.pic_path,
+          first_name: response?.data?.admin_data.first_name,
+          last_name: response?.data?.admin_data.last_name,
+          dob: response?.data?.admin_data.dob,
+          gender: response?.data?.admin_data.gender,
+          father_name: response?.data?.admin_data.father_name,
+          mother_name: response?.data?.admin_data.mother_name,
+          guardian_name: response?.data?.admin_data.guardian_name,
+          department_id: response?.data?.admin_data.department_id,
+          pic_path: response?.data?.admin_data.pic_path,
         });
-        if (response?.data?.pic_path !== '') {
-          getData(`${'upload_file/get_image/' + response?.data?.pic_path}`)
+        if (response?.data?.admin_data.pic_path !== null) {
+          getData(`${'upload_file/get_image/' + response?.data?.admin_data.pic_path}`)
             .then((imgdata: any) => {
               setFilePreview(imgdata.data);
             })
             .catch(() => {});
         }
-      } else if (response?.status === 404) {
+      } else if (response?.code === 404) {
         setEditFlag(true);
         toast.warning('Please add your information', {
           hideProgressBar: true,
@@ -198,13 +203,14 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         // empty
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.code === 401) {
         toast.warning('Please login again', {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
         });
-      } else {
+      } 
+      else {
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',
@@ -217,13 +223,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     try {
       const response = await getData(`${'department/list'}`);
 
-      if (response?.status === 200) {
+      if (response?.status) {
         setAllDepartment(
-          response?.data?.filter((item: any) => item.is_active === 1),
+          response?.data?.departments_data.filter((item: any) => item.is_active === true),
         );
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.code === 401) {
         toast.warning('Please login again', {
           hideProgressBar: true,
           theme: 'colored',
@@ -244,10 +250,10 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
 
   useEffect(() => {
-    getData(`${'admin_basicinfo/edit/' + adminId}`).then((response) => {
-      if (response?.status == 200) {
+    getData(`${'admin/edit/' + adminId}`).then((response) => {
+      if (response?.status) {
         setEditable(false);
-      } else if (response?.status == 404) {
+      } else if (response?.code == 404) {
         setEditable(true);
       }
     });
@@ -291,13 +297,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       formData.append('file', file);
       postFileData(`${'upload_file/upload'}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
             });
-          } else if (data?.status === 404) {
+          } else if (data?.code === 404) {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -369,8 +375,8 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     if (!admin?.last_name) setLname_col1(true);
     if (!admin?.father_name) setFathername_col1(true);
     if (!admin?.mother_name) setMothername_col1(true);
-    const paylod = {
-      admin_login_id: adminId,
+    const payload = {
+      user_uuid: adminId,
       department_id: adminDepartment,
       first_name: admin?.first_name,
       last_name: admin?.last_name,
@@ -382,6 +388,13 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       is_kyc_verified: true,
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
+    const formData = new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value as string);
+      }
+    });
+
     const compare = {
       department_id: adminDepartment,
       first_name: admin?.first_name,
@@ -393,7 +406,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       guardian_name: admin?.guardian_name || '',
       pic_path: selectedFile ? selectedFile : adminFilePath,
     };
-    const datecheck: any = dayjs(paylod?.dob).format('DD/MM/YYYY');
+    const datecheck: any = dayjs(payload?.dob).format('DD/MM/YYYY');
     if (datecheck === 'Invalid Date') {
       setdobset_col(true);
     } else {
@@ -405,17 +418,19 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     if (editable) {
       const seveData = async () => {
         try {
-          const response = await postData('admin_basicinfo/add', paylod);
-          if (response?.status === 200) {
+          const response = await postData('admin/add', formData);
+          if (response?.status) {
+            sessionStorage.setItem('userdata', JSON.stringify(response?.data));
+            localStorage.setItem('_id' ,response?.data.id);
             toast.success('Admin basic information saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
             });
             setNamepro({
-              first_name: paylod?.first_name,
-              last_name: paylod?.last_name,
-              gender: paylod?.gender,
+              first_name: payload?.first_name,
+              last_name: payload?.last_name,
+              gender: payload?.gender,
             });
             setActiveForm((prev: number) => prev + 1);
             getData(
@@ -424,7 +439,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
               }`,
             )
               .then((data: any) => {
-                if (data.status == 200) {
+                if (data.status) {
                   setProImage(data.data);
                 }
               })
@@ -472,20 +487,19 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       const editData = async () => {
         try {
           const response = await putData(
-            'admin_basicinfo/edit/' + adminId,
-            paylod,
+            'admin/edit/' + adminId,
+            formData,
           );
-
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success('Admin basic information updated successfully', {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
             });
             setNamepro({
-              first_name: paylod?.first_name,
-              last_name: paylod?.last_name,
-              gender: paylod?.gender,
+              first_name: payload?.first_name,
+              last_name: payload?.last_name,
+              gender: payload?.gender,
             });
             setActiveForm((prev: number) => prev + 1);
             getData(
@@ -494,7 +508,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
               }`,
             )
               .then((data: any) => {
-                if (data.status == 200) {
+                if (data.status) {
                   setProImage(data.data);
                 }
               })

@@ -33,7 +33,7 @@ const Sidebar = () => {
   const MenuListURL1 = QUERY_KEYS_MENU.GET_MENULIST;
 
   const { getData } = useApi();
-  const profileData: any = sessionStorage.getItem('profileData');
+  const profileData: any = sessionStorage.getItem('userdata');
   let basicinfo: any = {};
   if (profileData !== null) {
     basicinfo = JSON.parse(profileData);
@@ -48,9 +48,9 @@ const Sidebar = () => {
   const callAPI = async () => {
     getData(`${MenuListURL}/${user_type}`)
       .then((data: any) => {
-        if (data.data) {
+        if (data.data.sorted_menus) {
           // setMenuList(data.data);
-          localStorage.setItem('menulist', JSON.stringify(data?.data));
+          localStorage.setItem('menulist', JSON.stringify(data?.data.sorted_menus));
         }
       })
       .catch((e: any) => {
@@ -63,12 +63,14 @@ const Sidebar = () => {
 
   const callAPI1 = async () => {
     if (basicinfo?.basic_info !== null) {
-      getData(`${MenuListURL1}/${basicinfo?.basic_info?.id}`)
+      getData(`${MenuListURL1}/${basicinfo?.id}`)
         .then((data: any) => {
           if (data.data) {
-            const menuData = data.data;
-            setMenuList1(menuData);
-            localStorage.setItem('menulist1', JSON.stringify(menuData));
+            if(data.data.menus_data_list){
+              const menuData = data.data.menus_data_list;
+              setMenuList1(menuData);
+              localStorage.setItem('menulist1', JSON.stringify(menuData));
+            }
             const saved = localStorage.getItem('menulist1');
             if (!saved) {
               console.warn('Failed to save menulist1');
@@ -84,7 +86,7 @@ const Sidebar = () => {
     }
   };
   useEffect(() => {
-    if (profileData !== null && basicinfo?.basic_info !== null) {
+    if (profileData !== null && basicinfo?.id !== null) {
       callAPI1();
     }
   }, [profileData]);

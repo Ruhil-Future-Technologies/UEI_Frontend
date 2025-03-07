@@ -35,12 +35,12 @@ import {
 import { Teacher } from '../TeacherRgistrationForm';
 
 const InstitutionDash = () => {
-  const instituteLoginId = localStorage.getItem('_id');
+  const instituteLoginId = localStorage.getItem('user_uuid');
 
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<InstituteRep0oDTO>({
-    institution_name: '',
-    email_id: '',
+    institute_name: '',
+    email: '',
     address: '',
     city: '',
     country: '',
@@ -48,7 +48,7 @@ const InstitutionDash = () => {
     district: '',
     pincode: '',
     entity_id: '',
-    mobile_no: '',
+    phone: '',
     website_url: '',
     id: 0, // Assuming `id` is required, initialize with 0
     university_id: '',
@@ -64,7 +64,6 @@ const InstitutionDash = () => {
   useEffect(() => {
     getInstitutionInfo();
 
-    console.log('getData');
     // eslint-disable-next-line
   }, []);
 
@@ -72,7 +71,7 @@ const InstitutionDash = () => {
     console.log(totleCourse);
     try {
       await getData(`course/course-count/${instituteId}`).then((response) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           setTotleCourse(response?.data?.courses_count);
         }
         console.log(response);
@@ -84,7 +83,7 @@ const InstitutionDash = () => {
   const getCountTeacher = async (instituteId: any) => {
     try {
       await getData(`/teacher/count/${instituteId}`).then((response) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           setTotleTeacher(response?.data?.teacher_count);
         }
         console.log(response);
@@ -97,8 +96,9 @@ const InstitutionDash = () => {
     try {
       await getData(`/institution/get-student-count/${instituteId}`).then(
         (response) => {
-          console.log(response);
-          setTotelStudent(response.student_count);
+          if (response.status) {
+            setTotelStudent(response.student_count);
+          }
         },
       );
     } catch (error) {
@@ -107,22 +107,19 @@ const InstitutionDash = () => {
   };
   const getInstitutionInfo = async () => {
     try {
-      await getData(`institution/getbyloginid/${instituteLoginId}`).then(
-        (response) => {
-          console.log(response, 'institute profile info');
-          if (response?.status === 200) {
-            setInstituteInfo(response?.data);
-            getCourseCount(response?.data?.id);
-            getStudentsCount(response?.data?.id);
-            getCountTeacher(response?.data?.id);
-            getStudentsData(response?.data?.id);
-            getTeahcersData(response?.data?.id);
-            getCoursesData(response?.data?.id);
-            localStorage.setItem('institute_id', response?.data?.id);
-            console.log(response);
-          }
-        },
-      );
+      await getData(`institute/edit/${instituteLoginId}`).then((response) => {
+        if (response?.status) {
+          setInstituteInfo(response?.data);
+          getCourseCount(response?.data?.id);
+          getStudentsCount(response?.data?.id);
+          getCountTeacher(response?.data?.id);
+          getStudentsData(response?.data?.id);
+          getTeahcersData(response?.data?.id);
+          getCoursesData(response?.data?.id);
+          localStorage.setItem('institute_id', response?.data?.id);
+          console.log(response);
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -131,8 +128,7 @@ const InstitutionDash = () => {
   const getStudentsData = async (instituteId: any) => {
     try {
       await getData(`/student/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataStudents(response?.data);
         }
       });
@@ -144,8 +140,7 @@ const InstitutionDash = () => {
   const getTeahcersData = async (instituteId: any) => {
     try {
       await getData(`/teacher/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataTeachers(response?.data);
         }
       });
@@ -156,8 +151,7 @@ const InstitutionDash = () => {
   const getCoursesData = async (instituteId: any) => {
     try {
       await getData(`/course/list/${instituteId}`).then((response) => {
-        console.log(response);
-        if (response?.status === 200) {
+        if (response?.status) {
           setDataCourses(response?.data);
         }
       });
@@ -174,28 +168,6 @@ const InstitutionDash = () => {
     { subject: 'Geography', totalStudents: 40, image: courseImg },
   ];
 
-  // const topStudent = [
-  //   {
-  //     name: 'Akulya shiva',
-  //     class: '5th',
-  //     image: studentimg,
-  //   },
-  //   {
-  //     name: 'Nitn raj',
-  //     class: '8th',
-  //     image: studentimg,
-  //   },
-  //   {
-  //     name: 'Rovin singh',
-  //     class: '10th',
-  //     image: studentimg,
-  //   },
-  //   {
-  //     name: 'Rohit patel',
-  //     class: '9th',
-  //     image: studentimg,
-  //   },
-  // ];
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -236,7 +208,7 @@ const InstitutionDash = () => {
                       />
                       <div className="w-100">
                         <h4 className="fw-semibold mb-0 fs-18 mb-0">
-                          {instituteInfo.institution_name}
+                          {instituteInfo.institute_name}
                         </h4>
                         <small className="mb-3 d-block">
                           {instituteInfo.address + ' '}

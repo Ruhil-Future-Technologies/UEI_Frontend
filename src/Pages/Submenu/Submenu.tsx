@@ -52,8 +52,8 @@ const Submenu = () => {
       .then((data: any) => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
-        if (data.data) {
-          setDataSubmenu(data?.data);
+        if (data.status) {
+          setDataSubmenu(data?.data?.submenus_data);
         }
       })
       .catch((e) => {

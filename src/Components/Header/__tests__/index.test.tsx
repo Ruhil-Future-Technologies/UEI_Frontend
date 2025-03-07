@@ -77,10 +77,9 @@ describe('Header Component', () => {
     });
     expect(localStorage.removeItem).toHaveBeenCalledWith('token');
     expect(localStorage.removeItem).toHaveBeenCalledWith('user_type');
-    expect(localStorage.removeItem).toHaveBeenCalledWith('userid');
     expect(localStorage.removeItem).toHaveBeenCalledWith('userdata');
     expect(localStorage.removeItem).toHaveBeenCalledWith('signupdata');
-    expect(localStorage.removeItem).toHaveBeenCalledWith('_id');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('user_uuid');
     expect(localStorage.removeItem).toHaveBeenCalledWith('menulist');
     expect(localStorage.removeItem).toHaveBeenCalledWith('menulist1');
     expect(localStorage.removeItem).toHaveBeenCalledWith('proFalg');

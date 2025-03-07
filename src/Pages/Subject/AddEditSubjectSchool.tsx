@@ -42,15 +42,16 @@ const AddEditSubjectSchool = () => {
   const SubjectEditURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_EDIT;
   const SubjectEditgetURL = QUERY_KEYS_SUBJECT_SCHOOL.SUBJECT_GET;
   //   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
-  const { getData, postData, putData } = useApi();
+  const { getData, postDataJson, putDataJson } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  //const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  const user_uuid = localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z\s]*$/;
 
   const initialState = {
     subject_name: '',
-    created_by: userdata?.id,
+    created_by: user_uuid,
     class_id: '',
     stream: '',
     menu_image: '',
@@ -90,8 +91,8 @@ const AddEditSubjectSchool = () => {
   const callAPI = async () => {
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
+        if (response.status) {
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -102,7 +103,6 @@ const AddEditSubjectSchool = () => {
               return {
                 id: item?.id,
                 class_name: getModifyClassMane(item?.class_name),
-                class_id: item?.class_id,
               };
             })
             .sort((a: { class_name: string }, b: { class_name: any }) =>
@@ -121,8 +121,8 @@ const AddEditSubjectSchool = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
+        if (response.status) {
+          const filteredData = response?.data?.semesters_data?.filter(
             (item: any) => item?.is_active === 1,
           );
           setSemester(filteredData || []);
@@ -139,11 +139,11 @@ const AddEditSubjectSchool = () => {
     if (id) {
       getData(`${SubjectEditgetURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSubject(data?.data);
-          getData(`/class/get/${data?.data?.class_id}`).then(
+          setSubject(data?.data?.subject_data);
+          getData(`/class/get/${data?.data?.subject_data?.class_id}`).then(
             (response: any) => {
-              if (response.status === 200) {
-                setParticularClass(response.data.class_name);
+              if (response.status) {
+                setParticularClass(response?.data?.class_data?.class_name);
               } else setParticularClass('');
             },
           );
@@ -176,8 +176,8 @@ const AddEditSubjectSchool = () => {
   ) => {
     if (fieldName === 'class_id') {
       getData(`/class/get/${e.target.value}`).then((response: any) => {
-        if (response.status === 200) {
-          setParticularClass(response.data.class_name);
+        if (response.status) {
+          setParticularClass(response.data.class_data.class_name);
         } else setParticularClass('');
       });
     }
@@ -206,6 +206,7 @@ const AddEditSubjectSchool = () => {
   // ) => {
   // const handleSubmit = async (subjectData: ISubjectForm) => {
   const handleSubmit1 = () => {
+    const formData = new FormData();
     const submitData = {
       subject_name: (subject[''] as string) || subject?.subject_name,
       pdf_content: subject?.pdf_content || '',
@@ -214,7 +215,7 @@ const AddEditSubjectSchool = () => {
         particularClass === 'class_11' || particularClass === 'class_12'
           ? subject.stream || ''
           : '',
-    };
+    } as any;
     if (!submitData.subject_name || !submitData.class_id) {
       return;
     }
@@ -225,11 +226,14 @@ const AddEditSubjectSchool = () => {
       return;
     }
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putDataJson(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -254,13 +258,13 @@ const AddEditSubjectSchool = () => {
   const handleSubmit = async () => {
     // e.preventDefault();
     // e.target.reset()
-
+    //const formData = new FormData();
     const submitData = {
       subject_name: subject[''] as string,
       pdf_content: subject?.menu_image || '',
       class_id: subject.class_id,
       stream: subject.stream || '',
-    };
+    } as any;
     if (!submitData.subject_name || !submitData.class_id) {
       return;
     }
@@ -271,9 +275,12 @@ const AddEditSubjectSchool = () => {
       return;
     }
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      // Object.keys(submitData).forEach((key) => {
+      //   formData.append(key, submitData[key]);
+      // });
+      putDataJson(`${SubjectEditURL}/${id}`, submitData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -293,9 +300,12 @@ const AddEditSubjectSchool = () => {
           });
         });
     } else {
-      postData(`${SubjectAddURL}`, submitData)
+      // Object.keys(submitData).forEach((key) => {
+      //   formData.append(key, submitData[key]);
+      // });
+      postDataJson(`${SubjectAddURL}`, submitData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',

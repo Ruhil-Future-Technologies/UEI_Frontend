@@ -167,7 +167,9 @@ const Student = () => {
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
-                                    handleEditFile(row?.row?.original?.id);
+                                    handleEditFile(
+                                      row?.row?.original?.user_uuid,
+                                    );
                                   }}
                                 >
                                   <EditIcon />
@@ -182,7 +184,9 @@ const Student = () => {
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {
-                                  handleDeleteFiles(row.row.original.id);
+                                  handleDeleteFiles(
+                                    row?.row?.original?.user_uuid,
+                                  );
                                 }}
                               >
                                 <TrashIcon />

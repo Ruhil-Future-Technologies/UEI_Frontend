@@ -24,9 +24,11 @@ import {
 import NameContext from '../Context/NameContext';
 
 interface Hobby {
+  hobby_id: number;
   hobby_name: string;
   id: number;
-  is_active: number;
+  is_active: boolean;
+  student_id: string;
 }
 interface StudentHobbiesProps {
   save: boolean;
@@ -41,7 +43,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   isLanguageUpdated,
 }) => {
   const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  const { namecolor, activeForm }: any = context;
+
   const { getData, postData, putData, deleteData } = useApi();
   //const theme = useTheme();
   const [ishobbiestuch, setIshobbiestuch] = useState(false);
@@ -51,6 +54,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [hobbiesAll, setHobbiesAll] = useState<any>([]);
   const StudentId = localStorage.getItem('_id');
+  // const userUUID = localStorage.getItem('user_uuid');
 
   useEffect(() => {
     if (save) {
@@ -62,39 +66,44 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     const fetchData = async () => {
       try {
         const hobbyListData = await getData('hobby/list');
-
-        if (hobbyListData?.status === 200) {
-          const filteredData = hobbyListData?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (hobbyListData?.status) {
+          const filteredData = hobbyListData?.data?.hobby_data?.filter(
+            (item: any) => item?.is_active,
           );
           setAllHobbies(filteredData || []);
         }
 
-        const studentHobbyData = await getData(
-          'student_hobby/edit/' + StudentId,
-        );
+        const studentHobbyData = await getData(`student_hobby/get/${StudentId}`)
 
-        if (studentHobbyData?.status === 200) {
-          const hobbyIds = studentHobbyData.data.map(
+        
+        if (studentHobbyData?.code) {
+          const hobbyIds = studentHobbyData.data?.map(
             (selecthobby: any) => selecthobby.hobby_id,
           );
           setSelectedHobbies(hobbyIds);
           setInitialState(hobbyIds);
           setHobbiesAll(studentHobbyData?.data || []);
-        } else if (studentHobbyData?.status === 404) {
+        } else if (studentHobbyData?.code === 404) {
           setEditFlag(true);
         }
-      } catch (e: any) {
-        toast.error(e?.message || 'An error occurred', {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+      }
+      catch (e: any) {
+        if(e.status !==400){
+          toast.error(e?.message || 'An error occurred', {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
+        
       }
     };
 
-    fetchData();
-  }, []);
+    if (StudentId) {
+      fetchData();
+    }
+
+  }, [activeForm]);
 
   const handleChange = (event: SelectChangeEvent<typeof selectedHobbies>) => {
     Promise.resolve(setIsHobbiesUpdated(true));
@@ -117,28 +126,34 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     const eq = deepEqual(initialAdminState, selectedHobbies);
 
     const payloadPromises = selectedHobbies.map((hobbyid) => {
+      const formData = new FormData();
       const payload = {
         student_id: StudentId,
         hobby_id: hobbyid,
-      };
+      } as any;
       const hobbyExists = hobbiesAll?.some(
         (item: { hobby_id: any }) => item?.hobby_id === hobbyid,
       );
+
+      Object.keys(payload).forEach((key) => {
+        formData.append(key, payload[key]);
+      });
+console.log(ishobbiestuch, editFlag , hobbyExists,hobbyid)
       if (ishobbiestuch) {
         if (editFlag || !hobbyExists) {
-          return postData('student_hobby/add', payload);
+          return postData('student_hobby/add', formData);
         } else if (!eq) {
-          return putData('student_hobby/edit/' + StudentId, payload);
+          return putData('student_hobby/edit/' + hobbyid, formData);
         } else {
-          return Promise.resolve({ status: 204 }); // Skip update
+          return Promise.resolve({ code: 204 }); // Skip update
         }
       } else {
-        return Promise.resolve({ status: 204 });
+        return Promise.resolve({ code: 204 });
       }
     });
     try {
       const results = await Promise.all(payloadPromises);
-      const successfulResults = results.filter((res) => res.status === 200);
+      const successfulResults = results.filter((res) => res.code === 201);
 
       if (successfulResults?.length > 0) {
         if (!isLanguageUpdated && ishobbiestuch) {
@@ -161,7 +176,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         } else {
           setIshobbiestuch(false);
         }
-      } else if (results.some((res) => res.status !== 204)) {
+      } else if (results.some((res) => res.code !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
         //     theme: "colored",
@@ -177,7 +192,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       });
     }
     setSave(false);
-    // >>>>>>> Stashed changes
+
   };
 
   const ITEM_HEIGHT = 48;
@@ -197,7 +212,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     if (deleteHob[0]?.id) {
       deleteData('/student_hobby/delete/' + deleteHob[0]?.id)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             // const filteredData = data?.data?.filter((item:any) => item?.is_active === 1);
             // setAllHobbies(filteredData ||[]);
             // setAllHobbies(data?.data);
@@ -222,6 +237,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       // console.log("Check", event.target.checked, hobbyId);
     }
   };
+
+
   return (
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">

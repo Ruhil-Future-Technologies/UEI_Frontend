@@ -105,7 +105,7 @@ function App() {
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');
@@ -115,6 +115,10 @@ function App() {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('_id');
     synth.cancel();
     // logoutpro();
   };

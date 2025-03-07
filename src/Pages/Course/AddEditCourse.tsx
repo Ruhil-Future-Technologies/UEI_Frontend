@@ -79,15 +79,23 @@ const AddEditCourse = () => {
 
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter(
-          (item) => item.is_active === 1 && item.is_approve === true,
-        );
-        setinstituteList(filteredData);
+      .then((data) => {
+        if (data?.status) {
+          const filteredData = data?.data.filter(
+            (item: any) =>
+              item.is_active &&
+              item.is_approve &&
+              item.entity_type == 'college',
+          );
+
+          setinstituteList(filteredData);
+        } else {
+          setinstituteList([]);
+        }
         // setDataEntity(data?.data)
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -97,11 +105,13 @@ const AddEditCourse = () => {
       });
     if (id) {
       getData(`${CourseEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: any }) => {
-          setInstitute(data?.data);
+        .then((data) => {
+          if (data?.status) {
+            setInstitute(data?.data?.course_data);
+          }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -126,11 +136,10 @@ const AddEditCourse = () => {
       institution_id: courseData.institute,
       duration: JSON.stringify(courseData.duration),
     };
-    console.log('test log ===', coursedata, courseData);
     if (id) {
       putData(`${CourseEditURL}/${id}`, coursedata)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Course');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -144,7 +153,7 @@ const AddEditCourse = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -154,8 +163,8 @@ const AddEditCourse = () => {
         });
     } else {
       postData(`${CourseAddURL}`, coursedata)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Course')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -170,7 +179,7 @@ const AddEditCourse = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -250,7 +259,7 @@ const AddEditCourse = () => {
                               {instituteList.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
-                                  key={`${item.institution_name}-${idx + 1}`}
+                                  key={`${item.institute_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
@@ -260,7 +269,7 @@ const AddEditCourse = () => {
                                     },
                                   }}
                                 >
-                                  {item.institution_name}
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>

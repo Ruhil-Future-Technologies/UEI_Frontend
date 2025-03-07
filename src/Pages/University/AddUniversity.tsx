@@ -26,7 +26,7 @@ const AddUniversity = () => {
     if (id) {
       getData(`${UniversityeditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setUnivesity(data?.data);
+          setUnivesity(data?.data?.university_data);
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -43,12 +43,17 @@ const AddUniversity = () => {
     universityData: any,
     { resetForm }: FormikHelpers<any>,
   ) => {
+    const formData = new FormData();
     if (id) {
-      putData(`${UniversityupdateURL}/${id}`, universityData)
+      Object.keys(universityData).forEach((key) => {
+        formData.append(key, universityData[key]);
+      });
+
+      putData(`${UniversityupdateURL}/${id}`, formData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/University');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -68,9 +73,12 @@ const AddUniversity = () => {
           });
         });
     } else {
-      postData(`${UniversityAddURL}`, universityData)
+      Object.keys(universityData).forEach((key) => {
+        formData.append(key, universityData[key]);
+      });
+      postData(`${UniversityAddURL}`, formData)
         .then((data: { status: number; message: string }) => {
-          if (data.status === 201) {
+          if (data.status) {
             // navigator('/main/Course')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -86,7 +94,7 @@ const AddUniversity = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -155,6 +163,7 @@ const AddUniversity = () => {
                     )}
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
+                        {' '}
                         {id ? 'Update' : 'Save'}
                       </button>
                     </div>

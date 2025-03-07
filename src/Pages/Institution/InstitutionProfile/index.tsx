@@ -29,12 +29,12 @@ import NameContext from '../../Context/NameContext';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
 interface Institute {
-  institution_name: string;
+  institute_name: string;
   university_id: string;
   school_name: string;
   entity_id: string;
-  email_id: string;
-  mobile_no: string;
+  email: string;
+  phone: string;
   website_url: string;
   country: string;
   state: string;
@@ -48,7 +48,7 @@ interface Institute {
 const InstitutionProfile = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const instituttionLoginId = localStorage.getItem('_id');
+  const instituttionLoginId = localStorage.getItem("user_uuid");
   const { postFileData, getData, putData } = useApi();
 
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
@@ -69,16 +69,16 @@ const InstitutionProfile = () => {
   const [selectedEntity, setSelectedEntity] = useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [documents, setDocuments] = useState<File[]>([]);
-  const [entityData, setEntityData] = useState<IEntity[]>([]);
+  const [entityData, setEntityData] = useState<IEntity[]>([])
   const [universityData, setUniversityData] = useState<IUniversity[]>([]);
   const [instituteId, setInstituteId] = useState('');
   const [instituteInfo, setInstituteInfo] = useState<Institute>({
-    institution_name: '',
+    institute_name: '',
     university_id: '',
     school_name: '',
     entity_id: '',
-    email_id: '',
-    mobile_no: '',
+    email: '',
+    phone: '',
     website_url: '',
     country: '',
     state: '',
@@ -93,17 +93,20 @@ const InstitutionProfile = () => {
     getEntity();
     getInstitutionInfo();
     getUniversity();
-  }, []);
+  }, [])
   const getEntity = () => {
     getData(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        const filteredData = data?.data.filter(
-          (entity) => entity.is_active === 1,
-        );
-        setEntityData(filteredData);
-        // setDataEntity(data?.data)
+      .then((data) => {
+        if (data?.status) {
+          const filteredData = data?.data?.entityes_data.filter(
+            (entity: any) => entity.is_active === true,
+          );
+          setEntityData(filteredData);
+        }
+
       })
       .catch((e) => {
+
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -112,9 +115,9 @@ const InstitutionProfile = () => {
   };
   const getUniversity = () => {
     getData(`${UniversityURL}`)
-      .then((data: { data: IUniversity[] }) => {
-        if (data.data) {
-          setUniversityData(data?.data);
+      .then((data) => {
+        if (data.status) {
+          setUniversityData(data?.data?.universities_data);
         }
       })
       .catch((e) => {
@@ -126,27 +129,22 @@ const InstitutionProfile = () => {
   };
   const getInstitutionInfo = async () => {
     try {
-      await getData(`institution/getbyloginid/${instituttionLoginId}`).then(
-        (response) => {
-          console.log(response, 'institute profile info');
-          if (response?.status === 200) {
-            setInstituteInfo(response?.data);
-            setInstituteId(response.data.id);
-            console.log(response);
-            if (
-              response?.data.university_id === '' ||
-              response?.data.university_id === null
-            ) {
-              setSelectedEntity('School');
-            } else {
-              setSelectedEntity('College');
-            }
-            if (response?.data?.document?.length() > 0) {
-              setDocuments(response?.data.document);
-            }
+      await getData(`institute/edit/${instituttionLoginId}`).then((response) => {
+        console.log(response, 'institute profile info');
+        if (response?.status) {
+          setInstituteInfo(response?.data);
+          setInstituteId(response.data.id);
+          console.log(response);
+          if (response?.data.university_id === '' || response?.data.university_id === null) {
+            setSelectedEntity("School");
+          } else {
+            setSelectedEntity("College");
           }
-        },
-      );
+          if (response?.data?.document?.length() > 0) {
+            setDocuments(response?.data.document)
+          }
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -303,13 +301,13 @@ const InstitutionProfile = () => {
     }
     if (
       !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-        instituteInfo.institution_name,
+        instituteInfo.institute_name,
       )
     ) {
       setInstitute_name_error(true);
       return;
     }
-    if (!/^(?!0{10})[0-9]{10}$/.test(instituteInfo.mobile_no)) {
+    if (!/^(?!0{10})[0-9]{10}$/.test(instituteInfo.phone)) {
       setMobile_no_error(true);
       return;
     }
@@ -346,8 +344,8 @@ const InstitutionProfile = () => {
     }
 
     const payload = {
-      institution_name: instituteInfo.institution_name,
-      email_id: instituteInfo.email_id,
+      institution_name: instituteInfo.institute_name,
+      email_id: instituteInfo.email,
       address: instituteInfo.address,
       city: instituteInfo.city,
       country: instituteInfo.country,
@@ -355,23 +353,21 @@ const InstitutionProfile = () => {
       district: instituteInfo.district,
       pincode: instituteInfo.pincode,
       entity_id: instituteInfo.entity_id,
-      mobile_no: instituteInfo.mobile_no,
+      mobile_no: instituteInfo.phone,
       website_url: instituteInfo.website_url,
-      ...(selectedEntity === 'College' && {
-        university_id: instituteInfo.university_id,
-      }),
+      ...(selectedEntity === "College" && { university_id: instituteInfo.university_id }),
       documents: documents,
-    };
+    }
     try {
       console.log(payload);
       putData(`/institution/edit/${instituteId}`, payload).then((reaponse) => {
-        if (reaponse.status === 200) {
+        if (reaponse.status) {
           toast.success('Profile updated successfully', {
             hideProgressBar: true,
             theme: 'colored',
             position: 'top-center',
           });
-          getInstitutionInfo();
+          getInstitutionInfo()
         } else {
           toast.error('Failed to update profile', {
             hideProgressBar: true,
@@ -379,11 +375,12 @@ const InstitutionProfile = () => {
             position: 'top-center',
           });
         }
-      });
+      })
+
     } catch (error) {
       console.error(error);
     }
-  };
+  }
   console.log(selectedFile);
   return (
     <>
@@ -392,6 +389,7 @@ const InstitutionProfile = () => {
           <div className="container mb-5">
             <div className="row align-items-center">
               <div className="col-lg-6 px-0">
+
                 <h4 className="fs-1 fw-bold">
                   My <span style={{ color: '#9943EC' }}> Profile </span>
                 </h4>
@@ -406,13 +404,9 @@ const InstitutionProfile = () => {
                         </label>
 
                         <FormControl fullWidth>
-                          <InputLabel id="demo-simple-select-label">
-                            Entity *
-                          </InputLabel>
+                          <InputLabel id="demo-simple-select-label">Entity *</InputLabel>
                           <Select
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleSelect(e)
-                            }
+                            onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
                             label="Entity"
                             name="entity_id"
                             disabled
@@ -451,6 +445,7 @@ const InstitutionProfile = () => {
                             ))}
                           </Select>
                         </FormControl>
+
                       </div>
                       <div className="col-md-6 col-12 mb-3">
                         <label className="col-form-label">
@@ -482,16 +477,15 @@ const InstitutionProfile = () => {
                             autoComplete="off"
                             className="form-control"
                             name="institution_name"
-                            value={instituteInfo.institution_name}
+                            value={instituteInfo.institute_name}
                             onChange={handleChange}
                           />
                           <div>
                             {institute_name_error === true && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please enter a valid school name</small>
+                              <p className="error-text " style={{ color: 'red' }}>
+                                <small>
+                                  Please enter a valid school name
+                                </small>
                               </p>
                             )}
                           </div>
@@ -508,9 +502,7 @@ const InstitutionProfile = () => {
                               University *
                             </InputLabel>
                             <Select
-                              onChange={(e: SelectChangeEvent<string>) =>
-                                handleSelect(e)
-                              }
+                              onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
                               label="University"
                               name="university_id"
                               value={instituteInfo?.university_id || ''}
@@ -533,14 +525,13 @@ const InstitutionProfile = () => {
                             >
                               {universityData?.map((item, idx) => (
                                 <MenuItem
-                                  value={item.university_id}
+                                  value={item.id}
                                   key={`${item.university_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
                                     '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
+                                      backgroundColor: inputfieldhover(namecolor),
                                     },
                                   }}
                                 >
@@ -551,10 +542,7 @@ const InstitutionProfile = () => {
                           </FormControl>
                           <div>
                             {instituteInfo.university_id === '' && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text " style={{ color: 'red' }}>
                                 <small>Please select a university name.</small>
                               </p>
                             )}
@@ -569,7 +557,7 @@ const InstitutionProfile = () => {
                             autoComplete="off"
                             className="form-control"
                             name="institution_name"
-                            value={instituteInfo.institution_name}
+                            value={instituteInfo.institute_name}
                             onChange={handleChange}
                           />
                           <div>
@@ -597,7 +585,7 @@ const InstitutionProfile = () => {
                           autoComplete="off"
                           className="form-control"
                           name="mobile_no"
-                          value={instituteInfo.mobile_no}
+                          value={instituteInfo.phone}
                           onChange={handleChange}
                         />
                         <div>
@@ -618,7 +606,7 @@ const InstitutionProfile = () => {
                           autoComplete="off"
                           className="form-control"
                           name="email_id"
-                          value={instituteInfo.email_id}
+                          value={instituteInfo.email}
                           onChange={handleChange}
                         />
                       </div>

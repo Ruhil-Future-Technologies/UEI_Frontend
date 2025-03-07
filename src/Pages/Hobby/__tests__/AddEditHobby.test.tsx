@@ -128,7 +128,7 @@ describe('AddEditHobby Component', () => {
   });
   it('displays error message when hobby name already exists', async () => {
     mockPostData.mockResolvedValue({
-      status: 400,
+      code: 400,
       message: 'Hobby name already exists',
     });
 

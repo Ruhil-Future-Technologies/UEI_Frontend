@@ -21,37 +21,41 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   const context = React.useContext(NameContext);
   const { namecolor, activeForm, setActiveForm }: any = context;
   const adminId = localStorage.getItem('_id');
+  const UuId = localStorage.getItem('user_uuid');
   const { getData, postData, putData } = useApi();
   const [description, setDesctiption] = useState(initialState);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [editable, setEditable] = useState(true);
   const [chaged, setChaged] = useState(false);
   const navigator = useNavigate();
+  const [descriptionId,setDescriptionId] =useState();
   // const formRef = useRef() as any
   const formRef = useRef<FormikProps<IAdminDescription>>(null);
 
   const getDescription = async () => {
     try {
       const response = await getData(
-        'admin_profile_description/edit/' + adminId,
+        'admin_profile_description/get/' + UuId,
       );
-
-      if (response && response?.status === 200) {
-        setDesctiption(response?.data);
-      } else if (response && response?.status === 404) {
+      console.log(response);
+      if (response && response?.status && response?.code !== 404) {
+        setDesctiption(response?.data.admin_profile_description_data);
+        setDescriptionId(response?.data.admin_profile_description_data.id)
+      } else if (response && response?.code === 404) {
+        console.log(response);
         setEditFlag(true);
       } else {
         console.error('Unexpected response:', response);
       }
     } catch (error: any) {
-      if (error?.response && error?.response?.status === 401) {
+      if (error?.response && error?.response?.code === 401) {
         navigator('/');
         toast.warning('Please login again', {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
         });
-      } else {
+      } else if(error.code !== 404) {
         toast.error('Request failed', {
           hideProgressBar: true,
           theme: 'colored',
@@ -65,10 +69,11 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   }, [adminId]);
 
   useEffect(() => {
-    getData('admin_profile_description/edit/' + adminId).then((response) => {
-      if (response && response?.status === 200) {
+    getData('admin_profile_description/get/' + UuId).then((response) => {
+      if (response && response?.status) {
+        console.log("success lijhsfds gdkdhgk hkhgkjdfg ")
         setEditable(false);
-      } else if (response && response?.status === 404) {
+      } else if (response && response?.code === 404) {
         setEditable(true);
       }
     });
@@ -103,19 +108,25 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
     const eq = deepEqual(description1, formRef?.current?.initialValues);
     // event.preventDefault();
     const paylod = {
-      admin_id: adminId,
+      admin_id:adminId,
       description: description1?.description,
     };
-
+    console.log(paylod);
+    const formData=new FormData();
+    Object.entries(paylod).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+          formData.append(key, value);
+      }
+  });
     if (editFalg && editable) {
       const saveData = async () => {
         try {
           const response = await postData(
             'admin_profile_description/add',
-            paylod,
+            formData,
           );
-
-          if (response?.status === 200) {
+      console.log(response);
+          if (response?.status) {
             toast.success('Admin description saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -125,7 +136,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
             setActiveForm((prev: number) => prev + 1);
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             toast.warning('Please login again', {
               hideProgressBar: true,
               theme: 'colored',
@@ -149,11 +160,11 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
       const editData = async () => {
         try {
           const response = await putData(
-            'admin_profile_description/edit/' + adminId,
-            paylod,
+            'admin_profile_description/edit/' + descriptionId,
+            formData,
           );
 
-          if (response?.status === 200) {
+          if (response?.status) {
             toast.success('Admin description updated successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -169,7 +180,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
             });
           }
         } catch (error: any) {
-          if (error?.response?.status === 401) {
+          if (error?.response?.code === 401) {
             navigator('/');
             toast.warning('Please login again', {
               hideProgressBar: true,

@@ -41,7 +41,12 @@ interface StudentAddress {
 const StudentAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
   const { activeForm, setActiveForm }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  let StudentId = localStorage.getItem('_id');
+  useEffect(()=>{
+     StudentId = localStorage.getItem('_id');
+     console.log("DFGDFGD")
+  },[activeForm])
+ 
 
   const { namecolor }: any = context;
 
@@ -155,7 +160,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   const listData = async () => {
     getData(`${'student_address/edit/' + StudentId}`)
       .then((response: any) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           let add1: any;
           let add2: any;
           response?.data.forEach((address: any) => {
@@ -197,7 +202,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           if (equal) {
             setChecked(true);
           }
-        } else if (response?.status === 404) {
+        } else if (response?.code === 404) {
+          console.log("inside 404")
           setEditFlag(true);
           // toast.error(response?.message, {
           //   hideProgressBar: true,
@@ -220,30 +226,38 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       });
   };
   useEffect(() => {
-    listData();
-  }, []);
+    if(StudentId){
+      listData();
+    }
+
+  }, [activeForm]);
 
   useEffect(() => {
-    getData(`${'student_address/edit/' + StudentId}`).then((response: any) => {
-      if (response?.status === 200) {
-        response?.data.forEach((address: any) => {
-          if (address?.address_type === 'permanent') {
-            //setPermanentAddress(address);
-            //setPermanentAddress1(address);
-            setEditableCurrectPerm(true);
-            setTuchedPram(false);
-          } else if (address?.address_type === 'current') {
-            // setStudentAddress(address);
-            // setStudentAddress1(address);
-            setEditableCurrect(true);
-            setTuchedCurrent(false);
-          } else {
-            setEditableCurrect(false);
-            setEditableCurrectPerm(false);
+    if(StudentId){
+      getData(`${'student_address/edit/' + StudentId}`).then((response: any) => {
+        if (response?.status) {
+          response?.data.forEach((address: any) => {
+            if (address?.address_type === 'permanent') {
+              //setPermanentAddress(address);
+              //setPermanentAddress1(address);
+              setEditableCurrectPerm(true);
+              setTuchedPram(false);
+            } else if (address?.address_type === 'current') {
+              // setStudentAddress(address);
+              // setStudentAddress1(address);
+              setEditableCurrect(true);
+              setTuchedCurrent(false);
+            } else {
+              setEditableCurrect(false);
+              setEditableCurrectPerm(false);
+            }
+          });
+          if(response.code===404){
+            setEditFlag(true);
           }
-        });
-      }
-    });
+        }
+      });
+    }
   }, [activeForm]);
   const handleInputChange = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -503,6 +517,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
     }
 
     validatinforperm();
+
+    
     const currentAddressPayload = {
       student_id: StudentId,
       ...studentAddress,
@@ -534,12 +550,17 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       !city_col1 &&
       !contry_col1
     ) {
+      console.log(editFlag,tuched)
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
-            const data = await postData('/student_address/add', addressPayload);
+            const formData = new FormData();
+            Object.keys(addressPayload).forEach((key) => {
+              formData.append(key, addressPayload[key]);
+            });
+            const data = await postData('/student_address/add', formData);
 
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(`${addressType} address saved successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -572,13 +593,15 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             }
           }
         };
-
+       
+        console.log(studentAddress?.address_type);
         // Add current address
         if (studentAddress?.address_type === 'current') {
+          console.log("issues");
           await addAddress('Current', currentAddressPayload);
         }
         // Add permanent address
-        if (permanentAddress?.address_type === 'permanent') {
+        if (permanentAddress?.address_type === 'permanent' && permanentAddress.country) {
           await addAddress('Permanent', permanentAddressPayload);
         }
       } else {
@@ -586,13 +609,30 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           addressType: string,
           addressPayload: any,
         ) => {
+          console.log(addressPayload);
           try {
-            const data = await putData('/student_address/edit/' + StudentId, {
-              ...addressPayload,
-              pincode: addressPayload?.pincode || 0,
-            });
+            const formData = new FormData();
 
-            if (data?.status === 200) {
+            // Object.keys(addressPayload).forEach((key) => {
+            //   console.log(key,addressPayload[key]);
+            //   formData.append(key, addressPayload[key]);
+            // });
+            console.log(addressPayload.pincode,addressPayload?.address1,addressPayload?.address1)
+            formData.append('pincode', addressPayload?.pincode || 0);
+            formData.append('address1', addressPayload?.address1 || '');
+            formData.append('address2', addressPayload?.address2 || '');
+            formData.append('country', addressPayload?.country || '');
+            formData.append('state', addressPayload?.state || '');
+            formData.append('city', addressPayload?.city || '');
+            formData.append('district', addressPayload?.district || '');
+            formData.append('address_type',addressPayload?.address_type ||'')
+            formData.append('student_id',StudentId || '')
+            console.log(formData);
+            const data = await putData('/student_address/edit/' + StudentId, 
+              formData,
+            );
+
+            if (data?.status) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -616,7 +656,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
               } else if (!tuchedPram && tuchedCurrent) {
                 setActiveForm(2);
               }
-            } else if (data?.status === 201) {
+            } else if (data?.code === 201) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -658,11 +698,13 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
+            console.log(  studentAddress?.address_type === 'current' ,editableCurrent , tuchedCurrent)
             if (
               studentAddress?.address_type === 'current' &&
               editableCurrent &&
               tuchedCurrent
             )
+            console.log(  studentAddress?.address_type === 'current' &&editableCurrent && tuchedCurrent)
               await editAddress('Current', currentAddressPayload);
 
             console.log(editablePerm);

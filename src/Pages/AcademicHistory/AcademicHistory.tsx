@@ -52,7 +52,7 @@ interface Boxset {
 interface Institute {
   id: number;
   institute_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: string | number;
   is_active?: number;
   is_approve?: boolean;
@@ -97,7 +97,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const { getData, postData, putData } = useApi();
+  const { getData, postData, putDataJson } = useApi();
   const [boxes, setBoxes] = useState<Box[]>([]);
   // const [checkBoxes, setCheckBoxes] = useState<Box[]>([]);
   const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
@@ -208,13 +208,12 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
   const listData = async () => {
     return new Promise((resolve) => {
-      getData('/institution/list')
+      getData('/institute/list')
         .then(async (response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+              (item: any) => item?.is_active,
             );
-
             if (boxes[0]?.institute_type === 'college') {
               const filterDataInstitute = filteredData?.filter(
                 (item: any) => item?.university_id === boxes[0]?.university_id,
@@ -246,9 +245,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   useEffect(() => {
     getData('university/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.universities_data?.filter(
+            (item: any) => item?.is_active,
           );
           setUniversity(filteredData || []);
           // setCourses(response.data);
@@ -263,9 +262,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -281,9 +280,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.course_data?.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
@@ -299,9 +298,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       });
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          const filteredData = response?.data?.filter(
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -325,72 +324,78 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           position: 'top-center',
         });
       });
-    getData(`${'new_student_academic_history/get/' + StudentId}`)
-      .then((data: any) => {
-        if (data?.status === 200) {
-          if (data?.data?.[0]?.class_id) {
-            getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
-              (response: any) => {
-                if (response.status === 200) {
-                  setParticularClass(response.data.class_name);
-                } else setParticularClass('');
-              },
-            );
-          }
-          data?.data?.forEach((item: any) => {
-            const newBox = {
-              id: item?.id,
-              institute_type: item?.institution_type,
-              board: item?.board,
-              state_for_stateboard: item?.state_for_stateboard,
-              institute_id: item?.institute_id,
-              course_id: item?.course_id,
-              learning_style: item?.learning_style,
-              class_id: item?.class_id,
-              year: item?.year ? dayjs(item?.year) : null,
-              stream: item?.stream,
-              university_id: item?.university_id,
-              sem_id: item?.sem_id,
-              errors: undefined,
-            };
-
-            if (!boxes.some((box) => box.id === newBox.id)) {
-              setBoxes((prevBoxes) => [...prevBoxes, newBox]);
-              // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
+    if (StudentId) {
+      console.log("222"+StudentId)
+      getData(`${'new_student_academic_history/get/' + StudentId}`)
+        .then((data: any) => {
+          if (data?.status) {
+            console.log(data?.data?.[0]?.class_id)
+            if (data?.data?.[0]?.class_id) {
+              getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
+                (response: any) => {
+                  console.log(response);
+                  if (response.status) {
+                    setParticularClass(response.data.
+                      class_data.class_name);
+                  } else setParticularClass('');
+                },
+              );
             }
+            data?.data?.forEach((item: any) => {
+              const newBox = {
+                id: item?.id,
+                institute_type: item?.institution_type,
+                board: item?.board,
+                state_for_stateboard: item?.state_for_stateboard,
+                institute_id: item?.institute_id,
+                course_id: item?.course_id,
+                learning_style: item?.learning_style,
+                class_id: item?.class_id,
+                year: item?.year ? dayjs(item?.year) : null,
+                stream: item?.stream,
+                university_id: item?.university_id,
+                sem_id: item?.sem_id,
+                errors: undefined,
+              };
+
+              if (!boxes.some((box) => box.id === newBox.id)) {
+                setBoxes((prevBoxes) => [...prevBoxes, newBox]);
+                // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
+              }
+            });
+          } else if (data?.code === 404) {
+            setBoxes([
+              {
+                id: 0,
+                institute_type: '',
+                board: '',
+                state_for_stateboard: '',
+                institute_id: '',
+                course_id: '',
+                learning_style: '',
+                class_id: '',
+                year: null,
+                stream: '',
+                university_id: '',
+                sem_id: '',
+                errors: undefined,
+              },
+            ]);
+            setEditFlag(true);
+          } else {
+            console.error('Unexpected response:', data);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
           });
-        } else if (data?.status === 404) {
-          setBoxes([
-            {
-              id: 0,
-              institute_type: '',
-              board: '',
-              state_for_stateboard: '',
-              institute_id: '',
-              course_id: '',
-              learning_style: '',
-              class_id: '',
-              year: null,
-              stream: '',
-              university_id: '',
-              sem_id: '',
-              errors: undefined,
-            },
-          ]);
-          setEditFlag(true);
-        } else {
-          console.error('Unexpected response:', data);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
         });
-      });
+    }
     listData();
-  }, [updateBoxes]);
+  }, [updateBoxes,activeForm]);
   const [errors, setErrors] = useState(initialErrors);
 
   const saveAcademy = (instituteId: number = 0) => {
@@ -423,67 +428,54 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
     // If validation passes, proceed with form submission
     const promises = updatedBoxes.map((box) => {
-      const payload = {
-        student_id: StudentId,
-        institution_type: box.institute_type,
-        board:
-          box.institute_type.toLowerCase() === 'school'
-            ? box.board
-            : box.id
-              ? ''
-              : null,
-        state_for_stateboard:
-          box.institute_type.toLowerCase() === 'school' &&
-          box.state_for_stateboard !== null
-            ? String(box.state_for_stateboard)
-            : box.id
-              ? ''
-              : null,
-        institute_id:
-          box.institute_type.toLowerCase() === 'college'
-            ? String(instituteId || box.institute_id)
-            : box.id
-              ? ''
-              : null,
-        course_id:
-          box.institute_type.toLowerCase() === 'college'
-            ? String(box.course_id)
-            : box.id
-              ? ''
-              : null,
-        learning_style:
-          box.institute_type.toLowerCase() === 'college'
-            ? box.learning_style
-            : box.id
-              ? ''
-              : null,
-        class_id:
-          box.institute_type.toLowerCase() === 'school'
-            ? String(box.class_id)
-            : box.id
-              ? ''
-              : null,
-        ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}),
-        ...(box.university_id
-          ? { university_id: String(box.university_id) }
-          : {}),
-        year:
-          box?.year?.$y && box.institute_type.toLowerCase() === 'college'
-            ? String(box?.year?.$y)
-            : '', // Assuming 'year' is a string
-        stream:
-          (particularClass === 'class_11' || particularClass === 'class_12') &&
-          box.institute_type.toLowerCase() === 'school'
-            ? box?.stream
-            : '',
-      };
+      // Filter out null, empty string, and 'errors' field
+      const filteredBox = Object.fromEntries(
+        Object.entries(box).filter(([key, value]) =>
+          value !== null && value !== "" && key !== 'errors'
+        )
+      );
 
-      // Submit the form data (handle POST/PUT request here)
+      // Rename institute_type to institution_type
+      filteredBox.institution_type = filteredBox.institute_type;
+      delete filteredBox.institute_type;
 
-      if (editFlag && box.id === 0) {
-        return postData('/new_student_academic_history/add', payload);
+      // Add student_id
+      filteredBox.student_id = StudentId || '';
+
+      // Handle college-specific fields
+      if (filteredBox.institution_type.toLowerCase() === 'college') {
+        if (filteredBox.year?.$y) {
+          filteredBox.year = String(filteredBox.year.$y);
+        }
+        filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
+        if (filteredBox.sem_id) {
+          filteredBox.sem_id = String(filteredBox.sem_id);
+        }
+        if (filteredBox.university_id) {
+          filteredBox.university_id = String(filteredBox.university_id);
+          filteredBox.course_id = String(filteredBox.course_id);
+
+        }
+      }
+
+      // Handle school-specific fields
+      if (filteredBox.institution_type.toLowerCase() === 'school') {
+        if (['class_11', 'class_12'].includes(particularClass)) {
+          filteredBox.stream = filteredBox.stream || '';
+        }else{
+          filteredBox.stream = '';
+        }
+        if (filteredBox.state_for_stateboard !== undefined) {
+          filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
+        }
+        filteredBox.class_id = String(filteredBox.class_id);
+      }
+      console.log(filteredBox)
+      // Determine API request type
+      if (editFlag && filteredBox.id === 0) {
+        return postData('/new_student_academic_history/add', filteredBox);
       } else {
-        return putData(`/new_student_academic_history/edit/${box.id}`, payload);
+        return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, filteredBox);
       }
     });
 
@@ -491,7 +483,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     Promise.all(promises)
       .then((responses) => {
         const allSuccessful = responses.every(
-          (response) => response?.status === 200,
+          (response) => response?.status,
         );
         if (allSuccessful) {
           if (editAcademicHistory) {
@@ -548,7 +540,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       const filterDataInstitute = institutesAll.filter(
         (item) =>
           item.university_id === value &&
-          item.is_active === 1 &&
+          item.is_active  &&
           item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
@@ -590,8 +582,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     setEnddateInvalidList(newEnddateInvalidList);
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
-        if (response.status === 200) {
-          setParticularClass(response.data.class_name);
+        if (response.status) {
+          setParticularClass(response.data.
+            class_data
+            .class_name);
         } else setParticularClass('');
       });
     }
@@ -618,7 +612,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       const filterDataInstitute = institutesAll.filter(
         (item) =>
           item.university_id === boxes[0].university_id &&
-          item.is_active === 1 &&
+          item.is_active  &&
           item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
@@ -647,6 +641,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   //     setMaxSemester(0);
   //   }
   // }, [totalSemester]);
+  console.log(particularClass,boxes);
   return (
     <div className="mt-5">
       <form>
@@ -796,8 +791,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                   >
                     {university.map((item) => (
                       <MenuItem
-                        key={item?.university_id}
-                        value={item?.university_id}
+                        key={item?.id}
+                        value={item?.id}
                         sx={commonStyle(namecolor)}
                       >
                         {item.university_name}
@@ -840,7 +835,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                         value={institute.id}
                         sx={commonStyle(namecolor)}
                       >
-                        {institute.institution_name}
+                        {institute.institute_name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -963,17 +958,17 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                     label="Class"
                   >
                     {// classes.map((classes) => (
-                    classes
-                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                      ?.map((classes) => (
-                        <MenuItem
-                          key={classes.id}
-                          value={classes.id}
-                          sx={commonStyle(namecolor)}
-                        >
-                          {classes.class_name}
-                        </MenuItem>
-                      ))}
+                      classes
+                        ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                        ?.map((classes) => (
+                          <MenuItem
+                            key={classes.id}
+                            value={classes.id}
+                            sx={commonStyle(namecolor)}
+                          >
+                            {classes.class_name}
+                          </MenuItem>
+                        ))}
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1083,9 +1078,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type === 'college' && (
               <div
-                className={`${
-                  box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
-                } form_field_wrapper`}
+                className={`${box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
+                  } form_field_wrapper`}
               >
                 <FormControl
                   required

@@ -47,9 +47,9 @@ const Class = () => {
 
   const callAPI = async () => {
     getData(`${ClassURL}`)
-      .then((data: { data: IClass[] }) => {
-        if (data.data) {
-          const classData = data.data.map((cls: any) => {
+      .then((data) => {
+        if (data.status) {
+          const classData = data?.data?.classes_data?.map((cls: any) => {
             const createdDateTime = cls?.created_at;
             const updatedDateTime = cls?.updated_at;
             const created_time = new Date(createdDateTime);
@@ -93,7 +93,7 @@ const Class = () => {
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteClassURL}/${id}`)
       .then((data: { message: string; status: any }) => {
-        if (data.status === 200) {
+        if (data.status) {
           toast.success('Class deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',

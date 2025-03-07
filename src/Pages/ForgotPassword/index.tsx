@@ -53,7 +53,7 @@ const Forgotpassword = () => {
     };
     postData(`${forgotpassUrl}`, UserSignUp)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status === true) {
           // setMsg(data?.message);
           toast.success(data?.message, {
             hideProgressBar: true,

@@ -40,7 +40,7 @@ import { useTheme } from '@mui/material/styles';
 import { ImageModal } from '../../Components/ImageModal';
 
 const Chat = () => {
-  const userid = localStorage.getItem('_id') || '';
+  const userid = localStorage.getItem('user_uuid') || '';
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [studentDetail, setStudentData] = useState<any>();
@@ -322,7 +322,7 @@ const Chat = () => {
   };
 
   const callAPI = async () => {
-    getData(`${StudentGETURL}${userdata ? `/${userdata?.id}` : ''}`)
+    getData(`${StudentGETURL}${userdata ? `/${userdata?.user_uuid}` : ''}`)
       .then((data: any) => {
         setStudentData(data?.data);
         if (
@@ -359,7 +359,7 @@ const Chat = () => {
       });
     getData(`${university_list}`)
       .then((data: any) => {
-        setUniversity_List_Data(data?.data || '');
+        setUniversity_List_Data(data?.data.universities_data || '');
       })
       .catch((e) => {
         toast.error(e?.message, {
@@ -649,7 +649,7 @@ const Chat = () => {
         // if (data.status === 200) {
         //   handleResponse(data);
         // } else if (data.status === 404) {
-        if (data.status === 200 || data.status === 404) {
+        if (data.status || data.code === 404) {
           // setLoaderMsg("Searching result from knowledge base");
           setLoaderMsg('Searching result from Rag model');
 
@@ -672,7 +672,7 @@ const Chat = () => {
               subject: studentDetail.subject,
             })
               .then((response) => {
-                if (response?.status === 200 || response?.status === 402) {
+                if (response?.status || response?.code === 402) {
                   function formatAnswer(answer: any) {
                     if (Array.isArray(answer)) {
                       return answer;
@@ -709,7 +709,7 @@ const Chat = () => {
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
-                  if (response?.status !== 402) {
+                  if (response?.code !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
@@ -724,7 +724,7 @@ const Chat = () => {
                     class_or_course_selection: studentDetail.class.name,
                   })
                     .then((response) => {
-                      if (response?.status === 200) {
+                      if (response?.status) {
                         handleResponse(response);
                         const ChatStorepayload = {
                           student_id: userid,
@@ -756,7 +756,7 @@ const Chat = () => {
                   class_or_course_selection: studentDetail?.class.name,
                 })
                   .then((response) => {
-                    if (response?.status === 200) {
+                    if (response?.status) {
                       handleResponse(response);
                       const ChatStorepayload = {
                         student_id: userid,
@@ -814,7 +814,7 @@ const Chat = () => {
             // )
             return postData(`${ChatRAGURL}`, queryParams)
               .then((response) => {
-                if (response?.status === 200 || response?.status === 402) {
+                if (response?.status || response?.code === 402) {
                   function formatAnswer(answer: any) {
                     if (Array.isArray(answer)) {
                       return answer;
@@ -851,7 +851,7 @@ const Chat = () => {
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
-                  if (response?.status !== 402) {
+                  if (response?.code !== 402) {
                     postData(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
@@ -872,7 +872,7 @@ const Chat = () => {
                     class_or_course_selection: course_name,
                   })
                     .then((response) => {
-                      if (response?.status === 200) {
+                      if (response?.status) {
                         handleResponse(response);
                         const ChatStorepayload = {
                           student_id: userid,
@@ -905,7 +905,7 @@ const Chat = () => {
                   class_or_course_selection: course_name,
                 })
                   .then((response) => {
-                    if (response?.status === 200) {
+                    if (response?.status) {
                       handleResponse(response);
                       const ChatStorepayload = {
                         student_id: userid,
@@ -929,7 +929,7 @@ const Chat = () => {
         }
       })
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           const ChatStorepayload = {
             student_id: userid,
             chat_question: search,
@@ -938,7 +938,7 @@ const Chat = () => {
 
           postData(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
-              if (data?.status === 200) {
+              if (data?.status) {
                 // handleResponse(data);
               } else if (data) {
                 // handleError(data);
@@ -947,7 +947,7 @@ const Chat = () => {
             .catch(handleError);
 
           handleResponsereg(data);
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           // const Ollamapayload = {
           //   user_query: search,
           // };
@@ -971,7 +971,7 @@ const Chat = () => {
         }
       })
       .then((data) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           // handleResponse(data);
           const ChatStorepayload = {
             student_id: userid,
@@ -981,7 +981,7 @@ const Chat = () => {
 
           postData(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
-              if (data?.status === 200) {
+              if (data?.status) {
                 // handleResponse(data);
               } else if (data) {
                 // handleError(data);
@@ -989,7 +989,7 @@ const Chat = () => {
             })
             .catch(handleError);
           handleResponsereg(data);
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setLoaderMsg('Fetching data from Chat-GPT API.');
           return postData(`${ChatURLAI}`, payload);
         } else if (data) {
@@ -997,7 +997,7 @@ const Chat = () => {
         }
       })
       .then((data) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           handleResponse(data);
         } else if (data) {
           handleError(data);
@@ -1337,7 +1337,7 @@ const Chat = () => {
         setDataDelete(false);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -1431,7 +1431,7 @@ const Chat = () => {
           : studentDetail?.subject_preference?.course_name,
     })
       .then((response) => {
-        if (response?.status === 200) {
+        if (response?.status) {
           handleResponse(response);
           const ChatStorepayload = {
             student_id: userid,
