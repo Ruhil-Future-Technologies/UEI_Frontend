@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 //import BookIcon from '@mui/icons-material/Book';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -9,45 +9,47 @@ import { Chip, IconButton, Box, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import useApi from '../../../hooks/useAPI';
+import { Assignment } from './CreateAssignments';
 
-type Assignment = {
-  assignment: string;
-  subject: string;
-  dueDate: string;
-  status: string;
-  submissions: string;
-};
+// type Assignment = {
+//   assignment: string;
+//   subject: string;
+//   dueDate: string;
+//   status: string;
+//   submissions: string;
+// };
 
-const assignments: Assignment[] = [
-  {
-    assignment: 'Mathematics Quiz - Chapter 3',
-    subject: 'Mathematics',
-    dueDate: 'Feb 15, 2024',
-    status: 'Active',
-    submissions: '18 / 25',
-  },
-  {
-    assignment: 'English Essay - Creative Writing',
-    subject: 'English',
-    dueDate: 'Feb 18, 2024',
-    status: 'Draft',
-    submissions: '0 / 30',
-  },
-  {
-    assignment: 'Science Project - Solar System',
-    subject: 'Science',
-    dueDate: 'Feb 10, 2024',
-    status: 'Closed',
-    submissions: '28 / 28',
-  },
-  {
-    assignment: 'History Assignment - World War II',
-    subject: 'History',
-    dueDate: 'Feb 20, 2024',
-    status: 'Active',
-    submissions: '15 / 32',
-  },
-];
+// const assignments: Assignment[] = [
+//   {
+//     assignment: 'Mathematics Quiz - Chapter 3',
+//     subject: 'Mathematics',
+//     dueDate: 'Feb 15, 2024',
+//     status: 'Active',
+//     submissions: '18 / 25',
+//   },
+//   {
+//     assignment: 'English Essay - Creative Writing',
+//     subject: 'English',
+//     dueDate: 'Feb 18, 2024',
+//     status: 'Draft',
+//     submissions: '0 / 30',
+//   },
+//   {
+//     assignment: 'Science Project - Solar System',
+//     subject: 'Science',
+//     dueDate: 'Feb 10, 2024',
+//     status: 'Closed',
+//     submissions: '28 / 28',
+//   },
+//   {
+//     assignment: 'History Assignment - World War II',
+//     subject: 'History',
+//     dueDate: 'Feb 20, 2024',
+//     status: 'Active',
+//     submissions: '15 / 32',
+//   },
+// ];
 
 const getStatusChip = (status: string) => {
   switch (status) {
@@ -61,41 +63,30 @@ const getStatusChip = (status: string) => {
       return <Chip label={status} />;
   }
 };
-
+const viewAssignmnet=()=>{
+ console.log("view this assgnment")
+}
+const editAssignmnet=()=>{
+  console.log("edit this assgnment")
+}
+const deleteAssignment=()=>{
+console.log("delete this assognment")
+}
 const columns: MRT_ColumnDef<Assignment>[] = [
-  {
-    accessorKey: 'assignment',
-    header: 'Assignment',
-  },
-  {
-    accessorKey: 'subject',
-    header: 'Subject',
-  },
-  {
-    accessorKey: 'dueDate',
-    header: 'Due Date',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    Cell: ({ cell }) => getStatusChip(cell.getValue<string>()),
-  },
-  {
-    accessorKey: 'submissions',
-    header: 'Submissions',
-  },
   {
     accessorKey: 'actions',
     header: 'Actions',
     Cell: () => (
       <Box>
-        <IconButton color="primary">
+        <IconButton color="primary" onClick={viewAssignmnet}>
+          
           <VisibilityIcon />
+          
         </IconButton>
-        <IconButton color="secondary">
+        <IconButton color="secondary" onClick={editAssignmnet}>
           <EditIcon />
         </IconButton>
-        <IconButton color="error">
+        <IconButton color="error" onClick={deleteAssignment}>
           <DeleteIcon />
         </IconButton>
       </Box>
@@ -103,9 +94,85 @@ const columns: MRT_ColumnDef<Assignment>[] = [
     enableSorting: false,
     enableColumnFilter: false,
   },
+  {
+    accessorKey: 'title',
+    header: 'Title',
+  },
+  {
+    accessorKey: 'due_date_time',
+    header: 'Due Time & Date',
+  },
+  {
+    accessorKey: 'contact_email',
+    header: 'contact email',
+  },
+  {
+    accessorKey: 'type',
+    header: 'type',
+  },
+  {
+    accessorKey: 'created_by',
+    header: 'Created By',
+  },
+  {
+    accessorKey: 'created_at',
+    header: 'Created at',
+  },
+  {
+    accessorKey: 'updated_by',
+    header: 'updated by',
+  },
+  {
+    accessorKey: 'updated_at',
+    header: 'updated at',
+  },
+  {
+    accessorKey: 'subject',
+    header: 'Subject',
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    Cell: ({ cell }) => getStatusChip(cell.getValue<string>()),
+  },
 ];
 
 export const Assignments = () => {
+
+
+  const {getData}=useApi();
+  const [assignmentData,setAssignmentData]=useState<Assignment[]>([{
+    title: "",
+    type: "written",
+    contact_email: "",
+    allow_late_submission: false,
+    due_date_time: "", // Or new Date().toISOString() if using Date type
+    available_from: "", // Or new Date().toISOString() if using Date type
+    assign_to_students: [],
+    instructions: "",
+    points: '',
+    save_draft: false,
+    add_to_report: false,
+    notify: false,
+    file: null, // File should be null initially
+  }]);
+  useEffect(()=>{
+    getListOfAssignments();
+  },[])
+
+  const getListOfAssignments=()=>{
+  try {
+    getData(`/assignment/list/`).then((response)=>{
+      console.log(response);
+      if(response.data){
+        setAssignmentData(response.data)
+      }
+    })
+  } catch (error) {
+    
+  }
+  }
+  console.log(assignmentData);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -224,7 +291,7 @@ export const Assignments = () => {
             <Box className="rounded-4 overflow-hidden">
             <MaterialReactTable
               columns={columns}
-              data={assignments}
+              data={assignmentData}
               enablePagination
               enableSorting
               enableColumnFilters

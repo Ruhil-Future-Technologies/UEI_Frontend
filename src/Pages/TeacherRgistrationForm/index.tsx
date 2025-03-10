@@ -856,7 +856,7 @@ console.log(valid,teacher.university_id)
           'institute_id',
           teacher.institution_id?.toString() || '',
         );
-        if (selectedClassName === 'col-6') {
+        if (selectedClassName === 'col-4') {
           formData.append('stream', teacher.stream);
         }
       } else {
@@ -1064,6 +1064,7 @@ console.log(valid,teacher.university_id)
               subjects: [],
             };
           }
+          console.log(updatedBox);
         }
 
         if (name === 'stream') {
@@ -1079,6 +1080,7 @@ console.log(valid,teacher.university_id)
             filteredSubjects,
             subjects: [],
           };
+          console.log(updatedBox);
         }
         validateFields(index, name, updatedBox);
         return updatedBox;

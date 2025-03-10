@@ -34,6 +34,9 @@ import 'swiper/css/navigation';
 
 import useApi from '../../../hooks/useAPI';
 import { Boxes } from '../../TeacherRgistrationForm';
+import { QUERY_KEYS_CLASS } from '../../../utils/const';
+import { IClass } from '../../../Components/Table/columns';
+import { toast } from 'react-toastify';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -52,8 +55,11 @@ interface Teacher {
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
+   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
+    const [selectedEntity, setSelectedEntity] = useState('');
+  const [dataClass, setDataClass] = useState<IClass[]>([]);
   const [boxes, setBoxes] = useState<Boxes[]>([
     {
       semester_number: '',
@@ -70,21 +76,30 @@ const TeacherDash = () => {
         console.log(data);
         if (data?.status) {
           setTeacherData(data.data);
-          const output: Boxes[] = Object.keys(
-            data.data.course_semester_subjects,
-          ).flatMap((CourseKey) =>
-            Object.keys(data.data.course_semester_subjects[CourseKey]).map(
-              (semester_number) => ({
-                course_id: CourseKey,
-                semester_number: semester_number,
-                subjects:
-                  data.data.course_semester_subjects[CourseKey][
-                    semester_number
-                  ],
-              }),
-            ),
-          );
-          setBoxes(output);
+          if(data?.data?.course_semester_subjects !=null){
+            setSelectedEntity("college")
+            const output: Boxes[] = Object.keys(
+              data.data.course_semester_subjects,
+            ).flatMap((CourseKey) =>
+              Object.keys(data.data.course_semester_subjects[CourseKey]).map(
+                (semester_number) => ({
+                  course_id: CourseKey,
+                  semester_number: semester_number,
+                  subjects:
+                    data.data.course_semester_subjects[CourseKey][
+                      semester_number
+                    ],
+                }),
+              ),
+            );
+            setBoxes(output);
+          }else{
+            setSelectedEntity("school")
+            const classIds = Object.keys(data.data.class_stream_subjects).map((classKey) => classKey);
+            getClasslist(classIds)
+          }
+         
+          
         }
       });
     } catch (error) {
@@ -95,6 +110,26 @@ const TeacherDash = () => {
     getTeacherInfo();
   }, []);
   console.log(teacherData);
+
+    const getClasslist = (classIds: any) => {
+      getData(`${ClassURL}`)
+        .then((data) => {
+          if (data.data) {
+            const filteredClasses = data.data.classes_data.filter((classn: any) =>
+              classIds.includes(String(classn.id))
+            )
+            setDataClass(filteredClasses);
+          }
+        })
+        .catch((e) => {
+          if (e?.response?.status === 401) {
+          }
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+    };
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -141,12 +176,26 @@ const TeacherDash = () => {
                         <p className="planbg">Senior Professor</p>
                       </div>
                       <div className="curcc">
-                        <h6>CURRENT COURSES</h6>
-                          <ul>
-                            {boxes?.map((item, index) => (
-                              <li key={index}>{item.course_id}</li>
-                            ))}
-                          </ul>
+                        {selectedEntity==='college'?(
+                          <>
+                         <h6>CURRENT COURSES</h6>
+                         <ul>
+                           {boxes?.map((item, index) => (
+                             <li key={index}>{item.course_id}</li>
+                           ))}
+                         </ul>
+                         </>
+                        ):
+                        <>
+                        <h6>CURRENT CLASSES</h6>
+                        <ul>
+                          {dataClass?.map((item, index) => (
+                            <li key={index}>{item.class_name}</li>
+                          ))}
+                        </ul>
+                        </> 
+                        }
+                       
                       </div>
                     </div>
                   </div>
