@@ -362,7 +362,11 @@ const AddEditInstitute = () => {
           });
         });
     } else {
-      postData(`${InstituteAddURL}`, filteredData)
+      const newInstituteData = {
+        ...filteredData,
+        is_verified: 'True',  // Add this key only in the else block
+    };
+      postData(`${InstituteAddURL}`, newInstituteData)
         .then((data: { status: boolean; message: string }) => {
           if (data.status) {
             // navigator('/main/Institute')

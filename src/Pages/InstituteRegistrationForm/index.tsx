@@ -468,6 +468,7 @@ const InstituteRegistrationForm = () => {
       formData.append("phone", valueInstitute.mobile_no);
       formData.append("email", valueInstitute.email_id);
       formData.append("icon", valueInstitute.icon);
+      formData.append("is_verified", 'False');
 
       if (selectedEntity.toLowerCase() !== 'school') {
         formData.append('university_id', valueInstitute.university_id);

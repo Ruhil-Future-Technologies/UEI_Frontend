@@ -679,7 +679,6 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleSubmit = () => {
-    console.log("fkjhsghghjsjgfs")
     let valid1=false;
     if (teacher.entity_id == '') {
       setEntity_error(true)
@@ -822,6 +821,7 @@ if(valid1) return;
       formData.append('district', teacher.district);
       formData.append('city', teacher.city);
       formData.append('pincode', teacher.pincode);
+      formData.append('is_verified', 'False');
 
       if (selectedEntity.toLowerCase() === 'school') {
         const class_stream_subjects = boxesForSchool.reduce(
