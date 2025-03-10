@@ -47,7 +47,6 @@ const AddEditSubject = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  //const userdata = JSON.parse(localStorage.getItem('userdata') || '');
   const user_uuid = localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z0-9\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
 
@@ -61,10 +60,7 @@ const AddEditSubject = () => {
     pdf_content: '',
   };
   const [subject, setSubject] = useState<any>(initialState);
-  // const [subject_namecol, setSubjectNamevalid] = useState<boolean>(false);
-  // const [selectedFile, setSelectedFile] = React.useState("");
   const formRef = useRef<FormikProps<ISubjectForm>>(null);
-
   const location = useLocation();
   const Menulist: any = localStorage.getItem('menulist1');
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -90,7 +86,6 @@ const AddEditSubject = () => {
   ) {
     navigator('/main/Subject');
   }
-
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
@@ -104,7 +99,8 @@ const AddEditSubject = () => {
         if (e?.response?.code === 401) {
           navigator('/');
         }
-        toast.error(e?.message, {
+        const errorMessage = e?.response?.data?.message || e?.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
         });
@@ -121,7 +117,8 @@ const AddEditSubject = () => {
         if (e?.response?.code === 401) {
           navigator('/');
         }
-        toast.error(e?.message, {
+        const errorMessage = e?.response?.data?.message || e?.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
         });
@@ -133,11 +130,11 @@ const AddEditSubject = () => {
             (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
-        toast.error(error?.message, {
+        const errorMessage = error?.response?.data?.message || error?.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
@@ -146,13 +143,13 @@ const AddEditSubject = () => {
     if (id) {
       getData(`${SubjectGETURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          console.log(data);
           if (data.status) {
             setSubject(data?.data?.subject_data);
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -245,8 +242,6 @@ const AddEditSubject = () => {
       });
       putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
           if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
@@ -261,7 +256,8 @@ const AddEditSubject = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -300,7 +296,8 @@ const AddEditSubject = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -327,7 +324,8 @@ const AddEditSubject = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -352,10 +350,6 @@ const AddEditSubject = () => {
     course_id: Yup.string().required('Please select Course name'),
     institution_id: Yup.string().required('Please select institute name'),
   });
-
-  // const maxSemester = totalSemester && totalSemester?.length > 0
-  // ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-  // : 0;
   return (
     <>
       <div className="main-wrapper">
@@ -387,7 +381,6 @@ const AddEditSubject = () => {
               >
                 {({ errors, values, touched, handleBlur }: any) => (
                   <Form>
-                    {/* <form onSubmit={(e) => handleSubmit(e, subject)}> */}
                     <div className="row">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
@@ -543,22 +536,6 @@ const AddEditSubject = () => {
                                 },
                               }}
                             >
-                              {/* {  [...Array(maxSemester)]?.map((_, index) => (
-                                <MenuItem
-                                  key={`${index + 1}`}
-                                  value={index + 1}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    "&:hover": {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
-                                >
-                                  Semester {index + 1}
-                                </MenuItem>
-                              ))} */}
                               {totalSemester
                                 ?.sort(
                                   (a: any, b: any) =>
@@ -629,9 +606,6 @@ const AddEditSubject = () => {
                             <input
                               type="file"
                               accept=".pdf,.doc,.docx"
-                              // onChange={(event) =>
-                              //   setSelectedFile(event.target.value)
-                              // }
                               onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>,
                               ) => handleChange(e, 'menu_image')}
@@ -659,7 +633,6 @@ const AddEditSubject = () => {
                         </button>
                       )}
                     </div>
-                    {/* </form> */}
                   </Form>
                 )}
               </Formik>
