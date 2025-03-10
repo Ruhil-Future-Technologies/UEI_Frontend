@@ -470,15 +470,20 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         }
         filteredBox.class_id = String(filteredBox.class_id);
       }
-      console.log(filteredBox)
+      const updatedFilteredBox = { 
+        ...filteredBox,
+        course_id: filteredBox?.course_id !== undefined ? String(filteredBox?.course_id) :"",
+        university_id: filteredBox?.university_id !== undefined ? String(filteredBox?.university_id) : "",
+        sem_id: filteredBox?.sem_id !== undefined ? String(filteredBox?.sem_id): "",
+        class_id: filteredBox?.class_id !== undefined ? String(filteredBox?.class_id) : ""
+    };
       // Determine API request type
       if (editFlag && filteredBox.id === 0) {
         return postData('/new_student_academic_history/add', filteredBox);
       } else {
-        return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, filteredBox);
+        return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, updatedFilteredBox);
       }
     });
-
     // Handle all promises
     Promise.all(promises)
       .then((responses) => {
