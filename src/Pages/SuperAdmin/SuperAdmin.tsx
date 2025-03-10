@@ -183,7 +183,8 @@ const SuperAdmin = () => {
         }
       })
       .catch((e) => {
-        toast.error(e?.message, {
+        const errorMessage = e.response?.data?.message || e.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
         });
