@@ -391,18 +391,19 @@ const InstitutionDash = () => {
                       <th>semester count</th>
                       <th>Enrollment Status</th>
                     </tr>
-                    {dataCourses.slice(0, 4).map((course, index) => (
-                      <tr key={index}>
-                        <td>{course.course_name}</td>
-                        <td>{course.duration}</td>
-                        <td>{course.semester_count}</td>
-                        <td>
-                          {course.enrollment_status == null
-                            ? 'NA'
-                            : course.enrollment_status}
-                        </td>
-                      </tr>
-                    ))}
+                    {Array.isArray(dataCourses) &&
+                      dataCourses.slice(0, 4).map((course, index) => (
+                        <tr key={index}>
+                          <td>{course.course_name}</td>
+                          <td>{course.duration}</td>
+                          <td>{course.semester_count}</td>
+                          <td>
+                            {course.enrollment_status == null
+                              ? 'NA'
+                              : course.enrollment_status}
+                          </td>
+                        </tr>
+                      ))}
                   </table>
                 </div>
                 <Link

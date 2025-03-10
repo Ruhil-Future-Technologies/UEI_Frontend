@@ -91,6 +91,8 @@ import Teacher from './Pages/Teacher/Teacher';
 import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
 import InstitutionProfile from './Pages/Institution/InstitutionProfile';
 import TeacherProfile from './Pages/Teacher/TeacherProfile';
+import Content from './Pages/Content/Content';
+import AddContent from './Pages/Content/AddEditContent';
 
 function App() {
   const navigate = useNavigate();
@@ -234,6 +236,20 @@ function App() {
               />
             }
           />
+          <Route path="/institution-dashboard/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>
           <Route
@@ -254,6 +270,20 @@ function App() {
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
           />
+          <Route path="/teacher-dashboard/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
@@ -389,6 +419,22 @@ function App() {
               }
             />
           </Route>
+
+          <Route path="/main/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
+
           <Route path="/main/University">
             <Route
               path=""

@@ -237,3 +237,14 @@ export const QUERY_KEYS_STUDENT_SUBJECT_PREFERENCE = {
   ADMIN_ADD_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/add',
   ADMIN_EDIT_STUDENT_SUBJECT_PREFERENCE: '/subject_preference/edit',
 };
+
+export const QUERY_KEYS_CONTENT = {
+  GET_CONTENT: '/content/list',
+  CONTENT_ADD: '/content/add',
+  CONTENT_GET: '/content/get',
+  CONTENT_EDIT: '/content/edit',
+  CONTENT_DELETE: '/content/delete',
+  GET_CONTENT_ACTIVE: '/content/activate',
+  GET_CONTENT_DEACTIVE: '/content/deactivate',
+  CONTENT_FILE_DELETE: '/content/delete/url',
+};

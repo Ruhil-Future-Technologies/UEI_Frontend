@@ -38,6 +38,7 @@ import {
   QUERY_KEYS_UNIVERSITY,
   QUERY_KEYS_TEACHER,
   QUERY_KEYS_CLASS,
+  QUERY_KEYS_CONTENT,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
 import React, { useEffect, useState } from 'react';
@@ -306,6 +307,22 @@ export interface IPDFList {
   pdf_path: string;
   upload_date_time: string;
 }
+
+export interface ContentRepoDTO {
+  id: string;
+  url: string;
+  content_type: string;
+  description: string;
+  course_semester_subjects: string;
+  class_stream_subjects: string;
+  entity_id: string;
+  institute_id: string;
+  university_id?: string;
+  created_at: string;
+  updated_at: string;
+  is_active: boolean;
+}
+
 export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
@@ -413,7 +430,7 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
             inactiveColor="#f44336"
           />
         </Box>
-         ) : null;
+      ) : null;
     },
     size: 150,
   },
@@ -2481,6 +2498,315 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   {
     accessorKey: 'year',
     header: 'Year',
+    size: 150,
+  },
+];
+
+export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
+  {
+    accessorKey: 'url',
+    header: 'URL',
+    size: 250,
+    Cell: ({ cell }: any) => {
+      const urls = cell?.getValue();
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {urls.map((item: { id: number; url: string }) => (
+            <a
+              key={item.id}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {item.url}
+            </a>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'content_type',
+    header: 'Content Type',
+    size: 200,
+    Cell: ({ cell }: any) => {
+      const content_type = cell?.getValue();
+      return content_type
+        ? content_type.charAt(0).toUpperCase() +
+            content_type.slice(1).toLowerCase()
+        : null;
+    },
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+    size: 250,
+  },
+
+  {
+    accessorKey: 'institute_id',
+    header: 'Institute Name',
+    size: 200,
+    Cell: ({ cell }: any) => {
+      const { getData } = useApi();
+      const [institute_name, setInstituteName] = useState<string>('-');
+      const institute_id = cell.getValue();
+
+      useEffect(() => {
+        getData('/institute/list')
+          .then((response: any) => {
+            if (response.status) {
+              const matchingEntity = response.data.find(
+                (institute: any) => institute.id === institute_id,
+              );
+
+              if (matchingEntity) {
+                setInstituteName(matchingEntity.institute_name);
+              }
+            }
+          })
+          .catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      }, [institute_id]);
+
+      return <span>{institute_name}</span>;
+    },
+  },
+  {
+    accessorKey: 'university_id',
+    header: 'University Name',
+    size: 200,
+    Cell: ({ row }: any) => {
+      const { getData } = useApi();
+      const [university_name, setUniversityName] = useState('');
+      const institute_id = row.original.institute_id;
+
+      useEffect(() => {
+        if (institute_id) {
+          getData('/institute/list')
+            .then((response: any) => {
+              if (response.status) {
+                const matchingEntity = response.data.find(
+                  (institute: any) => institute.id === institute_id,
+                );
+                if (matchingEntity) {
+                  setUniversityName(matchingEntity.university_name);
+                }
+              }
+            })
+            .catch((error) => {
+              toast.error(error?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+            });
+        }
+      }, [institute_id]);
+
+      return <span>{university_name}</span>;
+    },
+  },
+  {
+    accessorKey: 'class_id',
+    header: 'Class',
+    size: 150,
+    Cell: ({ row }: any) => {
+      const { getData } = useApi();
+      const [className, setClassName] = useState<string>('-');
+      const [, setClassList] = useState([]);
+      const entity_id = row.original.entity_id;
+      const class_id = row?.original?.class_stream_subjects
+        ? JSON.parse(row?.original?.class_stream_subjects)
+        : '';
+
+      useEffect(() => {
+        if (entity_id) {
+          getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
+            .then((data) => {
+              setClassList(data?.data?.classes_data);
+              return getData('/entity/list');
+            })
+            .then((entityResponse: any) => {
+              if (entityResponse.status) {
+                const entity = entityResponse?.data?.entityes_data.find(
+                  (e: any) => e.id === Number(entity_id),
+                );
+
+                if (entity?.entity_type === 'school' && class_id) {
+                  const class_id_arr = Object.keys(class_id);
+
+                  setClassList((prevClasses) => {
+                    const class_name_arr = prevClasses?.filter((cls: any) => {
+                      const id = cls.id.toString();
+
+                      return class_id_arr.includes(id);
+                    });
+
+                    setClassName(
+                      class_name_arr?.map((c: any) => c.class_name).join(', '),
+                    );
+
+                    return prevClasses;
+                  });
+                }
+              }
+            })
+            .catch((error) => {
+              console.error('Error fetching data:', error);
+            });
+        }
+      }, [entity_id]);
+
+      return <span>{className}</span>;
+    },
+  },
+  {
+    accessorKey: 'course_id',
+    header: 'Course',
+    size: 150,
+    Cell: ({ row }: any) => {
+      const { getData } = useApi();
+      const [courseName, setCourseName] = useState<string>('-');
+      const [, setCourseList] = useState([]);
+
+      const course_id = row?.original?.course_semester_subjects
+        ? JSON.parse(row?.original?.course_semester_subjects)
+        : '';
+
+      const entity_id = row.original.entity_id;
+
+      useEffect(() => {
+        if (entity_id) {
+          getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
+            .then((data) => {
+              setCourseList(data?.data?.course_data);
+              return getData('/entity/list');
+            })
+            .then((entityResponse: any) => {
+              if (entityResponse.status) {
+                const entity = entityResponse?.data?.entityes_data.find(
+                  (e: any) => e.id === Number(entity_id),
+                );
+
+                if (entity?.entity_type === 'college' && course_id) {
+                  const course_id_arr = Object.keys(course_id);
+
+                  setCourseList((prevCourses) => {
+                    const course_name_arr = prevCourses.filter(
+                      (course: any) => {
+                        const id = course.id.toString();
+
+                        return course_id_arr.includes(id);
+                      },
+                    );
+
+                    setCourseName(
+                      course_name_arr.map((c: any) => c.course_name).join(', '),
+                    );
+
+                    return prevCourses;
+                  });
+                }
+              }
+            })
+            .catch((error) => {
+              console.error('Error fetching data:', error);
+            });
+        }
+      }, [entity_id]);
+
+      return <span>{courseName}</span>;
+    },
+  },
+  {
+    accessorKey: 'subjects',
+    header: 'Subjects',
+    size: 250,
+    Cell: ({ row }: any) => {
+      const [subjectsName, setSubjectsName] = useState<string>('-');
+
+      useEffect(() => {
+        const class_id = row?.original?.class_stream_subjects
+          ? JSON.parse(row?.original?.class_stream_subjects)
+          : '';
+        const course_id = row?.original?.course_semester_subjects
+          ? JSON.parse(row?.original?.course_semester_subjects)
+          : '';
+
+        let subjects: any[] = [];
+
+        if (class_id) {
+          subjects = Object.values(class_id)
+            .flatMap((category: any) => Object.values(category))
+            .flat();
+        } else if (course_id) {
+          subjects = Object.values(course_id)
+            .flatMap((category: any) => Object.values(category))
+            .flat();
+        }
+
+        setSubjectsName(subjects.length > 0 ? subjects.join(', ') : '-');
+      }, [
+        row.original.class_stream_subjects,
+        row.original.course_semester_subjects,
+      ]);
+
+      return <span>{subjectsName}</span>;
+    },
+  },
+  {
+    accessorKey: 'created_at',
+    header: 'Created At',
+    size: 200,
+  },
+  {
+    accessorKey: 'updated_at',
+    header: 'Updated At',
+    size: 200,
+  },
+  {
+    accessorKey: 'is_active',
+    header: 'Active/DeActive',
+    Cell: ({ cell, row }: any) => {
+      const { putData } = useApi();
+      const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
+      const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
+      const value = cell?.getValue();
+
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(value);
+
+      const toggleActive = (id: string, currentStatus: boolean) => {
+        putData(`${currentStatus ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status) {
+              setShow((prev: any) => !prev);
+              setShowValue((prev: any) => !prev);
+              toast.success(data?.message);
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      };
+
+      return (
+        <Box>
+          <Switch
+            isChecked={show}
+            label={show ? 'Active' : 'Deactive'}
+            onChange={() => toggleActive(row?.original?.id, showValue)}
+          />
+        </Box>
+      );
+    },
     size: 150,
   },
 ];

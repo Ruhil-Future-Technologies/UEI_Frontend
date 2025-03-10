@@ -62,12 +62,12 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/institution-dashboard">
+            <Link to="/institution-dashboard/Content">
               <div className="parent-icon">
                 {' '}
                 <LocalLibraryOutlinedIcon />
               </div>
-              <div className="menu-title">Study Materials</div>
+              <div className="menu-title">Content Library</div>
             </Link>
           </li>
           <li>
