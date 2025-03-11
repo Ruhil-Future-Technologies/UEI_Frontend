@@ -50,6 +50,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         ? mName.toLowerCase() === 'add-student-feedback'
         : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'faq' : '') ||
+      (usertype === 'student' ? mName.toLowerCase() === 'content' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'add-university' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'university' : '') ||
       (usertype === 'admin' ? uName.toLowerCase() === 'edit-university' : '') ||

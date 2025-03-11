@@ -92,7 +92,8 @@ import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
 import InstitutionProfile from './Pages/Institution/InstitutionProfile';
 import TeacherProfile from './Pages/Teacher/TeacherProfile';
 import Content from './Pages/Content/Content';
-import AddContent from './Pages/Content/AddEditContent';
+import AddContent from './Pages/Content/AddContent';
+import StudentContent from './Pages/Content/StudentContent';
 
 function App() {
   const navigate = useNavigate();
@@ -300,6 +301,12 @@ function App() {
           <Route
             path="/main/chat"
             element={<Protected Component={Chat} menuName="Chat" />}
+          />
+          <Route
+            path="/main/student/content"
+            element={
+              <Protected Component={StudentContent} menuName="content" />
+            }
           />
           <Route
             path="/main/chat"
