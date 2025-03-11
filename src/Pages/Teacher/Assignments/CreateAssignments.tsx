@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   TextField,
   Button,
@@ -19,7 +19,7 @@ import {
   ToggleButtonGroup,
   SelectChangeEvent,
   InputLabel,
-  OutlinedInput
+  OutlinedInput,
 } from '@mui/material';
 import {
   fieldIcon,
@@ -45,9 +45,11 @@ import { toast } from 'react-toastify';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 import { CourseRep0oDTO, IClass, SemesterRep0oDTO, StudentRep0oDTO, SubjectRep0oDTO } from '../../../Components/Table/columns';
 import NameContext from '../../Context/NameContext';
+import dayjs, { Dayjs } from 'dayjs';
 
 
 export interface Assignment {
+  id?: string,
   title: string;
   type: string;
   contact_email: string;
@@ -66,7 +68,10 @@ export interface Assignment {
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const { getData, postData } = useApi()
+
+  const { id } = useParams();
+
+  const { getData, postData, putData } = useApi()
   //const stream = ['Science', 'Commerce', 'Arts'];
 
 
@@ -78,12 +83,13 @@ export const CreateAssignments = () => {
   const teacherId = localStorage.getItem('user_uuid');
   const [assignmentType, setAssignmentType] = useState('written');
   const [files, setFiles] = useState<File[]>([]);
-  const [availableFrom, setAvailableFrom] = useState<Date | null>(null);
- // const [availableUntil, setAvailableUntil] = useState<Date | null>(null);
+  const nevegate=useNavigate();
+  const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
+  // const [availableUntil, setAvailableUntil] = useState<Date | null>(null);
   const [allowLateSubmission, setAllowLateSubmission] = useState(false);
   const [addToStudentRepost, setAddToStudentRepost] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null)
   const [dueTime, setDueTime] = useState<Date | null>(null);
   const [selectedEntity, setSelectedEntity] = useState('');
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
@@ -106,9 +112,10 @@ export const CreateAssignments = () => {
   const [point_error, setPoint_error] = useState(false);
   const [instructions_error, setInstructoins_error] = useState(false);
   const [contact_email_email, setContact_email_error] = useState(false);
-  const [availableFrom_error,setAvailableFrom_error]= useState(false);
-  const [due_date_error, setDue_date_error]=useState(false);
-  const [dueTime_error,setDueTime_error]=useState(false);
+  const [availableFrom_error, setAvailableFrom_error] = useState(false);
+  const [due_date_error, setDue_date_error] = useState(false);
+  const [dueTime_error, setDueTime_error] = useState(false);
+
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -161,7 +168,51 @@ export const CreateAssignments = () => {
     notify: false,
     file: null, // File should be null initially
   });
+  useEffect(() => {
+    getSemester();
+    getCourses();
+    getStudentsForTeacher();
+    getTeacherProfileInfo();
+  }, [])
 
+  const getAssignmentInfo = () => {
+    if(id) {
+      try {
+        getData(`/assignment/get/${id}`).then((response)=>{
+          if(response.data){
+              console.log(response)
+              setAssignmentData(response.data)
+              if(response?.data?.file){
+                setFiles(response?.data?.file)
+              }
+              setSendNotification(response?.data?.notify);
+              setAddToStudentRepost(response?.data?.add_to_report);
+              setAllowLateSubmission(response?.data?.allow_late_submission);
+              setSaveAsDraft(response?.data?.save_draft);
+              setDueDate(dayjs(response?.data?.due_date_time));
+              setAvailableFrom(dayjs(response?.data?.available_from));
+          }
+         }).catch((error)=>{
+          toast.error(error.message,{
+            hideProgressBar:true,
+            theme:"colored",
+            position:'top-center'
+          })
+         })
+      } catch (error:any) {
+        toast.error(error.message,{
+          hideProgressBar:true,
+          theme:"colored",
+          position:'top-center'
+        })
+      
+      }
+     
+    }
+  }
+  useEffect(() => {
+    getAssignmentInfo()
+  }, [id])
   const getSubjects = async (type: string): Promise<any> => {
     try {
       const url = type === 'college' ? getSubjectCollege : getsubjectSchool;
@@ -186,8 +237,8 @@ export const CreateAssignments = () => {
     try {
       getData(`/teacher/edit/${teacherId}`).then(async (data) => {
         if (data?.status) {
-          
-          if (data.data.course_semester_subjects!= null) {
+
+          if (data.data.course_semester_subjects != null) {
             setSelectedEntity('College');
             getSubjects('college')
             // Extract all course IDs (keys)
@@ -237,8 +288,8 @@ export const CreateAssignments = () => {
             // );
 
             const streeamKeys = Object.values(data.data.class_stream_subjects as Record<string, Record<string, any>>)
-            .flatMap((streamkeys) => Object.keys(streamkeys));
-          setTeacherStream(streeamKeys);
+              .flatMap((streamkeys) => Object.keys(streamkeys));
+            setTeacherStream(streeamKeys);
 
             const classIds = Object.keys(data.data.class_stream_subjects).map((classKey) => parseInt(classKey, 10));
             //setBoxesForSchool(output);
@@ -250,9 +301,9 @@ export const CreateAssignments = () => {
                   Array.isArray(subjectList) ? subjectList.map((subject) => ({ streasm, subject })) : []
                 )
               );
-              setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject))
+            setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject))
           }
-         
+
         }
       });
     } catch (error) {
@@ -316,32 +367,28 @@ export const CreateAssignments = () => {
         });
       });
   };
- const getClasslist = (classIds: any) => {
-      getData(`${ClassURL}`)
-        .then((data) => {
-          if (data.data) {
-            const filteredClasses = data.data.classes_data.filter((classn: any) =>
-              classIds.includes(classn.id)
-            )
-            console.log(classIds,filteredClasses)
-            setDataClass(filteredClasses);
-          }
-        })
-        .catch((e) => {
-          if (e?.response?.status === 401) {
-          }
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
+  const getClasslist = (classIds: any) => {
+    getData(`${ClassURL}`)
+      .then((data) => {
+        if (data.data) {
+          const filteredClasses = data.data.classes_data.filter((classn: any) =>
+            classIds.includes(classn.id)
+          )
+          console.log(classIds, filteredClasses)
+          setDataClass(filteredClasses);
+        }
+      })
+      .catch((e) => {
+        if (e?.response?.status === 401) {
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
         });
-    };
-  useEffect(() => {
-    getSemester();
-    getCourses();
-    getStudentsForTeacher();
-    getTeacherProfileInfo();
-  }, [])
+      });
+  };
+
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFiles([...files, ...Array.from(event.target.files)]);
@@ -404,7 +451,7 @@ export const CreateAssignments = () => {
       })
     }
   }
-  
+
   const submitAssignment = () => {
 
     let valid1 = false;
@@ -432,28 +479,28 @@ export const CreateAssignments = () => {
       setInstructoins_error(false);
     }
 
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)){
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)) {
       setContact_email_error(true)
-      valid1 =true;
-    }else{
+      valid1 = true;
+    } else {
       setContact_email_error(false)
     }
-    if(availableFrom==null){
+    if (availableFrom == null) {
       setAvailableFrom_error(true);
-      valid1 =true;
-    }else{
+      valid1 = true;
+    } else {
       setAvailableFrom_error(false);
     }
-    if(dueDate==null){
+    if (dueDate == null) {
       setDue_date_error(true);
-      valid1 =true;
-    }else{
+      valid1 = true;
+    } else {
       setDue_date_error(false);
     }
-    if(dueTime ==null){
+    if (dueTime == null) {
       setDueTime_error(true);
-      valid1 =true;
-    }else{
+      valid1 = true;
+    } else {
       setDueTime_error(false);
     }
     let valid = true;
@@ -515,40 +562,77 @@ export const CreateAssignments = () => {
     files.forEach((file) => {
       formData.append('file[]', file);
     });
+       
 
-    try {
-      postData('assignment/add', formData).then((response) => {
-        if (response.status) {
-          toast.success(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center'
+    if(!id){
+      try {
+        postData('assignment/add', formData).then((response) => {
+          if (response.status) {
+            toast.success(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center'
+            })
+          }
+          setAssignmentData({
+            title: "",
+            type: "written",
+            contact_email: "",
+            allow_late_submission: false,
+            due_date_time: "", // Or new Date().toISOString() if using Date type
+            available_from: "", // Or new Date().toISOString() if using Date type
+            assign_to_students: [],
+            instructions: "",
+            points: '',
+            save_draft: false,
+            add_to_report: false,
+            notify: false,
+            file: null, // File should be null initially
           })
-        }
-        setAssignmentData({
-          title: "",
-          type: "written",
-          contact_email: "",
-          allow_late_submission: false,
-          due_date_time: "", // Or new Date().toISOString() if using Date type
-          available_from: "", // Or new Date().toISOString() if using Date type
-          assign_to_students: [],
-          instructions: "",
-          points: '',
-          save_draft: false,
-          add_to_report: false,
-          notify: false,
-          file: null, // File should be null initially
+          nevegate('/teacher-dashboard/assignments')
+        });
+      } catch (error: any) {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
         })
-      });
-    } catch (error: any) {
-      toast.error(error.message, {
-        hideProgressBar: true,
-        theme: 'colored',
-        position: 'top-center'
-      })
+      }
+    }else{
+      try {
+        putData(`/assignment/edit/${id}`, formData).then((response) => {
+          if (response.data) {
+            toast.success(response.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center'
+            })
+          }
+          setAssignmentData({
+            title: "",
+            type: "written",
+            contact_email: "",
+            allow_late_submission: false,
+            due_date_time: "", 
+            available_from: "", 
+            assign_to_students: [],
+            instructions: "",
+            points: '',
+            save_draft: false,
+            add_to_report: false,
+            notify: false,
+            file: null,
+          })
+          nevegate('/teacher-dashboard/assignments')
+        });
+      } catch (error: any) {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+        })
+      }
     }
-
   }
 
   // const classOptions = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
@@ -560,44 +644,44 @@ export const CreateAssignments = () => {
   //   setSelectedClasses(typeof value === 'string' ? value.split(',') : value);
   // };
 
-   const validateCourseFields = (index: number, field: string, boxes: Boxes) => {
-      setErrorForCourse_semester_subject((prevError) => ({
-        ...prevError,
-        [index]: {
-          ...prevError[index],
-          ...(field === 'course_id' && {
-            course_id_error: !boxes.course_id, // Fixed key name
-          }),
-          ...(field === 'semester_number' && {
-            semester_number_error: !boxes.semester_number, // Fixed key name
-          }),
-          ...(field === 'subjects' && {
-            subjects_error: !boxes.subjects?.length, // Ensuring subjects is not empty
-          }),
-        },
-      }));
-    };
-    const validateFields = (
-      index: number,
-      field: string,
-      boxesForSchool: BoxesForSchool,
-    ) => {
-      setErrorForClass_stream_subject((prevError) => ({
-        ...prevError,
-        [index]: {
-          ...prevError[index],
-          ...(field === 'class_id' && {
-            class_id_error: !boxesForSchool.class_id,
-          }),
-          ...(field === 'stream' && {
-            stream_error: !boxesForSchool.stream, // Fix: stream_error should check stream
-          }),
-          ...(field === 'subjects' && {
-            subjects_error: !boxesForSchool.subjects?.length, // Fix: Check if subjects array is empty
-          }),
-        },
-      }));
-    }
+  const validateCourseFields = (index: number, field: string, boxes: Boxes) => {
+    setErrorForCourse_semester_subject((prevError) => ({
+      ...prevError,
+      [index]: {
+        ...prevError[index],
+        ...(field === 'course_id' && {
+          course_id_error: !boxes.course_id, // Fixed key name
+        }),
+        ...(field === 'semester_number' && {
+          semester_number_error: !boxes.semester_number, // Fixed key name
+        }),
+        ...(field === 'subjects' && {
+          subjects_error: !boxes.subjects?.length, // Ensuring subjects is not empty
+        }),
+      },
+    }));
+  };
+  const validateFields = (
+    index: number,
+    field: string,
+    boxesForSchool: BoxesForSchool,
+  ) => {
+    setErrorForClass_stream_subject((prevError) => ({
+      ...prevError,
+      [index]: {
+        ...prevError[index],
+        ...(field === 'class_id' && {
+          class_id_error: !boxesForSchool.class_id,
+        }),
+        ...(field === 'stream' && {
+          stream_error: !boxesForSchool.stream, // Fix: stream_error should check stream
+        }),
+        ...(field === 'subjects' && {
+          subjects_error: !boxesForSchool.subjects?.length, // Fix: Check if subjects array is empty
+        }),
+      },
+    }));
+  }
   const handelSubjectBoxChange = (
     event: SelectChangeEvent<string[]>,
     index: number,
@@ -711,9 +795,9 @@ export const CreateAssignments = () => {
   const handleFileRemove = (index: number) => {
 
     setFiles(files.filter((_, i) => i !== index));
-    if((files.length==1)){
+    if ((files.length == 1)) {
       setFile_error(true)
-    }else{
+    } else {
       setFile_error(false)
     }
 
@@ -726,26 +810,26 @@ export const CreateAssignments = () => {
     }));
   }
 
-  useEffect(()=>{
+  useEffect(() => {
 
-    if(availableFrom==null && availableFrom_error){
+    if (availableFrom == null && availableFrom_error) {
       setAvailableFrom_error(true);
-      
-    }else{
+
+    } else {
       setAvailableFrom_error(false);
     }
-    if(dueDate==null && due_date_error){
+    if (dueDate == null && due_date_error) {
       setDue_date_error(true);
-    }else{
+    } else {
       setDue_date_error(false);
     }
-    if(dueTime ==null && dueTime_error){
+    if (dueTime == null && dueTime_error) {
       setDueTime_error(true);
-    }else{
+    } else {
       setDueTime_error(false);
     }
-  },[dueDate,availableFrom,dueTime])
-  console.log( coursesData, listOfStudent,boxesForSchool,teacherStream);
+  }, [dueDate, availableFrom, dueTime])
+  console.log(coursesData, listOfStudent, boxesForSchool, teacherStream);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1006,16 +1090,16 @@ export const CreateAssignments = () => {
                               onChange={(event: any) =>
                                 handelSubjectBoxChange(event, index)
                               }
-                            
+
                             >
                               {box.filteredSubjects?.filter((subject) => tescherSubjects?.includes(subject.subject_name)).map((subject: any) => (
                                 <MenuItem
                                   key={subject.subject_id}
                                   value={subject.subject_name}
                                 >
-                                  
-                                    {subject.subject_name}
-                                  
+
+                                  {subject.subject_name}
+
                                 </MenuItem>
                               ))}
                             </Select>
@@ -1225,9 +1309,9 @@ export const CreateAssignments = () => {
                           />
                           {
                             availableFrom_error && (
-                              <p className='error-text' style={{color:'red'}}>
+                              <p className='error-text' style={{ color: 'red' }}>
                                 <small>
-                                    Please select a available date.
+                                  Please select a available date.
                                 </small>
                               </p>
                             )
@@ -1246,9 +1330,9 @@ export const CreateAssignments = () => {
                           />
                           {
                             due_date_error && (
-                              <p className='error-text' style={{color:'red'}}>
+                              <p className='error-text' style={{ color: 'red' }}>
                                 <small>
-                                   Please select a due date.
+                                  Please select a due date.
                                 </small>
                               </p>
                             )
@@ -1265,10 +1349,10 @@ export const CreateAssignments = () => {
                             }}
                           />
                           {
-                            dueTime_error &&(
-                              <p className='error-text' style={{color:'red'}}>
+                            dueTime_error && (
+                              <p className='error-text' style={{ color: 'red' }}>
                                 <small>
-                                   Please select a due time.
+                                  Please select a due time.
                                 </small>
                               </p>
                             )
@@ -1338,6 +1422,7 @@ export const CreateAssignments = () => {
                     </div>
                   </div>
                 </div>
+       
               </div>
             </div>
           </div>

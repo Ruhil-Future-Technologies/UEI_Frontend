@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 //import BookIcon from '@mui/icons-material/Book';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
-import { Chip, IconButton, Box, Typography } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Chip, IconButton, Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+//import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useApi from '../../../hooks/useAPI';
@@ -51,96 +51,15 @@ import { Assignment } from './CreateAssignments';
 //   },
 // ];
 
-const getStatusChip = (status: string) => {
-  switch (status) {
-    case 'Active':
-      return <Chip label="Active" color="success" />;
-    case 'Draft':
-      return <Chip label="Draft" color="default" />;
-    case 'Closed':
-      return <Chip label="Closed" color="error" />;
-    default:
-      return <Chip label={status} />;
-  }
-};
-const viewAssignmnet=()=>{
- console.log("view this assgnment")
-}
-const editAssignmnet=()=>{
-  console.log("edit this assgnment")
-}
-const deleteAssignment=()=>{
-console.log("delete this assognment")
-}
-const columns: MRT_ColumnDef<Assignment>[] = [
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-    Cell: () => (
-      <Box>
-        <IconButton color="primary" onClick={viewAssignmnet}>
-          
-          <VisibilityIcon />
-          
-        </IconButton>
-        <IconButton color="secondary" onClick={editAssignmnet}>
-          <EditIcon />
-        </IconButton>
-        <IconButton color="error" onClick={deleteAssignment}>
-          <DeleteIcon />
-        </IconButton>
-      </Box>
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: 'title',
-    header: 'Title',
-  },
-  {
-    accessorKey: 'due_date_time',
-    header: 'Due Time & Date',
-  },
-  {
-    accessorKey: 'contact_email',
-    header: 'contact email',
-  },
-  {
-    accessorKey: 'type',
-    header: 'type',
-  },
-  {
-    accessorKey: 'created_by',
-    header: 'Created By',
-  },
-  {
-    accessorKey: 'created_at',
-    header: 'Created at',
-  },
-  {
-    accessorKey: 'updated_by',
-    header: 'updated by',
-  },
-  {
-    accessorKey: 'updated_at',
-    header: 'updated at',
-  },
-  {
-    accessorKey: 'subject',
-    header: 'Subject',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    Cell: ({ cell }) => getStatusChip(cell.getValue<string>()),
-  },
-];
 
 export const Assignments = () => {
 
 
   const {getData}=useApi();
+  const nevigate=useNavigate();
+  const [openCard,setOpenCard]=useState(false);
+
+  const [dataDeleteId, setDataDeleteId] = useState('');
   const [assignmentData,setAssignmentData]=useState<Assignment[]>([{
     title: "",
     type: "written",
@@ -172,6 +91,99 @@ export const Assignments = () => {
     
   }
   }
+  const getStatusChip = (status: string) => {
+    switch (status) {
+      case 'Active':
+        return <Chip label="Active" color="success" />;
+      case 'Draft':
+        return <Chip label="Draft" color="default" />;
+      case 'Closed':
+        return <Chip label="Closed" color="error" />;
+      default:
+        return <Chip label={status} />;
+    }
+  };
+  // const viewAssignmnet=(assignmentId:any)=>{
+  //  console.log("view this assgnment",assignmentId)
+  // }
+  const editAssignmnet=(assignmentId:any)=>{
+    nevigate(`/teacher-dashboard/edit-assignment/${assignmentId}`)
+  }
+  const deleteAssignment=()=>{
+    console.log(dataDeleteId)
+    setOpenCard(false);
+  }
+  const isDelete=(assignmentId:any)=>{
+    setDataDeleteId(assignmentId);
+    setOpenCard(true);
+  }
+  const columns: MRT_ColumnDef<Assignment>[] = [
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      Cell: ({row}) => {
+        const assignmentId = row.original.id;
+        return (
+        <Box>
+          {/* <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>
+            
+            <VisibilityIcon />
+            
+          </IconButton> */}
+          <IconButton color="secondary" onClick={()=>editAssignmnet(assignmentId)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton color="error" onClick={()=>isDelete(assignmentId)}>
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+        )
+    },
+      enableSorting: false,
+      enableColumnFilter: false,
+    },
+    {
+      accessorKey: 'title',
+      header: 'Title',
+    },
+    {
+      accessorKey: 'due_date_time',
+      header: 'Due Time & Date',
+    },
+    {
+      accessorKey: 'contact_email',
+      header: 'contact email',
+    },
+    {
+      accessorKey: 'type',
+      header: 'type',
+    },
+    {
+      accessorKey: 'created_by',
+      header: 'Created By',
+    },
+    {
+      accessorKey: 'created_at',
+      header: 'Created at',
+    },
+    {
+      accessorKey: 'updated_by',
+      header: 'updated by',
+    },
+    {
+      accessorKey: 'updated_at',
+      header: 'updated at',
+    },
+    {
+      accessorKey: 'subject',
+      header: 'Subject',
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      Cell: ({ cell }) => getStatusChip(cell.getValue<string>()),
+    },
+  ]
   console.log(assignmentData);
   return (
     <div className="main-wrapper">
@@ -307,6 +319,20 @@ export const Assignments = () => {
           </div>
         </div>
       </div>
+      <Dialog open={openCard} onClose={()=>setOpenCard(false)}>
+      <DialogTitle>Delete Assignment</DialogTitle>
+      <DialogContent>
+        <Typography>Are you sure you want to delete this assignment? This action cannot be undone.</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={()=>setOpenCard(false)} color="primary" variant="outlined">
+          Cancel
+        </Button>
+        <Button onClick={deleteAssignment} color="error" variant="contained">
+          Delete
+        </Button>
+      </DialogActions>
+      </Dialog>
     </div>
   );
 };

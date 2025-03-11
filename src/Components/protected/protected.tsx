@@ -8,7 +8,6 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   const { Component, menuName } = props;
   const navigate = useNavigate();
   const { id } = useParams();
-
   useEffect(() => {
     const logintoken = localStorage.getItem('token');
     if (!logintoken) {
@@ -85,6 +84,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'create-assignment'
         : '') ||
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'edit-assignment' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
       (usertype === 'institute'
         ? mName.toLowerCase() === 'institution-dashboard'
         : '') ||

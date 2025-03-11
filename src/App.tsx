@@ -265,6 +265,12 @@ function App() {
             path="/teacher-dashboard/create-assignment"
             element={<Protected Component={CreateAssignments} />}
           />
+          <Route
+              path="/teacher-dashboard/edit-assignment/:id"
+              element={
+                <Protected Component={CreateAssignments} />
+              }
+            />
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
