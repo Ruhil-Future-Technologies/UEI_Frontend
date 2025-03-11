@@ -94,8 +94,8 @@ const AddContent = () => {
   const [allfiles, setAllfiles] = useState<File[]>([]);
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
-  // const institute_id = localStorage.getItem('institute_id');
-  // const teacher_id = localStorage.getItem('teacher_id');
+  const institute_id = localStorage.getItem('institute_id');
+  const teacher_id = localStorage.getItem('teacher_id');
   const [user_info, setUserInfo] = useState('');
   const DeleteContentURL = QUERY_KEYS_CONTENT.CONTENT_FILE_DELETE;
   const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
@@ -127,6 +127,8 @@ const AddContent = () => {
   };
 
   const callAPI = async () => {
+    console.log({ user_type });
+
     let all_courses: any = [];
     let all_classes: any = [];
 
@@ -154,6 +156,8 @@ const AddContent = () => {
         if (!contentData?.data) {
           return;
         }
+        console.log({ contentData });
+        console.log({ id });
 
         const currentContent = contentData?.data.contents_data?.find(
           (content: any) => {
@@ -162,6 +166,7 @@ const AddContent = () => {
             }
           },
         );
+        console.log({ currentContent });
 
         if (!currentContent?.id) {
           return;
@@ -169,6 +174,7 @@ const AddContent = () => {
         const contentDetail = await getData(
           `${QUERY_KEYS_CONTENT.CONTENT_GET}/${currentContent.id}`,
         );
+        console.log({ contentDetail });
 
         const filterContentCourses = (
           contentDetail: any,
@@ -256,6 +262,10 @@ const AddContent = () => {
           all_classes,
         );
 
+        console.log({ contentDetail: contentDetail?.data.content_data });
+
+        console.log({ contentDetail: contentDetail?.data?.content_data });
+
         const urls = contentDetail?.data?.content_data?.url || [];
 
         const fileExtensions = /\.(pdf|png|jpg|mp4)$/i;
@@ -267,8 +277,17 @@ const AddContent = () => {
         );
 
         if (fileUrls.length > 0) {
+          console.log({ fileUrls });
+
+          console.log({ id });
+
           setAllfiles(fileUrls);
         }
+        console.log({ nonFileUrls });
+        console.log({
+          class_stream_subjects_arr,
+          course_semester_subjects_arr,
+        });
 
         const processedData = {
           url: nonFileUrls?.url,
@@ -288,6 +307,7 @@ const AddContent = () => {
           content_type: contentDetail?.data?.content_data.content_type || '',
           description: contentDetail?.data?.content_data.description || '',
         };
+        console.log({ processedData });
 
         setContent(processedData);
       } catch (e: any) {
@@ -301,9 +321,14 @@ const AddContent = () => {
       }
     }
     if (user_type === 'institute') {
+      console.log({ dataCourses });
+
       await getData(`${QUERY_KEYS.INSTITUTE_EDIT}/${user_uuid}`).then(
         (data) => {
+          console.log({ data, institute_id });
           setUserInfo(data?.data);
+          console.log({ data });
+          console.log({ user_info });
 
           setContent((prevState) => ({
             ...prevState,
@@ -315,11 +340,15 @@ const AddContent = () => {
       );
     }
     if (user_type === 'teacher') {
+      console.log({ dataCourses });
+
       await getData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${user_uuid}`).then(
         (data) => {
+          console.log({ data, teacher_id });
           setUserInfo(data?.data);
-
+          console.log({ data });
           const filteredCourses = data?.data?.course_semester_subjects;
+          console.log({ filteredCourses });
 
           setTeacherCourses((prevCourses) => ({
             ...prevCourses,
@@ -411,11 +440,14 @@ const AddContent = () => {
   useEffect(() => {
     const institutionId =
       formRef.current?.values?.institute_id || selectedInstitutionId;
+    console.log({ user_type });
+    console.log({ institutionId });
 
     if (user_type === 'institute' || institutionId) {
       const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
       );
+      console.log({ filtered });
 
       setFilteredCourses(filtered);
 
@@ -733,7 +765,8 @@ const AddContent = () => {
     { resetForm }: FormikHelpers<IContentForm>,
   ) => {
     const formData = new FormData();
-
+    console.log({ contentData });
+    console.log({ allselectedfiles });
     if (!contentData.url && allselectedfiles.length <= 0) {
       toast.error('Please Enter URL or Upload File', {
         hideProgressBar: true,
@@ -838,6 +871,9 @@ const AddContent = () => {
     } as any;
 
     if (id) {
+      console.log({ formattedData });
+      console.log({ allfiles });
+
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
@@ -846,10 +882,14 @@ const AddContent = () => {
       });
       const urls = allfiles.map((file: any) => file?.url);
       urls.push(formattedData?.url);
-
+      console.log({ urls });
       const urlStr = JSON.stringify(urls);
+      console.log({ urlStr });
 
       formData.set('url', urlStr);
+      formData.forEach((k, v) => {
+        console.log({ k, v });
+      });
 
       putData(`${QUERY_KEYS_CONTENT.CONTENT_EDIT}/${id}`, formData)
         .then((data: any) => {
@@ -871,13 +911,19 @@ const AddContent = () => {
           });
         });
     } else {
+      console.log({ formattedData });
+
+      console.log({ postData, resetForm, putData, navigator });
+
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
-
+      formData.forEach((k, v) => {
+        console.log({ k, v });
+      });
       postData(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData)
         .then((data: any) => {
           if (data.status) {
@@ -1181,6 +1227,7 @@ const AddContent = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    console.log(files, typeof files);
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
@@ -1224,6 +1271,10 @@ const AddContent = () => {
   };
 
   const handleDeleteFile = (id: number | undefined) => {
+    console.log({ id });
+
+    console.log({ DeleteContentURL, deleteData });
+
     deleteData(`${DeleteContentURL}/${id}`)
       .then((data: { message: string }) => {
         toast.success(data?.message, {
