@@ -44,7 +44,6 @@ const Content = () => {
   const user_uuid = localStorage.getItem('user_uuid');
 
   const callAPI = async () => {
-    console.log({ user_type });
     getData('/entity/list').then((data) => {
       if (data.status) {
         setEntity(data.data?.entityes_data);
@@ -101,18 +100,11 @@ const Content = () => {
   };
 
   useEffect(() => {
-    console.log({ activeTab });
-    console.log({ dataContent });
-    console.log({ user_type });
-
     if (user_type === 'admin') {
       if (activeTab === 0) {
         const college: any = entity.filter(
           (ent) => ent.entity_type == 'college',
         );
-        console.log({ college });
-
-        console.log('show college content');
 
         setTimeout(() => {
           setColumnVisibility({
@@ -149,9 +141,7 @@ const Content = () => {
         );
       } else if (activeTab === 1) {
         const school: any = entity.filter((ent) => ent.entity_type == 'school');
-        console.log({ school });
 
-        console.log('show school content');
         setColumnVisibility({
           university_id: false,
           course_id: false,
@@ -178,17 +168,10 @@ const Content = () => {
               university_name: '-',
             };
           });
-        console.log({ schoolContents });
 
         setFilteredContent(schoolContents);
       }
     } else if (user_type === 'institute' || user_type === 'teacher') {
-      console.log({ dataContent });
-      // if (dataContent[0]?.entity_type == 'school') {
-      //   setActiveTab(1);
-      //   setFilteredContent(dataContent);
-      // }
-
       setFilteredContent(dataContent);
     }
   }, [activeTab, dataContent, entity]);

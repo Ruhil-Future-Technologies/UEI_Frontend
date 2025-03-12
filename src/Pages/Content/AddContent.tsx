@@ -36,6 +36,7 @@ import {
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 
 interface IContentForm {
   subjects: string[];
@@ -48,6 +49,7 @@ interface IContentForm {
   classes: { class_id: string; stream: string; subjects: string[] }[];
   url?: string;
   content_type: string;
+  author: string;
   description: string;
   documents?: File[];
 }
@@ -94,11 +96,11 @@ const AddContent = () => {
   const [allfiles, setAllfiles] = useState<File[]>([]);
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
-  const institute_id = localStorage.getItem('institute_id');
-  const teacher_id = localStorage.getItem('teacher_id');
-  const [user_info, setUserInfo] = useState('');
+
   const DeleteContentURL = QUERY_KEYS_CONTENT.CONTENT_FILE_DELETE;
   const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
+  const [showAuthor, setShowAuthor] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const initialState: IContentForm = {
     subjects: [],
@@ -112,6 +114,7 @@ const AddContent = () => {
     url: '',
     content_type: '',
     description: '',
+    author: '',
   };
 
   const [content, setContent] = useState<IContentForm>(initialState);
@@ -127,8 +130,6 @@ const AddContent = () => {
   };
 
   const callAPI = async () => {
-    console.log({ user_type });
-
     let all_courses: any = [];
     let all_classes: any = [];
 
@@ -156,8 +157,6 @@ const AddContent = () => {
         if (!contentData?.data) {
           return;
         }
-        console.log({ contentData });
-        console.log({ id });
 
         const currentContent = contentData?.data.contents_data?.find(
           (content: any) => {
@@ -166,7 +165,6 @@ const AddContent = () => {
             }
           },
         );
-        console.log({ currentContent });
 
         if (!currentContent?.id) {
           return;
@@ -174,7 +172,6 @@ const AddContent = () => {
         const contentDetail = await getData(
           `${QUERY_KEYS_CONTENT.CONTENT_GET}/${currentContent.id}`,
         );
-        console.log({ contentDetail });
 
         const filterContentCourses = (
           contentDetail: any,
@@ -262,10 +259,6 @@ const AddContent = () => {
           all_classes,
         );
 
-        console.log({ contentDetail: contentDetail?.data.content_data });
-
-        console.log({ contentDetail: contentDetail?.data?.content_data });
-
         const urls = contentDetail?.data?.content_data?.url || [];
 
         const fileExtensions = /\.(pdf|png|jpg|mp4)$/i;
@@ -277,17 +270,8 @@ const AddContent = () => {
         );
 
         if (fileUrls.length > 0) {
-          console.log({ fileUrls });
-
-          console.log({ id });
-
           setAllfiles(fileUrls);
         }
-        console.log({ nonFileUrls });
-        console.log({
-          class_stream_subjects_arr,
-          course_semester_subjects_arr,
-        });
 
         const processedData = {
           url: nonFileUrls?.url,
@@ -305,9 +289,9 @@ const AddContent = () => {
           ],
 
           content_type: contentDetail?.data?.content_data.content_type || '',
+          author: contentDetail?.data?.content_data.author || '',
           description: contentDetail?.data?.content_data.description || '',
         };
-        console.log({ processedData });
 
         setContent(processedData);
       } catch (e: any) {
@@ -321,15 +305,8 @@ const AddContent = () => {
       }
     }
     if (user_type === 'institute') {
-      console.log({ dataCourses });
-
       await getData(`${QUERY_KEYS.INSTITUTE_EDIT}/${user_uuid}`).then(
         (data) => {
-          console.log({ data, institute_id });
-          setUserInfo(data?.data);
-          console.log({ data });
-          console.log({ user_info });
-
           setContent((prevState) => ({
             ...prevState,
             entity_id: data?.data.entity_id,
@@ -340,15 +317,9 @@ const AddContent = () => {
       );
     }
     if (user_type === 'teacher') {
-      console.log({ dataCourses });
-
       await getData(`${QUERY_KEYS_TEACHER.TEACHER_EDIT}/${user_uuid}`).then(
         (data) => {
-          console.log({ data, teacher_id });
-          setUserInfo(data?.data);
-          console.log({ data });
           const filteredCourses = data?.data?.course_semester_subjects;
-          console.log({ filteredCourses });
 
           setTeacherCourses((prevCourses) => ({
             ...prevCourses,
@@ -440,31 +411,24 @@ const AddContent = () => {
   useEffect(() => {
     const institutionId =
       formRef.current?.values?.institute_id || selectedInstitutionId;
-    console.log({ user_type });
-    console.log({ institutionId });
 
-    if (user_type === 'institute' || institutionId) {
+    if (
+      user_type === 'institute' ||
+      (institutionId && user_type !== 'teacher')
+    ) {
       const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
       );
-      console.log({ filtered });
 
       setFilteredCourses(filtered);
+    } else if (user_type === 'teacher') {
+      const teacher_courses_id = Object.keys(teacherCourses);
 
-      // } else if (user_type === 'teacher') {
-      //   console.log({ teacherCourses });
-      //   const teacher_courses_id = Object.keys(teacherCourses);
+      const filtered = dataCourses?.filter((course) =>
+        teacher_courses_id.includes(String(course.id)),
+      );
 
-      //   console.log({ teacher_courses_id });
-
-      //   console.log({ dataCourses });
-      //   const filtered = dataCourses?.filter((course) =>
-      //     teacher_courses_id.includes(String(course.id)),
-      //   );
-
-      // console.log(filtered);
-
-      // setFilteredCourses(filtered);
+      setFilteredCourses(filtered);
     } else {
       setFilteredCourses([]);
     }
@@ -757,6 +721,18 @@ const AddContent = () => {
     }),
     url: Yup.string(),
     content_type: Yup.string().required('Please select Content Type'),
+    author: Yup.string().when('content_type', {
+      is: (content_type: string) => {
+        return (
+          content_type == 'e-book' ||
+          content_type == 'video_lecture' ||
+          content_type == 'research_paper'
+        );
+      },
+      then: (schema) =>
+        schema.required('Please Fill Author or Instructor name'),
+      otherwise: (schema) => schema.notRequired(),
+    }),
     description: Yup.string().required('Please enter Description'),
   });
 
@@ -764,15 +740,24 @@ const AddContent = () => {
     contentData: IContentForm,
     { resetForm }: FormikHelpers<IContentForm>,
   ) => {
+    setLoading(true);
     const formData = new FormData();
-    console.log({ contentData });
-    console.log({ allselectedfiles });
+
     if (!contentData.url && allselectedfiles.length <= 0) {
       toast.error('Please Enter URL or Upload File', {
         hideProgressBar: true,
         theme: 'colored',
       });
+      return;
     }
+    if (
+      contentData?.url &&
+      contentData?.url.startsWith('https://www.youtube.com')
+    ) {
+      const videoId = new URL(contentData?.url).searchParams.get('v');
+      contentData.url = `https://www.youtube.com/embed/${videoId}`;
+    }
+
     const transformCollegeData = (originalData: any) => {
       const transformedData = { ...originalData };
 
@@ -871,25 +856,19 @@ const AddContent = () => {
     } as any;
 
     if (id) {
-      console.log({ formattedData });
-      console.log({ allfiles });
-
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
+
       const urls = allfiles.map((file: any) => file?.url);
       urls.push(formattedData?.url);
-      console.log({ urls });
+
       const urlStr = JSON.stringify(urls);
-      console.log({ urlStr });
 
       formData.set('url', urlStr);
-      formData.forEach((k, v) => {
-        console.log({ k, v });
-      });
 
       putData(`${QUERY_KEYS_CONTENT.CONTENT_EDIT}/${id}`, formData)
         .then((data: any) => {
@@ -899,6 +878,7 @@ const AddContent = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setLoading(false);
           }
         })
         .catch((e: any) => {
@@ -911,19 +891,13 @@ const AddContent = () => {
           });
         });
     } else {
-      console.log({ formattedData });
-
-      console.log({ postData, resetForm, putData, navigator });
-
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
       allselectedfiles.forEach((file) => {
         formData.append('documents[]', file);
       });
-      formData.forEach((k, v) => {
-        console.log({ k, v });
-      });
+
       postData(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData)
         .then((data: any) => {
           if (data.status) {
@@ -934,6 +908,7 @@ const AddContent = () => {
             resetForm({ values: initialState });
             setContent(initialState);
             setAllSelectedfiles([]);
+            setLoading(false);
           }
         })
         .catch((e: any) => {
@@ -953,6 +928,34 @@ const AddContent = () => {
   ) => {
     const value = e.target.value;
 
+    if (
+      (fieldName === 'content_type' && value === 'e-book') ||
+      value === 'video_lecture' ||
+      value === 'research_paper'
+    ) {
+      setShowAuthor(true);
+      setContent((prevState: any) => ({
+        ...prevState,
+        author: '',
+      }));
+
+      if (allselectedfiles?.length > 1) {
+        setAllSelectedfiles([]);
+
+        toast.error(
+          'Video Lecture, Research Paper and E-book only support one File',
+          { hideProgressBar: true, theme: 'colored' },
+        );
+      }
+    }
+
+    if (fieldName === 'content_type' && value === 'notes') {
+      setShowAuthor(false);
+      setContent((prevState: any) => ({
+        ...prevState,
+        author: user_type,
+      }));
+    }
     if (fieldName === 'institute_id') {
       setSelectedInstitutionId(value as string);
     }
@@ -1226,8 +1229,24 @@ const AddContent = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    console.log(files, typeof files);
+    setContent((prevState) => ({
+      ...prevState,
+      url: '',
+    }));
+    const files = event.target.files || '';
+
+    if (
+      (content?.content_type === 'e-book' && files?.length > 1) ||
+      (content?.content_type === 'video_lecture' && files?.length > 1) ||
+      (content?.content_type === 'research_paper' && files?.length > 1)
+    ) {
+      setAllSelectedfiles([]);
+      event.target.value = '';
+      toast.error(
+        'Video Lecture, Research Paper, and E-book only support one File',
+        { hideProgressBar: true, theme: 'colored' },
+      );
+    }
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
@@ -1271,10 +1290,6 @@ const AddContent = () => {
   };
 
   const handleDeleteFile = (id: number | undefined) => {
-    console.log({ id });
-
-    console.log({ DeleteContentURL, deleteData });
-
     deleteData(`${DeleteContentURL}/${id}`)
       .then((data: { message: string }) => {
         toast.success(data?.message, {
@@ -1294,533 +1309,249 @@ const AddContent = () => {
       });
   };
   return (
-    <div className="main-wrapper">
-      <div className="main-content">
-        <div className="card p-lg-3">
-          <div className="card-body">
-            <Typography variant="h6">
-              <div className="main_title">{id ? 'Edit' : 'Add'} Content</div>
-            </Typography>
-            <Formik
-              onSubmit={handleSubmit}
-              initialValues={content}
-              enableReinitialize
-              validationSchema={contentSchema}
-              innerRef={formRef}
-            >
-              {({ errors, values, touched }) => (
-                <Form>
-                  <SubjectsHandler values={values} />
-                  <div className="row gy-4 mt-0">
-                    <div className="col-md-2">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel>Entity *</InputLabel>
-                          <Select
-                            name="entity_id"
-                            value={values?.entity_id}
-                            label="Entity *"
-                            disabled={
-                              user_type === 'institute' ||
-                              user_type === 'teacher'
-                            }
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            style={{
-                              backgroundColor:
+    <>
+      {' '}
+      {loading && <FullScreenLoader />}
+      <div className="main-wrapper">
+        <div className="main-content">
+          <div className="card p-lg-3">
+            <div className="card-body">
+              <Typography variant="h6">
+                <div className="main_title">{id ? 'Edit' : 'Add'} Content</div>
+              </Typography>
+              <Formik
+                onSubmit={handleSubmit}
+                initialValues={content}
+                enableReinitialize
+                validationSchema={contentSchema}
+                innerRef={formRef}
+              >
+                {({ errors, values, touched }) => (
+                  <Form>
+                    <SubjectsHandler values={values} />
+                    <div className="row gy-4 mt-0">
+                      <div className="col-md-2">
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel>Entity *</InputLabel>
+                            <Select
+                              name="entity_id"
+                              value={values?.entity_id}
+                              label="Entity *"
+                              disabled={
                                 user_type === 'institute' ||
                                 user_type === 'teacher'
-                                  ? '#f0f0f0'
-                                  : inputfield(namecolor),
-                              color:
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '#999999'
-                                  : inputfieldtext(namecolor),
-                              border:
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '1px solid #d0d0d0'
-                                  : undefined,
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
+                              }
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
                                 },
-                              },
-                            }}
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'entity_id')
-                            }
-                          >
-                            {dataEntity?.map((entity) => (
-                              <MenuItem
-                                key={entity.id}
-                                value={entity.id}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
+                              }}
+                              style={{
+                                backgroundColor:
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '#f0f0f0'
+                                    : inputfield(namecolor),
+                                color:
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '#999999'
+                                    : inputfieldtext(namecolor),
+                                border:
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '1px solid #d0d0d0'
+                                    : undefined,
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
                                   },
-                                }}
-                              >
-                                {entity.entity_type}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {touched?.entity_id && errors?.entity_id && (
-                          <p style={{ color: 'red' }}>
-                            {String(errors.entity_id)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel>University *</InputLabel>
-                          <Select
-                            name="university_id"
-                            value={values?.university_id}
-                            label="University *"
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'university_id')
-                            }
-                            style={{
-                              backgroundColor:
-                                isSchoolEntity(values?.entity_id) ||
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '#f0f0f0'
-                                  : inputfield(namecolor),
-                              color:
-                                isSchoolEntity(values?.entity_id) ||
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '#999999'
-                                  : inputfieldtext(namecolor),
-                              border:
-                                isSchoolEntity(values?.entity_id) ||
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '1px solid #d0d0d0'
-                                  : undefined,
-                            }}
-                            disabled={
-                              isSchoolEntity(values?.entity_id) ||
-                              user_type === 'institute' ||
-                              user_type === 'teacher'
-                            }
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
                                 },
-                              },
-                            }}
-                          >
-                            {dataUniversity?.map((university: any) => (
-                              <MenuItem
-                                key={university.id}
-                                value={university.id}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
-                              >
-                                {university.university_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {touched?.university_id && errors?.university_id && (
-                          <p className="error">
-                            {String(errors.university_id)}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel>Institute *</InputLabel>
-                          <Select
-                            name="institute_id"
-                            value={values?.institute_id}
-                            label="Institute *"
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'institute_id')
-                            }
-                            disabled={
-                              user_type === 'institute' ||
-                              user_type === 'teacher'
-                            }
-                            style={{
-                              backgroundColor:
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '#f0f0f0'
-                                  : inputfield(namecolor),
-                              color:
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '#999999'
-                                  : inputfieldtext(namecolor),
-                              border:
-                                user_type === 'institute' ||
-                                user_type === 'teacher'
-                                  ? '1px solid #d0d0d0'
-                                  : undefined,
-                            }}
-                          >
-                            {filteredInstitutes.map((institute) => (
-                              <MenuItem key={institute.id} value={institute.id}>
-                                {institute.institute_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {touched?.institute_id && errors?.institute_id && (
-                          <p className="error">{String(errors.institute_id)}</p>
-                        )}
-                      </div>
-                    </div>
-                    {isCollegeEntity(values?.entity_id) &&
-                      values?.courses?.length > 0 && (
-                        <>
-                          {values.courses.map((course: any, index: any) => (
-                            <div className="row gy-4 mt-2" key={index}>
-                              <div className="col-md-2">
-                                <div className="form_field_wrapper">
-                                  <FormControl fullWidth>
-                                    <InputLabel>Course *</InputLabel>
-                                    <Select
-                                      name={`courses.${index}.course_id`}
-                                      value={course.course_id}
-                                      label="Course *"
-                                      onChange={(
-                                        e: SelectChangeEvent<string>,
-                                      ) =>
-                                        handleChange(
-                                          e,
-                                          `courses.${index}.course_id`,
-                                        )
-                                      }
-                                      disabled={!values?.institute_id}
-                                      sx={{
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                        '& .MuiSelect-icon': {
-                                          color: fieldIcon(namecolor),
-                                        },
-                                      }}
-                                      MenuProps={{
-                                        PaperProps: {
-                                          style: {
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                          },
-                                        },
-                                      }}
-                                    >
-                                      {filteredCourses?.map((course: any) => (
-                                        <MenuItem
-                                          key={course.id}
-                                          value={course.id}
-                                          sx={{
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                            '&:hover': {
-                                              backgroundColor:
-                                                inputfieldhover(namecolor),
-                                            },
-                                          }}
-                                        >
-                                          {course.course_name}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                </div>
-                              </div>
-
-                              <div className="col-md-2">
-                                <div className="form_field_wrapper">
-                                  <FormControl fullWidth>
-                                    <InputLabel>Semester *</InputLabel>
-                                    <Select
-                                      name={`courses.${index}.semester`}
-                                      value={course.semester}
-                                      label="Semester *"
-                                      onChange={(
-                                        e: SelectChangeEvent<string>,
-                                      ) =>
-                                        handleChange(
-                                          e,
-                                          `courses.${index}.semester`,
-                                        )
-                                      }
-                                      disabled={!course.course_id}
-                                      sx={{
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                        '& .MuiSelect-icon': {
-                                          color: fieldIcon(namecolor),
-                                        },
-                                      }}
-                                      MenuProps={{
-                                        PaperProps: {
-                                          style: {
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                          },
-                                        },
-                                      }}
-                                    >
-                                      {courseSemesters[index]?.map(
-                                        (semesterOption: string) => (
-                                          <MenuItem
-                                            key={semesterOption}
-                                            value={semesterOption}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
-                                          >
-                                            {semesterOption}
-                                          </MenuItem>
-                                        ),
-                                      )}
-                                    </Select>
-                                  </FormControl>
-                                </div>
-                              </div>
-
-                              <div className="col-md-4">
-                                <div className="form_field_wrapper">
-                                  <FormControl fullWidth>
-                                    <InputLabel>Subjects *</InputLabel>
-                                    <Select
-                                      multiple
-                                      name={`courses.${index}.subjects`}
-                                      value={course.subjects}
-                                      label="Subjects *"
-                                      onChange={(
-                                        e: SelectChangeEvent<string[]>,
-                                      ) =>
-                                        handleChange(
-                                          e,
-                                          `courses.${index}.subjects`,
-                                        )
-                                      }
-                                      disabled={!course.semester}
-                                      sx={{
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                        '& .MuiSelect-icon': {
-                                          color: fieldIcon(namecolor),
-                                        },
-                                      }}
-                                      MenuProps={{
-                                        PaperProps: {
-                                          style: {
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                          },
-                                        },
-                                      }}
-                                    >
-                                      {courseSubjects[index]?.map(
-                                        (subject: any) => (
-                                          <MenuItem
-                                            key={subject.subject_id}
-                                            value={subject.subject_name}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
-                                          >
-                                            {subject.subject_name}
-                                          </MenuItem>
-                                        ),
-                                      )}
-                                    </Select>
-                                  </FormControl>
-                                </div>
-                              </div>
-                              {values.courses.length > 1 && (
-                                <IconButton
-                                  onClick={() => {
-                                    setContent((prevTeacher) => ({
-                                      ...prevTeacher,
-                                      courses: prevTeacher?.courses?.filter(
-                                        (_, i) => i !== index,
-                                      ),
-                                    }));
-
-                                    const updatedCourses =
-                                      values.courses.filter(
-                                        (i: any) => i !== index,
-                                      );
-                                    formRef.current?.setFieldValue(
-                                      'courses',
-                                      updatedCourses,
-                                    );
-                                  }}
+                              }}
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleChange(e, 'entity_id')
+                              }
+                            >
+                              {dataEntity?.map((entity) => (
+                                <MenuItem
+                                  key={entity.id}
+                                  value={entity.id}
                                   sx={{
-                                    width: '35px',
-                                    height: '35px',
-                                    marginTop: '25px',
-                                    color: fieldIcon(namecolor),
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
                                   }}
                                 >
-                                  <DeleteOutlinedIcon />
-                                </IconButton>
-                              )}
-                              {index === values.courses.length - 1 && (
-                                <div className="col-md-1">
-                                  <IconButton
-                                    onClick={() => {
-                                      const newCourse = {
-                                        course_id: '',
-                                        semester: '',
-                                        subjects: [],
-                                      };
-
-                                      setContent((prevTeacher) => ({
-                                        ...prevTeacher,
-                                        courses: [
-                                          ...(prevTeacher.courses || []),
-                                          newCourse,
-                                        ],
-                                      }));
-                                    }}
-                                    sx={{
-                                      width: '35px',
-                                      height: '35px',
-                                      color: fieldIcon(namecolor),
-                                    }}
-                                  >
-                                    <AddCircleOutlinedIcon />
-                                  </IconButton>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    {isSchoolEntity(values?.entity_id) &&
-                      values?.classes?.length > 0 && (
-                        <>
-                          {values.classes.map((cls: any, index: any) => (
-                            <div className="row gy-4 mt-2" key={index}>
-                              <div className="col-md-2">
-                                <div className="form_field_wrapper">
-                                  <FormControl fullWidth>
-                                    <InputLabel>Class *</InputLabel>
-                                    <Select
-                                      name={`classes.${index}.class_id`}
-                                      value={cls.class_id}
-                                      label="Class *"
-                                      onChange={(
-                                        e: SelectChangeEvent<string>,
-                                      ) =>
-                                        handleChange(
-                                          e,
-                                          `classes.${index}.class_id`,
-                                        )
-                                      }
-                                      disabled={!values?.institute_id}
-                                      sx={{
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                        '& .MuiSelect-icon': {
-                                          color: fieldIcon(namecolor),
-                                        },
-                                      }}
-                                      MenuProps={{
-                                        PaperProps: {
-                                          style: {
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                          },
-                                        },
-                                      }}
-                                    >
-                                      {dataClasses?.map((cls: any) => (
-                                        <MenuItem
-                                          key={cls.id}
-                                          value={cls.id}
-                                          sx={{
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
-                                            '&:hover': {
-                                              backgroundColor:
-                                                inputfieldhover(namecolor),
-                                            },
-                                          }}
-                                        >
-                                          {cls.class_name}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                  </FormControl>
-                                </div>
-                              </div>
-                              {checkHigherClass(cls.class_id, dataClasses) && (
+                                  {entity.entity_type}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {touched?.entity_id && errors?.entity_id && (
+                            <p style={{ color: 'red' }}>
+                              {String(errors.entity_id)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-2">
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel>University *</InputLabel>
+                            <Select
+                              name="university_id"
+                              value={values?.university_id}
+                              label="University *"
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleChange(e, 'university_id')
+                              }
+                              style={{
+                                backgroundColor:
+                                  isSchoolEntity(values?.entity_id) ||
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '#f0f0f0'
+                                    : inputfield(namecolor),
+                                color:
+                                  isSchoolEntity(values?.entity_id) ||
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '#999999'
+                                    : inputfieldtext(namecolor),
+                                border:
+                                  isSchoolEntity(values?.entity_id) ||
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '1px solid #d0d0d0'
+                                    : undefined,
+                              }}
+                              disabled={
+                                isSchoolEntity(values?.entity_id) ||
+                                user_type === 'institute' ||
+                                user_type === 'teacher'
+                              }
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                  },
+                                },
+                              }}
+                            >
+                              {dataUniversity?.map((university: any) => (
+                                <MenuItem
+                                  key={university.id}
+                                  value={university.id}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >
+                                  {university.university_name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {touched?.university_id && errors?.university_id && (
+                            <p className="error">
+                              {String(errors.university_id)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-md-2">
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel>Institute *</InputLabel>
+                            <Select
+                              name="institute_id"
+                              value={values?.institute_id}
+                              label="Institute *"
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleChange(e, 'institute_id')
+                              }
+                              disabled={
+                                user_type === 'institute' ||
+                                user_type === 'teacher'
+                              }
+                              style={{
+                                backgroundColor:
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '#f0f0f0'
+                                    : inputfield(namecolor),
+                                color:
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '#999999'
+                                    : inputfieldtext(namecolor),
+                                border:
+                                  user_type === 'institute' ||
+                                  user_type === 'teacher'
+                                    ? '1px solid #d0d0d0'
+                                    : undefined,
+                              }}
+                            >
+                              {filteredInstitutes.map((institute) => (
+                                <MenuItem
+                                  key={institute.id}
+                                  value={institute.id}
+                                >
+                                  {institute.institute_name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {touched?.institute_id && errors?.institute_id && (
+                            <p className="error">
+                              {String(errors.institute_id)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      {isCollegeEntity(values?.entity_id) &&
+                        values?.courses?.length > 0 && (
+                          <>
+                            {values.courses.map((course: any, index: any) => (
+                              <div className="row gy-4 mt-2" key={index}>
                                 <div className="col-md-2">
                                   <div className="form_field_wrapper">
                                     <FormControl fullWidth>
-                                      <InputLabel>Stream *</InputLabel>
+                                      <InputLabel>Course *</InputLabel>
                                       <Select
-                                        name={`classes.${index}.stream`}
-                                        value={cls.stream}
-                                        label="Stream *"
+                                        name={`courses.${index}.course_id`}
+                                        value={course.course_id}
+                                        label="Course *"
                                         onChange={(
                                           e: SelectChangeEvent<string>,
                                         ) =>
                                           handleChange(
                                             e,
-                                            `classes.${index}.stream`,
+                                            `courses.${index}.course_id`,
                                           )
                                         }
-                                        disabled={!cls.class_id}
+                                        disabled={!values?.institute_id}
                                         sx={{
                                           backgroundColor:
                                             inputfield(namecolor),
@@ -1839,11 +1570,68 @@ const AddContent = () => {
                                           },
                                         }}
                                       >
-                                        {classStreams[index]?.map(
-                                          (streamOption: string) => (
+                                        {filteredCourses?.map((course: any) => (
+                                          <MenuItem
+                                            key={course.id}
+                                            value={course.id}
+                                            sx={{
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                              '&:hover': {
+                                                backgroundColor:
+                                                  inputfieldhover(namecolor),
+                                              },
+                                            }}
+                                          >
+                                            {course.course_name}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                </div>
+
+                                <div className="col-md-2">
+                                  <div className="form_field_wrapper">
+                                    <FormControl fullWidth>
+                                      <InputLabel>Semester *</InputLabel>
+                                      <Select
+                                        name={`courses.${index}.semester`}
+                                        value={course.semester}
+                                        label="Semester *"
+                                        onChange={(
+                                          e: SelectChangeEvent<string>,
+                                        ) =>
+                                          handleChange(
+                                            e,
+                                            `courses.${index}.semester`,
+                                          )
+                                        }
+                                        disabled={!course.course_id}
+                                        sx={{
+                                          backgroundColor:
+                                            inputfield(namecolor),
+                                          color: inputfieldtext(namecolor),
+                                          '& .MuiSelect-icon': {
+                                            color: fieldIcon(namecolor),
+                                          },
+                                        }}
+                                        MenuProps={{
+                                          PaperProps: {
+                                            style: {
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                            },
+                                          },
+                                        }}
+                                      >
+                                        {courseSemesters[index]?.map(
+                                          (semesterOption: string) => (
                                             <MenuItem
-                                              key={streamOption}
-                                              value={streamOption}
+                                              key={semesterOption}
+                                              value={semesterOption}
                                               sx={{
                                                 backgroundColor:
                                                   inputfield(namecolor),
@@ -1855,7 +1643,7 @@ const AddContent = () => {
                                                 },
                                               }}
                                             >
-                                              {streamOption}
+                                              {semesterOption}
                                             </MenuItem>
                                           ),
                                         )}
@@ -1863,55 +1651,172 @@ const AddContent = () => {
                                     </FormControl>
                                   </div>
                                 </div>
-                              )}
 
-                              <div className="col-md-4">
-                                <div className="form_field_wrapper">
-                                  <FormControl fullWidth>
-                                    <InputLabel>Subjects *</InputLabel>
-                                    <Select
-                                      multiple
-                                      name={`classes.${index}.subjects`}
-                                      value={cls.subjects}
-                                      label="Subjects *"
-                                      onChange={(
-                                        e: SelectChangeEvent<string[]>,
-                                      ) =>
-                                        handleChange(
-                                          e,
-                                          `classes.${index}.subjects`,
-                                        )
-                                      }
-                                      disabled={
-                                        !cls.class_id ||
-                                        (checkHigherClass(
-                                          cls.class_id,
-                                          dataClasses,
-                                        ) &&
-                                          !cls.stream)
-                                      }
-                                      sx={{
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                        '& .MuiSelect-icon': {
-                                          color: fieldIcon(namecolor),
-                                        },
-                                      }}
-                                      MenuProps={{
-                                        PaperProps: {
-                                          style: {
-                                            backgroundColor:
-                                              inputfield(namecolor),
-                                            color: inputfieldtext(namecolor),
+                                <div className="col-md-4">
+                                  <div className="form_field_wrapper">
+                                    <FormControl fullWidth>
+                                      <InputLabel>Subjects *</InputLabel>
+                                      <Select
+                                        multiple
+                                        name={`courses.${index}.subjects`}
+                                        value={course.subjects}
+                                        label="Subjects *"
+                                        onChange={(
+                                          e: SelectChangeEvent<string[]>,
+                                        ) =>
+                                          handleChange(
+                                            e,
+                                            `courses.${index}.subjects`,
+                                          )
+                                        }
+                                        disabled={!course.semester}
+                                        sx={{
+                                          backgroundColor:
+                                            inputfield(namecolor),
+                                          color: inputfieldtext(namecolor),
+                                          '& .MuiSelect-icon': {
+                                            color: fieldIcon(namecolor),
                                           },
-                                        },
+                                        }}
+                                        MenuProps={{
+                                          PaperProps: {
+                                            style: {
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                            },
+                                          },
+                                        }}
+                                      >
+                                        {courseSubjects[index]?.map(
+                                          (subject: any) => (
+                                            <MenuItem
+                                              key={subject.subject_id}
+                                              value={subject.subject_name}
+                                              sx={{
+                                                backgroundColor:
+                                                  inputfield(namecolor),
+                                                color:
+                                                  inputfieldtext(namecolor),
+                                                '&:hover': {
+                                                  backgroundColor:
+                                                    inputfieldhover(namecolor),
+                                                },
+                                              }}
+                                            >
+                                              {subject.subject_name}
+                                            </MenuItem>
+                                          ),
+                                        )}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                </div>
+                                {values.courses.length > 1 && (
+                                  <IconButton
+                                    onClick={() => {
+                                      setContent((prevTeacher) => ({
+                                        ...prevTeacher,
+                                        courses: prevTeacher?.courses?.filter(
+                                          (_, i) => i !== index,
+                                        ),
+                                      }));
+
+                                      const updatedCourses =
+                                        values.courses.filter(
+                                          (i: any) => i !== index,
+                                        );
+                                      formRef.current?.setFieldValue(
+                                        'courses',
+                                        updatedCourses,
+                                      );
+                                    }}
+                                    sx={{
+                                      width: '35px',
+                                      height: '35px',
+                                      marginTop: '25px',
+                                      color: fieldIcon(namecolor),
+                                    }}
+                                  >
+                                    <DeleteOutlinedIcon />
+                                  </IconButton>
+                                )}
+                                {index === values.courses.length - 1 && (
+                                  <div className="col-md-1">
+                                    <IconButton
+                                      onClick={() => {
+                                        const newCourse = {
+                                          course_id: '',
+                                          semester: '',
+                                          subjects: [],
+                                        };
+
+                                        setContent((prevTeacher) => ({
+                                          ...prevTeacher,
+                                          courses: [
+                                            ...(prevTeacher.courses || []),
+                                            newCourse,
+                                          ],
+                                        }));
+                                      }}
+                                      sx={{
+                                        width: '35px',
+                                        height: '35px',
+                                        color: fieldIcon(namecolor),
                                       }}
                                     >
-                                      {classSubjects[index]?.map(
-                                        (subject: any) => (
+                                      <AddCircleOutlinedIcon />
+                                    </IconButton>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      {isSchoolEntity(values?.entity_id) &&
+                        values?.classes?.length > 0 && (
+                          <>
+                            {values.classes.map((cls: any, index: any) => (
+                              <div className="row gy-4 mt-2" key={index}>
+                                <div className="col-md-2">
+                                  <div className="form_field_wrapper">
+                                    <FormControl fullWidth>
+                                      <InputLabel>Class *</InputLabel>
+                                      <Select
+                                        name={`classes.${index}.class_id`}
+                                        value={cls.class_id}
+                                        label="Class *"
+                                        onChange={(
+                                          e: SelectChangeEvent<string>,
+                                        ) =>
+                                          handleChange(
+                                            e,
+                                            `classes.${index}.class_id`,
+                                          )
+                                        }
+                                        disabled={!values?.institute_id}
+                                        sx={{
+                                          backgroundColor:
+                                            inputfield(namecolor),
+                                          color: inputfieldtext(namecolor),
+                                          '& .MuiSelect-icon': {
+                                            color: fieldIcon(namecolor),
+                                          },
+                                        }}
+                                        MenuProps={{
+                                          PaperProps: {
+                                            style: {
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                            },
+                                          },
+                                        }}
+                                      >
+                                        {dataClasses?.map((cls: any) => (
                                           <MenuItem
-                                            key={subject.subject_id}
-                                            value={subject.subject_name}
+                                            key={cls.id}
+                                            value={cls.id}
                                             sx={{
                                               backgroundColor:
                                                 inputfield(namecolor),
@@ -1922,215 +1827,389 @@ const AddContent = () => {
                                               },
                                             }}
                                           >
-                                            {subject.subject_name}
+                                            {cls.class_name}
                                           </MenuItem>
-                                        ),
-                                      )}
-                                    </Select>
-                                  </FormControl>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
                                 </div>
-                              </div>
+                                {checkHigherClass(
+                                  cls.class_id,
+                                  dataClasses,
+                                ) && (
+                                  <div className="col-md-2">
+                                    <div className="form_field_wrapper">
+                                      <FormControl fullWidth>
+                                        <InputLabel>Stream *</InputLabel>
+                                        <Select
+                                          name={`classes.${index}.stream`}
+                                          value={cls.stream}
+                                          label="Stream *"
+                                          onChange={(
+                                            e: SelectChangeEvent<string>,
+                                          ) =>
+                                            handleChange(
+                                              e,
+                                              `classes.${index}.stream`,
+                                            )
+                                          }
+                                          disabled={!cls.class_id}
+                                          sx={{
+                                            backgroundColor:
+                                              inputfield(namecolor),
+                                            color: inputfieldtext(namecolor),
+                                            '& .MuiSelect-icon': {
+                                              color: fieldIcon(namecolor),
+                                            },
+                                          }}
+                                          MenuProps={{
+                                            PaperProps: {
+                                              style: {
+                                                backgroundColor:
+                                                  inputfield(namecolor),
+                                                color:
+                                                  inputfieldtext(namecolor),
+                                              },
+                                            },
+                                          }}
+                                        >
+                                          {classStreams[index]?.map(
+                                            (streamOption: string) => (
+                                              <MenuItem
+                                                key={streamOption}
+                                                value={streamOption}
+                                                sx={{
+                                                  backgroundColor:
+                                                    inputfield(namecolor),
+                                                  color:
+                                                    inputfieldtext(namecolor),
+                                                  '&:hover': {
+                                                    backgroundColor:
+                                                      inputfieldhover(
+                                                        namecolor,
+                                                      ),
+                                                  },
+                                                }}
+                                              >
+                                                {streamOption}
+                                              </MenuItem>
+                                            ),
+                                          )}
+                                        </Select>
+                                      </FormControl>
+                                    </div>
+                                  </div>
+                                )}
 
-                              {values.classes.length > 1 && (
-                                <IconButton
-                                  onClick={() => {
-                                    setContent((prevTeacher) => ({
-                                      ...prevTeacher,
-                                      classes: prevTeacher?.classes?.filter(
-                                        (_, i) => i !== index,
-                                      ),
-                                    }));
+                                <div className="col-md-4">
+                                  <div className="form_field_wrapper">
+                                    <FormControl fullWidth>
+                                      <InputLabel>Subjects *</InputLabel>
+                                      <Select
+                                        multiple
+                                        name={`classes.${index}.subjects`}
+                                        value={cls.subjects}
+                                        label="Subjects *"
+                                        onChange={(
+                                          e: SelectChangeEvent<string[]>,
+                                        ) =>
+                                          handleChange(
+                                            e,
+                                            `classes.${index}.subjects`,
+                                          )
+                                        }
+                                        disabled={
+                                          !cls.class_id ||
+                                          (checkHigherClass(
+                                            cls.class_id,
+                                            dataClasses,
+                                          ) &&
+                                            !cls.stream)
+                                        }
+                                        sx={{
+                                          backgroundColor:
+                                            inputfield(namecolor),
+                                          color: inputfieldtext(namecolor),
+                                          '& .MuiSelect-icon': {
+                                            color: fieldIcon(namecolor),
+                                          },
+                                        }}
+                                        MenuProps={{
+                                          PaperProps: {
+                                            style: {
+                                              backgroundColor:
+                                                inputfield(namecolor),
+                                              color: inputfieldtext(namecolor),
+                                            },
+                                          },
+                                        }}
+                                      >
+                                        {classSubjects[index]?.map(
+                                          (subject: any) => (
+                                            <MenuItem
+                                              key={subject.subject_id}
+                                              value={subject.subject_name}
+                                              sx={{
+                                                backgroundColor:
+                                                  inputfield(namecolor),
+                                                color:
+                                                  inputfieldtext(namecolor),
+                                                '&:hover': {
+                                                  backgroundColor:
+                                                    inputfieldhover(namecolor),
+                                                },
+                                              }}
+                                            >
+                                              {subject.subject_name}
+                                            </MenuItem>
+                                          ),
+                                        )}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                </div>
 
-                                    const updatedClasses =
-                                      values.classes.filter(
-                                        (i: any) => i !== index,
-                                      );
-                                    formRef.current?.setFieldValue(
-                                      'classes',
-                                      updatedClasses,
-                                    );
-                                  }}
-                                  sx={{
-                                    width: '35px',
-                                    height: '35px',
-                                    marginTop: '25px',
-                                    color: fieldIcon(namecolor),
-                                  }}
-                                >
-                                  <DeleteOutlinedIcon />
-                                </IconButton>
-                              )}
-                              {index === values.classes.length - 1 && (
-                                <div className="col-md-1">
+                                {values.classes.length > 1 && (
                                   <IconButton
                                     onClick={() => {
-                                      const newCourse = {
-                                        class_id: '',
-                                        stream: '',
-                                        subjects: [],
-                                      };
-
                                       setContent((prevTeacher) => ({
                                         ...prevTeacher,
-                                        classes: [
-                                          ...(prevTeacher.classes || []),
-                                          newCourse,
-                                        ],
+                                        classes: prevTeacher?.classes?.filter(
+                                          (_, i) => i !== index,
+                                        ),
                                       }));
+
+                                      const updatedClasses =
+                                        values.classes.filter(
+                                          (i: any) => i !== index,
+                                        );
+                                      formRef.current?.setFieldValue(
+                                        'classes',
+                                        updatedClasses,
+                                      );
                                     }}
                                     sx={{
                                       width: '35px',
                                       height: '35px',
+                                      marginTop: '25px',
                                       color: fieldIcon(namecolor),
                                     }}
                                   >
-                                    <AddCircleOutlinedIcon />
+                                    <DeleteOutlinedIcon />
                                   </IconButton>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    <div className="col-md-2">
-                      <div className="form_field_wrapper">
-                        <Field
-                          fullWidth
-                          component={TextField}
-                          label="URL *"
-                          name="url"
-                          value={values?.url}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'url')
-                          }
-                        />
-                        {touched?.url && errors?.url && (
-                          <p className="error">{String(errors.url)}</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col-md-2">
-                      <div className="form_field_wrapper">
-                        <FormControl fullWidth>
-                          <InputLabel>Content Type *</InputLabel>
-                          <Select
-                            name="content_type"
-                            value={values?.content_type}
-                            label="Content Type *"
-                            onChange={(e: SelectChangeEvent<string>) =>
-                              handleChange(e, 'content_type')
-                            }
-                          >
-                            <MenuItem value="notes">Notes</MenuItem>
-                            <MenuItem value="e-book">eBook</MenuItem>
-                            <MenuItem value="video_lecture">
-                              Video Lecture
-                            </MenuItem>
+                                )}
+                                {index === values.classes.length - 1 && (
+                                  <div className="col-md-1">
+                                    <IconButton
+                                      onClick={() => {
+                                        const newCourse = {
+                                          class_id: '',
+                                          stream: '',
+                                          subjects: [],
+                                        };
 
-                            <MenuItem value="research_paper">
-                              Research Paper
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                        {touched?.content_type && errors?.content_type && (
-                          <p className="error">{String(errors.content_type)}</p>
+                                        setContent((prevTeacher) => ({
+                                          ...prevTeacher,
+                                          classes: [
+                                            ...(prevTeacher.classes || []),
+                                            newCourse,
+                                          ],
+                                        }));
+                                      }}
+                                      sx={{
+                                        width: '35px',
+                                        height: '35px',
+                                        color: fieldIcon(namecolor),
+                                      }}
+                                    >
+                                      <AddCircleOutlinedIcon />
+                                    </IconButton>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </>
                         )}
+                      <div className="col-md-2">
+                        <div className="form_field_wrapper">
+                          <FormControl fullWidth>
+                            <InputLabel>Content Type *</InputLabel>
+                            <Select
+                              name="content_type"
+                              value={values?.content_type}
+                              label="Content Type *"
+                              onChange={(e: SelectChangeEvent<string>) =>
+                                handleChange(e, 'content_type')
+                              }
+                            >
+                              <MenuItem value="notes">Notes</MenuItem>
+                              <MenuItem value="e-book">eBook</MenuItem>
+                              <MenuItem value="video_lecture">
+                                Video Lecture
+                              </MenuItem>
+
+                              <MenuItem value="research_paper">
+                                Research Paper
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
+                          {touched?.content_type && errors?.content_type && (
+                            <p className="error">
+                              {String(errors.content_type)}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="row mt-4">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
                           <Field
                             fullWidth
                             component={TextField}
-                            label="Description *"
-                            name="description"
-                            value={values?.description}
+                            label="URL *"
+                            name="url"
+                            value={values?.url}
+                            disabled={allselectedfiles.length > 0}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
-                            ) => handleChange(e, 'description')}
-                            multiline
-                            rows={2}
+                            ) => handleChange(e, 'url')}
+                            style={{
+                              backgroundColor:
+                                allselectedfiles.length > 0
+                                  ? '#f0f0f0'
+                                  : inputfield(namecolor),
+                              color:
+                                allselectedfiles.length > 0
+                                  ? '#999999'
+                                  : inputfieldtext(namecolor),
+                              border:
+                                allselectedfiles.length > 0
+                                  ? '1px solid #d0d0d0'
+                                  : undefined,
+                            }}
                           />
-                          {touched?.description && errors?.description && (
-                            <p className="error">
-                              {String(errors.description)}
-                            </p>
+                          {touched?.url && errors?.url && (
+                            <p className="error">{String(errors.url)}</p>
                           )}
                         </div>
                       </div>
-                    </div>
-                    <div className="row d-flex justify-content-between mt-0 g-4">
-                      <div className="col-12 ">
-                        <UploadBtn
-                          label="Upload Files"
-                          name="document"
-                          accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
-                          handleFileChange={handleFileChange}
-                        />
-                        <div className="col-8">
-                          {allselectedfiles?.length > 0 && (
-                            <ul className="doclist">
-                              {allselectedfiles?.map((file, index) => (
-                                <li
-                                  key={index}
-                                  className="flex mt-2 items-center justify-between "
-                                >
-                                  {'name' in file
-                                    ? file.name
-                                    : (file as any)?.url}
 
-                                  <DeleteOutlinedIcon
-                                    className="m-2 cursor-pointer"
-                                    onClick={() => handleRemoveFile(index)}
-                                  />
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                          {allfiles?.length > 0 && (
-                            <ul className="doclist">
-                              {allfiles?.map((file, index) => (
-                                <li
-                                  key={index}
-                                  className="flex mt-2 items-center justify-between "
-                                >
-                                  {'name' in file
-                                    ? file.name
-                                    : (file as any)?.url}
-
-                                  <DeleteOutlinedIcon
-                                    className="m-2 cursor-pointer"
-                                    onClick={() =>
-                                      handleDeleteFile((file as any)?.id)
-                                    }
-                                  />
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                      {showAuthor && (
+                        <div className="col-md-2">
+                          <div className="form_field_wrapper">
+                            <Field
+                              fullWidth
+                              component={TextField}
+                              label="Author or Instructor *"
+                              name="author"
+                              value={values?.author}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'author')}
+                            />
+                            {touched?.author && errors?.author && (
+                              <p className="error">{String(errors.author)}</p>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          {touched?.documents && errors?.documents && (
-                            <p className="error">{String(errors.documents)}</p>
-                          )}
+                      )}
+                      <div className="row mt-4">
+                        <div className="col-md-4">
+                          <div className="form_field_wrapper">
+                            <Field
+                              fullWidth
+                              component={TextField}
+                              label="Description *"
+                              name="description"
+                              value={values?.description}
+                              onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                              ) => handleChange(e, 'description')}
+                              multiline
+                              rows={2}
+                            />
+                            {touched?.description && errors?.description && (
+                              <p className="error">
+                                {String(errors.description)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row d-flex justify-content-between mt-0 g-4">
+                        <div className="col-12 ">
+                          <UploadBtn
+                            label="Upload Files"
+                            name="document"
+                            accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
+                            handleFileChange={handleFileChange}
+                          />
+                          <div className="col-8">
+                            {allselectedfiles?.length > 0 && (
+                              <ul className="doclist">
+                                {allselectedfiles?.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex mt-2 items-center justify-between "
+                                  >
+                                    {'name' in file
+                                      ? file.name
+                                      : (file as any)?.url}
+
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() => handleRemoveFile(index)}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                            {allfiles?.length > 0 && (
+                              <ul className="doclist">
+                                {allfiles?.map((file, index) => (
+                                  <li
+                                    key={index}
+                                    className="flex mt-2 items-center justify-between "
+                                  >
+                                    {'name' in file
+                                      ? file.name
+                                      : (file as any)?.url}
+
+                                    <DeleteOutlinedIcon
+                                      className="m-2 cursor-pointer"
+                                      onClick={() =>
+                                        handleDeleteFile((file as any)?.id)
+                                      }
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                          <div>
+                            {touched?.documents && errors?.documents && (
+                              <p className="error">
+                                {String(errors.documents)}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary mainbutton mt-4"
-                  >
-                    {id ? 'Update' : 'Save'}
-                  </button>
-                </Form>
-              )}
-            </Formik>
+                    <button
+                      type="submit"
+                      className="btn btn-primary mainbutton mt-4"
+                    >
+                      {id ? 'Update' : 'Save'}
+                    </button>
+                  </Form>
+                )}
+              </Formik>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

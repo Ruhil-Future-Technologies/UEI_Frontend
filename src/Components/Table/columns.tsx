@@ -312,6 +312,7 @@ export interface ContentRepoDTO {
   id: string;
   url: string;
   content_type: string;
+  author: string;
   description: string;
   course_semester_subjects: string;
   class_stream_subjects: string;
@@ -2538,6 +2539,11 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
     },
   },
   {
+    accessorKey: 'author',
+    header: 'Author',
+    size: 250,
+  },
+  {
     accessorKey: 'description',
     header: 'Description',
     size: 250,
@@ -2786,7 +2792,10 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
             if (data.status) {
               setShow((prev: any) => !prev);
               setShowValue((prev: any) => !prev);
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
             }
           })
           .catch((e) => {
