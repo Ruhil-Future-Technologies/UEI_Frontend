@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from './CreateAssignments';
+import { toast } from 'react-toastify';
 
 // type Assignment = {
 //   assignment: string;
@@ -55,7 +56,7 @@ import { Assignment } from './CreateAssignments';
 export const Assignments = () => {
 
 
-  const {getData}=useApi();
+  const {getData,putData}=useApi();
   const nevigate=useNavigate();
   const [openCard,setOpenCard]=useState(false);
 
@@ -111,7 +112,32 @@ export const Assignments = () => {
   }
   const deleteAssignment=()=>{
     console.log(dataDeleteId)
-    setOpenCard(false);
+    try {
+      putData(`/assignment/delete/${dataDeleteId}`).then((response)=>{
+       if(response.status){
+        toast.success(response.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+        })
+        setOpenCard(false);
+       }
+      }).catch((error)=>{
+        toast.error(error.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+        })
+      })
+    } catch (error:any) {
+      toast.error(error.message,{
+        hideProgressBar:true,
+        theme:'colored',
+        position:'top-center'
+      })
+    }
+
+   
   }
   const isDelete=(assignmentId:any)=>{
     setDataDeleteId(assignmentId);
@@ -217,7 +243,7 @@ export const Assignments = () => {
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
                     <p className="mb-1">Total Assignments</p>
-                    <h3 className="mb-0">986</h3>
+                    <h3 className="mb-0">{assignmentData.length}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
                     <AssignmentIcon className="svgwhite" />

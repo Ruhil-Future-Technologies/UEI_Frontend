@@ -530,7 +530,7 @@ const InstituteRegistrationForm = () => {
         alert('Wait for 24-48 hours, the Administrator will inform you.');
         window.location.reload();
       }else{
-        toast.warning(data.message,{
+        toast.error(data.message,{
           hideProgressBar:true,
           theme:'colored',
           position:'top-center'

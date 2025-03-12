@@ -118,7 +118,8 @@ const Header = () => {
     localStorage.removeItem('phone');
     localStorage.removeItem('_id');
     localStorage.removeItem('student_id');
-    localStorage.removeItem('hasReloaded')
+    localStorage.removeItem('hasReloaded');
+    localStorage.removeItem('register_num');
     synth.cancel();
     navigator('/');
     logoutpro();

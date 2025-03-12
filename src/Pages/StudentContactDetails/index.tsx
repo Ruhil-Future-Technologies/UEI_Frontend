@@ -54,6 +54,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     whatsappNum: '',
   });
   const StudentId = localStorage.getItem('_id');
+  const register_num=localStorage.getItem('register_num');
   const validateEmail = (email: string) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
@@ -161,6 +162,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   };
   useEffect(() => {
     if(StudentId){
+      setPhoneNum(register_num as string);
       getContacInfo();
     }
   
@@ -357,8 +359,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
         <div className="row">
           {/* <label className="pb-2"> Whatsapp Number </label> */}
           <div className="form_field_wrapper">
-            <label style={{ textAlign: 'left', margin: '10px' }}>
-              Whatsapp Number{' '}
+            <label style={{ textAlign: 'left', marginLeft: '10px' ,marginTop: '10px',marginBottom: '10px'}}>
+              Whatsapp Number
             </label>
           </div>
           <div className="col-3 form_field_wrapper">

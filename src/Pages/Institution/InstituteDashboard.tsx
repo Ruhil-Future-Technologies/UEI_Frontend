@@ -260,7 +260,7 @@ const InstitutionDash = () => {
                     <h6 className="mb-0 fw-normal">Chat History</h6>
                   </div>
                   <div>
-                    <Link to="/">0</Link>
+                    <>0</>
                   </div>
                 </div>
 
@@ -269,7 +269,7 @@ const InstitutionDash = () => {
                     <h6 className="mb-0 fw-normal">Saved Chat</h6>
                   </div>
                   <div>
-                    <Link to="/">0</Link>
+                    <>0</>
                   </div>
                 </div>
 
@@ -278,7 +278,7 @@ const InstitutionDash = () => {
                     <h6 className="mb-0 fw-normal">Profile Completed</h6>
                   </div>
                   <div>
-                    <Link to="/">90%</Link>
+                    <>90%</>
                   </div>
                 </div>
               </div>

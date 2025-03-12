@@ -69,11 +69,14 @@ const ChangePassword = () => {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
           if (data?.status) {
-            navigate('/');
+            
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setTimeout(()=>{
+              navigate('/');
+            },2000);
           } else if (
             data?.code === 404 &&
             data?.message === 'Invalid userid or password'

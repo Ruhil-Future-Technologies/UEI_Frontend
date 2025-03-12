@@ -300,7 +300,7 @@ export const ProfileDialog: FunctionComponent<{
         .then((data: any) => {
           if (data.status) {
             setAnsweredData(data.data);
-
+            localStorage.setItem('register_num',data?.data?.register_num);
             if (data?.data?.academic_history?.institution_type === 'school') {
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`,
@@ -357,7 +357,7 @@ export const ProfileDialog: FunctionComponent<{
       'Select your known language',
       'What is your proficiency in the selected language?',
       'Please select your mobile number country code',
-      'What is your mobile number?',
+      // 'What is your mobile number?',
       'What is your WhatsApp number?',
       'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
       'Please select your semester ?',
@@ -866,6 +866,7 @@ export const ProfileDialog: FunctionComponent<{
           //   hideProgressBar: true,
           //   theme: 'colored',
           // });
+          callAPI();
           localStorage.setItem('student_id', data?.data?.id);
           setNamepro(data?.first_name);
           const formData = new FormData();
@@ -928,11 +929,8 @@ export const ProfileDialog: FunctionComponent<{
     const payload = {
       student_id: localStorage.getItem('student_id'),
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call:
-        answeredData?.contact?.mobile_no_call ||
-          answer[answer.length - 1] === ''
-          ? answer[answer.length - 2]
-          : answer[answer.length - 3],
+      mobile_no_call:localStorage.getItem('register_num'),
+        
       mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
       mobile_no_watsapp:
         answeredData?.contact?.mobile_no_watsapp ||
@@ -948,7 +946,7 @@ export const ProfileDialog: FunctionComponent<{
     Object.keys(payload).forEach((key) => {
       formData.append(key, payload[key]);
     });
-
+console.log(payload)
     postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
         if (data?.status) {
