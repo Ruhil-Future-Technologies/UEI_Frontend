@@ -211,23 +211,24 @@ const Sidebar = () => {
                               >
                                 {menu?.submenus?.map(
                                   (submenu: any, index: number) => {
-                                    const menulist =
-                                      submenu.menu_name === 'Sub Menu'
-                                        ? 'SubMenu'
-                                        : submenu.menu_name === 'Role Vs Form'
-                                          ? 'RoleVsForm'
-                                          : submenu.menu_name ===
-                                                'Role Vs User' ||
-                                              submenu.menu_name === 'RoleVsUser'
-                                            ? 'RoleVsUser '
-                                            : submenu.menu_name === 'Hobbies'
-                                              ? 'Hobby'
-                                              : submenu.menu_name ===
-                                                    'Student Feedback' ||
-                                                  submenu.menu_name ===
-                                                    'StudentFeedback'
-                                                ? 'StudentFeedback'
-                                                : submenu.menu_name;
+                                    // const menulist =
+                                    //   submenu.menu_name === 'Sub Menu'
+                                    //     ? 'SubMenu'
+                                    //     : submenu.menu_name === 'Role Vs Form'
+                                    //       ? 'RoleVsForm'
+                                    //       : submenu.menu_name ===
+                                    //             'Role Vs User' ||
+                                    //           submenu.menu_name === 'RoleVsUser'
+                                    //         ? 'RoleVsUser '
+                                    //         : submenu.menu_name === 'Hobbies'
+                                    //           ? 'Hobby'
+                                    //           : submenu.menu_name ===
+                                    //                 'Student Feedback' ||
+                                    //               submenu.menu_name ===
+                                    //                 'StudentFeedback'
+                                    //             ? 'StudentFeedback'
+                                    //             : submenu.menu_name;
+                                    const menulist = submenu.submenu_url
                                     if (
                                       submenu.menu_name.toLowerCase() ===
                                       'institute'
