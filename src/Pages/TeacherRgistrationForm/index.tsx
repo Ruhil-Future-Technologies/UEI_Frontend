@@ -1249,7 +1249,13 @@ if(valid1) return;
         setPopupOtpCard(false);
         alert('Wait for 24-48 hours, the Administrator will inform you.');
         window.location.reload();
-      }
+      }else{
+              toast.error(data.message,{
+                hideProgressBar:true,
+                theme:'colored',
+                position:'top-center'
+              })
+            }
     })
 
   };
