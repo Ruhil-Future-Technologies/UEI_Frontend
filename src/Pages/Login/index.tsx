@@ -46,7 +46,7 @@ const Login = () => {
     }
   }, []);
 
-  const { postData, postDataJson } = useApi();
+  const { postDataJson } = useApi();
 
   const navigator = useNavigate();
   const [password, setPassword] = useState('');
@@ -114,7 +114,7 @@ const Login = () => {
         setuserValue('');
       }
       try {
-        const data = await postData(loginUrl, UserSignUp);
+        const data = await postDataJson(loginUrl, UserSignUp);
         if (data?.status) {
           setLoading(false);
           localStorage.setItem('token', 'Bearer ' + data?.token);

@@ -146,6 +146,10 @@ const useApi = () => {
       }
       return response.data;
     } catch (error) {
+      if (error.response?.status === 404) {
+        console.warn('Data not found, returning empty object.');
+        return { data: [], code: 404 }; // Prevents UI from breaking
+      }
       setError(error);
       setLoading(false);
       return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking

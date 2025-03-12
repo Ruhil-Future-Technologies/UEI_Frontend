@@ -679,6 +679,7 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleSubmit = () => {
+    console.log("fkjhsghghjsjgfs")
     let valid1=false;
     if (teacher.entity_id == '') {
       setEntity_error(true)
@@ -755,7 +756,7 @@ if(valid1) return;
         setUniversityError(true);
       }
     }
-
+console.log(valid,teacher.university_id)
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -853,7 +854,7 @@ if(valid1) return;
           'institute_id',
           teacher.institution_id?.toString() || '',
         );
-        if (selectedClassName === 'col-6') {
+        if (selectedClassName === 'col-4') {
           formData.append('stream', teacher.stream);
         }
       } else {
@@ -1061,9 +1062,11 @@ if(valid1) return;
               subjects: [],
             };
           }
+          console.log(updatedBox);
         }
 
         if (name === 'stream') {
+          console.log(totleSubject);
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ===
@@ -1075,6 +1078,7 @@ if(valid1) return;
             filteredSubjects,
             subjects: [],
           };
+          console.log(updatedBox);
         }
         validateFields(index, name, updatedBox);
         return updatedBox;
@@ -1308,7 +1312,7 @@ if(valid1) return;
                   </div>
                   <h3 className="text-center fw-bold">Register As Teacher</h3>
                   <p className="mb-lg-5 mb-4 text-center text-black-50">
-                    Empower your institution—get started today!
+                  Empower your teaching journey—get started today!
                   </p>
 
                   <div className="row d-flex justify-content-center g-4">
