@@ -118,12 +118,10 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'institute' && uName.toLowerCase() === 'edit-content'
         ? true
         : '') ||
-        : '')||
       (usertype === 'admin' && mName?.toLowerCase() === 'servicesagreement') ||
-      (usertype === 'admin' && mName?.toLowerCase() === 'privacypolicy')||
+      (usertype === 'admin' && mName?.toLowerCase() === 'privacypolicy') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'refundpolicy') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'disclaimer');
-      
 
     return MnameExist;
   };
