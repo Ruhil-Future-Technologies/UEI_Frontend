@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+// import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 import gLogo from '../../assets/img/logo-white.svg';
 import loginImage from '../../assets/img/login-image.png';
@@ -21,7 +21,7 @@ const Forgotpassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   // const [msg, setMsg] = useState("");
-  const [value, setValue] = React.useState('student');
+  // const [value, setValue] = React.useState('student');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -41,15 +41,15 @@ const Forgotpassword = () => {
   }, []);
 
   const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
-  };
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setValue((event.target as HTMLInputElement).value);
+  // };
   const sendLink = (e: any) => {
     setIsLoading(true);
     e.preventDefault();
     const UserSignUp = {
       email: email,
-      user_type: String(value),
+      // user_type: String(value),
     };
     postData(`${forgotpassUrl}`, UserSignUp)
       .then((data: any) => {
@@ -171,7 +171,7 @@ const Forgotpassword = () => {
                     <form method="" className="mb-3">
                       <div className="mb-4">
                         <div className="mb-4">
-                          <RadioGroup row value={value} onChange={handleChange}>
+                          {/* <RadioGroup row value={value} onChange={handleChange}>
                             <FormControlLabel
                               value="student"
                               control={<Radio />}
@@ -182,7 +182,7 @@ const Forgotpassword = () => {
                               control={<Radio />}
                               label="Admin"
                             />
-                          </RadioGroup>
+                          </RadioGroup> */}
                         </div>
                         <label htmlFor="" className="form-label">
                           Email / Phone
