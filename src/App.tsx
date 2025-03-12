@@ -94,6 +94,11 @@ import TeacherProfile from './Pages/Teacher/TeacherProfile';
 import Content from './Pages/Content/Content';
 import AddContent from './Pages/Content/AddContent';
 import StudentContent from './Pages/Content/StudentContent';
+import ServicesAgreement from './Components/PolicyContent/ServicesAgreement';
+import Disclaimer from './Components/PolicyContent/Disclaimer';
+import RefundPolicy from './Components/PolicyContent/RefundPolicy';
+import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
+
 
 function App() {
   const navigate = useNavigate();
@@ -818,6 +823,22 @@ function App() {
               }
             />
           </Route>
+          <Route
+            path="/main/ServicesAgreement"
+            element={<Protected Component={ServicesAgreement} menuName="ServicesAgreement" />}
+          />
+          <Route
+            path="/main/PrivacyPolicy"
+            element={<Protected Component={PrivacyPolicy} menuName="PrivacyPolicy" />}
+          />
+          <Route
+            path="/main/RefundPolicy"
+            element={<Protected Component={RefundPolicy} menuName="RefundPolicy" />}
+          />
+          <Route
+            path="/main/Disclaimer"
+            element={<Protected Component={Disclaimer} menuName="Disclaimer" />}
+          />
         </Route>
         <Route path="profile" element={<Profile />} />
         <Route path="searchdepartment" element={<StudentProfileManagement />} />

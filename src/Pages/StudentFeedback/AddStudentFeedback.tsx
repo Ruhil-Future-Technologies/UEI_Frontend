@@ -14,8 +14,8 @@ interface Question {
   answer?: string;
 }
 const AddStudentFeedback = () => {
-  const StudentId = localStorage.getItem('user_uuid');
-  const { getData, postData } = useApi();
+  const StudentId = localStorage.getItem('student_id')?localStorage.getItem('student_id'):localStorage.getItem('_id');
+  const { getData, postDataJson } = useApi();
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -40,13 +40,13 @@ const AddStudentFeedback = () => {
   useEffect(() => {
     getData(`${'/feedback/list'}`).then((data) => {
       if (data.status) {
-        setQuestions(data.data);
+        setQuestions(data.data?.feedbacks_data);
       }
     });
     getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
       if (data.status) {
-        if (data.data.length > 0) {
-          setAnsweredQuestions(data.data);
+        if (data.data.feedbacks_data.length > 0) {
+          setAnsweredQuestions(data?.data?.feedbacks_data);
           setStudentFlag(false);
           // setIsOpen(true);
         }
@@ -131,8 +131,7 @@ const AddStudentFeedback = () => {
       Object.keys(payload).forEach((key) => {
         formData.append(key, payload[key]);
       });
-
-      postData('/feedback/student_feedback', formData)
+       postDataJson('/feedback/student_feedback', payload)
         .then((response) => {
           if (response.status) {
             toast.success('Feedback sent successfully', {
@@ -158,7 +157,6 @@ const AddStudentFeedback = () => {
     e.preventDefault();
     setMessage(e.target.value);
   };
-
   return (
     <>
       {studentFlag ? (
@@ -194,7 +192,7 @@ const AddStudentFeedback = () => {
                           </label>
                           <div className="row g-2">
                             {question?.options?.length > 0 ? (
-                              question?.options.map(
+                              JSON.parse(question?.options || "[]").map(
                                 (option: any, index: number) => (
                                   <div className="col-lg-6" key={index}>
                                     <div className="form-check">
@@ -312,7 +310,7 @@ const AddStudentFeedback = () => {
                           </label>
                           <div className="row g-2">
                             {question?.options?.length > 0 ? (
-                              question?.options.map(
+                              JSON.parse(question?.options || "[]").map(
                                 (option: any, index: number) => (
                                   <div className="col-lg-6" key={index}>
                                     <div className="form-check">

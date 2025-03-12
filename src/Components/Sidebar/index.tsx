@@ -138,8 +138,10 @@ const Sidebar = () => {
           <div className="logo-icon">
             <img src={gyansetuLogo} className="logo-img" alt="" />
           </div>
+
           <div className="logo-name flex-grow-1">
             <h5 className="mb-0">Gyansetu</h5>
+
           </div>
           <div className="sidebar-close">
             <CloseOutlinedIcon onClick={removeMobileToggle} />
