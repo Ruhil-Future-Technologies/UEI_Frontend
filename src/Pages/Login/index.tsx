@@ -153,7 +153,13 @@ const Login = () => {
           theme: 'colored',
         });
         setPopupOtpCard(false);
-      }
+      }else{
+              toast.error(data.message,{
+                hideProgressBar:true,
+                theme:'colored',
+                position:'top-center'
+              })
+            }
     });
   };
   const handleSuccessfulLogin = (data: any, password?: string) => {

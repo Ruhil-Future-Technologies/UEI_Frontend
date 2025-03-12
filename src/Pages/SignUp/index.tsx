@@ -162,7 +162,13 @@ const Signup = () => {
         console.log(data);
         if (data.status === true) {
           handleSuccessfulLogin(data.data);
-        }
+        }else{
+                toast.error(data.message,{
+                  hideProgressBar:true,
+                  theme:'colored',
+                  position:'top-center'
+                })
+              }
       });
     } catch (error:any) {
       toast.error(error.message,{
