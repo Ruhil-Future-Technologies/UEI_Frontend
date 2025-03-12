@@ -69,11 +69,10 @@ const useApi = () => {
       setError(error);
       setLoading(false);
 
-      if (error.response?.status === 404 || error.response?.status === 401 || error.response?.status === 400) {
         console.warn('Data not found, returning empty object.');
-        return { data: [], code: error.response?.status, status: false }; // Prevents UI from breaking
-      }
-      throw error; // Re-throw other errors
+        return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      
+     // throw error; // Re-throw other errors
     }
   };
   const getForRegistration = async (url) => {
@@ -95,13 +94,11 @@ const useApi = () => {
 
       return response?.data;
     } catch (error) {
-      if (error.response?.status === 404) {
-        console.warn('Data not found, returning empty object.');
-        return { data: [], code: 404 }; // Prevents UI from breaking
-      }
+      
       setError(error);
       setLoading(false);
-      throw error; // Re-throw the error for the caller to handle
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+
     }
   };
 
@@ -124,7 +121,8 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+
     }
   };
 
@@ -148,13 +146,9 @@ const useApi = () => {
       }
       return response.data;
     } catch (error) {
-      if (error.response?.status === 400 || error.response?.status === 404 ) {
-        console.warn('Data not found, returning empty object.', error);
-        return { data: [], code: 400, status: false,message:error.response.data.message}; // Prevents UI from breaking
-      }
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
   const postRegisterData = async (url, data, token = null) => {
@@ -186,13 +180,10 @@ const useApi = () => {
 
       return response.data;
     } catch (error) {
-      if (error.response?.status === 400 ) {
-        console.warn('Data not found, returning empty object.', error);
-        return { data: [], code: 400, status: false,message:error.response.data.message}; // Prevents UI from breaking
-      }
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+
     }
   };
 
@@ -217,7 +208,7 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
   const putDataJson = async (url, data, redirectUrl = null) => {
@@ -244,7 +235,7 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
 
@@ -273,7 +264,7 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
   const deleteData = async (url, data, redirectUrl = null) => {
@@ -301,7 +292,7 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
 
@@ -328,7 +319,7 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
 
@@ -351,7 +342,7 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      throw error;
+      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
     }
   };
 
