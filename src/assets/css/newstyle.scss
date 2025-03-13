@@ -264,7 +264,6 @@ img {
 }
 
 @media (min-width: 1024px) {
-  
   .main-chat-panel {
     border: 0 !important;
   }
@@ -317,22 +316,23 @@ img {
 }
 
 @media (max-width: 1024px) {
+
   .swiper-button-prev,
 .swiper-button-next{
   opacity: 1!important;
 }
   .search-filter{
     margin-right: 0!important;
+
   }
   .chat-panel .left-side-history .history-list li ul li {
     opacity: 1 !important;
   }
 
   .chat-panel {
-   
     //padding: 1rem;
-  
-    grid-template-columns: 1fr!important;
+
+    grid-template-columns: 1fr !important;
     .left-side-history {
       position: fixed !important;
       background: white;
@@ -387,15 +387,13 @@ img {
           display: none;
         }
 
-        
-
         .chat-result {
           .left-chat {
             .chat-card {
               max-width: 100% !important;
               width: 100% !important;
               box-shadow: none !important;
-              border-radius: 8px!important;
+              border-radius: 8px !important;
             }
 
             .profile-icon {
@@ -406,15 +404,15 @@ img {
           .right-chat {
             .chat-card {
               max-width: 100%;
-              border-radius: 8px!important;
+              border-radius: 8px !important;
             }
           }
-          ul{
-            li{
-              padding: 1rem 0!important;
-              ul.ansfooter{
-                li{
-                  padding: 0!important;
+          ul {
+            li {
+              padding: 1rem 0 !important;
+              ul.ansfooter {
+                li {
+                  padding: 0 !important;
                 }
               }
             }
@@ -1996,16 +1994,15 @@ body .desk-card {
   height: calc(100vh - 75px);
   display: grid;
   grid-template-columns: 320px 1fr;
-  
+
   max-width: 100%;
   overflow: hidden;
   position: relative;
 
   .left-side-history {
-   padding: 1rem 0 0rem 1rem;
-   background-color: rgba($primary, 0.02);
-  border-right: 1px solid rgba($primary, 0.1);
-    
+    padding: 1rem 0 0rem 1rem;
+    background-color: rgba($primary, 0.02);
+    border-right: 1px solid rgba($primary, 0.1);
 
     .search-filter {
       position: relative;
@@ -2157,7 +2154,6 @@ body .desk-card {
   }
 
   .main-chat-panel {
-   
     padding: 1rem;
     height: 100%;
 
@@ -2165,16 +2161,13 @@ body .desk-card {
       display: flex;
       flex-direction: column;
       height: 100%;
-     
+
       .chat-result {
-        
-       height: 100%;
-      max-height: calc(100vh - 210px);
-      margin-bottom: 5px;
+        height: 100%;
+        max-height: calc(100vh - 210px);
+        margin-bottom: 5px;
         position: relative;
 
-        
-        
         display: flex;
         overflow: auto;
         .welcome-box {
@@ -2323,18 +2316,15 @@ body .desk-card {
     .chat-input {
       border-radius: 100px;
 
-      
       position: relative;
 
       input {
-       
         box-shadow: 0px 8px 16px 0px rgba(10, 5, 15, 0.08);
         font-size: 15px;
         min-height: 50px;
 
         &::placeholder {
           font-size: 15px;
-         
         }
       }
 
@@ -2346,7 +2336,6 @@ body .desk-card {
         width: 42px;
         height: auto;
         border-radius: 4px;
-       
 
         i {
           width: 24px;
@@ -2720,12 +2709,12 @@ a {
 
 ::-webkit-scrollbar-track {
   border-radius: 2px;
-  background-color: rgba($primary, 0.0);
+  background-color: rgba($primary, 0);
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background-color: rgba($primary, 0.0);
+  background-color: rgba($primary, 0);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -2910,6 +2899,7 @@ a {
 //   }
 // }
 
+
 .swiper-container{
   position: relative;
 }
@@ -2985,3 +2975,8 @@ a {
     }
   }
 }
+
+.css-19kzrtu {
+  padding: 1.5rem 0 !important;
+}
+

@@ -94,6 +94,14 @@ import TeacherProfile from './Pages/Teacher/TeacherProfile';
 import { StudentDetails } from './Pages/Teacher/StudentDetails';
 import { Assignments } from './Pages/Teacher/Assignments';
 import { CreateAssignments } from './Pages/Teacher/Assignments/CreateAssignments';
+import Content from './Pages/Content/Content';
+import AddContent from './Pages/Content/AddContent';
+import StudentContent from './Pages/Content/StudentContent';
+import ServicesAgreement from './Components/PolicyContent/ServicesAgreement';
+import Disclaimer from './Components/PolicyContent/Disclaimer';
+import RefundPolicy from './Components/PolicyContent/RefundPolicy';
+import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
+
 
 function App() {
   const navigate = useNavigate();
@@ -237,6 +245,20 @@ function App() {
               />
             }
           />
+          <Route path="/institution-dashboard/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>
           <Route
@@ -275,6 +297,21 @@ function App() {
                 <Protected Component={CreateAssignments} />
               }
             />
+          />
+          <Route path="/teacher-dashboard/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
@@ -291,6 +328,12 @@ function App() {
           <Route
             path="/main/chat"
             element={<Protected Component={Chat} menuName="Chat" />}
+          />
+          <Route
+            path="/main/student/content"
+            element={
+              <Protected Component={StudentContent} menuName="content" />
+            }
           />
           <Route
             path="/main/chat"
@@ -410,6 +453,22 @@ function App() {
               }
             />
           </Route>
+
+          <Route path="/main/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
+
           <Route path="/main/University">
             <Route
               path=""
@@ -786,6 +845,22 @@ function App() {
               }
             />
           </Route>
+          <Route
+            path="/main/ServicesAgreement"
+            element={<Protected Component={ServicesAgreement} menuName="ServicesAgreement" />}
+          />
+          <Route
+            path="/main/PrivacyPolicy"
+            element={<Protected Component={PrivacyPolicy} menuName="PrivacyPolicy" />}
+          />
+          <Route
+            path="/main/RefundPolicy"
+            element={<Protected Component={RefundPolicy} menuName="RefundPolicy" />}
+          />
+          <Route
+            path="/main/Disclaimer"
+            element={<Protected Component={Disclaimer} menuName="Disclaimer" />}
+          />
         </Route>
         <Route path="profile" element={<Profile />} />
         <Route path="searchdepartment" element={<StudentProfileManagement />} />
