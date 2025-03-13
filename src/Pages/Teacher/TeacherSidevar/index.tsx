@@ -63,11 +63,11 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard">
+              <Link to="/teacher-dashboard/Content">
                 <div className="parent-icon">
                   <LocalLibraryOutlinedIcon />
                 </div>
-                <div className="menu-title">Study Materials</div>
+                <div className="menu-title">Content Library</div>
               </Link>
             </li>
             <li>

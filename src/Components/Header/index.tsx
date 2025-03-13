@@ -117,6 +117,7 @@ const Header = () => {
     localStorage.removeItem('email');
     localStorage.removeItem('phone');
     localStorage.removeItem('_id');
+    localStorage.removeItem('id');
     localStorage.removeItem('student_id');
     localStorage.removeItem('hasReloaded');
     localStorage.removeItem('register_num');
@@ -148,7 +149,6 @@ const Header = () => {
               gender: basic_info?.gender,
             });
             if (data?.data?.basic_info?.pic_path !== null) {
-
               getData(
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
@@ -249,7 +249,7 @@ const Header = () => {
     else if (theme === 'bordered-theme')
       document?.documentElement?.setAttribute('data-bs-theme', theme);
   }, [theme]);
-  
+
   const toggleTheme = () => {
     setTheme((prevTheme) => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
@@ -257,28 +257,28 @@ const Header = () => {
       return newTheme;
     });
   };
- 
- const gotoProfile=()=>{
-  if (user_type === 'admin') {
-    getAdminDetails();
-    navigator('/main/adminprofile')
-    setDashboardURL('/main/DashBoard');
-  } else if (user_type === 'institute') {
-    navigator('/institution-dashboard/profile')
-    setDashboardURL('/institution-dashboard');
-  } else if (user_type === 'teacher') {
-    navigator('/teacher-dashboard/profile')
-    setDashboardURL('/teacher-dashboard');
-  } else {
-    navigator('/main/StudentProfile')
-    callAPI();
-    setDashboardURL('/main/DashBoard');
-    setTimeout(() => {
-      window.location.reload();
-    }, 20);
-  }
-  setActiveForm(0);
- }
+
+  const gotoProfile = () => {
+    if (user_type === 'admin') {
+      getAdminDetails();
+      navigator('/main/adminprofile');
+      setDashboardURL('/main/DashBoard');
+    } else if (user_type === 'institute') {
+      navigator('/institution-dashboard/profile');
+      setDashboardURL('/institution-dashboard');
+    } else if (user_type === 'teacher') {
+      navigator('/teacher-dashboard/profile');
+      setDashboardURL('/teacher-dashboard');
+    } else {
+      navigator('/main/StudentProfile');
+      callAPI();
+      setDashboardURL('/main/DashBoard');
+      setTimeout(() => {
+        window.location.reload();
+      }, 20);
+    }
+    setActiveForm(0);
+  };
   return (
     <>
       <header className="top-header">

@@ -22,7 +22,6 @@ const Protected = (props: { Component: any; menuName?: string }) => {
     const parts = currentURL.split('/');
     const mName = parts[parts.length - 1];
     const uName = parts[parts.length - 2];
-    console.log(uName);
     const feedbackRoute =
       parts[parts.length - 2] + '/' + parts[parts.length - 1];
     const MnameExist =
@@ -49,6 +48,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         ? mName.toLowerCase() === 'add-student-feedback'
         : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'faq' : '') ||
+      (usertype === 'student' ? mName.toLowerCase() === 'content' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'add-university' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'university' : '') ||
       (usertype === 'admin' ? uName.toLowerCase() === 'edit-university' : '') ||
@@ -61,6 +61,11 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin' ? mName.toLowerCase() === 'teacher' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'add-teacher' : '') ||
       (usertype === 'admin' && uName.toLowerCase() === 'edit-teacher'
+        ? true
+        : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'content' : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === 'add-content' : '') ||
+      (usertype === 'admin' && uName.toLowerCase() === 'edit-content'
         ? true
         : '') ||
       (usertype === 'teacher'
@@ -87,6 +92,13 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' &&
         uName.toLowerCase() === 'edit-assignment' &&
         parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
+
+      (usertype === 'teacher' ? mName.toLowerCase() === 'content' : '') ||
+      (usertype === 'teacher' ? mName.toLowerCase() === 'add-content' : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'edit-content'
+        ? true
+        : '') ||
+
       (usertype === 'institute'
         ? mName.toLowerCase() === 'institution-dashboard'
         : '') ||
@@ -113,7 +125,16 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'institute' &&
         uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'profile'
-        : '');
+        : '') ||
+      (usertype === 'institute' ? mName.toLowerCase() === 'content' : '') ||
+      (usertype === 'institute' ? mName.toLowerCase() === 'add-content' : '') ||
+      (usertype === 'institute' && uName.toLowerCase() === 'edit-content'
+        ? true
+        : '') ||
+      (usertype === 'admin' && mName?.toLowerCase() === 'servicesagreement') ||
+      (usertype === 'admin' && mName?.toLowerCase() === 'privacypolicy') ||
+      (usertype === 'admin' && mName?.toLowerCase() === 'refundpolicy') ||
+      (usertype === 'admin' && mName?.toLowerCase() === 'disclaimer');
 
     return MnameExist;
   };

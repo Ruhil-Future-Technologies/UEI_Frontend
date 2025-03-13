@@ -75,6 +75,7 @@ const TeacherDash = () => {
       getData(`/teacher/edit/${teacherId}`).then((data) => {
         console.log(data);
         if (data?.status) {
+          localStorage.setItem('teacher_id', data?.data.id);
           setTeacherData(data.data);
           if(data?.data?.course_semester_subjects !=null){
             setSelectedEntity("college")
