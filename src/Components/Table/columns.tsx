@@ -1784,17 +1784,17 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
               <DialogContent>
                 <div className="feedback-view">
                   {selectedResponse &&
-                    selectedResponse.map((question: any, qIndex: number) => (
+                    selectedResponse?.map((question: any, qIndex: number) => (
                       <div key={question.id}>
                         {' '}
                         <h4 className="message-bubble m-1">
-                          Q.{qIndex + 1} {question.question}
+                          Q.{qIndex + 1} {question?.question}
                         </h4>
                         <div className="row">
                           {/* {question?.options?.length > 0 ? ( */}
                           <div className="col-12 col-md-6 mb-2">
                             <div className="form-check">
-                              <p>A. {question.answer}</p>
+                              <p>A. {question?.answer?.answer}</p>
                             </div>
                           </div>
                         </div>
