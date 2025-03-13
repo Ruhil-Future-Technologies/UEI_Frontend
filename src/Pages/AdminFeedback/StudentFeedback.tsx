@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-
 import '../Hobby/Hobby.scss';
 import useApi from '../../hooks/useAPI';
 import { Box, Typography } from '@mui/material';
@@ -25,14 +24,13 @@ const StudentFeedback = () => {
     getData(`${FeedbackURL}`)
       .then((data) => {
         if (data?.status) {
-          const sortedData = Array.isArray(data?.data)
-            ? data.data.sort((a: any, b: any) => {
-                const dateA = new Date(a?.created_at);
-                const dateB = new Date(b?.created_at);
-                return dateB.getTime() - dateA.getTime();
-              })
+          const sortedData = Array.isArray(data?.data?.feedbacks_array)
+            ? data?.data?.feedbacks_array.sort((a: any, b: any) => {
+              const dateA = new Date(a?.created_at);
+              const dateB = new Date(b?.created_at);
+              return dateB.getTime() - dateA.getTime();
+            })
             : [];
-
           // Update your state with the sorted data
           setDataStudent(sortedData || []);
         }
@@ -43,8 +41,6 @@ const StudentFeedback = () => {
         } else if (e?.response?.code === 404) {
           setDataStudent([]);
         } else {
-          console.log('called');
-
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -113,12 +109,6 @@ const StudentFeedback = () => {
           </div>
         </div>
       </div>
-      {/* <DeleteDialog
-        isOpen={dataDelete}
-        onCancel={handlecancel}
-        onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
-      /> */}
     </>
   );
 };
