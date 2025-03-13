@@ -1312,7 +1312,7 @@ console.log(valid,teacher.university_id)
                   </div>
                   <h3 className="text-center fw-bold">Register As Teacher</h3>
                   <p className="mb-lg-5 mb-4 text-center text-black-50">
-                  Empower your teaching journey—get started today!
+                  Empower your teaching journey—get started today!
                   </p>
 
                   <div className="row d-flex justify-content-center g-4">

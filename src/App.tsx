@@ -130,6 +130,7 @@ function App() {
     localStorage.removeItem('phone');
     localStorage.removeItem('student_id');
     localStorage.removeItem('_id');
+    localStorage.removeItem('register_num');
     synth.cancel();
     // logoutpro();
   };

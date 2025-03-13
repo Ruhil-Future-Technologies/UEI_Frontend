@@ -103,6 +103,7 @@ interface Institute {
   university_id: string;
   is_active: number;
   is_approve: boolean;
+  entity_type?:string;
 }
 
 interface Course {
@@ -343,6 +344,7 @@ export const ProfileDialog: FunctionComponent<{
       "What is your guardian's name?",
       'Upload your profile picture',
       'Hi! Please provide your academic information! What is your institute type?',
+      'Please select your schoole name',
       'Please select your board',
       'Please select your state',
       'Please select your class',
@@ -554,6 +556,7 @@ export const ProfileDialog: FunctionComponent<{
                 if (instituteType === 'school') {
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
+                    'Please select your schoole name',
                     'Please select your board',
                     'Please select your state',
                     'Please select your class',
@@ -573,6 +576,7 @@ export const ProfileDialog: FunctionComponent<{
                 } else {
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
+                    'Please select your schoole name',
                     'Please select your board',
                     'Please select your state',
                     'Please select your class',
@@ -1044,8 +1048,8 @@ console.log(payload)
         }),
 
       }),
+      institute_id: selectedInstitute?.toString(),
       ...(selectedInstituteTypeLower === 'college' && {
-        institute_id: selectedInstitute?.toString(),
         course_id: selectCourse?.toString(),
         learning_style: selectedLearningStyle,
         year: (answers[length - 1]
@@ -2253,6 +2257,15 @@ console.log(payload)
               position: 'top-center',
             });
           });
+
+          const filteredInstitution = institutes.filter(
+            (item) =>
+              item.is_active &&
+              item.entity_type=='school'&&
+              item.is_approve == true,
+          );
+          console.log(filteredInstitution);
+          setInstitutes(filteredInstitution);
       } else {
         const questionsToRemove = [
           'Please select your board',
@@ -2260,6 +2273,7 @@ console.log(payload)
           'Please select your class',
           'Select your subject name',
           'Please select your stream',
+          'Please select your schoole name'
         ];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
           (question) => !questionsToRemove.includes(question),
@@ -2829,6 +2843,7 @@ console.log(payload)
   const semisterprepquestion =
     getLastQuestion() == 'Please select your semester ?';
 
+  const schoolnameQuestion=getLastQuestion() =='Please select your schoole name';
   const stylequestion = getLastQuestion() == 'What is your learning style?';
   const yearquesiton = getLastQuestion() == 'Please select year';
   const hobbyquestion = getLastQuestion() == 'Hi, Please choose your hobbies';
@@ -2852,6 +2867,7 @@ console.log(payload)
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
+  console.log(classOptions,classquestion, institutequestion  , schoolnameQuestion);
   return (
     <>
       <div
@@ -3093,7 +3109,7 @@ console.log(payload)
                       menuPlacement="top"
                       value={selectSemesterpre}
                     />
-                  ) : institutequestion ? (
+                  ) : institutequestion  || schoolnameQuestion? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}
