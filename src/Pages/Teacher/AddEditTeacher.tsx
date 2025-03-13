@@ -82,21 +82,11 @@ const AddEditTeacher = () => {
   const formRef = useRef<FormikProps<ITeacherForm>>(null);
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  // const location = useLocation();
-  // const pathSegments = location.pathname.split('/').filter(Boolean);
   const { id } = useParams();
-
-  // const lastSegment = id
-  //   ? pathSegments[pathSegments.length - 3].toLowerCase()
-  //   : pathSegments[pathSegments.length - 2].toLowerCase();
-  // const Menulist: any = localStorage.getItem('menulist1');
-  //   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const navigator = useNavigate();
-
   const { getData, postData, putData } = useApi();
   const GET_UNIVERSITY = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const GET_ENTITIES = QUERY_KEYS_ENTITY.GET_ENTITY;
-
   const [dataUniversity, setDataUniversity] = useState<any[]>([]);
   const [dataEntity, setDataEntity] = useState<any[]>([]);
   const [dataInstitutes, setDataInstitutes] = useState<any[]>([]);
@@ -151,9 +141,7 @@ const AddEditTeacher = () => {
     courses: [{ course_id: '', semester: '', subjects: [] }],
     classes: [{ class_id: '', stream: '', subjects: [] }],
   };
-
   const [teacher, setTeacher] = useState<ITeacherForm>(initialState);
-  // const [dataTeacher, setDataTeacher] = useState<any[]>([]);
   const [state_col, setstate_col] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isFocusedstate, setIsFocusedstate] = useState(false);
@@ -164,30 +152,25 @@ const AddEditTeacher = () => {
   const genderOptions = ['Male', 'Female'];
   const [dob, setDob] = useState<any>(null);
   const navigate = useNavigate();
-
   const [, setStreams] = useState<string[]>([]);
   const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
-
   const maxSelectableDate = dayjs().subtract(18, 'year');
   const minSelectableDate = dayjs().subtract(100, 'year');
-
   const charPattern = /^[a-zA-Z\s]*$/;
   const mobilePattern = /^\d{10}$/;
   const emailPattern = /\S+@\S+\.\S+/;
   const pincodePattern = /^\d{6}$/;
   const qualificationPattern = /^[a-zA-Z0-9\s.,()'-]+$/;
-
+  const [error, setError] = React.useState<string | null>(null);
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
     return selectedEntity?.entity_type?.toLowerCase() === 'school';
   };
-
   const isCollegeEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
 
     return selectedEntity?.entity_type?.toLowerCase() === 'college';
   };
-
   const callAPI = async () => {
     let all_courses: any = [];
     let all_classes: any = [];
@@ -225,7 +208,6 @@ const AddEditTeacher = () => {
         const teacherDetail = await getData(
           `${QUERY_KEYS_TEACHER.GET_TECHER_BY_UUID}/${currentTeacher.user_uuid}`,
         );
-
         const filterTeacherCourses = (
           teacherDetail: any,
           allCourses: any,
@@ -233,10 +215,8 @@ const AddEditTeacher = () => {
           const result = {
             courses: [],
           } as any;
-
           const teacherCoursesObj =
             teacherDetail?.data?.course_semester_subjects;
-
           if (teacherCoursesObj) {
             for (const [courseId, semesterData] of Object.entries(
               teacherCoursesObj as any,
@@ -264,12 +244,10 @@ const AddEditTeacher = () => {
 
           return result;
         };
-
         const course_semester_subjects_arr: any = filterTeacherCourses(
           teacherDetail,
           all_courses,
         );
-
         const filterTeacherClasses = (
           teacherDetail: any,
           all_classes: any,
@@ -277,9 +255,7 @@ const AddEditTeacher = () => {
           const result = {
             classes: [],
           } as any;
-
           const teacherClassesObj = teacherDetail.data.class_stream_subjects;
-
           if (teacherClassesObj) {
             for (const [classId, streamData] of Object.entries(
               teacherClassesObj as any,
@@ -330,7 +306,6 @@ const AddEditTeacher = () => {
           ],
           school_name: teacherDetail?.data?.school_name || '',
           university_id: teacherDetail.data?.university_id || '',
-
           experience: Number(teacherDetail?.data?.experience) || 0,
           institute_id: teacherDetail?.data?.institute_id || '',
           address: teacherDetail?.data?.address || '',
@@ -340,9 +315,7 @@ const AddEditTeacher = () => {
           district: teacherDetail?.data?.district || '',
           pincode: teacherDetail?.data?.pincode || '',
         };
-
         setTeacher(processedData);
-
         if (teacherDetail?.data?.dob) {
           setDob(dayjs(teacherDetail?.data?.dob));
         }
@@ -371,12 +344,10 @@ const AddEditTeacher = () => {
       getData(`${QUERY_KEYS.GET_INSTITUTES}`)
         .then((data) => {
           const allInstitutes = data.data || [];
-  
           const schoolInstitutes = allInstitutes.filter(
             (institute: any) =>
               institute.entity_type?.toLowerCase() === 'school' && institute.is_approve
           );
-  
           const collegeInstitutes = allInstitutes.filter(
             (institute: any) =>
               institute.entity_type?.toLowerCase() === 'college' && institute.is_approve
@@ -416,7 +387,6 @@ const AddEditTeacher = () => {
     await Promise.allSettled(promises); 
   };
   
-
   useEffect(() => {
     const fetchAndCallAPI = async () => {
       await fetchData(); 
@@ -455,7 +425,6 @@ const AddEditTeacher = () => {
   useEffect(() => {
     const institutionId =
       formRef.current?.values?.institute_id || selectedInstitutionId;
-
     if (institutionId) {
       const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
@@ -492,20 +461,16 @@ const AddEditTeacher = () => {
             const filtered = schoolSubjects.filter(
               (subject) => subject.class_id === values.class_id,
             );
-
             const higherClass = checkHigherClass(values.class_id, dataClasses);
-
             if (higherClass) {
               if (values.stream) {
                 const streamFiltered = filtered.filter(
                   (subject) => subject.stream === values.stream,
                 );
-
                 setFilteredSubjects(streamFiltered);
               } else {
                 setFilteredSubjects([]);
               }
-
               setStreams(
                 filtered
                   .map((subject) => subject.stream)
@@ -524,26 +489,21 @@ const AddEditTeacher = () => {
         }
       }
     }, [values?.class_id, values?.entity_id, values?.stream]);
-
     return null;
   };
 
   useEffect(() => {
     const initialCourses = teacher.courses;
-
     formRef.current?.setFieldValue('courses', initialCourses);
-
     setTeacher((prev) => ({
       ...prev,
       courses: initialCourses,
     }));
-
     initialCourses?.forEach((course, index) => {
       if (course.course_id) {
         const allSubjects = collegeSubjects.filter(
           (subject) => subject.course_id === course.course_id,
         );
-
         const uniqueSemesters = allSubjects
           .map((subject) => subject.semester_number)
           .filter((semester, index, self) => self.indexOf(semester) === index)
@@ -553,12 +513,10 @@ const AddEditTeacher = () => {
           ...prev,
           [index]: uniqueSemesters,
         }));
-
         if (course.semester) {
           const filteredSubjects = allSubjects.filter(
             (subject) => subject.semester_number === Number(course.semester),
           );
-
           setCourseSubjects((prev) => ({
             ...prev,
             [index]: filteredSubjects,
@@ -570,9 +528,7 @@ const AddEditTeacher = () => {
 
   useEffect(() => {
     const initialClasses = teacher.classes;
-
     formRef.current?.setFieldValue('classes', initialClasses);
-
     setTeacher((prev) => ({
       ...prev,
       classes: initialClasses,
@@ -580,7 +536,6 @@ const AddEditTeacher = () => {
     if (!Array.isArray(schoolSubjects)) {
       return;
     }
-
     initialClasses?.forEach((cls, index) => {
       if (cls.class_id) {
         const allSubjects = schoolSubjects.filter(
@@ -595,7 +550,6 @@ const AddEditTeacher = () => {
           ...prev,
           [index]: uniqueStreams,
         }));
-
         if (cls.stream) {
           const filteredSubjects = allSubjects.filter(
             (subject) =>
@@ -603,7 +557,6 @@ const AddEditTeacher = () => {
                 subject.stream === cls.stream?.toLowerCase()) ||
               subject.stream == '',
           );
-
           setClassSubjects((prev) => ({
             ...prev,
             [index]: filteredSubjects,
@@ -620,7 +573,6 @@ const AddEditTeacher = () => {
           const allSubjects = collegeSubjects.filter(
             (subject) => subject.course_id === course.course_id,
           );
-
           const uniqueSemesters = allSubjects
             .map((subject) => subject.semester_number)
             .filter((semester, index, self) => self.indexOf(semester) === index)
@@ -630,12 +582,10 @@ const AddEditTeacher = () => {
             ...prev,
             [index]: uniqueSemesters,
           }));
-
           if (course.semester) {
             const filteredSubjects = allSubjects.filter(
               (subject) => subject.semester_number === course.semester,
             );
-
             setCourseSubjects((prev) => ({
               ...prev,
               [index]: filteredSubjects,
@@ -648,7 +598,6 @@ const AddEditTeacher = () => {
 
   const isDuplicateCourseAndSemester = (courses: any[]): boolean => {
     const combinations = new Set();
-
     for (const course of courses) {
       if (course.course_id && course.semester) {
         const combination = `${course.course_id}-${course.semester}`;
@@ -828,34 +777,27 @@ const AddEditTeacher = () => {
       const transformedData = { ...originalData };
 
       delete transformedData.classes;
-
       const class_stream_subjects = {} as any;
-
       originalData.classes.forEach((cls: any) => {
         const classDetails = dataClasses.find(
           (dataClass) => dataClass.id === cls.class_id,
         );
-
         const streamOrClassName =
           cls.stream === '' && classDetails ? 'general' : cls.stream;
 
         if (!class_stream_subjects[cls.class_id]) {
           class_stream_subjects[cls.class_id] = {};
         }
-
         class_stream_subjects[cls.class_id][streamOrClassName] = cls.subjects;
       });
-
       return {
         ...transformedData,
         class_stream_subjects: JSON.stringify(class_stream_subjects),
       };
     };
-
     const teacherRole = role.find(
       (r) => r.role_name.toLowerCase() === 'teacher',
     );
-
     Object.keys(teacherData).forEach((key) => {
       const typedKey = key as keyof ITeacherForm;
       if (typedKey.startsWith('courses.')) {
@@ -880,12 +822,9 @@ const AddEditTeacher = () => {
       teacherData.university_id == 'None'
     ) {
       delete teacherData.courses;
-
       delete teacherData.university_id;
     }
-
     const checkCollege = isCollegeEntity(teacherData.entity_id);
-
     const transformedData = checkCollege
       ? transformCollegeData(teacherData)
       : transformSchoolData(teacherData);
@@ -894,6 +833,9 @@ const AddEditTeacher = () => {
       ...transformedData,
       role_id: teacherRole?.id,
     } as any;
+    if(error !== null){
+      return;
+    }
 
     if (id) {
       Object.keys(formattedData).forEach((key) => {
@@ -958,7 +900,6 @@ const AddEditTeacher = () => {
         setIsFocused(false);
       }
     };
-
     const handleBlurstate = (e: FocusEvent) => {
       if (
         dropdownstateRef.current &&
@@ -1028,14 +969,23 @@ const AddEditTeacher = () => {
 
     if (
       !formattedDate ||
-      formattedDate === 'Invalid Date' ||
-      dayjs(newValue).isAfter(minAgeDate)
+      formattedDate === 'Invalid Date'
     ) {
-      toast.error('Teacher must be 18 years old');
+      // toast.error('Teacher must be 18 years old');
+      setError(null);
       setDob('');
       return;
     }
-
+    if (dayjs(newValue).isAfter(minAgeDate)) {
+      const currentDate = dayjs();
+      if (newValue?.isAfter(currentDate, 'day')) {
+        setError('Future dates are not allowed.');
+      } else {
+        setError('Teacher at least 18 years old.');
+      }
+    }else{
+      setError(null);
+    }
     setTeacher((prevTeacher) => ({
       ...prevTeacher,
       dob: formattedDate,
@@ -1274,7 +1224,6 @@ const AddEditTeacher = () => {
                 [currentIndex]: filteredSubjects,
               }));
             }
-
             return updatedClass;
           }
 
@@ -1289,14 +1238,11 @@ const AddEditTeacher = () => {
         ...prevTeacher,
         [fieldName]: value,
       };
-
       if (fieldName === 'class_id') {
         formRef?.current?.setFieldValue('subjects', []);
-
         newState.stream = '';
         setStreams([]);
       }
-
       if (fieldName === 'entity_id' && typeof value === 'string') {
         if (isSchoolEntity(value)) {
           newState.university_id = '';
@@ -1306,10 +1252,8 @@ const AddEditTeacher = () => {
           newState.class_id = '';
         }
       }
-
       if (fieldName === 'university_id') {
         newState.institute_id = '';
-
         const filtered = dataInstitutes?.filter(
           (institute) => institute.university_id === value,
         );
@@ -1482,6 +1426,9 @@ const AddEditTeacher = () => {
                         </LocalizationProvider>
                         {touched?.dob && errors?.dob && (
                           <p className="error">{String(errors.dob)}</p>
+                        )}
+                        {error && (
+                          <p style={{ color: 'red' }}>{error}</p>
                         )}
                       </div>
                     </div>
