@@ -9,7 +9,6 @@ import {
   ListItemText,
   OutlinedInput,
   SelectChangeEvent,
-  // useTheme,
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import useApi from '../../hooks/useAPI';
@@ -44,9 +43,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor, activeForm }: any = context;
-
   const { getData, postData, putData, deleteData } = useApi();
-  //const theme = useTheme();
   const [ishobbiestuch, setIshobbiestuch] = useState(false);
   const [allHobbies, setAllHobbies] = useState<Hobby[]>([]);
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
@@ -72,10 +69,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
           );
           setAllHobbies(filteredData || []);
         }
-
         const studentHobbyData = await getData(`student_hobby/get/${StudentId}`)
-
-        
         if (studentHobbyData?.code) {
           const hobbyIds = studentHobbyData.data?.map(
             (selecthobby: any) => selecthobby.hobby_id,
@@ -88,7 +82,7 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
         }
       }
       catch (e: any) {
-        if(e.status !==400){
+        if (e.status !== 400) {
           toast.error(e?.message || 'An error occurred', {
             hideProgressBar: true,
             theme: 'colored',
@@ -110,17 +104,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
     setSelectedHobbies(event.target.value as string[]);
     setIshobbiestuch(true);
   };
-  //   const handleChange = (event: SelectChangeEvent<string[]>, allHobbies: any[]) => {
-  //     setSelectedHobbies(event.target.value as string[]);
-  //     const selectedHobbiesIds = event.target.value;
-  //     const uncheckedHobbyId = allHobbies.find(hobby => !selectedHobbiesIds.includes(hobby.id));
-  //     if (uncheckedHobbyId) {
-  //         // Call your function with the unchecked hobby id
-  //         // yourFunction(uncheckedHobbyId);
-  //         console.log("Check", uncheckedHobbyId,allHobbies);
-
-  //     }
-  // };
 
   const submitHandle = async () => {
     const eq = deepEqual(initialAdminState, selectedHobbies);
@@ -138,7 +121,6 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
       Object.keys(payload).forEach((key) => {
         formData.append(key, payload[key]);
       });
-console.log(ishobbiestuch, editFlag , hobbyExists,hobbyid)
       if (ishobbiestuch) {
         if (editFlag || !hobbyExists) {
           return postData('student_hobby/add', formData);
@@ -232,13 +214,9 @@ console.log(ishobbiestuch, editFlag , hobbyExists,hobbyid)
   };
   const handleCheckboxClick = (event: any, hobbyId: string) => {
     if (!event.target.checked) {
-      // Call your function when checkbox is unchecked
       hobbydelete(hobbyId);
-      // console.log("Check", event.target.checked, hobbyId);
     }
   };
-
-
   return (
     <form onSubmit={submitHandle}>
       <div className="row justify-content-start">
@@ -263,40 +241,27 @@ console.log(ishobbiestuch, editFlag , hobbyExists,hobbyid)
               }}
               value={selectedHobbies}
               onChange={handleChange}
-              // onChange={(event) => handleChange(event, allHobbies)}
               input={<OutlinedInput label="Hobby" />}
               renderValue={(selected) =>
                 (selected as string[])
-                  .map((id) => {
-                    const hobby = allHobbies.find(
-                      (hobby: any) => hobby.id === id,
-                    );
-                    return hobby ? hobby.hobby_name : '';
-                  })
-                  // .join(", ")
-                  .reduce(
-                    (prev, curr) => (prev === '' ? curr : `${prev}, ${curr}`),
-                    '',
-                  )
+                  ?.map((id) => allHobbies?.find((hobby: any) => hobby.id === id)?.hobby_name || '')
+                  ?.filter((hobby) => hobby !== '') // Removes empty values
+                  .reduce((prev, curr) => (prev === '' ? curr : `${prev}, ${curr}`), '')
               }
               MenuProps={MenuProps}
             >
-              {allHobbies.map((hobby: any) => (
+              {allHobbies?.map((hobby: any) => (
                 <MenuItem
                   key={hobby.id}
                   value={hobby.id}
                   sx={{
                     backgroundColor: inputfield(namecolor),
                     color: inputfieldtext(namecolor),
-                    // "&:hover": {
-                    //   backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                    // },
                     '&:hover': {
                       backgroundColor: inputfieldhover(namecolor),
                       color: 'black !important',
                     },
                     '&.Mui-selected': {
-                      // backgroundColor: inputfield(namecolor),
                       color: 'black',
                     },
                     '&.Mui-selected, &:focus': {
@@ -309,19 +274,13 @@ console.log(ishobbiestuch, editFlag , hobbyExists,hobbyid)
                     checked={selectedHobbies.indexOf(hobby.id) > -1}
                     onClick={(event) => handleCheckboxClick(event, hobby.id)}
                   />
-                  <ListItemText primary={hobby.hobby_name} />
+                  <ListItemText primary={hobby?.hobby_name} />
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </div>
       </div>
-      {/* Optional save button */}
-      {/* <div className="row justify-content-center mt-3">
-        <div className="col-12 d-flex justify-content-center">
-          <button className="btn btn-primary">Save</button>
-        </div>
-      </div> */}
     </form>
   );
 };
