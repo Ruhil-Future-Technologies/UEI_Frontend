@@ -102,6 +102,7 @@ const TeacherDash = () => {
       getData(`/teacher/edit/${teacherId}`).then((data) => {
         console.log(data);
         if (data?.status) {
+          localStorage.setItem('teacher_id', data?.data.id);
           setTeacherData(data.data);
         }
       });
