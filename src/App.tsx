@@ -297,7 +297,7 @@ function App() {
                 <Protected Component={CreateAssignments} />
               }
             />
-          />
+
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
@@ -312,6 +312,7 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
