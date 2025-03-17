@@ -845,7 +845,7 @@ const AddEditTeacher = () => {
         .then((data: any) => {
           if (data.status) {
             navigator('/main/Teacher');
-            toast.success('Teacher updated successfully', {
+            toast.success(data.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
@@ -869,13 +869,18 @@ const AddEditTeacher = () => {
       postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formData)
         .then((data: any) => {
           if (data.status) {
-            toast.success('Teacher saved successfully', {
+            toast.success(data.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
             resetForm({ values: initialState });
             setDob(null);
             setTeacher(initialState);
+          }else{
+            toast.error(data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           }
         })
         .catch((e: any) => {
