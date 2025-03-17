@@ -296,7 +296,7 @@ function App() {
         <Route path="/admin-feedback-view" element={<AdminFeedbackView />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgotpassword" element={<Forgotpassword />} />
-        <Route path="/changepassword" element={<ChangePassword />} />
+        <Route path="/resetpassword" element={<ChangePassword />} />
         <Route path="/chatbot" element={<Chatbot answer={[]} index={0} />} />
         <Route path="/main" element={<Main />}>
           <Route

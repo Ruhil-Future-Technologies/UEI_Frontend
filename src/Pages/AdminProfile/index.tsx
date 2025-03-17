@@ -277,7 +277,7 @@ export default function AdminProfile() {
                         <div className="myform-wizard">
                           <div className="wizard-sidebar">
                             <div className="steps-container">
-                              <div className="progress-background"></div>
+                              <div className="progress-background-admin"></div>
                               <div
                                 ref={progressLineRef}
                                 className="progress-line"
