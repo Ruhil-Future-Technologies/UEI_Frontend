@@ -59,6 +59,7 @@ import Chatbot from '../../Pages/Chatbot';
 import theme from '../../theme';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
+import { ChatTable } from '../../Pages/Chat/Tablechat';
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
@@ -463,7 +464,7 @@ function MainContent() {
   //   basicinfo = JSON.parse(profileData);
   // }
 
-  const { postData, getData, loading } = useApi();
+  const { postDataJson, getData, loading } = useApi();
   const [stats, setStats] = useState({
     institutionCount: 0,
     studentCount: 0,
@@ -1668,7 +1669,7 @@ function MainContent() {
         });
     };
 
-    postData(`${ChatURL}`, payload)
+    postDataJson(`${ChatURL}`, payload)
       .then((data) => {
         // if (data.status === 200) {
         //   handleResponse(data);
@@ -1678,7 +1679,7 @@ function MainContent() {
           setLoaderMsg('Searching result from Rag model');
 
           if (profileDatas?.academic_history?.institution_type === 'school') {
-            postData(`${ChatRAGURL}`, {
+            postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: StudentId,
               school_college_selection:
@@ -1726,6 +1727,7 @@ function MainContent() {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1734,7 +1736,7 @@ function MainContent() {
                     response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -1747,7 +1749,7 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
                     class_or_course_selection: profileDatas?.class.name,
@@ -1760,13 +1762,13 @@ function MainContent() {
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -1779,7 +1781,7 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
                   class_or_course_selection: profileDatas?.class.name,
@@ -1792,13 +1794,13 @@ function MainContent() {
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   }),
@@ -1834,7 +1836,7 @@ function MainContent() {
               year: year || null,
               subject: subject_name || null,
             };
-            return postData(`${ChatRAGURL}`, queryParams)
+            return postDataJson(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   function formatAnswer(answer: any) {
@@ -1866,6 +1868,7 @@ function MainContent() {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1874,7 +1877,7 @@ function MainContent() {
                     response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -1887,7 +1890,7 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: StudentId,
                     class_or_course_selection: course_name,
@@ -1900,13 +1903,13 @@ function MainContent() {
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -1920,7 +1923,7 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: StudentId,
                   class_or_course_selection: course_name,
@@ -1933,13 +1936,13 @@ function MainContent() {
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   });
@@ -1957,7 +1960,7 @@ function MainContent() {
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status === 200) {
                 // handleResponse(data);
@@ -1972,14 +1975,14 @@ function MainContent() {
           // let Ollamapayload = {
           //   user_query: search,
           // };
-          // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
+          // return postDataJson(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg('Fetching Data from Ollama model.');
           // return getData(
           //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
           //     search
           //   )}`
           // );
-          return postData(`${ChatOLLAMAURL}`, {
+          return postDataJson(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: StudentId,
             class_or_course_selection:
@@ -2000,7 +2003,7 @@ function MainContent() {
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status === 200) {
                 // handleResponse(data);
@@ -2012,7 +2015,7 @@ function MainContent() {
           handleResponsereg(data);
         } else if (data?.status === 404) {
           setLoaderMsg('Fetching data from Chat-GPT API.');
-          return postData(`${ChatURLAI}`, payload);
+          return postDataJson(`${ChatURLAI}`, payload);
         } else if (data) {
           handleError(data);
         }
@@ -2238,7 +2241,7 @@ function MainContent() {
     //     search
     //   )}`
     // )
-    postData(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatOLLAMAURL}`, {
       user_query: search,
       student_id: StudentId,
       class_or_course_selection:
@@ -2254,11 +2257,11 @@ function MainContent() {
             chat_question: search,
             response: response?.answer,
           };
-          postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
         }
       })
       .catch(() => {
-        postData(`${ChatURLAI}`, payload)
+        postDataJson(`${ChatURLAI}`, payload)
           .then((response) => handleResponse(response))
           .catch((error) => handleError(error));
       });
@@ -2337,7 +2340,7 @@ function MainContent() {
       };
     }
 
-    await postData(`${chataddconversationurl}`, chat_payload)
+    await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         // setChatSaved(false);
         // toast.success(chatdata?.message, {
@@ -3354,6 +3357,7 @@ function MainContent() {
                                             }}
                                           />
                                         )}
+                                         {chat?.table_code && <ChatTable tableCode={chat?.table_code} />}
                                       </div>
                                       <ul className="ansfooter">
                                         <ThumbUpAltOutlinedIcon
