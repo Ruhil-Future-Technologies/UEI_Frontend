@@ -64,8 +64,6 @@ const InstitutionProfile = () => {
   const [city_error, setCity_error] = useState<boolean>(false);
   const [state_error, setState_error] = useState<boolean>(false);
   const [country_error, setCountry_error] = useState<boolean>(false);
-
-  const [selectedFile, setSelectedFile] = useState('');
   const [selectedEntity, setSelectedEntity] = useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [documents, setDocuments] = useState<File[]>([]);
@@ -130,11 +128,9 @@ const InstitutionProfile = () => {
   const getInstitutionInfo = async () => {
     try {
       await getData(`institute/edit/${instituttionLoginId}`).then((response) => {
-        console.log(response, 'institute profile info');
         if (response?.status) {
           setInstituteInfo(response?.data);
           setInstituteId(response.data.id);
-          console.log(response);
           if (response?.data.university_id === '' || response?.data.university_id === null) {
             setSelectedEntity("School");
           } else {
@@ -161,7 +157,6 @@ const InstitutionProfile = () => {
       if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
         return;
       }
-      setSelectedFile(file.name);
       const reader: any = new FileReader();
       reader.onloadend = () => {
         setFilePreview(reader.result);
@@ -359,7 +354,6 @@ const InstitutionProfile = () => {
       documents: documents,
     }
     try {
-      console.log(payload);
       putData(`/institution/edit/${instituteId}`, payload).then((reaponse) => {
         if (reaponse.status) {
           toast.success('Profile updated successfully', {
@@ -381,7 +375,6 @@ const InstitutionProfile = () => {
       console.error(error);
     }
   }
-  console.log(selectedFile);
   return (
     <>
       <div className="main-wrapper">
@@ -449,7 +442,7 @@ const InstitutionProfile = () => {
                       </div>
                       <div className="col-md-6 col-12 mb-3">
                         <label className="col-form-label">
-                          Website<span>*</span>
+                          Website<span></span>
                         </label>
                         <TextField
                           autoComplete="off"
