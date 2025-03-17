@@ -117,7 +117,10 @@ const InstituteRegistrationForm = () => {
     getForRegistration(`${UniversityURL}`)
       .then((data) => {
         if (data.status) {
-          setDataUniversity(data?.data?.universities_data);
+          const filteredData = data?.data?.universities_data?.filter(
+            (item: any) => item?.is_active,
+          );
+          setDataUniversity(filteredData || []);
         }
       })
       .catch((e) => {
@@ -135,7 +138,10 @@ const InstituteRegistrationForm = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
         if (data.status) {
-          setDataEntity(data.data.entityes_data);
+          const filteredData = data?.data?.entityes_data?.filter(
+            (item: any) => item?.is_active,
+          );
+          setDataEntity(filteredData || []);
         }
       })
       .catch((e) => {
