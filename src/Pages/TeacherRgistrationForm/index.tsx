@@ -358,7 +358,6 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        console.log(data.data.entityes_data);
         const filteredData = data?.data?.entityes_data.filter(
           (entity: any) => entity.is_active === true,
         );
@@ -379,7 +378,7 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        const fiteredInstitutedata = data.data.filter(
+        const fiteredInstitutedata = data?.data?.filter(
           (institute: any) =>
             institute.is_active && institute.is_approve,
         );
@@ -493,7 +492,10 @@ const TeacherRegistrationPage = () => {
     getForRegistration(`${UniversityURL}`)
       .then((data) => {
         if (data.status) {
-          setUniversityData(data?.data?.universities_data);
+          const filteredData = data?.data?.universities_data?.filter(
+            (item: any) => item?.is_active,
+          );
+          setUniversityData(filteredData || []);
         }
       })
       .catch((e) => {
@@ -537,11 +539,9 @@ const TeacherRegistrationPage = () => {
     }
 
     if (name === 'entity_id') {
-      console.log(dataInstitute)
       const filteredInstitute = dataInstitute.filter(
         (item) => item.entity_id === value,
       );
-      console.log(filteredInstitute)
       setFiteredInstitute(filteredInstitute);
     }
 
@@ -552,7 +552,6 @@ const TeacherRegistrationPage = () => {
       setSelectedSchool(String(selectedSchool));
     }
     if (name === 'university_id') {
-      console.log(dataInstitute);
       const filteredInstitute = dataInstitute.filter(
         (item) => item.university_id === value,
       );
@@ -929,7 +928,6 @@ if(valid1) return;
   
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
-      console.log(files, typeof files);
       setDocument_error(false);
     
       if (files && event.target.name !== "icon") {
@@ -1026,7 +1024,6 @@ if(valid1) return;
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
 
         if (name === 'class_id') {
-          console.log(dataClass,value)
           const selectedClass = dataClass.find(
             (item) => String(item.id) == value,
           )?.class_name;
@@ -1244,7 +1241,6 @@ if(valid1) return;
       otp: otp
     }
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
-      console.log(data);
       if (data.status === true) {
         setPopupOtpCard(false);
         alert('Wait for 24-48 hours, the Administrator will inform you.');
