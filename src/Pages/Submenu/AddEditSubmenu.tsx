@@ -170,7 +170,7 @@ const AddEditSubmenu = () => {
             });
             resetForm({ values: initialState });
           } else {
-            toast.error('Please add menu first', {
+            toast.error(data.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
