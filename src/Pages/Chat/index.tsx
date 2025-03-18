@@ -67,7 +67,6 @@ const Chat = () => {
   const [expandSearch, setExpandSearch] = useState(false);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
 
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '/{/}/');
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
@@ -323,7 +322,7 @@ const Chat = () => {
   };
 
   const callAPI = async () => {
-    getData(`${StudentGETURL}${userdata ? `/${userdata?.user_uuid}` : ''}`)
+    getData(`${StudentGETURL}${userid ? `/${userid}` : ''}`)
       .then((data: any) => {
         setStudentData(data?.data);
         if (
@@ -345,7 +344,7 @@ const Chat = () => {
           theme: 'colored',
         });
       });
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${userid}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
@@ -532,7 +531,7 @@ const Chat = () => {
     setLoading(false);
     setSearch('');
     setShowInitialPage(false);
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${userid}`)
       .then((data: any) => {
         setchathistory(data?.data);
         setchatlistData(data?.data);
@@ -631,7 +630,7 @@ const Chat = () => {
       setchatData((prevState: any) => [...prevState, newData]);
       setLoading(false);
       setSearch('');
-      getData(`${chatlisturl}/${userdata?.id}`)
+      getData(`${chatlisturl}/${userid}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
@@ -934,7 +933,7 @@ const Chat = () => {
           handleResponsereg(data);
         } else if (data?.code === 404) {
           setLoaderMsg('Fetching Data from Ollama model.');
-         
+
           return postDataJson(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: userid,
@@ -986,7 +985,6 @@ const Chat = () => {
   useEffect(() => {
     if (dataflagged) {
       setSelectedChat([]);
-      
     }
   }, [dataflagged]);
 
@@ -1055,23 +1053,21 @@ const Chat = () => {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: userid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: userid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     }
-    // postDataJson(`${chataddurl}`, chat_payload)
     await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
-
         callAPI();
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
@@ -1098,20 +1094,19 @@ const Chat = () => {
     if (datatest?.length !== 0 && Array.isArray(chat) && chat.length >= 2) {
       // chat?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: userid,
         chat_title: chat[0]?.question,
         chat_conversation: JSON.stringify(chat),
         flagged: chatsaved,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: userid,
         chat_title: chat[0]?.question,
         chat_conversation: JSON.stringify(chat),
         flagged: chatsaved,
       };
     }
-    // postDataJson(`${chataddurl}`, chat_payload)
     await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         setChatSaved(false);
@@ -1268,7 +1263,6 @@ const Chat = () => {
     saveChatlocal();
   };
 
-
   const regenerateChat = (question: any) => {
     setLoading(true);
     setLoaderMsg('Fetching Data from Ollama model.');
@@ -1404,7 +1398,6 @@ const Chat = () => {
 
   return (
     <>
-      
       <main className="main-wrapper">
         <div className="main-content p-lg-0">
           <div
@@ -1613,11 +1606,10 @@ const Chat = () => {
                       <></>
                     )}
                     <div className="me-auto d-lg-none">
-                    <SyncAltOutlinedIcon 
-                      onClick={() => setShowHistory(!showHistory)}
-                    />
+                      <SyncAltOutlinedIcon
+                        onClick={() => setShowHistory(!showHistory)}
+                      />
                     </div>
-                    
                   </div>
                 ) : (
                   <></>
@@ -1701,7 +1693,9 @@ const Chat = () => {
                                       />
                                     </>
                                   )}
-                                  {chat?.table_code && <ChatTable tableCode={chat?.table_code} />}
+                                  {chat?.table_code && (
+                                    <ChatTable tableCode={chat?.table_code} />
+                                  )}
                                 </div>
                                 <ul className="ansfooter">
                                   <ThumbUpAltOutlinedIcon

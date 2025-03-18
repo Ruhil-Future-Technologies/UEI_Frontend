@@ -9,6 +9,7 @@ import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import MetisMenu from '@metismenu/react';
 import useApi from '../../hooks/useAPI';
@@ -141,7 +142,6 @@ const Sidebar = () => {
 
           <div className="logo-name flex-grow-1">
             <h5 className="mb-0">Gyansetu</h5>
-
           </div>
           <div className="sidebar-close">
             <CloseOutlinedIcon onClick={removeMobileToggle} />
@@ -186,7 +186,7 @@ const Sidebar = () => {
                         onClick={removeMobileToggle}
                       >
                         <div className="parent-icon">
-                          <LocalLibraryOutlinedIcon />
+                          <LibraryBooksOutlinedIcon />
                         </div>
                         <div className="menu-title">Content Library</div>
                       </Link>

@@ -117,12 +117,11 @@ function MainContent() {
   const chatRef = useRef<HTMLInputElement>(null);
 
   const usertype: any = localStorage.getItem('user_type');
-  // const userdata = JSON.parse(localStorage?.getItem("userdata") || "/{/}/");
-  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
   const [isExpanded, setIsExpanded] = useState(false);
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
   const [flagged, setFlagged] = useState(false);
+  const userid = localStorage.getItem('user_uuid');
 
   const handleFlag = () => {
     setFlagged(!flagged);
@@ -905,14 +904,13 @@ function MainContent() {
   };
 
   const callAPIStudent = async () => {
-
-    if (usertype === 'student' &&  StudentId !== null) {
+    if (usertype === 'student' && StudentId !== null) {
       getData(`${profileURL}/${StudentId}`)
         .then((data: any) => {
           if (data.data) {
-            if(data?.data?.basic_info?.id){
-              localStorage.setItem('userdata', JSON.stringify(data.data))
-              localStorage.setItem('_id', data?.data?.basic_info.id)
+            if (data?.data?.basic_info?.id) {
+              localStorage.setItem('userdata', JSON.stringify(data.data));
+              localStorage.setItem('_id', data?.data?.basic_info.id);
             }
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
@@ -1016,7 +1014,7 @@ function MainContent() {
               if (academic_history?.institution_type === 'school') {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
-                    (response) =>{
+                    (response) => {
                       console.log(response);
                       setStudentClass(
                         response.data.class_data.class_name
@@ -1025,9 +1023,10 @@ function MainContent() {
                           .charAt(0)
                           .toUpperCase() +
                           response.data.class_data.class_name
-                          .replace('_', ' ').slice(1),
-                      )
-                    }
+                            .replace('_', ' ')
+                            .slice(1),
+                      );
+                    },
                   );
                 }
                 delete academic_history?.course_id;
@@ -1121,7 +1120,7 @@ function MainContent() {
           }
         })
         .catch((e) => {
-          if(e.response.code===404){
+          if (e.response.code === 404) {
             setDataCompleted(true);
           }
           toast.error(e?.message, {
@@ -1156,13 +1155,19 @@ function MainContent() {
     if (usertype === 'admin') {
       getData(`${profileURLadmin}/${StudentId}`)
         .then((data: any) => {
-          if(data.code===404){
-            navigate('/main/adminprofile')
+          if (data.code === 404) {
+            navigate('/main/adminprofile');
           }
           if (data?.data) {
-            if(data?.data?.admin_data?.basic_info){
-              sessionStorage.setItem('userdata', JSON.stringify(data?.data?.admin_data?.basic_info));
-              localStorage.setItem('_id', data?.data?.admin_data?.basic_info.id)
+            if (data?.data?.admin_data?.basic_info) {
+              sessionStorage.setItem(
+                'userdata',
+                JSON.stringify(data?.data?.admin_data?.basic_info),
+              );
+              localStorage.setItem(
+                '_id',
+                data?.data?.admin_data?.basic_info.id,
+              );
             }
 
             // setProfileData(data?.data)
@@ -1210,7 +1215,8 @@ function MainContent() {
             const profession = {
               course_id: data?.data?.admin_data?.profession?.course_id,
               subject_id: data?.data?.admin_data?.profession?.subject_id,
-              institution_id: data?.data?.admin_data?.profession?.institution_id,
+              institution_id:
+                data?.data?.admin_data?.profession?.institution_id,
             };
             const hobby = data?.data?.admin_data?.hobby;
             let totalPercentage = 0;
@@ -1219,7 +1225,8 @@ function MainContent() {
               if (data?.data?.admin_data?.basic_info?.pic_path !== null) {
                 getData(
                   `${
-                    'upload_file/get_image/' + data?.data?.admin_data?.basic_info?.pic_path
+                    'upload_file/get_image/' +
+                    data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
@@ -1447,8 +1454,7 @@ function MainContent() {
           ]);
           const studentCoursedata =
             studentCoursecount?.status === 'fulfilled'
-              ? studentCoursecount?.value?.data?.result
-              || 0
+              ? studentCoursecount?.value?.data?.result || 0
               : 0;
 
           setStatsCourse(studentCoursedata);
@@ -1554,7 +1560,7 @@ function MainContent() {
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
     setSearch('');
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${userid}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1653,7 +1659,7 @@ function MainContent() {
       setchatData((prevState: any) => [...prevState, newData]);
       setChatLoader(false);
       setSearch('');
-      getData(`${chatlisturl}/${userdata?.id}`)
+      getData(`${chatlisturl}/${userid}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -2326,14 +2332,14 @@ function MainContent() {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: userid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: userid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
@@ -2353,7 +2359,6 @@ function MainContent() {
         localStorage.removeItem('chatsaved');
       })
       .catch((e) => {
-        console.log("7")
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -3357,7 +3362,11 @@ function MainContent() {
                                             }}
                                           />
                                         )}
-                                         {chat?.table_code && <ChatTable tableCode={chat?.table_code} />}
+                                        {chat?.table_code && (
+                                          <ChatTable
+                                            tableCode={chat?.table_code}
+                                          />
+                                        )}
                                       </div>
                                       <ul className="ansfooter">
                                         <ThumbUpAltOutlinedIcon
