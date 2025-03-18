@@ -313,7 +313,7 @@ const TeacherProfile = () => {
           setTeacherData(data.data);
           setGenderData(data?.data?.gender);
           handleFileChanges(data?.data?.documents);
-          setTeacherId(data?.data?.teacher_id);
+          setTeacherId(data?.data?.id);
           const universityId = Number(data?.data?.university_id);
           if (!Number.isNaN(universityId) && universityId > 0) {
             const allsemesters:any = (await getSemester()) || [];
@@ -746,7 +746,7 @@ const TeacherProfile = () => {
     formData.append('role_id', roleId);
     formData.append('gender', teacherData.gender);
     formData.append('entity_id', teacherData.entity_id);
-    formData.append('institution_id', teacherData.institution_id || '');
+    formData.append('institute_id', teacherData.institute_id || '');
     formData.append('experience', teacherData.experience);
     formData.append('qualification', teacherData.qualification);
     formData.append('state', teacherData.state);
