@@ -122,6 +122,7 @@ const Header = () => {
     localStorage.removeItem('teacher_id');
     localStorage.removeItem('institute_id');
     localStorage.removeItem('hasReloaded');
+    sessionStorage.removeItem('userdata');
     synth.cancel();
     navigator('/');
     logoutpro();
