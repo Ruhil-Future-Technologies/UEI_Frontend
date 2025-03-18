@@ -101,6 +101,8 @@ const TeacherProfile = () => {
     is_verified: false,
     is_kyc_verified: false,
     pic_path: '',
+    email:'',
+    institute_id: '',
   });
 
   const [genderData, setGenderData] = useState('male');
@@ -173,9 +175,9 @@ const TeacherProfile = () => {
   const getRole = () => {
     getData(`${Rolelist}`)
       .then((data) => {
-        if (data.data) {
-          const filerRoleId = data.data.find(
-            (role: any) => role.role_name === 'Teacher',
+        if (data.status) {
+          const filerRoleId = data?.data?.rolees_data.find(
+            (role: any) => role.role_name.toLowercase() === 'teacher',
           ).id;
           setRoleId(filerRoleId);
         }
@@ -184,10 +186,10 @@ const TeacherProfile = () => {
         if (e?.response?.status === 401) {
           navigate('/');
         }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
+        // toast.error(e?.message, {
+        //   hideProgressBar: true,
+        //   theme: 'colored',
+        // });
       });
   };
   const getClasslist = () => {
@@ -212,9 +214,9 @@ const TeacherProfile = () => {
       const url = type === 'College' ? getSubjectCollege : getsubjectSchool;
       const data = await getData(url);
 
-      if (data?.data) {
-        setTotleSubject(data.data);
-        return data.data; // Return subjects
+      if (data?.status) {
+        setTotleSubject(data?.data?.subjects_data);
+        return data.data.subjects_data; // Return subjects
       }
 
       return []; // Return empty array if no data
@@ -228,13 +230,13 @@ const TeacherProfile = () => {
     }
   };
 
-  const getCourses = (instituteId: any) => {
+  const getCourses = async (instituteId: any) => {
     getData(`${CourseURL}`)
-      .then((data: { data: CourseRep0oDTO[] }) => {
+      .then((data:any) => {
         if (data.data) {
-          setCoursesData(data?.data);
-          const filtredCourses = data.data.filter(
-            (course) => course.institution_id === instituteId,
+          setCoursesData(data?.data?.course_data);
+          const filtredCourses = data?.data?.course_data.filter(
+            (course:any) => course.institution_id === instituteId,
           );
           setFilteredCoursesData(filtredCourses);
         }
@@ -251,7 +253,7 @@ const TeacherProfile = () => {
       .then((data) => {
         const fiteredInstitutedata = data.data.filter(
           (institute: any) =>
-            institute.is_active === 1 &&
+            institute.is_active &&
             institute.is_approve === true &&
             institute.entity_id === entityId,
         );
@@ -271,12 +273,11 @@ const TeacherProfile = () => {
   };
   const getEntity = () => {
     getData(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        const filteredData = data?.data.filter(
-          (entity) => entity.is_active === 1,
+      .then((data) => {
+        const filteredData = data?.data?.entityes_data?.filter(
+          (entity:any) => entity.is_active,
         );
         setDataEntity(filteredData);
-        // setDataEntity(data?.data)
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
@@ -307,40 +308,50 @@ const TeacherProfile = () => {
   const getTeacherProfileInfo = async () => {
     try {
       getData(`/teacher/edit/${teacherLoginId}`).then(async (data) => {
-        if (data?.status === 200) {
+        if (data?.status) {
+          getInstitutelist(data?.data?.entity_id);
           setTeacherData(data.data);
-          setGenderData(data.data.gender);
+          setGenderData(data?.data?.gender);
           handleFileChanges(data?.data?.documents);
-          setTeacherId(data.data.teacher_id);
-          if (data.data.university_id !== 'None') {
-            const allSubject: SubjectRep0oDTO[] = await getSubjects('College');
-            const allsemesters: SemesterRep0oDTO[] = await getSemester();
+          setTeacherId(data?.data?.teacher_id);
+          const universityId = Number(data?.data?.university_id);
+          if (!Number.isNaN(universityId) && universityId > 0) {
+            const allsemesters:any = (await getSemester()) || [];
+            const allSubject:any = await getSubjects('College') || [];
+         
             setSelectedEntity('College');
-            getCourses(data.data.institution_id);
-            const output: Boxes[] = Object.keys(
-              data.data.course_semester_subjects,
-            ).flatMap((CourseKey) =>
-              Object.keys(data.data.course_semester_subjects[CourseKey]).map(
-                (semester_number) => ({
-                  course_id: CourseKey,
-                  semester_number: semester_number,
-                  subjects:
-                    data.data.course_semester_subjects[CourseKey][
-                      semester_number
-                    ],
-                  filteredSemesters: allsemesters.filter(
-                    (item) => item.course_id == CourseKey,
-                  ),
-                  filteredSubjects: allSubject.filter(
-                    (item) =>
-                      item.semester_number == semester_number &&
-                      item.course_id === CourseKey,
-                  ),
-                }),
-              ),
-            );
-            setBoxes(output);
-          } else {
+            await getCourses(data.data.institute_id); 
+          
+            try {
+              const output: Boxes[] = Object.keys(data.data.course_semester_subjects).flatMap((CourseKey) => {
+            
+                return Object.keys(data.data.course_semester_subjects[CourseKey]).map((semester_number) => {
+                  const filteredSemesters = allsemesters?.filter(
+                    (item:any) => String(item.course_id) === String(CourseKey)
+                  );
+            
+                  const filteredSubjects = allSubject?.filter(
+                    (item:any) =>
+                      String(item.semester_number) === String(semester_number) &&
+                      String(item.course_id) === String(CourseKey)
+                  );
+                  return {
+                    course_id: CourseKey,
+                    semester_number: semester_number,
+                    subjects: data.data.course_semester_subjects[CourseKey][semester_number],
+                    filteredSemesters,
+                    filteredSubjects
+                  };
+                });
+              });
+              setBoxes([...output]); // ✅ Ensure React re-renders
+            } catch (error) {
+              console.error("🔥 ERROR in flatMap execution:", error);
+            }
+            
+          }
+          
+           else {
             getSubjects('School');
             setSelectedEntity('School');
             const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
@@ -369,8 +380,7 @@ const TeacherProfile = () => {
           }
           if (data.data.stream) {
             setSelectedClassName('col-6');
-          }
-          getInstitutelist(data.data.entity_id);
+          }          
         }
       });
     } catch (error) {
@@ -723,7 +733,7 @@ const TeacherProfile = () => {
     const formData = new FormData();
     formData.append('first_name', teacherData.first_name);
     formData.append('last_name', teacherData.last_name);
-    formData.append('email_id', teacherData.email_id);
+    formData.append('email', teacherData.email || "");
     formData.append('phone', teacherData.phone);
     formData.append('address', teacherData.address);
     formData.append('district', teacherData.district);
@@ -801,7 +811,7 @@ const TeacherProfile = () => {
 
     try {
       putData(`/teacher/edit/${teacherId}`, formData).then((response) => {
-        if (response.status === 200) {
+        if (response.status) {
           toast.success(response.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -819,56 +829,7 @@ const TeacherProfile = () => {
       console.error(error);
     }
   };
-  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { files } = event.target;
-  //     const formData = new FormData();
-
-  //     if (files && files[0]) {
-  //         const file: any = files[0];
-  //         if (file.size > 3 * 1024 * 1024) {
-  //             return;
-  //         }
-  //         if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-  //             return;
-  //         }
-  //         setSelectedFile(file.name);
-  //         const reader: any = new FileReader();
-  //         reader.onloadend = () => {
-  //             setFilePreview(reader.result);
-  //         };
-  //         reader.readAsDataURL(file);
-  //         formData.append('file', file);
-  //         postFileData(`${'upload_file/upload'}`, formData)
-  //             .then((data: any) => {
-  //                 if (data?.status === 200) {
-  //                     toast.success(data?.message, {
-  //                         hideProgressBar: true,
-  //                         theme: 'colored',
-  //                         position: 'top-center',
-  //                     });
-  //                 } else if (data?.status === 404) {
-  //                     toast.error(data?.message, {
-  //                         hideProgressBar: true,
-  //                         theme: 'colored',
-  //                         position: 'top-center',
-  //                     });
-  //                 } else {
-  //                     toast.error(data?.message, {
-  //                         hideProgressBar: true,
-  //                         theme: 'colored',
-  //                         position: 'top-center',
-  //                     });
-  //                 }
-  //             })
-  //             .catch((e: any) => {
-  //                 toast.error(e?.message, {
-  //                     hideProgressBar: true,
-  //                     theme: 'colored',
-  //                     position: 'top-center',
-  //                 });
-  //             });
-  //     }
-  // };
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
@@ -884,16 +845,13 @@ const TeacherProfile = () => {
     }
   };
 
-  // const handleDocumentClick = (url: string) => {
-  //     window.open(url, "_blank");
-  // };
   const getSemester = async (): Promise<any[]> => {
     try {
       const data = await getData(`/semester/list`);
 
-      if (data?.status === 200 && data?.data) {
-        setSemesterData(data.data);
-        return data.data; // Return the fetched semesters
+      if (data?.status && data?.data) {
+        setSemesterData(data?.data?.semesters_data);
+        return data?.data?.semesters_data; // Return the fetched semesters
       }
 
       return []; // Return an empty array if no data
@@ -946,7 +904,7 @@ const TeacherProfile = () => {
       setBoxes([...boxes, newbox]);
     }
   };
-  console.log(selectedClassName);
+  console.log("===ty",selectedClassName,boxes);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1088,7 +1046,7 @@ const TeacherProfile = () => {
                         type="text"
                         disabled
                         onChange={handleChange}
-                        value={teacherData.email_id}
+                        value={teacherData.email}
                       />
                     </div>
                   </div>
@@ -1297,7 +1255,7 @@ const TeacherProfile = () => {
                             {universityData.map((item) => (
                               <MenuItem
                                 key={item.id}
-                                value={item.university_id}
+                                value={item.id}
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
                                   color: inputfieldtext(namecolor),
@@ -1386,7 +1344,7 @@ const TeacherProfile = () => {
                             name="institution_id"
                             label="Institute"
                             onChange={handleSelect}
-                            value={teacherData?.institution_id}
+                            value={teacherData?.institute_id}
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
@@ -1544,7 +1502,7 @@ const TeacherProfile = () => {
                             >
                               {box.filteredSemesters?.map((item) => (
                                 <MenuItem
-                                  key={item.id}
+                                  key={item.semester_number}
                                   value={item.semester_number || ''}
                                 >
                                   {item.semester_number}

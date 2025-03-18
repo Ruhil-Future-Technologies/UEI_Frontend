@@ -97,6 +97,8 @@ export interface Teacher {
   is_verified: boolean;
   is_kyc_verified: boolean;
   pic_path?: string; // Optional profile picture path
+  email?: string;
+  institute_id?: string;
 }
 
 export const qualifications = [
