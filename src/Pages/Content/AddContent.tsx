@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Checkbox,
   FormControl,
   IconButton,
   InputLabel,
@@ -1229,10 +1230,17 @@ const AddContent = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setContent((prevState) => ({
-      ...prevState,
-      url: '',
-    }));
+    if (content?.url) {
+      setContent((prevState) => ({
+        ...prevState,
+        url: '',
+      }));
+      toast.error('URL sets to empty. Content can be either URL or File ', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
+
     const files = event.target.files || '';
 
     if (
@@ -1670,6 +1678,9 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!course.semester}
+                                        renderValue={(selected) =>
+                                          selected.join(', ')
+                                        }
                                         sx={{
                                           backgroundColor:
                                             inputfield(namecolor),
@@ -1704,6 +1715,17 @@ const AddContent = () => {
                                                 },
                                               }}
                                             >
+                                              <Checkbox
+                                                checked={course.subjects.includes(
+                                                  subject.subject_name,
+                                                )}
+                                                sx={{
+                                                  color: fieldIcon(namecolor),
+                                                  '&.Mui-checked': {
+                                                    color: fieldIcon(namecolor),
+                                                  },
+                                                }}
+                                              />
                                               {subject.subject_name}
                                             </MenuItem>
                                           ),
@@ -1927,6 +1949,9 @@ const AddContent = () => {
                                           ) &&
                                             !cls.stream)
                                         }
+                                        renderValue={(selected) =>
+                                          selected.join(', ')
+                                        }
                                         sx={{
                                           backgroundColor:
                                             inputfield(namecolor),
@@ -1961,6 +1986,17 @@ const AddContent = () => {
                                                 },
                                               }}
                                             >
+                                              <Checkbox
+                                                checked={cls.subjects.includes(
+                                                  subject.subject_name,
+                                                )}
+                                                sx={{
+                                                  color: fieldIcon(namecolor),
+                                                  '&.Mui-checked': {
+                                                    color: fieldIcon(namecolor),
+                                                  },
+                                                }}
+                                              />
                                               {subject.subject_name}
                                             </MenuItem>
                                           ),

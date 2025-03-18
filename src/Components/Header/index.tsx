@@ -119,6 +119,8 @@ const Header = () => {
     localStorage.removeItem('_id');
     localStorage.removeItem('id');
     localStorage.removeItem('student_id');
+    localStorage.removeItem('teacher_id');
+    localStorage.removeItem('institute_id');
     localStorage.removeItem('hasReloaded');
     synth.cancel();
     navigator('/');
