@@ -68,7 +68,8 @@ function MainContent() {
   const navigate = useNavigate();
   const { ProPercentage, setProPercentage, namecolor }: any = context;
   const [userName, setUserName] = useState('');
-  const StudentId = localStorage.getItem('user_uuid');
+  const StudentId = localStorage.getItem('_id');
+  const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
 
   const getMenuList = () => {
@@ -121,7 +122,7 @@ function MainContent() {
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
   const [flagged, setFlagged] = useState(false);
-  const userid = localStorage.getItem('user_uuid');
+  
 
   const handleFlag = () => {
     setFlagged(!flagged);
@@ -904,8 +905,8 @@ function MainContent() {
   };
 
   const callAPIStudent = async () => {
-    if (usertype === 'student' && StudentId !== null) {
-      getData(`${profileURL}/${StudentId}`)
+    if (usertype === 'student' && userid !== null) {
+      getData(`${profileURL}/${userid}`)
         .then((data: any) => {
           if (data.data) {
             if (data?.data?.basic_info?.id) {
@@ -1153,7 +1154,7 @@ function MainContent() {
 
   const callAPIAdmin = async () => {
     if (usertype === 'admin') {
-      getData(`${profileURLadmin}/${StudentId}`)
+      getData(`${profileURLadmin}/${userid}`)
         .then((data: any) => {
           if (data.code === 404) {
             navigate('/main/adminprofile');
@@ -1560,7 +1561,7 @@ function MainContent() {
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
     setSearch('');
-    getData(`${chatlisturl}/${userid}`)
+    getData(`${chatlisturl}/${StudentId}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1611,7 +1612,7 @@ function MainContent() {
     // let rag_payload = {};
     if (selectedchat?.question !== '') {
       payload = {
-        student_id: StudentId,
+        student_id: userid,
         question: search,
         prompt: prompt,
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
@@ -1631,11 +1632,11 @@ function MainContent() {
       };
       // rag_payload = {
       //   user_query: search,
-      //   student_id: StudentId,
+      //   student_id: userid,
       // };
     } else {
       payload = {
-        student_id: StudentId,
+        student_id: userid,
         question: search,
         prompt: prompt,
         course:
@@ -1646,7 +1647,7 @@ function MainContent() {
       };
       // rag_payload = {
       //   user_query: search,
-      //   student_id: StudentId,
+      //   student_id: userid,
       // };
     }
 
@@ -1659,7 +1660,7 @@ function MainContent() {
       setchatData((prevState: any) => [...prevState, newData]);
       setChatLoader(false);
       setSearch('');
-      getData(`${chatlisturl}/${userid}`)
+      getData(`${chatlisturl}/${StudentId}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1687,7 +1688,7 @@ function MainContent() {
           if (profileDatas?.academic_history?.institution_type === 'school') {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
-              student_id: StudentId,
+              student_id: userid,
               school_college_selection:
                 profileDatas.academic_history.institution_type,
               board_selection:
@@ -1757,7 +1758,7 @@ function MainContent() {
                   // )
                   postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
-                    student_id: StudentId,
+                    student_id: userid,
                     class_or_course_selection: profileDatas?.class.name,
                   })
                     .then((response) => {
@@ -1789,7 +1790,7 @@ function MainContent() {
                 // )
                 postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
-                  student_id: StudentId,
+                  student_id: userid,
                   class_or_course_selection: profileDatas?.class.name,
                 })
                   .then((response) => {
@@ -1830,7 +1831,7 @@ function MainContent() {
               ) || null;
             const queryParams = {
               user_query: search,
-              student_id: StudentId,
+              student_id: userid,
               school_college_selection: institution_type || null,
               board_selection: board || null,
               state_board_selection: state_for_stateboard || null,
@@ -1898,7 +1899,7 @@ function MainContent() {
                   // )
                   postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
-                    student_id: StudentId,
+                    student_id: userid,
                     class_or_course_selection: course_name,
                   })
                     .then((response) => {
@@ -1931,7 +1932,7 @@ function MainContent() {
                 // )
                 postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
-                  student_id: StudentId,
+                  student_id: userid,
                   class_or_course_selection: course_name,
                 })
                   .then((response) => {
@@ -1990,7 +1991,7 @@ function MainContent() {
           // );
           return postDataJson(`${ChatOLLAMAURL}`, {
             user_query: search,
-            student_id: StudentId,
+            student_id: userid,
             class_or_course_selection:
               profileDatas?.academic_history?.institution_type === 'school'
                 ? profileDatas?.class.name
@@ -2249,7 +2250,7 @@ function MainContent() {
     // )
     postDataJson(`${ChatOLLAMAURL}`, {
       user_query: search,
-      student_id: StudentId,
+      student_id: userid,
       class_or_course_selection:
         profileDatas?.academic_history?.institution_type === 'school'
           ? profileDatas?.class.name
@@ -2332,14 +2333,14 @@ function MainContent() {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userid,
+        student_id: StudentId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userid,
+        student_id: StudentId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,

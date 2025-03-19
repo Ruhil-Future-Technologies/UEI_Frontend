@@ -45,6 +45,7 @@ const Header = () => {
     setActiveForm,
   }: any = context;
   const StudentId = localStorage.getItem('user_uuid');
+  const StuId = localStorage.getItem('_id');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -56,7 +57,7 @@ const Header = () => {
   const [dashboardURL, setDashboardURL] = useState('');
 
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
-  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
+  // const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem('chatData');
@@ -75,7 +76,7 @@ const Header = () => {
 
     if (Array.isArray(chatData)) {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: StuId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
