@@ -33,6 +33,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'react-toastify/dist/ReactToastify.css';
 import OtpCard from '../../Components/Dailog/OtpCard';
+import Footer from '../../Components/Footer';
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
@@ -153,13 +154,13 @@ const Login = () => {
           theme: 'colored',
         });
         setPopupOtpCard(false);
-      }else{
-              toast.error(data.message,{
-                hideProgressBar:true,
-                theme:'colored',
-                position:'top-center'
-              })
-            }
+      } else {
+        toast.error(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
     });
   };
   const handleSuccessfulLogin = (data: any, password?: string) => {
@@ -550,6 +551,7 @@ const Login = () => {
           handleOtpSuccess={(e: any) => handleSubmit(e)}
           email={emailphone}
         />
+        <Footer />
       </div>
     </>
   );

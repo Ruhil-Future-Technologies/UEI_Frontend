@@ -35,6 +35,7 @@ import { QUERY_KEYS } from '../../utils/const';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import registerHero from '../../assets/img/register-hero.png';
 import OtpCard from '../../Components/Dailog/OtpCard';
+import Footer from '../../Components/Footer';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
@@ -138,7 +139,11 @@ const Signup = () => {
         } catch (error) {
           let errorMessage = 'An unexpected error occurred';
 
-          if ((error as any)?.response && (error as any)?.response.data && (error as any)?.response?.data?.message) {
+          if (
+            (error as any)?.response &&
+            (error as any)?.response.data &&
+            (error as any)?.response?.data?.message
+          ) {
             errorMessage = (error as any)?.response?.data?.message;
           } else if ((error as any)?.message) {
             errorMessage = (error as Error)?.message;
@@ -162,21 +167,20 @@ const Signup = () => {
         console.log(data);
         if (data.status === true) {
           handleSuccessfulLogin(data.data);
-        }else{
-                toast.error(data.message,{
-                  hideProgressBar:true,
-                  theme:'colored',
-                  position:'top-center'
-                })
-              }
+        } else {
+          toast.error(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
       });
-    } catch (error:any) {
-      toast.error(error.message,{
-        hideProgressBar:true,
-        theme:'colored'
-      })
+    } catch (error: any) {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
     }
-   
   };
 
   const handleSuccessfulLogin = (data: any) => {
@@ -619,6 +623,7 @@ const Signup = () => {
           email={email}
         />
       </div>
+      <Footer />
     </>
   );
 };
