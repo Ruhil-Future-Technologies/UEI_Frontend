@@ -164,7 +164,8 @@ const AddEditTeacher = () => {
   const [error, setError] = React.useState<string | null>(null);
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
-    return selectedEntity?.entity_type?.toLowerCase() === 'school';
+    return selectedEntity?.entity_type?.toLowerCase?.() === 'school';
+
   };
   const isCollegeEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
@@ -397,15 +398,15 @@ const AddEditTeacher = () => {
   }, []);
 
   useEffect(() => {
-    if (formRef.current?.values?.entity_id) {
-      if (isSchoolEntity(formRef.current?.values?.entity_id)) {
+    if (teacher.entity_id) {
+      if (isSchoolEntity(teacher.entity_id)) {
         setFilteredInstitutes(schoolInstitutes);
-      } else if (isCollegeEntity(formRef.current?.values?.entity_id)) {
-        if (formRef.current?.values?.university_id) {
+      } else if (isCollegeEntity(teacher.entity_id)) {
+        if (teacher.university_id) {
           const filtered = collegeInstitutes?.filter(
             (institute) =>
               institute.university_id ===
-              formRef.current?.values?.university_id,
+            teacher.university_id,
           );
           setFilteredInstitutes(filtered);
         } else {
@@ -416,15 +417,13 @@ const AddEditTeacher = () => {
       setFilteredInstitutes([]);
     }
   }, [
-    formRef.current?.values?.entity_id,
-    formRef.current?.values?.university_id,
-    schoolInstitutes,
-    collegeInstitutes,
+    teacher.university_id,
+    teacher.entity_id,
   ]);
 
   useEffect(() => {
     const institutionId =
-      formRef.current?.values?.institute_id || selectedInstitutionId;
+      selectedInstitutionId || teacher?.institute_id;
     if (institutionId) {
       const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
@@ -434,11 +433,7 @@ const AddEditTeacher = () => {
     } else {
       setFilteredCourses([]);
     }
-  }, [
-    formRef.current?.values?.institute_id,
-    dataCourses,
-    selectedInstitutionId,
-  ]);
+  }, [ teacher?.institute_id ]);
 
   const checkHigherClass = (
     classId: string | undefined,
@@ -452,20 +447,18 @@ const AddEditTeacher = () => {
           classes.class_name === 'class_12'),
     );
   };
-
-  const SubjectsHandler = ({ values }: { values: ITeacherForm }) => {
-    useEffect(() => {
-      if (values?.entity_id) {
-        if (isSchoolEntity(values.entity_id)) {
-          if (values.class_id) {
+      useEffect(() => {
+      if (teacher?.entity_id) {
+        if (isSchoolEntity(teacher.entity_id)) {
+          if (teacher.class_id) {
             const filtered = schoolSubjects.filter(
-              (subject) => subject.class_id === values.class_id,
+              (subject) => subject.class_id === teacher.class_id,
             );
-            const higherClass = checkHigherClass(values.class_id, dataClasses);
+            const higherClass = checkHigherClass(teacher.class_id, dataClasses);
             if (higherClass) {
-              if (values.stream) {
+              if (teacher.stream) {
                 const streamFiltered = filtered.filter(
-                  (subject) => subject.stream === values.stream,
+                  (subject) => subject.stream === teacher.stream,
                 );
                 setFilteredSubjects(streamFiltered);
               } else {
@@ -488,87 +481,131 @@ const AddEditTeacher = () => {
           }
         }
       }
-    }, [values?.class_id, values?.entity_id, values?.stream]);
-    return null;
-  };
+    }, [teacher.classes]);
+
+  // const SubjectsHandler = ({ values }: { values: ITeacherForm }) => {
+  //   useEffect(() => {
+  //     console.log("test build use 2",values)
+     
+  //     if (values?.entity_id) {
+  //       if (isSchoolEntity(values.entity_id)) {
+  //         if (values.class_id) {
+  //           const filtered = schoolSubjects.filter(
+  //             (subject) => subject.class_id === values.class_id,
+  //           );
+  //           const higherClass = checkHigherClass(values.class_id, dataClasses);
+  //           if (higherClass) {
+  //             if (values.stream) {
+  //               const streamFiltered = filtered.filter(
+  //                 (subject) => subject.stream === values.stream,
+  //               );
+  //               setFilteredSubjects(streamFiltered);
+  //             } else {
+  //               setFilteredSubjects([]);
+  //             }
+  //             setStreams(
+  //               filtered
+  //                 .map((subject) => subject.stream)
+  //                 .filter(
+  //                   (stream, index, array) => array.indexOf(stream) === index,
+  //                 ),
+  //             );
+  //           } else {
+  //             setFilteredSubjects(filtered);
+  //             setStreams([]);
+  //           }
+  //         } else {
+  //           setFilteredSubjects([]);
+  //           setStreams([]);
+  //         }
+  //       }
+  //     }
+  //   }, [values?.class_id, values?.entity_id, values?.stream]);
+  //   return null;
+  // };
+
+  // useEffect(() => {
+  //   console.log("test build use 3",teacher)
+  //   console.log("test build use 33",collegeSubjects)
+  //   console.log("test build use 333",collegeInstitutes)
+  //   const initialCourses = teacher.courses;
+  //   formRef.current?.setFieldValue('courses', initialCourses);
+  //   setTeacher((prev) => ({
+  //     ...prev,
+  //     courses: initialCourses,
+  //   }));
+  //   initialCourses?.forEach((course, index) => {
+  //     if (course.course_id) {
+  //       const allSubjects = collegeSubjects.filter(
+  //         (subject) => subject.course_id === course.course_id,
+  //       );
+  //       const uniqueSemesters = allSubjects
+  //         .map((subject) => subject.semester_number)
+  //         .filter((semester, index, self) => self.indexOf(semester) === index)
+  //         .sort((a, b) => Number(a) - Number(b));
+
+  //       setCourseSemesters((prev) => ({
+  //         ...prev,
+  //         [index]: uniqueSemesters,
+  //       }));
+  //       if (course.semester) {
+  //         const filteredSubjects = allSubjects.filter(
+  //           (subject) => subject.semester_number === Number(course.semester),
+  //         );
+  //         setCourseSubjects((prev) => ({
+  //           ...prev,
+  //           [index]: filteredSubjects,
+  //         }));
+  //       }
+  //     }
+  //   });
+  // }, [teacher, collegeSubjects]);
+
+  // useEffect(() => {
+  //   console.log("test build use 4",teacher.classes)
+    
+  //   const initialClasses = teacher.classes;
+  //   formRef.current?.setFieldValue('classes', initialClasses);
+  //   setTeacher((prev) => ({
+  //     ...prev,
+  //     classes: initialClasses,
+  //   }));
+  //   if (!Array.isArray(schoolSubjects)) {
+  //     return;
+  //   }
+  //   initialClasses?.forEach((cls, index) => {
+  //     if (cls.class_id) {
+  //       const allSubjects = schoolSubjects.filter(
+  //         (subject) => subject.class_id === cls.class_id,
+  //       );
+
+  //       const uniqueStreams = allSubjects
+  //         .map((subject) => subject.stream)
+  //         .filter((stream, index, self) => self.indexOf(stream) === index);
+
+  //       setClassStreams((prev) => ({
+  //         ...prev,
+  //         [index]: uniqueStreams,
+  //       }));
+  //       if (cls.stream) {
+  //         const filteredSubjects = allSubjects.filter(
+  //           (subject) =>
+  //             (subject.class_id === cls.class_id &&
+  //               subject.stream === cls.stream?.toLowerCase()) ||
+  //             subject.stream == '',
+  //         );
+  //         setClassSubjects((prev) => ({
+  //           ...prev,
+  //           [index]: filteredSubjects,
+  //         }));
+  //       }
+  //     }
+  //   });
+  // }, [teacher.classes, schoolSubjects]);
 
   useEffect(() => {
-    const initialCourses = teacher.courses;
-    formRef.current?.setFieldValue('courses', initialCourses);
-    setTeacher((prev) => ({
-      ...prev,
-      courses: initialCourses,
-    }));
-    initialCourses?.forEach((course, index) => {
-      if (course.course_id) {
-        const allSubjects = collegeSubjects.filter(
-          (subject) => subject.course_id === course.course_id,
-        );
-        const uniqueSemesters = allSubjects
-          .map((subject) => subject.semester_number)
-          .filter((semester, index, self) => self.indexOf(semester) === index)
-          .sort((a, b) => Number(a) - Number(b));
-
-        setCourseSemesters((prev) => ({
-          ...prev,
-          [index]: uniqueSemesters,
-        }));
-        if (course.semester) {
-          const filteredSubjects = allSubjects.filter(
-            (subject) => subject.semester_number === Number(course.semester),
-          );
-          setCourseSubjects((prev) => ({
-            ...prev,
-            [index]: filteredSubjects,
-          }));
-        }
-      }
-    });
-  }, [teacher, collegeSubjects]);
-
-  useEffect(() => {
-    const initialClasses = teacher.classes;
-    formRef.current?.setFieldValue('classes', initialClasses);
-    setTeacher((prev) => ({
-      ...prev,
-      classes: initialClasses,
-    }));
-    if (!Array.isArray(schoolSubjects)) {
-      return;
-    }
-    initialClasses?.forEach((cls, index) => {
-      if (cls.class_id) {
-        const allSubjects = schoolSubjects.filter(
-          (subject) => subject.class_id === cls.class_id,
-        );
-
-        const uniqueStreams = allSubjects
-          .map((subject) => subject.stream)
-          .filter((stream, index, self) => self.indexOf(stream) === index);
-
-        setClassStreams((prev) => ({
-          ...prev,
-          [index]: uniqueStreams,
-        }));
-        if (cls.stream) {
-          const filteredSubjects = allSubjects.filter(
-            (subject) =>
-              (subject.class_id === cls.class_id &&
-                subject.stream === cls.stream?.toLowerCase()) ||
-              subject.stream == '',
-          );
-          setClassSubjects((prev) => ({
-            ...prev,
-            [index]: filteredSubjects,
-          }));
-        }
-      }
-    });
-  }, [teacher, schoolSubjects]);
-
-  useEffect(() => {
-    if (formRef.current?.values?.courses) {
-      formRef.current?.values?.courses.forEach((course, index) => {
+    if (teacher?.courses) {
+      teacher?.courses?.forEach((course, index) => {
         if (course.course_id) {
           const allSubjects = collegeSubjects.filter(
             (subject) => subject.course_id === course.course_id,
@@ -584,7 +621,7 @@ const AddEditTeacher = () => {
           }));
           if (course.semester) {
             const filteredSubjects = allSubjects.filter(
-              (subject) => subject.semester_number === course.semester,
+              (subject) => Number(subject.semester_number) === Number(course.semester),
             );
             setCourseSubjects((prev) => ({
               ...prev,
@@ -594,7 +631,7 @@ const AddEditTeacher = () => {
         }
       });
     }
-  }, [formRef.current?.values?.courses, collegeSubjects]);
+  }, [teacher?.courses, collegeSubjects]);
 
   const isDuplicateCourseAndSemester = (courses: any[]): boolean => {
     const combinations = new Set();
@@ -1315,7 +1352,6 @@ const AddEditTeacher = () => {
   const handleStateBlur = () => {
     setIsStateOpen(false);
   };
-
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1340,7 +1376,7 @@ const AddEditTeacher = () => {
             >
               {({ errors, values, touched }) => (
                 <Form>
-                  <SubjectsHandler values={values} />
+                  {/* <SubjectsHandler values={values} /> */}
                   <div className="row gy-4 mt-0">
                     <div className="col-md-2">
                       <div className="form_field_wrapper">

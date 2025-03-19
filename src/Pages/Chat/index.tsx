@@ -42,6 +42,7 @@ import { ChatTable } from './Tablechat';
 
 const Chat = () => {
   const userid = localStorage.getItem('user_uuid') || '';
+  const studentid = localStorage.getItem('_id') || '';
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [studentDetail, setStudentData] = useState<any>();
@@ -344,7 +345,7 @@ const Chat = () => {
           theme: 'colored',
         });
       });
-    getData(`${chatlisturl}/${userid}`)
+    getData(`${chatlisturl}/${studentid}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
@@ -531,7 +532,7 @@ const Chat = () => {
     setLoading(false);
     setSearch('');
     setShowInitialPage(false);
-    getData(`${chatlisturl}/${userid}`)
+    getData(`${chatlisturl}/${studentid}`)
       .then((data: any) => {
         setchathistory(data?.data);
         setchatlistData(data?.data);
@@ -630,7 +631,7 @@ const Chat = () => {
       setchatData((prevState: any) => [...prevState, newData]);
       setLoading(false);
       setSearch('');
-      getData(`${chatlisturl}/${userid}`)
+      getData(`${chatlisturl}/${studentid}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
@@ -707,7 +708,7 @@ const Chat = () => {
                     },
                   };
                   const ChatStorepayload = {
-                    student_id: userid,
+                    student_id: studentid,
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
@@ -729,7 +730,7 @@ const Chat = () => {
                       if (response?.status) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          student_id: userid,
+                          student_id: studentid,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -755,7 +756,7 @@ const Chat = () => {
                     if (response?.status) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        student_id: userid,
+                        student_id: studentid,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -844,7 +845,7 @@ const Chat = () => {
                     },
                   };
                   const ChatStorepayload = {
-                    student_id: userid,
+                    student_id: studentid,
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
@@ -865,7 +866,7 @@ const Chat = () => {
                       if (response?.status) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          student_id: userid,
+                          student_id: studentid,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -892,7 +893,7 @@ const Chat = () => {
                     if (response?.status) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        student_id: userid,
+                        student_id: studentid,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -915,7 +916,7 @@ const Chat = () => {
       .then((data: any) => {
         if (data?.status) {
           const ChatStorepayload = {
-            student_id: userid,
+            student_id: studentid,
             chat_question: search,
             response: data?.answer,
           };
@@ -950,7 +951,7 @@ const Chat = () => {
         if (data?.status) {
           // handleResponse(data);
           const ChatStorepayload = {
-            student_id: userid,
+            student_id: studentid,
             chat_question: search,
             response: data?.answer,
           };
@@ -1053,14 +1054,14 @@ const Chat = () => {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userid,
+        student_id: studentid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userid,
+        student_id: studentid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
@@ -1094,14 +1095,14 @@ const Chat = () => {
     if (datatest?.length !== 0 && Array.isArray(chat) && chat.length >= 2) {
       // chat?.shift();
       chat_payload = {
-        student_id: userid,
+        student_id: studentid,
         chat_title: chat[0]?.question,
         chat_conversation: JSON.stringify(chat),
         flagged: chatsaved,
       };
     } else {
       chat_payload = {
-        student_id: userid,
+        student_id: studentid,
         chat_title: chat[0]?.question,
         chat_conversation: JSON.stringify(chat),
         flagged: chatsaved,
@@ -1310,7 +1311,7 @@ const Chat = () => {
         if (response?.status) {
           handleResponse(response);
           const ChatStorepayload = {
-            student_id: userid,
+            student_id: studentid,
             chat_question: question,
             response: response?.answer,
           };
