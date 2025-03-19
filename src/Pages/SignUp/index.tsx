@@ -12,6 +12,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  ListItem,
+  List,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
@@ -35,7 +37,6 @@ import { QUERY_KEYS } from '../../utils/const';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import registerHero from '../../assets/img/register-hero.png';
 import OtpCard from '../../Components/Dailog/OtpCard';
-import Footer from '../../Components/Footer';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
@@ -622,8 +623,39 @@ const Signup = () => {
           handleOtpSuccess={(otp: string) => handleSubmit(otp)}
           email={email}
         />
+        <footer className="login-footer">
+          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <List
+            sx={{
+              display: 'inline-flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              padding: 0,
+            }}
+          >
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="privacypolicy" color="primary">
+                Privacy Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="refundpolicy" color="primary">
+                Refund Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="Disclaimer" color="primary">
+                Disclaimer
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="ServicesAgreement" color="primary">
+                End User Aggrement
+              </Link>
+            </ListItem>
+          </List>
+        </footer>
       </div>
-      <Footer />
     </>
   );
 };
