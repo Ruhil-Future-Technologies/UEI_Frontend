@@ -1862,3 +1862,32 @@ form select.error:focus {
     }
   }
 }
+
+.login-footer {
+  padding: 0.8rem;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+
+  a,
+  p {
+    font-size: 0.8rem;
+    color: $headingColor;
+  }
+  @media (max-width: 768px) {
+    justify-content: center;
+    a,
+    p {
+      font-size: 0.6rem;
+    }
+    gap: 0.5rem;
+  }
+}
+.footermargin {
+  .page-footer{
+    left: 0;
+  }
+}
+.bg-light2{
+  background-color: $light-bg;
+}

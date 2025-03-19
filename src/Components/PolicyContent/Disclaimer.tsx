@@ -1,17 +1,29 @@
 import React from 'react';
+import {  useNavigate } from 'react-router-dom';
+//import Footer from '../Footer';
+//import { List, ListItem } from '@mui/material';
+import gLogo from '../../assets/img/logo-white.svg';
+import Footer from '../Footer';
 
 const Disclaimer = () => {
+  const navigate = useNavigate();
   return (
-    <div className="main-wrapper">
+    <div className='footermargin'>
+    <div className="main-wrapper pt-0 ms-0">
       <div className="main-content">
-        <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3 border-bottom pb-3 mb-5">
+        <div className="page-breadcrumb d-flex flex-wrap gap-4 align-items-center mb-3 border-bottom pb-3 mb-5">
+          <a href="/" className='fw-bold text-dark fs-4 me-4'><img src={gLogo} width={20} className='me-1 ' alt="" /> Gyansetu</a>          
+          <div className="d-flex">
+          <div className="cursor-pointer" onClick={() => navigate(-1)}>
+            <i className="bi bi-arrow-left-circle-fill fs-5 me-2"></i>
+          </div>
           <div className="breadcrumb-title pe-3">Site Policies</div>
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item">
-                  <a href="javascript:;">
-                    <i className="bx bx-home-alt"></i>
+                  <a href="/" className="text-secondary">
+                    <i className="bi bi-house-fill"></i>
                   </a>
                 </li>
                 <li className="breadcrumb-item active" aria-current="page">
@@ -19,6 +31,7 @@ const Disclaimer = () => {
                 </li>
               </ol>
             </nav>
+          </div>
           </div>
         </div>
 
@@ -126,8 +139,13 @@ const Disclaimer = () => {
             </div>
           </div>
         </div>
+
+        
       </div>
+     
     </div>
+    <Footer />
+   </div>
   );
 };
 
