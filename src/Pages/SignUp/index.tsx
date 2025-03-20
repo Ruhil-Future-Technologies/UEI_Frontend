@@ -634,22 +634,22 @@ const Signup = () => {
             }}
           >
             <ListItem sx={{ width: 'auto', padding: 0 }}>
-              <Link to="privacypolicy" color="primary">
+              <Link to="/privacypolicy" color="primary">
                 Privacy Policy
               </Link>
             </ListItem>
             <ListItem sx={{ width: 'auto', padding: 0 }}>
-              <Link to="refundpolicy" color="primary">
+              <Link to="/refundpolicy" color="primary">
                 Refund Policy
               </Link>
             </ListItem>
             <ListItem sx={{ width: 'auto', padding: 0 }}>
-              <Link to="Disclaimer" color="primary">
+              <Link to="/Disclaimer" color="primary">
                 Disclaimer
               </Link>
             </ListItem>
             <ListItem sx={{ width: 'auto', padding: 0 }}>
-              <Link to="ServicesAgreement" color="primary">
+              <Link to="/ServicesAgreement" color="primary">
                 End User Aggrement
               </Link>
             </ListItem>
