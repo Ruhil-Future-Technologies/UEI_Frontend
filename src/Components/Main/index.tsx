@@ -18,9 +18,9 @@ const Main = () => {
           <Header />
           <Sidebar />
           <Outlet />
+          <Footer />
         </div>
       </div>
-      <Footer />
     </>
   );
 };

@@ -99,7 +99,6 @@ import Disclaimer from './Components/PolicyContent/Disclaimer';
 import RefundPolicy from './Components/PolicyContent/RefundPolicy';
 import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
 
-
 function App() {
   const navigate = useNavigate();
   const context = useContext(NameContext);
@@ -823,28 +822,20 @@ function App() {
               }
             />
           </Route>
+          <Route path="profile" element={<Profile />} />
           <Route
-            path="/main/ServicesAgreement"
-            element={<Protected Component={ServicesAgreement} menuName="ServicesAgreement" />}
+            path="searchdepartment"
+            element={<StudentProfileManagement />}
           />
-          <Route
-            path="/main/PrivacyPolicy"
-            element={<Protected Component={PrivacyPolicy} menuName="PrivacyPolicy" />}
-          />
-          <Route
-            path="/main/RefundPolicy"
-            element={<Protected Component={RefundPolicy} menuName="RefundPolicy" />}
-          />
-          <Route
-            path="/main/Disclaimer"
-            element={<Protected Component={Disclaimer} menuName="Disclaimer" />}
-          />
+          <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
+          {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Route>
-        <Route path="profile" element={<Profile />} />
-        <Route path="searchdepartment" element={<StudentProfileManagement />} />
-        <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
-        {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="/ServicesAgreement" element={<ServicesAgreement />} />
+
+        <Route path="/RefundPolicy" element={<RefundPolicy />} />
+        <Route path="/Disclaimer" element={<Disclaimer />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       </Routes>
     </div>
   );

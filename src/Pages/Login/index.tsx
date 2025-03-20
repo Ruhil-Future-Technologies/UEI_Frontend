@@ -7,6 +7,8 @@ import {
   FormControl,
   IconButton,
   InputLabel,
+  List,
+  ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -33,6 +35,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'react-toastify/dist/ReactToastify.css';
 import OtpCard from '../../Components/Dailog/OtpCard';
+
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
@@ -153,13 +156,13 @@ const Login = () => {
           theme: 'colored',
         });
         setPopupOtpCard(false);
-      }else{
-              toast.error(data.message,{
-                hideProgressBar:true,
-                theme:'colored',
-                position:'top-center'
-              })
-            }
+      } else {
+        toast.error(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
     });
   };
   const handleSuccessfulLogin = (data: any, password?: string) => {
@@ -550,6 +553,38 @@ const Login = () => {
           handleOtpSuccess={(e: any) => handleSubmit(e)}
           email={emailphone}
         />
+        <footer className="login-footer">
+          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <List
+            sx={{
+              display: 'inline-flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              padding: 0,
+            }}
+          >
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="privacypolicy" color="primary">
+                Privacy Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="refundpolicy" color="primary">
+                Refund Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="Disclaimer" color="primary">
+                Disclaimer
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="ServicesAgreement" color="primary">
+                End User Aggrement
+              </Link>
+            </ListItem>
+          </List>
+        </footer>
       </div>
     </>
   );

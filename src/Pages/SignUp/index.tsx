@@ -12,6 +12,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  ListItem,
+  List,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
@@ -138,7 +140,11 @@ const Signup = () => {
         } catch (error) {
           let errorMessage = 'An unexpected error occurred';
 
-          if ((error as any)?.response && (error as any)?.response.data && (error as any)?.response?.data?.message) {
+          if (
+            (error as any)?.response &&
+            (error as any)?.response.data &&
+            (error as any)?.response?.data?.message
+          ) {
             errorMessage = (error as any)?.response?.data?.message;
           } else if ((error as any)?.message) {
             errorMessage = (error as Error)?.message;
@@ -162,21 +168,20 @@ const Signup = () => {
         console.log(data);
         if (data.status === true) {
           handleSuccessfulLogin(data.data);
-        }else{
-                toast.error(data.message,{
-                  hideProgressBar:true,
-                  theme:'colored',
-                  position:'top-center'
-                })
-              }
+        } else {
+          toast.error(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
       });
-    } catch (error:any) {
-      toast.error(error.message,{
-        hideProgressBar:true,
-        theme:'colored'
-      })
+    } catch (error: any) {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
     }
-   
   };
 
   const handleSuccessfulLogin = (data: any) => {
@@ -618,6 +623,38 @@ const Signup = () => {
           handleOtpSuccess={(otp: string) => handleSubmit(otp)}
           email={email}
         />
+        <footer className="login-footer">
+          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <List
+            sx={{
+              display: 'inline-flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              padding: 0,
+            }}
+          >
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/privacypolicy" color="primary">
+                Privacy Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/refundpolicy" color="primary">
+                Refund Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/Disclaimer" color="primary">
+                Disclaimer
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/ServicesAgreement" color="primary">
+                End User Aggrement
+              </Link>
+            </ListItem>
+          </List>
+        </footer>
       </div>
     </>
   );
