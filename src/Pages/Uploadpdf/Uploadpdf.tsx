@@ -511,7 +511,7 @@ const Uploadpdf = () => {
 
         if (board) formData.append('board_selection', board?.toUpperCase());
         if (class_id)
-          formData.append('class_selection', particularClass || class_id);
+          formData.append('class_selection', particularClass || "");
         if (state_for_stateboard)
           formData.append('state_board_selection', state_for_stateboard);
         if (stream) formData.append('stream_selection', stream);
@@ -671,7 +671,7 @@ const Uploadpdf = () => {
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
         if (response.status) {
-          setParticularClass(response.data.class_name);
+          setParticularClass(response?.data?.class_data?.class_name);
         } else setParticularClass('');
       });
     }
