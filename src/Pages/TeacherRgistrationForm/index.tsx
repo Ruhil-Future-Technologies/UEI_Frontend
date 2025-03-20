@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import gLogo from '../../assets/img/logo-white.svg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as LinkReact } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import {
@@ -14,6 +14,8 @@ import {
   DialogTitle,
   FormControl,
   FormControlLabel,
+  List,
+  ListItem,
   ListItemText,
   MenuItem,
   Radio,
@@ -97,6 +99,8 @@ export interface Teacher {
   is_verified: boolean;
   is_kyc_verified: boolean;
   pic_path?: string; // Optional profile picture path
+  email?: string;
+  institute_id?: string;
 }
 
 export const qualifications = [
@@ -270,7 +274,8 @@ const TeacherRegistrationPage = () => {
   const [city_error, setCity_error] = useState(false);
   const [pincode_error, setPincode_error] = useState(false);
   const [qualifications_error, setQualifications_error] = useState(false);
-  const [teaching_experience_error, setTeaching_experience_error] = useState(false);
+  const [teaching_experience_error, setTeaching_experience_error] =
+    useState(false);
   const [entity_error, setEntity_error] = useState(false);
   const [institution_id_error, setInstitution_id_error] = useState(false);
   const [document_error, setDocument_error] = useState(false);
@@ -358,7 +363,6 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        console.log(data.data.entityes_data);
         const filteredData = data?.data?.entityes_data.filter(
           (entity: any) => entity.is_active === true,
         );
@@ -379,9 +383,8 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        const fiteredInstitutedata = data.data.filter(
-          (institute: any) =>
-            institute.is_active && institute.is_approve,
+        const fiteredInstitutedata = data?.data?.filter(
+          (institute: any) => institute.is_active && institute.is_approve,
         );
         if (data.status) {
           setDataInstitute(fiteredInstitutedata);
@@ -421,7 +424,7 @@ const TeacherRegistrationPage = () => {
       .then((data) => {
         if (data.data) {
           const filerRoleId = data?.data?.rolees_data?.find(
-            (role: any) => (role.role_name).toLowerCase() === 'teacher',
+            (role: any) => role.role_name.toLowerCase() === 'teacher',
           ).id;
           setRoleId(filerRoleId); // setRoleData(data?.data);
         }
@@ -493,7 +496,10 @@ const TeacherRegistrationPage = () => {
     getForRegistration(`${UniversityURL}`)
       .then((data) => {
         if (data.status) {
-          setUniversityData(data?.data?.universities_data);
+          const filteredData = data?.data?.universities_data?.filter(
+            (item: any) => item?.is_active,
+          );
+          setUniversityData(filteredData || []);
         }
       })
       .catch((e) => {
@@ -537,11 +543,9 @@ const TeacherRegistrationPage = () => {
     }
 
     if (name === 'entity_id') {
-      console.log(dataInstitute)
       const filteredInstitute = dataInstitute.filter(
         (item) => item.entity_id === value,
       );
-      console.log(filteredInstitute)
       setFiteredInstitute(filteredInstitute);
     }
 
@@ -552,7 +556,6 @@ const TeacherRegistrationPage = () => {
       setSelectedSchool(String(selectedSchool));
     }
     if (name === 'university_id') {
-      console.log(dataInstitute);
       const filteredInstitute = dataInstitute.filter(
         (item) => item.university_id === value,
       );
@@ -679,30 +682,36 @@ const TeacherRegistrationPage = () => {
   };
 
   const handleSubmit = () => {
-    console.log("fkjhsghghjsjgfs")
-    let valid1=false;
+    let valid1 = false;
     if (teacher.entity_id == '') {
-      setEntity_error(true)
-      setUniversityError(true)
-      setInstitution_id_error(true)
+      setEntity_error(true);
+      setUniversityError(true);
+      setInstitution_id_error(true);
       valid1 = true;
     } else {
-      setEntity_error(false)
+      setEntity_error(false);
     }
-    if (!/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(teacher.institution_id || '')) {
+    if (
+      !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+        teacher.institution_id || '',
+      )
+    ) {
       setInstitution_id_error(true);
       valid1 = true;
     } else {
       setInstitution_id_error(false);
     }
 
-    if (selectedEntity.toLowerCase() === 'college' && teacher.university_id == '') {
+    if (
+      selectedEntity.toLowerCase() === 'college' &&
+      teacher.university_id == ''
+    ) {
       setUniversityError(true);
       valid1 = true;
     } else {
       setUniversityError(false);
     }
-    if ( teacher.qualification === '') {
+    if (teacher.qualification === '') {
       valid1 = true;
       setQualifications_error(true);
     } else {
@@ -715,7 +724,7 @@ const TeacherRegistrationPage = () => {
       setTeaching_experience_error(false);
     }
 
-if(valid1) return;
+    if (valid1) return;
 
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
@@ -891,18 +900,21 @@ console.log(valid,teacher.university_id)
       const payload = {
         email: process.env.REACT_APP_SUPER_USER_EMAIL,
         password: process.env.REACT_APP_SUPER_USER_PASSWORD,
-        user_type: "super_admin"
-      }
+        user_type: 'super_admin',
+      };
       postDataJson(`auth/login`, payload).then((data) => {
         if (data.status) {
           const token = data.data.access_token;
           postRegisterData(getTeacherURL, formData, token)
             .then((response) => {
               if (response.status) {
-                toast.success('Teacher registration request sent successfully', {
-                  hideProgressBar: true,
-                  theme: 'colored',
-                });
+                toast.success(
+                  'Teacher registration request sent successfully',
+                  {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                  },
+                );
                 setPopupOtpCard(true);
               } else {
                 toast.error(response.message, {
@@ -912,13 +924,13 @@ console.log(valid,teacher.university_id)
               }
             })
             .catch((error) => {
-                toast.error(error.response.data.message, {
-                            hideProgressBar: true,
-                            theme: 'colored',
-                          });
+              toast.error(error.response.data.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
             });
         }
-      })
+      });
     } else {
       toast.error('validation error', {
         hideProgressBar: true,
@@ -927,26 +939,24 @@ console.log(valid,teacher.university_id)
     }
   };
 
-  
-   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      console.log(files, typeof files);
-      setDocument_error(false);
-    
-      if (files && event.target.name !== "icon") {
-        const filesArray = Array.from(files);
-    
-        setAllSelectedfiles((prevFiles) => [
-          ...prevFiles, // Keep previously selected files
-          ...filesArray, // Add newly selected files
-        ]);
-    
-        // Reset the input field to allow selecting the same files again
-        event.target.value = "";
-      } else {
-        // setLogo(files);
-      }
-    };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    setDocument_error(false);
+
+    if (files && event.target.name !== 'icon') {
+      const filesArray = Array.from(files);
+
+      setAllSelectedfiles((prevFiles) => [
+        ...prevFiles, // Keep previously selected files
+        ...filesArray, // Add newly selected files
+      ]);
+
+      // Reset the input field to allow selecting the same files again
+      event.target.value = '';
+    } else {
+      // setLogo(files);
+    }
+  };
 
   const handleInputChangecountry = (val: string, name: string) => {
     setTeacher({ ...teacher, [name]: val });
@@ -1027,7 +1037,6 @@ console.log(valid,teacher.university_id)
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
 
         if (name === 'class_id') {
-          console.log(dataClass,value)
           const selectedClass = dataClass.find(
             (item) => String(item.id) == value,
           )?.class_name;
@@ -1151,7 +1160,6 @@ console.log(valid,teacher.university_id)
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
-    
     if (activeStep == 0) {
       let valid = false;
       if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
@@ -1170,7 +1178,10 @@ console.log(valid,teacher.university_id)
       } else {
         setPhone_no_error(false);
       }
-      if (!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.first_name.trim())
+      if (
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+          teacher.first_name.trim(),
+        )
       ) {
         setFirst_name_error(true);
         valid = true;
@@ -1178,7 +1189,10 @@ console.log(valid,teacher.university_id)
         setFirst_name_error(false);
       }
 
-      if (!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.last_name.trim())
+      if (
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+          teacher.last_name.trim(),
+        )
       ) {
         setLast_name_error(true);
         valid = true;
@@ -1188,24 +1202,33 @@ console.log(valid,teacher.university_id)
       if (!valid) {
         setActiveStep((prevStep) => prevStep + 1);
       }
-
     } else if (activeStep == 1) {
       let valid = false;
-      if (!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.city.trim())) {
+      if (
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+          teacher.city.trim(),
+        )
+      ) {
         setCity_error(true);
         valid = true;
       } else {
         setCity_error(false);
       }
 
-      if (!/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(teacher.district.trim())) {
+      if (
+        !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+          teacher.district.trim(),
+        )
+      ) {
         setDistrict_error(true);
         valid = true;
       } else {
         setDistrict_error(false);
       }
 
-      if (!/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address.trim())) {
+      if (
+        !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(teacher.address.trim())
+      ) {
         setAddress_error(true);
         valid = true;
       } else {
@@ -1233,43 +1256,40 @@ console.log(valid,teacher.university_id)
         setActiveStep((prevStep) => prevStep + 1);
       }
     } else {
-      setActiveStep((prevStep) => prevStep + 1)
+      setActiveStep((prevStep) => prevStep + 1);
     }
-
   };
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
   const handleOtpSubmit = (otp: string) => {
-
     const payload = {
       email: teacher.email_id,
-      otp: otp
-    }
+      otp: otp,
+    };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
-      console.log(data);
       if (data.status === true) {
         setPopupOtpCard(false);
         alert('Wait for 24-48 hours, the Administrator will inform you.');
         window.location.reload();
-      }else{
-              toast.error(data.message,{
-                hideProgressBar:true,
-                theme:'colored',
-                position:'top-center'
-              })
-            }
-    })
-
+      } else {
+        toast.error(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
+    });
   };
   return (
-    <Box sx={{ width: '100%' }} className="Stepperform">
-      <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
-        <div className="logoui mb-4">
-          <img src={gLogo} alt="" onClick={() => navigate('/signup')} />
-          <span>Gyansetu</span>
-        </div>
+    <>
+      <Box sx={{ width: '100%' }} className="Stepperform">
+        <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
+          <div className="logoui mb-4">
+            <img src={gLogo} alt="" onClick={() => navigate('/signup')} />
+            <span>Gyansetu</span>
+          </div>
 
         <Stepper
           className="mt-5"
@@ -1315,849 +1335,887 @@ console.log(valid,teacher.university_id)
                   Empower your teaching journey—get started today!
                   </p>
 
-                  <div className="row d-flex justify-content-center g-4">
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
+                    <div className="row d-flex justify-content-center g-4">
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
                         First Name<span>*</span>
                       </label> */}
 
-                      <TextField
-                        autoComplete="off"
-                        name="first_name"
-                        className="form-control"
-                        type="text"
-                        value={teacher.first_name}
-                        onChange={handelChange}
-                        label="First Name *"
-                      />
-                      {first_name_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small> Please enter a valid First name.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
+                        <TextField
+                          autoComplete="off"
+                          name="first_name"
+                          className="form-control"
+                          type="text"
+                          value={teacher.first_name}
+                          onChange={handelChange}
+                          label="First Name *"
+                        />
+                        {first_name_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small> Please enter a valid First name.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
                         Last Name<span>*</span>
                       </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="last_name"
-                        className="form-control"
-                        type="text"
-                        value={teacher.last_name}
-                        onChange={handelChange}
-                        label="Last Name *"
-                      />
-                      {last_name_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid Last name.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      <label className="col-form-label">
-                        Gender<span>*</span>
-                      </label>
-                      <br />
-                      <FormControl>
-                        <RadioGroup
-                          row
-                          aria-labelledby="demo-controlled-radio-buttons-group"
-                          name="gender"
-                          value={genderData}
+                        <TextField
+                          autoComplete="off"
+                          name="last_name"
+                          className="form-control"
+                          type="text"
+                          value={teacher.last_name}
                           onChange={handelChange}
-                        >
-                          <FormControlLabel
-                            value="male"
-                            control={<Radio />}
-                            label="Male"
-                          />
-                          <FormControlLabel
-                            value="female"
-                            control={<Radio />}
-                            label="Female"
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      <label className="col-form-label">
-                        Date Of Birth<span>*</span>
-                      </label>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer
-                          components={[
-                            'DatePicker',
-                            'MobileDatePicker',
-                            'DesktopDatePicker',
-                            'StaticDatePicker',
-                          ]}
-                        >
-                          <DemoItem>
-                            <DatePicker
-                              name="dob"
-                              value={dayjs(teacher?.dob)}
-                              onChange={handleDate}
-                              format="DD/MM/YYYY"
-                              minDate={minSelectableDate}
-                              maxDate={exactSixYearsAgo}
+                          label="Last Name *"
+                        />
+                        {last_name_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid Last name.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        <label className="col-form-label">
+                          Gender<span>*</span>
+                        </label>
+                        <br />
+                        <FormControl>
+                          <RadioGroup
+                            row
+                            aria-labelledby="demo-controlled-radio-buttons-group"
+                            name="gender"
+                            value={genderData}
+                            onChange={handelChange}
+                          >
+                            <FormControlLabel
+                              value="male"
+                              control={<Radio />}
+                              label="Male"
                             />
-                          </DemoItem>
-                        </DemoContainer>
-                      </LocalizationProvider>
-                      {dobset_col === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid Date of Birth.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12">
-                      {/* <label className="col-form-label">
+                            <FormControlLabel
+                              value="female"
+                              control={<Radio />}
+                              label="Female"
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        <label className="col-form-label">
+                          Date Of Birth<span>*</span>
+                        </label>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer
+                            components={[
+                              'DatePicker',
+                              'MobileDatePicker',
+                              'DesktopDatePicker',
+                              'StaticDatePicker',
+                            ]}
+                          >
+                            <DemoItem>
+                              <DatePicker
+                                name="dob"
+                                value={dayjs(teacher?.dob)}
+                                onChange={handleDate}
+                                format="DD/MM/YYYY"
+                                minDate={minSelectableDate}
+                                maxDate={exactSixYearsAgo}
+                              />
+                            </DemoItem>
+                          </DemoContainer>
+                        </LocalizationProvider>
+                        {dobset_col === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid Date of Birth.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12">
+                        {/* <label className="col-form-label">
                         Mobile Number<span>*</span>
                       </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="phone"
-                        className="form-control"
-                        type="text"
-                        value={teacher.phone}
-                        onChange={handelChange}
-                        label="Mobile Number*"
-                      />
-                      {phone_no_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small> Please enter a valid Mobile number.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12">
-                      {/* <label className="col-form-label">
+                        <TextField
+                          autoComplete="off"
+                          name="phone"
+                          className="form-control"
+                          type="text"
+                          value={teacher.phone}
+                          onChange={handelChange}
+                          label="Mobile Number*"
+                        />
+                        {phone_no_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small> Please enter a valid Mobile number.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12">
+                        {/* <label className="col-form-label">
                         Email Id<span>*</span>
                       </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="email_id"
-                        className="form-control"
-                        type="text"
-                        value={teacher.email_id}
-                        onChange={handelChange}
-                        label="Email Id *"
-                      />
-                      {email_id_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid Email Id.</small>
-                        </p>
-                      )}
-                    </div>
+                        <TextField
+                          autoComplete="off"
+                          name="email_id"
+                          className="form-control"
+                          type="text"
+                          value={teacher.email_id}
+                          onChange={handelChange}
+                          label="Email Id *"
+                        />
+                        {email_id_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid Email Id.</small>
+                          </p>
+                        )}
+                      </div>
 
-                    <div className="col-12">
-                      <Button
-                        className="btn btn-secondary w-100 mt-4 outsecbtn "
-                        variant="contained"
-                        onClick={handleNext}
-                      >
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                      </Button>
-
-                      <Link
-                        href="/"
-                        className="text-dark opacity-75 d-lg-none text-capitalize mt-3 fs-14 d-flex align-items-center gap-2 justify-content-center"
-                      >
-                        <WestIcon /> Back to login
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Box>
-        )}
-
-        {activeStep === 1 && (
-          <Box>
-            <div className="without-login p-3">
-              <div className="access1-card">
-                <div className="card-body">
-                  <div className="row d-flex justify-content-center g-4 mb-4">
-                    <div className="col-12">
-                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
-                        <BackArrowCircle
-                          onClick={handleBack}
-                          role="button"
-                          fontSize="small"
-                        />{' '}
-                        Address Details
-                      </h5>
-                    </div>
-                  </div>
-
-                  <div className="row d-flex justify-content-center g-4">
-                    <div className="col-md-6 col-12 ">
-                      <label className={`col-form-label`}>
-                        Country<span>*</span>
-                      </label>
-                      <CountryDropdown
-                        classes="form-select custom-dropdown"
-                        defaultOptionLabel={teacher.country}
-                        value={teacher.country || ''}
-                        onChange={(e: string) =>
-                          handleInputChangecountry(e, 'country')
-                        }
-                      />
-                      {country_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please select a Country.</small>
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="col-md-6 col-12 ">
-                      <label className="col-form-label">
-                        State<span>*</span>
-                      </label>
-                      <RegionDropdown
-                        data-testid="perStateDropdown"
-                        classes="form-select custom-dropdown"
-                        defaultOptionLabel={teacher.state || ''}
-                        country={teacher.country || ''}
-                        value={teacher.state || ''}
-                        // onChange={(val) => setRegion(val)}
-                        onChange={(e: string) =>
-                          handleInputChangecountry(e, 'state')
-                        }
-                      />
-                      {state_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please select a State.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
-                        District<span>*</span>
-                      </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="district"
-                        className="form-control"
-                        type="text"
-                        value={teacher.district}
-                        onChange={handelChange}
-                        label="District *"
-                      />
-                      {district_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid District name.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
-                        City<span>*</span>
-                      </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="city"
-                        value={teacher.city}
-                        className="form-control"
-                        type="text"
-                        onChange={handelChange}
-                        label="City *"
-                      />
-                      {city_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid City name.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
-                        Address<span>*</span>
-                      </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="address"
-                        className="form-control"
-                        type="text"
-                        value={teacher.address}
-                        onChange={handelChange}
-                        label="Address*"
-                      />
-                      {address_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid Address.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
-                        Pincode<span>*</span>
-                      </label> */}
-                      <TextField
-                        autoComplete="off"
-                        name="pincode"
-                        className="form-control"
-                        type="text"
-                        value={teacher.pincode}
-                        onChange={handelChange}
-                        label="pincode*"
-                      />
-                      {pincode_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid Pincode.</small>
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="col-12">
-                      <Box>
+                      <div className="col-12">
                         <Button
+                          className="btn btn-secondary w-100 mt-4 outsecbtn "
                           variant="contained"
-                          className="btn btn-secondary w-100 outsecbtn mb-2"
                           onClick={handleNext}
                         >
                           {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
-                      </Box>
+
+                        <Link
+                          href="/"
+                          className="text-dark opacity-75 d-lg-none text-capitalize mt-3 fs-14 d-flex align-items-center gap-2 justify-content-center"
+                        >
+                          <WestIcon /> Back to login
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Box>
-        )}
-        {activeStep === 2 && (
-          <Box>
-            <div className="without-login p-3">
-              <div className="access1-card">
-                <div className="card-body">
-                  <div className="row d-flex justify-content-center g-4">
-                    <div className="col-12">
-                      <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
-                        <BackArrowCircle
-                          onClick={handleBack}
-                          role="button"
-                          fontSize="small"
-                        />{' '}
-                        Documents & Logo
-                      </h5>
+            </Box>
+          )}
+
+          {activeStep === 1 && (
+            <Box>
+              <div className="without-login p-3">
+                <div className="access1-card">
+                  <div className="card-body">
+                    <div className="row d-flex justify-content-center g-4 mb-4">
+                      <div className="col-12">
+                        <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                          <BackArrowCircle
+                            onClick={handleBack}
+                            role="button"
+                            fontSize="small"
+                          />{' '}
+                          Address Details
+                        </h5>
+                      </div>
                     </div>
-                    <div className="col-md-6 col-12 ">
-                      {/* <label className="col-form-label">
+
+                    <div className="row d-flex justify-content-center g-4">
+                      <div className="col-md-6 col-12 ">
+                        <label className={`col-form-label`}>
+                          Country<span>*</span>
+                        </label>
+                        <CountryDropdown
+                          classes="form-select custom-dropdown"
+                          defaultOptionLabel={teacher.country}
+                          value={teacher.country || ''}
+                          onChange={(e: string) =>
+                            handleInputChangecountry(e, 'country')
+                          }
+                        />
+                        {country_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please select a Country.</small>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="col-md-6 col-12 ">
+                        <label className="col-form-label">
+                          State<span>*</span>
+                        </label>
+                        <RegionDropdown
+                          data-testid="perStateDropdown"
+                          classes="form-select custom-dropdown"
+                          defaultOptionLabel={teacher.state || ''}
+                          country={teacher.country || ''}
+                          value={teacher.state || ''}
+                          // onChange={(val) => setRegion(val)}
+                          onChange={(e: string) =>
+                            handleInputChangecountry(e, 'state')
+                          }
+                        />
+                        {state_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please select a State.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
+                        District<span>*</span>
+                      </label> */}
+                        <TextField
+                          autoComplete="off"
+                          name="district"
+                          className="form-control"
+                          type="text"
+                          value={teacher.district}
+                          onChange={handelChange}
+                          label="District *"
+                        />
+                        {district_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid District name.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
+                        City<span>*</span>
+                      </label> */}
+                        <TextField
+                          autoComplete="off"
+                          name="city"
+                          value={teacher.city}
+                          className="form-control"
+                          type="text"
+                          onChange={handelChange}
+                          label="City *"
+                        />
+                        {city_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid City name.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
+                        Address<span>*</span>
+                      </label> */}
+                        <TextField
+                          autoComplete="off"
+                          name="address"
+                          className="form-control"
+                          type="text"
+                          value={teacher.address}
+                          onChange={handelChange}
+                          label="Address*"
+                        />
+                        {address_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid Address.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
+                        Pincode<span>*</span>
+                      </label> */}
+                        <TextField
+                          autoComplete="off"
+                          name="pincode"
+                          className="form-control"
+                          type="text"
+                          value={teacher.pincode}
+                          onChange={handelChange}
+                          label="pincode*"
+                        />
+                        {pincode_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please enter a valid Pincode.</small>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="col-12">
+                        <Box>
+                          <Button
+                            variant="contained"
+                            className="btn btn-secondary w-100 outsecbtn mb-2"
+                            onClick={handleNext}
+                          >
+                            {activeStep === steps.length - 1
+                              ? 'Finish'
+                              : 'Next'}
+                          </Button>
+                        </Box>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Box>
+          )}
+          {activeStep === 2 && (
+            <Box>
+              <div className="without-login p-3">
+                <div className="access1-card">
+                  <div className="card-body">
+                    <div className="row d-flex justify-content-center g-4">
+                      <div className="col-12">
+                        <h5 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                          <BackArrowCircle
+                            onClick={handleBack}
+                            role="button"
+                            fontSize="small"
+                          />{' '}
+                          Documents & Logo
+                        </h5>
+                      </div>
+                      <div className="col-md-6 col-12 ">
+                        {/* <label className="col-form-label">
                         Entity<span>*</span>
                       </label> */}
 
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Entity*</InputLabel>
-                        <Select
-                          onChange={(e: SelectChangeEvent<string>) => handleSelect(e)}
-                          label="Entity"
-                          name="entity_id"
-                          value={teacher?.entity_id}
-                          variant="outlined"
-                          sx={{
-                            backgroundColor: inputfield(namecolor),
-                            color: inputfieldtext(namecolor),
-                            '& .MuiSelect-icon': {
-                              color: fieldIcon(namecolor),
-                            },
-                          }}
-                          MenuProps={{
-                            PaperProps: {
-                              style: {
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-simple-select-label">
+                            Entity*
+                          </InputLabel>
+                          <Select
+                            onChange={(e: SelectChangeEvent<string>) =>
+                              handleSelect(e)
+                            }
+                            label="Entity"
+                            name="entity_id"
+                            value={teacher?.entity_id}
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: inputfield(namecolor),
+                              color: inputfieldtext(namecolor),
+                              '& .MuiSelect-icon': {
+                                color: fieldIcon(namecolor),
                               },
-                            },
-                          }}
-                        >
-                          {dataEntity.map((item, idx) => (
-                            <MenuItem
-                              value={item.id}
-                              key={`${item.entity_type}-${idx + 1}`}
+                            }}
+                            MenuProps={{
+                              PaperProps: {
+                                style: {
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                },
+                              },
+                            }}
+                          >
+                            {dataEntity.map((item, idx) => (
+                              <MenuItem
+                                value={item.id}
+                                key={`${item.entity_type}-${idx + 1}`}
+                                sx={{
+                                  backgroundColor: inputfield(namecolor),
+                                  color: inputfieldtext(namecolor),
+                                  '&:hover': {
+                                    backgroundColor: inputfieldhover(namecolor),
+                                  },
+                                }}
+                              >
+                                {item.entity_type}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {entity_error && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>Please select an Entity.</small>
+                          </p>
+                        )}
+                      </div>
+                      {selectedEntity.toLowerCase() === 'college' ? (
+                        <div className="col-md-6 col-12 mb-3">
+                          {/* <label className="col-form-label">
+                          University Name<span>*</span>
+                        </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id="university_id">
+                              University Name*
+                            </InputLabel>
+                            <Select
+                              labelId="university_id"
+                              id="demo2-multiple-name"
+                              name="university_id"
+                              label="University Name*"
+                              onChange={handleSelect}
+                              value={teacher.university_id}
                               sx={{
                                 backgroundColor: inputfield(namecolor),
                                 color: inputfieldtext(namecolor),
-                                '&:hover': {
-                                  backgroundColor: inputfieldhover(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                  },
                                 },
                               }}
                             >
-                              {item.entity_type}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      {entity_error && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please select an Entity.</small>
-                        </p>
-                      )}
-                    </div>
-                    {selectedEntity.toLowerCase() === 'college' ? (
-                      <div className="col-md-6 col-12 mb-3">
-                        {/* <label className="col-form-label">
-                          University Name<span>*</span>
-                        </label> */}
-                        <FormControl fullWidth>
-                          <InputLabel id="university_id">University Name*</InputLabel>
-                          <Select
-                            labelId="university_id"
-                            id="demo2-multiple-name"
-                            name="university_id"
-                            label="University Name*"
-                            onChange={handleSelect}
-                            value={teacher.university_id}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                },
-                              },
-                            }}
-                          >
-                            {universityData.map((item) => (
-                              <MenuItem
-                                key={item.id}
-                                value={item.id}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
-                              >
-                                {item.university_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {universityError === true && (
-                          <p className="error-text " style={{ color: 'red' }}>
-                            <small>Please select an University name.</small>
-                          </p>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="col-md-6 col-12 mb-3">
-                        {/* <label className="col-form-label">
-                          Institution Name<span>*</span>
-                        </label> */}
-                        <FormControl fullWidth>
-                          <InputLabel id="institution_id">Institute*</InputLabel>
-                          <Select
-                            labelId="institution_id"
-                            id="demo2-multiple-name"
-                            name="institution_id"
-                            label="Institute"
-                            onChange={handleSelect}
-                            value={teacher.institution_id}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                },
-                              },
-                            }}
-                          >
-                            {filteredInstitute.map((item) => (
-                              <MenuItem
-                                key={item.id}
-                                value={item.id}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
-                              >
-                                {item.institute_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {institution_id_error === true && (
-                          <p className="error-text " style={{ color: 'red' }}>
-                            <small>Please select an Institute name.</small>
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  {selectedEntity.toLowerCase() === 'college' && (
-                    <div className="row d-flex justify-content-center">
-                      <div className="col-md-12 col-12 mb-3">
-                        {/* <label className="col-form-label">
-                  Institution Name<span>*</span>
-                </label> */}
-                        <FormControl fullWidth>
-                          <InputLabel id="institution_id">Institute*</InputLabel>
-                          <Select
-                            labelId="institution_id"
-                            id="demo2-multiple-name"
-                            name="institution_id"
-                            label="Institute*"
-                            onChange={handleSelect}
-                            value={teacher.institution_id}
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                },
-                              },
-                            }}
-                          >
-                            {filteredInstitute.map((item) => (
-                              <MenuItem
-                                key={item.id}
-                                value={item.id}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
-                              >
-                                {item.institute_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {institution_id_error === true && (
-                          <p className="error-text " style={{ color: 'red' }}>
-                            <small>Please select an Institute name.</small>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  <div className="row d-flex justify-content-center">
-                    <div className="col-md-6 col-12 mb-3">
-                      {/* <label className="col-form-label">
-                Experience(Yr)<span>*</span>
-              </label> */}
-
-                      <TextField
-                        placeholder='Teaching Experience'
-                        autoComplete="off"
-                        name="experience"
-                        className="form-control"
-                        type="number"
-                        value={teacher.experience}
-                        label="Teaching Experience*"
-                        onChange={handelChange}
-                        inputProps={{ min: '0' }}
-                      />
-                      {teaching_experience_error === true && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small>Please enter a valid Teaching Experience.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-md-6 col-12 mb-3">
-                      {/* <label className="col-form-label">
-                Qualification<span>*</span>
-              </label> */}
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-multiple-name-label">
-                          Qualification*
-                        </InputLabel>
-                        <Select
-                          labelId="demo-multiple-name-label"
-                          id="demo1-multiple-name"
-                          name="qualification"
-                          onChange={handleSelect}
-                          value={teacher.qualification}
-                          input={<OutlinedInput label="Qualification" />}
-                        >
-                          {qualifications.map((item) => (
-                            <MenuItem key={item} value={item}>
-                              {item}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      {qualifications_error && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please select a Qualification.</small>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  {selectedEntity.toLowerCase() === 'college' &&
-                    boxes.length > 0 &&
-                    boxes.map((box, index) => (
-                      <div key={index} className="row d-flex justify-content-center">
-                        {/* Course Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          {/* <label className="col-form-label">
-                            Course<span>*</span>
-                          </label> */}
-                          <FormControl fullWidth>
-                            <InputLabel id={`course_id_${index}`}>Course*</InputLabel>
-                            <Select
-                              labelId={`course_id_${index}`}
-                              id={`demo3-multiple-name-${index}`}
-                              name="course_id"
-                              label="Course*"
-                              onChange={(event: any) =>
-                                handelSubjectBoxChange(event, index)
-                              }
-                              value={box.course_id || ''}
-                            >
-                              {filteredCourse.map((course) => (
-                                <MenuItem key={course.id} value={course.id}>
-                                  {course.course_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForCourse_semester_subject[index]?.course_id_error ===
-                            true && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select Course name.</small>
-                              </p>
-                            )}
-                        </div>
-
-                        {/* Semester Selection */}
-                        <div className="col-md-4 col-12 ">
-                          {/* <label className="col-form-label">
-                            Semester <span>*</span>
-                          </label> */}
-                          <FormControl fullWidth>
-                            <InputLabel id={`semester_id_${index}`}>
-                              Semester*
-                            </InputLabel>
-                            <Select
-                              labelId={`semester_id_${index}`}
-                              id={`semester_select_${index}`}
-                              name="semester_number"
-                              label="Semester*"
-                              onChange={(event: any) =>
-                                handelSubjectBoxChange(event, index)
-                              }
-                              value={box.semester_number || ''}
-                            >
-                              {box.filteredSemesters?.map((item) => (
+                              {universityData.map((item) => (
                                 <MenuItem
                                   key={item.id}
-                                  value={item.semester_number || ''}
+                                  value={item.id}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
                                 >
-                                  {item.semester_number}
+                                  {item.university_name}
                                 </MenuItem>
                               ))}
                             </Select>
                           </FormControl>
-                          {errorForCourse_semester_subject[index]
-                            ?.semester_number_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a Semester.</small>
-                              </p>
-                            )}
+                          {universityError === true && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small>Please select an University name.</small>
+                            </p>
+                          )}
                         </div>
-
-                        {/* Subjects Selection */}
-                        <div className="col-md-4 col-12 ">
+                      ) : (
+                        <div className="col-md-6 col-12 mb-3">
                           {/* <label className="col-form-label">
-                            Subjects Taught<span>*</span>
-                          </label> */}
+                          Institution Name<span>*</span>
+                        </label> */}
                           <FormControl fullWidth>
-                            <InputLabel id={`subject_label_${index}`}>
-                              Subject*
+                            <InputLabel id="institution_id">
+                              Institute*
                             </InputLabel>
                             <Select
-                              labelId={`subject_label_${index}`}
-                              id={`subject_select_${index}`}
-                              multiple
-                              name="subjects"
-                              value={box.subjects || []}
-                              onChange={(event: any) =>
-                                handelSubjectBoxChange(event, index)
-                              }
-                              input={<OutlinedInput label="Subject" />}
-                              renderValue={(selected) =>
-                                (selected as string[])
-                                  .map((id) => {
-                                    const subject = totleSubject.find(
-                                      (subject: any) =>
-                                        subject.subject_name === id,
-                                    );
-                                    return subject ? subject.subject_name : '';
-                                  })
-                                  .join(', ')
-                              }
+                              labelId="institution_id"
+                              id="demo2-multiple-name"
+                              name="institution_id"
+                              label="Institute"
+                              onChange={handleSelect}
+                              value={teacher.institution_id}
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                  },
+                                },
+                              }}
                             >
-                              {box.filteredSubjects?.map((subject: any) => (
+                              {filteredInstitute.map((item) => (
                                 <MenuItem
-                                  key={subject.subject_id}
-                                  value={subject.subject_name}
+                                  key={item.id}
+                                  value={item.id}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
                                 >
-                                  <Checkbox
-                                    checked={box.subjects?.includes(
-                                      subject.subject_name.toString(),
-                                    )}
-                                  />
-                                  <ListItemText
-                                    primary={subject.subject_name}
-                                  />
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>
                           </FormControl>
-                          {errorForCourse_semester_subject[index]
-                            ?.subjects_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select at least one subject.</small>
-                              </p>
-                            )}
+                          {institution_id_error === true && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small>Please select an Institute name.</small>
+                            </p>
+                          )}
                         </div>
-                        <div>
-                          {(selectedEntity.toLowerCase() === 'college' ||
-                            selectedEntity.toLowerCase() === 'school') &&
-                            ((boxes.length === 1 && index === 0) ||
-                              (boxes.length > 1 &&
-                                index === boxes.length - 1)) && (
-                              <AddCircleIcon
-                                className="m-2 cursor-pointer"
-                                onClick={() => handleAddmore(selectedEntity)}
-                              />
-                            )}
-                          {index > 0 && (
-                            <DeleteOutlinedIcon
-                              onClick={() =>
-                                handleRemove(selectedEntity, index)
-                              }
-                              className="m-2 cursor-pointer"
-                            />
+                      )}
+                    </div>
+                    {selectedEntity.toLowerCase() === 'college' && (
+                      <div className="row d-flex justify-content-center">
+                        <div className="col-md-12 col-12 mb-3">
+                          {/* <label className="col-form-label">
+                  Institution Name<span>*</span>
+                </label> */}
+                          <FormControl fullWidth>
+                            <InputLabel id="institution_id">
+                              Institute*
+                            </InputLabel>
+                            <Select
+                              labelId="institution_id"
+                              id="demo2-multiple-name"
+                              name="institution_id"
+                              label="Institute*"
+                              onChange={handleSelect}
+                              value={teacher.institution_id}
+                              sx={{
+                                backgroundColor: inputfield(namecolor),
+                                color: inputfieldtext(namecolor),
+                                '& .MuiSelect-icon': {
+                                  color: fieldIcon(namecolor),
+                                },
+                              }}
+                              MenuProps={{
+                                PaperProps: {
+                                  style: {
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                  },
+                                },
+                              }}
+                            >
+                              {filteredInstitute.map((item) => (
+                                <MenuItem
+                                  key={item.id}
+                                  value={item.id}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '&:hover': {
+                                      backgroundColor:
+                                        inputfieldhover(namecolor),
+                                    },
+                                  }}
+                                >
+                                  {item.institute_name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          {institution_id_error === true && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small>Please select an Institute name.</small>
+                            </p>
                           )}
                         </div>
                       </div>
-                    ))}
-                  {selectedEntity.toLowerCase() === 'school' &&
-                    boxesForSchool.length > 0 &&
-                    boxesForSchool.map((box, index) => (
-                      <div
-                        key={index}
-                        className="row d-flex justify-content-center mt-0 g-4"
-                      >
-                        {/* Class Selection */}
+                    )}
+                    <div className="row d-flex justify-content-center">
+                      <div className="col-md-6 col-12 mb-3">
+                        {/* <label className="col-form-label">
+                Experience(Yr)<span>*</span>
+              </label> */}
+
+                        <TextField
+                          placeholder="Teaching Experience"
+                          autoComplete="off"
+                          name="experience"
+                          className="form-control"
+                          type="number"
+                          value={teacher.experience}
+                          label="Teaching Experience*"
+                          onChange={handelChange}
+                          inputProps={{ min: '0' }}
+                        />
+                        {teaching_experience_error === true && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>
+                              Please enter a valid Teaching Experience.
+                            </small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-md-6 col-12 mb-3">
+                        {/* <label className="col-form-label">
+                Qualification<span>*</span>
+              </label> */}
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-multiple-name-label">
+                            Qualification*
+                          </InputLabel>
+                          <Select
+                            labelId="demo-multiple-name-label"
+                            id="demo1-multiple-name"
+                            name="qualification"
+                            onChange={handleSelect}
+                            value={teacher.qualification}
+                            input={<OutlinedInput label="Qualification" />}
+                          >
+                            {qualifications.map((item) => (
+                              <MenuItem key={item} value={item}>
+                                {item}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {qualifications_error && (
+                          <p className="error-text" style={{ color: 'red' }}>
+                            <small>Please select a Qualification.</small>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    {selectedEntity.toLowerCase() === 'college' &&
+                      boxes.length > 0 &&
+                      boxes.map((box, index) => (
                         <div
-                           className={box.selected_class_name}
-                          //className="col-md-6 col-12"
+                          key={index}
+                          className="row d-flex justify-content-center"
                         >
-                          {/* <label className="col-form-label">
-                            Class<span>*</span>
-                          </label> */}
-                          <FormControl fullWidth>
-                            <InputLabel id={`class_id_${index}`}>
-                              Class*
-                            </InputLabel>
-                            <Select
-                              labelId={`class_id_${index}`}
-                              id={`class_select_${index}`}
-                              name="class_id"
-                              onChange={(event: any) =>
-                                handelSchoolBoxChange(event, index)
-                              }
-                              value={box.class_id || ''}
-                              input={<OutlinedInput label="Class" />}
-                            >
-                              {dataClass.map((item) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                  {item.class_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForClass_stream_subject[index]
-                            ?.class_id_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a Class.</small>
-                              </p>
-                            )}
-                        </div>
-                        {box.is_Stream && (
-                          <div className="col-md-4 col-12 ">
+                          {/* Course Selection */}
+                          <div className="col-md-4 col-12 mb-3">
                             {/* <label className="col-form-label">
-                              Stream Name<span>*</span>
-                            </label> */}
+                            Course<span>*</span>
+                          </label> */}
                             <FormControl fullWidth>
-                              <InputLabel id={`stream_id_${index}`}>
-                                Stream Name*
+                              <InputLabel id={`course_id_${index}`}>
+                                Course*
                               </InputLabel>
                               <Select
-                                labelId={`stream_id_${index}`}
-                                id={`stream_select_${index}`}
-                                name="stream"
+                                labelId={`course_id_${index}`}
+                                id={`demo3-multiple-name-${index}`}
+                                name="course_id"
+                                label="Course*"
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.course_id || ''}
+                              >
+                                {filteredCourse.map((course) => (
+                                  <MenuItem key={course.id} value={course.id}>
+                                    {course.course_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.course_id_error === true && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select Course name.</small>
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Semester Selection */}
+                          <div className="col-md-4 col-12 ">
+                            {/* <label className="col-form-label">
+                            Semester <span>*</span>
+                          </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`semester_id_${index}`}>
+                                Semester*
+                              </InputLabel>
+                              <Select
+                                labelId={`semester_id_${index}`}
+                                id={`semester_select_${index}`}
+                                name="semester_number"
+                                label="Semester*"
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.semester_number || ''}
+                              >
+                                {box.filteredSemesters?.map((item) => (
+                                  <MenuItem
+                                    key={item.id}
+                                    value={item.semester_number || ''}
+                                  >
+                                    {item.semester_number}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.semester_number_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Semester.</small>
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Subjects Selection */}
+                          <div className="col-md-4 col-12 ">
+                            {/* <label className="col-form-label">
+                            Subjects Taught<span>*</span>
+                          </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject*
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                multiple
+                                name="subjects"
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                input={<OutlinedInput label="Subject" />}
+                                renderValue={(selected) =>
+                                  (selected as string[])
+                                    .map((id) => {
+                                      const subject = totleSubject.find(
+                                        (subject: any) =>
+                                          subject.subject_name === id,
+                                      );
+                                      return subject
+                                        ? subject.subject_name
+                                        : '';
+                                    })
+                                    .join(', ')
+                                }
+                              >
+                                {box.filteredSubjects?.map((subject: any) => (
+                                  <MenuItem
+                                    key={subject.subject_id}
+                                    value={subject.subject_name}
+                                  >
+                                    <Checkbox
+                                      checked={box.subjects?.includes(
+                                        subject.subject_name.toString(),
+                                      )}
+                                    />
+                                    <ListItemText
+                                      primary={subject.subject_name}
+                                    />
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
+                          </div>
+                          <div>
+                            {(selectedEntity.toLowerCase() === 'college' ||
+                              selectedEntity.toLowerCase() === 'school') &&
+                              ((boxes.length === 1 && index === 0) ||
+                                (boxes.length > 1 &&
+                                  index === boxes.length - 1)) && (
+                                <AddCircleIcon
+                                  className="m-2 cursor-pointer"
+                                  onClick={() => handleAddmore(selectedEntity)}
+                                />
+                              )}
+                            {index > 0 && (
+                              <DeleteOutlinedIcon
+                                onClick={() =>
+                                  handleRemove(selectedEntity, index)
+                                }
+                                className="m-2 cursor-pointer"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    {selectedEntity.toLowerCase() === 'school' &&
+                      boxesForSchool.length > 0 &&
+                      boxesForSchool.map((box, index) => (
+                        <div
+                          key={index}
+                          className="row d-flex justify-content-center mt-0 g-4"
+                        >
+                          {/* Class Selection */}
+                          <div
+                            className={box.selected_class_name}
+                            //className="col-md-6 col-12"
+                          >
+                            {/* <label className="col-form-label">
+                            Class<span>*</span>
+                          </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`class_id_${index}`}>
+                                Class*
+                              </InputLabel>
+                              <Select
+                                labelId={`class_id_${index}`}
+                                id={`class_select_${index}`}
+                                name="class_id"
                                 onChange={(event: any) =>
                                   handelSchoolBoxChange(event, index)
                                 }
-                                value={box.stream || ''}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '& .MuiSelect-icon': {
-                                    color: fieldIcon(namecolor),
-                                  },
-                                }}
-                                MenuProps={{
-                                  PaperProps: {
-                                    style: {
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                    },
-                                  },
-                                }}
+                                value={box.class_id || ''}
+                                input={<OutlinedInput label="Class" />}
                               >
-                                {stream.map((item) => (
-                                  <MenuItem
-                                    key={item}
-                                    value={item}
-                                    sx={{
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                      '&:hover': {
-                                        backgroundColor:
-                                          inputfieldhover(namecolor),
-                                      },
-                                    }}
-                                  >
-                                    {item}
+                                {dataClass.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.class_name}
                                   </MenuItem>
                                 ))}
                               </Select>
                             </FormControl>
                             {errorForClass_stream_subject[index]
-                              ?.stream_error && (
+                              ?.class_id_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Class.</small>
+                              </p>
+                            )}
+                          </div>
+                          {box.is_Stream && (
+                            <div className="col-md-4 col-12 ">
+                              {/* <label className="col-form-label">
+                              Stream Name<span>*</span>
+                            </label> */}
+                              <FormControl fullWidth>
+                                <InputLabel id={`stream_id_${index}`}>
+                                  Stream Name*
+                                </InputLabel>
+                                <Select
+                                  labelId={`stream_id_${index}`}
+                                  id={`stream_select_${index}`}
+                                  name="stream"
+                                  onChange={(event: any) =>
+                                    handelSchoolBoxChange(event, index)
+                                  }
+                                  value={box.stream || ''}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '& .MuiSelect-icon': {
+                                      color: fieldIcon(namecolor),
+                                    },
+                                  }}
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: {
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                      },
+                                    },
+                                  }}
+                                >
+                                  {stream.map((item) => (
+                                    <MenuItem
+                                      key={item}
+                                      value={item}
+                                      sx={{
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                        '&:hover': {
+                                          backgroundColor:
+                                            inputfieldhover(namecolor),
+                                        },
+                                      }}
+                                    >
+                                      {item}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                              {errorForClass_stream_subject[index]
+                                ?.stream_error && (
                                 <p
                                   className="error-text"
                                   style={{ color: 'red' }}
@@ -2165,171 +2223,175 @@ console.log(valid,teacher.university_id)
                                   <small>Please select a Stream.</small>
                                 </p>
                               )}
-                          </div>
-                        )}
-                        <div className={box.selected_class_name}>
-                          {/* <label className="col-form-label">
+                            </div>
+                          )}
+                          <div className={box.selected_class_name}>
+                            {/* <label className="col-form-label">
                             Subjects Taught<span>*</span>
                           </label> */}
-                          <FormControl fullWidth>
-                            <InputLabel id={`subject_label_${index}`}>
-                              Subject*
-                            </InputLabel>
-                            <Select
-                              labelId={`subject_label_${index}`}
-                              id={`subject_select_${index}`}
-                              multiple
-                              name="subjects"
-                              value={box.subjects || []}
-                              onChange={(event: any) =>
-                                handelSchoolBoxChange(event, index)
-                              }
-                              input={<OutlinedInput label="Subject" />}
-                              renderValue={(selected) =>
-                                (selected as string[])
-                                  .map((id) => {
-                                    const subject = totleSubject.find(
-                                      (subject: any) =>
-                                        subject.subject_name === id,
-                                    );
-                                    return subject ? subject.subject_name : '';
-                                  })
-                                  .join(', ')
-                              }
-                            >
-                              {box.filteredSubjects?.map((subject: any) => (
-                                <MenuItem
-                                  key={subject.subject_id}
-                                  value={subject.subject_name}
-                                >
-                                  <Checkbox
-                                    checked={box.subjects?.includes(
-                                      subject.subject_name.toString(),
-                                    )}
-                                  />
-                                  <ListItemText
-                                    primary={subject.subject_name}
-                                  />
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForClass_stream_subject[index]
-                            ?.subjects_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select at least one subject.</small>
-                              </p>
-                            )}
-                        </div>
-
-                        <div>
-                          {(selectedEntity.toLowerCase() === 'college' ||
-                            selectedEntity.toLowerCase() === 'school') &&
-                            ((boxesForSchool.length === 1 && index === 0) ||
-                              (boxesForSchool.length > 1 &&
-                                index === boxesForSchool.length - 1)) && (
-                              <AddCircleIcon
-                                className="m-2 cursor-pointer"
-                                onClick={() => handleAddmore(selectedEntity)}
-                              />
-                            )}
-                          {index > 0 && (
-                            <DeleteOutlinedIcon
-                              onClick={() =>
-                                handleRemove(selectedEntity, index)
-                              }
-                              className="m-2 cursor-pointer"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  <div className="row d-flex justify-content-between mt-0 g-4">
-                    <div className="col-12 ">
-                      <label className="col-form-label">
-                        Document<span>*</span>
-                      </label>
-                      <UploadBtn
-                        label="Upload Documents"
-                        name="document"
-                        accept=".pdf, .jpg, .jpeg, .png, .gif"
-                        handleFileChange={handleFileChange}
-                      />
-                      <div>
-                        {allselectedfiles.length > 0 && (
-                          <ul className='doclist'>
-                            {allselectedfiles.map((file, index) => (
-                              <li
-                                key={index}
-                                className="flex items-center justify-between"
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject*
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                multiple
+                                name="subjects"
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
+                                }
+                                input={<OutlinedInput label="Subject" />}
+                                renderValue={(selected) =>
+                                  (selected as string[])
+                                    .map((id) => {
+                                      const subject = totleSubject.find(
+                                        (subject: any) =>
+                                          subject.subject_name === id,
+                                      );
+                                      return subject
+                                        ? subject.subject_name
+                                        : '';
+                                    })
+                                    .join(', ')
+                                }
                               >
-                                {file.name}
-                                <DeleteOutlinedIcon
-                                  className="m-2 cursor-pointer"
-                                  onClick={() => handleRemoveFile(index)}
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                      <div>
-                            {document_error && (
+                                {box.filteredSubjects?.map((subject: any) => (
+                                  <MenuItem
+                                    key={subject.subject_id}
+                                    value={subject.subject_name}
+                                  >
+                                    <Checkbox
+                                      checked={box.subjects?.includes(
+                                        subject.subject_name.toString(),
+                                      )}
+                                    />
+                                    <ListItemText
+                                      primary={subject.subject_name}
+                                    />
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.subjects_error && (
                               <p
-                                className="error-text "
+                                className="error-text"
                                 style={{ color: 'red' }}
                               >
-                                <small >
-                                  {' '}
-                                  Please select at least a Document file.
+                                <small>
+                                  Please select at least one subject.
                                 </small>
                               </p>
                             )}
                           </div>
-                    </div>
-                    <div className="col-lg-12">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            data-testid="checkbox"
-                            onChange={handleTermandCondi}
-                          />
-                        }
-                        label={
-                          <Typography variant="body2">
-                            By registering your account you have to agree with
-                            our{' '}
-                            <Link
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleTACpopup();
-                              }}
-                              sx={{ fontSize: '0.85rem' }} // Adjusts font size of the link
-                            >
-                              Terms & Conditions
-                            </Link>
-                          </Typography>
-                        }
-                        sx={{
-                          '& .MuiTypography-root': { fontSize: '0.85rem' },
-                        }} // Adjusts font size of the entire label
-                      />
-                    </div>
-                    <div className="col-12">
-                      <div className=" d-flex justify-content-center  flex-column">
-                        <Button
-                          variant="contained"
-                          onClick={handleSubmit}
-                          disabled={CheckTermandcondi}
-                          className="py-3"
-                        >
-                          Submit
-                        </Button>
+
+                          <div>
+                            {(selectedEntity.toLowerCase() === 'college' ||
+                              selectedEntity.toLowerCase() === 'school') &&
+                              ((boxesForSchool.length === 1 && index === 0) ||
+                                (boxesForSchool.length > 1 &&
+                                  index === boxesForSchool.length - 1)) && (
+                                <AddCircleIcon
+                                  className="m-2 cursor-pointer"
+                                  onClick={() => handleAddmore(selectedEntity)}
+                                />
+                              )}
+                            {index > 0 && (
+                              <DeleteOutlinedIcon
+                                onClick={() =>
+                                  handleRemove(selectedEntity, index)
+                                }
+                                className="m-2 cursor-pointer"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    <div className="row d-flex justify-content-between mt-0 g-4">
+                      <div className="col-12 ">
+                        <label className="col-form-label">
+                          Document<span>*</span>
+                        </label>
+                        <UploadBtn
+                          label="Upload Documents"
+                          name="document"
+                          accept=".pdf, .jpg, .jpeg, .png, .gif"
+                          handleFileChange={handleFileChange}
+                        />
+                        <div>
+                          {allselectedfiles.length > 0 && (
+                            <ul className="doclist">
+                              {allselectedfiles.map((file, index) => (
+                                <li
+                                  key={index}
+                                  className="flex items-center justify-between"
+                                >
+                                  {file.name}
+                                  <DeleteOutlinedIcon
+                                    className="m-2 cursor-pointer"
+                                    onClick={() => handleRemoveFile(index)}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                        <div>
+                          {document_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small>
+                                {' '}
+                                Please select at least a Document file.
+                              </small>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="col-lg-12">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              data-testid="checkbox"
+                              onChange={handleTermandCondi}
+                            />
+                          }
+                          label={
+                            <Typography variant="body2">
+                              By registering your account you have to agree with
+                              our{' '}
+                              <Link
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleTACpopup();
+                                }}
+                                sx={{ fontSize: '0.85rem' }} // Adjusts font size of the link
+                              >
+                                Terms & Conditions
+                              </Link>
+                            </Typography>
+                          }
+                          sx={{
+                            '& .MuiTypography-root': { fontSize: '0.85rem' },
+                          }} // Adjusts font size of the entire label
+                        />
+                      </div>
+                      <div className="col-12">
+                        <div className=" d-flex justify-content-center  flex-column">
+                          <Button
+                            variant="contained"
+                            onClick={handleSubmit}
+                            disabled={CheckTermandcondi}
+                            className="py-3"
+                          >
+                            Submit
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {/* <div className="form-check my-3 fs-14">
+                    {/* <div className="form-check my-3 fs-14">
                     <input
                       data-testid="checkbox"
                       className="form-check-input"
@@ -2356,28 +2418,66 @@ console.log(valid,teacher.university_id)
                     </label>
                   </div> */}
 
-                  <Dialog open={popupTermandCondi} onClose={handleClose}>
-                    <DialogTitle>{'Terms and Condition'}</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        Content of Gyanshetu Terms and Conditions...... will
-                        come soon
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleClose} color="primary">
-                        Close
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                  <OtpCard open={popupOtpCard} handleOtpClose={() => setPopupOtpCard(false)} handleOtpSuccess={(otp: string) => handleOtpSubmit(otp)} email={teacher.email_id} />
+                    <Dialog open={popupTermandCondi} onClose={handleClose}>
+                      <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Content of Gyanshetu Terms and Conditions...... will
+                          come soon
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                          Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                    <OtpCard
+                      open={popupOtpCard}
+                      handleOtpClose={() => setPopupOtpCard(false)}
+                      handleOtpSuccess={(otp: string) => handleOtpSubmit(otp)}
+                      email={teacher.email_id}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </Box>
-        )}
+            </Box>
+          )}
+        </Box>
       </Box>
-    </Box>
+      <footer className="login-footer">
+        <p className="mb-0">Copyright © 2025. All right reserved.</p>
+        <List
+          sx={{
+            display: 'inline-flex',
+            flexWrap: 'wrap',
+            gap: 2,
+            padding: 0,
+          }}
+        >
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <LinkReact to="/privacypolicy" color="primary">
+              Privacy Policy
+            </LinkReact>
+          </ListItem>
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <LinkReact to="/refundpolicy" color="primary">
+              Refund Policy
+            </LinkReact>
+          </ListItem>
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <LinkReact to="/Disclaimer" color="primary">
+              Disclaimer
+            </LinkReact>
+          </ListItem>
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <LinkReact to="/ServicesAgreement" color="primary">
+              End User Aggrement
+            </LinkReact>
+          </ListItem>
+        </List>
+      </footer>
+    </>
   );
 };
 

@@ -38,9 +38,11 @@ import '../../assets/css/main.scss';
 //import 'react-perfect-scrollbar/dist/css/styles.css';
 import { useTheme } from '@mui/material/styles';
 import { ImageModal } from '../../Components/ImageModal';
+import { ChatTable } from './Tablechat';
 
 const Chat = () => {
   const userid = localStorage.getItem('user_uuid') || '';
+  const studentid = localStorage.getItem('_id') || '';
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [studentDetail, setStudentData] = useState<any>();
@@ -66,7 +68,6 @@ const Chat = () => {
   const [expandSearch, setExpandSearch] = useState(false);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
 
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '/{/}/');
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
@@ -86,7 +87,7 @@ const Chat = () => {
   const [chathistoryrecent, setchathistoryrecent] = useState<any>();
   const [chatsaved, setChatSaved] = useState<boolean>(false);
   const [displayedChat, setDisplayedChat] = useState<any>([]);
-  const { postData, getData, deleteData } = useApi();
+  const { postDataJson, getData, deleteData } = useApi();
   const navigate = useNavigate();
   const profileCompletion = localStorage.getItem('Profile_completion') || '0';
   const [searchQuery, setSearchQuery] = useState('');
@@ -322,7 +323,7 @@ const Chat = () => {
   };
 
   const callAPI = async () => {
-    getData(`${StudentGETURL}${userdata ? `/${userdata?.user_uuid}` : ''}`)
+    getData(`${StudentGETURL}${userid ? `/${userid}` : ''}`)
       .then((data: any) => {
         setStudentData(data?.data);
         if (
@@ -344,7 +345,7 @@ const Chat = () => {
           theme: 'colored',
         });
       });
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${studentid}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
@@ -417,6 +418,7 @@ const Chat = () => {
             question: chatmodify[0]?.question,
             answer: chatmodify[0]?.answer,
             diagram_code: chatmodify[0]?.diagram_code,
+            table_code: chatmodify[0]?.table_code,
           },
         ];
 
@@ -530,7 +532,7 @@ const Chat = () => {
     setLoading(false);
     setSearch('');
     setShowInitialPage(false);
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${studentid}`)
       .then((data: any) => {
         setchathistory(data?.data);
         setchatlistData(data?.data);
@@ -629,7 +631,7 @@ const Chat = () => {
       setchatData((prevState: any) => [...prevState, newData]);
       setLoading(false);
       setSearch('');
-      getData(`${chatlisturl}/${userdata?.id}`)
+      getData(`${chatlisturl}/${studentid}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setstatredchat(data?.data?.filter((chat: any) => chat?.flagged));
@@ -644,7 +646,7 @@ const Chat = () => {
         });
     };
 
-    postData(`${ChatURL}`, payload)
+    postDataJson(`${ChatURL}`, payload)
       .then((data) => {
         // if (data.status === 200) {
         //   handleResponse(data);
@@ -654,7 +656,7 @@ const Chat = () => {
           setLoaderMsg('Searching result from Rag model');
 
           if (studentDetail?.academic_history?.institution_type === 'school') {
-            postData(`${ChatRAGURL}`, {
+            postDataJson(`${ChatRAGURL}`, {
               user_query: search,
               student_id: userid,
               school_college_selection:
@@ -702,15 +704,16 @@ const Chat = () => {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
-                    student_id: userid,
+                    student_id: studentid,
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
                   if (response?.code !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -718,7 +721,7 @@ const Chat = () => {
                 } else {
                   setLoaderMsg('Fetching Data from Ollama model.');
 
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: userid,
                     class_or_course_selection: studentDetail.class.name,
@@ -727,30 +730,24 @@ const Chat = () => {
                       if (response?.status) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          student_id: userid,
+                          student_id: studentid,
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
                 }
               })
               .catch(() =>
-                // getData(
-                //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                //     search
-                //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.class.name)}`
-                // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: userid,
                   class_or_course_selection: studentDetail?.class.name,
@@ -759,17 +756,17 @@ const Chat = () => {
                     if (response?.status) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        student_id: userid,
+                        student_id: studentid,
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   }),
@@ -812,7 +809,7 @@ const Chat = () => {
             // return getData(
             //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
             // )
-            return postData(`${ChatRAGURL}`, queryParams)
+            return postDataJson(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status || response?.code === 402) {
                   function formatAnswer(answer: any) {
@@ -844,29 +841,23 @@ const Chat = () => {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
-                    student_id: userid,
+                    student_id: studentid,
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
                   if (response?.code !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
                   handleResponse(formattedResponse);
                 } else {
                   setLoaderMsg('Fetching Data from Ollama model.');
-                  // getData(
-                  //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                  //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                  //     search
-                  //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
-                  // )
-
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
                     student_id: userid,
                     class_or_course_selection: course_name,
@@ -875,17 +866,17 @@ const Chat = () => {
                       if (response?.status) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          student_id: userid,
+                          student_id: studentid,
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -893,13 +884,7 @@ const Chat = () => {
               })
               .catch(() => {
                 setLoaderMsg('Fetching Data from Ollama model.');
-                // getData(
-                //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-                //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-                //     search
-                //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
-                // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: userid,
                   class_or_course_selection: course_name,
@@ -908,17 +893,17 @@ const Chat = () => {
                     if (response?.status) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        student_id: userid,
+                        student_id: studentid,
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   });
@@ -931,12 +916,12 @@ const Chat = () => {
       .then((data: any) => {
         if (data?.status) {
           const ChatStorepayload = {
-            student_id: userid,
+            student_id: studentid,
             chat_question: search,
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status) {
                 // handleResponse(data);
@@ -948,17 +933,9 @@ const Chat = () => {
 
           handleResponsereg(data);
         } else if (data?.code === 404) {
-          // const Ollamapayload = {
-          //   user_query: search,
-          // };
-          // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg('Fetching Data from Ollama model.');
-          // return getData(
-          //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-          //     search
-          //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ? studentDetail?.class.name : studentDetail?.academic_history?.course_id)}`
-          // );
-          return postData(`${ChatOLLAMAURL}`, {
+
+          return postDataJson(`${ChatOLLAMAURL}`, {
             user_query: search,
             student_id: userid,
             class_or_course_selection:
@@ -974,12 +951,12 @@ const Chat = () => {
         if (data?.status) {
           // handleResponse(data);
           const ChatStorepayload = {
-            student_id: userid,
+            student_id: studentid,
             chat_question: search,
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status) {
                 // handleResponse(data);
@@ -991,7 +968,7 @@ const Chat = () => {
           handleResponsereg(data);
         } else if (data?.code === 404) {
           setLoaderMsg('Fetching data from Chat-GPT API.');
-          return postData(`${ChatURLAI}`, payload);
+          return postDataJson(`${ChatURLAI}`, payload);
         } else if (data) {
           handleError(data);
         }
@@ -1008,43 +985,10 @@ const Chat = () => {
 
   useEffect(() => {
     if (dataflagged) {
-      // setSelectedChat([intials]);
-
       setSelectedChat([]);
-      // if (!expandedChat.length) {
-      //   setSelectedChat([]);
-      // }
     }
   }, [dataflagged]);
 
-  // useEffect(() => {
-  //   if (chat?.length > 0) {
-  //     console.log({ displayChat });
-  //     console.log({ chat });
-  //     console.log("useEffect called at 717");
-  //     localStorage.setItem(
-  //       "chatData",
-  //       JSON.stringify(chat?.length ? chat : displayedChat)
-  //     );
-  //   }
-  // }, [chat]);
-
-  // let chatData: any;
-  // useEffect(() => {
-  //   const chatDataString = localStorage?.getItem("chatData");
-
-  //   if (chatDataString) {
-  //     chatData = JSON.parse(chatDataString);
-  //   } else {
-  //     chatData = null;
-  //   }
-
-  //   if (chatData?.length > 0 && !hasInitialExpandedChat) {
-  //     console.log("Chat Data Dependency ======>>>>>>", chatData);
-  //     console.log("save chat local gets called in chat index.tsx");
-  //     saveChatlocal();
-  //   }
-  // }, [chatData]);
   useEffect(() => {
     if (chat?.length > 0) {
       const existingChatData = localStorage.getItem('chatData');
@@ -1110,28 +1054,21 @@ const Chat = () => {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: studentid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: studentid,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     }
-    // postData(`${chataddurl}`, chat_payload)
-    await postData(`${chataddconversationurl}`, chat_payload)
+    await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
-        // setChatSaved(false);
-        // toast.success(chatdata?.message, {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-
         callAPI();
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
@@ -1158,27 +1095,22 @@ const Chat = () => {
     if (datatest?.length !== 0 && Array.isArray(chat) && chat.length >= 2) {
       // chat?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: studentid,
         chat_title: chat[0]?.question,
         chat_conversation: JSON.stringify(chat),
         flagged: chatsaved,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: studentid,
         chat_title: chat[0]?.question,
         chat_conversation: JSON.stringify(chat),
         flagged: chatsaved,
       };
     }
-    // postData(`${chataddurl}`, chat_payload)
-    await postData(`${chataddconversationurl}`, chat_payload)
+    await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         setChatSaved(false);
-        // toast.success(chatdata?.message, {
-        //   hideProgressBar: true,
-        //   theme: 'colored',
-        // });
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
 
@@ -1192,10 +1124,6 @@ const Chat = () => {
       });
   };
 
-  // useEffect(() => {
-  //   setFilteredProducts([]);
-  // }, []);
-
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === 'Enter') {
       searchData();
@@ -1208,24 +1136,6 @@ const Chat = () => {
       await saveChat();
     }
     setSelectedChat([]);
-
-    //     setSelectedChat([{
-    //   "answer": [
-    //     "Welcome",
-    //     "to",
-    //     "GYAN",
-    //     "Setu",
-    //     "Chat",
-    //     "!",
-    //     "How",
-    //     "can",
-    //     "I",
-    //     "assist",
-    //     "you",
-    //     "today",
-    //     "?"
-    //   ],
-    // },])
     setDataflagged(true);
     setTimeout(() => {
       setDataflagged(false);
@@ -1297,6 +1207,7 @@ const Chat = () => {
 
       chatdata.answer = elements;
       chatdata.diagram_code = itemchat?.diagram_code;
+      chatdata.table_code = itemchat?.table_code;
       chatdata.speak = false;
       chatdata.like_dislike = null;
       chatdataset.push(chatdata);
@@ -1353,33 +1264,6 @@ const Chat = () => {
     saveChatlocal();
   };
 
-  // const isSmallScreen = useMediaQuery("(max-width:600px)");
-  // const isMediumScreen = useMediaQuery(
-  //   "(min-width:601px) and (max-width:1200px)"
-  // );
-
-  // let fontSize = "27px";
-
-  // if (isSmallScreen) {
-  //   fontSize = "18px";
-  // } else if (isMediumScreen) {
-  //   fontSize = "22px";
-  // } else {
-  //   //empty
-  // }
-  //   let statredchat:any =[];
-  //   let chathistory:any =[];
-  // useEffect(()=>{
-
-  //      statredchat = chatlist?.filter((chat:any)=>chat?.flagged)
-  //      chathistory = chatlist?.data?.filter((chat:any)=>!chat?.flagged)
-
-  // },[chatlist,statredchat,chathistory])
-  // console.log("test starred",statredchat,chatlist,selectedchat)
-
-  // const toggleStarredChat = () => setIsStarredChatOpen(!isStarredChatOpen);
-  // const toggleChatHistory = () => setIsChatHistoryOpen(!isChatHistoryOpen);
-
   const regenerateChat = (question: any) => {
     setLoading(true);
     setLoaderMsg('Fetching Data from Ollama model.');
@@ -1415,14 +1299,7 @@ const Chat = () => {
         stream: studentDetail?.subject,
       };
     }
-
-    // getData(
-    //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-    //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-    //     question
-    //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(studentDetail?.academic_history?.institution_type === "school" ?studentDetail?.class?.name: studentDetail?.academic_history?.course_id)}`
-    // )
-    postData(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatOLLAMAURL}`, {
       user_query: question,
       student_id: userid,
       class_or_course_selection:
@@ -1434,26 +1311,19 @@ const Chat = () => {
         if (response?.status) {
           handleResponse(response);
           const ChatStorepayload = {
-            student_id: userid,
+            student_id: studentid,
             chat_question: question,
             response: response?.answer,
           };
-          postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
         }
       })
       .catch(() => {
-        postData(`${ChatURLAI}`, payload)
+        postDataJson(`${ChatURLAI}`, payload)
           .then((response) => handleResponse(response))
           .catch((error) => handleError(error));
       });
   };
-
-  // const iconcolor: any = {
-  //   light: "#003032",
-  //   dark: "#FFFFFF",
-  //   default: "#003032",
-  // };
-
   // Handle search input change
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -1461,13 +1331,6 @@ const Chat = () => {
     setSearchQuery(e?.target?.value);
     setSearchQuerystarred(e?.target?.value);
   };
-
-  // Filter chats based on search query, or show all if query is blank
-  // const filteredChatsstarred = searchQuery
-  //   ? statredchat?.filter((chat: { chat_title: string }) =>
-  //     chat?.chat_title.toLowerCase().includes(searchQuery?.toLowerCase())
-  //   )
-  //   : statredchat;
   const filteredChatsstarred = searchQuery
     ? chatlist
         ?.map((chat: any) => ({
@@ -1536,421 +1399,6 @@ const Chat = () => {
 
   return (
     <>
-      {/* <div className="chat_view">
-        <div className="chat_section">
-          <div className="row">
-            <div className="left_panel col-md-3">
-              <div className="left_panel_inner">
-                <div className="chat">
-                  <Box className="title" style={{ fontSize }}>
-                    Chat History
-                  </Box>
-                  {Id === undefined ? (
-                    <div className="search-bar" id="search-toggle">
-                      <form
-                        className="search-form d-flex align-items-center"
-                        method="POST"
-                        action="#"
-                        onSubmit={(e) => e?.preventDefault()} // Prevent form submission
-                      >
-                        <input
-                          className="search-input-text"
-                          type="text"
-                          name="query" //question add
-                          placeholder="Search"
-                          title="Enter search keyword"
-                          value={searchQuery}
-                          onChange={handleSearchChange}
-                        />
-                        <button type="submit" title="Search">
-                          <i className="bi bi-search"></i>
-                        </button>
-                      </form>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  <div className="chat_inner">
-                    <div
-                      className="chathedding title"
-                      onClick={toggleStarredChat}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Starred Chat{" "}
-                      <span style={{ marginLeft: "10px" }}>
-                        {isStarredChatOpen ? "▲" : "▼"}
-                      </span>
-                    </div>
-                    {isStarredChatOpen &&
-                      filteredChatsstarred?.length > 0 &&
-                      filteredChatsstarred?.map(
-                        (
-                          chat: {
-                            chat_title:
-                              | string
-                              | number
-                              | boolean
-                              | React.ReactElement<
-                                  any,
-                                  string | React.JSXElementConstructor<any>
-                                >
-                              | Iterable<React.ReactNode>
-                              | React.ReactPortal
-                              | null
-                              | undefined;
-                            flagged: any;
-                            id: number | undefined;
-                          },
-                          index: React.Key | null | undefined
-                        ) => {
-                          return (
-                            <div className="chat_item" key={index}>
-                              <div className="chat_item_inner row">
-                                <div className="left_part col-sm-8 col-md-7 col-lg-8 col-xl-7">
-                                  <div className="chat_detail">
-                                    <div
-                                      className="chat_title chat_head"
-                                      onClick={() => displayChat(chat)}
-                                    >
-                                      {chat?.chat_title}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="right_part col-sm-4 col-md-5 col-lg-4 col-xl-5">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "row",
-                                    }}
-                                  >
-                                    <div style={{ marginTop: "5px" }}>
-                                      {" "}
-                                      {chat?.flagged ? (
-                                        <StarIcon
-                                          sx={{ color: iconcolor[namecolor] }}
-                                        />
-                                      ) : (
-                                        ""
-                                      )}
-                                    </div>
-                                    <div className="dateandtime">
-                                      <IconButton
-                                        // onClick={()=>handleDelete(chat?.id)}
-                                        onClick={() =>
-                                          handleDeleteFiles(chat?.id)
-                                        }
-                                        sx={{
-                                          width: "35px",
-                                          height: "35px",
-                                          color: iconcolor[namecolor],
-                                        }}
-                                      >
-                                        <DeleteIcon />
-                                      </IconButton>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        }
-                      )}
-                    <hr className="hr_chat"/>
-                    <div
-                      className="chathedding title"
-                      onClick={toggleChatHistory}
-                      style={{ cursor: "pointer" }}
-                    >
-                      {Id !== undefined ? "Chat" : "Chat History"}{" "}
-                      <span style={{ marginLeft: "10px" }}>
-                        {isChatHistoryOpen ? "▲" : "▼"}
-                      </span>
-                    </div>                 
-                    {isChatHistoryOpen &&
-                      filteredChats?.length > 0 &&
-                      filteredChats.map(
-                        (
-                          chat: {
-                            chat_title:
-                              | string
-                              | number
-                              | boolean
-                              | React.ReactElement<
-                                  any,
-                                  string | React.JSXElementConstructor<any>
-                                >
-                              | Iterable<React.ReactNode>
-                              | React.ReactPortal
-                              | null
-                              | undefined;
-                            flagged: any;
-                            id: number | undefined;
-                          },
-                          index: React.Key | null | undefined
-                        ) => {
-                          return (
-                            <div className="chat_item" key={index}>
-                              <div className="chat_item_inner row">
-                                <div className="left_part col-sm-8 col-md-7 col-lg-8 col-xl-7">
-                                  <div className="chat_detail">
-                                    <div
-                                      className="chat_title chat_head"
-                                      onClick={() => displayChat(chat)}
-                                    >
-                                      {chat?.chat_title}
-                                    </div>                                 
-                                  </div>
-                                </div>
-                                <div className="right_part col-sm-4 col-md-5 col-lg-4 col-xl-5">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "row",
-                                    }}
-                                  >
-                                    <div style={{ marginTop: "5px" }}>
-                                      {" "}
-                                      {chat?.flagged ? (
-                                        <StarIcon
-                                          color={iconcolor[namecolor]}
-                                        />
-                                      ) : (
-                                        ""
-                                      )}
-                                    </div>
-                                    <div className="dateandtime">
-                                      <IconButton
-                                        // onClick={()=>handleDelete(chat?.id)}
-                                        onClick={() =>
-                                          handleDeleteFiles(chat?.id)
-                                        }
-                                        sx={{
-                                          width: "35px",
-                                          height: "35px",
-                                          color: iconcolor[namecolor],
-                                        }}
-                                      >
-                                        <DeleteIcon />
-                                      </IconButton>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        }
-                      )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="right_panel col-md-9">
-              <div className="right_panel_inner">
-                <div className="message">
-                  <div className="message_inner ">
-                    <div className="profile_top">
-                      <div className="left_part">
-                        <div className="chat_detail">
-                          <div className="chat_title">
-                            <div className="title" style={{ fontSize: "27px" }}>
-                              {Id !== undefined ? "Chat" : ""}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {Id !== undefined ? (
-                        <div className="right_part">
-                          {selectedchat && selectedchat?.length > 0 && (
-                            <div className="dropdown_content">
-                              {chatsaved ? (
-                                <span onClick={() => saveChatstar()}>
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="green"
-                                    className="bi bi-flag-fill"
-                                    viewBox="0 0 16 16"
-                                    cursor="pointer"
-                                  >
-                                    <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
-                                  </svg>
-                                </span>
-                              ) : (
-                                <span onClick={() => saveChatstar()}>
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    className="bi bi-flag-fill"
-                                    viewBox="0 0 16 16"
-                                    cursor="pointer"
-                                  >
-                                    <title>Save Chat</title>
-                                    <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001" />
-                                  </svg>
-                                </span>
-                              )}
-                            </div>
-                          )}
-                          <div>
-                            <button
-                              className="btn btn-primary chatbutton"
-                              onClick={() => newchat()}
-                            >
-                              New Chat
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-
-                    <div className="profile_bottom">
-                      <div className="chat">
-                        {selectedchat?.map((chat: any, index: any) => (
-                          <div key={index} className="chat_wrapper">
-                            {chat?.question && (
-                              <div className="chat_message">
-                                <div
-                                  className="msg_txt BG_chat"
-                                  style={{ fontSize: "15px" }}
-                                >
-                                  {chat?.question}
-                                </div>
-                              </div>
-                            )}
-
-                            {chat?.answer && (
-                              <div className="chat_message chat_message-own">
-                                <div
-                                  className="msg_txt BG_chatA"
-                                  //   style={{ maxWidth: "80%", fontSize: "18px" }}
-                                >
-                                  <Chatbot answer={chat?.answer} />
-                                  {chat?.speak}
-                                </div>
-                                {chat?.speak === true ? (
-                                  <div className="date_time">
-                                    <img
-                                      src={soundimg}
-                                      alt="sound-img"
-                                      height="50px"
-                                      width="50px"
-                                      className="soundimg"
-                                    />
-                                    <svg
-                                      fill={iconcolor[namecolor]}
-                                      version="1.1"
-                                      id="Capa_1"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="20px"
-                                      height="20px"
-                                      viewBox="0 0 306.257 306.257"
-                                      cursor="pointer"
-                                      onClick={() => stop(index)}
-                                    >
-                                      <title>Stop</title>
-                                      <g
-                                        id="SVGRepo_bgCarrier"
-                                        stroke-width="0"
-                                      ></g>
-                                      <g
-                                        id="SVGRepo_tracerCarrier"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                      ></g>
-                                      <g id="SVGRepo_iconCarrier">
-                                        <g>
-                                          <path d="M19.747,121.968v70.068c0,21.499,17.43,38.924,38.924,38.924h40.703l112.088,73.612 c11.351,6.271,26.808-5.883,34.372-21.256L47.261,84.75C31.333,89.628,19.747,104.438,19.747,121.968z"></path>
-                                          <path d="M250.386,41.816c0-21.5-19.464-51.253-38.924-38.924L108.71,76.499l141.676,141.677V41.816z"></path>
-                                          <path d="M55.463,83.202l193.146,193.145l18.88,18.874c3.459,3.469,8.005,5.204,12.547,5.204c4.541,0,9.087-1.735,12.552-5.204 c6.934-6.929,6.934-18.17,0-25.104l-42.197-42.197L103.037,80.566L38.771,16.314c-3.461-3.469-8.005-5.204-12.549-5.204 c-4.544,0-9.085,1.735-12.552,5.204c-6.937,6.928-6.937,18.17,0,25.101L55.463,83.202z"></path>
-                                        </g>
-                                      </g>
-                                    </svg>
-                                  </div>
-                                ) : (
-                                  <div
-                                    className="date_time"
-                                    onClick={() =>
-                                      speak(chat && chat?.answer, index)
-                                    }
-                                  >
-                                    <svg
-                                      fill={iconcolor[namecolor]}
-                                      width="20px"
-                                      height="20px"
-                                      viewBox="0 -32 576 576"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      cursor="pointer"
-                                    >
-                                      <title>Play</title>
-                                      <g
-                                        id="SVGRepo_bgCarrier"
-                                        stroke-width="0"
-                                      ></g>
-                                      <g
-                                        id="SVGRepo_tracerCarrier"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                      ></g>
-                                      <g id="SVGRepo_iconCarrier">
-                                        <path d="M215.03 71.05L126.06 160H24c-13.26 0-24 10.74-24 24v144c0 13.25 10.74 24 24 24h102.06l88.97 88.95c15.03 15.03 40.97 4.47 40.97-16.97V88.02c0-21.46-25.96-31.98-40.97-16.97zm233.32-51.08c-11.17-7.33-26.18-4.24-33.51 6.95-7.34 11.17-4.22 26.18 6.95 33.51 66.27 43.49 105.82 116.6 105.82 195.58 0 78.98-39.55 152.09-105.82 195.58-11.17 7.32-14.29 22.34-6.95 33.5 7.04 10.71 21.93 14.56 33.51 6.95C528.27 439.58 576 351.33 576 256S528.27 72.43 448.35 19.97zM480 256c0-63.53-32.06-121.94-85.77-156.24-11.19-7.14-26.03-3.82-33.12 7.46s-3.78 26.21 7.41 33.36C408.27 165.97 432 209.11 432 256s-23.73 90.03-63.48 115.42c-11.19 7.14-14.5 22.07-7.41 33.36 6.51 10.36 21.12 15.14 33.12 7.46C447.94 377.94 480 319.54 480 256zm-141.77-76.87c-11.58-6.33-26.19-2.16-32.61 9.45-6.39 11.61-2.16 26.2 9.45 32.61C327.98 228.28 336 241.63 336 256c0 14.38-8.02 27.72-20.92 34.81-11.61 6.41-15.84 21-9.45 32.61 6.43 11.66 21.05 15.8 32.61 9.45 28.23-15.55 45.77-45 45.77-76.88s-17.54-61.32-45.78-76.86z"></path>
-                                      </g>
-                                    </svg>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <br />
-              <div className="searchbar_wrap">
-                <div className="search_bar">
-                  {Id !== undefined ? (
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        ref={chatRef}
-                        className="form-control"
-                        placeholder="Search..."
-                        aria-label="Search"
-                        value={search}
-                        onChange={(e) => setSearch(e?.target?.value)}
-                        onKeyDown={handleKeyDown}
-                      />
-                      <button
-                        className="btn search_btn"
-                        type="button"
-                        onClick={() => searchData()}
-                        style={{ top: "15%" }}
-                      >                      
-                        <SendIcon className="mainsearch" />
-                      </button>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  {searcherr === true ? (
-                    <small className="text-danger">
-                      Please Enter your query!!
-                    </small>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <main className="main-wrapper">
         <div className="main-content p-lg-0">
           <div
@@ -2159,11 +1607,10 @@ const Chat = () => {
                       <></>
                     )}
                     <div className="me-auto d-lg-none">
-                    <SyncAltOutlinedIcon 
-                      onClick={() => setShowHistory(!showHistory)}
-                    />
+                      <SyncAltOutlinedIcon
+                        onClick={() => setShowHistory(!showHistory)}
+                      />
                     </div>
-                    
                   </div>
                 ) : (
                   <></>
@@ -2246,6 +1693,9 @@ const Chat = () => {
                                         content={image}
                                       />
                                     </>
+                                  )}
+                                  {chat?.table_code && (
+                                    <ChatTable tableCode={chat?.table_code} />
                                   )}
                                 </div>
                                 <ul className="ansfooter">
@@ -2364,20 +1814,9 @@ const Chat = () => {
                     </div>
                   )}
                 </div>
-                {/* </div> */}
-                {/* <div className="chat-suggestion">
-                  <h4>Suggestions</h4>
-                  <ul className="slider">
-                    <li><i className="material-icons-outlined">chat</i> Start my history exam</li>
-                    <li><i className="material-icons-outlined">chat</i> What's the news today</li>
-                    <li><i className="material-icons-outlined">chat</i> Test myself</li>
-                  </ul>
-                  <div className="dots"></div>
-                </div> */}
                 {Id !== undefined ? (
                   <>
                     <div className="chat-input">
-                      {/* <input type="text" className="form-control" placeholder="Type your question" /> */}
                       <input
                         type="text"
                         ref={chatRef}
@@ -2405,11 +1844,6 @@ const Chat = () => {
                 ) : (
                   <></>
                 )}
-                {/* <div className="change-instructor">
-                  <select name="" className="form-select" id="">
-                    <option value="">Change Instructor</option>
-                  </select>
-                </div> */}
               </div>
             </div>
           </div>

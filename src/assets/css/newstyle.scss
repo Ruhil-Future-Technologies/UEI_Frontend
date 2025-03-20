@@ -1737,6 +1737,17 @@ body .desk-card {
     max-height: 335px;
     transform: translateX(-6.5%);
   }
+  .progress-background-admin {
+    position: absolute;
+    top: 0;
+    left: 6.5%;
+    width: 2px;
+    background-color: rgba($primary, 0.2);
+    height: 100%;
+    z-index: 1;
+    max-height: 280px;
+    transform: translateX(-6.5%);
+  }
 
   .progress-line {
     position: absolute;

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Checkbox,
   FormControl,
   IconButton,
   InputLabel,
@@ -294,6 +295,14 @@ const AddContent = () => {
         };
 
         setContent(processedData);
+
+        if (
+          contentDetail?.data?.content_data.author !== 'admin' &&
+          contentDetail?.data?.content_data.author !== 'institute' &&
+          contentDetail?.data?.content_data.author !== 'teacher'
+        ) {
+          setShowAuthor(true);
+        }
       } catch (e: any) {
         if (e?.response?.code === 401) {
           navigate('/');
@@ -743,7 +752,7 @@ const AddContent = () => {
     setLoading(true);
     const formData = new FormData();
 
-    if (!contentData.url && allselectedfiles.length <= 0) {
+    if (!contentData.url && allselectedfiles.length <= 0 && !id) {
       toast.error('Please Enter URL or Upload File', {
         hideProgressBar: true,
         theme: 'colored',
@@ -864,7 +873,10 @@ const AddContent = () => {
       });
 
       const urls = allfiles.map((file: any) => file?.url);
-      urls.push(formattedData?.url);
+
+      if (formattedData?.url) {
+        urls.push(formattedData?.url);
+      }
 
       const urlStr = JSON.stringify(urls);
 
@@ -1229,10 +1241,17 @@ const AddContent = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setContent((prevState) => ({
-      ...prevState,
-      url: '',
-    }));
+    if (content?.url) {
+      setContent((prevState) => ({
+        ...prevState,
+        url: '',
+      }));
+      toast.error('URL sets to empty. Content can be either URL or File ', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
+
     const files = event.target.files || '';
 
     if (
@@ -1670,6 +1689,9 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!course.semester}
+                                        renderValue={(selected) =>
+                                          selected.join(', ')
+                                        }
                                         sx={{
                                           backgroundColor:
                                             inputfield(namecolor),
@@ -1704,6 +1726,17 @@ const AddContent = () => {
                                                 },
                                               }}
                                             >
+                                              <Checkbox
+                                                checked={course.subjects.includes(
+                                                  subject.subject_name,
+                                                )}
+                                                sx={{
+                                                  color: fieldIcon(namecolor),
+                                                  '&.Mui-checked': {
+                                                    color: fieldIcon(namecolor),
+                                                  },
+                                                }}
+                                              />
                                               {subject.subject_name}
                                             </MenuItem>
                                           ),
@@ -1927,6 +1960,9 @@ const AddContent = () => {
                                           ) &&
                                             !cls.stream)
                                         }
+                                        renderValue={(selected) =>
+                                          selected.join(', ')
+                                        }
                                         sx={{
                                           backgroundColor:
                                             inputfield(namecolor),
@@ -1961,6 +1997,17 @@ const AddContent = () => {
                                                 },
                                               }}
                                             >
+                                              <Checkbox
+                                                checked={cls.subjects.includes(
+                                                  subject.subject_name,
+                                                )}
+                                                sx={{
+                                                  color: fieldIcon(namecolor),
+                                                  '&.Mui-checked': {
+                                                    color: fieldIcon(namecolor),
+                                                  },
+                                                }}
+                                              />
                                               {subject.subject_name}
                                             </MenuItem>
                                           ),
@@ -2042,6 +2089,16 @@ const AddContent = () => {
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'content_type')
                               }
+                              disabled={id ? true : false}
+                              style={{
+                                backgroundColor: id
+                                  ? '#f0f0f0'
+                                  : inputfield(namecolor),
+                                color: id
+                                  ? '#999999'
+                                  : inputfieldtext(namecolor),
+                                border: id ? '1px solid #d0d0d0' : undefined,
+                              }}
                             >
                               <MenuItem value="notes">Notes</MenuItem>
                               <MenuItem value="e-book">eBook</MenuItem>
@@ -2069,21 +2126,26 @@ const AddContent = () => {
                             label="URL *"
                             name="url"
                             value={values?.url}
-                            disabled={allselectedfiles.length > 0}
+                            disabled={
+                              allselectedfiles.length > 0 || allfiles.length > 0
+                            }
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
                             ) => handleChange(e, 'url')}
                             style={{
                               backgroundColor:
-                                allselectedfiles.length > 0
+                                allselectedfiles.length > 0 ||
+                                allfiles.length > 0
                                   ? '#f0f0f0'
                                   : inputfield(namecolor),
                               color:
-                                allselectedfiles.length > 0
+                                allselectedfiles.length > 0 ||
+                                allfiles.length > 0
                                   ? '#999999'
                                   : inputfieldtext(namecolor),
                               border:
-                                allselectedfiles.length > 0
+                                allselectedfiles.length > 0 ||
+                                allfiles.length > 0
                                   ? '1px solid #d0d0d0'
                                   : undefined,
                             }}

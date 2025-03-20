@@ -12,11 +12,13 @@ import {
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 import { ChildComponentProps } from '../StudentProfile';
+import { useNavigate } from 'react-router-dom';
 
 const AdminContactDetails: React.FC<ChildComponentProps> = ({
   setActiveForm,
 }) => {
   const context = React.useContext(NameContext);
+  const navigate = useNavigate();
   const { namecolor }: any = context;
   const adminUuId = localStorage.getItem('user_uuid');
   const adminId= localStorage.getItem('_id');
@@ -187,7 +189,8 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
               position: 'top-center',
             });
             getContact();
-            setActiveForm((prev) => prev + 1);
+            navigate('/');
+            // setActiveForm((prev) => prev + 1);
           }
         } catch (error: any) {
           if (error?.response?.code === 401) {
@@ -211,8 +214,9 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                     theme: 'colored',
                     position: 'top-center',
                   });
-                  setActiveForm((prev) => prev + 1);
+                  // setActiveForm((prev) => prev + 1);
                   getContact();
+                  navigate('/');
                 } else {
                   toast.error('Something went wrong ', {
                     hideProgressBar: true,
@@ -260,8 +264,9 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
               theme: 'colored',
               position: 'top-center',
             });
-            setActiveForm((prev) => prev + 1);
+            // setActiveForm((prev) => prev + 1);
             getContact();
+            navigate('/');
           } else {
             toast.error('Something went wrong ', {
               hideProgressBar: true,
@@ -534,7 +539,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
             className="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn"
             onClick={(e: any) => handleSubmit(e)}
           >
-            Next
+            Submit
           </button>
         </div>
       </div>

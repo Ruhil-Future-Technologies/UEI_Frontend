@@ -36,17 +36,6 @@ const Teacher = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
 
-  // const location = useLocation();
-  // const pathSegments = location.pathname.split('/').filter(Boolean);
-  // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  // const Menulist: any = localStorage.getItem('menulist1');
-  // const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-  // useEffect(() => {
-  //   setFilteredData(
-  //     dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
-  //   );
-  // }, [Menulist, lastSegment]);
 
   const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
   const DeleteTeacherURL = QUERY_KEYS_TEACHER.TEACHER_DELETE;
@@ -64,9 +53,6 @@ const Teacher = () => {
   const [open, setOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<any>({});
   const [, setDataClasses] = useState<any[]>([]);
-  // const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
-  // const [filteredSubjects, setFilteredSubjects] = useState<any[]>([]);
-  // const [filteredInstitutes, setFilteredInstitutes] = useState<any[]>([]);
   const [schoolInstitutes, setSchoolInstitutes] = useState<any[]>([]);
   const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -371,7 +357,7 @@ const Teacher = () => {
 
   const handleTeacherDetails = (id: number) => {
     const teacherDetail = JSON.parse(
-      JSON.stringify(dataTeacher?.find((teacher) => teacher.teacher_id == id)),
+      JSON.stringify(dataTeacher?.find((teacher) => teacher?.id == id)),
     );
 
     const full_name =
@@ -565,23 +551,6 @@ const Teacher = () => {
                             width: '140px',
                           }}
                         >
-                          {/* {filteredData?.form_data?.is_update === true && (
-                            <Tooltip arrow placement="right" title="Edit">
-                              <IconButton
-                                sx={{
-                                  width: '35px',
-                                  height: '35px',
-                                  color: tabletools(namecolor),
-                                }}
-                                onClick={() => {
-                                  //   handleEditFile(row?.row?.original?.id);
-                                  console.log('handleEditFile');
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )} */}
 
                           {row.row.original.is_approve ? (
                             <>
@@ -626,7 +595,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleTeacherDetails(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.id,
                                     )
                                   }
                                 >
@@ -677,7 +646,7 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleTeacherDetails(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.id,
                                     )
                                   }
                                 >
@@ -691,42 +660,6 @@ const Teacher = () => {
                             selectedTeacher={selectedTeacher}
                             onClose={handleClose}
                           />
-                          {/* <Tooltip arrow placement="right" title="Edit">
-                            <IconButton
-                              sx={{
-                                width: '35px',
-                                height: '35px',
-                                color: tabletools(namecolor),
-                              }}
-                              onClick={() => {
-                                console.log({ row });
-
-                                handleEditFile(row?.row?.original?.teacher_id);
-                                console.log('handleEditFile');
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip arrow placement="right" title="Delete">
-                            <IconButton
-                              sx={{
-                                width: '35px',
-                                height: '35px',
-                                color: tabletools(namecolor),
-                              }}
-                              onClick={() => {
-                                console.log({ row });
-
-                                handleDeleteFiles(
-                                  row?.row?.original?.teacher_id,
-                                );
-                                console.log('handleDeleteFiles');
-                              }}
-                            >
-                              <TrashIcon />
-                            </IconButton>
-                          </Tooltip> */}
                         </Box>
                       )}
                     />

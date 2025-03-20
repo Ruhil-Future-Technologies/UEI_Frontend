@@ -1,7 +1,7 @@
 import React from 'react';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -65,7 +65,7 @@ const InstituteSidevar = () => {
             <Link to="/institution-dashboard/Content">
               <div className="parent-icon">
                 {' '}
-                <LocalLibraryOutlinedIcon />
+                <LibraryBooksOutlinedIcon />
               </div>
               <div className="menu-title">Content Library</div>
             </Link>

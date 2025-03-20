@@ -28,7 +28,7 @@ const ChangePassword = () => {
   const newpassword = '';
   const [searchParams] = useSearchParams();
   // const [changepassword, setChangePassword] = useState(initialState);
-  const email = searchParams?.get('email');
+  const token = searchParams?.get('token');
   const user_type = searchParams?.get('user_type');
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -49,9 +49,8 @@ const ChangePassword = () => {
     // e.preventDefault()
     // e.target.reset()
     const UserSignUp = {
-      email: String(email),
+      token: String(token),
       new_password: String(formData.newpassword),
-      conf_password: String(formData.confpassword),
       user_type: String(user_type),
     };
     const emptyKeys: string[] = [];
