@@ -8,7 +8,6 @@ const Protected = (props: { Component: any; menuName?: string }) => {
   const { Component, menuName } = props;
   const navigate = useNavigate();
   const { id } = useParams();
-
   useEffect(() => {
     const logintoken = localStorage.getItem('token');
     if (!logintoken) {
@@ -29,8 +28,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin' && mName?.toLowerCase() === 'dashboard') ||
       (usertype === 'student' && mName?.toLowerCase() === 'dashboard') ||
       (usertype === 'admin' ||
-      usertype === 'teacher' ||
-      usertype === 'institute'
+        usertype === 'teacher' ||
+        usertype === 'institute'
         ? mName.toLowerCase() === 'adminprofile'
         : '') ||
       (usertype === 'student'
@@ -86,31 +85,50 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' && uName.toLowerCase() === 'edit-content'
         ? true
         : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'student-details'
+        : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'assignments'
+        : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'create-assignment'
+        : '') ||
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'edit-assignment' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
+
+      (usertype === 'teacher' ? mName.toLowerCase() === 'content' : '') ||
+      (usertype === 'teacher' ? mName.toLowerCase() === 'add-content' : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'edit-content'
+        ? true
+        : '') ||
+
       (usertype === 'institute'
         ? mName.toLowerCase() === 'institution-dashboard'
         : '') ||
       (usertype === 'institute' &&
-      uName.toLowerCase() === 'institution-dashboard'
+        uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'chat'
         : '') ||
       (usertype === 'institute' &&
-      uName.toLowerCase() === 'institution-dashboard'
+        uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === `teacher-list`
         : '') ||
       (usertype === 'institute' &&
-      uName.toLowerCase() === 'institution-dashboard'
+        uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'student-list'
         : '') ||
       (usertype === 'institute' &&
-      uName.toLowerCase() === 'institution-dashboard'
+        uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'course-list'
         : '') ||
       (usertype === 'institute' &&
-      uName.toLowerCase() === 'institution-dashboard'
+        uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'feedback'
         : '') ||
       (usertype === 'institute' &&
-      uName.toLowerCase() === 'institution-dashboard'
+        uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'profile'
         : '') ||
       (usertype === 'institute' ? mName.toLowerCase() === 'content' : '') ||

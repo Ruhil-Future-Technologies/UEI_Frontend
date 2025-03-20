@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import TeacherGraoh from '../TeacherGraphs';
 import profile from '../../../assets/img/profile.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
 import consultantimg from '../../../assets/img/consultant.png';
 import goaling from '../../../assets/img/goal.png';
-import classimg from '../../../assets/img/class.png';
+//import classimg from '../../../assets/img/class.png';
 
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+//import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
+//import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
 import MicIcon from '@mui/icons-material/Mic';
 import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
@@ -22,22 +23,20 @@ import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-
+import PercentIcon from '@mui/icons-material/Percent';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import StreamIcon from '@mui/icons-material/Stream';
+import AttractionsIcon from '@mui/icons-material/Attractions';
+//import SubjectIcon from '@mui/icons-material/Subject';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
 import useApi from '../../../hooks/useAPI';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
+import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
+import { toast } from 'react-toastify';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -46,6 +45,7 @@ interface Teacher {
   first_name: string;
   last_name: string;
   department: string;
+  university_id: string;
   qualifications: string;
   image: string;
   bio: string;
@@ -55,66 +55,99 @@ interface Teacher {
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
-  const [activeTab, setActiceTab] = useState(0);
+  const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
+  const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData } = useApi();
   const [teacherData, setTeacherData] = useState<Teacher>();
-  const tabContent = [
-    {
-      label: 'All',
-      lessons: 21,
-      duration: '45 min',
-      assignments: 2,
-      students: 256,
-      image: classimg,
-      title: 'Microbiology Society',
-    },
-    {
-      label: 'Design',
-      lessons: 18,
-      duration: '50 min',
-      assignments: 3,
-      students: 198,
-      image: classimg,
-      title: 'Creative Design Hub',
-    },
-    {
-      label: 'Science',
-      lessons: 25,
-      duration: '60 min',
-      assignments: 4,
-      students: 300,
-      image: classimg,
-      title: 'Advanced Science Course',
-    },
-    {
-      label: 'Coding',
-      lessons: 30,
-      duration: '90 min',
-      assignments: 5,
-      students: 400,
-      image: classimg,
-      title: 'Full-Stack Coding Bootcamp',
-    },
-  ];
+  const [selectedEntity, setSelectedEntity] = useState('');
+  const [dataClass, setDataClass] = useState<IClass[]>([]);
+  const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
+  // const [boxes, setBoxes] = useState<Boxes[]>([
+  //   {
+  //     semester_number: '',
+  //     subjects: [],
+  //     course_id: '',
+  //   },
+  // ]);
+  const navigate = useNavigate();
+
 
   const getTeacherInfo = () => {
     try {
       getData(`/teacher/edit/${teacherId}`).then((data) => {
-        console.log(data);
         if (data?.status) {
           localStorage.setItem('teacher_id', data?.data.id);
           setTeacherData(data.data);
+          if (data?.data?.course_semester_subjects != null) {
+            setSelectedEntity("college")
+            // const output: Boxes[] = Object.keys(
+            //   data.data.course_semester_subjects,
+            // ).flatMap((CourseKey) =>
+            //   Object.keys(data.data.course_semester_subjects[CourseKey]).map(
+            //     (semester_number) => ({
+            //       course_id: CourseKey,
+            //       semester_number: semester_number,
+            //       subjects:
+            //         data.data.course_semester_subjects[CourseKey][
+            //         semester_number
+            //         ],
+            //     }),
+            //   ),
+            // );
+            const courseIds = Object.keys(data.data.course_semester_subjects).map((CourseKey) => CourseKey);
+            getCourses(courseIds);
+          } else {
+            setSelectedEntity("school")
+            const classIds = Object.keys(data.data.class_stream_subjects).map((classKey) => classKey);
+            getClasslist(classIds)
+          }
+
+
         }
       });
     } catch (error) {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getTeacherInfo();
   }, []);
+  const getCourses = (courseIds: any) => {
+    getData(`${CourseURL}`)
+      .then((data) => {
+        if (data.data) {
+          setCoursesData(data?.data);
+          const filteredCourses = data.data.course_data.filter((course: any) =>
+            courseIds.includes(String(course.id))
+          );
+          setCoursesData(filteredCourses);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
 
+  const getClasslist = (classIds: any) => {
+    getData(`${ClassURL}`)
+      .then((data) => {
+        if (data.data) {
+          const filteredClasses = data.data.classes_data.filter((classn: any) =>
+            classIds.includes(String(classn.id))
+          )
+          setDataClass(filteredClasses);
+        }
+      })
+      .catch((e) => {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -139,13 +172,13 @@ const TeacherDash = () => {
           </div>
         </div>
 
-        <div className="row">
+        <div className="row  g-4 mb-4">
           <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
-            <div className="card w-100 overflow-hidden rounded-4">
-              <div className="card-header bg-primary-20">
+            <div className="card ">
+              <div className="card-body position-relative p-4">
                 <div className="row">
                   <div className="col-12">
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center gap-3 flex-column">
                       <img
                         src={profile}
                         className="rounded-circle bg-grd-info p-1"
@@ -153,25 +186,39 @@ const TeacherDash = () => {
                         height="94"
                         alt="user"
                       />
-                      <div className="w-100">
-                        <h4 className="fw-semibold  fs-18 ">
+                      <div className="w-100 text-center">
+                        <h4 className="fw-bold mb-1 fs-4">
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
-                        <small className=" d-block">24 Course</small>
-                        <small className=" d-block mb-2">
-                          18 Certification
-                        </small>
-                        <strong className="d-block text-dark fs-12">
-                          {' '}
-                          260 Students
-                        </strong>
+                        <p className="opacity-75 mb-1">{teacherData?.university_id}</p>
+                        <p className="planbg">Senior Professor</p>
+                      </div>
+                      <div className="curcc">
+                        {selectedEntity === 'college' ? (
+                          <>
+                            <h6>CURRENT COURSES</h6>
+                            <ul>
+                              {coursesData?.map((item, index) => (
+                                <li key={index}>{item.course_name}</li>
+                              ))}
+                            </ul>
+                          </>
+                        ) :
+                          <>
+                            <h6>CURRENT CLASSES</h6>
+                            <ul>
+                              {dataClass?.map((item, index) => (
+                                <li key={index}>{item.class_name}</li>
+                              ))}
+                            </ul>
+                          </>
+                        }
+
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="card-body position-relative p-4">
-                <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
+                {/* <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
                   <div>
                     <h6 className="mb-0 fw-normal">Status</h6>
                   </div>
@@ -211,12 +258,228 @@ const TeacherDash = () => {
                   <div>
                     <a href="profile.html">90%</a>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
 
-          <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
+          <div className="col-12">
+            <h5 className="mb-1 fw-bold fs-4">Your Classes</h5>
+            <p className="text-secondary">
+              Manage your classes and view student information
+            </p>
+
+            <div className="swiper-container">
+              <Swiper
+                spaceBetween={24}
+                slidesPerView={3}
+                loop={true}
+                navigation={{
+                  nextEl: '.swiper-button-next',
+                  prevEl: '.swiper-button-prev',
+                }}
+                modules={[Navigation]}
+                breakpoints={{
+                  320: { slidesPerView: 1 }, // Mobile
+                  640: { slidesPerView: 1 }, // Tablets
+                  1024: { slidesPerView: 2 }, // Laptops
+                  1440: { slidesPerView: 3 }, // Large Screens
+                }}
+              >
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <AttractionsIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 11</h6>
+                          <p> Physics</p>
+                        </div>
+                      </div>
+
+                      <div className="row g-2">
+                        <div className="col-lg-6">
+                          <div className="totallist">
+                            <span>
+                              <SupervisedUserCircleIcon />
+                            </span>
+                            <div className="">
+                              <h6>Total Students</h6> <p>50</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <div className="totallist">
+                            <span>
+                              <StreamIcon />
+                            </span>
+                            <div className="">
+                              <h6>Streem</h6> <p>Science</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="card mb-0">
+                    <div className="card-body">
+                      <div className="carddlex">
+                        <span>
+                          <PercentIcon />
+                        </span>
+                        <div className="">
+                          <h6 className="fs-4">Grade 10</h6>
+                          <p>Maths</p>
+                        </div>
+                      </div>
+
+                      <div className="totallist">
+                        <span>
+                          <SupervisedUserCircleIcon />
+                        </span>
+                        <div className="">
+                          <h6>Total Students</h6> <p>50</p>
+                        </div>
+                      </div>
+
+                      <button
+                        className="btn btn-outline-primary mt-4 w-100"
+                        onClick={() =>
+                          navigate('/teacher-dashboard/student-details')
+                        }
+                      >
+                        View Students
+                      </button>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              </Swiper>
+              <div className="swiper-button-prev"></div>
+              <div className="swiper-button-next"></div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div className="row">
+
+
+
+          <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
                 <img src={consultantimg} alt="" />
@@ -231,7 +494,7 @@ const TeacherDash = () => {
             </div>
           </div>
 
-          <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
+          <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
                 <img src={goaling} alt="" />
@@ -246,316 +509,6 @@ const TeacherDash = () => {
             </div>
           </div>
 
-          <div className="col-xxl-4 col-xl-6 d-flex align-items-stretch">
-            <div className="card w-100">
-              <div className="card-body ">
-                <h6 className="fs-18 fw-bold mb-3">Your className</h6>
-
-                {/* <ul className="nav nav-pills  classtabs" id="pills-tab" role="tablist">
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">All</button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Design</button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Science</button>
-                                    </li>
-                                    <li className="nav-item" role="presentation">
-                                        <button className="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled" type="button" role="tab" aria-controls="pills-disabled" aria-selected="false">Coding</button>
-                                    </li>
-                                </ul> */}
-                <Box>
-                  <Tabs
-                    value={activeTab}
-                    onChange={(_, newValue) => setActiceTab(newValue)}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    aria-label="Navigation Pills"
-                  >
-                    {tabContent.map((tab, index) => (
-                      <Tab key={index} label={tab.label} />
-                    ))}
-                  </Tabs>
-                  <Box sx={{ mt: 3 }}>
-                    {tabContent.map((tab, index) => (
-                      <Box
-                        key={index}
-                        role="tabpanel"
-                        hidden={activeTab !== index}
-                        id={`tabpanel-${index}`}
-                        aria-labelledby={`tab-${index}`}
-                      >
-                        {activeTab === index && (
-                          <Card
-                            sx={{
-                              boxShadow: 2,
-                              borderRadius: 2,
-                              mb: 2,
-                              p: 2,
-                              '&:hover': { boxShadow: 4 },
-                              // backgroundColor: "primary.main"
-                            }}
-                            className="card bg-primary-20 rounded-3 mb-0"
-                          >
-                            <CardContent>
-                              <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={12} md={3}>
-                                  <img
-                                    src={tab.image}
-                                    alt={tab.title}
-                                    style={{
-                                      width: '100%',
-                                      borderRadius: '8px',
-                                    }}
-                                  />
-                                </Grid>
-                                <Grid item xs={12} md={9}>
-                                  <Typography variant="h6" sx={{ mb: 1 }}>
-                                    {tab.title}
-                                  </Typography>
-                                  <Table size="small">
-                                    <TableBody>
-                                      <TableRow>
-                                        <TableCell>
-                                          {tab.lessons} Lessons
-                                        </TableCell>
-                                        <TableCell align="right">
-                                          {tab.duration}
-                                        </TableCell>
-                                      </TableRow>
-                                      <TableRow>
-                                        <TableCell>
-                                          {tab.assignments} Assignments
-                                        </TableCell>
-                                        <TableCell align="right">
-                                          {tab.students} Students
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableBody>
-                                  </Table>
-                                </Grid>
-                              </Grid>
-                            </CardContent>
-                          </Card>
-                        )}
-                      </Box>
-                    ))}
-                  </Box>
-                </Box>
-                {/* <div className="tab-content clstabcontent" id="pills-tabContent">
-                                    <div className="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src={classimg} alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src=classimg alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src=classimg alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabIndex={0}>
-                                        <div className="card bg-primary-20 rounded-3 mb-0">
-                                            <div className="card-body">
-                                                <div className="row g-3">
-                                                    <div className="col-lg-3"><img src=classimg alt="" /></div>
-                                                    <div className="col-lg-9">
-                                                        <h6 >Microbiology Socity</h6>
-                                                        <table className="table table-sm table-borderless">
-                                                            <tr><td>21 Lesson</td><td>45 min</td></tr>
-                                                            <tr><td>2 Assignments</td><td>256 Students</td></tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> */}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-lg-8">
-            <div className="d-flex mb-3 justify-content-between align-items-center">
-              <h5 className="mb-0 fw-bold fs-18">Subject Wise Students</h5>
-              <div className="d-flex align-items-center gap-3">
-                <div className="swiper-next d-flex">
-                  <ArrowBackOutlinedIcon />
-                </div>
-                <div className="swiper-prev d-flex">
-                  <ArrowForwardOutlinedIcon />
-                </div>
-                <a
-                  href=""
-                  className="d-block text-dark btn btn-light rounded-3 btn-sm"
-                >
-                  See All
-                </a>
-              </div>
-            </div>
-            <div className="card">
-              <div className="card-body">
-                <div className="swiper studentslider ">
-                  <div className="swiper-wrapper">
-                    <Swiper spaceBetween={10} slidesPerView={2} loop={true}>
-                      <SwiperSlide>
-                        <div className="card crcard">
-                          <div className="card-body">
-                            <div className="row g-3 align-items-center">
-                              <div className="col-lg-4">
-                                <div className="chart-container2 h-auto">
-                                  <div id="chart9"></div>
-                                </div>
-                              </div>
-                              <div className="col-lg-8">
-                                <h6 className=" fw-semibold mb-3">
-                                  Biology Molecular
-                                </h6>
-
-                                <table className="table table-sm table-borderless">
-                                  <tr>
-                                    <td>21 Lesson</td>
-                                    <td>45 min</td>
-                                  </tr>
-                                  <tr>
-                                    <td>2 Assignments</td>
-                                    <td>256 Students</td>
-                                  </tr>
-                                </table>
-
-                                <div className="d-flex gap-3">
-                                  <button className="btn btn-outline-primary rounded-pill w-100">
-                                    Skip
-                                  </button>
-                                  <button className="btn-primary btn rounded-pill w-100">
-                                    Continue
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <div className="card crcard">
-                          <div className="card-body">
-                            <div className="row g-3 align-items-center">
-                              <div className="col-lg-4">
-                                <div className="chart-container2 h-auto">
-                                  <div id="chart9"></div>
-                                </div>
-                              </div>
-                              <div className="col-lg-8">
-                                <h6 className=" fw-semibold mb-3">
-                                  Color Theory
-                                </h6>
-
-                                <table className="table table-sm table-borderless">
-                                  <tr>
-                                    <td>21 Lesson</td>
-                                    <td>45 min</td>
-                                  </tr>
-                                  <tr>
-                                    <td>2 Assignments</td>
-                                    <td>256 Students</td>
-                                  </tr>
-                                </table>
-
-                                <div className="d-flex gap-3">
-                                  <button className="btn btn-outline-primary rounded-pill w-100">
-                                    Skip
-                                  </button>
-                                  <button className="btn-primary btn rounded-pill w-100">
-                                    Continue
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                      <SwiperSlide>
-                        <div className="card crcard">
-                          <div className="card-body">
-                            <div className="row g-3 align-items-center">
-                              <div className="col-lg-4">
-                                <div className="chart-container2 h-auto">
-                                  <div id="chart9"></div>
-                                </div>
-                              </div>
-                              <div className="col-lg-8">
-                                <h6 className=" fw-semibold mb-3">
-                                  Biology Molecular
-                                </h6>
-
-                                <table className="table table-sm table-borderless">
-                                  <tr>
-                                    <td>21 Lesson</td>
-                                    <td>45 min</td>
-                                  </tr>
-                                  <tr>
-                                    <td>2 Assignments</td>
-                                    <td>256 Students</td>
-                                  </tr>
-                                </table>
-
-                                <div className="d-flex gap-3">
-                                  <button className="btn btn-outline-primary rounded-pill w-100">
-                                    Skip
-                                  </button>
-                                  <button className="btn-primary btn rounded-pill w-100">
-                                    Continue
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                    </Swiper>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <TeacherGraoh />
           <div
             className="col-xxl-8 d-flex align-items-stretch"

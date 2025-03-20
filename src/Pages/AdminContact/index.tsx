@@ -98,7 +98,6 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       }
      
       if (response?.status) {
-        console.log(response?.data.admin_contactes_data[0]);
         setContectId(response?.data.admin_contactes_data[0].id);
         setContcodeWtsap(response?.data.admin_contactes_data[0].mobile_isd_watsapp);
         setWhatsappNum(response?.data.admin_contactes_data[0].mobile_no_watsapp);
@@ -166,7 +165,6 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
       mobile_no_watsapp: whatsappNum,
       email_id: email,
     };
-    console.log(paylod,email);
     const formData = new FormData();
     Object.entries(paylod).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {

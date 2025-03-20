@@ -126,7 +126,6 @@ const Teacher = () => {
             teacher.updated_at = updated_time.toLocaleString();
             return teacher;
           });
-
           setDataTeacher(teacherData);
         } else {
           setDataTeacher([]);
@@ -164,8 +163,8 @@ const Teacher = () => {
         (teacher) => teacher.is_approve === true,
       );
 
-      const college: any = entity.filter((ent) => ent.entity_type == 'college');
-      const school: any = entity.filter((ent) => ent.entity_type == 'school');
+      const college: any = entity.filter((ent) => (ent.entity_type).toLowerCase() == 'college');
+      const school: any = entity.filter((ent) => (ent.entity_type).toLowerCase() == 'school');
 
       setFilteredTeachers([]);
 
@@ -456,7 +455,6 @@ const Teacher = () => {
         });
       });
   };
-
   return (
     <>
       {loading && <FullScreenLoader />}

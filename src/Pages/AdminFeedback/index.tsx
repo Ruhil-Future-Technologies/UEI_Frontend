@@ -41,7 +41,6 @@ const AdminFeedback: React.FC = () => {
     };
 
     postData('/feedback/add', payload).then((response) => {
-      console.log(response);
       if (response.status) {
         toast.success('question added successfully', {
           hideProgressBar: true,

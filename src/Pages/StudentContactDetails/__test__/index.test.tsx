@@ -189,6 +189,9 @@ describe('Student Contect Component', () => {
       if (key === '_id') {
         return '76'; // Mock the studentId value
       }
+      if(key==='phone'){
+       return '8975461325'
+      }
       return null;
     });
     mockGetData.mockResolvedValue({

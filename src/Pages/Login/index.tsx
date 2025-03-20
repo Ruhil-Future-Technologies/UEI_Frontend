@@ -49,7 +49,7 @@ const Login = () => {
     }
   }, []);
 
-  const { postData, postDataJson } = useApi();
+  const { postDataJson } = useApi();
 
   const navigator = useNavigate();
   const [password, setPassword] = useState('');
@@ -117,7 +117,7 @@ const Login = () => {
         setuserValue('');
       }
       try {
-        const data = await postData(loginUrl, UserSignUp);
+        const data = await postDataJson(loginUrl, UserSignUp);
         if (data?.status) {
           setLoading(false);
           localStorage.setItem('token', 'Bearer ' + data?.token);
@@ -166,8 +166,6 @@ const Login = () => {
     });
   };
   const handleSuccessfulLogin = (data: any, password?: string) => {
-    console.log(data);
-
     localStorage.setItem('token', 'Bearer ' + data?.data?.access_token);
     localStorage.setItem('user_type', value);
     localStorage.setItem('user_uuid', data?.data?.user_uuid);

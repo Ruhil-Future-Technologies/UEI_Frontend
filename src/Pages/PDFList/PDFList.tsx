@@ -84,7 +84,6 @@ const PDFList = () => {
           });
         });
     }
-    console.log(schoolOrcollFile);
   }, [schoolOrcollFile, dataDelete]);
 
   if (usertype !== 'admin') {
@@ -101,7 +100,6 @@ const PDFList = () => {
   };
 
   const handleDelete = () => {
-    console.log('Delete File', selectedFile);
 
     if (selectedFile?.pdf_id) {
       const payload: { file_id: string } = { file_id: selectedFile.pdf_id };
@@ -135,7 +133,6 @@ const PDFList = () => {
       setSchoolOrcollFile('college');
     }
   };
-  console.log(fileList);
   return (
     <>
       {loading && <FullScreenLoader />}

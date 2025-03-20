@@ -131,7 +131,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         if(response?.data[0]?.institution_type){
           getSubject(response?.data[0]?.institution_type);
         }
-          console.log(response);
           setBoxes((prevBoxes) =>
             prevBoxes.map((box) => ({
               ...box,
@@ -230,11 +229,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       });
   };
   const getSubject = async (type:any) => {
-    console.log(type)
     if (type == 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          console.log(response)
           if (response.status) {
             const filteredData = response?.data?.subjects_data?.filter(
               (item: any) => item?.is_active,
@@ -250,7 +247,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 (item: any) => item?.class_id === boxes[0]?.class_id,
               );
               setSubjects(filterData || []);
-              console.log(filterData,filteredData)
             } else {
               const filterData = filteredData?.filter(
                 (item: any) =>
@@ -258,7 +254,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   item?.stream === boxes[0]?.stream,
               );
               setSubjects(filterData || []);
-              console.log(filterData,filteredData,boxes[0]?.class_id,boxes[0]?.stream)
             }
             setSubjectsAll(filteredData || []);
           }
@@ -316,7 +311,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       .then((data: any) => {
         if (data?.data.length > 0) {
           data?.data.map((item: any, index: number) => {
-            console.log( data?.data)
             const newBox: Box = {
               id: item.id,
               course_id: item?.course_id,

@@ -59,7 +59,7 @@ $max-items: 100;
 @import 'responsive';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-body {
+body, a, p {
   font-family: 'Inter', system-ui !important;
 }
 .mh-56 {
@@ -316,8 +316,14 @@ img {
 }
 
 @media (max-width: 1024px) {
-  .search-filter {
-    margin-right: 0 !important;
+
+  .swiper-button-prev,
+.swiper-button-next{
+  opacity: 1!important;
+}
+  .search-filter{
+    margin-right: 0!important;
+
   }
   .chat-panel .left-side-history .history-list li ul li {
     opacity: 1 !important;
@@ -2884,7 +2890,7 @@ a {
   margin-bottom: 1.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   border: 0 !important;
-  border-radius: 2.5rem !important;
+  border-radius: 1rem !important;
   width: 100%;
   overflow: hidden;
   .card-header {
@@ -2904,6 +2910,84 @@ a {
 //   }
 // }
 
+
+.swiper-container{
+  position: relative;
+}
+.swiper-button-prev,
+.swiper-button-next {
+   opacity: 0;
+  color: $secondary!important;
+  transition: opacity 0.3s ease;
+  width: 32px!important;
+  height: 32px!important;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:  rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  &::after{
+    font-size: 1.2rem!important;
+  }
+}
+
+.swiper-container:hover .swiper-button-prev,
+.swiper-container:hover .swiper-button-next {
+  opacity: 1;
+}
+.swiper-button-prev{
+  left: -10px!important;
+}
+.swiper-button-next{
+  right: -10px!important;
+}
+.svgwhite{
+  path{
+    fill: white;
+  }
+}
+.uploadfile{
+  padding: 4rem 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content:center ;
+  border: 2px  dashed #D1D5DB;
+  border-radius: 8px;
+}
+.assignbtngrp{
+  display: flex;
+  gap: 10px;
+
+  button{
+    border: 1px solid #E5E7EB!important;
+    border-radius: 8px!important; 
+    color: #4B5563; 
+    min-height: 86px;  
+  }
+  button[aria-pressed="true"]{
+    background-color: rgba($primary, 0.1);
+    border: 1px solid rgba($primary, 0.7)!important;
+    color: $primary;
+  }
+}
+
+.fileslistitem{
+  background-color: #F9FAFB;
+}
+.pinwi-20{
+  svg{
+    width: 20px;
+    height: 20px;
+    path{
+      fill: #6B7280;
+    }
+  }
+}
+
 .css-19kzrtu {
   padding: 1.5rem 0 !important;
 }
+

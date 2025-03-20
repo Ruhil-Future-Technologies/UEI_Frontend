@@ -86,7 +86,6 @@ const Subject = () => {
       });
     getData(`${SubjectSchoolURL}`)
       .then((data: any) => {
-        console.log(data);
         if (data.status) {
           setDataSubjectSchool(data?.data?.subjects_data);
         }
@@ -102,7 +101,6 @@ const Subject = () => {
     callAPI();
   }, []);
   const handleEditFile = (id: any) => {
-    console.log('test lod id', id);
     navigate(
       tabValue === 0 ? `edit-Subject/${id}` : `edit-Subject-school/${id}`,
     );
@@ -139,7 +137,6 @@ const Subject = () => {
   ) => {
     setTabValue(newValue);
   };
-  console.log('test tabs', tabValue);
   return (
     <>
       {loading && <FullScreenLoader />}

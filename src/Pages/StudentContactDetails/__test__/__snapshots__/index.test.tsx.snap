@@ -125,9 +125,9 @@ exports[`Student Contect Component Should render Student contect component corre
           class="form_field_wrapper"
         >
           <label
-            style="text-align: left; margin: 10px;"
+            style="text-align: left; margin-left: 10px; margin-top: 10px; margin-bottom: 10px;"
           >
-            Whatsapp Number 
+            Whatsapp Number
           </label>
         </div>
         <div

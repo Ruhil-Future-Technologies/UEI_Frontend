@@ -909,9 +909,10 @@ function MainContent() {
       getData(`${profileURL}/${userid}`)
         .then((data: any) => {
           if (data.data) {
-            if (data?.data?.basic_info?.id) {
-              localStorage.setItem('userdata', JSON.stringify(data.data));
-              localStorage.setItem('_id', data?.data?.basic_info.id);
+            if(data?.data?.basic_info?.id){
+              localStorage.setItem('userdata', JSON.stringify(data.data))
+              localStorage.setItem('_id', data?.data?.basic_info.id)
+              localStorage.setItem('register_num',data?.data?.register_num);
             }
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
@@ -1016,7 +1017,6 @@ function MainContent() {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) => {
-                      console.log(response);
                       setStudentClass(
                         response.data.class_data.class_name
 
@@ -2322,7 +2322,6 @@ function MainContent() {
         (chatitem: { chat_title: any }) =>
           chatitem?.chat_title === chatData?.[0]?.question,
       );
-      console.log(datatest);
     }
 
     let chat_payload;

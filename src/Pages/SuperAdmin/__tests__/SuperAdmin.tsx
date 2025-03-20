@@ -237,7 +237,6 @@ describe('SuperAdmin Component', () => {
       try {
         await useApi().postData(QUERY_KEYS.POST_SIGNUP, formData);
       } catch (error: any) {
-        console.log(error);
         toast.error(error.message);
       }
 

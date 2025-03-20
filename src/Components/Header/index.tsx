@@ -123,6 +123,7 @@ const Header = () => {
     localStorage.removeItem('teacher_id');
     localStorage.removeItem('institute_id');
     localStorage.removeItem('hasReloaded');
+    localStorage.removeItem('register_num');
     sessionStorage.removeItem('userdata');
     synth.cancel();
     navigator('/');

@@ -863,7 +863,7 @@ const TeacherRegistrationPage = () => {
           'institute_id',
           teacher.institution_id?.toString() || '',
         );
-        if (selectedClassName === 'col-6') {
+        if (selectedClassName === 'col-4') {
           formData.append('stream', teacher.stream);
         }
       } else {
@@ -1288,49 +1288,49 @@ const TeacherRegistrationPage = () => {
             <span>Gyansetu</span>
           </div>
 
-          <Stepper
-            className="mt-5"
-            activeStep={activeStep}
-            orientation="vertical"
+        <Stepper
+          className="mt-5"
+          activeStep={activeStep}
+          orientation="vertical"
+        >
+          {steps.map(({ label, subline, icon }, index) => (
+            <Step key={index}>
+              <StepLabel icon={icon}>
+                {label}
+                <Typography variant="body2" className="opacity-50">
+                  {subline}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <div className="mt-auto d-flex justify-content-between ">
+          <Link
+            href="/"
+            className="text-dark opacity-75 text-capitalize fs-14 d-flex align-items-center gap-2"
           >
-            {steps.map(({ label, subline, icon }, index) => (
-              <Step key={index}>
-                <StepLabel icon={icon}>
-                  {label}
-                  <Typography variant="body2" className="opacity-50">
-                    {subline}
-                  </Typography>
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <div className="mt-auto d-flex justify-content-between ">
-            <Link
-              href="/"
-              className="text-dark opacity-75 text-capitalize fs-14 d-flex align-items-center gap-2"
-            >
-              <WestIcon /> Back to login
-            </Link>
-          </div>
+            <WestIcon /> Back to login
+          </Link>
         </div>
-        <Box>
-          {activeStep === 0 && (
-            <Box>
-              <div className="without-login p-3">
-                <div className="access1-card">
-                  <div className="card-body">
-                    <div className="logoui mb-4 justify-content-center d-lg-none">
-                      <img
-                        src={gLogo}
-                        alt=""
-                        onClick={() => navigate('/signup')}
-                      />
-                      <span>Gyansetu</span>
-                    </div>
-                    <h3 className="text-center fw-bold">Register As Teacher</h3>
-                    <p className="mb-lg-5 mb-4 text-center text-black-50">
-                      Empower your institution—get started today!
-                    </p>
+      </div>
+      <Box>
+        {activeStep === 0 && (
+          <Box>
+            <div className="without-login p-3">
+              <div className="access1-card">
+                <div className="card-body">
+                  <div className="logoui mb-4 justify-content-center d-lg-none">
+                    <img
+                      src={gLogo}
+                      alt=""
+                      onClick={() => navigate('/signup')}
+                    />
+                    <span>Gyansetu</span>
+                  </div>
+                  <h3 className="text-center fw-bold">Register As Teacher</h3>
+                  <p className="mb-lg-5 mb-4 text-center text-black-50">
+                  Empower your teaching journey—get started today!
+                  </p>
 
                     <div className="row d-flex justify-content-center g-4">
                       <div className="col-md-6 col-12 ">

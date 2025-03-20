@@ -54,6 +54,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     whatsappNum: '',
   });
   const StudentId = localStorage.getItem('_id');
+  const register_num=localStorage.getItem('register_num');
   const validateEmail = (email: string) => {
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
@@ -123,7 +124,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
-          setPhoneNum(data?.data.mobile_no_call);
+          setPhoneNum(data?.data.mobile_no_call?data?.data.mobile_no_call:localStorage.getItem('phone'));
           setEmail(data?.data.email_id?data?.data.email:localStorage.getItem('email'));
 
           setInitialState({
@@ -161,6 +162,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   };
   useEffect(() => {
     if(StudentId){
+      setPhoneNum(register_num as string);
       getContacInfo();
     }
   
@@ -178,7 +180,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       return;
     }
 
-    if (phoneNum.length !== 10) {
+    if (phoneNum?.length !== 10) {
       setPhoneNumerror({
         ...errors,
         phoneNum: !/^(?!0{10})[0-9]{10}$/.test(phoneNum)
@@ -357,8 +359,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
         <div className="row">
           {/* <label className="pb-2"> Whatsapp Number </label> */}
           <div className="form_field_wrapper">
-            <label style={{ textAlign: 'left', margin: '10px' }}>
-              Whatsapp Number{' '}
+            <label style={{ textAlign: 'left', marginLeft: '10px' ,marginTop: '10px',marginBottom: '10px'}}>
+              Whatsapp Number
             </label>
           </div>
           <div className="col-3 form_field_wrapper">
