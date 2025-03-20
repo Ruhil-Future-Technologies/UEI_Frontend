@@ -44,7 +44,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
   let StudentId = localStorage.getItem('_id');
   useEffect(()=>{
      StudentId = localStorage.getItem('_id');
-     console.log("DFGDFGD")
   },[activeForm])
  
 
@@ -203,7 +202,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             setChecked(true);
           }
         } else if (response?.code === 404) {
-          console.log("inside 404")
           setEditFlag(true);
           // toast.error(response?.message, {
           //   hideProgressBar: true,
@@ -550,7 +548,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
       !city_col1 &&
       !contry_col1
     ) {
-      console.log(editFlag,tuched)
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           try {
@@ -594,10 +591,8 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           }
         };
        
-        console.log(studentAddress?.address_type);
         // Add current address
         if (studentAddress?.address_type === 'current') {
-          console.log("issues");
           await addAddress('Current', currentAddressPayload);
         }
         // Add permanent address
@@ -609,7 +604,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           addressType: string,
           addressPayload: any,
         ) => {
-          console.log(addressPayload);
           try {
             const formData = new FormData();
 
@@ -617,7 +611,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             //   console.log(key,addressPayload[key]);
             //   formData.append(key, addressPayload[key]);
             // });
-            console.log(addressPayload.pincode,addressPayload?.address1,addressPayload?.address1)
             formData.append('pincode', addressPayload?.pincode || 0);
             formData.append('address1', addressPayload?.address1 || '');
             formData.append('address2', addressPayload?.address2 || '');
@@ -627,7 +620,6 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
             formData.append('district', addressPayload?.district || '');
             formData.append('address_type',addressPayload?.address_type ||'')
             formData.append('student_id',StudentId || '')
-            console.log(formData);
             const data = await putData('/student_address/edit/' + StudentId, 
               formData,
             );
@@ -695,19 +687,14 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
 
         if (StudentId !== null) {
           // Edit current address
-          console.log(tuched);
           if (!tuched) setActiveForm((prev: number) => prev + 1);
           else {
-            console.log(  studentAddress?.address_type === 'current' ,editableCurrent , tuchedCurrent)
             if (
               studentAddress?.address_type === 'current' &&
               editableCurrent &&
               tuchedCurrent
             )
-            console.log(  studentAddress?.address_type === 'current' &&editableCurrent && tuchedCurrent)
               await editAddress('Current', currentAddressPayload);
-
-            console.log(editablePerm);
             if (permanentAddress?.address_type === 'permanent' && tuchedPram)
               await editAddress('Permanent', permanentAddressPayload);
           }

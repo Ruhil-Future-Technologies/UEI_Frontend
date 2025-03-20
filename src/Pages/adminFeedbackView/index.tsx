@@ -29,7 +29,6 @@ const AdminFeedbackView = () => {
   useEffect(() => {
     getData(`${'/feedback/'}`).then((data) => {
       if (data.status) {
-        console.log(data.data);
         setFeedbacks(data.data);
       }
     });

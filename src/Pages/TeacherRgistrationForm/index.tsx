@@ -765,7 +765,7 @@ const TeacherRegistrationPage = () => {
         setUniversityError(true);
       }
     }
-console.log(valid,teacher.university_id)
+
     if (!valid) return;
     if (!teacher.dob || !dayjs(teacher.dob).isValid()) {
       setdobset_col(true);
@@ -1071,11 +1071,9 @@ console.log(valid,teacher.university_id)
               subjects: [],
             };
           }
-          console.log(updatedBox);
         }
 
         if (name === 'stream') {
-          console.log(totleSubject);
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ===
@@ -1087,7 +1085,6 @@ console.log(valid,teacher.university_id)
             filteredSubjects,
             subjects: [],
           };
-          console.log(updatedBox);
         }
         validateFields(index, name, updatedBox);
         return updatedBox;

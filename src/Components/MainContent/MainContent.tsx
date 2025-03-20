@@ -1017,7 +1017,6 @@ function MainContent() {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
                     (response) => {
-                      console.log(response);
                       setStudentClass(
                         response.data.class_data.class_name
 
@@ -2323,7 +2322,6 @@ function MainContent() {
         (chatitem: { chat_title: any }) =>
           chatitem?.chat_title === chatData?.[0]?.question,
       );
-      console.log(datatest);
     }
 
     let chat_payload;

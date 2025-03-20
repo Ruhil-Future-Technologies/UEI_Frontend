@@ -166,8 +166,6 @@ const Login = () => {
     });
   };
   const handleSuccessfulLogin = (data: any, password?: string) => {
-    console.log(data);
-
     localStorage.setItem('token', 'Bearer ' + data?.data?.access_token);
     localStorage.setItem('user_type', value);
     localStorage.setItem('user_uuid', data?.data?.user_uuid);

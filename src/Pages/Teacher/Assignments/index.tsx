@@ -6,9 +6,10 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from 'material-react-table';
-import { Chip, IconButton, Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Chip, IconButton, Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle, } from '@mui/material';
 //import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import { Switch } from '../../../Components/Switch/switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from './CreateAssignments';
@@ -45,7 +46,6 @@ export const Assignments = () => {
   const getListOfAssignments = () => {
     try {
       getData(`/assignment/list/`).then((response) => {
-        console.log(response);
         if (response.data) {
           setAssignmentData(response.data)
         }
@@ -77,7 +77,6 @@ export const Assignments = () => {
     nevigate(`/teacher-dashboard/edit-assignment/${assignmentId}`)
   }
   const deleteAssignment = () => {
-    console.log(dataDeleteId)
     try {
       putData(`/assignment/delete/${dataDeleteId}`).then((response) => {
         if (response.status) {
@@ -201,8 +200,63 @@ export const Assignments = () => {
       accessorKey: 'updated_at',
       header: 'updated at',
     },
+    {
+      accessorKey: 'is_active',
+      header: 'Active/DeActive',
+      Cell: ({ cell, row }: any) => {
+        const { putData } = useApi();
+        const MenuInstituteActive = '/assignment/activate/';
+        const MenuInstituteDeactive = '/assignment/deactivate/';
+        const value = cell?.getValue();
+        // if (!value) {
+        //   return EMPTY_CELL_VALUE;
+        // }
+  
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [Showvalue, setShowvalue] = useState(value);
+  
+        const [Show, setShow] = useState(value ? true : false);
+  
+        const active = (id: number, valueset: any) => {
+          putData(
+            `${valueset ? MenuInstituteDeactive : MenuInstituteActive}${id}`,
+          )
+            .then((data: any) => {
+              if (data.status) {
+                setShow((prevState) => !prevState);
+                setShowvalue(Showvalue ? 0 : 1);
+                toast.success(data?.message);
+                // window.location.reload();
+              }
+            })
+            .catch((e) => {
+              toast.error(e?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+            });
+        };
+  
+        return (
+          <Box>
+            <Switch
+              isChecked={Show}
+              label={Show ? 'Active' : 'Deactive'}
+              // onChange={() => setShow((prevState) => !prevState)}
+              onChange={() => {
+                active(row?.original?.id, Showvalue);
+              }}
+              // disabled={true}
+              activeColor="#4CAF50"
+              inactiveColor="#f44336"
+            />
+          </Box>
+        );
+      },
+      size: 150,
+    },
   ]
-  console.log(assignmentData);
+
   return (
     <div className="main-wrapper">
       <div className="main-content">

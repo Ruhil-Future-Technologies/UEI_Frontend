@@ -950,7 +950,7 @@ export const ProfileDialog: FunctionComponent<{
     Object.keys(payload).forEach((key) => {
       formData.append(key, payload[key]);
     });
-console.log(payload)
+
     postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
         if (data?.status) {
@@ -2264,7 +2264,6 @@ console.log(payload)
               item.entity_type=='school'&&
               item.is_approve == true,
           );
-          console.log(filteredInstitution);
           setInstitutes(filteredInstitution);
       } else {
         const questionsToRemove = [
@@ -2674,7 +2673,7 @@ console.log(payload)
     const filteredcourse = courses.filter(
       (item) => item.institution_id === e.value,
     );
-    console.log(filteredcourse, courses, e.value);
+  
     setCourses(filteredcourse);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
@@ -2867,7 +2866,6 @@ console.log(payload)
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
-  console.log(classOptions,classquestion, institutequestion  , schoolnameQuestion);
   return (
     <>
       <div

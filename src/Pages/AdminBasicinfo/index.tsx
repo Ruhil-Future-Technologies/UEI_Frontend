@@ -156,7 +156,6 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
   const getBasicInfo = async () => {
     try {
       const response = await getData(`${'admin/edit/' + adminId}`);
-      console.log(response);
       if (response?.status) {
         if(response?.data?.admin_data.id){
           sessionStorage.setItem('userdata', JSON.stringify(response?.data?.admin_data));

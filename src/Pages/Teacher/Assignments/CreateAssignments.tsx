@@ -183,7 +183,6 @@ export const CreateAssignments = () => {
       try {
         getData(`/assignment/get/${id}`).then(async (response) => {
           if (response.data) {
-            console.log(response)
             setAssignmentData(response.data)
             if (response?.data?.file) {
               setFiles(response?.data?.file)
@@ -221,7 +220,6 @@ export const CreateAssignments = () => {
                            }),
                          ),
                        );
-                       console.log(allSubject)
                        setBoxes(output);
                      } else {
                        getSubjects('School');
@@ -296,7 +294,6 @@ export const CreateAssignments = () => {
     try {
       getData(`/teacher/edit/${teacherId}`).then(async (data) => {
         if (data?.status) {
-          console.log(data.dtata)
           if (data.data.course_semester_subjects != null) {
             setSelectedEntity('College');
             getSubjects('college')
@@ -315,8 +312,6 @@ export const CreateAssignments = () => {
                   Array.isArray(subjectList) ? subjectList.map((subject) => ({ semester, subject })) : []
                 )
               );
-
-            console.log(semesterSubjects, data.data.course_semester_subjects)
             setTeacherSubjects(semesterSubjects.map(({ subject }) => subject));
 
             setTeacherCourse((prev) => [...(prev || []), ...courseKeys]);
@@ -434,7 +429,6 @@ export const CreateAssignments = () => {
           const filteredClasses = data.data.classes_data.filter((classn: any) =>
             classIds.includes(classn.id)
           )
-          console.log(classIds, filteredClasses)
           setDataClass(filteredClasses);
         }
       })
@@ -581,11 +575,8 @@ export const CreateAssignments = () => {
         }
       });
     } else {
-      console.log(boxes)
       boxes.forEach((box, index) => {
-        console.log(!box.course_id, !box.semester_number, !box.subjects?.length)
         if (!box.course_id || !box.semester_number || !box.subjects?.length) {
-          console.log("kdfsdhkjjfsdf")
           valid = false;
           setErrorForCourse_semester_subject((prevError) => ({
             ...prevError,
@@ -598,7 +589,6 @@ export const CreateAssignments = () => {
         }
       });
     }
-    console.log(valid);
     if (valid1) return;
     if (!valid) return;
     const formData = new FormData();
@@ -805,7 +795,6 @@ export const CreateAssignments = () => {
     index: number,
   ) => {
     const { value, name } = event.target;
-     console.log(name,value);
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) => {
         if (i !== index) return box;
@@ -816,7 +805,6 @@ export const CreateAssignments = () => {
           const filteredSemesters = semesterData.filter(
             (item) => item.course_id === value,
           );
-          console.log(semesterData)
           updatedBox = {
             ...updatedBox,
             filteredSemesters,
@@ -827,7 +815,6 @@ export const CreateAssignments = () => {
         }
 
         if (name === 'semester_number') {
-          console.log(totleSubject);
           const filteredSubjects = totleSubject.filter(
             (item) =>
               item.semester_number === value &&
@@ -857,7 +844,6 @@ export const CreateAssignments = () => {
           const selectedClass = dataClass.find(
             (item) => String(item.id) == value,
           )?.class_name;
-          console.log(selectedClass);
           // setSelectedClassName(
           //   selectedClass === 'class_11' || selectedClass === 'class_12'
           //     ? 'col-4'
@@ -948,7 +934,7 @@ export const CreateAssignments = () => {
       setDueTime_error(false);
     }
   }, [dueDate, availableFrom, dueTime])
-  console.log(coursesData, listOfStudent, boxes, teacherCourse,filteredcoursesData );
+  console.log(coursesData, listOfStudent,);
   return (
     <div className="main-wrapper">
       <div className="main-content">

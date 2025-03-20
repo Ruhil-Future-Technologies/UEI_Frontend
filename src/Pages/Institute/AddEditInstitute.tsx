@@ -197,7 +197,6 @@ const AddEditInstitute = () => {
       }
     };
     const handleBlurstate = (e: FocusEvent) => {
-      console.log('Blurstate');
       if (
         dropdownstateRef.current &&
         !dropdownstateRef.current.contains(e.relatedTarget as Node)

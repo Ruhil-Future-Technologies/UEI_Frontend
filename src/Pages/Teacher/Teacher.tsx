@@ -126,7 +126,6 @@ const Teacher = () => {
             teacher.updated_at = updated_time.toLocaleString();
             return teacher;
           });
-          console.log(teacherData)
           setDataTeacher(teacherData);
         } else {
           setDataTeacher([]);
@@ -456,7 +455,6 @@ const Teacher = () => {
         });
       });
   };
-  console.log(filteredTeachers)
   return (
     <>
       {loading && <FullScreenLoader />}

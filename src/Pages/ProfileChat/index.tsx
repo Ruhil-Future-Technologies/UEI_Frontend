@@ -739,7 +739,6 @@ const ProfileChat: React.FC = () => {
   let hitcount = 1;
 
   const handleclickdate = () => {
-    console.log('test ss', datecheck);
     if (datecheck) {
       if (currentQuestionIndex == 14) {
         if (datecheck > answers[13]) {
