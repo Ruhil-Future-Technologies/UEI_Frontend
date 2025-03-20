@@ -57,6 +57,7 @@ const AddEditInstitute = () => {
   const mobilePattern = /^(?!0{10})[0-9]{10}$/;
   const emailPattern = /\S+@\S+\.\S+/;
   const pincodePattern = /^(?!0{6})[0-9]{6}$/;
+  const websiteRegex =  /^(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)$/;
 
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const initialState = {
@@ -539,9 +540,16 @@ const AddEditInstitute = () => {
             return !exists;
           }),
 
-        website_url: Yup.string(),
-        //     .required("Please enter Website")
-        //     .matches(websitePattern, 'Please enter a valid URL format.'),
+          website_url: Yup.string()
+          .nullable()
+          .test(
+            "is-valid-url",
+            "Please enter a valid URL format (e.g., https://example.com).",
+            (value) => {
+              if (!value) return true; // Allow empty values
+              return websiteRegex.test(value); // Validate only if a value is present
+            }
+          ),
       });
     } else {
       instituteSchema = Yup.object().shape({
@@ -646,9 +654,16 @@ const AddEditInstitute = () => {
             );
             return !exists;
           }),
-        website_url: Yup.string(),
-        //     .required("Please enter Website")
-        //     .matches(websitePattern, 'Please enter a valid URL format.'),
+          website_url: Yup.string()
+          .nullable()
+          .test(
+            "is-valid-url",
+            "Please enter a valid URL format (e.g., https://example.com).",
+            (value) => {
+              if (!value) return true; // Allow empty values
+              return websiteRegex.test(value); // Validate only if a value is present
+            }
+          ),
       });
     }
   }
@@ -697,7 +712,7 @@ const AddEditInstitute = () => {
               validationSchema={instituteSchema}
               innerRef={formRef}
             >
-              {({ errors, values, touched }) => (
+              {({ errors, values, touched,setFieldValue,setFieldTouched }) => (
                 <Form>
                   <div className="row gy-4 mt-0">
                     <div className="col-md-4">
@@ -974,20 +989,6 @@ const AddEditInstitute = () => {
                         )}
                       </div>
                     </div>
-                    {/* <div className='col-md-4'>
-                                         <div className="form_field_wrapper">
-                                            <Field
-                                                component={TextField}
-                                                label="Country *"
-                                                name="country"
-                                                value={values?.country}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "country")}
-                                            />
-                                            {touched?.country && errors?.country ?
-                                                <p style={{ color: 'red' }}>{errors?.country}</p> : <></>
-                                            }
-                                        </div> 
-                                    </div> */}
 
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
@@ -1028,20 +1029,6 @@ const AddEditInstitute = () => {
                         )}
                       </div>
                     </div>
-                    {/* <div className='col-md-4'>
-                                        <div className="form_field_wrapper">
-                                            <Field
-                                                component={TextField}
-                                                label="State *"
-                                                name="state"
-                                                value={values?.state}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "state")}
-                                            />
-                                            {touched?.state && errors?.state ?
-                                                <p style={{ color: 'red' }}>{errors?.state}</p> : <></>
-                                            }
-                                        </div>
-                                    </div> */}
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
@@ -1088,13 +1075,18 @@ const AddEditInstitute = () => {
                           label="Website"
                           name="website_url"
                           value={values?.website_url}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          //   handleChange(e, 'website_url')
+                          // }
+                          onChange={(e:any) => {
                             handleChange(e, 'website_url')
-                          }
+                            setFieldValue('website_url', e?.target?.value);
+                            setFieldTouched('website_url', true, false);  // Manually trigger validation
+                          }}
                         />
-                        {/* {touched?.website_url && errors?.website_url ?
-                                                <p style={{ color: 'red' }}>{errors?.website_url}</p> : <></>
-                                            } */}
+                        {errors?.website_url && <p style={{ color: 'red' }}>{errors?.website_url}</p>}
+
+                                      
                       </div>
                     </div>
                   </div>
