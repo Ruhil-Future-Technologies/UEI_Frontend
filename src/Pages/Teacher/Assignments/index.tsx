@@ -14,55 +14,16 @@ import useApi from '../../../hooks/useAPI';
 import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 
-// type Assignment = {
-//   assignment: string;
-//   subject: string;
-//   dueDate: string;
-//   status: string;
-//   submissions: string;
-// };
-
-// const assignments: Assignment[] = [
-//   {
-//     assignment: 'Mathematics Quiz - Chapter 3',
-//     subject: 'Mathematics',
-//     dueDate: 'Feb 15, 2024',
-//     status: 'Active',
-//     submissions: '18 / 25',
-//   },
-//   {
-//     assignment: 'English Essay - Creative Writing',
-//     subject: 'English',
-//     dueDate: 'Feb 18, 2024',
-//     status: 'Draft',
-//     submissions: '0 / 30',
-//   },
-//   {
-//     assignment: 'Science Project - Solar System',
-//     subject: 'Science',
-//     dueDate: 'Feb 10, 2024',
-//     status: 'Closed',
-//     submissions: '28 / 28',
-//   },
-//   {
-//     assignment: 'History Assignment - World War II',
-//     subject: 'History',
-//     dueDate: 'Feb 20, 2024',
-//     status: 'Active',
-//     submissions: '15 / 32',
-//   },
-// ];
-
 
 export const Assignments = () => {
 
 
-  const {getData,putData}=useApi();
-  const nevigate=useNavigate();
-  const [openCard,setOpenCard]=useState(false);
+  const { getData, putData } = useApi();
+  const nevigate = useNavigate();
+  const [openCard, setOpenCard] = useState(false);
 
   const [dataDeleteId, setDataDeleteId] = useState('');
-  const [assignmentData,setAssignmentData]=useState<Assignment[]>([{
+  const [assignmentData, setAssignmentData] = useState<Assignment[]>([{
     title: "",
     type: "written",
     contact_email: "",
@@ -77,74 +38,74 @@ export const Assignments = () => {
     notify: false,
     file: null, // File should be null initially
   }]);
-  useEffect(()=>{
+  useEffect(() => {
     getListOfAssignments();
-  },[])
+  }, [])
 
-  const getListOfAssignments=()=>{
-  try {
-    getData(`/assignment/list/`).then((response)=>{
-      console.log(response);
-      if(response.data){
-        setAssignmentData(response.data)
-      }
-    })
-  } catch (error:any) {
-    toast.error(error.message,{
-      hideProgressBar:true,
-      theme:"colored",
-      position:'top-center'
-    })
-  }
-  }
-  const getStatusChip = (status: string) => {
-    switch (status) {
-      case 'Active':
-        return <Chip label="Active" color="success" />;
-      case 'Draft':
-        return <Chip label="Draft" color="default" />;
-      case 'Closed':
-        return <Chip label="Closed" color="error" />;
-      default:
-        return <Chip label={status} />;
+  const getListOfAssignments = () => {
+    try {
+      getData(`/assignment/list/`).then((response) => {
+        console.log(response);
+        if (response.data) {
+          setAssignmentData(response.data)
+        }
+      })
+    } catch (error: any) {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: "colored",
+        position: 'top-center'
+      })
     }
-  };
+  }
+  // const getStatusChip = (status: string) => {
+  //   switch (status) {
+  //     case 'Active':
+  //       return <Chip label="Active" color="success" />;
+  //     case 'Draft':
+  //       return <Chip label="Draft" color="default" />;
+  //     case 'Closed':
+  //       return <Chip label="Closed" color="error" />;
+  //     default:
+  //       return <Chip label={status} />;
+  //   }
+  // };
   // const viewAssignmnet=(assignmentId:any)=>{
   //  console.log("view this assgnment",assignmentId)
   // }
-  const editAssignmnet=(assignmentId:any)=>{
+  const editAssignmnet = (assignmentId: any) => {
     nevigate(`/teacher-dashboard/edit-assignment/${assignmentId}`)
   }
-  const deleteAssignment=()=>{
+  const deleteAssignment = () => {
     console.log(dataDeleteId)
     try {
-      putData(`/assignment/delete/${dataDeleteId}`).then((response)=>{
-       if(response.status){
-        toast.success(response.message,{
-          hideProgressBar:true,
-          theme:'colored',
-          position:'top-center'
-        })
-        setOpenCard(false);
-       }
-      }).catch((error)=>{
-        toast.error(error.message,{
-          hideProgressBar:true,
-          theme:'colored',
-          position:'top-center'
+      putData(`/assignment/delete/${dataDeleteId}`).then((response) => {
+        if (response.status) {
+          toast.success(response.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center'
+          })
+          setOpenCard(false);
+        }
+      }).catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
         })
       })
-    } catch (error:any) {
-      toast.error(error.message,{
-        hideProgressBar:true,
-        theme:'colored',
-        position:'top-center'
+    } catch (error: any) {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
       })
     }
 
-   
+
   }
-  const isDelete=(assignmentId:any)=>{
+  const isDelete = (assignmentId: any) => {
     setDataDeleteId(assignmentId);
     setOpenCard(true);
   }
@@ -155,21 +116,21 @@ export const Assignments = () => {
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const assignmentId = row?.original?.id;
         return (
-        <Box>
-          {/* <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>
+          <Box>
+            {/* <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>
             
             <VisibilityIcon />
             
           </IconButton> */}
-          <IconButton color="secondary" onClick={()=>editAssignmnet(assignmentId)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" onClick={()=>isDelete(assignmentId)}>
-            <DeleteIcon />
-          </IconButton>
-        </Box>
+            <IconButton color="secondary" onClick={() => editAssignmnet(assignmentId)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton color="error" onClick={() => isDelete(assignmentId)}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
         )
-    },
+      },
       enableSorting: false,
       enableColumnFilter: false,
     },
@@ -190,6 +151,41 @@ export const Assignments = () => {
       header: 'type',
     },
     {
+      accessorKey: 'subject',
+      header: 'Subject',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const courseKeys = row?.original?.course_semester_subjects;
+    
+        if (!courseKeys || typeof courseKeys !== 'object') return <p>No subjects</p>;
+    
+        // Cast courseKeys to a known structure
+        const subjects = Object.values(courseKeys as Record<string, Record<string, string[]>>)
+          .flatMap((semesterObj) => Object.values(semesterObj))
+          .flat();
+    
+        return <p>{subjects.join(', ')}</p>;
+      }
+    }
+,    
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+
+        const is_draft = row?.original?.save_draft;
+        return (
+
+          <>
+            {is_draft ?
+              <Chip label="Draft" color="default" />:<Chip label="Active" color="success" />
+            }
+            {/* <Chip label={status} />; */}
+          </>
+
+        )
+      },
+    },
+    {
       accessorKey: 'created_by',
       header: 'Created By',
     },
@@ -204,15 +200,6 @@ export const Assignments = () => {
     {
       accessorKey: 'updated_at',
       header: 'updated at',
-    },
-    {
-      accessorKey: 'subject',
-      header: 'Subject',
-    },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      Cell: ({ cell }) => getStatusChip(cell.getValue<string>()),
     },
   ]
   console.log(assignmentData);
@@ -238,7 +225,7 @@ export const Assignments = () => {
         </div>
 
         <div className="row g-4">
-        <div className="col-lg-12 text-end">
+          <div className="col-lg-12 text-end">
             <Link to='/teacher-dashboard/create-assignment' className='btn btn-primary m-0'>Create Assignments</Link>
           </div>
 
@@ -329,40 +316,40 @@ export const Assignments = () => {
             </div>
           </div>
 
-          
+
           <div className="col-12">
             <Box className="rounded-4 overflow-hidden">
-            <MaterialReactTable
-              columns={columns}
-              data={assignmentData}
-              enablePagination
-              enableSorting
-              enableColumnFilters
-              enableStickyHeader
-              muiTableContainerProps={{ sx: { maxHeight: '500px' } }}
-              renderTopToolbarCustomActions={() => (
-                <Typography variant="h6" sx={{ fontWeight: "bold", ml: 1 }}>
-                  Recent Assignments
-                </Typography>
-              )}
-            />
+              <MaterialReactTable
+                columns={columns}
+                data={assignmentData}
+                enablePagination
+                enableSorting
+                enableColumnFilters
+                enableStickyHeader
+                muiTableContainerProps={{ sx: { maxHeight: '500px' } }}
+                renderTopToolbarCustomActions={() => (
+                  <Typography variant="h6" sx={{ fontWeight: "bold", ml: 1 }}>
+                    Recent Assignments
+                  </Typography>
+                )}
+              />
             </Box>
           </div>
         </div>
       </div>
-      <Dialog open={openCard} onClose={()=>setOpenCard(false)}>
-      <DialogTitle>Delete Assignment</DialogTitle>
-      <DialogContent>
-        <Typography>Are you sure you want to delete this assignment? This action cannot be undone.</Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={()=>setOpenCard(false)} color="primary" variant="outlined">
-          Cancel
-        </Button>
-        <Button onClick={deleteAssignment} color="error" variant="contained">
-          Delete
-        </Button>
-      </DialogActions>
+      <Dialog open={openCard} onClose={() => setOpenCard(false)}>
+        <DialogTitle>Delete Assignment</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this assignment? This action cannot be undone.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenCard(false)} color="primary" variant="outlined">
+            Cancel
+          </Button>
+          <Button onClick={deleteAssignment} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

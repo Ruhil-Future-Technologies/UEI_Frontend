@@ -60,6 +60,8 @@ export interface Assignment {
   assign_to_students: string[]; // Converted from string representation to an actual array
   instructions: string;
   points: string;
+  course_semester_subjects?:any;
+  class_stream_subjects?:any;
   save_draft: boolean;
   add_to_report: boolean;
   notify: boolean;
