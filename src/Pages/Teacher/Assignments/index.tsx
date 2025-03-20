@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 //import BookIcon from '@mui/icons-material/Book';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
-import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
+import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from 'material-react-table';
 import { Chip, IconButton, Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 //import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -88,8 +89,12 @@ export const Assignments = () => {
         setAssignmentData(response.data)
       }
     })
-  } catch (error) {
-    
+  } catch (error:any) {
+    toast.error(error.message,{
+      hideProgressBar:true,
+      theme:"colored",
+      position:'top-center'
+    })
   }
   }
   const getStatusChip = (status: string) => {
@@ -147,8 +152,8 @@ export const Assignments = () => {
     {
       accessorKey: 'actions',
       header: 'Actions',
-      Cell: ({row}) => {
-        const assignmentId = row.original.id;
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const assignmentId = row?.original?.id;
         return (
         <Box>
           {/* <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>

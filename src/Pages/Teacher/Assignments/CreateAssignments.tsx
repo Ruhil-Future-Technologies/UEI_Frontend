@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -83,7 +84,7 @@ export const CreateAssignments = () => {
   const teacherId = localStorage.getItem('user_uuid');
   const [assignmentType, setAssignmentType] = useState('written');
   const [files, setFiles] = useState<File[]>([]);
-  const nevegate=useNavigate();
+  const nevegate = useNavigate();
   const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
   // const [availableUntil, setAvailableUntil] = useState<Date | null>(null);
   const [allowLateSubmission, setAllowLateSubmission] = useState(false);
@@ -176,38 +177,94 @@ export const CreateAssignments = () => {
   }, [])
 
   const getAssignmentInfo = () => {
-    if(id) {
+    if (id) {
       try {
-        getData(`/assignment/get/${id}`).then((response)=>{
-          if(response.data){
-              console.log(response)
-              setAssignmentData(response.data)
-              if(response?.data?.file){
-                setFiles(response?.data?.file)
-              }
-              setSendNotification(response?.data?.notify);
-              setAddToStudentRepost(response?.data?.add_to_report);
-              setAllowLateSubmission(response?.data?.allow_late_submission);
-              setSaveAsDraft(response?.data?.save_draft);
-              setDueDate(dayjs(response?.data?.due_date_time));
-              setAvailableFrom(dayjs(response?.data?.available_from));
+        getData(`/assignment/get/${id}`).then(async (response) => {
+          if (response.data) {
+            console.log(response)
+            setAssignmentData(response.data)
+            if (response?.data?.file) {
+              setFiles(response?.data?.file)
+            }
+            setSendNotification(response?.data?.notify);
+            setAddToStudentRepost(response?.data?.add_to_report);
+            setAllowLateSubmission(response?.data?.allow_late_submission);
+            setSaveAsDraft(response?.data?.save_draft);
+            setDueDate(dayjs(response?.data?.due_date_time));
+            setAvailableFrom(dayjs(response?.data?.available_from));
           }
-         }).catch((error)=>{
-          toast.error(error.message,{
-            hideProgressBar:true,
-            theme:"colored",
-            position:'top-center'
+            if (response.data.university_id !== 'None') {
+                       const allSubject: SubjectRep0oDTO[] = await getSubjects('college');
+                       const allsemesters: SemesterRep0oDTO[] = await getSemester();
+                       setSelectedEntity('College');
+                       const output: Boxes[] = Object.keys(
+                         response.data.course_semester_subjects,
+                       ).flatMap((CourseKey) =>
+                         Object.keys(response.data.course_semester_subjects[CourseKey]).map(
+                           (semester_number) => ({
+                             course_id: CourseKey,
+                             semester_number: semester_number,
+                             subjects:
+                               response.data.course_semester_subjects[CourseKey][
+                                 semester_number
+                               ],
+                             filteredSemesters: allsemesters.filter(
+                               (item) => item.course_id == CourseKey,
+                             ),
+                             filteredSubjects: allSubject.filter(
+                               (item) =>
+                                 item.semester_number == semester_number &&
+                                 item.course_id == CourseKey,
+                             ),
+                           }),
+                         ),
+                       );
+                       console.log(allSubject)
+                       setBoxes(output);
+                     } else {
+                       getSubjects('School');
+                       setSelectedEntity('School');
+                       const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
+                       const output: BoxesForSchool[] = Object.keys(
+                         response.data.class_stream_subjects,
+                       ).flatMap((classKey) =>
+                         Object.keys(response.data.class_stream_subjects[classKey]).map(
+                           (stream) => ({
+                             stream: stream,
+                             subjects: response.data.class_stream_subjects[classKey][stream],
+                             class_id: classKey,
+                             is_Stream: stream !== 'general',
+                             selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
+                             filteredSubjects:
+                               stream == 'general'
+                                 ? allSubject.filter((item) => item.class_id === classKey)
+                                 : allSubject.filter(
+                                     (item) =>
+                                       item.class_id === classKey &&
+                                       item.stream === stream,
+                                   ),
+                           }),
+                         ),
+                       );
+                       setBoxesForSchool(output);
+                     }
+          // setBoxesForSchool(response?.data?.class_stream_subjects);
+        }).catch((error) => {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: "colored",
+            position: 'top-center'
           })
-         })
-      } catch (error:any) {
-        toast.error(error.message,{
-          hideProgressBar:true,
-          theme:"colored",
-          position:'top-center'
         })
-      
+      } catch (error: any) {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: "colored",
+          position: 'top-center'
+        })
+
       }
-     
+
     }
   }
   useEffect(() => {
@@ -220,7 +277,7 @@ export const CreateAssignments = () => {
 
       if (data?.data) {
         setTotleSubject(data.data?.subjects_data);
-        return data.data; // Return subjects
+        return data.data?.subjects_data; // Return subjects
       }
 
       return []; // Return empty array if no data
@@ -237,7 +294,7 @@ export const CreateAssignments = () => {
     try {
       getData(`/teacher/edit/${teacherId}`).then(async (data) => {
         if (data?.status) {
-
+          console.log(data.dtata)
           if (data.data.course_semester_subjects != null) {
             setSelectedEntity('College');
             getSubjects('college')
@@ -252,10 +309,11 @@ export const CreateAssignments = () => {
 
             const semesterSubjects = Object.entries(data.data.course_semester_subjects as Record<string, Record<string, string[]>>)
               .flatMap(([semester, subjects]) =>
-                Object.entries(subjects).flatMap(([_, subjectList]) =>
+                Object.values(subjects).flatMap((subjectList) =>
                   Array.isArray(subjectList) ? subjectList.map((subject) => ({ semester, subject })) : []
                 )
               );
+
             console.log(semesterSubjects, data.data.course_semester_subjects)
             setTeacherSubjects(semesterSubjects.map(({ subject }) => subject));
 
@@ -297,7 +355,7 @@ export const CreateAssignments = () => {
 
             const Subjects = Object.entries(data.data.class_stream_subjects as Record<string, Record<string, string[]>>)
               .flatMap(([streasm, subjects]) =>
-                Object.entries(subjects).flatMap(([_, subjectList]) =>
+                Object.entries(subjects).flatMap(([subjectList]) =>
                   Array.isArray(subjectList) ? subjectList.map((subject) => ({ streasm, subject })) : []
                 )
               );
@@ -339,7 +397,7 @@ export const CreateAssignments = () => {
 
       if (data?.status && data?.data) {
         setSemesterData(data.data.semesters_data);
-        return data.data; // Return the fetched semesters
+        return data.data.semesters_data; // Return the fetched semesters
       }
 
       return []; // Return an empty array if no data
@@ -379,8 +437,6 @@ export const CreateAssignments = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
-        }
         toast.error(e?.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -555,16 +611,76 @@ export const CreateAssignments = () => {
     formData.append('save_draft', assignmentData.save_draft ? 'True' : 'False');
     formData.append('add_to_report', addToStudentRepost ? 'True' : 'False');
     formData.append('notify', sendNotification ? 'True' : 'False');
-    let students = ['2323']
+    const students = ['2323']
     students.forEach((student) => {
       formData.append('assign_to_students', student)
     })
     files.forEach((file) => {
       formData.append('file[]', file);
     });
-       
+    if (selectedEntity.toLowerCase() === 'school') {
+      const class_stream_subjects = boxesForSchool.reduce(
+        (acc, boxesForSchool) => {
+          const { class_id, stream, subjects } = boxesForSchool;
+          const streamKey = stream === '' ? 'general' : stream || 'general';
+          if (!acc[class_id]) {
+            acc[class_id] = {};
+          }
 
-    if(!id){
+          if (!acc[class_id][streamKey]) {
+            acc[class_id][streamKey] = [];
+          }
+
+          const subjectString = Array.isArray(subjects) ? subjects.join("") : subjects;
+
+          acc[class_id][streamKey] = [subjectString];
+
+          return acc;
+        },
+        {} as Record<string, Record<string, string[]>>,
+      );
+      formData.append(
+        'class_stream_subjects',
+        JSON.stringify(class_stream_subjects),
+      );
+
+
+      // if (selectedClassName === 'col-4') {
+      //   formData.append('stream', teacher.stream);
+      // }
+    } else {
+
+      const course_semester_subjects = boxes.reduce(
+        (acc, box) => {
+          const { course_id, semester_number, subjects } = box;
+
+          if (!acc[course_id]) {
+            acc[course_id] = {};
+          }
+
+          if (!acc[course_id][semester_number]) {
+            acc[course_id][semester_number] = [];
+          }
+
+          acc[course_id][semester_number] = [
+            ...new Set([...acc[course_id][semester_number], ...subjects]),
+          ];
+
+          const subjectString = Array.isArray(subjects) ? subjects.join("") : subjects;
+
+          acc[course_id][semester_number] = [subjectString];
+          return acc;
+        },
+        {} as Record<string, Record<string, string[]>>,
+      );
+      formData.append(
+        'course_semester_subjects',
+        JSON.stringify(course_semester_subjects),
+      );
+    }
+
+
+    if (!id) {
       try {
         postData('assignment/add', formData).then((response) => {
           if (response.status) {
@@ -598,7 +714,7 @@ export const CreateAssignments = () => {
           position: 'top-center'
         })
       }
-    }else{
+    } else {
       try {
         putData(`/assignment/edit/${id}`, formData).then((response) => {
           if (response.data) {
@@ -613,8 +729,8 @@ export const CreateAssignments = () => {
             type: "written",
             contact_email: "",
             allow_late_submission: false,
-            due_date_time: "", 
-            available_from: "", 
+            due_date_time: "",
+            available_from: "",
             assign_to_students: [],
             instructions: "",
             points: '',
@@ -687,7 +803,7 @@ export const CreateAssignments = () => {
     index: number,
   ) => {
     const { value, name } = event.target;
-
+     console.log(name,value);
     setBoxes((prevBoxes) =>
       prevBoxes.map((box, i) => {
         if (i !== index) return box;
@@ -808,6 +924,7 @@ export const CreateAssignments = () => {
       ...prev,
       ["save_draft"]: true,
     }));
+    submitAssignment();
   }
 
   useEffect(() => {
@@ -829,7 +946,7 @@ export const CreateAssignments = () => {
       setDueTime_error(false);
     }
   }, [dueDate, availableFrom, dueTime])
-  console.log(coursesData, listOfStudent, boxesForSchool, teacherStream);
+  console.log(coursesData, listOfStudent, boxes, teacherCourse,filteredcoursesData );
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1404,8 +1521,6 @@ export const CreateAssignments = () => {
                         style={{
                           marginTop: 20,
                           marginRight: 10,
-                          backgroundColor: saveAsDraft ? "#e3f2fd" : "transparent", // Optional custom background
-                          borderColor: saveAsDraft ? "#1976d2" : "", // Optional border color change
                         }}
                         onClick={handleSaveAsDraft}
                       >
@@ -1422,7 +1537,7 @@ export const CreateAssignments = () => {
                     </div>
                   </div>
                 </div>
-       
+
               </div>
             </div>
           </div>

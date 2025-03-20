@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import './Style.scss';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';

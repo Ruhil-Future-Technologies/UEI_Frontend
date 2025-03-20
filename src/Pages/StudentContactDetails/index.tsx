@@ -124,7 +124,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
-          setPhoneNum(data?.data.mobile_no_call);
+          setPhoneNum(data?.data.mobile_no_call?data?.data.mobile_no_call:localStorage.getItem('phone'));
           setEmail(data?.data.email_id?data?.data.email:localStorage.getItem('email'));
 
           setInitialState({
@@ -180,7 +180,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       return;
     }
 
-    if (phoneNum.length !== 10) {
+    if (phoneNum?.length !== 10) {
       setPhoneNumerror({
         ...errors,
         phoneNum: !/^(?!0{10})[0-9]{10}$/.test(phoneNum)
