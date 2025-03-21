@@ -564,7 +564,7 @@ const Signup = () => {
                             }}
                           >
                             {' '}
-                            Terms and Condition
+                            Terms and Conditions
                           </a>
                         </label>
                       </div>
