@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { InputLabel, Typography, Box } from '@mui/material';
+import { InputLabel, Typography, Box, Checkbox } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 import {
   QUERY_KEYS,
@@ -163,12 +163,15 @@ const AddEditTeacher = () => {
   const qualificationPattern = /^[a-zA-Z0-9\s.,()'-]+$/;
   const [error, setError] = React.useState<string | null>(null);
   const isSchoolEntity = (entityId: string | string[]): boolean => {
-    const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
+    const selectedEntity = dataEntity?.find(
+      (entity) => entity.id === entityId && entity?.is_active,
+    );
     return selectedEntity?.entity_type?.toLowerCase?.() === 'school';
-
   };
   const isCollegeEntity = (entityId: string | string[]): boolean => {
-    const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
+    const selectedEntity = dataEntity?.find(
+      (entity) => entity.id === entityId && entity?.is_active,
+    );
 
     return selectedEntity?.entity_type?.toLowerCase() === 'college';
   };
@@ -182,13 +185,19 @@ const AddEditTeacher = () => {
     });
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data.course_data;
-      setDataCourses(data?.data?.course_data);
+      setDataCourses(
+        data?.data?.course_data.filter((subject: any) => subject.is_active),
+      );
     });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data.subjects_data);
+      setCollegeSubjects(
+        data.data.subjects_data.filter((subject: any) => subject.is_active),
+      );
     });
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data.subjects_data);
+      setSchoolSubjects(
+        data.data.subjects_data.filter((subject: any) => subject.is_active),
+      );
     });
     if (id) {
       const teacherData = await getData(`${TeacherURL}`);
@@ -291,7 +300,7 @@ const AddEditTeacher = () => {
           last_name: teacherDetail?.data?.last_name || '',
           gender:
             teacherDetail?.data?.gender.charAt(0).toUpperCase() +
-            teacherDetail?.data?.gender.slice(1) || '',
+              teacherDetail?.data?.gender.slice(1) || '',
           dob: teacherDetail?.data?.dob || '',
           phone: teacherDetail?.data?.phone || '',
           email: teacherDetail?.data?.email || '',
@@ -335,25 +344,40 @@ const AddEditTeacher = () => {
   const fetchData = async () => {
     const promises = [
       getData(`${GET_UNIVERSITY}`)
-        .then((data) => setDataUniversity(data.data?.universities_data || []))
+        .then((data) =>
+          setDataUniversity(
+            data.data?.universities_data.filter((uni: any) => uni.is_active) ||
+              [],
+          ),
+        )
         .catch(() => setDataUniversity([])),
-  
+
       getData(`${GET_ENTITIES}`)
-        .then((data) => setDataEntity(data.data?.entityes_data || []))
+        .then((data) =>
+          setDataEntity(
+            data.data?.entityes_data.filter(
+              (entity: any) => entity.is_active,
+            ) || [],
+          ),
+        )
         .catch(() => setDataEntity([])),
-  
+
       getData(`${QUERY_KEYS.GET_INSTITUTES}`)
         .then((data) => {
           const allInstitutes = data.data || [];
           const schoolInstitutes = allInstitutes.filter(
             (institute: any) =>
-              institute.entity_type?.toLowerCase() === 'school' && institute.is_approve
+              institute.entity_type?.toLowerCase() === 'school' &&
+              institute.is_approve &&
+              institute.is_active,
           );
           const collegeInstitutes = allInstitutes.filter(
             (institute: any) =>
-              institute.entity_type?.toLowerCase() === 'college' && institute.is_approve
+              institute.entity_type?.toLowerCase() === 'college' &&
+              institute.is_approve &&
+              institute.is_active,
           );
-  
+
           setDataInstitutes(allInstitutes);
           setSchoolInstitutes(schoolInstitutes);
           setCollegeInstitutes(collegeInstitutes);
@@ -363,37 +387,54 @@ const AddEditTeacher = () => {
           setSchoolInstitutes([]);
           setCollegeInstitutes([]);
         }),
-  
+
       getData(`${QUERY_KEYS_ROLE.GET_ROLE}`)
         .then((data) => setRole(data.data?.rolees_data || []))
         .catch(() => setRole([])),
-  
+
       getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
         .then((data) => setDataClasses(data.data?.classes_data || []))
         .catch(() => setDataClasses([])),
-  
+
       getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
-        .then((data) => setDataCourses(data.data?.course_data || []))
+        .then((data) =>
+          setDataCourses(
+            data.data?.course_data.filter((course: any) => course.is_active) ||
+              [],
+          ),
+        )
         .catch(() => setDataCourses([])),
-  
+
       getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`)
-        .then((data) => setCollegeSubjects(data.data?.subjects_data || []))
+        .then((data) =>
+          setCollegeSubjects(
+            data.data?.subjects_data.filter(
+              (subject: any) => subject.is_active,
+            ) || [],
+          ),
+        )
         .catch(() => setCollegeSubjects([])),
-  
+
       getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`)
-        .then((data) => setSchoolSubjects(data.data?.subjects_data || []))
+        .then((data) =>
+          setSchoolSubjects(
+            data.data?.subjects_data.filter(
+              (subject: any) => subject.is_active,
+            ) || [],
+          ),
+        )
         .catch(() => setSchoolSubjects([])),
     ];
-  
-    await Promise.allSettled(promises); 
+
+    await Promise.allSettled(promises);
   };
-  
+
   useEffect(() => {
     const fetchAndCallAPI = async () => {
-      await fetchData(); 
-      callAPI(); 
+      await fetchData();
+      callAPI();
     };
-  
+
     fetchAndCallAPI();
   }, []);
 
@@ -404,9 +445,7 @@ const AddEditTeacher = () => {
       } else if (isCollegeEntity(teacher.entity_id)) {
         if (teacher.university_id) {
           const filtered = collegeInstitutes?.filter(
-            (institute) =>
-              institute.university_id ===
-            teacher.university_id,
+            (institute) => institute.university_id === teacher.university_id,
           );
           setFilteredInstitutes(filtered);
         } else {
@@ -416,14 +455,10 @@ const AddEditTeacher = () => {
     } else {
       setFilteredInstitutes([]);
     }
-  }, [
-    teacher.university_id,
-    teacher.entity_id,
-  ]);
+  }, [teacher.university_id, teacher.entity_id]);
 
   useEffect(() => {
-    const institutionId =
-      selectedInstitutionId || teacher?.institute_id;
+    const institutionId = selectedInstitutionId || teacher?.institute_id;
     if (institutionId) {
       const filtered = dataCourses?.filter(
         (course) => course.institution_id === institutionId,
@@ -433,7 +468,7 @@ const AddEditTeacher = () => {
     } else {
       setFilteredCourses([]);
     }
-  }, [ teacher?.institute_id ]);
+  }, [teacher?.institute_id]);
 
   const checkHigherClass = (
     classId: string | undefined,
@@ -447,46 +482,46 @@ const AddEditTeacher = () => {
           classes.class_name === 'class_12'),
     );
   };
-      useEffect(() => {
-      if (teacher?.entity_id) {
-        if (isSchoolEntity(teacher.entity_id)) {
-          if (teacher.class_id) {
-            const filtered = schoolSubjects.filter(
-              (subject) => subject.class_id === teacher.class_id,
-            );
-            const higherClass = checkHigherClass(teacher.class_id, dataClasses);
-            if (higherClass) {
-              if (teacher.stream) {
-                const streamFiltered = filtered.filter(
-                  (subject) => subject.stream === teacher.stream,
-                );
-                setFilteredSubjects(streamFiltered);
-              } else {
-                setFilteredSubjects([]);
-              }
-              setStreams(
-                filtered
-                  .map((subject) => subject.stream)
-                  .filter(
-                    (stream, index, array) => array.indexOf(stream) === index,
-                  ),
+  useEffect(() => {
+    if (teacher?.entity_id) {
+      if (isSchoolEntity(teacher.entity_id)) {
+        if (teacher.class_id) {
+          const filtered = schoolSubjects.filter(
+            (subject) => subject.class_id === teacher.class_id,
+          );
+          const higherClass = checkHigherClass(teacher.class_id, dataClasses);
+          if (higherClass) {
+            if (teacher.stream) {
+              const streamFiltered = filtered.filter(
+                (subject) => subject.stream === teacher.stream,
               );
+              setFilteredSubjects(streamFiltered);
             } else {
-              setFilteredSubjects(filtered);
-              setStreams([]);
+              setFilteredSubjects([]);
             }
+            setStreams(
+              filtered
+                .map((subject) => subject.stream)
+                .filter(
+                  (stream, index, array) => array.indexOf(stream) === index,
+                ),
+            );
           } else {
-            setFilteredSubjects([]);
+            setFilteredSubjects(filtered);
             setStreams([]);
           }
+        } else {
+          setFilteredSubjects([]);
+          setStreams([]);
         }
       }
-    }, [teacher.classes]);
+    }
+  }, [teacher.classes]);
 
   // const SubjectsHandler = ({ values }: { values: ITeacherForm }) => {
   //   useEffect(() => {
   //     console.log("test build use 2",values)
-     
+
   //     if (values?.entity_id) {
   //       if (isSchoolEntity(values.entity_id)) {
   //         if (values.class_id) {
@@ -563,7 +598,7 @@ const AddEditTeacher = () => {
 
   // useEffect(() => {
   //   console.log("test build use 4",teacher.classes)
-    
+
   //   const initialClasses = teacher.classes;
   //   formRef.current?.setFieldValue('classes', initialClasses);
   //   setTeacher((prev) => ({
@@ -621,7 +656,8 @@ const AddEditTeacher = () => {
           }));
           if (course.semester) {
             const filteredSubjects = allSubjects.filter(
-              (subject) => Number(subject.semester_number) === Number(course.semester),
+              (subject) =>
+                Number(subject.semester_number) === Number(course.semester),
             );
             setCourseSubjects((prev) => ({
               ...prev,
@@ -870,7 +906,7 @@ const AddEditTeacher = () => {
       ...transformedData,
       role_id: teacherRole?.id,
     } as any;
-    if(error !== null){
+    if (error !== null) {
       return;
     }
 
@@ -913,7 +949,7 @@ const AddEditTeacher = () => {
             resetForm({ values: initialState });
             setDob(null);
             setTeacher(initialState);
-          }else{
+          } else {
             toast.error(data.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -1009,10 +1045,7 @@ const AddEditTeacher = () => {
     const today = dayjs();
     const minAgeDate = today.subtract(18, 'year');
 
-    if (
-      !formattedDate ||
-      formattedDate === 'Invalid Date'
-    ) {
+    if (!formattedDate || formattedDate === 'Invalid Date') {
       // toast.error('Teacher must be 18 years old');
       setError(null);
       setDob('');
@@ -1025,7 +1058,7 @@ const AddEditTeacher = () => {
       } else {
         setError('Teacher at least 18 years old.');
       }
-    }else{
+    } else {
       setError(null);
     }
     setTeacher((prevTeacher) => ({
@@ -1468,9 +1501,7 @@ const AddEditTeacher = () => {
                         {touched?.dob && errors?.dob && (
                           <p className="error">{String(errors.dob)}</p>
                         )}
-                        {error && (
-                          <p style={{ color: 'red' }}>{error}</p>
-                        )}
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
                       </div>
                     </div>
                     <div className="col-md-2">
@@ -1933,6 +1964,17 @@ const AddEditTeacher = () => {
                                               },
                                             }}
                                           >
+                                            <Checkbox
+                                              checked={course.subjects.includes(
+                                                subject.subject_name,
+                                              )}
+                                              sx={{
+                                                color: fieldIcon(namecolor),
+                                                '&.Mui-checked': {
+                                                  color: fieldIcon(namecolor),
+                                                },
+                                              }}
+                                            />
                                             {subject.subject_name}
                                           </MenuItem>
                                         ),
@@ -2181,6 +2223,17 @@ const AddEditTeacher = () => {
                                               },
                                             }}
                                           >
+                                            <Checkbox
+                                              checked={cls.subjects.includes(
+                                                subject.subject_name,
+                                              )}
+                                              sx={{
+                                                color: fieldIcon(namecolor),
+                                                '&.Mui-checked': {
+                                                  color: fieldIcon(namecolor),
+                                                },
+                                              }}
+                                            />
                                             {subject.subject_name}
                                           </MenuItem>
                                         ),
