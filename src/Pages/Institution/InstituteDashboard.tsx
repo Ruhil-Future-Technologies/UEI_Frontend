@@ -68,13 +68,11 @@ const InstitutionDash = () => {
   }, []);
 
   const getCourseCount = async (instituteId: any) => {
-    console.log(totleCourse);
     try {
       await getData(`course/course-count/${instituteId}`).then((response) => {
         if (response?.status) {
           setTotleCourse(response?.data?.courses_count);
         }
-        console.log(response);
       });
     } catch (error) {
       console.log(error);
@@ -86,7 +84,7 @@ const InstitutionDash = () => {
         if (response?.status) {
           setTotleTeacher(response?.data?.teacher_count);
         }
-        console.log(response);
+
       });
     } catch (error) {
       console.log(error);
@@ -117,7 +115,6 @@ const InstitutionDash = () => {
           getTeahcersData(response?.data?.id);
           getCoursesData(response?.data?.id);
           localStorage.setItem('institute_id', response?.data?.id);
-          console.log(response);
         }
       });
     } catch (error) {
@@ -260,7 +257,7 @@ const InstitutionDash = () => {
                     <h6 className="mb-0 fw-normal">Chat History</h6>
                   </div>
                   <div>
-                    <Link to="/">0</Link>
+                    <>0</>
                   </div>
                 </div>
 
@@ -269,7 +266,7 @@ const InstitutionDash = () => {
                     <h6 className="mb-0 fw-normal">Saved Chat</h6>
                   </div>
                   <div>
-                    <Link to="/">0</Link>
+                    <>0</>
                   </div>
                 </div>
 
@@ -278,7 +275,7 @@ const InstitutionDash = () => {
                     <h6 className="mb-0 fw-normal">Profile Completed</h6>
                   </div>
                   <div>
-                    <Link to="/">90%</Link>
+                    <>90%</>
                   </div>
                 </div>
               </div>

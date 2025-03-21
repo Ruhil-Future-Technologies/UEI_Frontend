@@ -59,8 +59,6 @@ const Student = () => {
     try {
       const response = await getData(StudentURL);
       if (response.data) {
-        console.log(response);
-        console.log(response.data);
         setDataStudent(response.data);
       }
     } catch (e: any) {

@@ -91,6 +91,9 @@ import Teacher from './Pages/Teacher/Teacher';
 import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
 import InstitutionProfile from './Pages/Institution/InstitutionProfile';
 import TeacherProfile from './Pages/Teacher/TeacherProfile';
+import { StudentDetails } from './Pages/Teacher/StudentDetails';
+import { Assignments } from './Pages/Teacher/Assignments';
+import { CreateAssignments } from './Pages/Teacher/Assignments/CreateAssignments';
 import Content from './Pages/Content/Content';
 import AddContent from './Pages/Content/AddContent';
 import StudentContent from './Pages/Content/StudentContent';
@@ -126,6 +129,7 @@ function App() {
     localStorage.removeItem('phone');
     localStorage.removeItem('student_id');
     localStorage.removeItem('_id');
+    localStorage.removeItem('register_num');
     synth.cancel();
     // logoutpro();
   };
@@ -275,6 +279,25 @@ function App() {
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
           />
+          <Route
+            path="/teacher-dashboard/student-details"
+            element={<Protected Component={StudentDetails} />}
+          />
+          <Route
+            path="/teacher-dashboard/assignments"
+            element={<Protected Component={Assignments} />}
+          />
+          <Route
+            path="/teacher-dashboard/create-assignment"
+            element={<Protected Component={CreateAssignments} />}
+          />
+          <Route
+              path="/teacher-dashboard/edit-assignment/:id"
+              element={
+                <Protected Component={CreateAssignments} />
+              }
+            />
+
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
@@ -289,6 +312,7 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}

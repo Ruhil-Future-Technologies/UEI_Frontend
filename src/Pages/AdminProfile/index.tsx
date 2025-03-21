@@ -76,7 +76,6 @@ export default function AdminProfile() {
       .then((data: any) => {
 
         if (data.data.admin_data) {
-          console.log(data.data.admin_data);
           const basic_info = {
             first_name: data?.data?.admin_data?.basic_info?.first_name,
             last_name: data?.data?.admin_data?.basic_info?.last_name,

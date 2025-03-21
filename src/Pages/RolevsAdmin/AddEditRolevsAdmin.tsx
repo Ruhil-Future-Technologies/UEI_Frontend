@@ -99,11 +99,9 @@ const AddEditRoleVsAdmin = () => {
     getData(`${AdminURL}`)
       .then((data: any) => {
         if(data.status){
-          console.log(data?.data)
           const filteredData = data?.data?.admines_data?.filter(
             (item: any) => item?.is_active,
           );
-          console.log(filteredData)
           setDataAdmin(filteredData || []);
         }
         

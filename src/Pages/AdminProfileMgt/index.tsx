@@ -45,7 +45,7 @@ const steps = [
 ];
 
 const adminId = localStorage.getItem('user_uuid');
-console.log(adminId);
+
 export default function AdminProfileMgt() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -141,7 +141,7 @@ function AdminAddress() {
 
   useEffect(() => {
     getData('admin_address/edit/' + adminId).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         setAddress1(data?.data.address1);
         setAddress2(data?.data.address2);
@@ -157,7 +157,6 @@ function AdminAddress() {
 
   const submitHandle = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('working');
     const paylod = {
       admin_id: adminId,
       address1: address1,
@@ -171,7 +170,6 @@ function AdminAddress() {
     };
     //console.log(paylod)
     postData('admin_address/add', paylod).then((data: any) => {
-      console.log(data);
       if (data?.state === 200) {
         toast.success('address saved', {
           hideProgressBar: true,
@@ -310,11 +308,10 @@ function AdminBasicInfo() {
   ]);
   const [adminDepartment, setAdminDepartment] = useState<string>('');
   const adminId = localStorage.getItem('user_uuid');
-  console.log(adminId);
 
   useEffect(() => {
     getData(`${'admin/edit/' + adminId}`).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         setAdminFName(data?.data.first_name);
         setAdminLName(data?.data.last_name);
@@ -330,7 +327,7 @@ function AdminBasicInfo() {
       }
     });
     getData(`${'department/list'}`).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         setAllDepartment(data?.data);
         //console.log("hello")
@@ -367,7 +364,7 @@ function AdminBasicInfo() {
       }
   });
     postData('admin/add', formData).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         toast.success('info saved successfully', {
           hideProgressBar: true,
@@ -604,7 +601,7 @@ function AdminDescription() {
 
   useEffect(() => {
     getData('admin_profile_description/edit/' + adminId).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         setDesctiption(data?.data.description);
         //console.log("working")
@@ -618,7 +615,7 @@ function AdminDescription() {
       description: description,
     };
     postData('admin_profile_description/add', paylod).then((data: any) => {
-      console.log(data);
+ 
       if (data?.status) {
         toast.success('description saved', {
           hideProgressBar: true,
@@ -662,7 +659,7 @@ function AdmincontactDtails() {
   const [email, setEmail] = useState('');
   useEffect(() => {
     getData('admin_contact/edit/' + adminId).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         setContcodeWtsap(data?.data.mobile_isd_watsapp);
         setWhatsappNum(data?.data.mobile_no_watsapp);
@@ -682,9 +679,9 @@ function AdmincontactDtails() {
       mobile_no_watsapp: whatsappNum,
       email_id: email,
     };
-    console.log(paylod);
+
     postData('admin_contact/add', paylod).then((data: any) => {
-      console.log(data);
+
       if (data?.status) {
         toast.success('contact saved', {
           hideProgressBar: true,
@@ -798,25 +795,21 @@ function AdminProfession() {
 
   useEffect(() => {
     getData('institution/list').then((data: any) => {
-      console.log(data);
       if (data?.status) {
         setInstitude(data?.data);
       }
     });
     getData('course/list').then((data: any) => {
-      console.log(data);
       if (data?.status) {
         setCourse(data?.data);
       }
     });
     getData('subject/list').then((data: any) => {
-      console.log(data);
       if (data?.status) {
         setSubject(data?.data);
       }
     });
     getData('admin_profession/edit/' + adminId).then((data: any) => {
-      console.log(data);
       if (data?.status) {
         setSelectInstitude(data?.data.institution_id);
         setSelectCourse(data?.data.course_id);
@@ -832,9 +825,7 @@ function AdminProfession() {
       course_id: selectCourse,
       subject_id: selectSubject,
     };
-    console.log(paylod);
     postData('admin_profession/add', paylod).then((data: any) => {
-      console.log(data);
       if (data?.status) {
         toast.success('profession saved', {
           hideProgressBar: true,

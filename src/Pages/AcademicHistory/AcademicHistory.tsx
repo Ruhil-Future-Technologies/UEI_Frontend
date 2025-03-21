@@ -212,7 +212,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         .then(async (response: any) => {
           if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active,
+              (item: any) => item?.is_active&& item.is_approve
             );
             if (boxes[0]?.institute_type === 'college') {
               const filterDataInstitute = filteredData?.filter(
@@ -220,7 +220,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               );
               setInstitutes(filterDataInstitute || []);
             } else {
-              setInstitutes(filteredData || []);
+              const filterDataInstitute = filteredData?.filter(
+                (item: any) => item.entity_type === 'school',
+              );
+              setInstitutes(filterDataInstitute || []);
             }
             setInstitutesAll(filteredData || []);
             // setInstitutes(response.data);
@@ -325,15 +328,12 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         });
       });
     if (StudentId) {
-      console.log("222"+StudentId)
       getData(`${'new_student_academic_history/get/' + StudentId}`)
         .then((data: any) => {
           if (data?.status) {
-            console.log(data?.data?.[0]?.class_id)
             if (data?.data?.[0]?.class_id) {
               getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
                 (response: any) => {
-                  console.log(response);
                   if (response.status) {
                     setParticularClass(response.data.
                       class_data.class_name);
@@ -447,7 +447,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         if (filteredBox.year?.$y) {
           filteredBox.year = String(filteredBox.year.$y);
         }
-        filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
+      
         if (filteredBox.sem_id) {
           filteredBox.sem_id = String(filteredBox.sem_id);
         }
@@ -457,7 +457,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
 
         }
       }
-
+      filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
       // Handle school-specific fields
       if (filteredBox.institution_type.toLowerCase() === 'school') {
         if (['class_11', 'class_12'].includes(particularClass)) {
@@ -646,7 +646,6 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   //     setMaxSemester(0);
   //   }
   // }, [totalSemester]);
-  console.log(particularClass,boxes);
   return (
     <div className="mt-5">
       <form>
@@ -693,6 +692,43 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                 )}
               </FormControl>
             </div>
+            {box.institute_type == 'school' && (
+              <div className="col form_field_wrapper">
+                <FormControl
+                  required
+                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                >
+                  <InputLabel>Institute Name</InputLabel>
+                  <Select
+                    name="institute_id"
+                    value={box.institute_id}
+                    sx={{
+                      backgroundColor: '#f5f5f5',
+                      '& .MuiSelect-icon': {
+                        color: fieldIcon(namecolor),
+                      },
+                    }}
+                    onChange={(e) =>
+                      handleInputChange(index, 'institute_id', e.target.value)
+                    }
+                    label="Institute Name"
+                  >
+                    {institutes.map((institute) => (
+                      <MenuItem
+                        key={institute.id}
+                        value={institute.id}
+                        sx={commonStyle(namecolor)}
+                      >
+                        {institute.institute_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.institute_id && !box?.institute_id && (
+                    <FormHelperText error>{errors.institute_id}</FormHelperText>
+                  )}
+                </FormControl>
+              </div>
+            )}
             {box.institute_type == 'school' && (
               <div className="col form_field_wrapper">
                 <FormControl

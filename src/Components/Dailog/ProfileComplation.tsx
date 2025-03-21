@@ -103,6 +103,7 @@ interface Institute {
   university_id: string;
   is_active: number;
   is_approve: boolean;
+  entity_type?:string;
 }
 
 interface Course {
@@ -300,7 +301,7 @@ export const ProfileDialog: FunctionComponent<{
         .then((data: any) => {
           if (data.status) {
             setAnsweredData(data.data);
-
+            localStorage.setItem('register_num',data?.data?.register_num);
             if (data?.data?.academic_history?.institution_type === 'school') {
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`,
@@ -343,6 +344,7 @@ export const ProfileDialog: FunctionComponent<{
       "What is your guardian's name?",
       'Upload your profile picture',
       'Hi! Please provide your academic information! What is your institute type?',
+      'Please select your schoole name',
       'Please select your board',
       'Please select your state',
       'Please select your class',
@@ -357,7 +359,7 @@ export const ProfileDialog: FunctionComponent<{
       'Select your known language',
       'What is your proficiency in the selected language?',
       'Please select your mobile number country code',
-      'What is your mobile number?',
+      // 'What is your mobile number?',
       'What is your WhatsApp number?',
       'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
       'Please select your semester ?',
@@ -554,6 +556,7 @@ export const ProfileDialog: FunctionComponent<{
                 if (instituteType === 'school') {
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
+                    'Please select your schoole name',
                     'Please select your board',
                     'Please select your state',
                     'Please select your class',
@@ -573,6 +576,7 @@ export const ProfileDialog: FunctionComponent<{
                 } else {
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
+                    'Please select your schoole name',
                     'Please select your board',
                     'Please select your state',
                     'Please select your class',
@@ -866,6 +870,7 @@ export const ProfileDialog: FunctionComponent<{
           //   hideProgressBar: true,
           //   theme: 'colored',
           // });
+          callAPI();
           localStorage.setItem('student_id', data?.data?.id);
           setNamepro(data?.first_name);
           const formData = new FormData();
@@ -928,11 +933,8 @@ export const ProfileDialog: FunctionComponent<{
     const payload = {
       student_id: localStorage.getItem('student_id'),
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call:
-        answeredData?.contact?.mobile_no_call ||
-          answer[answer.length - 1] === ''
-          ? answer[answer.length - 2]
-          : answer[answer.length - 3],
+      mobile_no_call:localStorage.getItem('register_num'),
+        
       mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
       mobile_no_watsapp:
         answeredData?.contact?.mobile_no_watsapp ||
@@ -1046,8 +1048,8 @@ export const ProfileDialog: FunctionComponent<{
         }),
 
       }),
+      institute_id: selectedInstitute?.toString(),
       ...(selectedInstituteTypeLower === 'college' && {
-        institute_id: selectedInstitute?.toString(),
         course_id: selectCourse?.toString(),
         learning_style: selectedLearningStyle,
         year: (answers[length - 1]
@@ -2255,6 +2257,14 @@ export const ProfileDialog: FunctionComponent<{
               position: 'top-center',
             });
           });
+
+          const filteredInstitution = institutes.filter(
+            (item) =>
+              item.is_active &&
+              item.entity_type=='school'&&
+              item.is_approve == true,
+          );
+          setInstitutes(filteredInstitution);
       } else {
         const questionsToRemove = [
           'Please select your board',
@@ -2262,6 +2272,7 @@ export const ProfileDialog: FunctionComponent<{
           'Please select your class',
           'Select your subject name',
           'Please select your stream',
+          'Please select your schoole name'
         ];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
           (question) => !questionsToRemove.includes(question),
@@ -2662,7 +2673,7 @@ export const ProfileDialog: FunctionComponent<{
     const filteredcourse = courses.filter(
       (item) => item.institution_id === e.value,
     );
-    console.log(filteredcourse, courses, e.value);
+  
     setCourses(filteredcourse);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
@@ -2831,6 +2842,7 @@ export const ProfileDialog: FunctionComponent<{
   const semisterprepquestion =
     getLastQuestion() == 'Please select your semester ?';
 
+  const schoolnameQuestion=getLastQuestion() =='Please select your schoole name';
   const stylequestion = getLastQuestion() == 'What is your learning style?';
   const yearquesiton = getLastQuestion() == 'Please select year';
   const hobbyquestion = getLastQuestion() == 'Hi, Please choose your hobbies';
@@ -3095,7 +3107,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSemesterpre}
                     />
-                  ) : institutequestion ? (
+                  ) : institutequestion  || schoolnameQuestion? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}

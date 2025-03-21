@@ -209,7 +209,6 @@ const InstituteRegistrationForm = () => {
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    console.log(files, typeof files);
     setDocument_error(false);
 
     if (files && event.target.name !== 'icon') {
@@ -510,7 +509,7 @@ const InstituteRegistrationForm = () => {
           try {
             postRegisterData(`${InstituteAddURL}`, formData, token).then(
               (response) => {
-                console.log(response);
+
                 if (response.status) {
                   toast.success(response.message, {
                     hideProgressBar: true,
@@ -518,7 +517,7 @@ const InstituteRegistrationForm = () => {
                   });
                   setPopupOtpCard(true);
                 } else {
-                  console.log(response);
+
                   toast.error(response.message, {
                     hideProgressBar: true,
                     theme: 'colored',
@@ -527,7 +526,6 @@ const InstituteRegistrationForm = () => {
               },
             );
           } catch (error: any) {
-            console.log(error);
             toast.error(error.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -548,16 +546,15 @@ const InstituteRegistrationForm = () => {
       otp: otp,
     };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
-      console.log(data);
       if (data.status === true) {
         alert('Wait for 24-48 hours, the Administrator will inform you.');
         window.location.reload();
-      } else {
-        toast.warning(data.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+      }else{
+        toast.error(data.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+        })
       }
     });
   };
@@ -718,7 +715,7 @@ const InstituteRegistrationForm = () => {
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
-  console.log(dataUniversity);
+ // console.log(dataUniversity);
   return (
     <>
       <Box sx={{ width: '100%' }} className="Stepperform">

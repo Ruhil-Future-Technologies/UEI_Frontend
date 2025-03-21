@@ -151,7 +151,6 @@ const SuperAdmin = () => {
     setIsLoading(true);
     // e.preventDefault()
     // e.target.reset()
-    console.log('reset', menuData);
     const formData = new FormData();
     const payload = {
       user_type: value,

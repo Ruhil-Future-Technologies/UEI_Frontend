@@ -37,12 +37,10 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
       const response = await getData(
         'admin_profile_description/get/' + UuId,
       );
-      console.log(response);
       if (response && response?.status && response?.code !== 404) {
         setDesctiption(response?.data.admin_profile_description_data);
         setDescriptionId(response?.data.admin_profile_description_data.id)
       } else if (response && response?.code === 404) {
-        console.log(response);
         setEditFlag(true);
       } else {
         console.error('Unexpected response:', response);
@@ -71,7 +69,6 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
   useEffect(() => {
     getData('admin_profile_description/get/' + UuId).then((response) => {
       if (response && response?.status) {
-        console.log("success lijhsfds gdkdhgk hkhgkjdfg ")
         setEditable(false);
       } else if (response && response?.code === 404) {
         setEditable(true);
@@ -111,7 +108,6 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
       admin_id:adminId,
       description: description1?.description,
     };
-    console.log(paylod);
     const formData=new FormData();
     Object.entries(paylod).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
@@ -125,7 +121,7 @@ const AdminDescription: React.FC<ChildComponentProps> = () => {
             'admin_profile_description/add',
             formData,
           );
-      console.log(response);
+  
           if (response?.status) {
             toast.success('Admin description saved successfully', {
               hideProgressBar: true,

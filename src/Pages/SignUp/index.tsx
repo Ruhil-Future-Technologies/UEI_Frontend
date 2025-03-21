@@ -165,7 +165,6 @@ const Signup = () => {
     };
     try {
       postDataJson(`/auth/verify-otp`, payload).then((data) => {
-        console.log(data);
         if (data.status === true) {
           handleSuccessfulLogin(data.data);
         } else {
