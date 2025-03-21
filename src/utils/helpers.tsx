@@ -57,7 +57,8 @@ export const hasSubMenu = (menuListdata: any, menuName: any) => {
         ?.replace(/\s+/g, '')
         .toLowerCase();
       const normalizedMenuName = menuName?.replace(/\s+/g, '').toLowerCase();
-      return normalizedSubmenuName === normalizedMenuName;
+      console.log(normalizedSubmenuName);
+      return normalizedMenuName;
     });
     // console.log(`Checking menu: ${menu.menu_name.toLowerCase()}, hasSubMenu: ${hasSubMenu} `);
     return hasSubMenu;
