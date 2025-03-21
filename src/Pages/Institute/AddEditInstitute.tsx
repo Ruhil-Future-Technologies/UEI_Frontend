@@ -332,7 +332,13 @@ const AddEditInstitute = () => {
     if (filteredData.university_id === '') {
       delete filteredData.university_id;
     }
+    const isDataUnchanged = Object.keys(filteredData).every(
+      (key) => filteredData[key as keyof IInstituteForm] === institute[key as keyof IInstituteForm]
+    );
     if (id) {
+      if (isDataUnchanged) {
+        return; // Skip API call if no changes
+      }
       putData(`${InstituteEditURL}/${id}`, filteredData)
         .then((data: { status: boolean; message: string }) => {
           if (data.status) {
