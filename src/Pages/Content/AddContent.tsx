@@ -121,12 +121,16 @@ const AddContent = () => {
   const [content, setContent] = useState<IContentForm>(initialState);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
-    const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
+    const selectedEntity = dataEntity?.find(
+      (entity) => entity.id === entityId && entity?.is_active,
+    );
     return selectedEntity?.entity_type?.toLowerCase() === 'school';
   };
 
   const isCollegeEntity = (entityId: string | string[]): boolean => {
-    const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
+    const selectedEntity = dataEntity?.find(
+      (entity) => entity.id === entityId && entity?.is_active,
+    );
     return selectedEntity?.entity_type?.toLowerCase() === 'college';
   };
 
@@ -141,15 +145,21 @@ const AddContent = () => {
 
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data.course_data;
-      setDataCourses(data?.data?.course_data);
+      setDataCourses(
+        data?.data?.course_data.filter((course: any) => course.is_active),
+      );
     });
 
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data.subjects_data);
+      setCollegeSubjects(
+        data.data.subjects_data.filter((subject: any) => subject.is_active),
+      );
     });
 
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data.subjects_data);
+      setSchoolSubjects(
+        data.data.subjects_data.filter((subject: any) => subject.is_active),
+      );
     });
 
     if (id) {
@@ -348,22 +358,28 @@ const AddContent = () => {
 
   useEffect(() => {
     getData(`${GET_UNIVERSITY}`).then((data) => {
-      setDataUniversity(data.data?.universities_data);
+      setDataUniversity(
+        data.data?.universities_data.filter((uni: any) => uni.is_active),
+      );
     });
     getData(`${GET_ENTITIES}`).then((data) => {
-      setDataEntity(data.data?.entityes_data);
+      setDataEntity(
+        data.data?.entityes_data.filter((entity: any) => entity.is_active),
+      );
     });
     getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
       const allInstitutes = data.data;
       const schoolInstitutes = allInstitutes?.filter(
         (institute: any) =>
           institute.entity_type?.toLowerCase() === 'school' &&
-          institute.is_approve,
+          institute.is_approve &&
+          institute.is_active,
       );
       const collegeInstitutes = allInstitutes?.filter(
         (institute: any) =>
           institute.entity_type?.toLowerCase() === 'college' &&
-          institute.is_approve,
+          institute.is_approve &&
+          institute.is_active,
       );
       setDataInstitutes(allInstitutes);
       setSchoolInstitutes(schoolInstitutes);
