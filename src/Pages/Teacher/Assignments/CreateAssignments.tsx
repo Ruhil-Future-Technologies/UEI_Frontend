@@ -97,7 +97,7 @@ export const CreateAssignments = () => {
   const [dueTime, setDueTime] = useState<Date | null>(null);
   const [selectedEntity, setSelectedEntity] = useState('');
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
-  const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
+  //const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
   const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
   const [dataClass, setDataClass] = useState<IClass[]>([]);
   const [teacherCourse, setTeacherCourse] = useState<string[]>();
@@ -410,7 +410,7 @@ export const CreateAssignments = () => {
     getData(`${CourseURL}`)
       .then((data) => {
         if (data.data) {
-          setCoursesData(data?.data);
+        //  setCoursesData(data?.data);
           const filteredCourses = data.data.course_data.filter((course: any) =>
             course.is_active
           );
@@ -936,7 +936,7 @@ export const CreateAssignments = () => {
       setDueTime_error(false);
     }
   }, [dueDate, availableFrom, dueTime])
-  console.log(coursesData, listOfStudent,);
+  console.log(listOfStudent);
   return (
     <div className="main-wrapper">
       <div className="main-content">

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { Modal, Box, Checkbox, FormControlLabel, Paper, List, ListItem, ListItemText, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";

@@ -798,9 +798,7 @@ export const ProfileDialog: FunctionComponent<{
   const getTeahcersList = (instituteType: string, institute_id: string) => {
     getData('/teacher/list').then((data) => {
       if (data.status) {
-        console.log(institute_id)
         if (instituteType.toLowerCase() == "school") {
-          console.log(data.data);
           const filteredTeacher = data?.data.filter((teacher: any) => teacher.course_semester_subjects == null && teacher.institute_id == institute_id)
           setTeacherList(filteredTeacher);
         } else {
@@ -1129,7 +1127,7 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType?.toLowerCase() === 'college') && {
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
-      teacher_id:answers[length - 1]
+      teacher_id: answers[length - 1]
     };
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status) {
@@ -1812,7 +1810,7 @@ export const ProfileDialog: FunctionComponent<{
 
         if (whatsappnumbet) {
           saveAnswersforContact([...answers, e.currentTarget.value]);
-        } 
+        }
         else if (secondaddressquestion)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
@@ -2686,7 +2684,6 @@ export const ProfileDialog: FunctionComponent<{
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
-    console.log(e.value, e.label)
     setSelectedSemesterpre(e.value);
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1['basic'];
@@ -2699,7 +2696,6 @@ export const ProfileDialog: FunctionComponent<{
         teacher?.course_semester_subjects?.[selectCourse]?.[e.label.split(" ")[1]]?.includes(selectSubjectName)
       )
       setFilteredTeacherList(filteredTeacher)
-      console.log(teacherList, selectCourse, e.label.split(" ")[1], selectSubjectName)
     }
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -2728,7 +2724,6 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
-    console.log(selectedInstituteType)
     if (selectedInstituteType == 'school') {
       const filteredTeacher = teacherList.filter(teacher =>
         teacher?.class_stream_subjects?.[selectedClassId]?.[selectedStream]?.includes(e.label)
@@ -2958,7 +2953,6 @@ export const ProfileDialog: FunctionComponent<{
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
-  console.log(semesterSelectOptionspre);
   return (
     <>
       <div

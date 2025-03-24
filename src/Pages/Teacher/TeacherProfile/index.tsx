@@ -537,7 +537,6 @@ const TeacherProfile = () => {
               item.semester_number == value &&
               item.course_id == boxes[index].course_id,
           );
-          console.log(boxes[index].course_id,filteredSubjects, totleSubject);
           
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
         }
