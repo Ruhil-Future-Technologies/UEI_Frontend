@@ -534,9 +534,11 @@ const TeacherProfile = () => {
         if (name === 'semester_number') {
           const filteredSubjects = totleSubject.filter(
             (item) =>
-              item.semester_number === value &&
-              item.course_id === boxes[index].course_id,
+              item.semester_number == value &&
+              item.course_id == boxes[index].course_id,
           );
+          console.log(boxes[index].course_id,filteredSubjects, totleSubject);
+          
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
         }
 

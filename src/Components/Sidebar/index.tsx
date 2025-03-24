@@ -30,6 +30,7 @@ const Sidebar = () => {
   const [profileCompletion, setProfileCompletion] = useState(
     localStorage.getItem('Profile_completion') || '0',
   );
+  const [dashboardURL, setDashboardURL] = useState('');
   const MenuListURL = QUERY_KEYS_MENU.GET_MENU;
   const MenuListURL1 = QUERY_KEYS_MENU.GET_MENULIST;
 
@@ -46,6 +47,18 @@ const Sidebar = () => {
 
   useEffect(() => {}, [menuList1]);
 
+  useEffect(() => {
+    if (user_type === 'admin') {
+      
+      setDashboardURL('/main/DashBoard');
+    } else if (user_type === 'institute') {
+      setDashboardURL('/institution-dashboard');
+    } else if (user_type === 'teacher') {
+      setDashboardURL('/teacher-dashboard');
+    } else {
+      setDashboardURL('/main/DashBoard');
+    }
+  }, []);
   const callAPI = async () => {
     getData(`${MenuListURL}/${user_type}`)
       .then((data: any) => {
@@ -150,7 +163,7 @@ const Sidebar = () => {
         <div className="sidebar-nav">
           <MetisMenu>
             <li>
-              <Link to="/main/DashBoard" onClick={removeMobileToggle}>
+              <Link to={dashboardURL} onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <HomeOutlinedIcon />
                 </div>

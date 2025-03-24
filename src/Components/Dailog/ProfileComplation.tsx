@@ -38,6 +38,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ChatDialogClose } from './ChatDialogClose';
 import { styled } from '@mui/material/styles';
 import Course from '../../Pages/Course/Course';
+import { Teacher } from '../../Pages/TeacherRgistrationForm';
 //import { Initializable } from '@mui/x-charts/internals';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -103,7 +104,7 @@ interface Institute {
   university_id: string;
   is_active: number;
   is_approve: boolean;
-  entity_type?:string;
+  entity_type?: string;
 }
 
 interface Course {
@@ -198,6 +199,8 @@ export const ProfileDialog: FunctionComponent<{
   const [university, setUniversity] = useState<University[]>([]);
   const [semester, setSemester] = useState<Semester[]>([]);
   const [semesterpre, setSemesterpre] = useState<Semester[]>([]);
+  const [teacherList, setTeacherList] = useState<Teacher[]>([]);
+  const [filteredTeacherList, setFilteredTeacherList] = useState<Teacher[]>([]);
 
   const [selectedHobby, setSelectedHobby] = useState<any>('');
   const [selectedLanguage, setSelectedLanguage] = useState<any>('');
@@ -207,6 +210,8 @@ export const ProfileDialog: FunctionComponent<{
   const [selectCourse, setSelectedCourse] = useState<any>('');
   const [selectUniversity, setSelectedUniversity] = useState<any>('');
   const [selectSemester, setSelectedSemester] = useState<any>('');
+  const [selectSubjectName, setSelectedSubjectName] = useState<any>('');
+  const [selectTeacher, setSelectedTeacher] = useState<any>('');
   const [selectSemesterpre, setSelectedSemesterpre] = useState<any>('');
   const [selectSubject, setSelectedSubject] = useState<any>('');
   const [selectedInstituteType, setSelectedInstituteType] = useState<any>('');
@@ -214,7 +219,9 @@ export const ProfileDialog: FunctionComponent<{
   const [selectedAcademicState, setSelectedAcademicState] = useState<any>('');
   const [selectedClass, setSelectedClass] = useState<any>('');
   const [selectedStream, setSelectedStream] = useState<any>('');
+  const [selectedClassId, setselectedClassId] = useState<any>('');
   const [selectedLearningStyle, setSelectedLearningStyle] = useState<any>('');
+
   // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>('');
 
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -301,7 +308,7 @@ export const ProfileDialog: FunctionComponent<{
         .then((data: any) => {
           if (data.status) {
             setAnsweredData(data.data);
-            localStorage.setItem('register_num',data?.data?.register_num);
+            localStorage.setItem('register_num', data?.data?.register_num);
             if (data?.data?.academic_history?.institution_type === 'school') {
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`,
@@ -344,7 +351,7 @@ export const ProfileDialog: FunctionComponent<{
       "What is your guardian's name?",
       'Upload your profile picture',
       'Hi! Please provide your academic information! What is your institute type?',
-      'Please select your schoole name',
+      'Please select your school name',
       'Please select your board',
       'Please select your state',
       'Please select your class',
@@ -366,6 +373,7 @@ export const ProfileDialog: FunctionComponent<{
       'Select your subject name',
       'What is your preference?',
       'Add your score in percentage',
+      'Please select a teacher',
       'Please select your current country of residence',
       'Which state do you currently reside in?',
       'Which district do you currently live in?',
@@ -545,7 +553,7 @@ export const ProfileDialog: FunctionComponent<{
               const instituteType =
                 data?.data?.academic_history?.institution_type || '';
               const address = data?.data?.address?.address1 || '';
-
+              const institute_id = data?.data?.academic_history?.institute_id;
               if (guardianName) {
                 filteredQuestions.basic = filteredQuestions.basic.filter(
                   (_, index) => index > 7,
@@ -554,9 +562,11 @@ export const ProfileDialog: FunctionComponent<{
               if (instituteType) {
                 // Skip institution type-related questions
                 if (instituteType === 'school') {
+                  setSelectedStream(data?.data?.academic_history?.stream ? data?.data?.academic_history?.stream : 'general');
+                  setselectedClassId(data?.data?.academic_history?.class_id)
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
-                    'Please select your schoole name',
+                    'Please select your school name',
                     'Please select your board',
                     'Please select your state',
                     'Please select your class',
@@ -574,9 +584,10 @@ export const ProfileDialog: FunctionComponent<{
                     (question) => !questionsToRemove.includes(question),
                   );
                 } else {
+                  setSelectedCourse(data?.data?.academic_history?.course_id);
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
-                    'Please select your schoole name',
+                    'Please select your school name',
                     'Please select your board',
                     'Please select your state',
                     'Please select your class',
@@ -593,6 +604,8 @@ export const ProfileDialog: FunctionComponent<{
                     (question) => !questionsToRemove.includes(question),
                   );
                 }
+                getTeahcersList(instituteType, institute_id);
+                setSelectedInstituteType(instituteType);
               }
               if (hobby) {
                 filteredQuestions.basic = filteredQuestions.basic.filter(
@@ -625,6 +638,7 @@ export const ProfileDialog: FunctionComponent<{
                       'Add your score in percentage',
                       'What is your preference?',
                       'Select your subject name',
+                      'Please select a teacher',
                       'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
                       'Please select your semester ?',
                     ].includes(question),
@@ -781,6 +795,27 @@ export const ProfileDialog: FunctionComponent<{
     }
   }, [currentSection, isOpen]);
 
+  const getTeahcersList = (instituteType: string, institute_id: string) => {
+    getData('/teacher/list').then((data) => {
+      if (data.status) {
+        console.log(institute_id)
+        if (instituteType.toLowerCase() == "school") {
+          console.log(data.data);
+          const filteredTeacher = data?.data.filter((teacher: any) => teacher.course_semester_subjects == null && teacher.institute_id == institute_id)
+          setTeacherList(filteredTeacher);
+        } else {
+          const filteredTeacher = data?.data.filter((teacher: any) => teacher.class_stream_subjects == null && teacher.institute_id == institute_id)
+          setTeacherList(filteredTeacher);
+        }
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+      })
+    })
+  }
   useEffect(() => {
     // Scroll to the bottom of the chat box whenever messages update
     if (chatBoxRef.current) {
@@ -933,8 +968,8 @@ export const ProfileDialog: FunctionComponent<{
     const payload = {
       student_id: localStorage.getItem('student_id'),
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call:localStorage.getItem('register_num'),
-        
+      mobile_no_call: localStorage.getItem('register_num'),
+
       mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
       mobile_no_watsapp:
         answeredData?.contact?.mobile_no_watsapp ||
@@ -1079,11 +1114,11 @@ export const ProfileDialog: FunctionComponent<{
     const payload = {
       student_id: localStorage.getItem('student_id'),
       subject_id: selectSubject,
-      preference:answers[length - 3],
+      preference: answers[length - 3],
       score_in_percentage: answers[length - 2],
       sem_id:
-        selectedInstituteType?.toLowerCase() === 'college'||
-        answeredData?.academic_history?.institution_type === 'college'
+        selectedInstituteType?.toLowerCase() === 'college' ||
+          answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
       ...(answeredData?.academic_history?.institution_type === 'school' &&
@@ -1094,6 +1129,7 @@ export const ProfileDialog: FunctionComponent<{
         selectedInstituteType?.toLowerCase() === 'college') && {
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
+      teacher_id:answers[length - 1]
     };
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status) {
@@ -1151,6 +1187,11 @@ export const ProfileDialog: FunctionComponent<{
     label: `Semester ${option?.semester_number}`,
   }));
 
+  const teacherSelectOption = filteredTeacherList?.map((option) => ({
+    value: option.id,
+    label: `${option.first_name} ${option.last_name}`
+  }));
+
   const semlable = semester?.filter(
     (item) => item?.semester_id === selectSemester,
   );
@@ -1169,6 +1210,7 @@ export const ProfileDialog: FunctionComponent<{
         },
       ]
       : [];
+
 
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
@@ -1770,8 +1812,7 @@ export const ProfileDialog: FunctionComponent<{
 
         if (whatsappnumbet) {
           saveAnswersforContact([...answers, e.currentTarget.value]);
-        } else if (persentegequestion)
-          saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
+        } 
         else if (secondaddressquestion)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
@@ -2258,13 +2299,13 @@ export const ProfileDialog: FunctionComponent<{
             });
           });
 
-          const filteredInstitution = institutes.filter(
-            (item) =>
-              item.is_active &&
-              item.entity_type=='school'&&
-              item.is_approve == true,
-          );
-          setInstitutes(filteredInstitution);
+        const filteredInstitution = institutes.filter(
+          (item) =>
+            item.is_active &&
+            item.entity_type == 'school' &&
+            item.is_approve == true,
+        );
+        setInstitutes(filteredInstitution);
       } else {
         const questionsToRemove = [
           'Please select your board',
@@ -2272,7 +2313,7 @@ export const ProfileDialog: FunctionComponent<{
           'Please select your class',
           'Select your subject name',
           'Please select your stream',
-          'Please select your schoole name'
+          'Please select your school name'
         ];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
           (question) => !questionsToRemove.includes(question),
@@ -2378,7 +2419,6 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.value, type: 'answer' as const },
     ];
-
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -2424,6 +2464,7 @@ export const ProfileDialog: FunctionComponent<{
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
     setSelectedClass(e);
+    setselectedClassId(e.value);
     setAnswers(updatedAnswers);
     if (e.label !== 'class_11' && e.label !== 'class_12') {
       const filterData = subjects?.filter(
@@ -2607,6 +2648,33 @@ export const ProfileDialog: FunctionComponent<{
       setCurrentQuestionIndex(0);
     }
   };
+
+  const handleDropdownChangeTeacher = (e: any) => {
+    const currentQuestions = filterdQuestions1['basic'];
+    const updatedAnswers = [...answers];
+    updatedAnswers[answers.length] = e.value;
+    setSelectedTeacher(e.value);
+    setAnswers(updatedAnswers);
+    const updatedMessages = [
+      ...messages,
+      { text: e.label, type: 'answer' as const },
+    ];
+    if (teacherQuestion) saveAnswerforsubjectpreference(updatedAnswers);
+    if (currentQuestionIndex < currentQuestions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setMessages([
+        ...updatedMessages,
+        {
+          text: currentQuestions[currentQuestionIndex + 1],
+          type: 'question' as const,
+        },
+      ]);
+    } else {
+      setMessages(updatedMessages);
+      proceedToNextSection(currentSection!);
+      setCurrentQuestionIndex(0);
+    }
+  }
   const handleDropdownChangesemesterpre = (e: any) => {
     // const courses = courses.filter((item)=> item.course_name === answers[] )
     const filteredsubject = subjects.filter(
@@ -2618,6 +2686,7 @@ export const ProfileDialog: FunctionComponent<{
     setSubjects(filteredsubject);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
+    console.log(e.value, e.label)
     setSelectedSemesterpre(e.value);
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1['basic'];
@@ -2625,7 +2694,13 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
-
+    if (selectedInstituteType == 'college') {
+      const filteredTeacher = teacherList.filter(teacher =>
+        teacher?.course_semester_subjects?.[selectCourse]?.[e.label.split(" ")[1]]?.includes(selectSubjectName)
+      )
+      setFilteredTeacherList(filteredTeacher)
+      console.log(teacherList, selectCourse, e.label.split(" ")[1], selectSubjectName)
+    }
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -2646,12 +2721,28 @@ export const ProfileDialog: FunctionComponent<{
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
     setSelectedSubject(e.value);
+    setSelectedSubjectName(e.label)
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1['basic'];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
+    console.log(selectedInstituteType)
+    if (selectedInstituteType == 'school') {
+      const filteredTeacher = teacherList.filter(teacher =>
+        teacher?.class_stream_subjects?.[selectedClassId]?.[selectedStream]?.includes(e.label)
+      );
+      setFilteredTeacherList(filteredTeacher)
+    }
+    const filteredsempre = semesterpre.filter(
+      (item) =>
+      (item.semester_id === answeredData?.academic_history?.sem_id
+      )
+    );
+
+    setSemesterpre(filteredsempre);
+
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -2673,7 +2764,7 @@ export const ProfileDialog: FunctionComponent<{
     const filteredcourse = courses.filter(
       (item) => item.institution_id === e.value,
     );
-  
+
     setCourses(filteredcourse);
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
@@ -2842,7 +2933,7 @@ export const ProfileDialog: FunctionComponent<{
   const semisterprepquestion =
     getLastQuestion() == 'Please select your semester ?';
 
-  const schoolnameQuestion=getLastQuestion() =='Please select your schoole name';
+  const schoolnameQuestion = getLastQuestion() == 'Please select your school name';
   const stylequestion = getLastQuestion() == 'What is your learning style?';
   const yearquesiton = getLastQuestion() == 'Please select year';
   const hobbyquestion = getLastQuestion() == 'Hi, Please choose your hobbies';
@@ -2858,6 +2949,7 @@ export const ProfileDialog: FunctionComponent<{
     getLastQuestion() == 'Which state do you currently reside in?';
   const persentegequestion =
     getLastQuestion() == 'Add your score in percentage';
+  const teacherQuestion = getLastQuestion() == 'Please select a teacher';
   const verylastquestion =
     getLastQuestion() == 'Thanks for providing your personal information';
 
@@ -2866,6 +2958,7 @@ export const ProfileDialog: FunctionComponent<{
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
+  console.log(semesterSelectOptionspre);
   return (
     <>
       <div
@@ -2907,8 +3000,8 @@ export const ProfileDialog: FunctionComponent<{
                     <div
                       key={index}
                       className={`message-wrapper d-flex mb-3 ${message.type === 'question'
-                          ? 'justify-content-start'
-                          : 'justify-content-end'
+                        ? 'justify-content-start'
+                        : 'justify-content-end'
                         }`}
                     >
                       <div
@@ -3098,6 +3191,15 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSemester}
                     />
+                  ) : teacherQuestion ? (
+                    <Select
+                      className="dropdown-wrapper"
+                      onChange={handleDropdownChangeTeacher}
+                      options={teacherSelectOption}
+                      placeholder="Select an option"
+                      menuPlacement="top"
+                      value={selectTeacher}
+                    />
                   ) : semisterprepquestion ? (
                     <Select
                       className="dropdown-wrapper"
@@ -3107,7 +3209,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSemesterpre}
                     />
-                  ) : institutequestion  || schoolnameQuestion? (
+                  ) : institutequestion || schoolnameQuestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}

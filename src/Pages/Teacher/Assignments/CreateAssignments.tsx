@@ -39,7 +39,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-
+import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import useApi from '../../../hooks/useAPI';
 import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL } from '../../../utils/const';
 import { toast } from 'react-toastify';
@@ -47,6 +47,7 @@ import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 import { CourseRep0oDTO, IClass, SemesterRep0oDTO, StudentRep0oDTO, SubjectRep0oDTO } from '../../../Components/Table/columns';
 import NameContext from '../../Context/NameContext';
 import dayjs, { Dayjs } from 'dayjs';
+import StudentSelectionPopup from './listOfStudents';
 
 
 export interface Assignment {
@@ -60,8 +61,8 @@ export interface Assignment {
   assign_to_students: string[]; // Converted from string representation to an actual array
   instructions: string;
   points: string;
-  course_semester_subjects?:any;
-  class_stream_subjects?:any;
+  course_semester_subjects?: any;
+  class_stream_subjects?: any;
   save_draft: boolean;
   add_to_report: boolean;
   notify: boolean;
@@ -156,6 +157,7 @@ export const CreateAssignments = () => {
         subjects_error: boolean;
       };
     }>({});
+    const [open, setOpen] = useState(false);
   const [assignmentData, setAssignmentData] = useState<Assignment>({
     title: "",
     type: "written",
@@ -194,60 +196,60 @@ export const CreateAssignments = () => {
             setDueDate(dayjs(response?.data?.due_date_time));
             setAvailableFrom(dayjs(response?.data?.available_from));
           }
-            if (response.data.university_id !== 'None') {
-                       const allSubject: SubjectRep0oDTO[] = await getSubjects('college');
-                       const allsemesters: SemesterRep0oDTO[] = await getSemester();
-                       setSelectedEntity('College');
-                       const output: Boxes[] = Object.keys(
-                         response.data.course_semester_subjects,
-                       ).flatMap((CourseKey) =>
-                         Object.keys(response.data.course_semester_subjects[CourseKey]).map(
-                           (semester_number) => ({
-                             course_id: CourseKey,
-                             semester_number: semester_number,
-                             subjects:
-                               response.data.course_semester_subjects[CourseKey][
-                                 semester_number
-                               ],
-                             filteredSemesters: allsemesters.filter(
-                               (item) => item.course_id == CourseKey,
-                             ),
-                             filteredSubjects: allSubject.filter(
-                               (item) =>
-                                 item.semester_number == semester_number &&
-                                 item.course_id == CourseKey,
-                             ),
-                           }),
-                         ),
-                       );
-                       setBoxes(output);
-                     } else {
-                       getSubjects('School');
-                       setSelectedEntity('School');
-                       const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
-                       const output: BoxesForSchool[] = Object.keys(
-                         response.data.class_stream_subjects,
-                       ).flatMap((classKey) =>
-                         Object.keys(response.data.class_stream_subjects[classKey]).map(
-                           (stream) => ({
-                             stream: stream,
-                             subjects: response.data.class_stream_subjects[classKey][stream],
-                             class_id: classKey,
-                             is_Stream: stream !== 'general',
-                             selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
-                             filteredSubjects:
-                               stream == 'general'
-                                 ? allSubject.filter((item) => item.class_id === classKey)
-                                 : allSubject.filter(
-                                     (item) =>
-                                       item.class_id === classKey &&
-                                       item.stream === stream,
-                                   ),
-                           }),
-                         ),
-                       );
-                       setBoxesForSchool(output);
-                     }
+          if (response.data.university_id !== 'None') {
+            const allSubject: SubjectRep0oDTO[] = await getSubjects('college');
+            const allsemesters: SemesterRep0oDTO[] = await getSemester();
+            setSelectedEntity('College');
+            const output: Boxes[] = Object.keys(
+              response.data.course_semester_subjects,
+            ).flatMap((CourseKey) =>
+              Object.keys(response.data.course_semester_subjects[CourseKey]).map(
+                (semester_number) => ({
+                  course_id: CourseKey,
+                  semester_number: semester_number,
+                  subjects:
+                    response.data.course_semester_subjects[CourseKey][
+                    semester_number
+                    ],
+                  filteredSemesters: allsemesters.filter(
+                    (item) => item.course_id == CourseKey,
+                  ),
+                  filteredSubjects: allSubject.filter(
+                    (item) =>
+                      item.semester_number == semester_number &&
+                      item.course_id == CourseKey,
+                  ),
+                }),
+              ),
+            );
+            setBoxes(output);
+          } else {
+            getSubjects('School');
+            setSelectedEntity('School');
+            const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
+            const output: BoxesForSchool[] = Object.keys(
+              response.data.class_stream_subjects,
+            ).flatMap((classKey) =>
+              Object.keys(response.data.class_stream_subjects[classKey]).map(
+                (stream) => ({
+                  stream: stream,
+                  subjects: response.data.class_stream_subjects[classKey][stream],
+                  class_id: classKey,
+                  is_Stream: stream !== 'general',
+                  selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
+                  filteredSubjects:
+                    stream == 'general'
+                      ? allSubject.filter((item) => item.class_id === classKey)
+                      : allSubject.filter(
+                        (item) =>
+                          item.class_id === classKey &&
+                          item.stream === stream,
+                      ),
+                }),
+              ),
+            );
+            setBoxesForSchool(output);
+          }
           // setBoxesForSchool(response?.data?.class_stream_subjects);
         }).catch((error) => {
           toast.error(error.message, {
@@ -1378,7 +1380,11 @@ export const CreateAssignments = () => {
                         </div>
                       </div>
                     ))}
-
+                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                 
+                    <Button onClick={() => setOpen(true)}><GroupAddOutlinedIcon className='me-2'/><span >Add Students</span></Button>
+                    <StudentSelectionPopup open={open} onClose={() => setOpen(false)} />
+                  </div>
                   <div className="col-12">
                     <TextField
                       fullWidth
