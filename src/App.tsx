@@ -102,6 +102,8 @@ import Disclaimer from './Components/PolicyContent/Disclaimer';
 import RefundPolicy from './Components/PolicyContent/RefundPolicy';
 import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
 import AssignmentDetails from './Pages/Teacher/Assignments/assignmentDetails';
+import StudentAssignments from './Pages/Student/StudentAssignment';
+import PreviewAndSubmit from './Pages/Student/StudentAssignment/previewAndSubmit';
 
 function App() {
   const navigate = useNavigate();
@@ -340,6 +342,18 @@ function App() {
             path="/main/student/content"
             element={
               <Protected Component={StudentContent} menuName="content" />
+            }
+          />
+          <Route
+            path="/main/student/assignment"
+            element={
+              <Protected Component={StudentAssignments} menuName="content" />
+            }
+          />
+          <Route
+            path="/main/student/view-and-submit"
+            element={
+              <Protected Component={PreviewAndSubmit} menuName="content" />
             }
           />
           <Route

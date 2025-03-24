@@ -37,6 +37,8 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         : '') ||
       mName.toLowerCase() === 'changepassword' ||
       (usertype === 'student' ? mName.toLowerCase() === 'chat' : '') ||
+      (usertype === 'student' ? mName.toLowerCase() === 'assignment' : '') ||
+      (usertype === 'student' ? mName.toLowerCase() === 'view-and-submit' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'uploadpdf' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'pdflist' : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'recentchat' : '') ||
