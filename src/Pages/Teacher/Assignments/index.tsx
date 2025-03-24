@@ -7,14 +7,14 @@ import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from 'material-react-table';
 import { Chip, IconButton, Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle, } from '@mui/material';
-//import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { Switch } from '../../../Components/Switch/switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
-
+import GroupsIcon from '@mui/icons-material/Groups';
 
 export const Assignments = () => {
 
@@ -70,9 +70,10 @@ export const Assignments = () => {
   //       return <Chip label={status} />;
   //   }
   // };
-  // const viewAssignmnet=(assignmentId:any)=>{
-  //  console.log("view this assgnment",assignmentId)
-  // }
+  const viewAssignmnet=(assignmentId:any)=>{
+   console.log("view this assgnment",assignmentId)
+   nevigate(`/teacher-dashboard/assignment-details/${assignmentId}`)
+  }
   const editAssignmnet = (assignmentId: any) => {
     nevigate(`/teacher-dashboard/edit-assignment/${assignmentId}`)
   }
@@ -86,6 +87,7 @@ export const Assignments = () => {
             position: 'top-center'
           })
           setOpenCard(false);
+          window.location.reload()
         }
       }).catch((error) => {
         toast.error(error.message, {
@@ -116,11 +118,11 @@ export const Assignments = () => {
         const assignmentId = row?.original?.id;
         return (
           <Box>
-            {/* <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>
+            <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>
             
             <VisibilityIcon />
             
-          </IconButton> */}
+          </IconButton>
             <IconButton color="secondary" onClick={() => editAssignmnet(assignmentId)}>
               <EditIcon />
             </IconButton>
@@ -176,7 +178,7 @@ export const Assignments = () => {
 
           <>
             {is_draft ?
-              <Chip label="Draft" color="default" />:<Chip label="Active" color="success" />
+              <Chip label="Draft" color="default" />:<Chip label="Created" color="success" />
             }
             {/* <Chip label={status} />; */}
           </>
@@ -207,26 +209,20 @@ export const Assignments = () => {
         const { putData } = useApi();
         const MenuInstituteActive = '/assignment/activate/';
         const MenuInstituteDeactive = '/assignment/deactivate/';
-        const value = cell?.getValue();
+        const value = cell?.getValue() ?? false;
         // if (!value) {
         //   return EMPTY_CELL_VALUE;
         // }
-  
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [Showvalue, setShowvalue] = useState(value);
-  
-        const [Show, setShow] = useState(value ? true : false);
-  
         const active = (id: number, valueset: any) => {
           putData(
             `${valueset ? MenuInstituteDeactive : MenuInstituteActive}${id}`,
           )
             .then((data: any) => {
               if (data.status) {
-                setShow((prevState) => !prevState);
                 setShowvalue(Showvalue ? 0 : 1);
                 toast.success(data?.message);
-                // window.location.reload();
+                 window.location.reload();
               }
             })
             .catch((e) => {
@@ -240,11 +236,11 @@ export const Assignments = () => {
         return (
           <Box>
             <Switch
-              isChecked={Show}
-              label={Show ? 'Active' : 'Deactive'}
+              isChecked={value}
+              label={value ? 'Active' : 'Deactive'}
               // onChange={() => setShow((prevState) => !prevState)}
               onChange={() => {
-                active(row?.original?.id, Showvalue);
+                active(row?.original?.id, value);
               }}
               // disabled={true}
               activeColor="#4CAF50"
@@ -357,7 +353,7 @@ export const Assignments = () => {
                     <h3 className="mb-0">986</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
-                    <AccessTimeFilledIcon className="svgwhite" />
+                    <GroupsIcon className="svgwhite" />
                   </div>
                 </div>
                 <div className="d-flex align-items-center mt-3 gap-2">

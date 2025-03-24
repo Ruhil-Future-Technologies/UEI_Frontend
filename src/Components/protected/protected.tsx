@@ -98,6 +98,10 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         uName.toLowerCase() === 'edit-assignment' &&
         parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
 
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'assignment-details' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
+
       (usertype === 'teacher' ? mName.toLowerCase() === 'content' : '') ||
       (usertype === 'teacher' ? mName.toLowerCase() === 'add-content' : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'edit-content'

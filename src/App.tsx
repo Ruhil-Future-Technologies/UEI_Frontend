@@ -101,6 +101,7 @@ import ServicesAgreement from './Components/PolicyContent/ServicesAgreement';
 import Disclaimer from './Components/PolicyContent/Disclaimer';
 import RefundPolicy from './Components/PolicyContent/RefundPolicy';
 import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
+import AssignmentDetails from './Pages/Teacher/Assignments/assignmentDetails';
 
 function App() {
   const navigate = useNavigate();
@@ -292,12 +293,17 @@ function App() {
             element={<Protected Component={CreateAssignments} />}
           />
           <Route
-              path="/teacher-dashboard/edit-assignment/:id"
-              element={
-                <Protected Component={CreateAssignments} />
-              }
-            />
-
+            path="/teacher-dashboard/edit-assignment/:id"
+            element={
+              <Protected Component={CreateAssignments} />
+            }
+          />
+          <Route
+            path="/teacher-dashboard/assignment-details/:id"
+            element={
+              <Protected Component={AssignmentDetails} />
+            }
+          />
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
@@ -774,12 +780,12 @@ function App() {
               element={<Protected Component={PDFList} menuName="pdflist" />}
             />
           </Route>
-          <Route path="/main/teacher-deshboard">
+          {/* <Route path="/main/teacher-deshboard">
             <Route
               path=""
               element={<Protected Component={TeacherDash} menuName="pdflist" />}
             />
-          </Route>
+          </Route> */}
           <Route path="/main/feedback">
             <Route
               path=""

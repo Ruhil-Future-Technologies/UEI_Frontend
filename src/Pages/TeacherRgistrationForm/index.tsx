@@ -71,6 +71,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import WestIcon from '@mui/icons-material/West';
 
 export interface Teacher {
+  id?:string;
   first_name: string;
   last_name: string;
   gender: string;
@@ -78,6 +79,8 @@ export interface Teacher {
   phone: string;
   email_id: string;
   qualification: string;
+  course_semester_subjects?:any;
+  class_stream_subjects?:any;
   documents?: File[]; // Updated from 'document' to 'documents'
   role_id: string; // UUID for teacher role
   subjects: string[]; // Array of UUIDs for subjects

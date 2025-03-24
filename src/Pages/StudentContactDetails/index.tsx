@@ -41,7 +41,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [contcodeWtsap, setContcodeWtsap] = useState('+91');
   const [whatsappNum, setWhatsappNum] = useState('');
   const [contcodePhone, setContcodePhone] = useState('+91');
-  const [phoneNum, setPhoneNum] = useState('');
+  const [phoneNum, setPhoneNum] = useState(localStorage.getItem('phone') ||'');
 
   const [phoneNumerror, setPhoneNumerror] = useState({
     phoneNum: '',
@@ -124,7 +124,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
-          setPhoneNum(data?.data.mobile_no_call?data?.data.mobile_no_call:localStorage.getItem('phone'));
+          setPhoneNum(data?.data.mobile_no_call ? data?.data.mobile_no_call:localStorage.getItem('phone'));
           setEmail(data?.data.email_id?data?.data.email:localStorage.getItem('email'));
 
           setInitialState({
