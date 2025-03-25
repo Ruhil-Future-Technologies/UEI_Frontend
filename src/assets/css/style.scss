@@ -1,4 +1,4 @@
-@import 'variable/variable';
+
 $primary: #9943ec;
 $secondary: #1e1e1e;
 $warning: #ffd700;
@@ -10,6 +10,7 @@ $gray2: #80818c;
 $gray3: #707070;
 
 $body-bg: #faf5fe;
+@import "~bootstrap/scss/bootstrap";
 // @import '../css/themes/themes.css';
 
 // @font-face {

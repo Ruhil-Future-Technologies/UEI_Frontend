@@ -38,7 +38,10 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       mName.toLowerCase() === 'changepassword' ||
       (usertype === 'student' ? mName.toLowerCase() === 'chat' : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'assignment' : '') ||
-      (usertype === 'student' ? mName.toLowerCase() === 'view-and-submit' : '') ||
+      (usertype === 'student' &&  uName.toLowerCase() === 'view-and-submit' && parts[parts.length - 3]?.toLowerCase() === 'student') ||
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'edit-assignment' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'uploadpdf' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'pdflist' : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'recentchat' : '') ||
@@ -70,6 +73,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin' && uName.toLowerCase() === 'edit-content'
         ? true
         : '') ||
+      (usertype === 'admin' ? mName.toLowerCase() === '/admin-list' : '') ||
       (usertype === 'teacher'
         ? mName.toLowerCase() === 'teacher-dashboard'
         : '') ||

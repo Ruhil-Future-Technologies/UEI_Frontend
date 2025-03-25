@@ -6,7 +6,8 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import "../../assets/css/newstyle.scss";
 import './stylechat.css'; // Import your CSS file
 import useApi from '../../hooks/useAPI';
 import { toast } from 'react-toastify';

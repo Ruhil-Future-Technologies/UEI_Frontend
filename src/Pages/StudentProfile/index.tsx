@@ -582,7 +582,7 @@ const StudentProfile = () => {
             <div className="row">
               <div className="col-lg-12 px-0">
                 <div
-                  className="card rounded-5 mt-3 bg-transparent-mb"
+                  className="card rounded-5 mt-3 bg-transparent-mb removecardm"
                   style={{ border: '0' }}
                 >
                   <div className="card-body p-0">
