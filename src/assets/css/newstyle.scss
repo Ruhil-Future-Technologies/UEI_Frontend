@@ -289,6 +289,10 @@ img {
   font-size: 10px !important;
 }
 @media (max-width: 428px) {
+  body .bg-m-transparent{
+    background-color: transparent!important;
+    box-shadow: none!important;
+  }
   .mobile-profile {
     img {
       width: 70px;
@@ -3008,3 +3012,6 @@ a {
   padding: 1.5rem 0 !important;
 }
 
+.overflow-auto{
+  overflow: auto;
+}
