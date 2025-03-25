@@ -458,20 +458,39 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             }
           });
         } else if (data?.code === 404) {
-          setBoxes([
-            {
-              id: 0,
-              course_id: '',
-              subject_id: '',
-              preference: '',
-              score_in_percentage: '',
-              sem_id: '',
-              class_id: '',
-              stream: '',
-              teacher_id: '',
-              teachers: [],
-            },
-          ]);
+          if(data?.code === 404){
+            setBoxes([
+              {
+                id: 0,
+                course_id: '',
+                subject_id: '',
+                preference: '',
+                score_in_percentage: '',
+                sem_id: '',
+                class_id: '',
+                stream: '',
+                teacher_id: '',
+                teachers: [],
+              },
+            ]);
+            getacademic()
+          }else{
+            setBoxes([
+              {
+                id: 0,
+                course_id: '',
+                subject_id: '',
+                preference: '',
+                score_in_percentage: '',
+                sem_id: '',
+                class_id: '',
+                stream: '',
+                teacher_id: '',
+                teachers: [],
+              },
+            ]);
+          }
+         
           setEditFlag(true);
         } else {
           // empty
@@ -516,7 +535,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       await getacademic();
 
       if (StudentId) {
-
         getPrefrencelist();
       }
     }

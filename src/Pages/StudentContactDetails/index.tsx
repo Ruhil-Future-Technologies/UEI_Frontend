@@ -339,7 +339,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               placeholder="Enter Mobile number"
               name="phoneNum"
               value={phoneNum}
-              disabled={user_id ? !validateEmail(user_id) : false}
+              // disabled={user_id ? !validateEmail(user_id) : false}
               onChange={handleChange}
               sx={{
                 backgroundColor: '#f5f5f5',
