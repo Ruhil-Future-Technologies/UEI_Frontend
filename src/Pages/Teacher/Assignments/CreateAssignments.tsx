@@ -20,7 +20,7 @@ import {
   ToggleButtonGroup,
   SelectChangeEvent,
   InputLabel,
-  OutlinedInput,
+  OutlinedInput
 } from '@mui/material';
 import {
   fieldIcon,
@@ -39,7 +39,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import { Box } from "@mui/system"
 import useApi from '../../../hooks/useAPI';
 import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL } from '../../../utils/const';
 import { toast } from 'react-toastify';
@@ -47,7 +47,7 @@ import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
 import { CourseRep0oDTO, IClass, SemesterRep0oDTO, StudentRep0oDTO, SubjectRep0oDTO } from '../../../Components/Table/columns';
 import NameContext from '../../Context/NameContext';
 import dayjs, { Dayjs } from 'dayjs';
-import StudentSelectionPopup from './listOfStudents';
+import { Autocomplete, Chip } from "@mui/material";
 
 
 export interface Assignment {
@@ -66,9 +66,8 @@ export interface Assignment {
   save_draft: boolean;
   add_to_report: boolean;
   notify: boolean;
-  file: File | null; // Assuming file is optional and a File object
+  file: File[] | null; // Assuming file is optional and a File object
 }
-
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
@@ -77,7 +76,6 @@ export const CreateAssignments = () => {
 
   const { getData, postData, putData } = useApi()
   //const stream = ['Science', 'Commerce', 'Arts'];
-
 
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
@@ -89,21 +87,20 @@ export const CreateAssignments = () => {
   const [files, setFiles] = useState<File[]>([]);
   const nevegate = useNavigate();
   const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
-  // const [availableUntil, setAvailableUntil] = useState<Date | null>(null);
   const [allowLateSubmission, setAllowLateSubmission] = useState(false);
   const [addToStudentRepost, setAddToStudentRepost] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null)
-  const [dueTime, setDueTime] = useState<Date | null>(null);
+  const [dueTime, setDueTime] = useState<Dayjs | null>(null);
   const [selectedEntity, setSelectedEntity] = useState('');
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
-  //const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
   const [semesterData, setSemesterData] = useState<SemesterRep0oDTO[]>([]);
   const [dataClass, setDataClass] = useState<IClass[]>([]);
   const [teacherCourse, setTeacherCourse] = useState<string[]>();
   const [teacherSemester, setTeacherSemester] = useState<string[]>();
   const [tescherSubjects, setTeacherSubjects] = useState<string[]>();
-  //const [teacherClass, setTeacherClass] = useState<string[]>();
+  const [selectedStudents, setSelectedStudents] = useState<StudentRep0oDTO[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
   const [teacherStream, setTeacherStream] = useState<string[]>();
   const [tescherSchoolSubjects, setTeacherSchoolSubjects] = useState<string[]>();
 
@@ -119,7 +116,7 @@ export const CreateAssignments = () => {
   const [availableFrom_error, setAvailableFrom_error] = useState(false);
   const [due_date_error, setDue_date_error] = useState(false);
   const [dueTime_error, setDueTime_error] = useState(false);
-
+  const [error, setError] = useState<string | null>(null);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -157,7 +154,7 @@ export const CreateAssignments = () => {
         subjects_error: boolean;
       };
     }>({});
-    const [open, setOpen] = useState(false);
+
   const [assignmentData, setAssignmentData] = useState<Assignment>({
     title: "",
     type: "written",
@@ -189,11 +186,14 @@ export const CreateAssignments = () => {
             if (response?.data?.file) {
               setFiles(response?.data?.file)
             }
+            const extractedDate = dayjs(response?.data?.due_date_time).format("YYYY-MM-DD"); // "2025-03-02"
+            //const extractedTime = dayjs(response?.data?.due_date_time).format("HH:mm:ss");
             setSendNotification(response?.data?.notify);
             setAddToStudentRepost(response?.data?.add_to_report);
             setAllowLateSubmission(response?.data?.allow_late_submission);
             setSaveAsDraft(response?.data?.save_draft);
-            setDueDate(dayjs(response?.data?.due_date_time));
+            setDueDate(dayjs(extractedDate));
+            setDueTime(dayjs(response?.data?.due_date_time));
             setAvailableFrom(dayjs(response?.data?.available_from));
           }
           if (response.data.university_id !== 'None') {
@@ -410,7 +410,7 @@ export const CreateAssignments = () => {
     getData(`${CourseURL}`)
       .then((data) => {
         if (data.data) {
-        //  setCoursesData(data?.data);
+          //  setCoursesData(data?.data);
           const filteredCourses = data.data.course_data.filter((course: any) =>
             course.is_active
           );
@@ -442,6 +442,16 @@ export const CreateAssignments = () => {
       });
   };
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+
+      setSelectedStudents(listOfStudent || []);
+      setSelectAll(true);
+    } else {
+      setSelectedStudents([]);
+      setSelectAll(false);
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -486,7 +496,7 @@ export const CreateAssignments = () => {
   }
   const getStudentsForTeacher = () => {
     try {
-      getData(`/student/get/${teacherId}`).then((response) => {
+      getData(`/student_teacher/teacher/${teacherId}/students`).then((response) => {
         if (response.status) {
           setListOfStudent(response.data)
         }
@@ -557,6 +567,9 @@ export const CreateAssignments = () => {
     } else {
       setDueTime_error(false);
     }
+    if(error!=null){
+      valid1 = true;
+    }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
@@ -597,20 +610,19 @@ export const CreateAssignments = () => {
     formData.append('title', assignmentData.title);
     formData.append('type', assignmentData.type);
     formData.append('contact_email', assignmentData.contact_email);
-    formData.append('allow_late_submission', assignmentData.allow_late_submission ? 'True' : 'False');
-    formData.append('due_date_time', String(dueDate));
+    formData.append('allow_late_submission', String(assignmentData.allow_late_submission));
+    formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
     formData.append('points', assignmentData.points);
-    formData.append('save_draft', assignmentData.save_draft ? 'True' : 'False');
-    formData.append('add_to_report', addToStudentRepost ? 'True' : 'False');
-    formData.append('notify', sendNotification ? 'True' : 'False');
-    const students = ['2323']
-    students.forEach((student) => {
-      formData.append('assign_to_students', student)
-    })
+    formData.append('save_draft', String(assignmentData.save_draft));
+    formData.append('add_to_report', String(addToStudentRepost));
+    formData.append('notify', String(sendNotification));
+    //const students = selectedStudents.map((student) => String(student.id))
+    const students = ['f8ef4dc8-7e36-4a9a-a9a3-5b722192353d', '325ff321-8765-4c61-a6ca-c58ff78e0d1b', 'd302ec8a-e48f-4c5c-91b2-8486304f0327']
+    formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
-      formData.append('file[]', file);
+      formData.append('file', file);
     });
     if (selectedEntity.toLowerCase() === 'school') {
       const class_stream_subjects = boxesForSchool.reduce(
@@ -711,12 +723,13 @@ export const CreateAssignments = () => {
     } else {
       try {
         putData(`/assignment/edit/${id}`, formData).then((response) => {
-          if (response.data) {
+          if (response.status) {
             toast.success(response.message, {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center'
             })
+            nevegate('/teacher-dashboard/assignments')
           }
           setAssignmentData({
             title: "",
@@ -733,7 +746,7 @@ export const CreateAssignments = () => {
             notify: false,
             file: null,
           })
-          nevegate('/teacher-dashboard/assignments')
+
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -745,6 +758,23 @@ export const CreateAssignments = () => {
     }
   }
 
+  const handleAvailableFromChange = (newDate: Dayjs | null) => {
+    setAvailableFrom(newDate);
+    if (dueDate && newDate && newDate.isAfter(dueDate)) {
+      setError("Available From should be less than Due Date");
+    } else {
+      setError(null);
+    }
+  };
+
+  const handleDueDateChange = (newDate: Dayjs | null) => {
+    setDueDate(newDate);
+    if (availableFrom && newDate && availableFrom.isAfter(newDate)) {
+      setError("Available From should be less than Due Date");
+    } else {
+      setError(null);
+    }
+  };
   // const classOptions = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
 
   // const handleClassChange = (
@@ -916,6 +946,19 @@ export const CreateAssignments = () => {
     }));
     submitAssignment();
   }
+  const mergeDateAndTime = () => {
+    if (!dueDate || !dueTime) return null;
+
+    // Extract hours and minutes using Dayjs methods
+    const hours = dueTime.hour();  // Use hour() instead of getHours()
+    const minutes = dueTime.minute(); // Use minute() instead of getMinutes()
+
+    // Set these hours & minutes in `dueDate`
+    const mergedDateTime = dueDate.hour(hours).minute(minutes).second(0);
+
+    return mergedDateTime;
+  };
+
 
   useEffect(() => {
 
@@ -936,6 +979,8 @@ export const CreateAssignments = () => {
       setDueTime_error(false);
     }
   }, [dueDate, availableFrom, dueTime])
+
+
   console.log(listOfStudent);
   return (
     <div className="main-wrapper">
@@ -1380,10 +1425,54 @@ export const CreateAssignments = () => {
                         </div>
                       </div>
                     ))}
-                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                 
-                    <Button onClick={() => setOpen(true)}><GroupAddOutlinedIcon className='me-2'/><span >Add Students</span></Button>
-                    <StudentSelectionPopup open={open} onClose={() => setOpen(false)} />
+                  <div className='col-12'>
+                    <Box>
+                      <FormControlLabel
+                        control={<Checkbox checked={selectAll} onChange={handleChange} />}
+                        label="Select All"
+                      />
+                      <Autocomplete
+                        multiple
+                        options={listOfStudent || []}
+                        getOptionLabel={(option) => option.first_name + " " + option.last_name}
+                        value={selectedStudents}
+                        onChange={(_, newValue) => {
+                          setSelectedStudents(newValue);
+                          setSelectAll(newValue.length === listOfStudent?.length);
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Select Students" placeholder='search students' />}
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props}>
+                            <Checkbox checked={selected} />
+                            {option.first_name + " " + option.last_name}
+                          </li>
+                        )}
+                        renderTags={(value, getTagProps) => (
+                          <Box
+                            sx={{
+                              maxHeight: "75px", // Max height for 3 rows
+                              overflowY: "auto", // Enable scrolling
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "4px",
+                            }}
+                          >
+                            {value.map((option, index) => (
+                              <Chip label={option.first_name + " " + option.last_name} {...getTagProps({ index })} />
+                            ))}
+                          </Box>
+                        )}
+                        sx={{
+                          "& .MuiAutocomplete-inputRoot": {
+                            flexWrap: "wrap",
+                          },
+                          "& .MuiAutocomplete-tagList": {
+                            maxHeight: "75px", // Ensures max height for selected chips
+                            overflowY: "auto", // Enables scrolling
+                          },
+                        }}
+                      />
+                    </Box>
                   </div>
                   <div className="col-12">
                     <TextField
@@ -1413,7 +1502,7 @@ export const CreateAssignments = () => {
                           <DesktopDatePicker
                             label="Available From"
                             value={availableFrom}
-                            onChange={(newValue) => setAvailableFrom(newValue)}
+                            onChange={handleAvailableFromChange}
                             slots={{
                               textField: (params) => <TextField {...params} />,
                             }}
@@ -1428,13 +1517,12 @@ export const CreateAssignments = () => {
                             )
                           }
                         </div>
-
                         <div className="col-lg-6">
                           <DesktopDatePicker
                             className="col-6"
                             label="Due Date"
                             value={dueDate}
-                            onChange={(newValue) => setDueDate(newValue)}
+                            onChange={handleDueDateChange}
                             slots={{
                               textField: (params) => <TextField {...params} />,
                             }}
@@ -1449,12 +1537,21 @@ export const CreateAssignments = () => {
                             )
                           }
                         </div>
+                        { error!=null &&(
+                          <span>
+                          <small className='error-text' style={{ color: 'red' }}>
+                            {error}
+                          </small>
+                        </span>
+                        )
+                        }
+                        
                         <div className="col-lg-6">
                           <TimePicker
                             className="col-6"
                             label="Due Time"
-                            value={dueTime}
-                            onChange={(newValue) => setDueTime(newValue)}
+                            value={dueTime} // Ensure it's a Dayjs object
+                            onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
                             slots={{
                               textField: (params) => <TextField {...params} />,
                             }}

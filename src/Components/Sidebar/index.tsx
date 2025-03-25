@@ -204,7 +204,17 @@ const Sidebar = () => {
                         <div className="menu-title">Content Library</div>
                       </Link>
                     </li>
-                    
+                    <li>
+                  <Link
+                    to="/main/student/assignment"
+                    onClick={removeMobileToggle}
+                  >
+                    <div className="parent-icon">
+                      <LibraryBooksOutlinedIcon />
+                    </div>
+                    <div className="menu-title">Your Assignments</div>
+                  </Link>
+                </li>
                   </>
                 ) : (
                   <li>
@@ -334,6 +344,13 @@ const Sidebar = () => {
                                               {' '}
                                               <ArrowRightIcon />
                                               Subject
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link to="/main/admin-list">
+                                              {' '}
+                                              <ArrowRightIcon />
+                                              Admin List
                                             </Link>
                                           </li>
                                         </ul>

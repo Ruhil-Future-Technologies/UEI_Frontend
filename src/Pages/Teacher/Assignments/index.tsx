@@ -15,6 +15,7 @@ import useApi from '../../../hooks/useAPI';
 import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 import GroupsIcon from '@mui/icons-material/Groups';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 
 export const Assignments = () => {
 
@@ -39,6 +40,9 @@ export const Assignments = () => {
     notify: false,
     file: null, // File should be null initially
   }]);
+  const [draftCount,setDreftCount]=useState(0)
+  const teacher_uuid=localStorage.getItem('user_uuid');
+
   useEffect(() => {
     getListOfAssignments();
   }, [])
@@ -47,7 +51,14 @@ export const Assignments = () => {
     try {
       getData(`/assignment/list/`).then((response) => {
         if (response.data) {
-          setAssignmentData(response.data)
+          const filteredassignment = response?.data?.filter((assignmnet:any)=>
+            assignmnet.created_by==teacher_uuid
+          )
+          setAssignmentData(filteredassignment)
+          const filteredassignmentcount = response?.data?.filter((assignmnet:any)=>
+            assignmnet.save_draft
+          )
+          setDreftCount(filteredassignmentcount.length)
         }
       })
     } catch (error: any) {
@@ -70,9 +81,9 @@ export const Assignments = () => {
   //       return <Chip label={status} />;
   //   }
   // };
-  const viewAssignmnet=(assignmentId:any)=>{
-   console.log("view this assgnment",assignmentId)
-   nevigate(`/teacher-dashboard/assignment-details/${assignmentId}`)
+  const viewAssignmnet = (assignmentId: any) => {
+    console.log("view this assgnment", assignmentId)
+    nevigate(`/teacher-dashboard/assignment-details/${assignmentId}`)
   }
   const editAssignmnet = (assignmentId: any) => {
     nevigate(`/teacher-dashboard/edit-assignment/${assignmentId}`)
@@ -118,12 +129,10 @@ export const Assignments = () => {
         const assignmentId = row?.original?.id;
         return (
           <Box>
-            <IconButton color="primary" onClick={()=>viewAssignmnet(assignmentId)}>
-            
-            <VisibilityIcon />
-            
-          </IconButton>
-            <IconButton color="secondary" onClick={() => editAssignmnet(assignmentId)}>
+            <IconButton color="primary" onClick={() => viewAssignmnet(assignmentId)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton color="primary" onClick={() => editAssignmnet(assignmentId)}>
               <EditIcon />
             </IconButton>
             <IconButton color="error" onClick={() => isDelete(assignmentId)}>
@@ -152,22 +161,26 @@ export const Assignments = () => {
       header: 'type',
     },
     {
+      accessorKey: 'points',
+      header: 'Points',
+    },
+    {
       accessorKey: 'subject',
       header: 'Subject',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const courseKeys = row?.original?.course_semester_subjects;
-    
+
         if (!courseKeys || typeof courseKeys !== 'object') return <p>No subjects</p>;
-    
+
         // Cast courseKeys to a known structure
         const subjects = Object.values(courseKeys as Record<string, Record<string, string[]>>)
           .flatMap((semesterObj) => Object.values(semesterObj))
           .flat();
-    
+
         return <p>{subjects.join(', ')}</p>;
       }
     }
-,    
+    ,
     {
       accessorKey: 'status',
       header: 'Status',
@@ -178,7 +191,7 @@ export const Assignments = () => {
 
           <>
             {is_draft ?
-              <Chip label="Draft" color="default" />:<Chip label="Created" color="success" />
+              <Chip label="Draft" color="default" /> : <Chip label="Created" color="success" />
             }
             {/* <Chip label={status} />; */}
           </>
@@ -187,16 +200,8 @@ export const Assignments = () => {
       },
     },
     {
-      accessorKey: 'created_by',
-      header: 'Created By',
-    },
-    {
       accessorKey: 'created_at',
       header: 'Created at',
-    },
-    {
-      accessorKey: 'updated_by',
-      header: 'updated by',
     },
     {
       accessorKey: 'updated_at',
@@ -222,7 +227,7 @@ export const Assignments = () => {
               if (data.status) {
                 setShowvalue(Showvalue ? 0 : 1);
                 toast.success(data?.message);
-                 window.location.reload();
+                window.location.reload();
               }
             })
             .catch((e) => {
@@ -232,7 +237,7 @@ export const Assignments = () => {
               });
             });
         };
-  
+
         return (
           <Box>
             <Switch
@@ -305,11 +310,11 @@ export const Assignments = () => {
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
-                    <p className="mb-1">Pending Submissions</p>
-                    <h3 className="mb-0">986</h3>
+                    <p className="mb-1">Dreft Submissions</p>
+                    <h3 className="mb-0">{draftCount}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
-                    <AccessTimeFilledIcon className="svgwhite" />
+                    <SaveAsIcon className="svgwhite" />
                   </div>
                 </div>
                 <div className="d-flex align-items-center mt-3 gap-2">
@@ -350,7 +355,7 @@ export const Assignments = () => {
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
                     <p className="mb-1">Active Students</p>
-                    <h3 className="mb-0">986</h3>
+                    <h3 className="mb-0">{assignmentData.length-draftCount}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
                     <GroupsIcon className="svgwhite" />

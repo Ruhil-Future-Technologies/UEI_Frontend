@@ -324,6 +324,18 @@ export interface ContentRepoDTO {
   is_active: boolean;
 }
 
+export interface Admin{
+id:number;
+department_id:number;
+first_name:string;
+last_name:string;
+gender:string;
+mother_name:string;
+father_name:string;
+dob:Date;
+is_active:boolean;
+}
+
 export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
@@ -2818,4 +2830,89 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
     },
     size: 150,
   },
+];
+
+
+export const ADMIN_LIST_COLUMNS: MRT_ColumnDef<Admin>[] = [
+  {
+    header: 'Action',
+    accessorKey: 'action',
+    Cell:({cell,row}:any)=>{
+          const value=cell?.getValue();
+          const { putData } = useApi();
+
+          const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
+          const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
+
+          const [showValue, setShowValue] = useState(value);
+          const [show, setShow] = useState(value);
+
+          const toggleActive = (id: string, currentStatus: boolean) => {
+            putData(`${currentStatus ? MenuDeactive : MenuActive}/${id}`)
+              .then((data: any) => {
+                if (data.status) {
+                  setShow((prev: any) => !prev);
+                  setShowValue((prev: any) => !prev);
+                  toast.success(data?.message, {
+                    hideProgressBar: true,
+                    theme: 'colored',
+                  });
+                }
+              })
+              .catch((e) => {
+                toast.error(e?.message, {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                });
+              });
+          };
+          return(
+            <Box>
+            <Switch
+              isChecked={show}
+              label={show ? 'Active' : 'Deactive'}
+              onChange={() => toggleActive(row?.original?.id, showValue)}
+            />
+          </Box>
+          );
+    
+        }
+  },
+  {
+    accessorFn: (row) => `${row.first_name ?? ''} ${row.last_name ?? ''}`,
+    header: 'Full Name',
+    id: 'fullName', 
+  },
+  {
+    header:"Department Name",
+    accessorKey:'department_id'
+  },
+  {
+    header:'DOB',
+    accessorFn: (row) => row.dob ? new Date(row.dob).toLocaleDateString() : '',
+  },
+  {
+    header:'Gender',
+    accessorKey:'gender'
+  },
+  {
+   header:'Father Name',
+   accessorKey:'father_name'
+  },
+  {
+    header:'Mother Name',
+    accessorKey:'mother_name'
+  },
+  // {
+  //   header:'Active/Deactive',
+  //   accessorKey:'is_active',
+  //   Cell:({cell,row}:any)=>{
+  //     const value=cell?.getValue();
+  //     const { putData } = useApi();
+
+
+  //     return();
+
+  //   }
+  // }
 ];
