@@ -438,7 +438,7 @@ const Signup = () => {
                       </div>
                       <div className="mb-3">
                         <label htmlFor="" className="form-label">
-                          Phone NO.
+                          Phone No.
                         </label>
                         <TextField
                           data-testid="phone"
@@ -446,7 +446,7 @@ const Signup = () => {
                           name="phone_no"
                           value={phone}
                           onChange={handleChangeData}
-                          placeholder="Mobile Number"
+                          placeholder="Enter phone number"
                           error={!!errorPhone}
                           helperText={errorPhone}
                           required={true}

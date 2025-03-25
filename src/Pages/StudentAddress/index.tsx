@@ -810,6 +810,7 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
           </label>
           <CountryDropdown
             classes="form-select custom-dropdown"
+            data-container="body"
             defaultOptionLabel={studentAddress.country}
             value={studentAddress.country || ''}
             onChange={(e: string) =>

@@ -17,6 +17,16 @@ $bg-gray: #f5f5f5;
 $form-check-input-bg: rgba($primary, 0.2);
 $form-check-input-border: 1px solid rgba($primary, 0.4);
 $max-items: 100;
+$text-color: #4B5563;
+
+// Import Bootstrap SCSS (after defining variables)
+@import "~bootstrap/scss/functions"; // Ensure functions are available
+@import "~bootstrap/scss/variables"; // Load default variables
+@import "~bootstrap/scss/mixins";    // Load mixins
+
+// Now import the full Bootstrap library
+@import "~bootstrap/scss/bootstrap";
+
 // //Required Bootstrap imports
 // @import "bootstrap/variables";
 // @import "bootstrap/variables-dark";
@@ -61,7 +71,14 @@ $max-items: 100;
 
 body, a, p {
   font-family: 'Inter', system-ui !important;
+ 
 }
+ul{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+p, ul li{ color: $text-color;}
 .mh-56 {
   min-height: 3.5rem;
 }
@@ -1847,7 +1864,7 @@ body .desk-card {
   .form-control,
   .form-select {
     background-color: $bg-gray;
-    border-color: $bg-gray;
+    border-color: #cfcfcf;
   }
 
   padding: 1.3rem;
@@ -2165,7 +2182,7 @@ body .desk-card {
   }
 
   .main-chat-panel {
-    padding: 1rem;
+    padding: 1rem 1rem 1.7rem;
     height: 100%;
 
     .inner-panel {

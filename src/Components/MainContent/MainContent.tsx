@@ -3001,7 +3001,7 @@ function MainContent() {
                 </div>
               </div> */}
 
-              <div className="row mt-lg-4 g-4">
+              <div className="row my-lg-4 g-4">
                 <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
                   <div className="card w-100 overflow-hidden rounded-4 shadow-none desk-card">
                     <div className="card-header bg-primary-20 border-bottom-0">

@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import useApi from '../../hooks/useAPI';

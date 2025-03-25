@@ -8,7 +8,7 @@ import React, {
   useRef,
   useContext,
 } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import './stylechat.css'; // Import your CSS file
 import useApi from '../../hooks/useAPI';
 import glogo from '../../assets/img/logo-white.svg';

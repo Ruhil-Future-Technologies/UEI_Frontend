@@ -647,18 +647,19 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   //   }
   // }, [totalSemester]);
   return (
-    <div className="mt-5">
+    <div>
+      <b className='font-weight-bold profiletext mb-4 d-block'>Academic History</b>     
+     
       <form>
         {boxes?.map((box, index) => (
-          <div
-            className="row align-items-center"
+          <div className="row align-items-center g-4"
             key={box.id}
             style={{ marginBottom: '5px' }}
           >
             <div className="col form_field_wrapper">
               <FormControl
                 required
-                sx={{ m: 1, minWidth: 70, width: '100%', maxWidth: 200 }}
+                sx={{  minWidth: 70, width: '100%' }}
               >
                 <InputLabel>Institute Type</InputLabel>
                 <Select
@@ -733,7 +734,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 70, width: '100%', maxWidth: 200 }}
+                  sx={{  minWidth: 70, width: '100%' }}
                 >
                   <InputLabel>Board</InputLabel>
                   <Select
@@ -769,7 +770,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 70, width: '100%', maxWidth: 200 }}
+                  sx={{  minWidth: 70, width: '100%' }}
                 >
                   <InputLabel>State</InputLabel>
                   <Select
@@ -814,7 +815,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                  sx={{  minWidth: 220, width: '100%' }}
                 >
                   <InputLabel>University name</InputLabel>
                   <Select
@@ -853,7 +854,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                  sx={{  minWidth: 220, width: '100%' }}
                 >
                   <InputLabel>Institute Name</InputLabel>
                   <Select
@@ -890,7 +891,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                  sx={{  minWidth: 220, width: '100%' }}
                 >
                   <InputLabel>Course</InputLabel>
                   <Select
@@ -926,7 +927,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col-lg-3 form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                  sx={{  minWidth: 220, width: '100%' }}
                 >
                   <InputLabel>Semester</InputLabel>
                   <Select
@@ -982,7 +983,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                  sx={{  minWidth: 220, width: '100%' }}
                 >
                   <InputLabel>Class</InputLabel>
                   <Select
@@ -1023,7 +1024,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                 <div className="col-lg-3 form_field_wrapper">
                   <FormControl
                     required
-                    sx={{ m: 1, minWidth: 70, width: '100%', maxWidth: 200 }}
+                    sx={{  minWidth: 70, width: '100%' }}
                   >
                     <InputLabel>Stream</InputLabel>
                     <Select
@@ -1057,7 +1058,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               )}
             {box.institute_id == '1' && (
               <div className="col form_field_wrapper">
-                <FormControl sx={{ m: 1, minWidth: 180, width: '100%' }}>
+                <FormControl sx={{  minWidth: 180, width: '100%' }}>
                   {boxes1.map((box, index) => (
                     <TextField
                       key={box.id}
@@ -1083,7 +1084,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               <div className="col-lg-3 form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 70, width: '100%', maxWidth: 200 }}
+                  sx={{  minWidth: 70, width: '100%' }}
                 >
                   <InputLabel>Learning Style</InputLabel>
                   <Select
@@ -1125,7 +1126,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                 <FormControl
                   required
                   sx={{
-                    m: 1,
+                    
                     minWidth: 180,
                     // width: "100%",
                   }}
@@ -1154,7 +1155,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           </div>
         ))}
 
-        <div className="mt-3 d-flex align-items-center justify-content-between">
+        <div className="mt-5 d-flex align-items-center justify-content-between">
           <button
             type="button"
             className="btn btn-outline-dark prev-btn px-lg-4 rounded-pill"
