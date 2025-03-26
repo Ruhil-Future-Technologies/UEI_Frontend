@@ -226,7 +226,7 @@ export const CreateAssignments = () => {
                   semester_number: semester_number,
                   subjects:
                     response.data.course_semester_subjects[CourseKey][
-                      semester_number
+                    semester_number
                     ],
                   filteredSemesters: allsemesters.filter(
                     (item) => item.course_id == CourseKey,
@@ -258,13 +258,13 @@ export const CreateAssignments = () => {
                     filteredSubjects:
                       stream == 'general'
                         ? allSubject.filter(
-                            (item) => item.class_id === classKey,
-                          )
+                          (item) => item.class_id === classKey,
+                        )
                         : allSubject.filter(
-                            (item) =>
-                              item.class_id === classKey &&
-                              item.stream === stream,
-                          ),
+                          (item) =>
+                            item.class_id === classKey &&
+                            item.stream === stream,
+                        ),
                   }),
                 ),
               );
@@ -439,7 +439,6 @@ export const CreateAssignments = () => {
 
       return []; // Return an empty array if no data
     } catch (error) {
-      console.error('Error fetching semester data:', error);
       return Promise.reject(error); // Reject the promise if an error occurs
     }
   };
@@ -1026,7 +1025,6 @@ export const CreateAssignments = () => {
     }
   }, [dueDate, availableFrom, dueTime]);
 
-  console.log(listOfStudent);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1077,31 +1075,31 @@ export const CreateAssignments = () => {
                         Assignment Type
                       </Typography>
                       <div className="overflow-auto">
-                      <ToggleButtonGroup
-                        value={assignmentType}
-                        exclusive
-                        onChange={(_, newValue) => setAssignmentType(newValue)}
-                        fullWidth
-                        className="assignbtngrp"
-                      >
-                        <ToggleButton value="written">
-                          {' '}
-                          <AssignmentIcon /> Written
-                        </ToggleButton>
-                        <ToggleButton value="quiz">
-                          <QuizIcon /> Quiz
-                        </ToggleButton>
-                        <ToggleButton value="project">
-                          <AccountTreeIcon /> Project
-                        </ToggleButton>
-                        <ToggleButton value="presentation">
-                          {' '}
-                          <PresentToAllIcon />
-                          Presentation
-                        </ToggleButton>
-                      </ToggleButtonGroup>
+                        <ToggleButtonGroup
+                          value={assignmentType}
+                          exclusive
+                          onChange={(_, newValue) => setAssignmentType(newValue)}
+                          fullWidth
+                          className="assignbtngrp"
+                        >
+                          <ToggleButton value="written">
+                            {' '}
+                            <AssignmentIcon /> Written
+                          </ToggleButton>
+                          <ToggleButton value="quiz">
+                            <QuizIcon /> Quiz
+                          </ToggleButton>
+                          <ToggleButton value="project">
+                            <AccountTreeIcon /> Project
+                          </ToggleButton>
+                          <ToggleButton value="presentation">
+                            {' '}
+                            <PresentToAllIcon />
+                            Presentation
+                          </ToggleButton>
+                        </ToggleButtonGroup>
                       </div>
-                     
+
                     </div>
                     <div className="col-12">
                       <Typography variant="subtitle1">Attachments</Typography>
@@ -1186,349 +1184,342 @@ export const CreateAssignments = () => {
                     </div>
                     <div className="col-12">
 
-                    
-                    {selectedEntity.toLowerCase() === 'college' &&
-                      boxes.length > 0 &&
-                      boxes.map((box, index) => (
-                        <div
-                          key={index}
-                          className="row g-4"
-                        >
-                          {/* Course Selection */}
-                          <div className="col-md-4 col-12">
-                            <label className="col-form-label">
-                              Course<span>*</span>
-                            </label>
-                            <FormControl fullWidth>
-                              <InputLabel id={`course_id_${index}`}>
-                                Course
-                              </InputLabel>
-                              <Select
-                                labelId={`course_id_${index}`}
-                                id={`demo3-multiple-name-${index}`}
-                                name="course_id"
-                                label="Course"
-                                onChange={(event: any) =>
-                                  handelSubjectBoxChange(event, index)
-                                }
-                                value={box.course_id || ''}
-                              >
-                                {filteredcoursesData
-                                  .filter((course) =>
-                                    teacherCourse?.includes(String(course.id)),
-                                  )
-                                  .map((course) => (
-                                    <MenuItem key={course.id} value={course.id}>
-                                      {course.course_name}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                            {errorForCourse_semester_subject[index]
-                              ?.course_id_error === true && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please enter a valid Course.</small>
-                              </p>
-                            )}
-                          </div>
 
-                          {/* Semester Selection */}
-                          <div className="col-md-4 col-12">
-                            <label className="col-form-label">
-                              Semester <span>*</span>
-                            </label>
-                            <FormControl fullWidth>
-                              <InputLabel id={`semester_id_${index}`}>
-                                Semester
-                              </InputLabel>
-                              <Select
-                                labelId={`semester_id_${index}`}
-                                id={`semester_select_${index}`}
-                                name="semester_number"
-                                label="Semester"
-                                onChange={(event: any) =>
-                                  handelSubjectBoxChange(event, index)
-                                }
-                                value={box.semester_number || ''}
-                              >
-                                {box.filteredSemesters
-                                  ?.filter((item) =>
-                                    teacherSemester?.includes(
-                                      String(item.semester_number),
-                                    ),
-                                  )
-                                  .map((item) => (
-                                    <MenuItem
-                                      key={item.id}
-                                      value={item.semester_number || ''}
-                                    >
-                                      {item.semester_number}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                            {errorForCourse_semester_subject[index]
-                              ?.semester_number_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a Semester.</small>
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Subjects Selection */}
-                          <div className="col-md-4 col-12">
-                            <label className="col-form-label">
-                              Subjects Taught<span>*</span>
-                            </label>
-                            <FormControl fullWidth>
-                              <InputLabel id={`subject_label_${index}`}>
-                                Subject
-                              </InputLabel>
-                              <Select
-                                labelId={`subject_label_${index}`}
-                                id={`subject_select_${index}`}
-                                name="subjects"
-                                label="subjects"
-                                value={box.subjects || []}
-                                onChange={(event: any) =>
-                                  handelSubjectBoxChange(event, index)
-                                }
-                              >
-                                {box.filteredSubjects
-                                  ?.filter((subject) =>
-                                    tescherSubjects?.includes(
-                                      subject.subject_name,
-                                    ),
-                                  )
-                                  .map((subject: any) => (
-                                    <MenuItem
-                                      key={subject.subject_id}
-                                      value={subject.subject_name}
-                                    >
-                                      {subject.subject_name}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                            {errorForCourse_semester_subject[index]
-                              ?.subjects_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select at least one subject.
-                                </small>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    {selectedEntity.toLowerCase() === 'school' &&
-                      boxesForSchool.length > 0 &&
-                      boxesForSchool.map((box, index) => (
-                        <div
-                          key={index}
-                          className="row"
-                        >
-                          {/* Class Selection */}
-                          <div className={box.selected_class_name}>
-                            <label className="col-form-label">
-                              Class<span>*</span>
-                            </label>
-                            <FormControl fullWidth>
-                              <InputLabel id={`class_id_${index}`}>
-                                Class
-                              </InputLabel>
-                              <Select
-                                labelId={`class_id_${index}`}
-                                id={`class_select_${index}`}
-                                name="class_id"
-                                onChange={(event: any) =>
-                                  handelSchoolBoxChange(event, index)
-                                }
-                                value={box.class_id || ''}
-                                input={<OutlinedInput label="Class" />}
-                              >
-                                {dataClass.map((item) => (
-                                  <MenuItem key={item.id} value={item.id}>
-                                    {item.class_name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                            {errorForClass_stream_subject[index]
-                              ?.class_id_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a Class.</small>
-                              </p>
-                            )}
-                          </div>
-                          {box.is_Stream && (
-                            <div className="col-md-4 col-12 mb-3">
+                      {selectedEntity.toLowerCase() === 'college' &&
+                        boxes.length > 0 &&
+                        boxes.map((box, index) => (
+                          <div
+                            key={index}
+                            className="row g-4"
+                          >
+                            {/* Course Selection */}
+                            <div className="col-md-4 col-12">
                               <label className="col-form-label">
-                                Stream Name<span>*</span>
+                                Course<span>*</span>
                               </label>
                               <FormControl fullWidth>
-                                <InputLabel id={`stream_id_${index}`}>
-                                  Stream Name
+                                <InputLabel id={`course_id_${index}`}>
+                                  Course
                                 </InputLabel>
                                 <Select
-                                  labelId={`stream_id_${index}`}
-                                  id={`stream_select_${index}`}
-                                  name="stream"
-                                  label="Stream Name"
+                                  labelId={`course_id_${index}`}
+                                  id={`demo3-multiple-name-${index}`}
+                                  name="course_id"
+                                  label="Course"
+                                  onChange={(event: any) =>
+                                    handelSubjectBoxChange(event, index)
+                                  }
+                                  value={box.course_id || ''}
+                                >
+                                  {filteredcoursesData
+                                    .filter((course) =>
+                                      teacherCourse?.includes(String(course.id)),
+                                    )
+                                    .map((course) => (
+                                      <MenuItem key={course.id} value={course.id}>
+                                        {course.course_name}
+                                      </MenuItem>
+                                    ))}
+                                </Select>
+                              </FormControl>
+                              {errorForCourse_semester_subject[index]
+                                ?.course_id_error === true && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please enter a valid Course.</small>
+                                  </p>
+                                )}
+                            </div>
+
+                            {/* Semester Selection */}
+                            <div className="col-md-4 col-12">
+                              <label className="col-form-label">
+                                Semester <span>*</span>
+                              </label>
+                              <FormControl fullWidth>
+                                <InputLabel id={`semester_id_${index}`}>
+                                  Semester
+                                </InputLabel>
+                                <Select
+                                  labelId={`semester_id_${index}`}
+                                  id={`semester_select_${index}`}
+                                  name="semester_number"
+                                  label="Semester"
+                                  onChange={(event: any) =>
+                                    handelSubjectBoxChange(event, index)
+                                  }
+                                  value={box.semester_number || ''}
+                                >
+                                  {box.filteredSemesters
+                                    ?.filter((item) =>
+                                      teacherSemester?.includes(
+                                        String(item.semester_number),
+                                      ),
+                                    )
+                                    .map((item) => (
+                                      <MenuItem
+                                        key={item.id}
+                                        value={item.semester_number || ''}
+                                      >
+                                        {item.semester_number}
+                                      </MenuItem>
+                                    ))}
+                                </Select>
+                              </FormControl>
+                              {errorForCourse_semester_subject[index]
+                                ?.semester_number_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Semester.</small>
+                                  </p>
+                                )}
+                            </div>
+
+                            {/* Subjects Selection */}
+                            <div className="col-md-4 col-12">
+                              <label className="col-form-label">
+                                Subjects Taught<span>*</span>
+                              </label>
+                              <FormControl fullWidth>
+                                <InputLabel id={`subject_label_${index}`}>
+                                  Subject
+                                </InputLabel>
+                                <Select
+                                  labelId={`subject_label_${index}`}
+                                  id={`subject_select_${index}`}
+                                  name="subjects"
+                                  label="subjects"
+                                  value={box.subjects || []}
+                                  onChange={(event: any) =>
+                                    handelSubjectBoxChange(event, index)
+                                  }
+                                >
+                                  {box.filteredSubjects
+                                    ?.filter((subject) =>
+                                      tescherSubjects?.includes(
+                                        subject.subject_name,
+                                      ),
+                                    )
+                                    .map((subject: any) => (
+                                      <MenuItem
+                                        key={subject.subject_id}
+                                        value={subject.subject_name}
+                                      >
+                                        {subject.subject_name}
+                                      </MenuItem>
+                                    ))}
+                                </Select>
+                              </FormControl>
+                              {errorForCourse_semester_subject[index]
+                                ?.subjects_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
+                            </div>
+                          </div>
+                        ))}
+                      {selectedEntity.toLowerCase() === 'school' &&
+                        boxesForSchool.length > 0 &&
+                        boxesForSchool.map((box, index) => (
+                          <div
+                            key={index}
+                            className="row"
+                          >
+                            {/* Class Selection */}
+                            <div className={box.selected_class_name}>
+                              <label className="col-form-label">
+                                Class<span>*</span>
+                              </label>
+                              <FormControl fullWidth>
+                                <InputLabel id={`class_id_${index}`}>
+                                  Class
+                                </InputLabel>
+                                <Select
+                                  labelId={`class_id_${index}`}
+                                  id={`class_select_${index}`}
+                                  name="class_id"
                                   onChange={(event: any) =>
                                     handelSchoolBoxChange(event, index)
                                   }
-                                  value={box.stream || ''}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '& .MuiSelect-icon': {
-                                      color: fieldIcon(namecolor),
-                                    },
-                                  }}
-                                  MenuProps={{
-                                    PaperProps: {
-                                      style: {
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                      },
-                                    },
-                                  }}
+                                  value={box.class_id || ''}
+                                  input={<OutlinedInput label="Class" />}
                                 >
-                                  {teacherStream?.map((item) => (
-                                    <MenuItem
-                                      key={item}
-                                      value={item}
-                                      sx={{
-                                        backgroundColor: inputfield(namecolor),
-                                        color: inputfieldtext(namecolor),
-                                        '&:hover': {
-                                          backgroundColor:
-                                            inputfieldhover(namecolor),
-                                        },
-                                      }}
-                                    >
-                                      {item}
+                                  {dataClass.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                      {item.class_name}
                                     </MenuItem>
                                   ))}
                                 </Select>
                               </FormControl>
                               {errorForClass_stream_subject[index]
-                                ?.stream_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Stream.</small>
-                                </p>
-                              )}
+                                ?.class_id_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Class.</small>
+                                  </p>
+                                )}
                             </div>
-                          )}
-                          <div className={box.selected_class_name}>
-                            <label className="col-form-label">
-                              Subjects Taught<span>*</span>
-                            </label>
-                            <FormControl fullWidth>
-                              <InputLabel id={`subject_label_${index}`}>
-                                Subject
-                              </InputLabel>
-                              <Select
-                                labelId={`subject_label_${index}`}
-                                id={`subject_select_${index}`}
-                                multiple
-                                name="subjects"
-                                value={box.subjects || []}
-                                onChange={(event: any) =>
-                                  handelSchoolBoxChange(event, index)
-                                }
-                                input={<OutlinedInput label="Subject" />}
-                                renderValue={(selected) =>
-                                  (selected as string[])
-                                    .map((id) => {
-                                      const subject = totleSubject.find(
-                                        (subject: any) =>
-                                          subject.subject_name === id,
-                                      );
-                                      return subject
-                                        ? subject.subject_name
-                                        : '';
-                                    })
-                                    .join(', ')
-                                }
-                              >
-                                {box.filteredSubjects
-                                  ?.filter((subject) =>
-                                    tescherSchoolSubjects?.includes(
-                                      subject.subject_name,
-                                    ),
-                                  )
-                                  ?.map((subject: any) => (
-                                    <MenuItem
-                                      key={subject.subject_id}
-                                      value={subject.subject_name}
+                            {box.is_Stream && (
+                              <div className="col-md-4 col-12 mb-3">
+                                <label className="col-form-label">
+                                  Stream Name<span>*</span>
+                                </label>
+                                <FormControl fullWidth>
+                                  <InputLabel id={`stream_id_${index}`}>
+                                    Stream Name
+                                  </InputLabel>
+                                  <Select
+                                    labelId={`stream_id_${index}`}
+                                    id={`stream_select_${index}`}
+                                    name="stream"
+                                    label="Stream Name"
+                                    onChange={(event: any) =>
+                                      handelSchoolBoxChange(event, index)
+                                    }
+                                    value={box.stream || ''}
+                                    sx={{
+                                      backgroundColor: inputfield(namecolor),
+                                      color: inputfieldtext(namecolor),
+                                      '& .MuiSelect-icon': {
+                                        color: fieldIcon(namecolor),
+                                      },
+                                    }}
+                                    MenuProps={{
+                                      PaperProps: {
+                                        style: {
+                                          backgroundColor: inputfield(namecolor),
+                                          color: inputfieldtext(namecolor),
+                                        },
+                                      },
+                                    }}
+                                  >
+                                    {teacherStream?.map((item) => (
+                                      <MenuItem
+                                        key={item}
+                                        value={item}
+                                        sx={{
+                                          backgroundColor: inputfield(namecolor),
+                                          color: inputfieldtext(namecolor),
+                                          '&:hover': {
+                                            backgroundColor:
+                                              inputfieldhover(namecolor),
+                                          },
+                                        }}
+                                      >
+                                        {item}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                                {errorForClass_stream_subject[index]
+                                  ?.stream_error && (
+                                    <p
+                                      className="error-text"
+                                      style={{ color: 'red' }}
                                     >
-                                      <Checkbox
-                                        checked={box.subjects?.includes(
-                                          subject.subject_name.toString(),
-                                        )}
-                                      />
-                                      <ListItemText
-                                        primary={subject.subject_name}
-                                      />
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                            {errorForClass_stream_subject[index]
-                              ?.subjects_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select at least one subject.
-                                </small>
-                              </p>
+                                      <small>Please select a Stream.</small>
+                                    </p>
+                                  )}
+                              </div>
                             )}
+                            <div className={box.selected_class_name}>
+                              <label className="col-form-label">
+                                Subjects Taught<span>*</span>
+                              </label>
+                              <FormControl fullWidth>
+                                <InputLabel id={`subject_label_${index}`}>
+                                  Subject
+                                </InputLabel>
+                                <Select
+                                  labelId={`subject_label_${index}`}
+                                  id={`subject_select_${index}`}
+                                  multiple
+                                  name="subjects"
+                                  value={box.subjects || []}
+                                  onChange={(event: any) =>
+                                    handelSchoolBoxChange(event, index)
+                                  }
+                                  input={<OutlinedInput label="Subject" />}
+                                  renderValue={(selected) =>
+                                    (selected as string[])
+                                      .map((id) => {
+                                        const subject = totleSubject.find(
+                                          (subject: any) =>
+                                            subject.subject_name === id,
+                                        );
+                                        return subject
+                                          ? subject.subject_name
+                                          : '';
+                                      })
+                                      .join(', ')
+                                  }
+                                >
+                                  {box.filteredSubjects
+                                    ?.filter((subject) =>
+                                      tescherSchoolSubjects?.includes(
+                                        subject.subject_name,
+                                      ),
+                                    )
+                                    ?.map((subject: any) => (
+                                      <MenuItem
+                                        key={subject.subject_id}
+                                        value={subject.subject_name}
+                                      >
+                                        <Checkbox
+                                          checked={box.subjects?.includes(
+                                            subject.subject_name.toString(),
+                                          )}
+                                        />
+                                        <ListItemText
+                                          primary={subject.subject_name}
+                                        />
+                                      </MenuItem>
+                                    ))}
+                                </Select>
+                              </FormControl>
+                              {errorForClass_stream_subject[index]
+                                ?.subjects_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                      </div>
+                        ))}
+                    </div>
                     <div className="col-12">
                       <Box>
                         <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selectAll}
-                              onChange={handleChange}
-                            />
-                          }
+                          control={<Checkbox checked={selectAll} onChange={handleChange} />}
                           label="Select All"
                         />
                         <Autocomplete
                           multiple
                           options={listOfStudent || []}
                           getOptionLabel={(option) =>
-                            option.first_name + ' ' + option.last_name
+                            `${option.first_name} ${option.last_name}`
                           }
                           value={selectedStudents}
                           onChange={(_, newValue) => {
                             setSelectedStudents(newValue);
-                            setSelectAll(
-                              newValue.length === listOfStudent?.length,
-                            );
+                            setSelectAll(newValue.length === listOfStudent?.length);
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -1538,43 +1529,51 @@ export const CreateAssignments = () => {
                             />
                           )}
                           renderOption={(props, option, { selected }) => (
-                            <li {...props}>
+                            <li {...props} key={option.id || option.first_name}>
                               <Checkbox checked={selected} />
-                              {option.first_name + ' ' + option.last_name}
+                              {option.first_name} {option.last_name}
                             </li>
                           )}
                           renderTags={(value, getTagProps) => (
                             <Box
                               sx={{
-                                maxHeight: '75px', // Max height for 3 rows
-                                overflowY: 'auto', // Enable scrolling
+                                maxHeight: '75px',
+                                overflowY: 'auto',
                                 display: 'flex',
                                 flexWrap: 'wrap',
                                 gap: '4px',
                               }}
                             >
-                              {value.map((option, index) => (
-                                <Chip
-                                  label={
-                                    option.first_name + ' ' + option.last_name
-                                  }
-                                  {...getTagProps({ index })}
-                                />
-                              ))}
+                              {value.map((option, index) => {
+                                const tagProps = getTagProps({ index });
+
+                                return (
+                                  <React.Fragment key={option.id || `${option.first_name}-${option.last_name}-${index}`}>
+                                    <Chip
+                                      {...tagProps} // Spread other props WITHOUT key
+                                      label={`${option.first_name} ${option.last_name}`}
+                                    />
+                                  </React.Fragment>
+                                );
+                              })}
                             </Box>
                           )}
+
+
+
                           sx={{
                             '& .MuiAutocomplete-inputRoot': {
                               flexWrap: 'wrap',
                             },
                             '& .MuiAutocomplete-tagList': {
-                              maxHeight: '75px', // Ensures max height for selected chips
-                              overflowY: 'auto', // Enables scrolling
+                              maxHeight: '75px',
+                              overflowY: 'auto',
                             },
                           }}
                         />
                       </Box>
                     </div>
+
                     <div className="col-12">
                       <TextField
                         fullWidth

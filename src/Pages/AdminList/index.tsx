@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from "react";
 import useApi from "../../hooks/useAPI";
 import { Admin, ADMIN_LIST_COLUMNS } from "../../Components/Table/columns";
@@ -52,12 +52,13 @@ const AdminList = () => {
         try {
             deleteData(`/admindelete/${assignmentId}`).then((response) => {
                 if (response?.status) {
-
+                    
                     toast.success(response.message, {
                         hideProgressBar: true,
                         theme: 'colored',
                         position: 'top-center'
                     })
+                    window.location.reload();
                 }
             }).catch((error) => {
                 toast.error(error?.message, {

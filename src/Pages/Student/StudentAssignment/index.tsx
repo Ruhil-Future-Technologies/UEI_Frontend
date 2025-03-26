@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useApi from "../../../hooks/useAPI";
@@ -111,7 +112,6 @@ const StudentAssignments = () => {
         try {
             getData(`/assignment/list/`).then((response) => {
                 if (response.data) {
-                    console.log(response.data)
                     const filteredAssignment = response?.data.filter((assignment: any) => assignment?.assign_to_students.includes(studemtId) && !assignment?.save_draft)
                     setAssignmentData(filteredAssignment)
                 }

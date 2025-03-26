@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -60,7 +61,6 @@ const PreviewAndSubmit = () => {
 
           // Convert milliseconds to days (1 day = 86400000 ms)
           const remainingDays = Math.ceil(differenceInMs / (1000 * 60 * 60 * 24));
-          console.log(remainingDays)
           setRemaingDays(dueDate.getTime() > today.getTime() ? remainingDays : 0)
         }
       })
@@ -167,8 +167,8 @@ const PreviewAndSubmit = () => {
                 <Typography variant="h6">Resources</Typography>
                 <ul>
                   {
-                    assignmentData?.file?.map((file) => (
-                      <li>
+                    assignmentData?.file?.map((file, index) => (
+                      <li key={index}> {/* Ensure a unique key */}
                         <Link to={'#'}>{file.name}</Link>
                       </li>
                     ))
