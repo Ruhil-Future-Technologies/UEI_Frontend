@@ -72,31 +72,30 @@ export const dataaccess = (
   datatest: any,
 ) => {
   let filteredData = null;
-  // console.log("tttt===",urlcheck?.urlcheck,datatest)
   JSON.parse(Menulist)?.forEach((data: any) => {
     if (data?.menu_name.toLowerCase() === lastSegment) {
       filteredData = data; // Found a match in the main menu
     } else {
-      const result = data?.submenus?.find((menu: any) =>
-        menu?.menu_name.toLowerCase() === urlcheck?.urlcheck
-          ? datatest?.datatest
-          : menu?.menu_name.toLowerCase() === lastSegment,
-      );
+      const result = data?.submenus?.find((menu: any) => {
+        if (menu?.menu_name.toLowerCase() === urlcheck?.urlcheck) {
+          return datatest?.datatest;
+        }
+        // Extract the last segment of submenu_url for comparison
+        const lastSegmentFromURL = menu?.submenu_url?.substring(menu?.submenu_url?.lastIndexOf("/") + 1);  
+        return lastSegmentFromURL?.toLowerCase() === lastSegment?.toLowerCase();
+      });
       if (result) {
-        // Found a match in the submenu
         filteredData = {
           ...data,
-          submenus: [result], // Include only the matched submenu
+          submenus: [result],
         };
       }
     }
   });
 
   if (filteredData) {
-    // setFilteredData(filteredData);
     return filteredData;
   } else {
-    // setFilteredData(null);
     return null;
   }
 };
