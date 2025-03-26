@@ -8,7 +8,7 @@ import {
   // Button,
   FormControl,
   FormControlLabel,
-  FormLabel,
+  //FormLabel,
   //Grid,
   // InputLabel,
   // MenuItem,
@@ -644,9 +644,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">
+            <label id="demo-row-radio-buttons-group-label" className='col-form-label'>
               Gender *
-            </FormLabel>
+            </label>
             <RadioGroup
               data-testid="gender"
               row
@@ -693,7 +693,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
         </div>
         <div className="col-md-6 pb-3 form_field_wrapper">
-          <Typography className="profiletext" variant="body1">
+          <Typography className="col-form-label" variant="body1">
             Date of Birth <span>*</span>
           </Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -709,8 +709,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               maxDate={maxSelectableDate}
             
             /> */}
-            <Box width={300}>
+            <Box >
               <DatePicker
+               className='w-100'
                 aria-label="datepicker_label"
                 value={dayjs(basicInfo?.dob)}
                 onChange={handleDateChange}
@@ -731,6 +732,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       maxLength: 10,
                       'aria-label': 'datepicker_label',
                     },
+                    size: "small",
                   },
                 }}
               />

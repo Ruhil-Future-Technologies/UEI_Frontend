@@ -212,7 +212,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         .then(async (response: any) => {
           if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active&& item.is_approve
+              (item: any) => item?.is_active && item.is_approve,
             );
             if (boxes[0]?.institute_type === 'college') {
               const filterDataInstitute = filteredData?.filter(
@@ -335,8 +335,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
                 (response: any) => {
                   if (response.status) {
-                    setParticularClass(response.data.
-                      class_data.class_name);
+                    setParticularClass(response.data.class_data.class_name);
                   } else setParticularClass('');
                 },
               );
@@ -395,7 +394,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         });
     }
     listData();
-  }, [updateBoxes,activeForm]);
+  }, [updateBoxes, activeForm]);
   const [errors, setErrors] = useState(initialErrors);
 
   const saveAcademy = (instituteId: number = 0) => {
@@ -430,9 +429,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     const promises = updatedBoxes.map((box) => {
       // Filter out null, empty string, and 'errors' field
       const filteredBox = Object.fromEntries(
-        Object.entries(box).filter(([key, value]) =>
-          value !== null && value !== "" && key !== 'errors'
-        )
+        Object.entries(box).filter(
+          ([key, value]) => value !== null && value !== '' && key !== 'errors',
+        ),
       );
 
       // Rename institute_type to institution_type
@@ -447,49 +446,63 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
         if (filteredBox.year?.$y) {
           filteredBox.year = String(filteredBox.year.$y);
         }
-      
+
         if (filteredBox.sem_id) {
           filteredBox.sem_id = String(filteredBox.sem_id);
         }
         if (filteredBox.university_id) {
           filteredBox.university_id = String(filteredBox.university_id);
           filteredBox.course_id = String(filteredBox.course_id);
-
         }
       }
-      filteredBox.institute_id = String(instituteId || filteredBox.institute_id);
+      filteredBox.institute_id = String(
+        instituteId || filteredBox.institute_id,
+      );
       // Handle school-specific fields
       if (filteredBox.institution_type.toLowerCase() === 'school') {
         if (['class_11', 'class_12'].includes(particularClass)) {
           filteredBox.stream = filteredBox.stream || '';
-        }else{
+        } else {
           filteredBox.stream = '';
         }
         if (filteredBox.state_for_stateboard !== undefined) {
-          filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
+          filteredBox.state_for_stateboard = String(
+            filteredBox.state_for_stateboard,
+          );
         }
         filteredBox.class_id = String(filteredBox.class_id);
       }
-      const updatedFilteredBox = { 
+      const updatedFilteredBox = {
         ...filteredBox,
-        course_id: filteredBox?.course_id !== undefined ? String(filteredBox?.course_id) :"",
-        university_id: filteredBox?.university_id !== undefined ? String(filteredBox?.university_id) : "",
-        sem_id: filteredBox?.sem_id !== undefined ? String(filteredBox?.sem_id): "",
-        class_id: filteredBox?.class_id !== undefined ? String(filteredBox?.class_id) : ""
-    };
+        course_id:
+          filteredBox?.course_id !== undefined
+            ? String(filteredBox?.course_id)
+            : '',
+        university_id:
+          filteredBox?.university_id !== undefined
+            ? String(filteredBox?.university_id)
+            : '',
+        sem_id:
+          filteredBox?.sem_id !== undefined ? String(filteredBox?.sem_id) : '',
+        class_id:
+          filteredBox?.class_id !== undefined
+            ? String(filteredBox?.class_id)
+            : '',
+      };
       // Determine API request type
       if (editFlag && filteredBox.id === 0) {
         return postData('/new_student_academic_history/add', filteredBox);
       } else {
-        return putDataJson(`/new_student_academic_history/edit/${filteredBox.id}`, updatedFilteredBox);
+        return putDataJson(
+          `/new_student_academic_history/edit/${filteredBox.id}`,
+          updatedFilteredBox,
+        );
       }
     });
     // Handle all promises
     Promise.all(promises)
       .then((responses) => {
-        const allSuccessful = responses.every(
-          (response) => response?.status,
-        );
+        const allSuccessful = responses.every((response) => response?.status);
         if (allSuccessful) {
           if (editAcademicHistory) {
             if (editFlag) {
@@ -545,7 +558,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       const filterDataInstitute = institutesAll.filter(
         (item) =>
           item.university_id === value &&
-          item.is_active  &&
+          item.is_active &&
           item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
@@ -588,9 +601,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
         if (response.status) {
-          setParticularClass(response.data.
-            class_data
-            .class_name);
+          setParticularClass(response.data.class_data.class_name);
         } else setParticularClass('');
       });
     }
@@ -617,7 +628,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       const filterDataInstitute = institutesAll.filter(
         (item) =>
           item.university_id === boxes[0].university_id &&
-          item.is_active  &&
+          item.is_active &&
           item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
@@ -648,19 +659,19 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
   // }, [totalSemester]);
   return (
     <div>
-      <b className='font-weight-bold profiletext mb-4 d-block'>Academic History</b>     
-     
+      <b className="font-weight-bold profiletext mb-4 d-block">
+        Academic History
+      </b>
+
       <form>
         {boxes?.map((box, index) => (
-          <div className="row align-items-center g-4"
+          <div
+            className="row align-items-center g-4"
             key={box.id}
             style={{ marginBottom: '5px' }}
           >
-            <div className="col form_field_wrapper">
-              <FormControl
-                required
-                sx={{  minWidth: 70, width: '100%' }}
-              >
+            <div className="col-lg-3 form_field_wrapper">
+              <FormControl required size="small" className='w-100'>
                 <InputLabel>Institute Type</InputLabel>
                 <Select
                   value={box.institute_type}
@@ -694,10 +705,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               </FormControl>
             </div>
             {box.institute_type == 'school' && (
-              <div className="col form_field_wrapper">
+              <div className="col-lg-3 form_field_wrapper">
                 <FormControl
                   required
-                  sx={{ m: 1, minWidth: 220, width: '100%' }}
+                  size="small" className='w-100'
                 >
                   <InputLabel>Institute Name</InputLabel>
                   <Select
@@ -731,11 +742,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               </div>
             )}
             {box.institute_type == 'school' && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 70, width: '100%' }}
-                >
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl required size="small" className='w-100'>
                   <InputLabel>Board</InputLabel>
                   <Select
                     value={box.board}
@@ -767,11 +775,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               </div>
             )}
             {box.board == 'state_board' && box.institute_type !== 'college' && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 70, width: '100%' }}
-                >
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl required className='w-100' size="small">
                   <InputLabel>State</InputLabel>
                   <Select
                     name="state_for_stateboard"
@@ -812,11 +817,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
 
             {box.institute_type == 'college' && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 220, width: '100%' }}
-                >
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl required className='w-100' size="small">
                   <InputLabel>University name</InputLabel>
                   <Select
                     value={box.university_id}
@@ -851,11 +853,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
 
             {box.institute_type == 'college' && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 220, width: '100%' }}
-                >
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl required className='w-100' size="small">
                   <InputLabel>Institute Name</InputLabel>
                   <Select
                     name="institute_id"
@@ -888,11 +887,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               </div>
             )}
             {box.institute_type == 'college' && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 220, width: '100%' }}
-                >
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl required className='w-100' size="small">
                   <InputLabel>Course</InputLabel>
                   <Select
                     value={box.course_id}
@@ -925,10 +921,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type == 'college' && (
               <div className="col-lg-3 form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 220, width: '100%' }}
-                >
+                <FormControl required size="small" className='w-100'>
                   <InputLabel>Semester</InputLabel>
                   <Select
                     value={box.sem_id}
@@ -980,11 +973,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               </div>
             )}
             {box.institute_type == 'school' && (
-              <div className="col form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 220, width: '100%' }}
-                >
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl required className='w-100' size="small">
                   <InputLabel>Class</InputLabel>
                   <Select
                     value={box.class_id}
@@ -1000,17 +990,17 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                     label="Class"
                   >
                     {// classes.map((classes) => (
-                      classes
-                        ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
-                        ?.map((classes) => (
-                          <MenuItem
-                            key={classes.id}
-                            value={classes.id}
-                            sx={commonStyle(namecolor)}
-                          >
-                            {classes.class_name}
-                          </MenuItem>
-                        ))}
+                    classes
+                      ?.sort((a, b) => a.class_name.localeCompare(b.class_name)) // Sort the classes array in ascending order by class_name
+                      ?.map((classes) => (
+                        <MenuItem
+                          key={classes.id}
+                          value={classes.id}
+                          sx={commonStyle(namecolor)}
+                        >
+                          {classes.class_name}
+                        </MenuItem>
+                      ))}
                   </Select>
                   {errors.class_id && !box?.class_id && (
                     <FormHelperText error>{errors.class_id}</FormHelperText>
@@ -1022,10 +1012,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
               (particularClass === 'class_11' ||
                 particularClass === 'class_12') && (
                 <div className="col-lg-3 form_field_wrapper">
-                  <FormControl
-                    required
-                    sx={{  minWidth: 70, width: '100%' }}
-                  >
+                  <FormControl required className='w-100' size="small">
                     <InputLabel>Stream</InputLabel>
                     <Select
                       value={box.stream}
@@ -1057,8 +1044,8 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                 </div>
               )}
             {box.institute_id == '1' && (
-              <div className="col form_field_wrapper">
-                <FormControl sx={{  minWidth: 180, width: '100%' }}>
+              <div className="col-lg-3 form_field_wrapper">
+                <FormControl size="small" className='w-100'>
                   {boxes1.map((box, index) => (
                     <TextField
                       key={box.id}
@@ -1082,10 +1069,7 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type === 'college' && (
               <div className="col-lg-3 form_field_wrapper">
-                <FormControl
-                  required
-                  sx={{  minWidth: 70, width: '100%' }}
-                >
+                <FormControl required className='w-100' size="small">
                   <InputLabel>Learning Style</InputLabel>
                   <Select
                     value={box.learning_style}
@@ -1120,19 +1104,18 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
             )}
             {box.institute_type === 'college' && (
               <div
-                className={`${box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
-                  } form_field_wrapper`}
+                className={`${
+                  box.institute_id == '1' ? 'col-lg-3' : 'col-lg-3 col-md-6'
+                } form_field_wrapper`}
               >
                 <FormControl
                   required
-                  sx={{
-                    
-                    minWidth: 180,
-                    // width: "100%",
-                  }}
+                  className='w-100'
+                  size="small"
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
+                    
                       views={['year']}
                       format="YYYY"
                       label="Year *"
@@ -1144,6 +1127,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                       onChange={(date) =>
                         handleInputChange(index, 'year', date)
                       }
+                      slotProps={{
+                        textField: { size: "small" }, 
+                      }}
                     />
                   </LocalizationProvider>
                   {errors?.year && errors.year !== '' && (

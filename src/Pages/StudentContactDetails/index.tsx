@@ -303,7 +303,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
               <label className="col-form-label ">Mobile Number *</label>
             </div>
             <div className="col-3 ">
-              <FormControl required fullWidth>
+              <FormControl required fullWidth size='small'>
                 {/* <InputLabel id="demo-simple-select-label">
                 Country code
               </InputLabel> */}
@@ -335,6 +335,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             </div>
             <div className="col-9 ">
               <TextField
+              size='small'
                 className="form-control"
                 data-testid="mobile_num"
                 type="text"
@@ -361,6 +362,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             </div>
             <div className="col-3 ">
               <FormControl
+              size='small'
                 // required
                 fullWidth
               >
@@ -395,6 +397,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             </div>
             <div className="col-9 ">
               <TextField
+              size='small'
                 type="text"
                 data-testid="whtmobile_num"
                 placeholder="Enter Whatsapp number"
@@ -418,6 +421,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           <label className="col-form-label"> Email Id </label>
 
           <TextField
+          size='small'
             type="email"
             className="form-control"
             data-testid="email_id"
