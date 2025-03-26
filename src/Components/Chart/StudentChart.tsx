@@ -1215,7 +1215,15 @@ const StudentDashboardCharts = () => {
         }
       >
         <div className="card shadow h-100">
-          <div className="card-body">
+          <div
+            className="card-body"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '350px',
+            }}
+          >
             {learningTimeData?.series &&
             learningTimeData.series.some(
               (series: any) => series.data && series.data.length > 0,
@@ -1227,7 +1235,7 @@ const StudentDashboardCharts = () => {
                 height={400}
               />
             ) : (
-              <p className="text-center text-gray-500">No data available</p>
+              <p className="text-gray-500 ">No data available</p>
             )}
           </div>
         </div>
@@ -1236,7 +1244,15 @@ const StudentDashboardCharts = () => {
       {activeTab !== 'daily' && (
         <div className="col-xl-6 col-lg-6 mb-4">
           <div className="card shadow h-100">
-            <div className="card-body">
+            <div
+              className="card-body"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '350px',
+              }}
+            >
               {studyStreaksData?.series &&
               studyStreaksData.series.some(
                 (series: any) => series.data && series.data.length > 0,
@@ -1248,7 +1264,7 @@ const StudentDashboardCharts = () => {
                   height={400}
                 />
               ) : (
-                <p className="text-center text-gray-500">No data available</p>
+                <p className=" text-gray-500 ">No data available</p>
               )}
             </div>
           </div>
@@ -1257,7 +1273,15 @@ const StudentDashboardCharts = () => {
 
       <div className="col-xl-6 col-lg-6 mb-4">
         <div className="card shadow h-100">
-          <div className="card-body">
+          <div
+            className="card-body"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '350px',
+            }}
+          >
             {academicPerformanceData?.series &&
             academicPerformanceData.series.some(
               (series: any) => series.data && series.data.length > 0,
@@ -1277,7 +1301,15 @@ const StudentDashboardCharts = () => {
 
       <div className="col-xl-6 col-lg-6 mb-4">
         <div className="card shadow h-100">
-          <div className="card-body">
+          <div
+            className="card-body"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '350px',
+            }}
+          >
             {completionRateData?.series &&
             completionRateData.series.some(
               (series: any) => series.data && series.data.length > 0,
@@ -1289,7 +1321,9 @@ const StudentDashboardCharts = () => {
                 height={350}
               />
             ) : (
-              <p className="text-center text-gray-500">No data available</p>
+              <p className="text-center text-gray-500 mt-12">
+                No data available
+              </p>
             )}
           </div>
         </div>

@@ -57,14 +57,18 @@ function SessionTracker({ userId }: { userId: string }) {
           10,
         );
 
+        console.log({ elapsedSeconds });
+
         const storedData: SessionData = JSON.parse(
           localStorage.getItem(storageKey) || '{}',
         );
 
         const updatedData: SessionData = {
           loginTime: storedData.loginTime || loginTime,
+
           duration: (storedData.duration || 0) + elapsedSeconds,
         };
+        console.log({ second: updatedData.duration });
 
         localStorage.setItem(storageKey, JSON.stringify(updatedData));
 
@@ -72,24 +76,31 @@ function SessionTracker({ userId }: { userId: string }) {
         lastUpdateTimeRef.current = currentTime;
       }
     };
-
     const syncToServer = async () => {
+      console.log('sync to server called');
+      const test = localStorage.getItem(storageKey);
+      console.log({ test });
+
       const sessionData: SessionData = JSON.parse(
         localStorage.getItem(storageKey) || '{}',
       );
+      console.log({ sessionData });
 
       if (sessionData.duration > 0) {
         try {
           const payload = {
             login_time: sessionData.loginTime,
-            logout_time: sessionData.logoutTime,
+            logut_time: sessionData.logoutTime,
             duration: Math.round(sessionData.duration),
           };
+
+          console.log('Update server', payload);
 
           await postDataJson(`${'/session/add'}`, payload);
 
           const resetData: SessionData = {
             loginTime: sessionData.loginTime,
+
             duration: 0,
           };
           localStorage.setItem(storageKey, JSON.stringify(resetData));
@@ -108,6 +119,7 @@ function SessionTracker({ userId }: { userId: string }) {
       if (document.visibilityState === 'hidden') {
         setIsActive(false);
         updateLocalStorage();
+        console.log('updating server visibility change');
         syncToServer();
       } else {
         setIsActive(true);
@@ -122,13 +134,22 @@ function SessionTracker({ userId }: { userId: string }) {
       }
     };
 
-    const localStorageInterval = setInterval(updateLocalStorage, 60000);
+    let syncCounter = 0;
+    const storageInterval = setInterval(() => {
+      updateLocalStorage();
+      console.log('localStorage update. ');
 
-    const serverSyncInterval = setInterval(syncToServer, 600000);
+      syncCounter++;
+      if (syncCounter >= 2) {
+        syncToServer();
+        syncCounter = 0;
+      }
+    }, 10000);
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', () => {
       updateLocalStorage();
+
       syncToServer();
     });
 
@@ -139,6 +160,9 @@ function SessionTracker({ userId }: { userId: string }) {
 
     return () => {
       const logoutTime = formatDateTime(new Date());
+      const stkey = localStorage.getItem(storageKey);
+      console.log({ stkey });
+
       const finalData: SessionData = JSON.parse(
         localStorage.getItem(storageKey) || '{}',
       );
@@ -151,8 +175,15 @@ function SessionTracker({ userId }: { userId: string }) {
           (logoutTimestamp - lastUpdateTimeRef.current) / 1000 +
             finalData.duration,
         );
+        const logout = Math.floor(
+          (logoutTimestamp - lastUpdateTimeRef.current) / 1000 +
+            finalData.duration,
+        );
+        console.log({ logout });
       }
       localStorage.setItem(storageKey, JSON.stringify(finalData));
+
+      console.log({ finalData });
 
       const cleanupPromise = syncToServer();
 
@@ -161,8 +192,7 @@ function SessionTracker({ userId }: { userId: string }) {
         localStorage.removeItem(lastSyncKey);
       });
 
-      clearInterval(localStorageInterval);
-      clearInterval(serverSyncInterval);
+      clearInterval(storageInterval);
 
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', updateLocalStorage);
