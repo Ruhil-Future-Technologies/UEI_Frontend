@@ -781,22 +781,28 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             nevegate('/teacher-dashboard/assignments');
+            setAssignmentData({
+              title: '',
+              type: 'written',
+              contact_email: '',
+              allow_late_submission: false,
+              due_date_time: '',
+              available_from: '',
+              assign_to_students: [],
+              instructions: '',
+              points: '',
+              save_draft: false,
+              add_to_report: false,
+              notify: false,
+              file: null,
+            });
           }
-          setAssignmentData({
-            title: '',
-            type: 'written',
-            contact_email: '',
-            allow_late_submission: false,
-            due_date_time: '',
-            available_from: '',
-            assign_to_students: [],
-            instructions: '',
-            points: '',
-            save_draft: false,
-            add_to_report: false,
-            notify: false,
-            file: null,
-          });
+        }).catch((response)=>{
+           toast.error(response.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
         });
       } catch (error: any) {
         toast.error(error.message, {

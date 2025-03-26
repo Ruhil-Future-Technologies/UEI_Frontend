@@ -3,236 +3,241 @@
 exports[`Student Contect Component Should render Student contect component correctly 1`] = `
 <DocumentFragment>
   <form>
+    <b
+      class="font-weight-bold profiletext mb-4 d-block"
+    >
+      Contact Details
+    </b>
     <div
-      class="d-flex justify-content-start"
+      class="row g-3"
     >
       <div
-        class="row"
+        class="col-lg-6"
       >
         <div
-          class="form_field_wrapper"
-        >
-          <label
-            style="text-align: left; margin: 10px;"
-          >
-            Mobile Number *
-          </label>
-        </div>
-        <div
-          class="col-3 form_field_wrapper"
+          class="row g-2"
         >
           <div
-            class="MuiFormControl-root MuiFormControl-fullWidth css-q8hpuo-MuiFormControl-root"
+            class="col-12"
+          >
+            <label
+              class="col-form-label "
+            >
+              Mobile Number *
+            </label>
+          </div>
+          <div
+            class="col-3 "
           >
             <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-crb59f-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
-              data-testid="county_pcode"
+              class="MuiFormControl-root MuiFormControl-fullWidth css-q8hpuo-MuiFormControl-root"
             >
               <div
-                aria-controls=":r0:"
-                aria-expanded="false"
-                aria-haspopup="listbox"
-                aria-labelledby="demo-simple-select-label demo-simple-select"
-                class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
-                id="demo-simple-select"
-                role="combobox"
-                tabindex="0"
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-crb59f-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+                data-testid="county_pcode"
               >
-                +91
-              </div>
-              <input
-                aria-hidden="true"
-                aria-invalid="false"
-                class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
-                required=""
-                tabindex="-1"
-                value="+91"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
-                data-testid="ArrowDropDownIcon"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M7 10l5 5 5-5z"
-                />
-              </svg>
-              <fieldset
-                aria-hidden="true"
-                class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-              >
-                <legend
-                  class="css-ihdtdm"
+                <div
+                  aria-controls=":r0:"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-labelledby="demo-simple-select-label demo-simple-select"
+                  class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                  id="demo-simple-select"
+                  role="combobox"
+                  tabindex="0"
                 >
-                  <span
-                    class="notranslate"
+                  +91
+                </div>
+                <input
+                  aria-hidden="true"
+                  aria-invalid="false"
+                  class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                  required=""
+                  tabindex="-1"
+                  value="+91"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+                  data-testid="ArrowDropDownIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <fieldset
+                  aria-hidden="true"
+                  class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="css-ihdtdm"
                   >
-                    ​
-                  </span>
-                </legend>
-              </fieldset>
+                    <span
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="col form_field_wrapper"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root form-control css-1hozo93-MuiFormControl-root-MuiTextField-root"
-            data-testid="mobile_num"
+            class="col-9 "
           >
             <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiFormControl-root MuiTextField-root form-control css-1hozo93-MuiFormControl-root-MuiTextField-root"
+              data-testid="mobile_num"
             >
-              <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                id=":r1:"
-                name="phoneNum"
-                placeholder="Enter Mobile number"
-                required=""
-                type="text"
-                value=""
-              />
-              <fieldset
-                aria-hidden="true"
-                class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
               >
-                <legend
-                  class="css-ihdtdm"
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+                  id=":r1:"
+                  name="phoneNum"
+                  placeholder="Enter Mobile number"
+                  required=""
+                  type="text"
+                  value=""
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                 >
-                  <span
-                    class="notranslate"
+                  <legend
+                    class="css-ihdtdm"
                   >
-                    ​
-                  </span>
-                </legend>
-              </fieldset>
+                    <span
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="d-flex justify-content-start"
-    >
       <div
-        class="row"
+        class="col-lg-6"
       >
         <div
-          class="form_field_wrapper"
-        >
-          <label
-            style="text-align: left; margin-left: 10px; margin-top: 10px; margin-bottom: 10px;"
-          >
-            Whatsapp Number
-          </label>
-        </div>
-        <div
-          class="col-3 form_field_wrapper"
+          class="row g-2"
         >
           <div
-            class="MuiFormControl-root MuiFormControl-fullWidth css-q8hpuo-MuiFormControl-root"
+            class="col-12"
+          >
+            <label
+              class="col-form-label"
+            >
+              Whatsapp Number
+            </label>
+          </div>
+          <div
+            class="col-3 "
           >
             <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-crb59f-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
-              data-testid="county_wpcode"
+              class="MuiFormControl-root MuiFormControl-fullWidth css-q8hpuo-MuiFormControl-root"
             >
               <div
-                aria-controls=":r2:"
-                aria-expanded="false"
-                aria-haspopup="listbox"
-                aria-labelledby="demo-simple-select-label demo-simple-select"
-                class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
-                id="demo-simple-select"
-                role="combobox"
-                tabindex="0"
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-crb59f-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root"
+                data-testid="county_wpcode"
               >
-                +91
-              </div>
-              <input
-                aria-hidden="true"
-                aria-invalid="false"
-                class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
-                tabindex="-1"
-                value="+91"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
-                data-testid="ArrowDropDownIcon"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M7 10l5 5 5-5z"
-                />
-              </svg>
-              <fieldset
-                aria-hidden="true"
-                class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
-              >
-                <legend
-                  class="css-ihdtdm"
+                <div
+                  aria-controls=":r2:"
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-labelledby="demo-simple-select-label demo-simple-select"
+                  class="MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"
+                  id="demo-simple-select"
+                  role="combobox"
+                  tabindex="0"
                 >
-                  <span
-                    class="notranslate"
+                  +91
+                </div>
+                <input
+                  aria-hidden="true"
+                  aria-invalid="false"
+                  class="MuiSelect-nativeInput css-yf8vq0-MuiSelect-nativeInput"
+                  tabindex="-1"
+                  value="+91"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiSelect-icon MuiSelect-iconOutlined css-hfutr2-MuiSvgIcon-root-MuiSelect-icon"
+                  data-testid="ArrowDropDownIcon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <fieldset
+                  aria-hidden="true"
+                  class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="css-ihdtdm"
                   >
-                    ​
-                  </span>
-                </legend>
-              </fieldset>
+                    <span
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="col form_field_wrapper"
-        >
           <div
-            class="MuiFormControl-root MuiTextField-root form-control css-1hozo93-MuiFormControl-root-MuiTextField-root"
-            data-testid="whtmobile_num"
+            class="col-9 "
           >
             <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiFormControl-root MuiTextField-root form-control w-100 css-1hozo93-MuiFormControl-root-MuiTextField-root"
+              data-testid="whtmobile_num"
             >
-              <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
-                id=":r3:"
-                name="whatsappNum"
-                placeholder="Enter Whatsapp number"
-                type="text"
-                value=""
-              />
-              <fieldset
-                aria-hidden="true"
-                class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root"
               >
-                <legend
-                  class="css-ihdtdm"
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input"
+                  id=":r3:"
+                  name="whatsappNum"
+                  placeholder="Enter Whatsapp number"
+                  type="text"
+                  value=""
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="MuiOutlinedInput-notchedOutline css-1d3z3hw-MuiOutlinedInput-notchedOutline"
                 >
-                  <span
-                    class="notranslate"
+                  <legend
+                    class="css-ihdtdm"
                   >
-                    ​
-                  </span>
-                </legend>
-              </fieldset>
+                    <span
+                      class="notranslate"
+                    >
+                      ​
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="row d-flex justify-content-start"
-    >
       <div
-        class="col-lg-6 form_field_wrapper"
+        class="col-lg-12 "
       >
         <label
-          style="text-align: left; margin: 5px;"
+          class="col-form-label"
         >
            Email Id 
         </label>
@@ -268,27 +273,27 @@ exports[`Student Contect Component Should render Student contect component corre
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="col-lg-12"
-    >
       <div
-        class="mt-3 d-flex align-items-center justify-content-between"
+        class="col-lg-12"
       >
-        <button
-          class="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
-          data-testid="gobackform"
-          type="button"
+        <div
+          class="mt-5 d-flex align-items-center justify-content-between"
         >
-          Previous
-        </button>
-        <button
-          class="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn"
-          data-testid="submitForm"
-          type="button"
-        >
-          Next
-        </button>
+          <button
+            class="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
+            data-testid="gobackform"
+            type="button"
+          >
+            Previous
+          </button>
+          <button
+            class="btn btn-dark px-lg-5  ms-auto d-block rounded-pill next-btn"
+            data-testid="submitForm"
+            type="button"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   </form>
