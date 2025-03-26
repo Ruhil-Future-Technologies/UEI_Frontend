@@ -7,15 +7,8 @@ import { Outlet } from 'react-router-dom';
 import SessionTracker from '../Tracker';
 
 const Main = () => {
-  const user_type = localStorage.getItem('user_type');
-  let userId: any = '';
-  if (user_type == 'student') {
-    userId = localStorage.getItem('_id');
-  } else if (user_type == 'teacher') {
-    userId = localStorage.getItem('teacher_id');
-  } else if (user_type == 'institute') {
-    userId = localStorage.getItem('institute_id');
-  }
+  const userId = localStorage.getItem('_id');
+
   console.log({ userId });
 
   const synth: SpeechSynthesis = window?.speechSynthesis;

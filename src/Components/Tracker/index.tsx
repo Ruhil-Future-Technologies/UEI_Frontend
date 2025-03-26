@@ -12,8 +12,8 @@ function SessionTracker({ userId }: { userId: string }) {
   const [isActive, setIsActive] = useState(true);
   const [loginTime, setLoginTime] = useState<string>('');
 
-  const [, setLastUpdateTime] = useState<number>(Date.now());
-  const lastUpdateTimeRef = useRef<number>(Date.now());
+  const [, setLastUpdateTime] = useState<number>(Math.floor(Date.now() / 1000));
+  const lastUpdateTimeRef = useRef<number>(Math.floor(Date.now() / 1000));
 
   const storageKey = `user_session_data`;
   const lastSyncKey = `user_last_sync`;
@@ -39,10 +39,13 @@ function SessionTracker({ userId }: { userId: string }) {
     }
 
     if (!localStorage.getItem(lastSyncKey)) {
-      localStorage.setItem(lastSyncKey, Date.now().toString());
+      localStorage.setItem(
+        lastSyncKey,
+        Math.floor(Date.now() / 1000).toString(),
+      );
     }
 
-    setLastUpdateTime(Date.now());
+    setLastUpdateTime(Math.floor(Date.now() / 1000));
   }, [userId]);
 
   useEffect(() => {
@@ -50,14 +53,12 @@ function SessionTracker({ userId }: { userId: string }) {
 
     const updateLocalStorage = () => {
       if (isActive) {
-        const currentTime = Date.now();
+        const currentTime = Math.floor(Date.now() / 1000);
 
         const elapsedSeconds = Math.max(
-          (currentTime - lastUpdateTimeRef.current) / 1000,
-          10,
+          currentTime - lastUpdateTimeRef.current,
+          1,
         );
-
-        console.log({ elapsedSeconds });
 
         const storedData: SessionData = JSON.parse(
           localStorage.getItem(storageKey) || '{}',
@@ -65,46 +66,44 @@ function SessionTracker({ userId }: { userId: string }) {
 
         const updatedData: SessionData = {
           loginTime: storedData.loginTime || loginTime,
-
           duration: (storedData.duration || 0) + elapsedSeconds,
         };
-        console.log({ second: updatedData.duration });
 
+        console.log({ 'update localStorage': updatedData });
         localStorage.setItem(storageKey, JSON.stringify(updatedData));
 
         setLastUpdateTime(currentTime);
         lastUpdateTimeRef.current = currentTime;
       }
     };
-    const syncToServer = async () => {
-      console.log('sync to server called');
-      const test = localStorage.getItem(storageKey);
-      console.log({ test });
 
+    const syncToServer = async () => {
       const sessionData: SessionData = JSON.parse(
         localStorage.getItem(storageKey) || '{}',
       );
-      console.log({ sessionData });
 
       if (sessionData.duration > 0) {
         try {
           const payload = {
             login_time: sessionData.loginTime,
-            logut_time: sessionData.logoutTime,
-            duration: Math.round(sessionData.duration),
+            ...(sessionData.logoutTime && {
+              logout_time: sessionData.logoutTime,
+            }),
+            duration: sessionData.duration,
           };
-
-          console.log('Update server', payload);
+          console.log({ saving: payload });
 
           await postDataJson(`${'/session/add'}`, payload);
 
           const resetData: SessionData = {
             loginTime: sessionData.loginTime,
-
             duration: 0,
           };
           localStorage.setItem(storageKey, JSON.stringify(resetData));
-          localStorage.setItem(lastSyncKey, Date.now().toString());
+          localStorage.setItem(
+            lastSyncKey,
+            Math.floor(Date.now() / 1000).toString(),
+          );
 
           return true;
         } catch (err) {
@@ -119,37 +118,27 @@ function SessionTracker({ userId }: { userId: string }) {
       if (document.visibilityState === 'hidden') {
         setIsActive(false);
         updateLocalStorage();
-        console.log('updating server visibility change');
         syncToServer();
       } else {
         setIsActive(true);
-        setLastUpdateTime(Date.now());
+        setLastUpdateTime(Math.floor(Date.now() / 1000));
       }
     };
 
     const resetInactivityTimer = () => {
       if (!isActive) {
         setIsActive(true);
-        setLastUpdateTime(Date.now());
+        setLastUpdateTime(Math.floor(Date.now() / 1000));
       }
     };
 
-    let syncCounter = 0;
-    const storageInterval = setInterval(() => {
-      updateLocalStorage();
-      console.log('localStorage update. ');
+    const localStorageInterval = setInterval(updateLocalStorage, 60000);
 
-      syncCounter++;
-      if (syncCounter >= 2) {
-        syncToServer();
-        syncCounter = 0;
-      }
-    }, 10000);
+    const serverSyncInterval = setInterval(syncToServer, 600000);
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', () => {
       updateLocalStorage();
-
       syncToServer();
     });
 
@@ -160,9 +149,6 @@ function SessionTracker({ userId }: { userId: string }) {
 
     return () => {
       const logoutTime = formatDateTime(new Date());
-      const stkey = localStorage.getItem(storageKey);
-      console.log({ stkey });
-
       const finalData: SessionData = JSON.parse(
         localStorage.getItem(storageKey) || '{}',
       );
@@ -170,20 +156,13 @@ function SessionTracker({ userId }: { userId: string }) {
       finalData.logoutTime = logoutTime;
 
       if (finalData.logoutTime) {
-        const logoutTimestamp = new Date(logoutTime).getTime();
-        finalData.duration = Math.floor(
-          (logoutTimestamp - lastUpdateTimeRef.current) / 1000 +
-            finalData.duration,
+        const logoutTimestamp = Math.floor(
+          new Date(logoutTime).getTime() / 1000,
         );
-        const logout = Math.floor(
-          (logoutTimestamp - lastUpdateTimeRef.current) / 1000 +
-            finalData.duration,
-        );
-        console.log({ logout });
+        finalData.duration =
+          logoutTimestamp - lastUpdateTimeRef.current + finalData.duration;
       }
       localStorage.setItem(storageKey, JSON.stringify(finalData));
-
-      console.log({ finalData });
 
       const cleanupPromise = syncToServer();
 
@@ -192,7 +171,8 @@ function SessionTracker({ userId }: { userId: string }) {
         localStorage.removeItem(lastSyncKey);
       });
 
-      clearInterval(storageInterval);
+      clearInterval(localStorageInterval);
+      clearInterval(serverSyncInterval);
 
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', updateLocalStorage);

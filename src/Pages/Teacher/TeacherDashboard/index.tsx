@@ -38,6 +38,7 @@ import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
 import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
 import { toast } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
+import SessionTracker from '../../../Components/Tracker';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -56,6 +57,7 @@ interface Teacher {
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
+  const userId = localStorage.getItem('teacher_id');
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData } = useApi();
@@ -63,6 +65,7 @@ const TeacherDash = () => {
   const [selectedEntity, setSelectedEntity] = useState('');
   const [dataClass, setDataClass] = useState<IClass[]>([]);
   const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
+
   // const [boxes, setBoxes] = useState<Boxes[]>([
   //   {
   //     semester_number: '',
@@ -670,6 +673,7 @@ const TeacherDash = () => {
           </div>
         </div>
       </div>
+      <SessionTracker userId={userId ? userId : ''} />
     </div>
   );
 };

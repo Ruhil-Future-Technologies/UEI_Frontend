@@ -34,9 +34,11 @@ import {
 } from '../../Components/Table/columns';
 import { Teacher } from '../TeacherRgistrationForm';
 import InstitutionCharts from './InstituteChart';
+import SessionTracker from '../../Components/Tracker';
 
 const InstitutionDash = () => {
   const instituteLoginId = localStorage.getItem('user_uuid');
+  const userId = localStorage.getItem('institute_id');
 
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<InstituteRep0oDTO>({
@@ -712,6 +714,7 @@ const InstitutionDash = () => {
                         </div>
                     </div>
                 </div> */}
+      <SessionTracker userId={userId ? userId : ''} />
     </div>
   );
 };
