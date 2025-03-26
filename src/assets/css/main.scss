@@ -5,9 +5,9 @@ $light-bg: #f5ebff;
 $primary: #9943ec;
 body {
   position: relative;
-  font-size: 14px;
+
   font-family: 'Inter', sans-serif;
-  letter-spacing: 0.5px;
+
   min-height: 100vh;
 }
 
@@ -498,7 +498,8 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
       -webkit-box-direction: normal;
       -ms-flex-direction: column;
       flex-direction: column;
-      height: 70vh !important;
+      height: 65
+      vh !important;
       overflow-y: auto !important;
       padding-bottom: 80px !important;
 
@@ -753,7 +754,7 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
 
 .main-wrapper {
   padding-top: 70px;
-  padding-bottom: 16px;
+  
   margin-left: 260px;
   transition: ease-out 0.3s;
 
@@ -965,7 +966,7 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
   bottom: -24px;
   transition: ease-out 0.3s;
 
-  padding: 0 0.8rem;
+  padding: 0.5rem 0.8rem;
   flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
@@ -1840,7 +1841,7 @@ form select.error:focus {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 2rem;
+  
   .login-footer {
     padding: 0.8rem;
     flex-wrap: wrap;
@@ -1891,6 +1892,7 @@ form select.error:focus {
 .bg-light2 {
   background-color: $light-bg;
 }
+
 
 .planbg{
   background-color: rgba($primary, 0.07);

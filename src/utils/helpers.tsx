@@ -218,8 +218,8 @@ export const commonStyle = (namecolor: any) => ({
     color: 'black !important',
   },
   '&.Mui-selected, &:focus': {
-    backgroundColor: '#F7F0FE',
-    color: 'black !important',
+    //backgroundColor: '#F7F0FE',
+    //color: 'black !important',
   },
 });
 export const fieldIcon = (textcolor: any) => {
@@ -230,3 +230,11 @@ export const fieldIcon = (textcolor: any) => {
   };
   return inputtext[textcolor];
 };
+
+export const toTitleCase=(str: string): string =>{
+  return str
+    .toLowerCase() // Convert everything to lowercase first
+    .split(" ") // Split by spaces
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+    .join(" "); // Join words back together
+}

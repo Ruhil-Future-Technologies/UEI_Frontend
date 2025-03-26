@@ -6,7 +6,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import {
   FormControl,
   IconButton,
-  InputLabel,
+  //InputLabel,
   List,
   ListItem,
   MenuItem,
@@ -440,12 +440,17 @@ const Login = () => {
                             )}
                           </div>
                           <div>
+                            <label
+                              htmlFor="passwordInput"
+                              className="form-label"
+                            >
+                              Role
+                            </label>
                             <FormControl fullWidth>
-                              <InputLabel>Role</InputLabel>
+                             
                               <Select
                                 value={value}
-                                onChange={handleChange}
-                                label="Role"
+                                onChange={handleChange}                                
                               >
                                 <MenuItem value="student">Student</MenuItem>
                                 <MenuItem value="admin">Admin</MenuItem>

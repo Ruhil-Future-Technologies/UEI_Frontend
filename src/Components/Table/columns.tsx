@@ -3,6 +3,7 @@ import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
 import { getDateFormat, isNullOrUndefined } from '../../utils/helpers';
 import profile from '../../assets/img/profile_img.svg';
+
 import {
   Box,
   Button,
@@ -322,6 +323,19 @@ export interface ContentRepoDTO {
   created_at: string;
   updated_at: string;
   is_active: boolean;
+}
+
+export interface Admin {
+  id: number;
+  department_id: number;
+  first_name: string;
+  last_name: string;
+  gender: string;
+  mother_name: string;
+  father_name: string;
+  dob: Date;
+  is_active: boolean;
+  user_uuid?:string;
 }
 
 export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
@@ -896,7 +910,7 @@ export const COURSE_COLUMNS: MRT_ColumnDef<CourseRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1059,7 +1073,7 @@ export const SEMESTER_COLUMNS: MRT_ColumnDef<SemesterRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.semester_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1138,7 +1152,7 @@ export const Department_COLUMNS: MRT_ColumnDef<DepartmentRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1431,7 +1445,7 @@ export const SUBJECT_COLUMNS: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1520,7 +1534,7 @@ export const SUBJECT_COLUMNS_SCHOOL: MRT_ColumnDef<SubjectRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.subject_id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1599,7 +1613,7 @@ export const LANGUAGE_COLUMNS: MRT_ColumnDef<LanguageRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1678,7 +1692,7 @@ export const HOBBY_COLUMNS: MRT_ColumnDef<HobbyRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1902,7 +1916,7 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -1977,7 +1991,7 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2105,7 +2119,7 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2249,7 +2263,7 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2334,7 +2348,7 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
             onChange={() => {
               active(row?.original?.id, Showvalue);
             }}
-            // disabled={true}
+          // disabled={true}
           />
         </Box>
       );
@@ -2534,7 +2548,7 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
       const content_type = cell?.getValue();
       return content_type
         ? content_type.charAt(0).toUpperCase() +
-            content_type.slice(1).toLowerCase()
+        content_type.slice(1).toLowerCase()
         : null;
     },
   },
@@ -2817,5 +2831,84 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
       );
     },
     size: 150,
+  },
+];
+
+
+export const ADMIN_LIST_COLUMNS: MRT_ColumnDef<Admin>[] = [
+  
+  {
+    accessorFn: (row) => `${row.first_name ?? ''} ${row.last_name ?? ''}`,
+    header: 'Full Name',
+    id: 'fullName',
+  },
+  {
+    header: "Department Name",
+    accessorKey: 'department_id'
+  },
+  {
+    header: 'DOB',
+    accessorFn: (row) => row.dob ? new Date(row.dob).toLocaleDateString() : '',
+  },
+  {
+    header: 'Gender',
+    accessorKey: 'gender'
+  },
+  {
+    header: 'Father Name',
+    accessorKey: 'father_name'
+  },
+  {
+    header: 'Mother Name',
+    accessorKey: 'mother_name'
+  },
+  {
+    header: 'Active/Deactive',
+    accessorKey: 'is_active',
+    Cell: ({ cell, row }: any) => {
+      const { putData } = useApi();
+      const MenuAdminActive = '/admin/activate/';
+      const MenuAdminDeactive = '/admin/deactivate/';
+      const value = cell?.getValue() ?? false;
+      // if (!value) {
+      //   return EMPTY_CELL_VALUE;
+      // }
+      console.log(value)
+      const [Showvalue, setShowvalue] = useState(value);
+      const active = (id: number, valueset: any) => {
+        putData(
+          `${valueset ? MenuAdminDeactive : MenuAdminActive}${id}`,
+        )
+          .then((data: any) => {
+            if (data.status) {
+              setShowvalue(Showvalue ? 0 : 1);
+              toast.success(data?.message);
+              window.location.reload();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+          });
+      };
+
+      return (
+        <Box>
+          <Switch
+            isChecked={value}
+            label={value ? 'Active' : 'Deactive'}
+            // onChange={() => setShow((prevState) => !prevState)}
+            onChange={() => {
+              active(row?.original?.user_uuid, value);
+            }}
+            // disabled={true}
+            activeColor="#4CAF50"
+            inactiveColor="#f44336"
+          />
+        </Box>
+      );
+    },
   },
 ];

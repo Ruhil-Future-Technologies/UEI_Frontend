@@ -24,7 +24,7 @@ const Footer = () => {
           Copyright © {new Date().getFullYear()}. All right reserved.
         </p>
         <List
-          sx={{ display: 'inline-flex', flexWrap: 'wrap', gap: 2, padding: 0 }}
+          sx={{ display: 'inline-flex', flexWrap: 'wrap', columnGap: 2, rowGap: '2px', padding: 0, justifyContent: 'center' }}
         >
           <ListItem sx={{ width: 'auto', padding: 0 }}>
             <Link to="/privacypolicy" color="primary">

@@ -102,6 +102,9 @@ import Disclaimer from './Components/PolicyContent/Disclaimer';
 import RefundPolicy from './Components/PolicyContent/RefundPolicy';
 import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
 import AssignmentDetails from './Pages/Teacher/Assignments/assignmentDetails';
+import StudentAssignments from './Pages/Student/StudentAssignment';
+import PreviewAndSubmit from './Pages/Student/StudentAssignment/previewAndSubmit';
+import AdminList from './Pages/AdminList';
 
 function App() {
   const navigate = useNavigate();
@@ -343,6 +346,18 @@ function App() {
             }
           />
           <Route
+            path="/main/student/assignment"
+            element={
+              <Protected Component={StudentAssignments} menuName="content" />
+            }
+          />
+          <Route
+            path="/main/student/view-and-submit/:id"
+            element={
+              <Protected Component={PreviewAndSubmit} menuName="content" />
+            }
+          />
+          <Route
             path="/main/chat"
             element={<Protected Component={Chat} menuName="Chat" />}
           />
@@ -424,6 +439,12 @@ function App() {
               element={<Protected Component={AddEditClass} menuName="Class" />}
             />
           </Route>
+          <Route path="/main/admin-list">
+            <Route
+              path=""
+              element={<Protected Component={AdminList} menuName="Admin List" />}
+            />
+            </Route>
           <Route path="/main/Student">
             <Route
               path=""

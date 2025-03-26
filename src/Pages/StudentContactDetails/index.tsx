@@ -35,8 +35,8 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
 }) => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
- 
-  const { activeForm, }: any = context;
+
+  const { activeForm }: any = context;
   const { getData, postData, putData } = useApi();
   const [contcodeWtsap, setContcodeWtsap] = useState('+91');
   const [whatsappNum, setWhatsappNum] = useState('');
@@ -132,7 +132,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             mobile_no_watsapp: data?.data.mobile_no_watsapp,
             mobile_isd_call: data?.data.mobile_isd_call,
             mobile_no_call: data?.data.mobile_no_call,
-            email_id: data?.data.email_id?data?.data.email:localStorage.getItem('email'),
+            email_id: data?.data.email_id
+              ? data?.data.email
+              : localStorage.getItem('email'),
             student_id: StudentId,
           });
           setEditFlag(false);
@@ -165,7 +167,6 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       setPhoneNum(register_num as string);
       getContacInfo();
     }
-  
   }, [activeForm]);
   const submitHandel = () => {
     // event: React.FormEvent<HTMLFormElement>
@@ -290,140 +291,131 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
 
   return (
     <form>
-      {/* <div className=' mt-5'> */}
-      <div className="d-flex justify-content-start">
-        <div className="row">
-          {/* <label className="pb-2">Mobile Number *</label> */}
-          <div className="form_field_wrapper">
-            <label style={{ textAlign: 'left', margin: '10px' }}>
-              Mobile Number *
-            </label>
-          </div>
+      
+      <b className="font-weight-bold profiletext mb-4 d-block">
+        Contact Details
+      </b>
 
-          <div className="col-3 form_field_wrapper">
-            <FormControl required fullWidth>
-              {/* <InputLabel id="demo-simple-select-label">
+      <div className="row g-3">
+        <div className="col-lg-6">
+          <div className="row g-2">
+            <div className="col-12">
+              <label className="col-form-label ">Mobile Number *</label>
+            </div>
+            <div className="col-3 ">
+              <FormControl required fullWidth>
+                {/* <InputLabel id="demo-simple-select-label">
                 Country code
               </InputLabel> */}
-              <Select
-                labelId="demo-simple-select-label"
-                data-testid="county_pcode"
-                id="demo-simple-select"
+                <Select
+                  labelId="demo-simple-select-label"
+                  data-testid="county_pcode"
+                  id="demo-simple-select"
+                  sx={{
+                    backgroundColor: '#f5f5f5',
+                    '& .MuiSelect-icon': {
+                      color: fieldIcon(namecolor),
+                    },
+                  }}
+                  value={contcodePhone}
+                  // label="Country code"
+                  onChange={(event) => setContcodePhone(event.target.value)}
+                >
+                  {phoneCodes?.map((item) => (
+                    <MenuItem
+                      key={item.value}
+                      value={item.value}
+                      sx={commonStyle(namecolor)}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-9 ">
+              <TextField
+                className="form-control"
+                data-testid="mobile_num"
+                type="text"
+                placeholder="Enter Mobile number"
+                name="phoneNum"
+                value={phoneNum}
+                disabled={user_id ? !validateEmail(user_id) : false}
+                onChange={handleChange}
                 sx={{
                   backgroundColor: '#f5f5f5',
-                  '& .MuiSelect-icon': {
-                    color: fieldIcon(namecolor),
-                  },
                 }}
-                value={contcodePhone}
-                // label="Country code"
-                onChange={(event) => setContcodePhone(event.target.value)}
-              >
-                {phoneCodes?.map((item) => (
-                  <MenuItem
-                    key={item.value}
-                    value={item.value}
-                    sx={commonStyle(namecolor)}
-                  >
-                    {item.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <div className="col form_field_wrapper">
-            <TextField
-              className="form-control"
-              data-testid="mobile_num"
-              type="text"
-              placeholder="Enter Mobile number"
-              name="phoneNum"
-              value={phoneNum}
-              // disabled={user_id ? !validateEmail(user_id) : false}
-              onChange={handleChange}
-              sx={{
-                backgroundColor: '#f5f5f5',
-              }}
-              required
-              error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
-              helperText={errors.phoneNum || phoneNumerror.phoneNum}
-            />
+                required
+                error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
+                helperText={errors.phoneNum || phoneNumerror.phoneNum}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      {/* <div className="mt-3"> */}
-      <div
-        className="d-flex justify-content-start"
-        // style={{ margin: "25px" }}
-      >
-        <div className="row">
-          {/* <label className="pb-2"> Whatsapp Number </label> */}
-          <div className="form_field_wrapper">
-            <label style={{ textAlign: 'left', marginLeft: '10px' ,marginTop: '10px',marginBottom: '10px'}}>
-              Whatsapp Number
-            </label>
-          </div>
-          <div className="col-3 form_field_wrapper">
-            <FormControl
-              // required
-              fullWidth
-            >
-              {/* <InputLabel id="demo-simple-select-label">
+
+        <div className="col-lg-6">
+          <div className="row g-2">
+            <div className="col-12">
+              <label className="col-form-label">Whatsapp Number</label>
+            </div>
+            <div className="col-3 ">
+              <FormControl
+                // required
+                fullWidth
+              >
+                {/* <InputLabel id="demo-simple-select-label">
                 Country code
               </InputLabel> */}
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                data-testid="county_wpcode"
-                value={contcodeWtsap}
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  data-testid="county_wpcode"
+                  value={contcodeWtsap}
+                  sx={{
+                    backgroundColor: '#f5f5f5',
+                    '& .MuiSelect-icon': {
+                      color: fieldIcon(namecolor),
+                    },
+                  }}
+                  // label="Country code"
+                  onChange={(event) => setContcodeWtsap(event.target.value)}
+                >
+                  {phoneCodes?.map((item) => (
+                    <MenuItem
+                      key={item.value}
+                      value={item.value}
+                      sx={commonStyle(namecolor)}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div className="col-9 ">
+              <TextField
+                type="text"
+                data-testid="whtmobile_num"
+                placeholder="Enter Whatsapp number"
+                className="form-control w-100"
+                value={whatsappNum}
                 sx={{
                   backgroundColor: '#f5f5f5',
-                  '& .MuiSelect-icon': {
-                    color: fieldIcon(namecolor),
-                  },
                 }}
-                // label="Country code"
-                onChange={(event) => setContcodeWtsap(event.target.value)}
-              >
-                {phoneCodes?.map((item) => (
-                  <MenuItem
-                    key={item.value}
-                    value={item.value}
-                    sx={commonStyle(namecolor)}
-                  >
-                    {item.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <div className="col form_field_wrapper">
-            <TextField
-              type="text"
-              data-testid="whtmobile_num"
-              placeholder="Enter Whatsapp number"
-              className="form-control"
-              value={whatsappNum}
-              sx={{
-                backgroundColor: '#f5f5f5',
-              }}
-              name="whatsappNum"
-              onChange={handleChange}
-              // required
-              error={!!errors.whatsappNum}
-              helperText={errors.whatsappNum}
-            />
+                name="whatsappNum"
+                onChange={handleChange}
+                // required
+                error={!!errors.whatsappNum}
+                helperText={errors.whatsappNum}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div
-        className="row d-flex justify-content-start"
-        // style={{ marginLeft: "1%" }}
-      >
-        <div className="col-lg-6 form_field_wrapper">
-          {/* <label>{""}   E-mail <span></span></label> */}
-          <label style={{ textAlign: 'left', margin: '5px' }}> Email Id </label>
+        <div className="col-lg-12 ">        
+         
+          <label className="col-form-label"> Email Id </label>
 
           <TextField
             type="email"
@@ -443,15 +435,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             }}
           />
         </div>
-      </div>
-      {/* <div className="col-6 d-flex justify-content-center mt-3">
-        <button className="btn btn-primary mainbutton">
-          {" "}
-          {editFalg ? "save" : "Save Changes"}
-        </button>
-      </div> */}
-      <div className="col-lg-12">
-        <div className="mt-3 d-flex align-items-center justify-content-between">
+
+        <div className="col-lg-12">
+        <div className="mt-5 d-flex align-items-center justify-content-between">
           <button
             type="button"
             className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"
@@ -472,6 +458,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           </button>
         </div>
       </div>
+      </div>
+
+     
     </form>
   );
 };

@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FormControl,
-  InputLabel,
+  //InputLabel,
   Select,
   MenuItem,
   Checkbox,
   ListItemText,
-  OutlinedInput,
+  //OutlinedInput,
   SelectChangeEvent,
 } from '@mui/material';
 import { toast } from 'react-toastify';
@@ -219,20 +219,17 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
   };
   return (
     <form onSubmit={submitHandle}>
-      <div className="row justify-content-start">
-        <div className="col-12 justify-content-start form_field_wrapper">
-          <FormControl
-            sx={{
-              maxWidth: '300px',
-              width: '100%',
-            }}
-          >
-            <InputLabel id="demo-multiple-checkbox-label">Hobby</InputLabel>
+      <div className="row g-4">
+        <div className="col-lg-6">
+          <FormControl className='w-100 pe-lg-3' size="small">
+            
+            
             <Select
-              labelId="demo-multiple-checkbox-label"
+              
               id="demo-multiple-checkbox"
               multiple
               data-testid="hobby_text"
+              displayEmpty
               sx={{
                 backgroundColor: '#f5f5f5',
                 '& .MuiSelect-icon': {
@@ -241,7 +238,8 @@ const StudentHobbies: React.FC<StudentHobbiesProps> = ({
               }}
               value={selectedHobbies}
               onChange={handleChange}
-              input={<OutlinedInput label="Hobby" />}
+             // input={<OutlinedInput label="Hobby" />}
+              
               renderValue={(selected) =>
                 (selected as string[])
                   ?.map((id) => allHobbies?.find((hobby: any) => hobby.id === id)?.hobby_name || '')
