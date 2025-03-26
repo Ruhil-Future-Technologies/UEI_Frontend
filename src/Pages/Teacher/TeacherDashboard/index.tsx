@@ -37,6 +37,8 @@ import useApi from '../../../hooks/useAPI';
 import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
 import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
 import { toast } from 'react-toastify';
+import TeacherDashboardCharts from '../TeacherChart';
+import SessionTracker from '../../../Components/Tracker';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -55,6 +57,7 @@ interface Teacher {
 
 const TeacherDash = () => {
   const teacherId = localStorage.getItem('user_uuid');
+  const userId = localStorage.getItem('teacher_id');
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const { getData } = useApi();
@@ -62,6 +65,7 @@ const TeacherDash = () => {
   const [selectedEntity, setSelectedEntity] = useState('');
   const [dataClass, setDataClass] = useState<IClass[]>([]);
   const [coursesData, setCoursesData] = useState<CourseRep0oDTO[]>([]);
+
   // const [boxes, setBoxes] = useState<Boxes[]>([
   //   {
   //     semester_number: '',
@@ -71,7 +75,6 @@ const TeacherDash = () => {
   // ]);
   const navigate = useNavigate();
 
-
   const getTeacherInfo = () => {
     try {
       getData(`/teacher/edit/${teacherId}`).then((data) => {
@@ -79,7 +82,7 @@ const TeacherDash = () => {
           localStorage.setItem('teacher_id', data?.data.id);
           setTeacherData(data.data);
           if (data?.data?.course_semester_subjects != null) {
-            setSelectedEntity("college")
+            setSelectedEntity('college');
             // const output: Boxes[] = Object.keys(
             //   data.data.course_semester_subjects,
             // ).flatMap((CourseKey) =>
@@ -94,15 +97,17 @@ const TeacherDash = () => {
             //     }),
             //   ),
             // );
-            const courseIds = Object.keys(data.data.course_semester_subjects).map((CourseKey) => CourseKey);
+            const courseIds = Object.keys(
+              data.data.course_semester_subjects,
+            ).map((CourseKey) => CourseKey);
             getCourses(courseIds);
           } else {
-            setSelectedEntity("school")
-            const classIds = Object.keys(data.data.class_stream_subjects).map((classKey) => classKey);
-            getClasslist(classIds)
+            setSelectedEntity('school');
+            const classIds = Object.keys(data.data.class_stream_subjects).map(
+              (classKey) => classKey,
+            );
+            getClasslist(classIds);
           }
-
-
         }
       });
     } catch (error) {
@@ -118,7 +123,7 @@ const TeacherDash = () => {
         if (data.data) {
           setCoursesData(data?.data);
           const filteredCourses = data.data.course_data.filter((course: any) =>
-            courseIds.includes(String(course.id))
+            courseIds.includes(String(course.id)),
           );
           setCoursesData(filteredCourses);
         }
@@ -136,8 +141,8 @@ const TeacherDash = () => {
       .then((data) => {
         if (data.data) {
           const filteredClasses = data.data.classes_data.filter((classn: any) =>
-            classIds.includes(String(classn.id))
-          )
+            classIds.includes(String(classn.id)),
+          );
           setDataClass(filteredClasses);
         }
       })
@@ -190,7 +195,9 @@ const TeacherDash = () => {
                         <h4 className="fw-bold mb-1 fs-4">
                           {teacherData?.first_name} {teacherData?.last_name}
                         </h4>
-                        <p className="opacity-75 mb-1">{teacherData?.university_id}</p>
+                        <p className="opacity-75 mb-1">
+                          {teacherData?.university_id}
+                        </p>
                         <p className="planbg">Senior Professor</p>
                       </div>
                       <div className="curcc">
@@ -203,7 +210,7 @@ const TeacherDash = () => {
                               ))}
                             </ul>
                           </>
-                        ) :
+                        ) : (
                           <>
                             <h6>CURRENT CLASSES</h6>
                             <ul>
@@ -212,8 +219,7 @@ const TeacherDash = () => {
                               ))}
                             </ul>
                           </>
-                        }
-
+                        )}
                       </div>
                     </div>
                   </div>
@@ -472,13 +478,7 @@ const TeacherDash = () => {
           </div>
         </div>
 
-
-
-
         <div className="row">
-
-
-
           <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
             <div className="card w-100">
               <div className="card-body text-center">
@@ -510,8 +510,9 @@ const TeacherDash = () => {
           </div>
 
           <TeacherGraoh />
+          <TeacherDashboardCharts />
           <div
-            className="col-xxl-8 d-flex align-items-stretch"
+            className="col-xxl-8 d-flex align-items-stretch "
             style={{ marginBottom: '64px' }}
           >
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
@@ -638,7 +639,7 @@ const TeacherDash = () => {
               <div className="overlay chat-toggle-btn-mobile"></div>
             </div>
           </div>
-          <div className="col-xxl-4 d-flex align-items-stretch">
+          <div className="col-xxl-4 d-flex align-items-stretch mt-8">
             <div className="card w-100">
               <div className="card-body">
                 <h6 className="text-center mb-5 fs-18">Top Students</h6>
@@ -672,6 +673,7 @@ const TeacherDash = () => {
           </div>
         </div>
       </div>
+      <SessionTracker userId={userId ? userId : ''} />
     </div>
   );
 };

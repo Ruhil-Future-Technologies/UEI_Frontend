@@ -33,9 +33,12 @@ import {
   StudentRep0oDTO,
 } from '../../Components/Table/columns';
 import { Teacher } from '../TeacherRgistrationForm';
+import InstitutionCharts from './InstituteChart';
+import SessionTracker from '../../Components/Tracker';
 
 const InstitutionDash = () => {
   const instituteLoginId = localStorage.getItem('user_uuid');
+  const userId = localStorage.getItem('institute_id');
 
   const { getData } = useApi();
   const [instituteInfo, setInstituteInfo] = useState<InstituteRep0oDTO>({
@@ -84,7 +87,6 @@ const InstitutionDash = () => {
         if (response?.status) {
           setTotleTeacher(response?.data?.teacher_count);
         }
-
       });
     } catch (error) {
       console.log(error);
@@ -472,6 +474,7 @@ const InstitutionDash = () => {
           </div>
 
           <InstituteGraphRepo />
+          <InstitutionCharts />
 
           <div className="col-xxl-8 d-flex align-items-stretch">
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
@@ -711,6 +714,7 @@ const InstitutionDash = () => {
                         </div>
                     </div>
                 </div> */}
+      <SessionTracker userId={userId ? userId : ''} />
     </div>
   );
 };
