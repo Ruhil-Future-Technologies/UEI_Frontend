@@ -217,17 +217,18 @@ const Sidebar = () => {
                 </li>
                   </>
                 ) : (
-                  <li>
-                  <Link
-                    to="/main/student/assignment"
-                    onClick={removeMobileToggle}
-                  >
-                    <div className="parent-icon">
-                      <LibraryBooksOutlinedIcon />
-                    </div>
-                    <div className="menu-title">Your Assignments</div>
-                  </Link>
-                </li>
+                  ' '
+                //   <li>
+                //   <Link
+                //     to="/main/student/assignment"
+                //     onClick={removeMobileToggle}
+                //   >
+                //     <div className="parent-icon">
+                //       <LibraryBooksOutlinedIcon />
+                //     </div>
+                //     <div className="menu-title">Your Assignments</div>
+                //   </Link>
+                // </li>
                   
                 )}
               </>

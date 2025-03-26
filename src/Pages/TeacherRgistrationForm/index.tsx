@@ -104,6 +104,7 @@ export interface Teacher {
   pic_path?: string; // Optional profile picture path
   email?: string;
   institute_id?: string;
+  subject_list?:string[];
 }
 
 export const qualifications = [

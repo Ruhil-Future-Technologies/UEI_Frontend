@@ -174,7 +174,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const context = useContext(NameContext);
   const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
-  const StudentId = localStorage.getItem('user_uuid');
+  const Student_uuid = localStorage.getItem('user_uuid');
   const usertype = localStorage.getItem('user_type');
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState('');
@@ -200,7 +200,7 @@ export const ProfileDialog: FunctionComponent<{
   const [semester, setSemester] = useState<Semester[]>([]);
   const [semesterpre, setSemesterpre] = useState<Semester[]>([]);
   const [teacherList, setTeacherList] = useState<Teacher[]>([]);
-  const [filteredTeacherList, setFilteredTeacherList] = useState<Teacher[]>([]);
+  //const [filteredTeacherList, setFilteredTeacherList] = useState<Teacher[]>([]);
 
   const [selectedHobby, setSelectedHobby] = useState<any>('');
   const [selectedLanguage, setSelectedLanguage] = useState<any>('');
@@ -210,7 +210,7 @@ export const ProfileDialog: FunctionComponent<{
   const [selectCourse, setSelectedCourse] = useState<any>('');
   const [selectUniversity, setSelectedUniversity] = useState<any>('');
   const [selectSemester, setSelectedSemester] = useState<any>('');
-  const [selectSubjectName, setSelectedSubjectName] = useState<any>('');
+ // const [selectSubjectName, setSelectedSubjectName] = useState<any>('');
   const [selectTeacher, setSelectedTeacher] = useState<any>('');
   const [selectSemesterpre, setSelectedSemesterpre] = useState<any>('');
   const [selectSubject, setSelectedSubject] = useState<any>('');
@@ -219,7 +219,7 @@ export const ProfileDialog: FunctionComponent<{
   const [selectedAcademicState, setSelectedAcademicState] = useState<any>('');
   const [selectedClass, setSelectedClass] = useState<any>('');
   const [selectedStream, setSelectedStream] = useState<any>('');
-  const [selectedClassId, setselectedClassId] = useState<any>('');
+  
   const [selectedLearningStyle, setSelectedLearningStyle] = useState<any>('');
 
   // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>('');
@@ -304,7 +304,7 @@ export const ProfileDialog: FunctionComponent<{
         // setMobile(user_id ? user_id : '');
       }
 
-      getData(`${profileURL}/${StudentId}`)
+      getData(`${profileURL}/${Student_uuid}`)
         .then((data: any) => {
           if (data.status) {
             setAnsweredData(data.data);
@@ -539,7 +539,7 @@ export const ProfileDialog: FunctionComponent<{
       if (currentSection) {
         const fetchProfileData = async () => {
           try {
-            const data = await getData(`${profileURL}/${StudentId}`);
+            const data = await getData(`${profileURL}/${Student_uuid}`);
             if (data.status) {
               setAnsweredData(data.data);
               localStorage.setItem('student_id', data?.data?.basic_info?.id);
@@ -553,7 +553,6 @@ export const ProfileDialog: FunctionComponent<{
               const instituteType =
                 data?.data?.academic_history?.institution_type || '';
               const address = data?.data?.address?.address1 || '';
-              const institute_id = data?.data?.academic_history?.institute_id;
               if (guardianName) {
                 filteredQuestions.basic = filteredQuestions.basic.filter(
                   (_, index) => index > 7,
@@ -563,7 +562,6 @@ export const ProfileDialog: FunctionComponent<{
                 // Skip institution type-related questions
                 if (instituteType === 'school') {
                   setSelectedStream(data?.data?.academic_history?.stream ? data?.data?.academic_history?.stream : 'general');
-                  setselectedClassId(data?.data?.academic_history?.class_id)
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
                     'Please select your school name',
@@ -604,7 +602,6 @@ export const ProfileDialog: FunctionComponent<{
                     (question) => !questionsToRemove.includes(question),
                   );
                 }
-                getTeahcersList(instituteType, institute_id);
                 setSelectedInstituteType(instituteType);
               }
               if (hobby) {
@@ -795,24 +792,26 @@ export const ProfileDialog: FunctionComponent<{
     }
   }, [currentSection, isOpen]);
 
-  const getTeahcersList = (instituteType: string, institute_id: string) => {
-    getData('/teacher/list').then((data) => {
-      if (data.status) {
-        if (instituteType.toLowerCase() == "school") {
-          const filteredTeacher = data?.data.filter((teacher: any) => teacher.course_semester_subjects == null && teacher.institute_id == institute_id)
-          setTeacherList(filteredTeacher);
-        } else {
-          const filteredTeacher = data?.data.filter((teacher: any) => teacher.class_stream_subjects == null && teacher.institute_id == institute_id)
-          setTeacherList(filteredTeacher);
+  const getTeahcersList = (subject:any) => {
+    const student_id=localStorage.getItem('student_id')
+    if(student_id){
+      getData(`/teacher/teachers_list_for_student/${student_id}`).then((data) => {
+        if (data.status) {
+          console.log(data.data);
+          const filteredTeacher = data.data?.teachers?.filter((teacher:any) =>
+            teacher?.subject_list?.includes(subject)
+          );
+            setTeacherList(filteredTeacher);
         }
-      }
-    }).catch((error) => {
-      toast.error(error.message, {
-        hideProgressBar: true,
-        theme: 'colored',
-        position: 'top-center'
+      }).catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+        })
       })
-    })
+    }
+  
   }
   useEffect(() => {
     // Scroll to the bottom of the chat box whenever messages update
@@ -880,7 +879,7 @@ export const ProfileDialog: FunctionComponent<{
     const email = localStorage.getItem('email');
     const phone = localStorage.getItem('phone');
     const payload = {
-      user_uuid: StudentId,
+      user_uuid: Student_uuid,
       first_name: answeredData?.basic_info?.first_name || firstname,
       last_name: answeredData?.basic_info?.last_name || lastname,
       // gender: answers[1],
@@ -1185,7 +1184,7 @@ export const ProfileDialog: FunctionComponent<{
     label: `Semester ${option?.semester_number}`,
   }));
 
-  const teacherSelectOption = filteredTeacherList?.map((option) => ({
+  const teacherSelectOption = teacherList?.map((option) => ({
     value: option.id,
     label: `${option.first_name} ${option.last_name}`
   }));
@@ -2462,7 +2461,6 @@ export const ProfileDialog: FunctionComponent<{
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.value;
     setSelectedClass(e);
-    setselectedClassId(e.value);
     setAnswers(updatedAnswers);
     if (e.label !== 'class_11' && e.label !== 'class_12') {
       const filterData = subjects?.filter(
@@ -2691,12 +2689,6 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
-    if (selectedInstituteType == 'college') {
-      const filteredTeacher = teacherList.filter(teacher =>
-        teacher?.course_semester_subjects?.[selectCourse]?.[e.label.split(" ")[1]]?.includes(selectSubjectName)
-      )
-      setFilteredTeacherList(filteredTeacher)
-    }
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -2717,19 +2709,16 @@ export const ProfileDialog: FunctionComponent<{
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
     setSelectedSubject(e.value);
-    setSelectedSubjectName(e.label)
+   // setSelectedSubjectName(e.label)
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1['basic'];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
-    if (selectedInstituteType == 'school') {
-      const filteredTeacher = teacherList.filter(teacher =>
-        teacher?.class_stream_subjects?.[selectedClassId]?.[selectedStream]?.includes(e.label)
-      );
-      setFilteredTeacherList(filteredTeacher)
-    }
+   
+    getTeahcersList(e.label);
+    
     const filteredsempre = semesterpre.filter(
       (item) =>
       (item.semester_id === answeredData?.academic_history?.sem_id
