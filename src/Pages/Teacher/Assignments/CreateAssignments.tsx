@@ -20,7 +20,7 @@ import {
   ToggleButtonGroup,
   SelectChangeEvent,
   InputLabel,
-  OutlinedInput
+  OutlinedInput,
 } from '@mui/material';
 import {
   fieldIcon,
@@ -39,19 +39,29 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { Box } from "@mui/system"
+import { Box } from '@mui/system';
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_SUBJECT, QUERY_KEYS_SUBJECT_SCHOOL } from '../../../utils/const';
+import {
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_COURSE,
+  QUERY_KEYS_SUBJECT,
+  QUERY_KEYS_SUBJECT_SCHOOL,
+} from '../../../utils/const';
 import { toast } from 'react-toastify';
 import { Boxes, BoxesForSchool } from '../../TeacherRgistrationForm';
-import { CourseRep0oDTO, IClass, SemesterRep0oDTO, StudentRep0oDTO, SubjectRep0oDTO } from '../../../Components/Table/columns';
+import {
+  CourseRep0oDTO,
+  IClass,
+  SemesterRep0oDTO,
+  StudentRep0oDTO,
+  SubjectRep0oDTO,
+} from '../../../Components/Table/columns';
 import NameContext from '../../Context/NameContext';
 import dayjs, { Dayjs } from 'dayjs';
-import { Autocomplete, Chip } from "@mui/material";
-
+import { Autocomplete, Chip } from '@mui/material';
 
 export interface Assignment {
-  id?: string,
+  id?: string;
   title: string;
   type: string;
   contact_email: string;
@@ -74,7 +84,7 @@ export const CreateAssignments = () => {
 
   const { id } = useParams();
 
-  const { getData, postData, putData } = useApi()
+  const { getData, postData, putData } = useApi();
   //const stream = ['Science', 'Commerce', 'Arts'];
 
   const ClassURL = QUERY_KEYS_CLASS.GET_CLASS;
@@ -90,7 +100,7 @@ export const CreateAssignments = () => {
   const [allowLateSubmission, setAllowLateSubmission] = useState(false);
   const [addToStudentRepost, setAddToStudentRepost] = useState(false);
   const [sendNotification, setSendNotification] = useState(false);
-  const [dueDate, setDueDate] = useState<Dayjs | null>(null)
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [dueTime, setDueTime] = useState<Dayjs | null>(null);
   const [selectedEntity, setSelectedEntity] = useState('');
   const [totleSubject, setTotleSubject] = useState<SubjectRep0oDTO[]>([]);
@@ -99,14 +109,16 @@ export const CreateAssignments = () => {
   const [teacherCourse, setTeacherCourse] = useState<string[]>();
   const [teacherSemester, setTeacherSemester] = useState<string[]>();
   const [tescherSubjects, setTeacherSubjects] = useState<string[]>();
-  const [selectedStudents, setSelectedStudents] = useState<StudentRep0oDTO[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<StudentRep0oDTO[]>(
+    [],
+  );
   const [selectAll, setSelectAll] = useState(false);
   const [teacherStream, setTeacherStream] = useState<string[]>();
-  const [tescherSchoolSubjects, setTeacherSchoolSubjects] = useState<string[]>();
+  const [tescherSchoolSubjects, setTeacherSchoolSubjects] =
+    useState<string[]>();
 
   const [saveAsDraft, setSaveAsDraft] = useState(false);
-  const [listOfStudent, setListOfStudent] = useState<StudentRep0oDTO[]>()
-
+  const [listOfStudent, setListOfStudent] = useState<StudentRep0oDTO[]>();
 
   const [title_error, setTitle_error] = useState(false);
   const [file_error, setFile_error] = useState(false);
@@ -156,14 +168,14 @@ export const CreateAssignments = () => {
     }>({});
 
   const [assignmentData, setAssignmentData] = useState<Assignment>({
-    title: "",
-    type: "written",
-    contact_email: "",
+    title: '',
+    type: 'written',
+    contact_email: '',
     allow_late_submission: false,
-    due_date_time: "", // Or new Date().toISOString() if using Date type
-    available_from: "", // Or new Date().toISOString() if using Date type
+    due_date_time: '', // Or new Date().toISOString() if using Date type
+    available_from: '', // Or new Date().toISOString() if using Date type
     assign_to_students: [],
-    instructions: "",
+    instructions: '',
     points: '',
     save_draft: false,
     add_to_report: false,
@@ -175,41 +187,46 @@ export const CreateAssignments = () => {
     getCourses();
     getStudentsForTeacher();
     getTeacherProfileInfo();
-  }, [])
+  }, []);
 
   const getAssignmentInfo = () => {
     if (id) {
       try {
-        getData(`/assignment/get/${id}`).then(async (response) => {
-          if (response.data) {
-            setAssignmentData(response.data)
-            if (response?.data?.file) {
-              setFiles(response?.data?.file)
+        getData(`/assignment/get/${id}`)
+          .then(async (response) => {
+            if (response.data) {
+              setAssignmentData(response.data);
+              if (response?.data?.file) {
+                setFiles(response?.data?.file);
+              }
+              const extractedDate = dayjs(response?.data?.due_date_time).format(
+                'YYYY-MM-DD',
+              ); // "2025-03-02"
+              //const extractedTime = dayjs(response?.data?.due_date_time).format("HH:mm:ss");
+              setSendNotification(response?.data?.notify);
+              setAddToStudentRepost(response?.data?.add_to_report);
+              setAllowLateSubmission(response?.data?.allow_late_submission);
+              setSaveAsDraft(response?.data?.save_draft);
+              setDueDate(dayjs(extractedDate));
+              setDueTime(dayjs(response?.data?.due_date_time));
+              setAvailableFrom(dayjs(response?.data?.available_from));
             }
-            const extractedDate = dayjs(response?.data?.due_date_time).format("YYYY-MM-DD"); // "2025-03-02"
-            //const extractedTime = dayjs(response?.data?.due_date_time).format("HH:mm:ss");
-            setSendNotification(response?.data?.notify);
-            setAddToStudentRepost(response?.data?.add_to_report);
-            setAllowLateSubmission(response?.data?.allow_late_submission);
-            setSaveAsDraft(response?.data?.save_draft);
-            setDueDate(dayjs(extractedDate));
-            setDueTime(dayjs(response?.data?.due_date_time));
-            setAvailableFrom(dayjs(response?.data?.available_from));
-          }
-          if (response.data.university_id !== 'None') {
-            const allSubject: SubjectRep0oDTO[] = await getSubjects('college');
-            const allsemesters: SemesterRep0oDTO[] = await getSemester();
-            setSelectedEntity('College');
-            const output: Boxes[] = Object.keys(
-              response.data.course_semester_subjects,
-            ).flatMap((CourseKey) =>
-              Object.keys(response.data.course_semester_subjects[CourseKey]).map(
-                (semester_number) => ({
+            if (response.data.university_id !== 'None') {
+              const allSubject: SubjectRep0oDTO[] =
+                await getSubjects('college');
+              const allsemesters: SemesterRep0oDTO[] = await getSemester();
+              setSelectedEntity('College');
+              const output: Boxes[] = Object.keys(
+                response.data.course_semester_subjects,
+              ).flatMap((CourseKey) =>
+                Object.keys(
+                  response.data.course_semester_subjects[CourseKey],
+                ).map((semester_number) => ({
                   course_id: CourseKey,
                   semester_number: semester_number,
                   subjects:
                     response.data.course_semester_subjects[CourseKey][
-                    semester_number
+                      semester_number
                     ],
                   filteredSemesters: allsemesters.filter(
                     (item) => item.course_id == CourseKey,
@@ -219,59 +236,61 @@ export const CreateAssignments = () => {
                       item.semester_number == semester_number &&
                       item.course_id == CourseKey,
                   ),
-                }),
-              ),
-            );
-            setBoxes(output);
-          } else {
-            getSubjects('School');
-            setSelectedEntity('School');
-            const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
-            const output: BoxesForSchool[] = Object.keys(
-              response.data.class_stream_subjects,
-            ).flatMap((classKey) =>
-              Object.keys(response.data.class_stream_subjects[classKey]).map(
-                (stream) => ({
-                  stream: stream,
-                  subjects: response.data.class_stream_subjects[classKey][stream],
-                  class_id: classKey,
-                  is_Stream: stream !== 'general',
-                  selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
-                  filteredSubjects:
-                    stream == 'general'
-                      ? allSubject.filter((item) => item.class_id === classKey)
-                      : allSubject.filter(
-                        (item) =>
-                          item.class_id === classKey &&
-                          item.stream === stream,
-                      ),
-                }),
-              ),
-            );
-            setBoxesForSchool(output);
-          }
-          // setBoxesForSchool(response?.data?.class_stream_subjects);
-        }).catch((error) => {
-          toast.error(error.message, {
-            hideProgressBar: true,
-            theme: "colored",
-            position: 'top-center'
+                })),
+              );
+              setBoxes(output);
+            } else {
+              getSubjects('School');
+              setSelectedEntity('School');
+              const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
+              const output: BoxesForSchool[] = Object.keys(
+                response.data.class_stream_subjects,
+              ).flatMap((classKey) =>
+                Object.keys(response.data.class_stream_subjects[classKey]).map(
+                  (stream) => ({
+                    stream: stream,
+                    subjects:
+                      response.data.class_stream_subjects[classKey][stream],
+                    class_id: classKey,
+                    is_Stream: stream !== 'general',
+                    selected_class_name:
+                      stream === 'general' ? 'col-6' : 'col-4',
+                    filteredSubjects:
+                      stream == 'general'
+                        ? allSubject.filter(
+                            (item) => item.class_id === classKey,
+                          )
+                        : allSubject.filter(
+                            (item) =>
+                              item.class_id === classKey &&
+                              item.stream === stream,
+                          ),
+                  }),
+                ),
+              );
+              setBoxesForSchool(output);
+            }
+            // setBoxesForSchool(response?.data?.class_stream_subjects);
           })
-        })
+          .catch((error) => {
+            toast.error(error.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+          });
       } catch (error: any) {
         toast.error(error.message, {
           hideProgressBar: true,
-          theme: "colored",
-          position: 'top-center'
-        })
-
+          theme: 'colored',
+          position: 'top-center',
+        });
       }
-
     }
-  }
+  };
   useEffect(() => {
-    getAssignmentInfo()
-  }, [id])
+    getAssignmentInfo();
+  }, [id]);
   const getSubjects = async (type: string): Promise<any> => {
     try {
       const url = type === 'college' ? getSubjectCollege : getsubjectSchool;
@@ -298,26 +317,34 @@ export const CreateAssignments = () => {
         if (data?.status) {
           if (data.data.course_semester_subjects != null) {
             setSelectedEntity('College');
-            getSubjects('college')
+            getSubjects('college');
             // Extract all course IDs (keys)
             const courseKeys = Object.keys(data.data.course_semester_subjects);
 
             // Extract all semester IDs for each course
-            const semesterKeys = Object.values(data.data.course_semester_subjects as Record<string, Record<string, any>>)
-              .flatMap((semesters) => Object.keys(semesters));
+            const semesterKeys = Object.values(
+              data.data.course_semester_subjects as Record<
+                string,
+                Record<string, any>
+              >,
+            ).flatMap((semesters) => Object.keys(semesters));
             setTeacherSemester(semesterKeys);
 
-
-            const semesterSubjects = Object.entries(data.data.course_semester_subjects as Record<string, Record<string, string[]>>)
-              .flatMap(([semester, subjects]) =>
-                Object.values(subjects).flatMap((subjectList) =>
-                  Array.isArray(subjectList) ? subjectList.map((subject) => ({ semester, subject })) : []
-                )
-              );
+            const semesterSubjects = Object.entries(
+              data.data.course_semester_subjects as Record<
+                string,
+                Record<string, string[]>
+              >,
+            ).flatMap(([semester, subjects]) =>
+              Object.values(subjects).flatMap((subjectList) =>
+                Array.isArray(subjectList)
+                  ? subjectList.map((subject) => ({ semester, subject }))
+                  : [],
+              ),
+            );
             setTeacherSubjects(semesterSubjects.map(({ subject }) => subject));
 
             setTeacherCourse((prev) => [...(prev || []), ...courseKeys]);
-
           } else {
             getSubjects('School');
             setSelectedEntity('School');
@@ -344,23 +371,34 @@ export const CreateAssignments = () => {
             //   ),
             // );
 
-            const streeamKeys = Object.values(data.data.class_stream_subjects as Record<string, Record<string, any>>)
-              .flatMap((streamkeys) => Object.keys(streamkeys));
+            const streeamKeys = Object.values(
+              data.data.class_stream_subjects as Record<
+                string,
+                Record<string, any>
+              >,
+            ).flatMap((streamkeys) => Object.keys(streamkeys));
             setTeacherStream(streeamKeys);
 
-            const classIds = Object.keys(data.data.class_stream_subjects).map((classKey) => parseInt(classKey, 10));
+            const classIds = Object.keys(data.data.class_stream_subjects).map(
+              (classKey) => parseInt(classKey, 10),
+            );
             //setBoxesForSchool(output);
             getClasslist(classIds);
 
-            const Subjects = Object.entries(data.data.class_stream_subjects as Record<string, Record<string, string[]>>)
-              .flatMap(([streasm, subjects]) =>
-                Object.entries(subjects).flatMap(([subjectList]) =>
-                  Array.isArray(subjectList) ? subjectList.map((subject) => ({ streasm, subject })) : []
-                )
-              );
-            setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject))
+            const Subjects = Object.entries(
+              data.data.class_stream_subjects as Record<
+                string,
+                Record<string, string[]>
+              >,
+            ).flatMap(([streasm, subjects]) =>
+              Object.entries(subjects).flatMap(([subjectList]) =>
+                Array.isArray(subjectList)
+                  ? subjectList.map((subject) => ({ streasm, subject }))
+                  : [],
+              ),
+            );
+            setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject));
           }
-
         }
       });
     } catch (error) {
@@ -411,8 +449,8 @@ export const CreateAssignments = () => {
       .then((data) => {
         if (data.data) {
           //  setCoursesData(data?.data);
-          const filteredCourses = data.data.course_data.filter((course: any) =>
-            course.is_active
+          const filteredCourses = data.data.course_data.filter(
+            (course: any) => course.is_active,
           );
           setFilteredCoursesData(filteredCourses);
         }
@@ -429,8 +467,8 @@ export const CreateAssignments = () => {
       .then((data) => {
         if (data.data) {
           const filteredClasses = data.data.classes_data.filter((classn: any) =>
-            classIds.includes(classn.id)
-          )
+            classIds.includes(classn.id),
+          );
           setDataClass(filteredClasses);
         }
       })
@@ -444,7 +482,6 @@ export const CreateAssignments = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-
       setSelectedStudents(listOfStudent || []);
       setSelectAll(true);
     } else {
@@ -456,9 +493,8 @@ export const CreateAssignments = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFiles([...files, ...Array.from(event.target.files)]);
-      setFile_error(false)
+      setFile_error(false);
     }
-
   };
 
   const handleChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -472,16 +508,19 @@ export const CreateAssignments = () => {
   };
 
   const validation = (name: string, value: string) => {
-    if (name == "title" && !/^[A-Za-z0-9][A-Za-z0-9 _-]{3,98}[A-Za-z0-9]*$/.test(value)) {
-      setTitle_error(true)
+    if (
+      name == 'title' &&
+      !/^[A-Za-z0-9][A-Za-z0-9 _-]{3,98}[A-Za-z0-9]*$/.test(value)
+    ) {
+      setTitle_error(true);
     } else {
       setTitle_error(false);
     }
 
     if (name == 'points' && !/^\d+$/.test(value)) {
-      setPoint_error(true)
+      setPoint_error(true);
     } else {
-      setPoint_error(false)
+      setPoint_error(false);
     }
     if (name == 'instructions' && value == '') {
       setInstructoins_error(true);
@@ -493,34 +532,39 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-  }
+  };
   const getStudentsForTeacher = () => {
     try {
-      getData(`/student_teacher/teacher/${teacherId}/students`).then((response) => {
-        if (response.status) {
-          setListOfStudent(response.data)
-        }
-      }).catch((error) => {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center'
+      getData(`/student_teacher/teacher/${teacherId}/students`)
+        .then((response) => {
+          if (response.status) {
+            setListOfStudent(response.data);
+          }
         })
-      })
+        .catch((error) => {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        });
     } catch (error: any) {
       toast.error(error.message, {
         hideProgressBar: true,
         theme: 'colored',
-        position: 'top-center'
-      })
+        position: 'top-center',
+      });
     }
-  }
+  };
 
   const submitAssignment = () => {
-
     let valid1 = false;
-    if (!/^[A-Za-z0-9][A-Za-z0-9 _-]{3,98}[A-Za-z0-9]*$/.test(assignmentData.title)) {
-      setTitle_error(true)
+    if (
+      !/^[A-Za-z0-9][A-Za-z0-9 _-]{3,98}[A-Za-z0-9]*$/.test(
+        assignmentData.title,
+      )
+    ) {
+      setTitle_error(true);
       valid1 = true;
     }
     if (!(files.length > 0)) {
@@ -530,10 +574,10 @@ export const CreateAssignments = () => {
       setFile_error(false);
     }
     if (!/^\d+$/.test(assignmentData.points)) {
-      setPoint_error(true)
+      setPoint_error(true);
       valid1 = true;
     } else {
-      setPoint_error(false)
+      setPoint_error(false);
     }
 
     if (assignmentData.instructions == '') {
@@ -544,10 +588,10 @@ export const CreateAssignments = () => {
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)) {
-      setContact_email_error(true)
+      setContact_email_error(true);
       valid1 = true;
     } else {
-      setContact_email_error(false)
+      setContact_email_error(false);
     }
     if (availableFrom == null) {
       setAvailableFrom_error(true);
@@ -567,7 +611,7 @@ export const CreateAssignments = () => {
     } else {
       setDueTime_error(false);
     }
-    if(error!=null){
+    if (error != null) {
       valid1 = true;
     }
     let valid = true;
@@ -610,7 +654,10 @@ export const CreateAssignments = () => {
     formData.append('title', assignmentData.title);
     formData.append('type', assignmentData.type);
     formData.append('contact_email', assignmentData.contact_email);
-    formData.append('allow_late_submission', String(assignmentData.allow_late_submission));
+    formData.append(
+      'allow_late_submission',
+      String(assignmentData.allow_late_submission),
+    );
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
@@ -619,7 +666,11 @@ export const CreateAssignments = () => {
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
-    const students = ['f8ef4dc8-7e36-4a9a-a9a3-5b722192353d', '325ff321-8765-4c61-a6ca-c58ff78e0d1b', 'd302ec8a-e48f-4c5c-91b2-8486304f0327']
+    const students = [
+      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
+      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
+      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+    ];
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
       formData.append('file', file);
@@ -637,7 +688,9 @@ export const CreateAssignments = () => {
             acc[class_id][streamKey] = [];
           }
 
-          const subjectString = Array.isArray(subjects) ? subjects.join("") : subjects;
+          const subjectString = Array.isArray(subjects)
+            ? subjects.join('')
+            : subjects;
 
           acc[class_id][streamKey] = [subjectString];
 
@@ -650,12 +703,10 @@ export const CreateAssignments = () => {
         JSON.stringify(class_stream_subjects),
       );
 
-
       // if (selectedClassName === 'col-4') {
       //   formData.append('stream', teacher.stream);
       // }
     } else {
-
       const course_semester_subjects = boxes.reduce(
         (acc, box) => {
           const { course_id, semester_number, subjects } = box;
@@ -672,7 +723,9 @@ export const CreateAssignments = () => {
             ...new Set([...acc[course_id][semester_number], ...subjects]),
           ];
 
-          const subjectString = Array.isArray(subjects) ? subjects.join("") : subjects;
+          const subjectString = Array.isArray(subjects)
+            ? subjects.join('')
+            : subjects;
 
           acc[course_id][semester_number] = [subjectString];
           return acc;
@@ -685,7 +738,6 @@ export const CreateAssignments = () => {
       );
     }
 
-
     if (!id) {
       try {
         postData('assignment/add', formData).then((response) => {
@@ -693,32 +745,32 @@ export const CreateAssignments = () => {
             toast.success(response.message, {
               hideProgressBar: true,
               theme: 'colored',
-              position: 'top-center'
-            })
+              position: 'top-center',
+            });
           }
           setAssignmentData({
-            title: "",
-            type: "written",
-            contact_email: "",
+            title: '',
+            type: 'written',
+            contact_email: '',
             allow_late_submission: false,
-            due_date_time: "", // Or new Date().toISOString() if using Date type
-            available_from: "", // Or new Date().toISOString() if using Date type
+            due_date_time: '', // Or new Date().toISOString() if using Date type
+            available_from: '', // Or new Date().toISOString() if using Date type
             assign_to_students: [],
-            instructions: "",
+            instructions: '',
             points: '',
             save_draft: false,
             add_to_report: false,
             notify: false,
             file: null, // File should be null initially
-          })
-          nevegate('/teacher-dashboard/assignments')
+          });
+          nevegate('/teacher-dashboard/assignments');
         });
       } catch (error: any) {
         toast.error(error.message, {
           hideProgressBar: true,
           theme: 'colored',
-          position: 'top-center'
-        })
+          position: 'top-center',
+        });
       }
     } else {
       try {
@@ -727,41 +779,40 @@ export const CreateAssignments = () => {
             toast.success(response.message, {
               hideProgressBar: true,
               theme: 'colored',
-              position: 'top-center'
-            })
-            nevegate('/teacher-dashboard/assignments')
+              position: 'top-center',
+            });
+            nevegate('/teacher-dashboard/assignments');
           }
           setAssignmentData({
-            title: "",
-            type: "written",
-            contact_email: "",
+            title: '',
+            type: 'written',
+            contact_email: '',
             allow_late_submission: false,
-            due_date_time: "",
-            available_from: "",
+            due_date_time: '',
+            available_from: '',
             assign_to_students: [],
-            instructions: "",
+            instructions: '',
             points: '',
             save_draft: false,
             add_to_report: false,
             notify: false,
             file: null,
-          })
-
+          });
         });
       } catch (error: any) {
         toast.error(error.message, {
           hideProgressBar: true,
           theme: 'colored',
-          position: 'top-center'
-        })
+          position: 'top-center',
+        });
       }
     }
-  }
+  };
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
     setAvailableFrom(newDate);
     if (dueDate && newDate && newDate.isAfter(dueDate)) {
-      setError("Available From should be less than Due Date");
+      setError('Available From should be less than Due Date');
     } else {
       setError(null);
     }
@@ -770,7 +821,7 @@ export const CreateAssignments = () => {
   const handleDueDateChange = (newDate: Dayjs | null) => {
     setDueDate(newDate);
     if (availableFrom && newDate && availableFrom.isAfter(newDate)) {
-      setError("Available From should be less than Due Date");
+      setError('Available From should be less than Due Date');
     } else {
       setError(null);
     }
@@ -821,7 +872,7 @@ export const CreateAssignments = () => {
         }),
       },
     }));
-  }
+  };
   const handelSubjectBoxChange = (
     event: SelectChangeEvent<string[]>,
     index: number,
@@ -929,28 +980,26 @@ export const CreateAssignments = () => {
   };
 
   const handleFileRemove = (index: number) => {
-
     setFiles(files.filter((_, i) => i !== index));
-    if ((files.length == 1)) {
-      setFile_error(true)
+    if (files.length == 1) {
+      setFile_error(true);
     } else {
-      setFile_error(false)
+      setFile_error(false);
     }
-
   };
   const handleSaveAsDraft = () => {
-    setSaveAsDraft((prev) => !prev)
+    setSaveAsDraft((prev) => !prev);
     setAssignmentData((prev) => ({
       ...prev,
-      ["save_draft"]: true,
+      ['save_draft']: true,
     }));
     submitAssignment();
-  }
+  };
   const mergeDateAndTime = () => {
     if (!dueDate || !dueTime) return null;
 
     // Extract hours and minutes using Dayjs methods
-    const hours = dueTime.hour();  // Use hour() instead of getHours()
+    const hours = dueTime.hour(); // Use hour() instead of getHours()
     const minutes = dueTime.minute(); // Use minute() instead of getMinutes()
 
     // Set these hours & minutes in `dueDate`
@@ -959,12 +1008,9 @@ export const CreateAssignments = () => {
     return mergedDateTime;
   };
 
-
   useEffect(() => {
-
     if (availableFrom == null && availableFrom_error) {
       setAvailableFrom_error(true);
-
     } else {
       setAvailableFrom_error(false);
     }
@@ -978,8 +1024,7 @@ export const CreateAssignments = () => {
     } else {
       setDueTime_error(false);
     }
-  }, [dueDate, availableFrom, dueTime])
-
+  }, [dueDate, availableFrom, dueTime]);
 
   console.log(listOfStudent);
   return (
@@ -1003,363 +1048,385 @@ export const CreateAssignments = () => {
           </div>
         </div>
 
-        <div className="row justify-content-center">
-          <div className="col-6">
-            <div className="card p-4">
-              <div className="cardbody">
-                <div className="row g-4">
-                  <div className="col-12">
-                    <Typography variant="h5" className="mb-4 fw-bold">
-                      Create Assignment
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      label="Assignment Title"
-                      variant="outlined"
-                      name='title'
-                      value={assignmentData.title}
-                      onChange={handleChanges}
-                    />
-                    {
-                      title_error && (
+        <div className="card p-lg-4 bg-m-transparent">
+          <div className="cardbody p-0 p-lg-2">
+            <div className="container">
+              <div className="row justify-content-center">
+                <div className="col-lg-9">
+                  <div className="row g-4">
+                    <div className="col-12">
+                      <Typography variant="h5" className="mb-4 fw-bold">
+                        Create Assignment
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        label="Assignment Title"
+                        variant="outlined"
+                        name="title"
+                        value={assignmentData.title}
+                        onChange={handleChanges}
+                      />
+                      {title_error && (
                         <p className="error-text " style={{ color: 'red' }}>
                           <small> Please enter a valid Title.</small>
                         </p>
-                      )
-                    }
-                  </div>
-                  <div className="col-12">
-                    <Typography variant="subtitle1" className="mb-2">
-                      Assignment Type
-                    </Typography>
-                    <ToggleButtonGroup
-                      value={assignmentType}
-                      exclusive
-                      onChange={(_, newValue) => setAssignmentType(newValue)}
-                      fullWidth
-                      className="assignbtngrp"
-                    >
-                      <ToggleButton value="written">
-                        {' '}
-                        <AssignmentIcon /> Written
-                      </ToggleButton>
-                      <ToggleButton value="quiz">
-                        <QuizIcon /> Quiz
-                      </ToggleButton>
-                      <ToggleButton value="project">
-                        <AccountTreeIcon /> Project
-                      </ToggleButton>
-                      <ToggleButton value="presentation">
-                        {' '}
-                        <PresentToAllIcon />
-                        Presentation
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  </div>
-                  <div className="col-12">
-                    <Typography variant="subtitle1">Attachments</Typography>
-                    <input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange}
-                      multiple
-                      name='file'
-                      style={{ display: 'none' }}
-                      id="file-upload"
-                    />
-                    <label htmlFor="file-upload" className="uploadfile">
-                      <Button
-                        variant="contained"
-                        component="span"
-                        startIcon={<CloudUploadIcon />}
+                      )}
+                    </div>
+                    <div className="col-12">
+                      <Typography variant="subtitle1" className="mb-2">
+                        Assignment Type
+                      </Typography>
+                      <div className="overflow-auto">
+                      <ToggleButtonGroup
+                        value={assignmentType}
+                        exclusive
+                        onChange={(_, newValue) => setAssignmentType(newValue)}
+                        fullWidth
+                        className="assignbtngrp"
                       >
-                        Browse Files
-                      </Button>
-                    </label>
-                    <List>
-                      {files.map((file, index) => (
-                        <ListItem
-                          className="fileslistitem"
-                          key={index}
-                          secondaryAction={
-                            <IconButton
-                              edge="end"
-                              onClick={() => handleFileRemove(index)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          }
+                        <ToggleButton value="written">
+                          {' '}
+                          <AssignmentIcon /> Written
+                        </ToggleButton>
+                        <ToggleButton value="quiz">
+                          <QuizIcon /> Quiz
+                        </ToggleButton>
+                        <ToggleButton value="project">
+                          <AccountTreeIcon /> Project
+                        </ToggleButton>
+                        <ToggleButton value="presentation">
+                          {' '}
+                          <PresentToAllIcon />
+                          Presentation
+                        </ToggleButton>
+                      </ToggleButtonGroup>
+                      </div>
+                     
+                    </div>
+                    <div className="col-12">
+                      <Typography variant="subtitle1">Attachments</Typography>
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange}
+                        multiple
+                        name="file"
+                        style={{ display: 'none' }}
+                        id="file-upload"
+                      />
+                      <label htmlFor="file-upload" className="uploadfile">
+                        <Button
+                          variant="contained"
+                          component="span"
+                          startIcon={<CloudUploadIcon />}
                         >
-                          <div className="pinwi-20">
-                            <AttachFileIcon />
-                          </div>
-                          <ListItemText primary={file.name} />
-                        </ListItem>
-                      ))}
-                    </List>
-                    {file_error &&
-                      <p className="error-text " style={{ color: 'red' }}>
-                        <small> Please add at least one file.</small>
-                      </p>
-                    }
+                          Browse Files
+                        </Button>
+                      </label>
+                      <List>
+                        {files.map((file, index) => (
+                          <ListItem
+                            className="fileslistitem"
+                            key={index}
+                            secondaryAction={
+                              <IconButton
+                                edge="end"
+                                onClick={() => handleFileRemove(index)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            }
+                          >
+                            <div className="pinwi-20">
+                              <AttachFileIcon />
+                            </div>
+                            <ListItemText primary={file.name} />
+                          </ListItem>
+                        ))}
+                      </List>
+                      {file_error && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small> Please add at least one file.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-lg-6">
+                      <TextField
+                        fullWidth
+                        label="Points"
+                        variant="outlined"
+                        name="points"
+                        onChange={handleChanges}
+                        type="number"
+                        inputProps={{ min: '0' }}
+                        value={assignmentData.points}
+                      />
+                      {point_error && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please enter a valid points.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-12">
+                      <TextField
+                        fullWidth
+                        label="Instructions"
+                        variant="outlined"
+                        onChange={handleChanges}
+                        value={assignmentData.instructions}
+                        name="instructions"
+                        multiline
+                        rows={4}
+                      />
+                      {instructions_error && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please enter Instructions.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-12">
 
-                  </div>
-                  <div className="col-lg-6">
-                    <TextField
-                      fullWidth
-                      label="Points"
-                      variant="outlined"
-                      name='points'
-                      onChange={handleChanges}
-                      type="number"
-                      inputProps={{ min: '0' }}
-                      value={assignmentData.points}
-                    />
-                    {
-                      point_error && (
-                        <p className='error-text' style={{ color: 'red' }}>
-                          <small>
-                            Please enter a valid points.
-                          </small>
-                        </p>
-                      )
-                    }
-                  </div>
-                  <div className="col-12">
-                    <TextField
-                      fullWidth
-                      label="Instructions"
-                      variant="outlined"
-                      onChange={handleChanges}
-                      value={assignmentData.instructions}
-                      name='instructions'
-                      multiline
-                      rows={4}
-                    />
-                    {
-                      instructions_error && (
-                        <p className='error-text' style={{ color: 'red' }}>
-                          <small>
-                            Please enter Instructions.
-                          </small>
-                        </p>
-                      )
-                    }
-                  </div>
-                  {selectedEntity.toLowerCase() === 'college' &&
-                    boxes.length > 0 &&
-                    boxes.map((box, index) => (
-                      <div
-                        key={index}
-                        className="row d-flex justify-content-center"
-                      >
-                        {/* Course Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
-                            Course<span>*</span>
-                          </label>
-                          <FormControl fullWidth>
-                            <InputLabel id={`course_id_${index}`}>
-                              Course
-                            </InputLabel>
-                            <Select
-                              labelId={`course_id_${index}`}
-                              id={`demo3-multiple-name-${index}`}
-                              name="course_id"
-                              label="Course"
-                              onChange={(event: any) =>
-                                handelSubjectBoxChange(event, index)
-                              }
-                              value={box.course_id || ''}
-                            >
-                              {filteredcoursesData.filter((course) => teacherCourse?.includes(String(course.id))).map((course) => (
-                                <MenuItem key={course.id} value={course.id}>
-                                  {course.course_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForCourse_semester_subject[index]
-                            ?.course_id_error === true && (
-                              <p className="error-text" style={{ color: 'red' }}>
+                    
+                    {selectedEntity.toLowerCase() === 'college' &&
+                      boxes.length > 0 &&
+                      boxes.map((box, index) => (
+                        <div
+                          key={index}
+                          className="row g-4"
+                        >
+                          {/* Course Selection */}
+                          <div className="col-md-4 col-12">
+                            <label className="col-form-label">
+                              Course<span>*</span>
+                            </label>
+                            <FormControl fullWidth>
+                              <InputLabel id={`course_id_${index}`}>
+                                Course
+                              </InputLabel>
+                              <Select
+                                labelId={`course_id_${index}`}
+                                id={`demo3-multiple-name-${index}`}
+                                name="course_id"
+                                label="Course"
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.course_id || ''}
+                              >
+                                {filteredcoursesData
+                                  .filter((course) =>
+                                    teacherCourse?.includes(String(course.id)),
+                                  )
+                                  .map((course) => (
+                                    <MenuItem key={course.id} value={course.id}>
+                                      {course.course_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.course_id_error === true && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
                                 <small>Please enter a valid Course.</small>
                               </p>
                             )}
-                        </div>
+                          </div>
 
-                        {/* Semester Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
-                            Semester <span>*</span>
-                          </label>
-                          <FormControl fullWidth>
-                            <InputLabel id={`semester_id_${index}`}>
-                              Semester
-                            </InputLabel>
-                            <Select
-                              labelId={`semester_id_${index}`}
-                              id={`semester_select_${index}`}
-                              name="semester_number"
-                              label="Semester"
-                              onChange={(event: any) =>
-                                handelSubjectBoxChange(event, index)
-                              }
-                              value={box.semester_number || ''}
-                            >
-                              {box.filteredSemesters?.filter((item) => teacherSemester?.includes(String(item.semester_number))).map((item) => (
-                                <MenuItem
-                                  key={item.id}
-                                  value={item.semester_number || ''}
-                                >
-                                  {item.semester_number}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForCourse_semester_subject[index]
-                            ?.semester_number_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
+                          {/* Semester Selection */}
+                          <div className="col-md-4 col-12">
+                            <label className="col-form-label">
+                              Semester <span>*</span>
+                            </label>
+                            <FormControl fullWidth>
+                              <InputLabel id={`semester_id_${index}`}>
+                                Semester
+                              </InputLabel>
+                              <Select
+                                labelId={`semester_id_${index}`}
+                                id={`semester_select_${index}`}
+                                name="semester_number"
+                                label="Semester"
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.semester_number || ''}
+                              >
+                                {box.filteredSemesters
+                                  ?.filter((item) =>
+                                    teacherSemester?.includes(
+                                      String(item.semester_number),
+                                    ),
+                                  )
+                                  .map((item) => (
+                                    <MenuItem
+                                      key={item.id}
+                                      value={item.semester_number || ''}
+                                    >
+                                      {item.semester_number}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.semester_number_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
                                 <small>Please select a Semester.</small>
                               </p>
                             )}
-                        </div>
+                          </div>
 
-                        {/* Subjects Selection */}
-                        <div className="col-md-4 col-12 mb-3">
-                          <label className="col-form-label">
-                            Subjects Taught<span>*</span>
-                          </label>
-                          <FormControl fullWidth>
-                            <InputLabel id={`subject_label_${index}`}>
-                              Subject
-                            </InputLabel>
-                            <Select
-                              labelId={`subject_label_${index}`}
-                              id={`subject_select_${index}`}
-                              name="subjects"
-                              label="subjects"
-                              value={box.subjects || []}
-                              onChange={(event: any) =>
-                                handelSubjectBoxChange(event, index)
-                              }
-
-                            >
-                              {box.filteredSubjects?.filter((subject) => tescherSubjects?.includes(subject.subject_name)).map((subject: any) => (
-                                <MenuItem
-                                  key={subject.subject_id}
-                                  value={subject.subject_name}
-                                >
-
-                                  {subject.subject_name}
-
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForCourse_semester_subject[index]
-                            ?.subjects_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select at least one subject.</small>
-                              </p>
-                            )}
-                        </div>
-
-                      </div>
-                    ))}
-                  {selectedEntity.toLowerCase() === 'school' &&
-                    boxesForSchool.length > 0 &&
-                    boxesForSchool.map((box, index) => (
-                      <div
-                        key={index}
-                        className="row d-flex justify-content-center"
-                      >
-                        {/* Class Selection */}
-                        <div className={box.selected_class_name}>
-                          <label className="col-form-label">
-                            Class<span>*</span>
-                          </label>
-                          <FormControl fullWidth>
-                            <InputLabel id={`class_id_${index}`}>
-                              Class
-                            </InputLabel>
-                            <Select
-                              labelId={`class_id_${index}`}
-                              id={`class_select_${index}`}
-                              name="class_id"
-                              onChange={(event: any) =>
-                                handelSchoolBoxChange(event, index)
-                              }
-                              value={box.class_id || ''}
-                              input={<OutlinedInput label="Class" />}
-                            >
-                              {dataClass.map((item) => (
-                                <MenuItem key={item.id} value={item.id}>
-                                  {item.class_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForClass_stream_subject[index]
-                            ?.class_id_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select a Class.</small>
-                              </p>
-                            )}
-                        </div>
-                        {box.is_Stream && (
-                          <div className="col-md-4 col-12 mb-3">
+                          {/* Subjects Selection */}
+                          <div className="col-md-4 col-12">
                             <label className="col-form-label">
-                              Stream Name<span>*</span>
+                              Subjects Taught<span>*</span>
                             </label>
                             <FormControl fullWidth>
-                              <InputLabel id={`stream_id_${index}`}>
-                                Stream Name
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject
                               </InputLabel>
                               <Select
-                                labelId={`stream_id_${index}`}
-                                id={`stream_select_${index}`}
-                                name="stream"
-                                label="Stream Name"
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                name="subjects"
+                                label="subjects"
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                              >
+                                {box.filteredSubjects
+                                  ?.filter((subject) =>
+                                    tescherSubjects?.includes(
+                                      subject.subject_name,
+                                    ),
+                                  )
+                                  .map((subject: any) => (
+                                    <MenuItem
+                                      key={subject.subject_id}
+                                      value={subject.subject_name}
+                                    >
+                                      {subject.subject_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    {selectedEntity.toLowerCase() === 'school' &&
+                      boxesForSchool.length > 0 &&
+                      boxesForSchool.map((box, index) => (
+                        <div
+                          key={index}
+                          className="row"
+                        >
+                          {/* Class Selection */}
+                          <div className={box.selected_class_name}>
+                            <label className="col-form-label">
+                              Class<span>*</span>
+                            </label>
+                            <FormControl fullWidth>
+                              <InputLabel id={`class_id_${index}`}>
+                                Class
+                              </InputLabel>
+                              <Select
+                                labelId={`class_id_${index}`}
+                                id={`class_select_${index}`}
+                                name="class_id"
                                 onChange={(event: any) =>
                                   handelSchoolBoxChange(event, index)
                                 }
-                                value={box.stream || ''}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '& .MuiSelect-icon': {
-                                    color: fieldIcon(namecolor),
-                                  },
-                                }}
-                                MenuProps={{
-                                  PaperProps: {
-                                    style: {
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                    },
-                                  },
-                                }}
+                                value={box.class_id || ''}
+                                input={<OutlinedInput label="Class" />}
                               >
-                                {teacherStream?.map((item) => (
-                                  <MenuItem
-                                    key={item}
-                                    value={item}
-                                    sx={{
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                      '&:hover': {
-                                        backgroundColor:
-                                          inputfieldhover(namecolor),
-                                      },
-                                    }}
-                                  >
-                                    {item}
+                                {dataClass.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.class_name}
                                   </MenuItem>
                                 ))}
                               </Select>
                             </FormControl>
                             {errorForClass_stream_subject[index]
-                              ?.stream_error && (
+                              ?.class_id_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Class.</small>
+                              </p>
+                            )}
+                          </div>
+                          {box.is_Stream && (
+                            <div className="col-md-4 col-12 mb-3">
+                              <label className="col-form-label">
+                                Stream Name<span>*</span>
+                              </label>
+                              <FormControl fullWidth>
+                                <InputLabel id={`stream_id_${index}`}>
+                                  Stream Name
+                                </InputLabel>
+                                <Select
+                                  labelId={`stream_id_${index}`}
+                                  id={`stream_select_${index}`}
+                                  name="stream"
+                                  label="Stream Name"
+                                  onChange={(event: any) =>
+                                    handelSchoolBoxChange(event, index)
+                                  }
+                                  value={box.stream || ''}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '& .MuiSelect-icon': {
+                                      color: fieldIcon(namecolor),
+                                    },
+                                  }}
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: {
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                      },
+                                    },
+                                  }}
+                                >
+                                  {teacherStream?.map((item) => (
+                                    <MenuItem
+                                      key={item}
+                                      value={item}
+                                      sx={{
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                        '&:hover': {
+                                          backgroundColor:
+                                            inputfieldhover(namecolor),
+                                        },
+                                      }}
+                                    >
+                                      {item}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                              {errorForClass_stream_subject[index]
+                                ?.stream_error && (
                                 <p
                                   className="error-text"
                                   style={{ color: 'red' }}
@@ -1367,268 +1434,312 @@ export const CreateAssignments = () => {
                                   <small>Please select a Stream.</small>
                                 </p>
                               )}
-                          </div>
-                        )}
-                        <div className={box.selected_class_name}>
-                          <label className="col-form-label">
-                            Subjects Taught<span>*</span>
-                          </label>
-                          <FormControl fullWidth>
-                            <InputLabel id={`subject_label_${index}`}>
-                              Subject
-                            </InputLabel>
-                            <Select
-                              labelId={`subject_label_${index}`}
-                              id={`subject_select_${index}`}
-                              multiple
-                              name="subjects"
-                              value={box.subjects || []}
-                              onChange={(event: any) =>
-                                handelSchoolBoxChange(event, index)
-                              }
-                              input={<OutlinedInput label="Subject" />}
-                              renderValue={(selected) =>
-                                (selected as string[])
-                                  .map((id) => {
-                                    const subject = totleSubject.find(
-                                      (subject: any) =>
-                                        subject.subject_name === id,
-                                    );
-                                    return subject ? subject.subject_name : '';
-                                  })
-                                  .join(', ')
-                              }
-                            >
-                              {box.filteredSubjects?.filter((subject) => tescherSchoolSubjects?.includes(subject.subject_name))?.map((subject: any) => (
-                                <MenuItem
-                                  key={subject.subject_id}
-                                  value={subject.subject_name}
-                                >
-                                  <Checkbox
-                                    checked={box.subjects?.includes(
-                                      subject.subject_name.toString(),
-                                    )}
-                                  />
-                                  <ListItemText
-                                    primary={subject.subject_name}
-                                  />
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          {errorForClass_stream_subject[index]
-                            ?.subjects_error && (
-                              <p className="error-text" style={{ color: 'red' }}>
-                                <small>Please select at least one subject.</small>
+                            </div>
+                          )}
+                          <div className={box.selected_class_name}>
+                            <label className="col-form-label">
+                              Subjects Taught<span>*</span>
+                            </label>
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                multiple
+                                name="subjects"
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
+                                }
+                                input={<OutlinedInput label="Subject" />}
+                                renderValue={(selected) =>
+                                  (selected as string[])
+                                    .map((id) => {
+                                      const subject = totleSubject.find(
+                                        (subject: any) =>
+                                          subject.subject_name === id,
+                                      );
+                                      return subject
+                                        ? subject.subject_name
+                                        : '';
+                                    })
+                                    .join(', ')
+                                }
+                              >
+                                {box.filteredSubjects
+                                  ?.filter((subject) =>
+                                    tescherSchoolSubjects?.includes(
+                                      subject.subject_name,
+                                    ),
+                                  )
+                                  ?.map((subject: any) => (
+                                    <MenuItem
+                                      key={subject.subject_id}
+                                      value={subject.subject_name}
+                                    >
+                                      <Checkbox
+                                        checked={box.subjects?.includes(
+                                          subject.subject_name.toString(),
+                                        )}
+                                      />
+                                      <ListItemText
+                                        primary={subject.subject_name}
+                                      />
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
                               </p>
                             )}
+                          </div>
                         </div>
+                      ))}
                       </div>
-                    ))}
-                  <div className='col-12'>
-                    <Box>
-                      <FormControlLabel
-                        control={<Checkbox checked={selectAll} onChange={handleChange} />}
-                        label="Select All"
-                      />
-                      <Autocomplete
-                        multiple
-                        options={listOfStudent || []}
-                        getOptionLabel={(option) => option.first_name + " " + option.last_name}
-                        value={selectedStudents}
-                        onChange={(_, newValue) => {
-                          setSelectedStudents(newValue);
-                          setSelectAll(newValue.length === listOfStudent?.length);
-                        }}
-                        renderInput={(params) => <TextField {...params} label="Select Students" placeholder='search students' />}
-                        renderOption={(props, option, { selected }) => (
-                          <li {...props}>
-                            <Checkbox checked={selected} />
-                            {option.first_name + " " + option.last_name}
-                          </li>
-                        )}
-                        renderTags={(value, getTagProps) => (
-                          <Box
-                            sx={{
-                              maxHeight: "75px", // Max height for 3 rows
-                              overflowY: "auto", // Enable scrolling
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: "4px",
-                            }}
-                          >
-                            {value.map((option, index) => (
-                              <Chip label={option.first_name + " " + option.last_name} {...getTagProps({ index })} />
-                            ))}
-                          </Box>
-                        )}
-                        sx={{
-                          "& .MuiAutocomplete-inputRoot": {
-                            flexWrap: "wrap",
-                          },
-                          "& .MuiAutocomplete-tagList": {
-                            maxHeight: "75px", // Ensures max height for selected chips
-                            overflowY: "auto", // Enables scrolling
-                          },
-                        }}
-                      />
-                    </Box>
-                  </div>
-                  <div className="col-12">
-                    <TextField
-                      fullWidth
-                      label="Contact Email"
-                      variant="outlined"
-                      name='contact_email'
-                      onChange={handleChanges}
-                      type="email"
-                      value={assignmentData.contact_email}
-                      autoComplete='off'
-                    />
-                    {
-                      contact_email_email && (
-                        <p className='error-text' style={{ color: 'red' }}>
-                          <small>
-                            Please enter a valid Email Id.
-                          </small>
-                        </p>
-                      )
-                    }
-                  </div>
-                  <div className="col-lg-12">
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <div className="row g-4">
-                        <div className="col-lg-6">
-                          <DesktopDatePicker
-                            label="Available From"
-                            value={availableFrom}
-                            onChange={handleAvailableFromChange}
-                            slots={{
-                              textField: (params) => <TextField {...params} />,
-                            }}
-                          />
-                          {
-                            availableFrom_error && (
-                              <p className='error-text' style={{ color: 'red' }}>
-                                <small>
-                                  Please select a available date.
-                                </small>
-                              </p>
-                            )
+                    <div className="col-12">
+                      <Box>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={selectAll}
+                              onChange={handleChange}
+                            />
                           }
-                        </div>
-                        <div className="col-lg-6">
-                          <DesktopDatePicker
-                            className="col-6"
-                            label="Due Date"
-                            value={dueDate}
-                            onChange={handleDueDateChange}
-                            slots={{
-                              textField: (params) => <TextField {...params} />,
-                            }}
-                          />
-                          {
-                            due_date_error && (
-                              <p className='error-text' style={{ color: 'red' }}>
-                                <small>
-                                  Please select a due date.
-                                </small>
-                              </p>
-                            )
+                          label="Select All"
+                        />
+                        <Autocomplete
+                          multiple
+                          options={listOfStudent || []}
+                          getOptionLabel={(option) =>
+                            option.first_name + ' ' + option.last_name
                           }
-                        </div>
-                        { error!=null &&(
-                          <span>
-                          <small className='error-text' style={{ color: 'red' }}>
-                            {error}
-                          </small>
-                        </span>
-                        )
-                        }
-                        
-                        <div className="col-lg-6">
-                          <TimePicker
-                            className="col-6"
-                            label="Due Time"
-                            value={dueTime} // Ensure it's a Dayjs object
-                            onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
-                            slots={{
-                              textField: (params) => <TextField {...params} />,
-                            }}
-                          />
-                          {
-                            dueTime_error && (
-                              <p className='error-text' style={{ color: 'red' }}>
-                                <small>
-                                  Please select a due time.
-                                </small>
-                              </p>
-                            )
-                          }
-                        </div>
-                      </div>
-                    </LocalizationProvider>
-                  </div>
-                  <div className="col-12">
-                    <div className="d-flex flex-column ">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={allowLateSubmission}
-                            onChange={(e) => setAllowLateSubmission(e.target.checked)}
-                          />
-                        }
-                        label="Allow late submissions"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox
-                          checked={sendNotification}
-                          onChange={(e) => setSendNotification(e.target.checked)}
-                        />}
-                        label="Send notification to students"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox
-                          checked={addToStudentRepost}
-                          onChange={(e) => setAddToStudentRepost(e.target.checked)}
-                        />}
-                        label="Add to student report"
-                      />
+                          value={selectedStudents}
+                          onChange={(_, newValue) => {
+                            setSelectedStudents(newValue);
+                            setSelectAll(
+                              newValue.length === listOfStudent?.length,
+                            );
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Select Students"
+                              placeholder="search students"
+                            />
+                          )}
+                          renderOption={(props, option, { selected }) => (
+                            <li {...props}>
+                              <Checkbox checked={selected} />
+                              {option.first_name + ' ' + option.last_name}
+                            </li>
+                          )}
+                          renderTags={(value, getTagProps) => (
+                            <Box
+                              sx={{
+                                maxHeight: '75px', // Max height for 3 rows
+                                overflowY: 'auto', // Enable scrolling
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: '4px',
+                              }}
+                            >
+                              {value.map((option, index) => (
+                                <Chip
+                                  label={
+                                    option.first_name + ' ' + option.last_name
+                                  }
+                                  {...getTagProps({ index })}
+                                />
+                              ))}
+                            </Box>
+                          )}
+                          sx={{
+                            '& .MuiAutocomplete-inputRoot': {
+                              flexWrap: 'wrap',
+                            },
+                            '& .MuiAutocomplete-tagList': {
+                              maxHeight: '75px', // Ensures max height for selected chips
+                              overflowY: 'auto', // Enables scrolling
+                            },
+                          }}
+                        />
+                      </Box>
                     </div>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="d-flex align-items-center gap-2 justify-content-end">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        style={{ marginTop: 20, marginRight: 10 }}
-                      >
-                        Preview
-                      </Button>
-                      <Button
+                    <div className="col-12">
+                      <TextField
+                        fullWidth
+                        label="Contact Email"
                         variant="outlined"
+                        name="contact_email"
+                        onChange={handleChanges}
+                        type="email"
+                        value={assignmentData.contact_email}
+                        autoComplete="off"
+                      />
+                      {contact_email_email && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please enter a valid Email Id.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-lg-12">
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <div className="row g-4">
+                          <div className="col-lg-4">
+                            <DesktopDatePicker
+                              label="Available From"
+                              value={availableFrom}
+                              onChange={handleAvailableFromChange}
+                              slots={{
+                                textField: (params) => (
+                                  <TextField {...params} />
+                                ),
+                              }}
+                            />
+                            {availableFrom_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a available date.</small>
+                              </p>
+                            )}
+                          </div>
+                          <div className="col-lg-4">
+                            <DesktopDatePicker
+                              className="col-6"
+                              label="Due Date"
+                              value={dueDate}
+                              onChange={handleDueDateChange}
+                              slots={{
+                                textField: (params) => (
+                                  <TextField {...params} />
+                                ),
+                              }}
+                            />
+                            {due_date_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a due date.</small>
+                              </p>
+                            )}
+                          </div>
+                          {error != null && (
+                            <span>
+                              <small
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                {error}
+                              </small>
+                            </span>
+                          )}
 
-                        color={saveAsDraft ? "primary" : "secondary"} // Change color dynamically
-                        style={{
-                          marginTop: 20,
-                          marginRight: 10,
-                        }}
-                        onClick={handleSaveAsDraft}
-                      >
-                        Save as Draft
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        style={{ marginTop: 20 }}
-                        onClick={submitAssignment}
-                      >
-                        Publish
-                      </Button>
+                          <div className="col-lg-4">
+                            <TimePicker
+                              className="col-6"
+                              label="Due Time"
+                              value={dueTime} // Ensure it's a Dayjs object
+                              onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
+                              slots={{
+                                textField: (params) => (
+                                  <TextField {...params} />
+                                ),
+                              }}
+                            />
+                            {dueTime_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a due time.</small>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </LocalizationProvider>
+                    </div>
+                    <div className="col-12">
+                      <div className="d-flex flex-column ">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={allowLateSubmission}
+                              onChange={(e) =>
+                                setAllowLateSubmission(e.target.checked)
+                              }
+                            />
+                          }
+                          label="Allow late submissions"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={sendNotification}
+                              onChange={(e) =>
+                                setSendNotification(e.target.checked)
+                              }
+                            />
+                          }
+                          label="Send notification to students"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={addToStudentRepost}
+                              onChange={(e) =>
+                                setAddToStudentRepost(e.target.checked)
+                              }
+                            />
+                          }
+                          label="Add to student report"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-lg-12">
+                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          style={{ marginTop: 20, marginRight: 10 }}
+                        >
+                          Preview
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
+                          style={{
+                            marginTop: 20,
+                            marginRight: 10,
+                          }}
+                          onClick={handleSaveAsDraft}
+                        >
+                          Save as Draft
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          style={{ marginTop: 20 }}
+                          onClick={submitAssignment}
+                        >
+                          Publish
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>

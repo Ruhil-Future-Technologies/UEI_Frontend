@@ -218,8 +218,8 @@ export const commonStyle = (namecolor: any) => ({
     color: 'black !important',
   },
   '&.Mui-selected, &:focus': {
-    backgroundColor: '#F7F0FE',
-    color: 'black !important',
+    //backgroundColor: '#F7F0FE',
+    //color: 'black !important',
   },
 });
 export const fieldIcon = (textcolor: any) => {
