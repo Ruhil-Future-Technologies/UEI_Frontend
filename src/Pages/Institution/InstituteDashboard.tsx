@@ -33,6 +33,7 @@ import {
   StudentRep0oDTO,
 } from '../../Components/Table/columns';
 import { Teacher } from '../TeacherRgistrationForm';
+import InstitutionCharts from './InstituteChart';
 
 const InstitutionDash = () => {
   const instituteLoginId = localStorage.getItem('user_uuid');
@@ -84,7 +85,6 @@ const InstitutionDash = () => {
         if (response?.status) {
           setTotleTeacher(response?.data?.teacher_count);
         }
-
       });
     } catch (error) {
       console.log(error);
@@ -472,6 +472,7 @@ const InstitutionDash = () => {
           </div>
 
           <InstituteGraphRepo />
+          <InstitutionCharts />
 
           <div className="col-xxl-8 d-flex align-items-stretch">
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
