@@ -122,6 +122,7 @@ const InstituteRegistrationForm = () => {
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const getUniversity = () => {
     getForRegistration(`${UniversityURL}`)
@@ -210,9 +211,20 @@ const InstituteRegistrationForm = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     setDocument_error(false);
+    setErrorMessage('');
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
+
+      // Check if any file is a duplicate
+    const duplicateFiles = filesArray.filter((file) =>
+      allselectedfiles.some((existingFile) => existingFile.name === file.name)
+    );
+
+    if (duplicateFiles.length > 0) {
+      setErrorMessage('This document has already been selected');
+      return; // Stop execution to prevent adding duplicate files
+    }
 
       setAllSelectedfiles((prevFiles) => [
         ...prevFiles, // Keep previously selected files
@@ -1301,6 +1313,7 @@ const InstituteRegistrationForm = () => {
                             </ul>
                           )}
                         </div>
+                        {errorMessage && <p style={{ color: 'red' }} className="text-red-500">{errorMessage}</p>}
                       </div>
                       <div className="col-lg-12">
                         <FormControlLabel
