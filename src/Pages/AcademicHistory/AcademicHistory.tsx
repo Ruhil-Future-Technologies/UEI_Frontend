@@ -628,6 +628,15 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       // const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
       // setTotalSemester(semesterCount)
     }
+     if (boxes[0]?.institute_type === 'school') {
+      const filterDataInstitute = institutesAll?.filter(
+                (item: any) =>
+          item.entity_type === 'school' &&
+          item.is_active  &&
+          item.is_approve == true,     
+         );
+             setInstitutes(filterDataInstitute || []);
+     }
   }, [boxes, activeForm]);
 
   //  const maxSemester = totalSemester && totalSemester?.length > 0
