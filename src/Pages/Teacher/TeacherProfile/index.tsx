@@ -1289,7 +1289,7 @@ const TeacherProfile = () => {
                             name="institution_id"
                             label="Institute"
                             onChange={handleSelect}
-                            value={teacherData?.institution_id}
+                            value={teacherData?.institute_id}
                             sx={{
                               backgroundColor: inputfield(namecolor),
                               color: inputfieldtext(namecolor),
