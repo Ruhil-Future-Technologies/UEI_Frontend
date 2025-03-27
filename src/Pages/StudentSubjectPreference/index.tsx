@@ -251,7 +251,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             // setSubjects(filteredData || []);
 
             if (
-              boxes[0]?.stream === '' ||
+              boxes[0]?.stream === 'general' ||
               boxes[0]?.stream === undefined ||
               boxes[0]?.stream === null
             ) {
@@ -559,7 +559,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       setSubjects(filterData);
     } else {
       if (
-        boxes[0]?.stream === '' ||
+        boxes[0]?.stream === 'general' ||
         boxes[0]?.stream === undefined ||
         boxes[0]?.stream === null
       ) {
@@ -716,7 +716,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       score_in_percentage: '',
       sem_id: boxes[0]?.sem_id || '',
       class_id: boxes[0]?.class_id || '',
-      stream: boxes[0]?.stream || '',
+      stream: boxes[0]?.stream || 'general',
       teacher_id: '',
       teachers: boxes[0]?.teachers || []
     };

@@ -461,9 +461,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       // Handle school-specific fields
       if (filteredBox.institution_type.toLowerCase() === 'school') {
         if (['class_11', 'class_12'].includes(particularClass)) {
-          filteredBox.stream = filteredBox.stream || '';
+          filteredBox.stream = filteredBox.stream || 'general';
         }else{
-          filteredBox.stream = '';
+          filteredBox.stream = 'general';
         }
         if (filteredBox.state_for_stateboard !== undefined) {
           filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
