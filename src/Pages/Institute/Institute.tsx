@@ -284,8 +284,8 @@ const Institute = () => {
                     )}
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Institute" />
-                    <Tab label="Pending Institute" />
+                    <Tab label="Total Institute" className={activeTab === 0 ? "": "text-color"}/>
+                    <Tab label="Pending Institute" className={activeTab === 1 ? "": "text-color"}/>
                   </Tabs>
                   <Box marginTop="10px">
                     <MaterialReactTable

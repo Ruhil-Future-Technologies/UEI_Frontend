@@ -60,3 +60,7 @@
   background-color: var(--inputbackcolor) !important;
   color: var(--inputlablecolor) !important;
 }
+[data-bs-theme='dark'] body
+.text-color {
+  color: var(--bs-body-color) !important;
+}
