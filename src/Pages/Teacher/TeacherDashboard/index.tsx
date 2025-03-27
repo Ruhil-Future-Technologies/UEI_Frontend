@@ -639,7 +639,10 @@ const TeacherDash = () => {
               <div className="overlay chat-toggle-btn-mobile"></div>
             </div>
           </div>
-          <div className="col-xxl-4 d-flex align-items-stretch mt-8">
+          <div
+            className="col-xxl-4 d-flex align-items-stretch "
+            style={{ marginTop: '40px' }}
+          >
             <div className="card w-100">
               <div className="card-body">
                 <h6 className="text-center mb-5 fs-18">Top Students</h6>
