@@ -134,6 +134,8 @@ function App() {
     localStorage.removeItem('student_id');
     localStorage.removeItem('_id');
     localStorage.removeItem('register_num');
+    localStorage.removeItem('user_session_data');
+    localStorage.removeItem('user_last_sync');
     synth.cancel();
     // logoutpro();
   };
@@ -297,15 +299,11 @@ function App() {
           />
           <Route
             path="/teacher-dashboard/edit-assignment/:id"
-            element={
-              <Protected Component={CreateAssignments} />
-            }
+            element={<Protected Component={CreateAssignments} />}
           />
           <Route
             path="/teacher-dashboard/assignment-details/:id"
-            element={
-              <Protected Component={AssignmentDetails} />
-            }
+            element={<Protected Component={AssignmentDetails} />}
           />
           <Route path="/teacher-dashboard/Content">
             <Route
@@ -321,7 +319,6 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
-
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
@@ -442,9 +439,11 @@ function App() {
           <Route path="/main/admin-list">
             <Route
               path=""
-              element={<Protected Component={AdminList} menuName="Admin List" />}
+              element={
+                <Protected Component={AdminList} menuName="Admin List" />
+              }
             />
-            </Route>
+          </Route>
           <Route path="/main/Student">
             <Route
               path=""

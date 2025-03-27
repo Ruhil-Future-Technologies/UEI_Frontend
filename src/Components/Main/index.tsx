@@ -9,8 +9,6 @@ import SessionTracker from '../Tracker';
 const Main = () => {
   const userId = localStorage.getItem('_id');
 
-  console.log({ userId });
-
   const synth: SpeechSynthesis = window?.speechSynthesis;
   useEffect(() => {
     synth.cancel();
