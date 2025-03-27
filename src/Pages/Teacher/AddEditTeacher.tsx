@@ -936,9 +936,8 @@ const AddEditTeacher = () => {
     } else {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
-        formData.append('is_verified', 'True');
       });
-
+      formData.append('is_verified', 'True');
       postData(`${QUERY_KEYS_TEACHER.TEACHER_ADD}`, formData)
         .then((data: any) => {
           if (data.status) {
