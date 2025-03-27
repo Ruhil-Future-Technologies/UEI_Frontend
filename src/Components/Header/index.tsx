@@ -33,8 +33,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
 const Header = () => {
-  const storageKey = `user_${localStorage.getItem('_id')}_active_time`;
-  const lastSyncKey = `user_${localStorage.getItem('_id')}_last_sync`;
   const context = useContext(NameContext);
   const {
     namepro,
@@ -99,12 +97,6 @@ const Header = () => {
   };
 
   const handlogout = async () => {
-    console.log(
-      'Before removal:',
-      localStorage.getItem(storageKey),
-      localStorage.getItem(lastSyncKey),
-    );
-
     await saveChat();
     setProPercentage(0);
     localStorage.removeItem('theme');
