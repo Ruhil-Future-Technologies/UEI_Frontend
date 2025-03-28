@@ -10,6 +10,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import MetisMenu from '@metismenu/react';
 import useApi from '../../hooks/useAPI';
@@ -49,7 +50,6 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (user_type === 'admin') {
-      
       setDashboardURL('/main/DashBoard');
     } else if (user_type === 'institute') {
       setDashboardURL('/institution-dashboard');
@@ -205,31 +205,41 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li>
-                  <Link
-                    to="/main/student/assignment"
-                    onClick={removeMobileToggle}
-                  >
-                    <div className="parent-icon">
-                      <LibraryBooksOutlinedIcon />
-                    </div>
-                    <div className="menu-title">Your Assignments</div>
-                  </Link>
-                </li>
+                      <Link
+                        to="/main/student/assignment"
+                        onClick={removeMobileToggle}
+                      >
+                        <div className="parent-icon">
+                          <LibraryBooksOutlinedIcon />
+                        </div>
+                        <div className="menu-title">Your Assignments</div>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/main/student/quiz"
+                        onClick={removeMobileToggle}
+                      >
+                        <div className="parent-icon">
+                          <QuestionAnswerOutlinedIcon />
+                        </div>
+                        <div className="menu-title">Quiz</div>
+                      </Link>
+                    </li>
                   </>
                 ) : (
                   ' '
-                //   <li>
-                //   <Link
-                //     to="/main/student/assignment"
-                //     onClick={removeMobileToggle}
-                //   >
-                //     <div className="parent-icon">
-                //       <LibraryBooksOutlinedIcon />
-                //     </div>
-                //     <div className="menu-title">Your Assignments</div>
-                //   </Link>
-                // </li>
-                  
+                  //   <li>
+                  //   <Link
+                  //     to="/main/student/assignment"
+                  //     onClick={removeMobileToggle}
+                  //   >
+                  //     <div className="parent-icon">
+                  //       <LibraryBooksOutlinedIcon />
+                  //     </div>
+                  //     <div className="menu-title">Your Assignments</div>
+                  //   </Link>
+                  // </li>
                 )}
               </>
             ) : (
