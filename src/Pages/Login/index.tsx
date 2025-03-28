@@ -447,11 +447,7 @@ const Login = () => {
                               Role
                             </label>
                             <FormControl fullWidth>
-                             
-                              <Select
-                                value={value}
-                                onChange={handleChange}                                
-                              >
+                              <Select value={value} onChange={handleChange}>
                                 <MenuItem value="student">Student</MenuItem>
                                 <MenuItem value="admin">Admin</MenuItem>
                                 <MenuItem value="institute">Institute</MenuItem>

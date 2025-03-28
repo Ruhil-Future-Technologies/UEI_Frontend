@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect } from 'react';
 import Header from '../Header/index';
 import Footer from '../Footer/index';
 import Sidebar from '../Sidebar/index';
 import { Outlet } from 'react-router-dom';
+import SessionTracker from '../Tracker';
 
 const Main = () => {
+  const userId = localStorage.getItem('_id');
+
   const synth: SpeechSynthesis = window?.speechSynthesis;
   useEffect(() => {
     synth.cancel();
@@ -17,6 +21,7 @@ const Main = () => {
         <div className="main_section" id="main-content">
           <Header />
           <Sidebar />
+          <SessionTracker userId={userId ? userId : ''} />
           <Outlet />
           <Footer />
         </div>

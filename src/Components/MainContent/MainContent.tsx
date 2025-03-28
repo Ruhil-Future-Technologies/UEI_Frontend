@@ -60,6 +60,7 @@ import theme from '../../theme';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
 import { ChatTable } from '../../Pages/Chat/Tablechat';
+import StudentDashboardCharts from '../Chart/StudentChart';
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
@@ -122,7 +123,6 @@ function MainContent() {
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
   const [flagged, setFlagged] = useState(false);
-  
 
   const handleFlag = () => {
     setFlagged(!flagged);
@@ -909,10 +909,10 @@ function MainContent() {
       getData(`${profileURL}/${userid}`)
         .then((data: any) => {
           if (data.data) {
-            if(data?.data?.basic_info?.id){
-              localStorage.setItem('userdata', JSON.stringify(data.data))
-              localStorage.setItem('_id', data?.data?.basic_info.id)
-              localStorage.setItem('register_num',data?.data?.register_num);
+            if (data?.data?.basic_info?.id) {
+              localStorage.setItem('userdata', JSON.stringify(data.data));
+              localStorage.setItem('_id', data?.data?.basic_info.id);
+              localStorage.setItem('register_num', data?.data?.register_num);
             }
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
@@ -3723,6 +3723,7 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
+                <StudentDashboardCharts />
               </div>
             </div>
           </main>

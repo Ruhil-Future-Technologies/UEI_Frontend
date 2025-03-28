@@ -518,125 +518,50 @@ const AddEditTeacher = () => {
     }
   }, [teacher.classes]);
 
-  // const SubjectsHandler = ({ values }: { values: ITeacherForm }) => {
-  //   useEffect(() => {
-  //     console.log("test build use 2",values)
+  useEffect(() => {
+    const initialClasses = teacher.classes;
 
-  //     if (values?.entity_id) {
-  //       if (isSchoolEntity(values.entity_id)) {
-  //         if (values.class_id) {
-  //           const filtered = schoolSubjects.filter(
-  //             (subject) => subject.class_id === values.class_id,
-  //           );
-  //           const higherClass = checkHigherClass(values.class_id, dataClasses);
-  //           if (higherClass) {
-  //             if (values.stream) {
-  //               const streamFiltered = filtered.filter(
-  //                 (subject) => subject.stream === values.stream,
-  //               );
-  //               setFilteredSubjects(streamFiltered);
-  //             } else {
-  //               setFilteredSubjects([]);
-  //             }
-  //             setStreams(
-  //               filtered
-  //                 .map((subject) => subject.stream)
-  //                 .filter(
-  //                   (stream, index, array) => array.indexOf(stream) === index,
-  //                 ),
-  //             );
-  //           } else {
-  //             setFilteredSubjects(filtered);
-  //             setStreams([]);
-  //           }
-  //         } else {
-  //           setFilteredSubjects([]);
-  //           setStreams([]);
-  //         }
-  //       }
-  //     }
-  //   }, [values?.class_id, values?.entity_id, values?.stream]);
-  //   return null;
-  // };
+    formRef.current?.setFieldValue('classes', initialClasses);
 
-  // useEffect(() => {
-  //   console.log("test build use 3",teacher)
-  //   console.log("test build use 33",collegeSubjects)
-  //   console.log("test build use 333",collegeInstitutes)
-  //   const initialCourses = teacher.courses;
-  //   formRef.current?.setFieldValue('courses', initialCourses);
-  //   setTeacher((prev) => ({
-  //     ...prev,
-  //     courses: initialCourses,
-  //   }));
-  //   initialCourses?.forEach((course, index) => {
-  //     if (course.course_id) {
-  //       const allSubjects = collegeSubjects.filter(
-  //         (subject) => subject.course_id === course.course_id,
-  //       );
-  //       const uniqueSemesters = allSubjects
-  //         .map((subject) => subject.semester_number)
-  //         .filter((semester, index, self) => self.indexOf(semester) === index)
-  //         .sort((a, b) => Number(a) - Number(b));
+    setTeacher((prev) => ({
+      ...prev,
+      classes: initialClasses,
+    }));
+    if (!Array.isArray(schoolSubjects)) {
+      return;
+    }
 
-  //       setCourseSemesters((prev) => ({
-  //         ...prev,
-  //         [index]: uniqueSemesters,
-  //       }));
-  //       if (course.semester) {
-  //         const filteredSubjects = allSubjects.filter(
-  //           (subject) => subject.semester_number === Number(course.semester),
-  //         );
-  //         setCourseSubjects((prev) => ({
-  //           ...prev,
-  //           [index]: filteredSubjects,
-  //         }));
-  //       }
-  //     }
-  //   });
-  // }, [teacher, collegeSubjects]);
+    initialClasses?.forEach((cls, index) => {
+      if (cls.class_id) {
+        const allSubjects = schoolSubjects.filter(
+          (subject) => subject.class_id === cls.class_id,
+        );
 
-  // useEffect(() => {
-  //   console.log("test build use 4",teacher.classes)
+        const uniqueStreams = allSubjects
+          .map((subject) => subject.stream)
+          .filter((stream, index, self) => self.indexOf(stream) === index);
 
-  //   const initialClasses = teacher.classes;
-  //   formRef.current?.setFieldValue('classes', initialClasses);
-  //   setTeacher((prev) => ({
-  //     ...prev,
-  //     classes: initialClasses,
-  //   }));
-  //   if (!Array.isArray(schoolSubjects)) {
-  //     return;
-  //   }
-  //   initialClasses?.forEach((cls, index) => {
-  //     if (cls.class_id) {
-  //       const allSubjects = schoolSubjects.filter(
-  //         (subject) => subject.class_id === cls.class_id,
-  //       );
+        setClassStreams((prev) => ({
+          ...prev,
+          [index]: uniqueStreams,
+        }));
 
-  //       const uniqueStreams = allSubjects
-  //         .map((subject) => subject.stream)
-  //         .filter((stream, index, self) => self.indexOf(stream) === index);
+        if (cls.stream) {
+          const filteredSubjects = allSubjects.filter(
+            (subject) =>
+              (subject.class_id === cls.class_id &&
+                subject.stream === cls.stream?.toLowerCase()) ||
+              subject.stream == '',
+          );
 
-  //       setClassStreams((prev) => ({
-  //         ...prev,
-  //         [index]: uniqueStreams,
-  //       }));
-  //       if (cls.stream) {
-  //         const filteredSubjects = allSubjects.filter(
-  //           (subject) =>
-  //             (subject.class_id === cls.class_id &&
-  //               subject.stream === cls.stream?.toLowerCase()) ||
-  //             subject.stream == '',
-  //         );
-  //         setClassSubjects((prev) => ({
-  //           ...prev,
-  //           [index]: filteredSubjects,
-  //         }));
-  //       }
-  //     }
-  //   });
-  // }, [teacher.classes, schoolSubjects]);
+          setClassSubjects((prev) => ({
+            ...prev,
+            [index]: filteredSubjects,
+          }));
+        }
+      }
+    });
+  }, [teacher?.classes, schoolSubjects]);
 
   useEffect(() => {
     if (teacher?.courses) {
@@ -2190,6 +2115,9 @@ const AddEditTeacher = () => {
                                           dataClasses,
                                         ) &&
                                           !cls.stream)
+                                      }
+                                      renderValue={(selected) =>
+                                        selected.join(', ')
                                       }
                                       sx={{
                                         backgroundColor: inputfield(namecolor),

@@ -218,6 +218,7 @@ const TeacherRegistrationPage = () => {
     [],
   );
   const [universityError, setUniversityError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const [boxes, setBoxes] = useState<Boxes[]>([
     {
@@ -952,9 +953,18 @@ const TeacherRegistrationPage = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     setDocument_error(false);
+    setErrorMessage('');
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
+      const duplicateFiles = filesArray.filter((file) =>
+        allselectedfiles.some((existingFile) => existingFile.name === file.name)
+      );
+  
+      if (duplicateFiles.length > 0) {
+        setErrorMessage('This document has already been selected');
+        return; // Stop execution to prevent adding duplicate files
+      }
 
       setAllSelectedfiles((prevFiles) => [
         ...prevFiles, // Keep previously selected files
@@ -2346,6 +2356,7 @@ const TeacherRegistrationPage = () => {
                           )}
                         </div>
                         <div>
+                        {errorMessage && <p style={{ color: 'red' }} className="text-red-500">{errorMessage}</p>}
                           {document_error && (
                             <p className="error-text " style={{ color: 'red' }}>
                               <small>

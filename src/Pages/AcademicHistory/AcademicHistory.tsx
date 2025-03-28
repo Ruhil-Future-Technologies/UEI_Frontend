@@ -461,9 +461,9 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       // Handle school-specific fields
       if (filteredBox.institution_type.toLowerCase() === 'school') {
         if (['class_11', 'class_12'].includes(particularClass)) {
-          filteredBox.stream = filteredBox.stream || '';
+          filteredBox.stream = filteredBox.stream || 'general';
         }else{
-          filteredBox.stream = '';
+          filteredBox.stream = 'general';
         }
         if (filteredBox.state_for_stateboard !== undefined) {
           filteredBox.state_for_stateboard = String(filteredBox.state_for_stateboard);
@@ -628,6 +628,15 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
       // const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
       // setTotalSemester(semesterCount)
     }
+     if (boxes[0]?.institute_type === 'school') {
+      const filterDataInstitute = institutesAll?.filter(
+                (item: any) =>
+          item.entity_type === 'school' &&
+          item.is_active  &&
+          item.is_approve == true,     
+         );
+             setInstitutes(filterDataInstitute || []);
+     }
   }, [boxes, activeForm]);
 
   //  const maxSemester = totalSemester && totalSemester?.length > 0

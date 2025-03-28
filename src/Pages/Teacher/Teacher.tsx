@@ -527,6 +527,7 @@ const Teacher = () => {
                       state={{
                         columnVisibility,
                       }}
+                      onColumnVisibilityChange={setColumnVisibility}
                       enableRowVirtualization
                       positionActionsColumn="first"
                       muiTablePaperProps={{
