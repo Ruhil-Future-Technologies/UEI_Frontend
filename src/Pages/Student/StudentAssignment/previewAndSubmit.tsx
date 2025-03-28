@@ -30,6 +30,7 @@ const PreviewAndSubmit = () => {
   const { getData, postData } = useApi();
   const { id } = useParams();
   const student_id = localStorage.getItem('user_uuid')
+  const stud_id = localStorage.getItem('student_id')
   const [assignmentData, setAssignmentData] = useState<Assignment>();
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
@@ -148,6 +149,7 @@ if(check)return;
     const formData = new FormData();
 
     formData.append('assignment_id', assignmentData?.id as string)
+    formData.append('student_id', stud_id as string)
     formData.append('text', value)
     allselectedfiles.forEach((file) => {
       formData.append('file', file);
