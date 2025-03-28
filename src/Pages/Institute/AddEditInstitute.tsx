@@ -57,7 +57,8 @@ const AddEditInstitute = () => {
   const mobilePattern = /^(?!0{10})[0-9]{10}$/;
   const emailPattern = /\S+@\S+\.\S+/;
   const pincodePattern = /^(?!0{6})[0-9]{6}$/;
-  const websiteRegex =  /^(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)$/;
+  const websiteRegex =
+    /^(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)$/;
 
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const initialState = {
@@ -333,7 +334,9 @@ const AddEditInstitute = () => {
       delete filteredData.university_id;
     }
     const isDataUnchanged = Object.keys(filteredData).every(
-      (key) => filteredData[key as keyof IInstituteForm] === institute[key as keyof IInstituteForm]
+      (key) =>
+        filteredData[key as keyof IInstituteForm] ===
+        institute[key as keyof IInstituteForm],
     );
     if (id) {
       if (isDataUnchanged) {
@@ -370,8 +373,8 @@ const AddEditInstitute = () => {
     } else {
       const newInstituteData = {
         ...filteredData,
-        is_verified: 'True',  // Add this key only in the else block
-    };
+        is_verified: 'True', // Add this key only in the else block
+      };
       postData(`${InstituteAddURL}`, newInstituteData)
         .then((data: { status: boolean; message: string }) => {
           if (data.status) {
@@ -546,15 +549,15 @@ const AddEditInstitute = () => {
             return !exists;
           }),
 
-          website_url: Yup.string()
+        website_url: Yup.string()
           .nullable()
           .test(
-            "is-valid-url",
-            "Please enter a valid URL format (e.g., https://example.com).",
+            'is-valid-url',
+            'Please enter a valid URL format (e.g., https://example.com).',
             (value) => {
               if (!value) return true; // Allow empty values
               return websiteRegex.test(value); // Validate only if a value is present
-            }
+            },
           ),
       });
     } else {
@@ -660,15 +663,15 @@ const AddEditInstitute = () => {
             );
             return !exists;
           }),
-          website_url: Yup.string()
+        website_url: Yup.string()
           .nullable()
           .test(
-            "is-valid-url",
-            "Please enter a valid URL format (e.g., https://example.com).",
+            'is-valid-url',
+            'Please enter a valid URL format (e.g., https://example.com).',
             (value) => {
               if (!value) return true; // Allow empty values
               return websiteRegex.test(value); // Validate only if a value is present
-            }
+            },
           ),
       });
     }
@@ -718,7 +721,16 @@ const AddEditInstitute = () => {
               validationSchema={instituteSchema}
               innerRef={formRef}
             >
-              {({ errors, values, touched,setFieldValue,setFieldTouched }) => (
+              {({
+                errors,
+                values,
+                touched,
+                setFieldValue,
+                setFieldTouched,
+
+                isValid,
+                dirty,
+              }) => (
                 <Form>
                   <div className="row gy-4 mt-0">
                     <div className="col-md-4">
@@ -1084,20 +1096,21 @@ const AddEditInstitute = () => {
                           // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                           //   handleChange(e, 'website_url')
                           // }
-                          onChange={(e:any) => {
-                            handleChange(e, 'website_url')
+                          onChange={(e: any) => {
+                            handleChange(e, 'website_url');
                             setFieldValue('website_url', e?.target?.value);
-                            setFieldTouched('website_url', true, false);  // Manually trigger validation
+                            setFieldTouched('website_url', true, false); // Manually trigger validation
                           }}
                         />
-                        {errors?.website_url && <p style={{ color: 'red' }}>{errors?.website_url}</p>}
-
-                                      
+                        {errors?.website_url && (
+                          <p style={{ color: 'red' }}>{errors?.website_url}</p>
+                        )}
                       </div>
                     </div>
                   </div>
                   <button
                     type="submit"
+                    disabled={!dirty || !isValid}
                     className="btn btn-primary mainbutton mt-4"
                   >
                     {id ? 'Update' : 'Save'}
