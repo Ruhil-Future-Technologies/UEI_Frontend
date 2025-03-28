@@ -76,385 +76,383 @@ const InstitutionCharts = () => {
 
   useEffect(() => {
     const fetchData = async () => {};
-    let session: any = "await getData(`${'call session api '}`)";
-    session = {
-      teachers: {
-        '3c0a895e-7fa0-4926-a37d-02580d634cf7': {
-          Jan: {
-            total: 187,
-            week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
-            week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
-            week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
-            week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
-          },
-          Feb: {
-            total: 165,
-            week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
-            week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
-            week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
-            week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
-          },
-          March: {
-            total: 192,
-            week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
-            week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
-            week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
-            week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
-          },
-        },
-        '4493d988-f834-484e-adf9-5c53ab486259': {
-          Jan: {
-            total: 178,
-            week1: { days: [2, 5, 8, 1, 7, 3, 6], total: 40 },
-            week2: { days: [4, 9, 2, 7, 0, 5, 8], total: 46 },
-            week3: { days: [6, 1, 4, 9, 3, 7, 2], total: 39 },
-            week4: { days: [0, 8, 5, 2, 6, 4, 1], total: 43 },
-          },
-          Feb: {
-            total: 190,
-            week1: { days: [7, 3, 6, 0, 9, 2, 5], total: 48 },
-            week2: { days: [1, 4, 8, 3, 7, 6, 2], total: 44 },
-            week3: { days: [5, 2, 9, 4, 8, 1, 7], total: 47 },
-            week4: { days: [3, 6, 0, 5, 2, 9, 4], total: 41 },
-          },
-          March: {
-            total: 175,
-            week1: { days: [8, 1, 5, 7, 3, 6, 2], total: 45 },
-            week2: { days: [4, 9, 2, 6, 0, 7, 3], total: 42 },
-            week3: { days: [1, 7, 4, 8, 2, 5, 9], total: 46 },
-            week4: { days: [6, 3, 0, 9, 4, 8, 1], total: 40 },
-          },
-        },
-        '4796978c-526c-47a3-85f0-b699ecb75ea2': {
-          Jan: {
-            total: 182,
-            week1: { days: [3, 6, 1, 8, 4, 7, 2], total: 44 },
-            week2: { days: [5, 2, 9, 0, 6, 3, 7], total: 41 },
-            week3: { days: [8, 4, 2, 7, 1, 5, 9], total: 47 },
-            week4: { days: [0, 7, 3, 6, 2, 8, 4], total: 43 },
-          },
-          Feb: {
-            total: 168,
-            week1: { days: [9, 1, 5, 3, 7, 2, 6], total: 45 },
-            week2: { days: [4, 8, 0, 5, 9, 1, 7], total: 42 },
-            week3: { days: [2, 6, 3, 8, 4, 7, 1], total: 46 },
-            week4: { days: [7, 0, 4, 9, 2, 5, 8], total: 40 },
-          },
-          March: {
-            total: 195,
-            week1: { days: [1, 5, 8, 2, 6, 3, 9], total: 47 },
-            week2: { days: [4, 7, 0, 6, 1, 8, 2], total: 43 },
-            week3: { days: [3, 9, 4, 7, 2, 5, 8], total: 48 },
-            week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 41 },
-          },
-        },
-        'c005054e-e7d7-4f58-a18f-a102698c40c9': {
-          Jan: {
-            total: 176,
-            week1: { days: [2, 7, 4, 9, 1, 6, 3], total: 42 },
-            week2: { days: [5, 0, 8, 3, 7, 2, 4], total: 45 },
-            week3: { days: [6, 1, 5, 8, 0, 9, 2], total: 47 },
-            week4: { days: [3, 7, 2, 6, 4, 8, 1], total: 43 },
-          },
-          Feb: {
-            total: 185,
-            week1: { days: [9, 3, 6, 2, 7, 4, 8], total: 46 },
-            week2: { days: [1, 5, 0, 7, 3, 9, 2], total: 44 },
-            week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-            week4: { days: [0, 9, 3, 5, 8, 1, 6], total: 41 },
-          },
-          March: {
-            total: 180,
-            week1: { days: [7, 2, 5, 9, 4, 8, 1], total: 47 },
-            week2: { days: [3, 6, 0, 8, 2, 7, 4], total: 43 },
-            week3: { days: [5, 1, 9, 4, 6, 3, 8], total: 45 },
-            week4: { days: [2, 7, 4, 0, 9, 5, 6], total: 42 },
-          },
-        },
-        'c80edb24-252d-41e4-b9e6-ca437d0d8f30': {
-          Jan: {
-            total: 190,
-            week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
-            week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
-            week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
-            week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
-          },
-          Feb: {
-            total: 175,
-            week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
-            week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
-            week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-            week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
-          },
-          March: {
-            total: 185,
-            week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
-            week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
-            week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
-            week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
-          },
-        },
-        'cf9a761e-1483-4f2b-89e1-ece3438b6598': {
-          Jan: {
-            total: 190,
-            week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
-            week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
-            week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
-            week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
-          },
-          Feb: {
-            total: 175,
-            week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
-            week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
-            week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-            week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
-          },
-          March: {
-            total: 185,
-            week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
-            week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
-            week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
-            week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
-          },
-        },
-      },
-      students: {
-        '6d2defe0-8d3b-4a16-b1e5-539974333bed': {
-          Jan: {
-            total: 180,
-            week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
-            week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
-            week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
-            week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
-          },
-          Feb: {
-            total: 165,
-            week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
-            week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
-            week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
-            week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
-          },
-          March: {
-            total: 192,
-            week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
-            week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
-            week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
-            week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
-          },
-        },
-        '24e589dd-8b90-4e51-bf75-0ff90ea544dc': {
-          Jan: {
-            total: 178,
-            week1: { days: [2, 5, 8, 1, 7, 3, 6], total: 40 },
-            week2: { days: [4, 9, 2, 7, 0, 5, 8], total: 46 },
-            week3: { days: [6, 1, 4, 9, 3, 7, 2], total: 39 },
-            week4: { days: [0, 8, 5, 2, 6, 4, 1], total: 43 },
-          },
-          Feb: {
-            total: 190,
-            week1: { days: [7, 3, 6, 0, 9, 2, 5], total: 48 },
-            week2: { days: [1, 4, 8, 3, 7, 6, 2], total: 44 },
-            week3: { days: [5, 2, 9, 4, 8, 1, 7], total: 47 },
-            week4: { days: [3, 6, 0, 5, 2, 9, 4], total: 41 },
-          },
-          March: {
-            total: 175,
-            week1: { days: [8, 1, 5, 7, 3, 6, 2], total: 45 },
-            week2: { days: [4, 9, 2, 6, 0, 7, 3], total: 42 },
-            week3: { days: [1, 7, 4, 8, 2, 5, 9], total: 46 },
-            week4: { days: [6, 3, 0, 9, 4, 8, 1], total: 40 },
-          },
-        },
-        'b6416263-ee02-4aef-b4c8-7391aa0452da': {
-          Jan: {
-            total: 182,
-            week1: { days: [3, 6, 1, 8, 4, 7, 2], total: 44 },
-            week2: { days: [5, 2, 9, 0, 6, 3, 7], total: 41 },
-            week3: { days: [8, 4, 2, 7, 1, 5, 9], total: 47 },
-            week4: { days: [0, 7, 3, 6, 2, 8, 4], total: 43 },
-          },
-          Feb: {
-            total: 168,
-            week1: { days: [9, 1, 5, 3, 7, 2, 6], total: 45 },
-            week2: { days: [4, 8, 0, 5, 9, 1, 7], total: 42 },
-            week3: { days: [2, 6, 3, 8, 4, 7, 1], total: 46 },
-            week4: { days: [7, 0, 4, 9, 2, 5, 8], total: 40 },
-          },
-          March: {
-            total: 195,
-            week1: { days: [1, 5, 8, 2, 6, 3, 9], total: 47 },
-            week2: { days: [4, 7, 0, 6, 1, 8, 2], total: 43 },
-            week3: { days: [3, 9, 4, 7, 2, 5, 8], total: 48 },
-            week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 41 },
-          },
-        },
-        'b6cc176a-ec2b-4ca1-a510-0bd7addd4b4e': {
-          Jan: {
-            total: 176,
-            week1: { days: [2, 7, 4, 9, 1, 6, 3], total: 42 },
-            week2: { days: [5, 0, 8, 3, 7, 2, 4], total: 45 },
-            week3: { days: [6, 1, 5, 8, 0, 9, 2], total: 47 },
-            week4: { days: [3, 7, 2, 6, 4, 8, 1], total: 43 },
-          },
-          Feb: {
-            total: 185,
-            week1: { days: [9, 3, 6, 2, 7, 4, 8], total: 46 },
-            week2: { days: [1, 5, 0, 7, 3, 9, 2], total: 44 },
-            week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-            week4: { days: [0, 9, 3, 5, 8, 1, 6], total: 41 },
-          },
-          March: {
-            total: 180,
-            week1: { days: [7, 2, 5, 9, 4, 8, 1], total: 47 },
-            week2: { days: [3, 6, 0, 8, 2, 7, 4], total: 43 },
-            week3: { days: [5, 1, 9, 4, 6, 3, 8], total: 45 },
-            week4: { days: [2, 7, 4, 0, 9, 5, 6], total: 42 },
-          },
-        },
-        '907de304-e1a1-4aab-923c-e599a43739b2': {
-          Jan: {
-            total: 190,
-            week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
-            week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
-            week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
-            week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
-          },
-          Feb: {
-            total: 175,
-            week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
-            week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
-            week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-            week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
-          },
-          March: {
-            total: 185,
-            week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
-            week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
-            week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
-            week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
-          },
-        },
-        '5d6503ad-6b57-4a7e-99bb-2931cc405c98': {
-          Jan: {
-            total: 180,
-            week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
-            week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
-            week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
-            week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
-          },
-          Feb: {
-            total: 165,
-            week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
-            week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
-            week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
-            week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
-          },
-          March: {
-            total: 192,
-            week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
-            week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
-            week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
-            week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
-          },
-        },
-      },
-    };
+    // let session: any = "await getData(`${'call session api '}`)";
+    // session = {
+    //   teachers: {
+    //     '3c0a895e-7fa0-4926-a37d-02580d634cf7': {
+    //       Jan: {
+    //         total: 187,
+    //         week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
+    //         week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
+    //         week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
+    //         week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
+    //       },
+    //       Feb: {
+    //         total: 165,
+    //         week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
+    //         week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
+    //         week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
+    //         week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
+    //       },
+    //       March: {
+    //         total: 192,
+    //         week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
+    //         week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
+    //         week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
+    //         week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
+    //       },
+    //     },
+    //     '4493d988-f834-484e-adf9-5c53ab486259': {
+    //       Jan: {
+    //         total: 178,
+    //         week1: { days: [2, 5, 8, 1, 7, 3, 6], total: 40 },
+    //         week2: { days: [4, 9, 2, 7, 0, 5, 8], total: 46 },
+    //         week3: { days: [6, 1, 4, 9, 3, 7, 2], total: 39 },
+    //         week4: { days: [0, 8, 5, 2, 6, 4, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 190,
+    //         week1: { days: [7, 3, 6, 0, 9, 2, 5], total: 48 },
+    //         week2: { days: [1, 4, 8, 3, 7, 6, 2], total: 44 },
+    //         week3: { days: [5, 2, 9, 4, 8, 1, 7], total: 47 },
+    //         week4: { days: [3, 6, 0, 5, 2, 9, 4], total: 41 },
+    //       },
+    //       March: {
+    //         total: 175,
+    //         week1: { days: [8, 1, 5, 7, 3, 6, 2], total: 45 },
+    //         week2: { days: [4, 9, 2, 6, 0, 7, 3], total: 42 },
+    //         week3: { days: [1, 7, 4, 8, 2, 5, 9], total: 46 },
+    //         week4: { days: [6, 3, 0, 9, 4, 8, 1], total: 40 },
+    //       },
+    //     },
+    //     '4796978c-526c-47a3-85f0-b699ecb75ea2': {
+    //       Jan: {
+    //         total: 182,
+    //         week1: { days: [3, 6, 1, 8, 4, 7, 2], total: 44 },
+    //         week2: { days: [5, 2, 9, 0, 6, 3, 7], total: 41 },
+    //         week3: { days: [8, 4, 2, 7, 1, 5, 9], total: 47 },
+    //         week4: { days: [0, 7, 3, 6, 2, 8, 4], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 168,
+    //         week1: { days: [9, 1, 5, 3, 7, 2, 6], total: 45 },
+    //         week2: { days: [4, 8, 0, 5, 9, 1, 7], total: 42 },
+    //         week3: { days: [2, 6, 3, 8, 4, 7, 1], total: 46 },
+    //         week4: { days: [7, 0, 4, 9, 2, 5, 8], total: 40 },
+    //       },
+    //       March: {
+    //         total: 195,
+    //         week1: { days: [1, 5, 8, 2, 6, 3, 9], total: 47 },
+    //         week2: { days: [4, 7, 0, 6, 1, 8, 2], total: 43 },
+    //         week3: { days: [3, 9, 4, 7, 2, 5, 8], total: 48 },
+    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 41 },
+    //       },
+    //     },
+    //     'c005054e-e7d7-4f58-a18f-a102698c40c9': {
+    //       Jan: {
+    //         total: 176,
+    //         week1: { days: [2, 7, 4, 9, 1, 6, 3], total: 42 },
+    //         week2: { days: [5, 0, 8, 3, 7, 2, 4], total: 45 },
+    //         week3: { days: [6, 1, 5, 8, 0, 9, 2], total: 47 },
+    //         week4: { days: [3, 7, 2, 6, 4, 8, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 185,
+    //         week1: { days: [9, 3, 6, 2, 7, 4, 8], total: 46 },
+    //         week2: { days: [1, 5, 0, 7, 3, 9, 2], total: 44 },
+    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
+    //         week4: { days: [0, 9, 3, 5, 8, 1, 6], total: 41 },
+    //       },
+    //       March: {
+    //         total: 180,
+    //         week1: { days: [7, 2, 5, 9, 4, 8, 1], total: 47 },
+    //         week2: { days: [3, 6, 0, 8, 2, 7, 4], total: 43 },
+    //         week3: { days: [5, 1, 9, 4, 6, 3, 8], total: 45 },
+    //         week4: { days: [2, 7, 4, 0, 9, 5, 6], total: 42 },
+    //       },
+    //     },
+    //     'c80edb24-252d-41e4-b9e6-ca437d0d8f30': {
+    //       Jan: {
+    //         total: 190,
+    //         week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
+    //         week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
+    //         week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
+    //         week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 175,
+    //         week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
+    //         week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
+    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
+    //         week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
+    //       },
+    //       March: {
+    //         total: 185,
+    //         week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
+    //         week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
+    //         week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
+    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
+    //       },
+    //     },
+    //     'cf9a761e-1483-4f2b-89e1-ece3438b6598': {
+    //       Jan: {
+    //         total: 190,
+    //         week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
+    //         week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
+    //         week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
+    //         week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 175,
+    //         week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
+    //         week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
+    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
+    //         week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
+    //       },
+    //       March: {
+    //         total: 185,
+    //         week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
+    //         week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
+    //         week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
+    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
+    //       },
+    //     },
+    //   },
+    //   students: {
+    //     '6d2defe0-8d3b-4a16-b1e5-539974333bed': {
+    //       Jan: {
+    //         total: 180,
+    //         week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
+    //         week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
+    //         week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
+    //         week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
+    //       },
+    //       Feb: {
+    //         total: 165,
+    //         week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
+    //         week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
+    //         week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
+    //         week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
+    //       },
+    //       March: {
+    //         total: 192,
+    //         week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
+    //         week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
+    //         week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
+    //         week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
+    //       },
+    //     },
+    //     '24e589dd-8b90-4e51-bf75-0ff90ea544dc': {
+    //       Jan: {
+    //         total: 178,
+    //         week1: { days: [2, 5, 8, 1, 7, 3, 6], total: 40 },
+    //         week2: { days: [4, 9, 2, 7, 0, 5, 8], total: 46 },
+    //         week3: { days: [6, 1, 4, 9, 3, 7, 2], total: 39 },
+    //         week4: { days: [0, 8, 5, 2, 6, 4, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 190,
+    //         week1: { days: [7, 3, 6, 0, 9, 2, 5], total: 48 },
+    //         week2: { days: [1, 4, 8, 3, 7, 6, 2], total: 44 },
+    //         week3: { days: [5, 2, 9, 4, 8, 1, 7], total: 47 },
+    //         week4: { days: [3, 6, 0, 5, 2, 9, 4], total: 41 },
+    //       },
+    //       March: {
+    //         total: 175,
+    //         week1: { days: [8, 1, 5, 7, 3, 6, 2], total: 45 },
+    //         week2: { days: [4, 9, 2, 6, 0, 7, 3], total: 42 },
+    //         week3: { days: [1, 7, 4, 8, 2, 5, 9], total: 46 },
+    //         week4: { days: [6, 3, 0, 9, 4, 8, 1], total: 40 },
+    //       },
+    //     },
+    //     'b6416263-ee02-4aef-b4c8-7391aa0452da': {
+    //       Jan: {
+    //         total: 182,
+    //         week1: { days: [3, 6, 1, 8, 4, 7, 2], total: 44 },
+    //         week2: { days: [5, 2, 9, 0, 6, 3, 7], total: 41 },
+    //         week3: { days: [8, 4, 2, 7, 1, 5, 9], total: 47 },
+    //         week4: { days: [0, 7, 3, 6, 2, 8, 4], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 168,
+    //         week1: { days: [9, 1, 5, 3, 7, 2, 6], total: 45 },
+    //         week2: { days: [4, 8, 0, 5, 9, 1, 7], total: 42 },
+    //         week3: { days: [2, 6, 3, 8, 4, 7, 1], total: 46 },
+    //         week4: { days: [7, 0, 4, 9, 2, 5, 8], total: 40 },
+    //       },
+    //       March: {
+    //         total: 195,
+    //         week1: { days: [1, 5, 8, 2, 6, 3, 9], total: 47 },
+    //         week2: { days: [4, 7, 0, 6, 1, 8, 2], total: 43 },
+    //         week3: { days: [3, 9, 4, 7, 2, 5, 8], total: 48 },
+    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 41 },
+    //       },
+    //     },
+    //     'b6cc176a-ec2b-4ca1-a510-0bd7addd4b4e': {
+    //       Jan: {
+    //         total: 176,
+    //         week1: { days: [2, 7, 4, 9, 1, 6, 3], total: 42 },
+    //         week2: { days: [5, 0, 8, 3, 7, 2, 4], total: 45 },
+    //         week3: { days: [6, 1, 5, 8, 0, 9, 2], total: 47 },
+    //         week4: { days: [3, 7, 2, 6, 4, 8, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 185,
+    //         week1: { days: [9, 3, 6, 2, 7, 4, 8], total: 46 },
+    //         week2: { days: [1, 5, 0, 7, 3, 9, 2], total: 44 },
+    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
+    //         week4: { days: [0, 9, 3, 5, 8, 1, 6], total: 41 },
+    //       },
+    //       March: {
+    //         total: 180,
+    //         week1: { days: [7, 2, 5, 9, 4, 8, 1], total: 47 },
+    //         week2: { days: [3, 6, 0, 8, 2, 7, 4], total: 43 },
+    //         week3: { days: [5, 1, 9, 4, 6, 3, 8], total: 45 },
+    //         week4: { days: [2, 7, 4, 0, 9, 5, 6], total: 42 },
+    //       },
+    //     },
+    //     '907de304-e1a1-4aab-923c-e599a43739b2': {
+    //       Jan: {
+    //         total: 190,
+    //         week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
+    //         week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
+    //         week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
+    //         week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
+    //       },
+    //       Feb: {
+    //         total: 175,
+    //         week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
+    //         week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
+    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
+    //         week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
+    //       },
+    //       March: {
+    //         total: 185,
+    //         week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
+    //         week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
+    //         week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
+    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
+    //       },
+    //     },
+    //     '5d6503ad-6b57-4a7e-99bb-2931cc405c98': {
+    //       Jan: {
+    //         total: 180,
+    //         week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
+    //         week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
+    //         week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
+    //         week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
+    //       },
+    //       Feb: {
+    //         total: 165,
+    //         week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
+    //         week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
+    //         week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
+    //         week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
+    //       },
+    //       March: {
+    //         total: 192,
+    //         week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
+    //         week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
+    //         week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
+    //         week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
+    //       },
+    //     },
+    //   },
+    // };
 
-    setSessionData(session);
+    // setSessionData(session);
 
-    let assignment: any = "await getData(`${'call  Assignment api '}`)";
-    assignment = {
-      subject_categories: {
-        9: {
-          low: 23,
-          medium: 30,
-          high: 20,
-          very_high: 10,
-        },
-        10: {
-          low: 27,
-          medium: 20,
-          high: 30,
-          very_high: 20,
-        },
-        14: {
-          low: 10,
-          medium: 50,
-          high: 20,
-          very_high: 9,
-        },
-        15: {
-          low: 23,
-          medium: 30,
-          high: 10,
-          very_high: 5,
-        },
-        13: {
-          low: 27,
-          medium: 30,
-          high: 8,
-          very_high: 20,
-        },
-        23: {
-          low: 27,
-          medium: 30,
-          high: 8,
-          very_high: 20,
-        },
-        24: {
-          low: 27,
-          medium: 30,
-          high: 8,
-          very_high: 20,
-        },
-        25: {
-          low: 27,
-          medium: 30,
-          high: 8,
-          very_high: 20,
-        },
-        27: {
-          low: 27,
-          medium: 30,
-          high: 8,
-          very_high: 20,
-        },
-        26: {
-          low: 27,
-          medium: 30,
-          high: 8,
-          very_high: 20,
-        },
-      },
-    };
-    setAssignmentData(assignment);
+    // let assignment: any = "await getData(`${'call  Assignment api '}`)";
+    // assignment = {
+    //   9: {
+    //     low: 23,
+    //     medium: 30,
+    //     high: 20,
+    //     very_high: 10,
+    //   },
+    //   10: {
+    //     low: 27,
+    //     medium: 20,
+    //     high: 30,
+    //     very_high: 20,
+    //   },
+    //   14: {
+    //     low: 10,
+    //     medium: 50,
+    //     high: 20,
+    //     very_high: 9,
+    //   },
+    //   15: {
+    //     low: 23,
+    //     medium: 30,
+    //     high: 10,
+    //     very_high: 5,
+    //   },
+    //   13: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   23: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   24: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   25: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   27: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   26: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    // };
+    // setAssignmentData(assignment);
 
-    let users: any = "await getData(`${'call student  users active  api '}`)";
-    users = {
-      less_active: {
-        Jan: {
-          weeks: [45, 56, 23, 45, 56],
-        },
-        Feb: {
-          weeks: [45, 56, 23, 45, 56],
-        },
-        March: {
-          weeks: [55, 30, 63, 35, 86],
-        },
-      },
-      more_active: {
-        Jan: {
-          weeks: [30, 20, 44, 70, 56],
-        },
-        Feb: {
-          weeks: [45, 56, 23, 45, 56],
-        },
-        March: {
-          weeks: [55, 30, 63, 35, 86],
-        },
-      },
-    };
-    setUserData(users);
+    // let users: any = "await getData(`${'call student  users active  api '}`)";
+    // users = {
+    //   less_active: {
+    //     Jan: {
+    //       weeks: [45, 56, 23, 45, 56],
+    //     },
+    //     Feb: {
+    //       weeks: [45, 56, 23, 45, 56],
+    //     },
+    //     March: {
+    //       weeks: [55, 30, 63, 35, 86],
+    //     },
+    //   },
+    //   more_active: {
+    //     Jan: {
+    //       weeks: [30, 20, 44, 70, 56],
+    //     },
+    //     Feb: {
+    //       weeks: [45, 56, 23, 45, 56],
+    //     },
+    //     March: {
+    //       weeks: [55, 30, 63, 35, 86],
+    //     },
+    //   },
+    // };
+    // setUserData(users);
 
     console.log({
       setSessionData,
@@ -496,7 +494,17 @@ const InstitutionCharts = () => {
   }, [selectedCourse, selectedSemester, institute, selectedClass]);
 
   useEffect(() => {
-    setSelectedSemester('');
+    if (selectedCourse && selectedSemester) {
+      const semestersForCourse = semesterAll.filter(
+        (semester) => semester.course_id === selectedCourse,
+      );
+
+      if (semestersForCourse.length > 0) {
+        setSelectedSemester(semestersForCourse[0]?.semester_id.toString());
+      } else {
+        setSelectedSemester('');
+      }
+    }
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -534,7 +542,7 @@ const InstitutionCharts = () => {
         ),
       );
       setSelectedCourse(uniqueCourses[0]?.course_id);
-      const uniqueSemesters = Object.values(
+      const uniqueSemesters: any = Object.values(
         filteredSub.reduce(
           (acc: any, item: any) => {
             if (!acc[item.semester_id]) {
@@ -554,6 +562,7 @@ const InstitutionCharts = () => {
       );
 
       setSemesterAll(uniqueSemesters);
+      setSelectedSemester(uniqueSemesters[0]?.semester_id.toString());
 
       const uniqueClasses: any = Object.values(
         filteredSub.reduce(
@@ -577,12 +586,7 @@ const InstitutionCharts = () => {
   }, [institute_id]);
 
   useEffect(() => {
-    if (
-      !sessionData ||
-      !assignmentData.subject_categories ||
-      !sessionData.teachers
-    )
-      return;
+    if (!sessionData || !assignmentData || !sessionData.teachers) return;
 
     if (sessionData.teachers) {
       const teacherActivity = Object.entries(sessionData.teachers).map(
@@ -626,7 +630,7 @@ const InstitutionCharts = () => {
       }));
     }
 
-    setSubjectData(assignmentData.subject_categories);
+    setSubjectData(assignmentData);
   }, [sessionData, assignmentData, activeMonth]);
 
   const getMonths = () => {
@@ -773,7 +777,7 @@ const InstitutionCharts = () => {
       plotOptions: {
         bar: {
           horizontal: false,
-          borderRadius: 10,
+          borderRadius: 8,
           columnWidth: '20%',
         },
       },
@@ -1603,7 +1607,6 @@ const InstitutionCharts = () => {
                   label="Semester"
                   disabled={!selectedCourse}
                 >
-                  <MenuItem value="">All Semesters</MenuItem>
                   {filteredSemesters.map((semester) => (
                     <MenuItem
                       key={semester.semester_id}

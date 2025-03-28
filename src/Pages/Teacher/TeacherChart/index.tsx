@@ -110,63 +110,65 @@ const TeacherDashboardCharts = () => {
     // getData(`${'for teacher chart'}/${user_uuid}`).then((data) => {
     //   setData(data?.data);
     // });
-    setData({
-      5: {
-        9: {
-          average_score: 45,
-          pending_assignments: 2,
-          completed: 8,
-        },
-        13: {
-          average_score: 50,
-          pending_assignments: 4,
-          completed: 8,
-        },
-        14: {
-          average_score: 60,
-          pending_assignments: 4,
-          completed: 6,
-        },
-        15: {
-          average_score: 70,
-          pending_assignments: 3,
-          completed: 6,
-        },
-        23: {
-          average_score: 80,
-          pending_assignments: 3,
-          completed: 6,
-        },
-        24: {
-          average_score: 50,
-          pending_assignments: 2,
-          completed: 8,
-        },
-        25: {
-          average_score: 70,
-          pending_assignments: 4,
-          completed: 6,
-        },
-      },
 
-      6: {
-        10: {
-          average_score: 60,
-          pending_assignments: 10,
-          completed: 15,
-        },
-        26: {
-          average_score: 50,
-          pending_assignments: 5,
-          completed: 10,
-        },
-        27: {
-          average_score: 70,
-          pending_assignments: 5,
-          completed: 10,
-        },
-      },
-    });
+    // setData({
+    //   5: {
+    //     9: {
+    //       average_score: 45,
+    //       pending_assignments: 2,
+    //       completed: 8,
+    //     },
+    //     13: {
+    //       average_score: 50,
+    //       pending_assignments: 4,
+    //       completed: 8,
+    //     },
+    //     14: {
+    //       average_score: 60,
+    //       pending_assignments: 4,
+    //       completed: 6,
+    //     },
+    //     15: {
+    //       average_score: 70,
+    //       pending_assignments: 3,
+    //       completed: 6,
+    //     },
+    //     23: {
+    //       average_score: 80,
+    //       pending_assignments: 3,
+    //       completed: 6,
+    //     },
+    //     24: {
+    //       average_score: 50,
+    //       pending_assignments: 2,
+    //       completed: 8,
+    //     },
+    //     25: {
+    //       average_score: 70,
+    //       pending_assignments: 4,
+    //       completed: 6,
+    //     },
+    //   },
+    //   6: {
+    //     10: {
+    //       average_score: 60,
+    //       pending_assignments: 10,
+    //       completed: 15,
+    //     },
+    //     26: {
+    //       average_score: 50,
+    //       pending_assignments: 5,
+    //       completed: 10,
+    //     },
+    //     27: {
+    //       average_score: 70,
+    //       pending_assignments: 5,
+    //       completed: 10,
+    //     },
+    //   },
+    // });
+
+    setData([]);
   }, []);
 
   useEffect(() => {
