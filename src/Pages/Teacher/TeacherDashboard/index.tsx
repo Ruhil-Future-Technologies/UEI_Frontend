@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import TeacherGraoh from '../TeacherGraphs';
 import profile from '../../../assets/img/profile.png';
 import { Link, useNavigate } from 'react-router-dom';
 import toperstudent from '../../../assets/img/topper-image.png';
@@ -39,6 +38,7 @@ import { CourseRep0oDTO, IClass } from '../../../Components/Table/columns';
 import { toast } from 'react-toastify';
 import TeacherDashboardCharts from '../TeacherChart';
 import SessionTracker from '../../../Components/Tracker';
+import TeacherGraph from '../TeacherGraphs';
 
 // import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 // import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -509,7 +509,7 @@ const TeacherDash = () => {
             </div>
           </div>
 
-          <TeacherGraoh />
+          <TeacherGraph />
           <TeacherDashboardCharts />
           <div
             className="col-xxl-8 d-flex align-items-stretch "
