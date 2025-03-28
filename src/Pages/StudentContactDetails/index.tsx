@@ -172,7 +172,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
 
-    if (errors.phoneNum || errors.email || errors.whatsappNum) {
+    if ( errors.email || errors.whatsappNum) {
       // toast.error("Please fix the errors before submitting", {
       //   hideProgressBar: true,
       //   theme: "colored",
@@ -341,14 +341,14 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 placeholder="Enter Mobile number"
                 name="phoneNum"
                 value={phoneNum}
-                disabled={user_id ? !validateEmail(user_id) : false}
+                disabled
                 onChange={handleChange}
                 sx={{
                   backgroundColor: '#f5f5f5',
                 }}
                 required
-                error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
-                helperText={errors.phoneNum || phoneNumerror.phoneNum}
+                // error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
+                // helperText={errors.phoneNum || phoneNumerror.phoneNum}
               />
             </div>
           </div>
