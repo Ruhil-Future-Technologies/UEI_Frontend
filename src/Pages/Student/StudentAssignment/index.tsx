@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useApi from "../../../hooks/useAPI";
-import { Box, Chip } from "@mui/material";
+import { Box, Checkbox, Chip, Typography } from "@mui/material";
 import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Assignment } from "../../Teacher/Assignments/CreateAssignments";
 import { toast } from "react-toastify";
@@ -14,7 +14,9 @@ const StudentAssignments = () => {
 
     const { getData } = useApi();
     const studemtId = localStorage.getItem('student_id');
+     const student_uuid=localStorage.getItem('user_uuid');
     const [assignmentData, setAssignmentData] = useState<Assignment[]>([])
+    const [assignmentsSubmited, setAssignmentsSubmited] = useState<any[]>([])
     const columns: MRT_ColumnDef<Assignment>[] = [
         {
             accessorKey: 'action',
@@ -50,63 +52,55 @@ const StudentAssignments = () => {
         {
             accessorKey: 'points',
             header: 'Points',
+            Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+
+                const AsisgnmnetId = row?.original?.id;
+                return assignmentGreded(AsisgnmnetId as string, row?.original?.points as string);
+            },
         },
         {
-            accessorKey: 'subject',
-            header: 'Subject',
-            Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-                const courseKeys = row?.original?.course_semester_subjects;
-
+              accessorKey: 'subject',
+              header: 'Subject',
+              Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+                let courseKeys='';
+                if(row?.original?.course_semester_subjects){
+               
+                 courseKeys = row?.original?.course_semester_subjects;
+                }else{
+                  courseKeys = row?.original?.class_stream_subjects; 
+                }
+                
+        
                 if (!courseKeys || typeof courseKeys !== 'object') return <p>No subjects</p>;
-
+        
                 // Cast courseKeys to a known structure
                 const subjects = Object.values(courseKeys as Record<string, Record<string, string[]>>)
-                    .flatMap((semesterObj) => Object.values(semesterObj))
-                    .flat();
-
+                  .flatMap((semesterObj) => Object.values(semesterObj))
+                  .flat();
+        
                 return <p>{subjects.join(', ')}</p>;
+              }
             }
-        }
         ,
         {
             accessorKey: 'status',
             header: 'Status',
             Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
 
-                const is_draft = row?.original?.save_draft;
-                return (
-
-                    <>
-                        {is_draft ?
-                            <Chip label="Draft" color="default" /> : <Chip label="Created" color="success" />
-                        }
-                        {/* <Chip label={status} />; */}
-                    </>
-
-                )
+                const AsisgnmnetId = row?.original?.id;
+                return isAssignmentSubmited(AsisgnmnetId as string);
             },
         },
         {
             accessorKey: 'created_by',
-            header: 'Created By',
-        },
-        {
-            accessorKey: 'created_at',
-            header: 'Created at',
-        },
-        {
-            accessorKey: 'updated_by',
-            header: 'updated by',
-        },
-        {
-            accessorKey: 'updated_at',
-            header: 'updated at',
+            header: 'Teacher',
         },
 
     ]
 
     useEffect(() => {
         getListOfAssignments();
+        getAssignmentsSubmited();
     }, [])
     const getListOfAssignments = () => {
         try {
@@ -124,6 +118,55 @@ const StudentAssignments = () => {
             })
         }
     }
+    
+    const getAssignmentsSubmited=()=>{
+        getData(`/assignment_submission/get/submissions/${student_uuid}`).then((response) => {
+            if (response?.status) {
+              setAssignmentsSubmited(response?.data);
+            }
+          }).catch((error) => {
+            toast.error(error?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center'
+            })
+          })
+    }
+
+     const isAssignmentSubmited = (assignmentId: string) => {
+        const assign =assignmentsSubmited.filter((item)=>item?.assignment_id==assignmentId)
+        console.log(assign)
+        if(assign.length>0){
+            return assign[0].is_submitted ? (
+                <Chip label="Submitted" color="primary" />
+            ) : assign[0].is_graded (
+                <Chip label="Graded" color="success" />
+            );
+        }else{
+            return <Chip label="Pending" color="error" />
+        }
+      }
+      const assignmentGreded=(assignmentId: string, points:string) =>{
+        const assign =assignmentsSubmited.filter((item)=>item?.assignment_id==assignmentId)
+        console.log(assign)
+        if(assign.length>0 && assign[0].graded_points){
+            return (
+                <Box display="flex" alignItems="center">
+            <Checkbox checked color="primary" />
+            <Typography variant="body1">{assign[0].graded_points}/{points}</Typography>
+        </Box>
+            )
+               
+
+        }else{
+            return (
+                <Box display="flex" alignItems="center">
+            <Checkbox color="primary" />
+            <Typography variant="body1">NA/{points}</Typography>
+        </Box>
+            )
+        }
+      }
     return (
         <>
       <div className="main-wrapper">

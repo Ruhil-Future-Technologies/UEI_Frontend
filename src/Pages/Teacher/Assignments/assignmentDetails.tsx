@@ -18,8 +18,9 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import useApi from "../../../hooks/useAPI";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Assignment } from "./CreateAssignments";
+import { toast } from "react-toastify";
 
 const students = [
     { name: "Alice Johnson", submitted: "Feb 14, 2024", status: "Submitted", grade: "85/100" },
@@ -32,14 +33,44 @@ const students = [
 const AssignmentDetails = () => {
     const { id } = useParams();
     const {getData}=useApi();
+
+    const nevigate=useNavigate();
+    const teacher_id=localStorage.getItem('teacher_id')
   const [assignmentData, setAssignmentData] = useState<Assignment>();
     useEffect(()=>{
-        getData(`/assignment/get/${id}`).then(async (response) => {
-        if(response.status){
-            setAssignmentData(response.data);
-        }
-     })
+        getAssignmentData();
     },[])
+
+      const getAssignmentData=()=>{
+        getData(`/assignment/get/${id}`).then(async (response) => {
+            if(response.status){
+                setAssignmentData(response.data);
+                getListOfStudnetsForAssignment(response.data.id);
+                console.log(response.data)
+            }
+         }).catch((error)=>{
+            toast.error(error?.message,{
+                hideProgressBar:true,
+                theme:'colored',
+                position:'top-center'
+            })
+         })
+      }
+
+      const getListOfStudnetsForAssignment=(assignmentId:string)=>{
+        getData(`/assignment_submission/get/students/${teacher_id}`).then((response)=>{
+            if(response?.status){
+           console.log(assignmentId)
+           console.log(response?.data)
+               // const filteredSubmition=response.data
+
+            }
+        })
+      }
+      
+      const gotoPreview=()=>{
+        nevigate("/teacher-dashboard/student-assignment-details/123")
+      }
     return (
         <div className="main-wrapper">
             <div className="main-content">
@@ -84,11 +115,11 @@ const AssignmentDetails = () => {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                               {student.grade}
+                                        NA/{assignmentData?.points}
                                             <Checkbox />
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary">
+                                            <IconButton color="primary" onClick={gotoPreview}>
                                                 <VisibilityIcon />
                                             </IconButton>
                                             Preview

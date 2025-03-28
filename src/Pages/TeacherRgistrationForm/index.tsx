@@ -466,6 +466,7 @@ const TeacherRegistrationPage = () => {
       getForRegistration(`${getsubjectSchool}`)
         .then((data) => {
           if (data.status) {
+            console.log(data?.data?.subjects_data);
             setTotleSubject(data?.data?.subjects_data);
           }
         })
@@ -727,6 +728,11 @@ const TeacherRegistrationPage = () => {
       setTeaching_experience_error(true);
     } else {
       setTeaching_experience_error(false);
+    }
+    if(allselectedfiles.length<1){
+      setDocument_error(true);
+    }else{
+      setDocument_error(false);
     }
 
     if (valid1) return;
@@ -1090,8 +1096,8 @@ const TeacherRegistrationPage = () => {
         if (name === 'stream') {
           const filteredSubjects = totleSubject.filter(
             (item) =>
-              String(item.stream).toLowerCase() ===
-              value.toString().toLowerCase(),
+              String(item.stream).toLowerCase() ==
+              value.toString().toLowerCase() && item.class_id === boxesForSchool[index].class_id
           );
           updatedBox = {
             ...updatedBox,
@@ -2355,7 +2361,7 @@ const TeacherRegistrationPage = () => {
                             <p className="error-text " style={{ color: 'red' }}>
                               <small>
                                 {' '}
-                                Please select at least a Document file.
+                                Please select at least a document file.
                               </small>
                             </p>
                           )}

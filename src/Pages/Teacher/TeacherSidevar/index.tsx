@@ -2,6 +2,7 @@ import React from 'react';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -81,7 +82,7 @@ const TeacherSideVar = () => {
             <li>
               <Link to="/teacher-dashboard/assignments">
                 <div className="parent-icon">
-                  <ChatOutlinedIcon />
+                  <AssignmentOutlinedIcon />
                 </div>
                 <div className="menu-title">Assignments</div>
               </Link>

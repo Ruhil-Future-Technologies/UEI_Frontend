@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Typography,
@@ -7,14 +7,6 @@ import {
   CardContent,
   Button,
   Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-
-  TextField,
   Chip,
   IconButton,
   ListItem,
@@ -31,16 +23,22 @@ import { toast } from 'react-toastify';
 import UploadBtn from '../../../Components/UploadBTN/UploadBtn';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
-  const { getData } = useApi();
+  const { getData, postData } = useApi();
   const { id } = useParams();
+  const student_id = localStorage.getItem('user_uuid')
   const [assignmentData, setAssignmentData] = useState<Assignment>();
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
   const [document_error, setDocument_error] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+  const [value, setValue] = useState("");
+  const quillRef = useRef<ReactQuill | null>(null);
+  const [isSubmited, setIssubmited] = useState(false);
+  const [statusCheck, setStatusCheck] = useState('Pending');
 
   const handleBack = () => {
     navigate(-1);
@@ -55,13 +53,12 @@ const PreviewAndSubmit = () => {
       getData(`/assignment/get/${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
-          const dueDate = new Date(response?.due_date_time);
+          const dueDate = new Date(response?.data?.due_date_time);
           const today = new Date();
           const differenceInMs = dueDate.getTime() - today.getTime();
-
-          // Convert milliseconds to days (1 day = 86400000 ms)
           const remainingDays = Math.ceil(differenceInMs / (1000 * 60 * 60 * 24));
           setRemaingDays(dueDate.getTime() > today.getTime() ? remainingDays : 0)
+          isAssignmentSubmitedGet(response?.data?.id);
         }
       })
     } catch (error: any) {
@@ -73,6 +70,30 @@ const PreviewAndSubmit = () => {
     }
   }
 
+
+  const isAssignmentSubmitedGet = (assignmentId: string) => {
+    getData(`/assignment_submission/get/submissions/${student_id}`).then((response) => {
+      if (response?.status) {
+        const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
+        console.log(filteredAssignment);
+        if (filteredAssignment.length > 0) {
+          if (filteredAssignment[0]?.text) setValue(filteredAssignment[0].text);
+          if (filteredAssignment[0]?.file) setAllSelectedfiles(filteredAssignment[0].file)
+          if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
+          if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
+          setIssubmited(true)
+        } else {
+          setIssubmited(false)
+        }
+      }
+    }).catch((error) => {
+      toast.error(error?.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+      })
+    })
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -104,6 +125,93 @@ const PreviewAndSubmit = () => {
 
   };
 
+
+  const submitAssignment = () => {
+
+    let check=true;
+    if(value==''){
+    
+      check=true;
+    }else{
+      
+      check=false;
+    }
+
+    if(allselectedfiles.length!<1){
+      setDocument_error(true);
+      check=true;
+    }else{
+      check=false;
+      setDocument_error(false);
+    }
+if(check)return;
+    const formData = new FormData();
+
+    formData.append('assignment_id', assignmentData?.id as string)
+    formData.append('text', value)
+    allselectedfiles.forEach((file) => {
+      formData.append('file', file);
+    });
+    postData(`/assignment_submission/add`, formData).then((response) => {
+      if (response?.status) {
+
+        toast.success(response.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+
+        })
+        navigate('/main/student/assignment')
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+
+      })
+    })
+  }
+  useEffect(() => {
+    const editor = quillRef.current?.editor?.root;
+
+    if (editor) {
+      // Prevent Paste
+      editor.addEventListener("paste", (e) => {
+        e.preventDefault();
+      });
+
+      // Prevent Drag and Drop
+      editor.addEventListener("drop", (e) => {
+        e.preventDefault();
+      });
+
+      // Prevent Right-click Paste
+      editor.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
+
+      // Prevent Ctrl+V
+      editor.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && (e.key === "v" || e.key === "V")) {
+          e.preventDefault();
+        }
+      });
+    }
+
+    return () => {
+      if (editor) {
+        editor.removeEventListener("paste", (e) => e.preventDefault());
+        editor.removeEventListener("drop", (e) => e.preventDefault());
+        editor.removeEventListener("contextmenu", (e) => e.preventDefault());
+        editor.removeEventListener("keydown", (e) => {
+          if (e.ctrlKey && (e.key === "v" || e.key === "V")) {
+            e.preventDefault();
+          }
+        });
+      }
+    };
+  }, []);
   return (
     <>
       <div className="main-wrapper">
@@ -138,26 +246,29 @@ const PreviewAndSubmit = () => {
               </Typography>
             </div>
             <div className="col-lg-5">
-              <div className="d-flex align-items-center justify-content-end"><AccessTimeIcon /> <span className='text-danger ms-2 me-3'> Due: {assignmentData?.due_date_time}</span><Chip label="Pending" color="warning" /> </div>
-
+              <div className="d-flex align-items-center justify-content-end">
+                <AccessTimeIcon />
+                <span
+                  className="ms-2 me-3"
+                  style={{
+                    color:remainingDays < 1 ? "red":remainingDays > 2 ? "green":"#FFA500",
+                  }}
+                >
+                  Due: {assignmentData?.due_date_time}
+                </span>
+                <Chip label={statusCheck} color={statusCheck == 'Submitted' ? 'primary' : statusCheck == 'Graded' ? 'success' : 'error'} />
+              </div>
             </div>
           </div>
 
-
           <Card sx={{ mt: 3 }}>
             <CardContent>
-              <Typography variant="h6">Assignment Description</Typography>
-              <Typography variant="body1" sx={{ mt: 1 }}>
-                Create a fully functional e-commerce website using React and
-                Node.js. The website should include the following features and
-                meet all specified requirements.
-              </Typography>
               <Typography variant="h6" className="mt-3">
                 Instructions
               </Typography>
               <ul>
                 <li>
-                  {assignmentData?.instructions}
+                <div dangerouslySetInnerHTML={{ __html: assignmentData?.instructions ||''}} />
                 </li>
               </ul>
 
@@ -233,65 +344,22 @@ const PreviewAndSubmit = () => {
                   <small> Please add at least one file.</small>
                 </p>
               }
-              <TextField
-                fullWidth
-                label="Add Remarks (Optional)"
-                multiline
-                rows={3}
-                sx={{ mt: 2 }}
-              />
+              <div className='mt-2 mb-5'>
+                <ReactQuill id='text' ref={quillRef} value={value} onChange={setValue} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
+              </div>
             </CardContent>
           </Card>
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <Typography variant="h6">Submission History</Typography>
-              <TableContainer sx={{ mt: 2 }}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <b>Date</b>
-                      </TableCell>
-                      <TableCell>
-                        <b>File Name</b>
-                      </TableCell>
-                      <TableCell>
-                        <b>Status</b>
-                      </TableCell>
-                      <TableCell>
-                        <b>Remarks</b>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Dec 10, 2023</TableCell>
-                      <TableCell>
-                        <a href="#">project_draft_v1.zip</a>
-                      </TableCell>
-                      <TableCell>Draft</TableCell>
-                      <TableCell>Initial project structure</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Dec 12, 2023</TableCell>
-                      <TableCell>
-                        <a href="#">project_draft_v2.zip</a>
-                      </TableCell>
-                      <TableCell>Draft</TableCell>
-                      <TableCell>Added core features</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
+          {
+            !isSubmited && (
+              <Box sx={{ my: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
+                <Button variant="contained" color="primary" onClick={submitAssignment}>
+                  Submit Assignment
+                </Button>
+                <Button variant="outlined">Save as Draft</Button>
+              </Box>
+            )
+          }
 
-          <Box sx={{ my: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
-            <Button variant="contained" color="primary">
-              Submit Assignment
-            </Button>
-            <Button variant="outlined">Save as Draft</Button>
-          </Box>
         </div>
       </div>
     </>
