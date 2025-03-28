@@ -10,6 +10,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import MetisMenu from '@metismenu/react';
 import useApi from '../../hooks/useAPI';
@@ -210,7 +211,7 @@ const Sidebar = () => {
                     onClick={removeMobileToggle}
                   >
                     <div className="parent-icon">
-                      <LibraryBooksOutlinedIcon />
+                      <AssignmentOutlinedIcon />
                     </div>
                     <div className="menu-title">Your Assignments</div>
                   </Link>

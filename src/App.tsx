@@ -105,6 +105,7 @@ import AssignmentDetails from './Pages/Teacher/Assignments/assignmentDetails';
 import StudentAssignments from './Pages/Student/StudentAssignment';
 import PreviewAndSubmit from './Pages/Student/StudentAssignment/previewAndSubmit';
 import AdminList from './Pages/AdminList';
+import PreviewStudentAssignment from './Pages/Teacher/Assignments/previewStudentAssignment';
 
 function App() {
   const navigate = useNavigate();
@@ -305,6 +306,12 @@ function App() {
             path="/teacher-dashboard/assignment-details/:id"
             element={
               <Protected Component={AssignmentDetails} />
+            }
+          />
+          <Route
+            path="/teacher-dashboard/student-assignment-details/:id"
+            element={
+              <Protected Component={PreviewStudentAssignment} />
             }
           />
           <Route path="/teacher-dashboard/Content">

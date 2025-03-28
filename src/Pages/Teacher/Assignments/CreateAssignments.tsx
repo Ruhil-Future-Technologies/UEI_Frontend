@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   TextField,
@@ -59,6 +59,7 @@ import {
 import NameContext from '../../Context/NameContext';
 import dayjs, { Dayjs } from 'dayjs';
 import { Autocomplete, Chip } from '@mui/material';
+import ReactQuill from 'react-quill';
 
 export interface Assignment {
   id?: string;
@@ -91,15 +92,16 @@ export const CreateAssignments = () => {
   const getsubjectSchool = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
   const getSubjectCollege = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
-
+  const teacher_id = localStorage.getItem('teacher_id');
   const teacherId = localStorage.getItem('user_uuid');
   const [assignmentType, setAssignmentType] = useState('written');
   const [files, setFiles] = useState<File[]>([]);
   const nevegate = useNavigate();
+  const quillRef = useRef<ReactQuill | null>(null);
   const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
   const [allowLateSubmission, setAllowLateSubmission] = useState(false);
-  const [addToStudentRepost, setAddToStudentRepost] = useState(false);
-  const [sendNotification, setSendNotification] = useState(false);
+  const [addToStudentRepost, setAddToStudentRepost] = useState(true);
+  const [sendNotification, setSendNotification] = useState(true);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [dueTime, setDueTime] = useState<Dayjs | null>(null);
   const [selectedEntity, setSelectedEntity] = useState('');
@@ -170,7 +172,7 @@ export const CreateAssignments = () => {
   const [assignmentData, setAssignmentData] = useState<Assignment>({
     title: '',
     type: 'written',
-    contact_email: '',
+    contact_email: localStorage.getItem('email') || '',
     allow_late_submission: false,
     due_date_time: '', // Or new Date().toISOString() if using Date type
     available_from: '', // Or new Date().toISOString() if using Date type
@@ -187,6 +189,7 @@ export const CreateAssignments = () => {
     getCourses();
     getStudentsForTeacher();
     getTeacherProfileInfo();
+    //getListOfStudnetsForAssignment();
   }, []);
 
   const getAssignmentInfo = () => {
@@ -194,7 +197,9 @@ export const CreateAssignments = () => {
       try {
         getData(`/assignment/get/${id}`)
           .then(async (response) => {
+            console.log(response)
             if (response.data) {
+              console.log(response.data)
               setAssignmentData(response.data);
               if (response?.data?.file) {
                 setFiles(response?.data?.file);
@@ -211,7 +216,7 @@ export const CreateAssignments = () => {
               setDueTime(dayjs(response?.data?.due_date_time));
               setAvailableFrom(dayjs(response?.data?.available_from));
             }
-            if (response.data.university_id !== 'None') {
+            if (response.data.class_stream_subjects == null) {
               const allSubject: SubjectRep0oDTO[] =
                 await getSubjects('college');
               const allsemesters: SemesterRep0oDTO[] = await getSemester();
@@ -238,6 +243,7 @@ export const CreateAssignments = () => {
                   ),
                 })),
               );
+              console.log(output)
               setBoxes(output);
             } else {
               getSubjects('School');
@@ -258,16 +264,17 @@ export const CreateAssignments = () => {
                     filteredSubjects:
                       stream == 'general'
                         ? allSubject.filter(
-                          (item) => item.class_id === classKey,
+                          (item) => item.class_id == classKey,
                         )
                         : allSubject.filter(
                           (item) =>
-                            item.class_id === classKey &&
-                            item.stream === stream,
+                            item.class_id == classKey &&
+                            item.stream == stream,
                         ),
                   }),
                 ),
               );
+              console.log(output);
               setBoxesForSchool(output);
             }
             // setBoxesForSchool(response?.data?.class_stream_subjects);
@@ -290,6 +297,7 @@ export const CreateAssignments = () => {
   };
   useEffect(() => {
     getAssignmentInfo();
+
   }, [id]);
   const getSubjects = async (type: string): Promise<any> => {
     try {
@@ -320,7 +328,6 @@ export const CreateAssignments = () => {
             getSubjects('college');
             // Extract all course IDs (keys)
             const courseKeys = Object.keys(data.data.course_semester_subjects);
-
             // Extract all semester IDs for each course
             const semesterKeys = Object.values(
               data.data.course_semester_subjects as Record<
@@ -386,17 +393,15 @@ export const CreateAssignments = () => {
             getClasslist(classIds);
 
             const Subjects = Object.entries(
-              data.data.class_stream_subjects as Record<
-                string,
-                Record<string, string[]>
-              >,
-            ).flatMap(([streasm, subjects]) =>
-              Object.entries(subjects).flatMap(([subjectList]) =>
-                Array.isArray(subjectList)
-                  ? subjectList.map((subject) => ({ streasm, subject }))
-                  : [],
-              ),
+              data.data.class_stream_subjects as Record<string, Record<string, string[]>>
+            ).flatMap(([, subjects]) =>  // Ignore the first key (e.g., "8")
+              Object.entries(subjects).flatMap(([streamName, subjectArray]) =>
+                subjectArray.map((subject) => ({ stream: streamName, subject }))
+              )
             );
+
+            console.log(Subjects.map(({ subject }) => subject));
+            console.log(Subjects, data.data.class_stream_subjects);
             setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject));
           }
         }
@@ -479,6 +484,19 @@ export const CreateAssignments = () => {
       });
   };
 
+
+  // const getListOfStudnetsForAssignment = () => {
+
+  //   getData(`/assignment_submission/get/students/${teacher_id}`).then((response) => {
+  //     if (response?.status) {
+  //       //console.log(assignmentId)
+  //       console.log(response?.data)
+  //       // const filteredSubmition=response.data
+  //       setSelectedStudents(response?.data)
+  //     }
+  //   })
+  // }
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       setSelectedStudents(listOfStudent || []);
@@ -504,6 +522,13 @@ export const CreateAssignments = () => {
       [name]: value,
     }));
     validation(name, value);
+  };
+  const handleQuillChange = (value: string) => {
+    setAssignmentData((prev) => ({
+      ...prev,
+      instructions: value, // Update the 'instructions' field in state
+    }));
+    validation("instructions", value);
   };
 
   const validation = (name: string, value: string) => {
@@ -534,7 +559,7 @@ export const CreateAssignments = () => {
   };
   const getStudentsForTeacher = () => {
     try {
-      getData(`/student_teacher/teacher/${teacherId}/students`)
+      getData(`/student_teacher/teacher/${teacher_id}/students`)
         .then((response) => {
           if (response.status) {
             setListOfStudent(response.data);
@@ -665,11 +690,7 @@ export const CreateAssignments = () => {
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
-    const students = [
-      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
-      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
-      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
-    ];
+    const students  = selectedStudents.map(student => student.id);
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
       formData.append('file', file);
@@ -797,12 +818,12 @@ export const CreateAssignments = () => {
               file: null,
             });
           }
-        }).catch((response)=>{
-           toast.error(response.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        }).catch((response) => {
+          toast.error(response.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -967,16 +988,16 @@ export const CreateAssignments = () => {
         if (name === 'stream') {
           const filteredSubjects = totleSubject.filter(
             (item) =>
-              String(item.stream).toLowerCase() ===
-              value.toString().toLowerCase(),
+              String(item.stream).toLowerCase() == value.toString().toLowerCase() && item.class_id === boxesForSchool[index].class_id,
           );
-
+            console.log(totleSubject)
           updatedBox = {
             ...updatedBox,
             stream: value.toString(),
             filteredSubjects,
             subjects: [],
           };
+          console.log(updatedBox, totleSubject, value, tescherSchoolSubjects)
         }
         validateFields(index, name, updatedBox);
         return updatedBox;
@@ -1031,6 +1052,11 @@ export const CreateAssignments = () => {
     }
   }, [dueDate, availableFrom, dueTime]);
 
+  console.log(filteredcoursesData
+    .filter((course) =>
+      teacherCourse?.includes(String(course.id)),
+    ))
+    
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1171,16 +1197,36 @@ export const CreateAssignments = () => {
                         </p>
                       )}
                     </div>
-                    <div className="col-12">
+                    <div className="col-6">
                       <TextField
                         fullWidth
-                        label="Instructions"
+                        label="Contact Email"
                         variant="outlined"
+                        name="contact_email"
+                        disabled
                         onChange={handleChanges}
+                        type="email"
+                        value={assignmentData.contact_email}
+                        autoComplete="off"
+                      />
+                      {contact_email_email && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please enter a valid Email Id.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-12 mt-3 mb-5">
+                      <label className="col-form-label">
+                        Instructions<span>*</span>
+                      </label>
+                      <ReactQuill
+                        id="text"
+                        placeholder='instuctions'
+                        ref={quillRef}
                         value={assignmentData.instructions}
-                        name="instructions"
-                        multiline
-                        rows={4}
+                        onChange={handleQuillChange}  // Use the new handler
+                        theme="snow"
+                        style={{ height: "120px", borderRadius: "8px" }}
                       />
                       {instructions_error && (
                         <p className="error-text" style={{ color: 'red' }}>
@@ -1188,9 +1234,8 @@ export const CreateAssignments = () => {
                         </p>
                       )}
                     </div>
+
                     <div className="col-12">
-
-
                       {selectedEntity.toLowerCase() === 'college' &&
                         boxes.length > 0 &&
                         boxes.map((box, index) => (
@@ -1200,9 +1245,9 @@ export const CreateAssignments = () => {
                           >
                             {/* Course Selection */}
                             <div className="col-md-4 col-12">
-                              <label className="col-form-label">
+                              {/* <label className="col-form-label">
                                 Course<span>*</span>
-                              </label>
+                              </label> */}
                               <FormControl fullWidth>
                                 <InputLabel id={`course_id_${index}`}>
                                   Course
@@ -1241,9 +1286,9 @@ export const CreateAssignments = () => {
 
                             {/* Semester Selection */}
                             <div className="col-md-4 col-12">
-                              <label className="col-form-label">
+                              {/* <label className="col-form-label">
                                 Semester <span>*</span>
-                              </label>
+                              </label> */}
                               <FormControl fullWidth>
                                 <InputLabel id={`semester_id_${index}`}>
                                   Semester
@@ -1287,9 +1332,9 @@ export const CreateAssignments = () => {
 
                             {/* Subjects Selection */}
                             <div className="col-md-4 col-12">
-                              <label className="col-form-label">
-                                Subjects Taught<span>*</span>
-                              </label>
+                              {/* <label className="col-form-label">
+                                Subjects <span>*</span>
+                              </label> */}
                               <FormControl fullWidth>
                                 <InputLabel id={`subject_label_${index}`}>
                                   Subject
@@ -1343,9 +1388,9 @@ export const CreateAssignments = () => {
                           >
                             {/* Class Selection */}
                             <div className={box.selected_class_name}>
-                              <label className="col-form-label">
+                              {/* <label className="col-form-label">
                                 Class<span>*</span>
-                              </label>
+                              </label> */}
                               <FormControl fullWidth>
                                 <InputLabel id={`class_id_${index}`}>
                                   Class
@@ -1379,9 +1424,9 @@ export const CreateAssignments = () => {
                             </div>
                             {box.is_Stream && (
                               <div className="col-md-4 col-12 mb-3">
-                                <label className="col-form-label">
+                                {/* <label className="col-form-label">
                                   Stream Name<span>*</span>
-                                </label>
+                                </label> */}
                                 <FormControl fullWidth>
                                   <InputLabel id={`stream_id_${index}`}>
                                     Stream Name
@@ -1441,9 +1486,9 @@ export const CreateAssignments = () => {
                               </div>
                             )}
                             <div className={box.selected_class_name}>
-                              <label className="col-form-label">
-                                Subjects Taught<span>*</span>
-                              </label>
+                              {/* <label className="col-form-label">
+                                Subjects <span>*</span>
+                              </label> */}
                               <FormControl fullWidth>
                                 <InputLabel id={`subject_label_${index}`}>
                                   Subject
@@ -1451,25 +1496,11 @@ export const CreateAssignments = () => {
                                 <Select
                                   labelId={`subject_label_${index}`}
                                   id={`subject_select_${index}`}
-                                  multiple
                                   name="subjects"
+                                  label="subjects"
                                   value={box.subjects || []}
                                   onChange={(event: any) =>
                                     handelSchoolBoxChange(event, index)
-                                  }
-                                  input={<OutlinedInput label="Subject" />}
-                                  renderValue={(selected) =>
-                                    (selected as string[])
-                                      .map((id) => {
-                                        const subject = totleSubject.find(
-                                          (subject: any) =>
-                                            subject.subject_name === id,
-                                        );
-                                        return subject
-                                          ? subject.subject_name
-                                          : '';
-                                      })
-                                      .join(', ')
                                   }
                                 >
                                   {box.filteredSubjects
@@ -1478,19 +1509,12 @@ export const CreateAssignments = () => {
                                         subject.subject_name,
                                       ),
                                     )
-                                    ?.map((subject: any) => (
+                                    .map((subject: any) => (
                                       <MenuItem
                                         key={subject.subject_id}
                                         value={subject.subject_name}
                                       >
-                                        <Checkbox
-                                          checked={box.subjects?.includes(
-                                            subject.subject_name.toString(),
-                                          )}
-                                        />
-                                        <ListItemText
-                                          primary={subject.subject_name}
-                                        />
+                                        {subject.subject_name}
                                       </MenuItem>
                                     ))}
                                 </Select>
@@ -1515,12 +1539,12 @@ export const CreateAssignments = () => {
                         <FormControlLabel
                           control={<Checkbox checked={selectAll} onChange={handleChange} />}
                           label="Select All"
-                        />
+                        />{"("+selectedStudents?.length+")"}
                         <Autocomplete
                           multiple
                           options={listOfStudent || []}
                           getOptionLabel={(option) =>
-                            `${option.first_name} ${option.last_name}`
+                            `${option.name}`
                           }
                           value={selectedStudents}
                           onChange={(_, newValue) => {
@@ -1537,7 +1561,7 @@ export const CreateAssignments = () => {
                           renderOption={(props, option, { selected }) => (
                             <li {...props} key={option.id || option.first_name}>
                               <Checkbox checked={selected} />
-                              {option.first_name} {option.last_name}
+                              {option.name}
                             </li>
                           )}
                           renderTags={(value, getTagProps) => (
@@ -1554,10 +1578,10 @@ export const CreateAssignments = () => {
                                 const tagProps = getTagProps({ index });
 
                                 return (
-                                  <React.Fragment key={option.id || `${option.first_name}-${option.last_name}-${index}`}>
+                                  <React.Fragment key={option.id || `${option.name}-${index}`}>
                                     <Chip
                                       {...tagProps} // Spread other props WITHOUT key
-                                      label={`${option.first_name} ${option.last_name}`}
+                                      label={`${option.name}`}
                                     />
                                   </React.Fragment>
                                 );
@@ -1578,24 +1602,6 @@ export const CreateAssignments = () => {
                           }}
                         />
                       </Box>
-                    </div>
-
-                    <div className="col-12">
-                      <TextField
-                        fullWidth
-                        label="Contact Email"
-                        variant="outlined"
-                        name="contact_email"
-                        onChange={handleChanges}
-                        type="email"
-                        value={assignmentData.contact_email}
-                        autoComplete="off"
-                      />
-                      {contact_email_email && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please enter a valid Email Id.</small>
-                        </p>
-                      )}
                     </div>
                     <div className="col-lg-12">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1709,7 +1715,7 @@ export const CreateAssignments = () => {
                               }
                             />
                           }
-                          label="Add to student report"
+                          label="Add to Student Grade Report"
                         />
                       </div>
                     </div>
