@@ -43,9 +43,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [contcodePhone, setContcodePhone] = useState('+91');
   const [phoneNum, setPhoneNum] = useState(localStorage.getItem('phone') ||'');
 
-  const [phoneNumerror, setPhoneNumerror] = useState({
-    phoneNum: '',
-  });
+  // const [phoneNumerror, setPhoneNumerror] = useState({
+  //   phoneNum: '',
+  // });
   const [email, setEmail] = useState(localStorage.getItem('email'));
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [errors, setErrors] = useState({
@@ -86,12 +86,12 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             ? 'Mobile number should be 10 digits'
             : '',
         });
-        setPhoneNumerror({
-          ...errors,
-          phoneNum: !/^(?!0{10})[0-9]{10}$/.test(value)
-            ? 'Mobile number should be 10 digits'
-            : '',
-        });
+        // setPhoneNumerror({
+        //   ...errors,
+        //   phoneNum: !/^(?!0{10})[0-9]{10}$/.test(value)
+        //     ? 'Mobile number should be 10 digits'
+        //     : '',
+        // });
         break;
       case 'whatsappNum':
         setWhatsappNum(value);
@@ -181,20 +181,20 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       return;
     }
 
-    if (phoneNum?.length !== 10) {
-      setPhoneNumerror({
-        ...errors,
-        phoneNum: !/^(?!0{10})[0-9]{10}$/.test(phoneNum)
-          ? 'Mobile number should be 10 digits'
-          : '',
-      });
-      // toast.error("Phone number should be 10 digits", {
-      //   hideProgressBar: true,
-      //   theme: "colored",
-      //   position: "top-center"
-      // });
-      return;
-    }
+    // if (phoneNum?.length !== 10) {
+    //   // setPhoneNumerror({
+    //   //   ...errors,
+    //   //   phoneNum: !/^(?!0{10})[0-9]{10}$/.test(phoneNum)
+    //   //     ? 'Mobile number should be 10 digits'
+    //   //     : '',
+    //   // });
+    //   // toast.error("Phone number should be 10 digits", {
+    //   //   hideProgressBar: true,
+    //   //   theme: "colored",
+    //   //   position: "top-center"
+    //   // });
+    //   return;
+    // }
     const formData = new FormData();
 
     const payload = {
