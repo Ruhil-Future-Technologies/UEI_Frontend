@@ -12,132 +12,239 @@ const StudentDashboardCharts = () => {
 
   const userdata = JSON.parse(localStorage.getItem('userdata') ?? '""');
   const [activeTab, setActiveTab] = useState('weekly');
-  const [activeMonth, setActiveMonth] = useState('');
+  const getCurrentMonth = () => {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return months[new Date().getMonth()];
+  };
+  const [activeMonth, setActiveMonth] = useState(getCurrentMonth());
 
-  const [academicPerformanceData, setAcademicPerformanceData] = useState<any>(
-    {},
-  );
-  const [completionRateData, setCompletionRateData] = useState<any>({});
-  const [learningTimeData, setLearningTimeData] = useState<any>({});
-  const [studyStreaksData, setStudyStreaksData] = useState<any>({});
-  const [studentData, setStudentData] = useState<any>({});
-  console.log({ setStudentData });
+  const [academicPerformanceData, setAcademicPerformanceData] = useState<any>({
+    series: [],
+    options: {
+      chart: { type: 'bar', height: 350 },
+      xaxis: { categories: [] },
+      title: {
+        text: 'No Academic Performance Data Available',
+        align: 'center',
+      },
+    },
+  });
+  const [completionRateData, setCompletionRateData] = useState<any>({
+    series: [],
+    options: {
+      chart: { type: 'bar', height: 350 },
+      xaxis: { categories: [] },
+      title: {
+        text: 'No Assignment Completion Data Available',
+        align: 'center',
+      },
+    },
+  });
 
-  const getMonths: any = () => Object.keys(studentData?.usage ?? {});
+  const [learningTimeData, setLearningTimeData] = useState<any>({
+    series: [],
+    options: {
+      chart: { height: 400, type: 'line' },
+      xaxis: { categories: [] },
+      title: { text: 'No Learning Time Data Available', align: 'center' },
+    },
+  });
+
+  const [studyStreaksData, setStudyStreaksData] = useState<any>({
+    series: [],
+    options: {
+      chart: { height: 400, type: 'line' },
+      xaxis: { categories: [] },
+      title: { text: 'No Study Streaks Data Available', align: 'center' },
+    },
+  });
+  const [studentData, setStudentData] = useState<any>('');
+
+  const getMonths: any = () => {
+    console.log({ studentData });
+
+    if (!studentData || !studentData.usage) {
+      return [getCurrentMonth()];
+    }
+
+    const keys = Object.keys(studentData.usage);
+    console.log({ keys });
+
+    return keys.length > 0 ? keys : [getCurrentMonth()];
+  };
+
+  useEffect(() => {
+    const months = getMonths();
+    if (months.length > 0 && activeMonth === getCurrentMonth()) {
+      setActiveMonth(months[0]);
+    }
+  }, [studentData]);
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(activeMonth);
+
+      console.log('fetchData called');
+
       try {
         const [collegeData, schoolData]: any = await Promise.all([
           getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`),
           getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`),
         ]);
 
-        // get assignment data here
-        let performanceData: any = await getData(
-          `${'call student  Assignment api '}`,
-        );
-        performanceData = [
-          {
-            9: {
-              previous: 78,
-              current: 99,
-              completed: 2,
-              pending: 5,
-            },
-            13: {
-              previous: 60,
-              current: 80,
-              completed: 8,
-              pending: 2,
-            },
-            14: {
-              previous: 90,
-              current: 70,
-              completed: 10,
-              pending: 1,
-            },
-            15: {
-              previous: 70,
-              current: 80,
-              completed: 6,
-              pending: 2,
-            },
-          },
-        ];
+        // // get assignment data here
+        // let performanceData: any =
+        //   "await getData(`${'call student  Assignment api '}`)";
+        // performanceData = [
+        //   {
+        //     5: {
+        //       previous: 78,
+        //       current: 99,
+        //       completed: 2,
+        //       pending: 5,
+        //     },
+        //     6: {
+        //       previous: 60,
+        //       current: 80,
+        //       completed: 8,
+        //       pending: 2,
+        //     },
+        //     7: {
+        //       previous: 90,
+        //       current: 70,
+        //       completed: 10,
+        //       pending: 1,
+        //     },
+        //     8: {
+        //       previous: 70,
+        //       current: 80,
+        //       completed: 6,
+        //       pending: 2,
+        //     },
+        //   },
+        // ];
 
         // get session data here
-        const study_data: any =
-          "await getData(`${'call student  session api '}`)";
+
+        // let study_data: any =
+        //   "await getData(`${'call student  session api '}`)";
 
         // study_data = {
-        //   usage: {
-        //     Jan: {
-        //       total: 180,
-        //       week1: {
-        //         days: [3, 7, 2, 0, 5.5, 1, 4],
-        //         total: 45,
-        //         max_streak: 3,
-        //         total_days_active: 5,
-        //         engagement: 4,
-        //       },
-        //       week2: {
-        //         days: [6, 1, 0, 4, 3, 2, 5],
-        //         total: 45,
-        //         max_streak: 3,
-        //         total_days_active: 5,
-        //         engagement: 4,
-        //       },
-        //       week3: {
-        //         days: [2, 0, 6, 4, 1, 5, 3],
-        //         total: 45,
-        //         max_streak: 3,
-        //         total_days_active: 5,
-        //         engagement: 4,
-        //       },
-        //       week4: {
-        //         days: [1, 5, 3, 0, 6, 2, 4],
-        //         total: 45,
-        //         max_streak: 3,
-        //         total_days_active: 5,
-        //         engagement: 4,
-        //       },
+        //   Jan: {
+        //     total: 180,
+        //     week1: {
+        //       days: [3, 7, 2, 0, 5.5, 1, 4],
+        //       total: 45,
+        //       max_streak: 3,
+        //       total_days_active: 5,
+        //       engagement: 4,
         //     },
-        //     Feb: {
-        //       total: 210,
-        //       week1: {
-        //         days: [4, 2, 6, 1, 0, 5, 3],
-        //         total: 52,
-        //         max_streak: 4,
-        //         total_days_active: 6,
-        //         engagement: 5,
-        //       },
-        //       week2: {
-        //         days: [0, 3, 5, 2, 1, 6, 4],
-        //         total: 38,
-        //         max_streak: 2,
-        //         total_days_active: 4,
-        //         engagement: 3,
-        //       },
-        //       week3: {
-        //         days: [6, 1, 3, 0, 5, 2, 4],
-        //         total: 67,
-        //         max_streak: 5,
-        //         total_days_active: 6,
-        //         engagement: 4,
-        //       },
-        //       week4: {
-        //         days: [2, 5, 0, 4, 1, 3, 6],
-        //         total: 53,
-        //         max_streak: 3,
-        //         total_days_active: 5,
-        //         engagement: 5,
-        //       },
+        //     week2: {
+        //       days: [6, 1, 0, 4, 3, 2, 5],
+        //       total: 40,
+        //       max_streak: 3,
+        //       total_days_active: 5,
+        //       engagement: 5,
+        //     },
+        //     week3: {
+        //       days: [2, 0, 6, 4, 1, 5, 3],
+        //       total: 55,
+        //       max_streak: 3,
+        //       total_days_active: 5,
+        //       engagement: 4,
+        //     },
+        //     week4: {
+        //       days: [1, 5, 3, 0, 6, 2, 4],
+        //       total: 60,
+        //       max_streak: 3,
+        //       total_days_active: 5,
+        //       engagement: 3,
+        //     },
+        //   },
+        //   Feb: {
+        //     total: 210,
+        //     week1: {
+        //       days: [4, 2, 6, 1, 0, 5, 3],
+        //       total: 52,
+        //       max_streak: 4,
+        //       total_days_active: 6,
+        //       engagement: 5,
+        //     },
+        //     week2: {
+        //       days: [0, 3, 5, 2, 1, 6, 4],
+        //       total: 38,
+        //       max_streak: 2,
+        //       total_days_active: 4,
+        //       engagement: 3,
+        //     },
+        //     week3: {
+        //       days: [6, 1, 3, 0, 5, 2, 4],
+        //       total: 67,
+        //       max_streak: 5,
+        //       total_days_active: 6,
+        //       engagement: 4,
+        //     },
+        //     week4: {
+        //       days: [2, 5, 0, 4, 1, 3, 6],
+        //       total: 53,
+        //       max_streak: 3,
+        //       total_days_active: 5,
+        //       engagement: 5,
+        //     },
+        //   },
+        //   March: {
+        //     total: 210,
+        //     week1: {
+        //       days: [4, 2, 6, 1, 0, 5, 3],
+        //       total: 52,
+        //       max_streak: 4,
+        //       total_days_active: 6,
+        //       engagement: 5,
+        //     },
+        //     week2: {
+        //       days: [0, 3, 5, 2, 1, 6, 4],
+        //       total: 38,
+        //       max_streak: 2,
+        //       total_days_active: 4,
+        //       engagement: 3,
+        //     },
+        //     week3: {
+        //       days: [6, 1, 3, 0, 5, 2, 4],
+        //       total: 67,
+        //       max_streak: 5,
+        //       total_days_active: 6,
+        //       engagement: 4,
+        //     },
+        //     week4: {
+        //       days: [2, 5, 0, 4, 1, 3, 6],
+        //       total: 53,
+        //       max_streak: 3,
+        //       total_days_active: 5,
+        //       engagement: 5,
         //     },
         //   },
         // };
 
-        // setStudentData(study_data);
+        const performanceData: any = [];
+        const study_data: any = [];
+
+        setStudentData((prevData: any) => ({
+          ...prevData,
+          usage: study_data,
+        }));
 
         if (userdata?.entity_name === 'college') {
           const subjectMap: any = {};
@@ -193,7 +300,9 @@ const StudentDashboardCharts = () => {
                 bar: {
                   horizontal: false,
                   columnWidth: '55%',
+                  borderRadius: 2,
                   endingShape: 'rounded',
+                  borderRadiusApplication: 'end',
                 },
               },
               dataLabels: {
@@ -266,6 +375,7 @@ const StudentDashboardCharts = () => {
                 bar: {
                   horizontal: false,
                   columnWidth: '55%',
+                  borderRadius: 2,
                   endingShape: 'rounded',
                 },
               },
@@ -328,6 +438,7 @@ const StudentDashboardCharts = () => {
               },
               plotOptions: {
                 bar: {
+                  borderRadius: 2,
                   horizontal: false,
                   columnWidth: '55%',
                   endingShape: 'rounded',
@@ -401,6 +512,7 @@ const StudentDashboardCharts = () => {
               },
               plotOptions: {
                 bar: {
+                  borderRadius: 2,
                   horizontal: false,
                   columnWidth: '55%',
                   endingShape: 'rounded',
@@ -494,6 +606,7 @@ const StudentDashboardCharts = () => {
               },
               plotOptions: {
                 bar: {
+                  borderRadius: 2,
                   horizontal: false,
                   columnWidth: '55%',
                   endingShape: 'rounded',
@@ -567,6 +680,7 @@ const StudentDashboardCharts = () => {
               },
               plotOptions: {
                 bar: {
+                  borderRadius: 2,
                   horizontal: false,
                   columnWidth: '55%',
                   endingShape: 'rounded',
@@ -631,6 +745,7 @@ const StudentDashboardCharts = () => {
               },
               plotOptions: {
                 bar: {
+                  borderRadius: 2,
                   horizontal: false,
                   columnWidth: '55%',
                   endingShape: 'rounded',
@@ -705,7 +820,8 @@ const StudentDashboardCharts = () => {
               plotOptions: {
                 bar: {
                   horizontal: false,
-                  columnWidth: '55%',
+                  borderRadius: 2,
+                  columnWidth: '40%',
                   endingShape: 'rounded',
                 },
               },
@@ -714,7 +830,7 @@ const StudentDashboardCharts = () => {
               },
               stroke: {
                 show: true,
-                width: 2,
+                width: 0.2,
                 colors: ['transparent'],
               },
               xaxis: {
@@ -748,8 +864,7 @@ const StudentDashboardCharts = () => {
         }
 
         const prepareTimeData = () => {
-          if (!study_data || !study_data.usage) return {};
-          const monthData: any = study_data.usage[activeMonth];
+          const monthData: any = study_data[activeMonth];
           const weeks = Object.keys(monthData).filter((key) =>
             key.startsWith('week'),
           );
@@ -757,20 +872,9 @@ const StudentDashboardCharts = () => {
           if (activeTab === 'daily') {
             const days = Array.from({ length: 31 }, (_, i) => `${i + 1}`);
 
-            const weeklyData = [
-              ...(monthData.week1?.days
-                ? Object.values(monthData.week1.days)
-                : []),
-              ...(monthData.week2?.days
-                ? Object.values(monthData.week2.days)
-                : []),
-              ...(monthData.week3?.days
-                ? Object.values(monthData.week3.days)
-                : []),
-              ...(monthData.week4?.days
-                ? Object.values(monthData.week4.days)
-                : []),
-            ];
+            const weeklyData = weeks.flatMap(
+              (week) => monthData[week]?.days || [],
+            );
 
             const dailyHours = days.map(
               (_, index) => weeklyData[index % 7] || 0,
@@ -798,13 +902,13 @@ const StudentDashboardCharts = () => {
               recommended: Array(weeklyLabels.length).fill(2.5 * 7),
             };
           } else {
-            const months = Object.keys(study_data.usage).map((month) =>
+            const months = Object.keys(study_data).map((month) =>
               month.replace('month', 'Month '),
             );
-            const monthlyTotals = Object.values(study_data.usage).map(
+            const monthlyTotals = Object.values(study_data).map(
               (month: any) => month.total,
             );
-            const dailyAverages = Object.values(study_data.usage).map(
+            const dailyAverages = Object.values(study_data).map(
               (month: any) => month.total / 30,
             );
 
@@ -824,7 +928,7 @@ const StudentDashboardCharts = () => {
             {
               name: 'Daily Time (Hours)',
               type: activeTab === 'daily' ? 'area' : 'line',
-              data: timeData.dailyHours,
+              data: timeData?.dailyHours || [],
             },
             ...(activeTab !== 'daily'
               ? [
@@ -834,7 +938,7 @@ const StudentDashboardCharts = () => {
                         ? 'Weekly Total Time (Hours)'
                         : 'Monthly Total Time (Hours)',
                     type: 'column',
-                    data: timeData.weeklyTotals,
+                    data: timeData?.weeklyTotals || [],
                   },
                   {
                     name:
@@ -842,7 +946,7 @@ const StudentDashboardCharts = () => {
                         ? 'Recommended Weekly Time (Hours)'
                         : 'Recommended Monthly Time (Hours)',
                     type: 'line',
-                    data: timeData.recommended,
+                    data: timeData?.recommended || [],
                   },
                 ]
               : []),
@@ -851,7 +955,7 @@ const StudentDashboardCharts = () => {
                   {
                     name: 'Recommended Daily Time (Hours)',
                     type: 'line',
-                    data: timeData.recommended,
+                    data: timeData?.recommended || [],
                   },
                 ]
               : []),
@@ -890,6 +994,14 @@ const StudentDashboardCharts = () => {
 
               width: activeTab === 'daily' ? [4, 3] : [4, 0, 3],
               dashArray: activeTab === 'daily' ? [0, 5] : [0, 0, 5],
+            },
+            plotOptions: {
+              bar: {
+                horizontal: false,
+                borderRadius: 6,
+                columnWidth: '35%',
+                borderRadiusApplication: 'end',
+              },
             },
             markers: {
               size: activeTab === 'daily' ? [0, 1] : [0, 0, 1],
@@ -959,7 +1071,9 @@ const StudentDashboardCharts = () => {
               offsetY: 10,
             },
             title: {
-              text: 'Learning Time Analysis',
+              text: timeData?.dailyHours?.length
+                ? 'Learning Time Analysis'
+                : 'No Learning Time Data Available',
               align: 'center',
               style: { fontSize: '18px', fontWeight: 'bold', color: '#333' },
             },
@@ -974,8 +1088,7 @@ const StudentDashboardCharts = () => {
           },
         });
         const prepareStreaksData = () => {
-          if (!study_data || !study_data.usage) return {};
-          const monthData: any = study_data.usage[activeMonth];
+          const monthData = study_data?.[activeMonth] || {};
 
           const weeks = Object.keys(monthData).filter((key) =>
             key.startsWith('week'),
@@ -985,12 +1098,14 @@ const StudentDashboardCharts = () => {
             const weeklyLabels = weeks.map((week) =>
               week.replace('week', 'Week '),
             );
-            const maxStreaks = weeks.map((week) => monthData[week].max_streak);
+            const maxStreaks = weeks.map(
+              (week) => monthData[week]?.max_streak || 0,
+            );
             const activeDays = weeks.map(
-              (week) => monthData[week].total_days_active,
+              (week) => monthData[week]?.total_days_active || 0,
             );
             const engagement = weeks.map(
-              (week) => monthData[week].engagement * 20,
+              (week) => (monthData[week]?.engagement || 0) * 20,
             );
 
             return {
@@ -1000,11 +1115,11 @@ const StudentDashboardCharts = () => {
               engagement,
             };
           } else if (activeTab === 'monthly') {
-            const months = Object.keys(study_data.usage).map((month) =>
+            const months = Object.keys(study_data?.usage).map((month) =>
               month.replace('month', 'Month '),
             );
 
-            const maxStreaks = Object.values(study_data.usage).map(
+            const maxStreaks = Object.values(study_data?.usage).map(
               (month: any) =>
                 Math.max(
                   ...Object.values(month)
@@ -1013,7 +1128,7 @@ const StudentDashboardCharts = () => {
                 ),
             );
 
-            const activeDays = Object.values(study_data.usage).map(
+            const activeDays = Object.values(study_data?.usage).map(
               (month: any) =>
                 Object.values(month)
                   .filter((week: any) => week.total_days_active)
@@ -1023,7 +1138,7 @@ const StudentDashboardCharts = () => {
                   ),
             );
 
-            const engagement = Object.values(study_data.usage).map(
+            const engagement = Object.values(study_data).map(
               (month: any) =>
                 Object.values(month)
                   .filter((week: any) => week.engagement)
@@ -1050,17 +1165,17 @@ const StudentDashboardCharts = () => {
             {
               name: 'Engagement Score',
               type: 'line',
-              data: streaksData?.engagement,
+              data: streaksData?.engagement || [],
             },
             {
               name: 'Max Consecutive Days Active',
               type: 'column',
-              data: streaksData?.maxStreaks,
+              data: streaksData?.maxStreaks || [],
             },
             {
               name: 'Total Active Days',
               type: 'column',
-              data: streaksData?.activeDays,
+              data: streaksData?.activeDays || [],
             },
           ],
           options: {
@@ -1081,6 +1196,14 @@ const StudentDashboardCharts = () => {
             stroke: {
               curve: 'smooth',
               width: [4, 0, 0],
+            },
+            plotOptions: {
+              bar: {
+                horizontal: false,
+                borderRadius: 6,
+                columnWidth: '55%',
+                borderRadiusApplication: 'end',
+              },
             },
             colors: ['#e74a3b', '#4e73df', '#1cc88a'],
             dataLabels: {
@@ -1137,7 +1260,9 @@ const StudentDashboardCharts = () => {
               offsetY: 10,
             },
             title: {
-              text: 'Study Streaks & Engagement',
+              text: streaksData?.engagement?.length
+                ? 'Study Streaks & Engagement'
+                : 'No Study Streaks Data Available',
               align: 'center',
               style: {
                 fontSize: '18px',
@@ -1156,7 +1281,9 @@ const StudentDashboardCharts = () => {
         console.error('Error fetching subjects:', error);
       }
     };
-    fetchData();
+    if (activeMonth) {
+      fetchData();
+    }
   }, [activeTab, activeMonth]);
 
   return (
@@ -1166,20 +1293,14 @@ const StudentDashboardCharts = () => {
           <div className="control-group">
             <label>Month:</label>
             <select
-              value={activeMonth || ''}
+              value={activeMonth}
               onChange={(e) => setActiveMonth(e.target.value)}
             >
-              {studentData ? (
-                getMonths().map((month: any) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
-                ))
-              ) : (
-                <option value="" disabled>
-                  No months available
+              {getMonths().map((month: any) => (
+                <option key={month} value={month}>
+                  {month}
                 </option>
-              )}
+              ))}
             </select>
           </div>
           <div className="tabs-container">
@@ -1215,116 +1336,51 @@ const StudentDashboardCharts = () => {
         }
       >
         <div className="card shadow h-100">
-          <div
-            className="card-body"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '350px',
-            }}
-          >
-            {learningTimeData?.series &&
-            learningTimeData.series.some(
-              (series: any) => series.data && series.data.length > 0,
-            ) ? (
-              <ReactApexChart
-                options={learningTimeData.options}
-                series={learningTimeData.series}
-                type="line"
-                height={400}
-              />
-            ) : (
-              <p className="text-gray-500 ">No data available</p>
-            )}
+          <div className="card-body">
+            <ReactApexChart
+              options={learningTimeData.options}
+              series={learningTimeData.series}
+              type="line"
+              height={400}
+            />
           </div>
         </div>
       </div>
-
       {activeTab !== 'daily' && (
         <div className="col-xl-6 col-lg-6 mb-4">
           <div className="card shadow h-100">
-            <div
-              className="card-body"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '350px',
-              }}
-            >
-              {studyStreaksData?.series &&
-              studyStreaksData.series.some(
-                (series: any) => series.data && series.data.length > 0,
-              ) ? (
-                <ReactApexChart
-                  options={studyStreaksData.options}
-                  series={studyStreaksData.series}
-                  type="line"
-                  height={400}
-                />
-              ) : (
-                <p className=" text-gray-500 ">No data available</p>
-              )}
+            <div className="card-body">
+              <ReactApexChart
+                options={studyStreaksData.options}
+                series={studyStreaksData.series}
+                type="line"
+                height={400}
+              />
             </div>
           </div>
         </div>
       )}
-
       <div className="col-xl-6 col-lg-6 mb-4">
         <div className="card shadow h-100">
-          <div
-            className="card-body"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '350px',
-            }}
-          >
-            {academicPerformanceData?.series &&
-            academicPerformanceData.series.some(
-              (series: any) => series.data && series.data.length > 0,
-            ) ? (
-              <ReactApexChart
-                options={academicPerformanceData.options}
-                series={academicPerformanceData.series}
-                type="bar"
-                height={350}
-              />
-            ) : (
-              <p className="text-center text-gray-500">No data available</p>
-            )}
+          <div className="card-body">
+            <ReactApexChart
+              options={academicPerformanceData.options}
+              series={academicPerformanceData.series}
+              type="bar"
+              height={350}
+            />
           </div>
         </div>
       </div>
-
       <div className="col-xl-6 col-lg-6 mb-4">
         <div className="card shadow h-100">
-          <div
-            className="card-body"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '350px',
-            }}
-          >
-            {completionRateData?.series &&
-            completionRateData.series.some(
-              (series: any) => series.data && series.data.length > 0,
-            ) ? (
-              <ReactApexChart
-                options={completionRateData.options}
-                series={completionRateData.series}
-                type="bar"
-                height={350}
-              />
-            ) : (
-              <p className="text-center text-gray-500 mt-12">
-                No data available
-              </p>
-            )}
+          <div className="card-body">
+            <ReactApexChart
+              options={completionRateData.options}
+              series={completionRateData.series}
+              type="bar"
+              height={350}
+            />
           </div>
         </div>
       </div>

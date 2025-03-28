@@ -18,7 +18,6 @@ const TeacherDashboardCharts = () => {
   const SUBJECT_SCHOOL_URL = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
 
   const [selectedClass, setSelectedClass] = useState('');
-
   const [subjectAll, setSubjectAll] = useState<any[]>([]);
   const [schoolSubjectAll, setschoolSubjectAll] = useState<any>([]);
   const [semesterAll, setSemesterAll] = useState<any[]>([]);
@@ -93,7 +92,17 @@ const TeacherDashboardCharts = () => {
   }, [selectedCourse, selectedSemester, selectedClass]);
 
   useEffect(() => {
-    setSelectedSemester('');
+    if (selectedCourse && selectedSemester) {
+      const semestersForCourse = semesterAll.filter(
+        (semester) => semester.course_id === selectedCourse,
+      );
+
+      if (semestersForCourse.length > 0) {
+        setSelectedSemester(semestersForCourse[0]?.semester_id.toString());
+      } else {
+        setSelectedSemester('');
+      }
+    }
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -101,26 +110,57 @@ const TeacherDashboardCharts = () => {
     // getData(`${'for teacher chart'}/${user_uuid}`).then((data) => {
     //   setData(data?.data);
     // });
+
     // setData({
-    //   7: {
-    //     11: {
+    //   5: {
+    //     9: {
     //       average_score: 45,
-    //       pending_assignments: 3,
-    //       completed: 2,
+    //       pending_assignments: 2,
+    //       completed: 8,
     //     },
-    //     20: {
+    //     13: {
     //       average_score: 50,
+    //       pending_assignments: 4,
+    //       completed: 8,
+    //     },
+    //     14: {
+    //       average_score: 60,
+    //       pending_assignments: 4,
+    //       completed: 6,
+    //     },
+    //     15: {
+    //       average_score: 70,
     //       pending_assignments: 3,
-    //       completed: 2,
+    //       completed: 6,
+    //     },
+    //     23: {
+    //       average_score: 80,
+    //       pending_assignments: 3,
+    //       completed: 6,
+    //     },
+    //     24: {
+    //       average_score: 50,
+    //       pending_assignments: 2,
+    //       completed: 8,
+    //     },
+    //     25: {
+    //       average_score: 70,
+    //       pending_assignments: 4,
+    //       completed: 6,
     //     },
     //   },
-    //   8: {
-    //     12: {
+    //   6: {
+    //     10: {
     //       average_score: 60,
     //       pending_assignments: 10,
     //       completed: 15,
     //     },
-    //     21: {
+    //     26: {
+    //       average_score: 50,
+    //       pending_assignments: 5,
+    //       completed: 10,
+    //     },
+    //     27: {
     //       average_score: 70,
     //       pending_assignments: 5,
     //       completed: 10,
@@ -128,8 +168,9 @@ const TeacherDashboardCharts = () => {
     //   },
     // });
 
-    console.log({ setData });
-  });
+    setData([]);
+  }, []);
+
   useEffect(() => {
     if (user_uuid) {
       getData(`${TEACHERURL}/${user_uuid}`).then((data) => {
@@ -159,7 +200,7 @@ const TeacherDashboardCharts = () => {
           );
 
           setSelectedCourse(uniqueCourses[0]?.course_id);
-          const uniqueSemesters = Object.values(
+          const uniqueSemesters: any = Object.values(
             filteredSub.reduce(
               (acc: any, item: any) => {
                 if (!acc[item.semester_id]) {
@@ -179,7 +220,9 @@ const TeacherDashboardCharts = () => {
           );
 
           setSemesterAll(uniqueSemesters);
+          console.log({ uniqueSemesters });
 
+          setSelectedSemester(uniqueSemesters[0]?.semester_id.toString());
           const uniqueClasses: any = Object.values(
             filteredSub.reduce(
               (acc: any, item: any) => {
@@ -258,7 +301,8 @@ const TeacherDashboardCharts = () => {
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '55%',
+            columnWidth: '40%',
+            borderRadius: 10,
           },
         },
         dataLabels: {
@@ -301,7 +345,8 @@ const TeacherDashboardCharts = () => {
         plotOptions: {
           bar: {
             horizontal: false,
-            columnWidth: '55%',
+            columnWidth: '40%',
+            borderRadius: 10,
           },
         },
         dataLabels: {
@@ -322,6 +367,7 @@ const TeacherDashboardCharts = () => {
           text: 'Assignment Completion Status',
           align: 'center',
         },
+        colors: ['#66C266', '#D9534F'],
       },
       series: [
         {
@@ -447,7 +493,6 @@ const TeacherDashboardCharts = () => {
                 label="Semester"
                 disabled={!selectedCourse}
               >
-                <MenuItem value="">All Semesters</MenuItem>
                 {filteredSemesters.map((semester) => (
                   <MenuItem
                     key={semester.semester_id}

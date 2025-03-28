@@ -364,37 +364,65 @@ const InstitutionCharts = () => {
 
     // let assignment: any = "await getData(`${'call  Assignment api '}`)";
     // assignment = {
-    //   subject_categories: {
-    //     5: {
-    //       low: 23,
-    //       medium: 30,
-    //       high: 20,
-    //       very_high: 10,
-    //     },
-    //     6: {
-    //       low: 27,
-    //       medium: 20,
-    //       high: 30,
-    //       very_high: 20,
-    //     },
-    //     7: {
-    //       low: 10,
-    //       medium: 50,
-    //       high: 20,
-    //       very_high: 9,
-    //     },
-    //     9: {
-    //       low: 23,
-    //       medium: 30,
-    //       high: 10,
-    //       very_high: 5,
-    //     },
-    //     16: {
-    //       low: 27,
-    //       medium: 30,
-    //       high: 8,
-    //       very_high: 20,
-    //     },
+    //   9: {
+    //     low: 23,
+    //     medium: 30,
+    //     high: 20,
+    //     very_high: 10,
+    //   },
+    //   10: {
+    //     low: 27,
+    //     medium: 20,
+    //     high: 30,
+    //     very_high: 20,
+    //   },
+    //   14: {
+    //     low: 10,
+    //     medium: 50,
+    //     high: 20,
+    //     very_high: 9,
+    //   },
+    //   15: {
+    //     low: 23,
+    //     medium: 30,
+    //     high: 10,
+    //     very_high: 5,
+    //   },
+    //   13: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   23: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   24: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   25: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   27: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
+    //   },
+    //   26: {
+    //     low: 27,
+    //     medium: 30,
+    //     high: 8,
+    //     very_high: 20,
     //   },
     // };
     // setAssignmentData(assignment);
@@ -466,7 +494,17 @@ const InstitutionCharts = () => {
   }, [selectedCourse, selectedSemester, institute, selectedClass]);
 
   useEffect(() => {
-    setSelectedSemester('');
+    if (selectedCourse && selectedSemester) {
+      const semestersForCourse = semesterAll.filter(
+        (semester) => semester.course_id === selectedCourse,
+      );
+
+      if (semestersForCourse.length > 0) {
+        setSelectedSemester(semestersForCourse[0]?.semester_id.toString());
+      } else {
+        setSelectedSemester('');
+      }
+    }
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -504,7 +542,7 @@ const InstitutionCharts = () => {
         ),
       );
       setSelectedCourse(uniqueCourses[0]?.course_id);
-      const uniqueSemesters = Object.values(
+      const uniqueSemesters: any = Object.values(
         filteredSub.reduce(
           (acc: any, item: any) => {
             if (!acc[item.semester_id]) {
@@ -524,6 +562,7 @@ const InstitutionCharts = () => {
       );
 
       setSemesterAll(uniqueSemesters);
+      setSelectedSemester(uniqueSemesters[0]?.semester_id.toString());
 
       const uniqueClasses: any = Object.values(
         filteredSub.reduce(
@@ -544,15 +583,10 @@ const InstitutionCharts = () => {
     getData(`${SUBJECT_SCHOOL_URL}`).then((data) => {
       setschoolSubjectAll(data?.data?.subjects_data);
     });
-  }, []);
+  }, [institute_id]);
 
   useEffect(() => {
-    if (
-      !sessionData ||
-      !assignmentData.subject_categories ||
-      !sessionData.teachers
-    )
-      return;
+    if (!sessionData || !assignmentData || !sessionData.teachers) return;
 
     if (sessionData.teachers) {
       const teacherActivity = Object.entries(sessionData.teachers).map(
@@ -596,7 +630,7 @@ const InstitutionCharts = () => {
       }));
     }
 
-    setSubjectData(assignmentData.subject_categories);
+    setSubjectData(assignmentData);
   }, [sessionData, assignmentData, activeMonth]);
 
   const getMonths = () => {
@@ -743,7 +777,7 @@ const InstitutionCharts = () => {
       plotOptions: {
         bar: {
           horizontal: false,
-          borderRadius: 10,
+          borderRadius: 8,
           columnWidth: '20%',
         },
       },
@@ -1546,11 +1580,7 @@ const InstitutionCharts = () => {
               className="filters-container"
               style={{ marginBottom: '20px', display: 'flex', gap: '16px' }}
             >
-              <FormControl
-                fullWidth
-                variant="outlined"
-                style={{ minWidth: '200px' }}
-              >
+              <FormControl variant="outlined" style={{ minWidth: '200px' }}>
                 <InputLabel id="course-select-label">Course</InputLabel>
                 <Select
                   labelId="course-select-label"
@@ -1567,11 +1597,7 @@ const InstitutionCharts = () => {
                 </Select>
               </FormControl>
 
-              <FormControl
-                fullWidth
-                variant="outlined"
-                style={{ minWidth: '200px' }}
-              >
+              <FormControl variant="outlined" style={{ minWidth: '200px' }}>
                 <InputLabel id="semester-select-label">Semester</InputLabel>
                 <Select
                   labelId="semester-select-label"
@@ -1581,7 +1607,6 @@ const InstitutionCharts = () => {
                   label="Semester"
                   disabled={!selectedCourse}
                 >
-                  <MenuItem value="">All Semesters</MenuItem>
                   {filteredSemesters.map((semester) => (
                     <MenuItem
                       key={semester.semester_id}
