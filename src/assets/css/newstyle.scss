@@ -289,6 +289,13 @@ img {
   font-size: 10px !important;
 }
 @media (max-width: 428px) {
+
+  .text-m-16{
+    font-size: 16px!important;
+  }
+  .text-m-14{
+    font-size: 14px!important;
+  }
   body .bg-m-transparent{
     background-color: transparent!important;
     box-shadow: none!important;
@@ -3014,4 +3021,64 @@ a {
 
 .overflow-auto{
   overflow: auto;
+}
+
+.quiz-panel{
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  background-color: white;
+  min-height: 100vh;
+  .rebtns{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+    grid-gap: 0.5rem;
+    button{
+      min-width: auto;
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+
+  .left-cards{
+    border-right: 1px solid rgba($primary, 0.2);
+    .optiongrp{
+      margin-left: 0.9rem;
+      margin-top: 1rem;
+      .optionscss{
+        border: 1px solid rgba($primary, 0.2);
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+       }
+    }
+   
+  }
+  .right-cards{
+    .quiz-hint{
+      margin: 2rem 0;
+      li{
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 0.5rem;
+        span{
+          width: 16px;
+          height: 16px;
+          display: block;
+          border-radius: 2px;
+        }
+      }
+      @media (max-width: 428px){
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+  .left-cards, .right-cards{
+    padding: 1.2rem;
+  }
+
+  @media (max-width: 428px) {
+    grid-template-columns: 1fr;
+  }
 }
