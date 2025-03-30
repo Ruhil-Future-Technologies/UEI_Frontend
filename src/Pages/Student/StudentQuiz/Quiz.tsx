@@ -14,9 +14,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  IconButton,
 } from '@mui/material';
 import { AccessTimeOutlined } from '@mui/icons-material';
-
+import CloseIcon from '@mui/icons-material/Close';
+import ForumIcon from '@mui/icons-material/Forum';
 interface Question {
   id: number;
   question: string;
@@ -140,6 +142,10 @@ const QuizPage = () => {
   const handleSubmit = () => {
     setShowResults(true);
   };
+  const correctCount = Object.keys(selectedAnswers).filter((qId) =>
+    isCorrectAnswer(parseInt(qId)),
+  ).length;
+  const scorePercentage = (correctCount / quizData.length) * 100;
 
   return (
     <div className="main-wrapper">
@@ -176,31 +182,32 @@ const QuizPage = () => {
                 >
                   Mathematics Final Exam
                 </Typography>
-                <Typography variant="body1" gutterBottom className='text-m-14'>
+                <Typography variant="body1" gutterBottom className="text-m-14">
                   Complete all questions. You can review your answers before
                   final submission.
                 </Typography>
                 <div className="d-flex justify-content-between my-3 align-items-center">
                   <small className=" fw-medium d-block text-m-14">
-                  Question {currentQuestionIndex + 1} of {quizData.length}
-                </small>
-                <Typography
-                variant="body1"
-                gutterBottom
-                className="text-danger fw-bold text-m-14 d-lg-none"
-              >
-                <AccessTimeOutlined className='d-none d-lg-block' /> {Math.floor(timeLeft / 60)}:
-                {(timeLeft % 60).toString().padStart(2, '0')} Time Remaining
-              </Typography>
+                    Question {currentQuestionIndex + 1} of {quizData.length}
+                  </small>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    className="text-danger fw-bold text-m-14 d-lg-none"
+                  >
+                    <AccessTimeOutlined className="d-none d-lg-block" />{' '}
+                    {Math.floor(timeLeft / 60)}:
+                    {(timeLeft % 60).toString().padStart(2, '0')} Time Remaining
+                  </Typography>
                 </div>
-                
               </div>
               <Typography
                 variant="body1"
                 gutterBottom
                 className="text-danger fw-bold text-m-14 d-none d-lg-flex gap-1"
               >
-                <AccessTimeOutlined className='d-none d-lg-block' /> {Math.floor(timeLeft / 60)}:
+                <AccessTimeOutlined className="d-none d-lg-block" />{' '}
+                {Math.floor(timeLeft / 60)}:
                 {(timeLeft % 60).toString().padStart(2, '0')} Time Remaining
               </Typography>
             </div>
@@ -208,17 +215,17 @@ const QuizPage = () => {
             <p className="fs-18 fw-medium mb-2">
               Question {currentQuestionIndex + 1}
             </p>
-            <Typography variant="body1" className='text-dark fs-5' gutterBottom>
+            <Typography variant="body1" className="text-dark fs-5" gutterBottom>
               {quizData[currentQuestionIndex].question}
             </Typography>
             <RadioGroup
-            className='optiongrp'
+              className="optiongrp"
               value={selectedAnswers[quizData[currentQuestionIndex].id] || ''}
               onChange={handleAnswerChange}
             >
               {quizData[currentQuestionIndex].options.map((option, index) => (
                 <FormControlLabel
-                className='optionscss'
+                  className="optionscss"
                   key={index}
                   value={option}
                   control={<Radio />}
@@ -262,20 +269,68 @@ const QuizPage = () => {
               >
                 Submit Quiz
               </Button>
-              <Dialog open={showResults} onClose={() => setShowResults(false)}>
-                <DialogTitle>Quiz Results</DialogTitle>
+              <Dialog
+                open={showResults}
+                onClose={() => setShowResults(false)}
+                maxWidth="sm"
+                fullWidth
+              >
+                <DialogTitle
+                  sx={{
+                    textAlign: 'center',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  Quiz Results
+                  <IconButton onClick={() => setShowResults(false)}>
+                    <CloseIcon />
+                  </IconButton>
+                </DialogTitle>
+
                 <DialogContent>
-                  <Typography>
-                    {
-                      Object.keys(selectedAnswers).filter((qId) =>
-                        isCorrectAnswer(parseInt(qId)),
-                      ).length
-                    }{' '}
-                    / {quizData.length} correct
-                  </Typography>
+                  <div className="incirclere">
+                    <h1>{scorePercentage.toFixed(0)}% <span>Score</span>  </h1>
+                   
+                  </div>
+                  <p className='text-dark text-center fs-4 mt-4 fw-bold mb-1'>Excellent Work!</p>
+                  <p className="text-center mb-4">
+                    You've completed the Mathematics Quiz
+                  </p>
+
+                  <div className="card bg-primary-20 mb-0">
+                    <div className="card-body">
+                      <ul className='quizsubre'>
+                        <li>
+                          <AccessTimeOutlined color='primary' />
+                          <div className="">
+                            <span>Time Taken:</span>
+                            <span className='text-dark'>
+                              {((300 - timeLeft) / 60).toFixed(2)} mins
+                            </span>
+                          </div>
+                        </li>
+                        <li>
+                          <ForumIcon color='primary'/>
+                          <div className="">
+                            <span>Questions:</span>
+                            <span className='text-dark'>
+                              {correctCount}/{quizData.length} Correct
+                            </span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setShowResults(false)}>Close</Button>
+                <DialogActions sx={{ justifyContent: 'center' }}>
+                  <button
+                    className='btn btn-primary rounded-pill mb-4 px-4'
+                    onClick={() => setShowResults(false)}
+                  >
+                    Go To Results
+                  </button>
                 </DialogActions>
               </Dialog>
             </Box>
@@ -318,7 +373,6 @@ const QuizPage = () => {
               </li>
             </ul>
           </div>
-          
         </div>
       </div>
     </div>
