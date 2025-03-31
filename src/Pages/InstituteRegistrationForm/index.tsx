@@ -484,7 +484,7 @@ const InstituteRegistrationForm = () => {
       const formData = new FormData();
 
       allselectedfiles.forEach((file) => {
-        formData.append('documents[]', file); // Backend reads it as an array
+        formData.append('documents', file); // Backend reads it as an array
       });
 
       // Append text fields to FormData

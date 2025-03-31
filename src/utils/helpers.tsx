@@ -238,3 +238,28 @@ export const toTitleCase=(str: string): string =>{
     .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
     .join(" "); // Join words back together
 }
+
+export const getColor = (value: number, max: number) => {
+  const mid = max / 2; // Midpoint where it's fully orange
+
+  if (value >= max) return "#4CAF50"; // Fully Green (Success)
+  if (value <= 0) return "#FF0000";  // Fully Red (Danger)
+
+  let red, green;
+
+  if (value > mid) {
+    // Transition from Green → Orange
+    const factor = (max - value) / (max - mid);
+    red = Math.floor(factor * 255);   // Increase red
+    green = Math.floor(76 + factor * (165 - 76)); // Reduce green slightly
+  } else {
+    // Transition from Orange → Red
+    const factor = value / mid;
+    red = 255;  // Keep fully red
+    green = Math.floor(factor * 165); // Reduce green
+  }
+
+  return `rgb(${red}, ${green}, 0)`;
+};
+
+

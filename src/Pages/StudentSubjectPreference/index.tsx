@@ -384,14 +384,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 item?.stream === null
               ) {
                 const filterData = filteredData?.filter(
-                  (items: any) => items?.class_id === item?.class_id,
+                  (items: any) => items?.class_id == item?.class_id,
                 );
                 subjectData = filterData || [];
               } else {
                 const filterData = filteredData?.filter(
                   (items: any) =>
-                    items?.class_id === item?.class_id &&
-                    items?.stream === item?.stream,
+                    items?.class_id == item?.class_id &&
+                    items?.stream == item?.stream,
                 );
                 subjectData = filterData || [];
               }
@@ -403,8 +403,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               );
               subjectData = filterData || [];
             }
-            const subjectname = subjectData?.filter((subject: Subject) => subject.subject_id === item?.subject_id)
-
+            const subjectname = subjectData?.filter((subject: Subject) => subject.subject_id == item?.subject_id)
             const selectedSubject = subjectname[0]?.subject_name?.toLowerCase();
             const teacherData = teacherlist?.filter((teacher: Teacher) =>
               teacher.subject_list.some((sub: any) => sub.toLowerCase() === selectedSubject)
@@ -458,7 +457,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             }
           });
         } else if (data?.code === 404) {
-          if(data?.code === 404){
+          if (data?.code === 404) {
             setBoxes([
               {
                 id: 0,
@@ -474,7 +473,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               },
             ]);
             getacademic()
-          }else{
+          } else {
             setBoxes([
               {
                 id: 0,
@@ -490,7 +489,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               },
             ]);
           }
-         
+
           setEditFlag(true);
         } else {
           // empty
@@ -888,9 +887,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   return (
     <div>
       <form>
-      <b className="font-weight-bold profiletext mb-4 d-block">
-        Subject prefrence
-      </b>
+        <b className="font-weight-bold profiletext mb-4 d-block">
+          Subject prefrence
+        </b>
         {boxes?.map((box, index) => (
           <div
             className="row d-flex align-items-center g-4 mb-3 mb-md-4"
@@ -902,7 +901,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 <div className="col form_field_wrapper">
                   <FormControl
                     required
-                    sx={{  minWidth: 220, width: '100%' }}
+                    sx={{ minWidth: 220, width: '100%' }}
                   >
                     <InputLabel>Course</InputLabel>
                     <Select
@@ -941,7 +940,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 <div className=" col form_field_wrapper">
                   <FormControl
                     required
-                    sx={{  minWidth: 220, width: '100%' }}
+                    sx={{ minWidth: 220, width: '100%' }}
                   >
                     <InputLabel id="semester-select-label">
                       Semester{' '}
@@ -1009,7 +1008,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 <div className="col form_field_wrapper">
                   <FormControl
                     required
-                    sx={{  minWidth: 220, width: '100%' }}
+                    sx={{ minWidth: 220, width: '100%' }}
                     disabled
                   >
                     <InputLabel id="class-label" shrink>
@@ -1058,7 +1057,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                       <FormControl
                         required
                         sx={{
-                          
+
                           minWidth: 70,
                           width: '100%',
                           maxWidth: 200,
@@ -1122,12 +1121,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               </>
             )}
             <div className="col form_field_wrapper">
-              <FormControl required sx={{  minWidth: 220, width: '100%' }}>
+              <FormControl required sx={{ minWidth: 220, width: '100%' }}>
                 <InputLabel>Subject</InputLabel>
                 <Select
                   name="subject_id"
                   value={box.subject_id}
-                  
+
                   onChange={(e) =>
                     handleInputChange(index, 'subject_id', e.target.value)
                   }
@@ -1245,7 +1244,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   : '',
               }}
             >
-              <FormControl sx={{  minWidth: 180, width: '100%' }}>
+              <FormControl sx={{ minWidth: 180, width: '100%' }}>
                 <TextField
                   name="score_in_percentage"
                   sx={{

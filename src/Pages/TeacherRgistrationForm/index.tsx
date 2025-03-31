@@ -466,7 +466,6 @@ const TeacherRegistrationPage = () => {
       getForRegistration(`${getsubjectSchool}`)
         .then((data) => {
           if (data.status) {
-            console.log(data?.data?.subjects_data);
             setTotleSubject(data?.data?.subjects_data);
           }
         })
@@ -820,7 +819,7 @@ const TeacherRegistrationPage = () => {
     ) {
       const formData = new FormData();
       allselectedfiles.forEach((file) => {
-        formData.append('documents[]', file);
+        formData.append('documents', file);
       });
 
       formData.append('first_name', teacher.first_name);

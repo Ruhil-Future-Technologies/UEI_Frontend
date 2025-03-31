@@ -1113,12 +1113,16 @@ export const ProfileDialog: FunctionComponent<{
       subject_id: selectSubject,
       preference: answers[length - 3],
       score_in_percentage: answers[length - 2],
+      ...((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school'&&
+       { class_id:answeredData?.academic_history?.class_id || answers[11]}
+      ),
+      
       sem_id:
         selectedInstituteType?.toLowerCase() === 'college' ||
           answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-      ...(answeredData?.academic_history?.institution_type === 'school' &&
+      ...((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school' &&
         answeredData?.academic_history?.stream && {
         stream: answeredData?.academic_history?.stream || answers[12],
       }),

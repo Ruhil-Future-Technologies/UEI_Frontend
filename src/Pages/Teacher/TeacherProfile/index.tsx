@@ -1674,7 +1674,7 @@ const TeacherProfile = () => {
                                 {stream.map((item) => (
                                   <MenuItem
                                     key={item}
-                                    value={item}
+                                    value={item.toLowerCase()}
                                     sx={{
                                       backgroundColor: inputfield(namecolor),
                                       color: inputfieldtext(namecolor),

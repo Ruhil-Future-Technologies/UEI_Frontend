@@ -77,7 +77,7 @@ export interface Assignment {
   save_draft: boolean;
   add_to_report: boolean;
   notify: boolean;
-  file: File[] | null; // Assuming file is optional and a File object
+  files: File[] | null; // Assuming file is optional and a File object
 }
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
@@ -131,6 +131,7 @@ export const CreateAssignments = () => {
   const [due_date_error, setDue_date_error] = useState(false);
   const [dueTime_error, setDueTime_error] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorselectStudent,setErrorSelectStudent]=useState(false);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -182,7 +183,7 @@ export const CreateAssignments = () => {
     save_draft: false,
     add_to_report: false,
     notify: false,
-    file: null, // File should be null initially
+    files: null, // File should be null initially
   });
   useEffect(() => {
     getSemester();
@@ -197,12 +198,10 @@ export const CreateAssignments = () => {
       try {
         getData(`/assignment/get/${id}`)
           .then(async (response) => {
-            console.log(response)
             if (response.data) {
-              console.log(response.data)
               setAssignmentData(response.data);
-              if (response?.data?.file) {
-                setFiles(response?.data?.file);
+              if (response?.data?.files) {
+                setFiles(response?.data?.files);
               }
               const extractedDate = dayjs(response?.data?.due_date_time).format(
                 'YYYY-MM-DD',
@@ -243,7 +242,6 @@ export const CreateAssignments = () => {
                   ),
                 })),
               );
-              console.log(output)
               setBoxes(output);
             } else {
               getSubjects('School');
@@ -274,7 +272,6 @@ export const CreateAssignments = () => {
                   }),
                 ),
               );
-              console.log(output);
               setBoxesForSchool(output);
             }
             // setBoxesForSchool(response?.data?.class_stream_subjects);
@@ -400,8 +397,6 @@ export const CreateAssignments = () => {
               )
             );
 
-            console.log(Subjects.map(({ subject }) => subject));
-            console.log(Subjects, data.data.class_stream_subjects);
             setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject));
           }
         }
@@ -638,6 +633,10 @@ export const CreateAssignments = () => {
     if (error != null) {
       valid1 = true;
     }
+    if(selectedStudents.length<1){
+      setErrorSelectStudent(true)
+      valid1 = true;
+    }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
       boxesForSchool.forEach((box, index) => {
@@ -680,7 +679,7 @@ export const CreateAssignments = () => {
     formData.append('contact_email', assignmentData.contact_email);
     formData.append(
       'allow_late_submission',
-      String(assignmentData.allow_late_submission),
+      String(allowLateSubmission),
     );
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
@@ -781,7 +780,7 @@ export const CreateAssignments = () => {
             save_draft: false,
             add_to_report: false,
             notify: false,
-            file: null, // File should be null initially
+            files: null, // File should be null initially
           });
           nevegate('/teacher-dashboard/assignments');
         });
@@ -815,7 +814,7 @@ export const CreateAssignments = () => {
               save_draft: false,
               add_to_report: false,
               notify: false,
-              file: null,
+              files: null,
             });
           }
         }).catch((response) => {
@@ -990,14 +989,12 @@ export const CreateAssignments = () => {
             (item) =>
               String(item.stream).toLowerCase() == value.toString().toLowerCase() && item.class_id === boxesForSchool[index].class_id,
           );
-            console.log(totleSubject)
           updatedBox = {
             ...updatedBox,
             stream: value.toString(),
             filteredSubjects,
             subjects: [],
           };
-          console.log(updatedBox, totleSubject, value, tescherSchoolSubjects)
         }
         validateFields(index, name, updatedBox);
         return updatedBox;
@@ -1052,10 +1049,6 @@ export const CreateAssignments = () => {
     }
   }, [dueDate, availableFrom, dueTime]);
 
-  console.log(filteredcoursesData
-    .filter((course) =>
-      teacherCourse?.includes(String(course.id)),
-    ))
     
   return (
     <div className="main-wrapper">
@@ -1601,6 +1594,16 @@ export const CreateAssignments = () => {
                             },
                           }}
                         />
+                        {
+                          errorselectStudent &&(
+                            <p
+                            className="error-text"
+                            style={{ color: 'red' }}
+                          >
+                            <small>Please select at least one student</small>
+                          </p>
+                          )
+                        }
                       </Box>
                     </div>
                     <div className="col-lg-12">
