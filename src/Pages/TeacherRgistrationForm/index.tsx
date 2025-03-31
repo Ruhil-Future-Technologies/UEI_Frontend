@@ -848,7 +848,7 @@ const TeacherRegistrationPage = () => {
         const class_stream_subjects = boxesForSchool.reduce(
           (acc, boxesForSchool) => {
             const { class_id, stream, subjects } = boxesForSchool;
-            const streamKey = stream === '' ? 'general' : stream || 'general';
+            const streamKey = stream === '' ? 'general' : stream?.toLowerCase() || 'general';
             if (!acc[class_id]) {
               acc[class_id] = {};
             }
@@ -875,7 +875,7 @@ const TeacherRegistrationPage = () => {
           teacher.institution_id?.toString() || '',
         );
         if (selectedClassName === 'col-4') {
-          formData.append('stream', teacher.stream);
+          formData.append('stream', String(teacher.stream).toLowerCase());
         }
       } else {
         formData.append('university_id', teacher.university_id || '');
