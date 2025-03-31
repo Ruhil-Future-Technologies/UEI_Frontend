@@ -39,6 +39,8 @@ import '../../assets/css/main.scss';
 import { useTheme } from '@mui/material/styles';
 import { ImageModal } from '../../Components/ImageModal';
 import { ChatTable } from './Tablechat';
+import { stopSpeech, textToSpeech } from './speech';
+
 
 const Chat = () => {
   const userid = localStorage.getItem('user_uuid') || '';
@@ -96,15 +98,15 @@ const Chat = () => {
   const [loaderMsg, setLoaderMsg] = useState('');
   const [isTextCopied, setIsTextCopied] = useState<any>({});
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  // const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const theme = useTheme();
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [imageOpen, setImageOpen] = useState(false);
   const [image, setImage] = useState('');
 
-  synth.onvoiceschanged = () => {
-    getVoices();
-  };
+  // synth.onvoiceschanged = () => {
+  //   getVoices();
+  // };
   if (profileCompletion !== '100') {
     navigate('/*');
   }
@@ -370,13 +372,13 @@ const Chat = () => {
       });
   };
 
-  const getVoices = () => {
-    setVoices(synth.getVoices());
-  };
+  // const getVoices = () => {
+  //   setVoices(synth.getVoices());
+  // };
 
   useEffect(() => {
     callAPI();
-    getVoices();
+    // getVoices();
   }, []);
 
   function getTodaysData(arr: any) {
@@ -448,64 +450,94 @@ const Chat = () => {
     }
   }, [Id, chatlist]);
 
+  // const speak = (text: string, index: number) => {
+  //   stopSpeech(index);
+  //   const textArray = Array.isArray(text) ? text : [text];
+  //   textToSpeech(textArray.join(" "), index);
+  //   // Join the array into a single string
+  //   let cleanedText = textArray.join(' ');
+
+  //   cleanedText = cleanedText.replace(/\$([^$]*)\$/g, '$1');
+  //   cleanedText = cleanedText.replace(/\\boxed{([^}]+)}/g, '$1');
+
+  //   cleanedText = cleanedText.replace(/#{1,6}\s?/g, '');
+  //   cleanedText = cleanedText.replace(/\*{1,3}/g, '');
+  //   cleanedText = cleanedText.replace(/~~/g, '');
+  //   cleanedText = cleanedText.replace(/`{1,3}/g, '');
+  //   cleanedText = cleanedText.replace(/>\s?/g, '');
+
+  //   cleanedText = cleanedText.replace(
+  //     /[^a-zA-Z0-9.,!? :;()'+\-*×x÷/=≠<>≤≥±]/g,
+  //     '',
+  //   );
+  //   cleanedText = cleanedText.replace(/([+\-*×x÷/=≠<>≤≥±])/g, ' $1 ');
+
+  //   cleanedText = cleanedText.replace(/\s+/g, ' ');
+
+  //   // Trim any leading or trailing spaces
+  //   cleanedText = cleanedText.trim();
+
+  //   // Convert the first letter of the cleaned text to uppercase
+  //   cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
+
+  //   const utterance = new SpeechSynthesisUtterance(cleanedText);
+  //   utterance.onerror = () => {};
+  //   // Event listener for when the speech ends
+  //   utterance.onend = () => {
+  //     const updatedChat = [...selectedchat];
+  //     updatedChat[index] = { ...updatedChat[index], speak: false };
+  //     setSelectedChat(updatedChat);
+  //   };
+
+  //   // console.log("ssssss",cleanedText,voices);
+  //   const voice = voices.find(
+  //     (voice) => voice.name === 'Microsoft Mark - English (United States)',
+  //   ) as SpeechSynthesisVoice;
+  //   utterance.rate = 0.9;
+  //   utterance.voice = voice;
+  //   // synth.speak(utterance);
+  //   // setSelectedChat({ ...selectedchat, speak: true });
+  //   const updatedChat = [...selectedchat];
+  //   updatedChat[index] = { ...updatedChat[index], speak: true };
+  //   setSelectedChat(updatedChat);
+  // };
+
+
   const speak = (text: string, index: number) => {
-    const textArray = Array.isArray(text) ? text : [text];
+    stopSpeech(index);
+    const textArray = Array.isArray(text) ? text : [text]; 
+    // Update `speak` state for all chats
+    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+        ...chat,
+        speak: i === index, // Only the current index is true
+    }));
 
-    // Join the array into a single string
-    let cleanedText = textArray.join(' ');
+    setSelectedChat(updatedChats);
+    textToSpeech(textArray.join(" "), index);
+};
 
-    cleanedText = cleanedText.replace(/\$([^$]*)\$/g, '$1');
-    cleanedText = cleanedText.replace(/\\boxed{([^}]+)}/g, '$1');
-
-    cleanedText = cleanedText.replace(/#{1,6}\s?/g, '');
-    cleanedText = cleanedText.replace(/\*{1,3}/g, '');
-    cleanedText = cleanedText.replace(/~~/g, '');
-    cleanedText = cleanedText.replace(/`{1,3}/g, '');
-    cleanedText = cleanedText.replace(/>\s?/g, '');
-
-    cleanedText = cleanedText.replace(
-      /[^a-zA-Z0-9.,!? :;()'+\-*×x÷/=≠<>≤≥±]/g,
-      '',
-    );
-    cleanedText = cleanedText.replace(/([+\-*×x÷/=≠<>≤≥±])/g, ' $1 ');
-
-    cleanedText = cleanedText.replace(/\s+/g, ' ');
-
-    // Trim any leading or trailing spaces
-    cleanedText = cleanedText.trim();
-
-    // Convert the first letter of the cleaned text to uppercase
-    cleanedText = cleanedText.charAt(0).toUpperCase() + cleanedText.slice(1);
-
-    const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => {};
-    // Event listener for when the speech ends
-    utterance.onend = () => {
-      const updatedChat = [...selectedchat];
-      updatedChat[index] = { ...updatedChat[index], speak: false };
-      setSelectedChat(updatedChat);
-    };
-
-    // console.log("ssssss",cleanedText,voices);
-    const voice = voices.find(
-      (voice) => voice.name === 'Microsoft Mark - English (United States)',
-    ) as SpeechSynthesisVoice;
-    utterance.rate = 0.9;
-    utterance.voice = voice;
-    synth.speak(utterance);
-    // setSelectedChat({ ...selectedchat, speak: true });
-    const updatedChat = [...selectedchat];
-    updatedChat[index] = { ...updatedChat[index], speak: true };
-    setSelectedChat(updatedChat);
-  };
 
   const stop = (index: number) => {
-    // setSelectedChat({ ...selectedchat, speak: false });
-    const updatedChat = [...selectedchat];
-    updatedChat[index] = { ...updatedChat[index], speak: false };
-    setSelectedChat(updatedChat);
-    synth.cancel();
-  };
+    stopSpeech(index);
+
+    // Update `speak` state for all chats
+    const updatedChats = selectedchat.map((chat: any, i: number) => ({
+        ...chat,
+        speak: i === index ? false : chat.speak, // Set only the current index to false
+    }));
+
+    setSelectedChat(updatedChats);
+};
+
+
+  // const stop = (index: number) => {
+  //   // setSelectedChat({ ...selectedchat, speak: false });
+  //   stopSpeech(index);
+  //   const updatedChat = [...selectedchat];
+  //   updatedChat[index] = { ...updatedChat[index], speak: false };
+  //   setSelectedChat(updatedChat);
+  //   // synth.cancel();
+  // };
 
   const handleResponse = (data: { data: any }) => {
     const newData = data?.data ? data?.data : data;
@@ -1765,7 +1797,7 @@ const Chat = () => {
                                         : 'Copy'}
                                     </span>
                                   </li>
-                                  {!chat?.speak ? (
+                                  {/* {!chat?.speak ? (
                                     <li
                                       onClick={() =>
                                         speak(chat && chat?.answer, index)
@@ -1783,7 +1815,21 @@ const Chat = () => {
                                       />{' '}
                                       <span>Stop</span>
                                     </li>
-                                  )}
+                                  )} */}
+                                  
+                                    <li key={index} onClick={() => (chat?.speak ? stop(index) : speak(chat?.answer, index))}>
+                                      {chat?.speak ? (
+                                        <>
+                                          <VolumeOffOutlinedIcon sx={{ fontSize: '14px' }} /> <span>Stop</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <VolumeUpOutlinedIcon sx={{ fontSize: '14px' }} /> <span>Read</span>
+                                        </>
+                                      )}
+                                    </li>
+                                  
+
                                   <li
                                     onClick={() =>
                                       regenerateChat(chat?.question)
