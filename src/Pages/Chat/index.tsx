@@ -517,7 +517,8 @@ const Chat = () => {
 };
 
 
-  const stop = (index: number) => {
+  const stop = async (index: number) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     stopSpeech(index);
 
     // Update `speak` state for all chats
