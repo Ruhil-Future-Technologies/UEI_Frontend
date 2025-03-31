@@ -33,13 +33,11 @@ const textToSpeech = async (text: string, index: number) => {
         const audioElement = new Audio(audioUrl);
 
         audioInstances[index] = audioElement; // Store the new audio instance
-        console.log("Playing speech at index:", index, audioElement);
 
         audioElement.play();
 
         // When the speech finishes, clean up the instance and update UI
         audioElement.onended = () => {
-            console.log(`Speech ended at index ${index}`);
             delete audioInstances[index]; // Remove instance
         };
     } catch (error) {
@@ -49,7 +47,6 @@ const textToSpeech = async (text: string, index: number) => {
 
 // Function to stop all audio except the given index
 const stopSpeech = (indexToKeep: number) => {
-    console.log("Stopping all except index:", indexToKeep);
     if (audioInstances[indexToKeep]) {
         audioInstances[indexToKeep]?.pause();
         audioInstances[indexToKeep]?.remove(); // Stop and remove the audio
@@ -58,7 +55,6 @@ const stopSpeech = (indexToKeep: number) => {
     for (const key in audioInstances) {
         const idx = Number(key);
         if (idx !== indexToKeep && audioInstances[idx]) {
-            console.log(`Stopping speech at index ${idx}`);
             audioInstances[idx]?.pause();
             delete audioInstances[idx]; // Remove reference
         }
