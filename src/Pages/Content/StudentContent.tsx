@@ -138,13 +138,14 @@ const StudentContent = () => {
                 const courseSubjects = content.course_semester_subjects
                   ? JSON.parse(content.course_semester_subjects)
                   : {};
-                return Object.prototype.hasOwnProperty.call(
-                  courseSubjects,
-                  studentCourseId,
+                return (
+                  Object.prototype.hasOwnProperty.call(
+                    courseSubjects,
+                    studentCourseId,
+                  ) && content.is_active
                 );
               },
             );
-
             setVideoLectures(
               filteredContents.filter(
                 (item: any) => item.content_type === 'video_lecture',
@@ -184,9 +185,11 @@ const StudentContent = () => {
                   const classSubjects = content.class_stream_subjects
                     ? JSON.parse(content.class_stream_subjects)
                     : {};
-                  return Object.prototype.hasOwnProperty.call(
-                    classSubjects,
-                    studentClassId,
+                  return (
+                    Object.prototype.hasOwnProperty.call(
+                      classSubjects,
+                      studentClassId,
+                    ) && content.is_active
                   );
                 },
               );
@@ -224,9 +227,11 @@ const StudentContent = () => {
                   const classSubjects = content.class_stream_subjects
                     ? JSON.parse(content.class_stream_subjects)
                     : {};
-                  return Object.prototype.hasOwnProperty.call(
-                    classSubjects,
-                    studentClassId,
+                  return (
+                    Object.prototype.hasOwnProperty.call(
+                      classSubjects,
+                      studentClassId,
+                    ) && content.is_active
                   );
                 },
               );

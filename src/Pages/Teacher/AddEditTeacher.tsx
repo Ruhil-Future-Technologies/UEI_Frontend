@@ -564,12 +564,51 @@ const AddEditTeacher = () => {
   }, [teacher?.classes, schoolSubjects]);
 
   useEffect(() => {
-    if (teacher?.courses) {
-      teacher?.courses?.forEach((course, index) => {
+    const initialCourses = teacher.courses;
+
+    formRef.current?.setFieldValue('courses', initialCourses);
+
+    setTeacher((prev) => ({
+      ...prev,
+      courses: initialCourses,
+    }));
+
+    initialCourses?.forEach((course, index) => {
+      if (course.course_id) {
+        const allSubjects = collegeSubjects.filter(
+          (subject) => subject.course_id === course.course_id,
+        );
+        const uniqueSemesters = allSubjects
+          .map((subject) => subject.semester_number)
+          .filter((semester, index, self) => self.indexOf(semester) === index)
+          .sort((a, b) => Number(a) - Number(b));
+
+        setCourseSemesters((prev) => ({
+          ...prev,
+          [index]: uniqueSemesters,
+        }));
+        if (course.semester) {
+          const filteredSubjects = allSubjects.filter(
+            (subject) => subject.semester_number === Number(course.semester),
+          );
+
+          setCourseSubjects((prev) => ({
+            ...prev,
+            [index]: filteredSubjects,
+          }));
+        }
+      }
+    });
+  }, [teacher?.courses, collegeSubjects]);
+
+  useEffect(() => {
+    if (formRef.current?.values?.courses) {
+      formRef.current?.values?.courses.forEach((course, index) => {
         if (course.course_id) {
           const allSubjects = collegeSubjects.filter(
             (subject) => subject.course_id === course.course_id,
           );
+
           const uniqueSemesters = allSubjects
             .map((subject) => subject.semester_number)
             .filter((semester, index, self) => self.indexOf(semester) === index)
@@ -579,10 +618,10 @@ const AddEditTeacher = () => {
             ...prev,
             [index]: uniqueSemesters,
           }));
+
           if (course.semester) {
             const filteredSubjects = allSubjects.filter(
-              (subject) =>
-                Number(subject.semester_number) === Number(course.semester),
+              (subject) => subject.semester_number === course.semester,
             );
             setCourseSubjects((prev) => ({
               ...prev,
