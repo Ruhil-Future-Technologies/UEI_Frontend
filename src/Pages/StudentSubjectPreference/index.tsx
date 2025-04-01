@@ -1189,7 +1189,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     ?.filter((teacher) => teacher.id === box.teacher_id)
                     ?.map((teacher) => (
                       <MenuItem key={teacher.id} value={teacher.id} disabled sx={commonStyle(namecolor)}>
-                        {teacher.first_name}
+                        {teacher.first_name+" "+teacher.last_name}
                       </MenuItem>
                     ))}
 
