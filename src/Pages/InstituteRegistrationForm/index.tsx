@@ -34,7 +34,7 @@ import {
   Typography,
   Box,
   FormControlLabel,
-  Checkbox,
+  //Checkbox,
   List,
   ListItem,
 } from '@mui/material';
@@ -1318,8 +1318,12 @@ const InstituteRegistrationForm = () => {
                       <div className="col-lg-12">
                         <FormControlLabel
                           control={
-                            <Checkbox
+                            <input
                               data-testid="checkbox"
+                              className="form-check-input me-1"
+                              type="checkbox"
+                              value=""
+                              id="flexCheckDefault"
                               onChange={handleTermandCondi}
                             />
                           }

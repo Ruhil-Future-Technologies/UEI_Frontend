@@ -79,6 +79,7 @@ const PreviewStudentAssignment = () => {
         getData(`/assignment_submission/get/submissions/${id}`).then((response) => {
             if (response?.status) {
                 const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
+                console.log(filteredAssignment);
                 if (filteredAssignment.length > 0) {
                     if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
                     if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
@@ -121,7 +122,7 @@ const PreviewStudentAssignment = () => {
                         <div className="breadcrumb-title pe-3 ms-2">
                             <div className="d-flex gap-1 align-items-center" role='button'>
                                 <Link to={'/teacher-dashboard/assignments'} className="text-dark">
-                                    Assignmnets List
+                                    Assignments List
                                 </Link></div>
 
                         </div>
