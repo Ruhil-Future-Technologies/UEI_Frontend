@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useTheme } from '../../ThemeProvider';
 import { toast } from 'react-toastify';
 import {
   QUERY_KEYS,
@@ -17,7 +20,7 @@ import Avatar6 from '../../assets/img/avatars/06.png';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+//import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
@@ -31,6 +34,7 @@ import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOu
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css';
+import { IconButton } from '@mui/material';
 
 const Header = () => {
   const context = useContext(NameContext);
@@ -40,7 +44,7 @@ const Header = () => {
     setNamepro,
     proImage,
     setProImage,
-    setNamecolor,
+   // setNamecolor,
     setProPercentage,
     setActiveForm,
   }: any = context;
@@ -216,7 +220,7 @@ const Header = () => {
     }
   }, []);
 
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  // const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   useEffect(() => {
     function toggleOnDesktop() {
       if (window.innerWidth >= 1200) {
@@ -238,29 +242,29 @@ const Header = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setNamecolor(theme);
-    if (theme === 'default') {
-      document?.documentElement?.setAttribute('data-theme', theme);
-    } else if (theme === 'light') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'dark') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'blue-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'semi-dark')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'bordered-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-  }, [theme]);
+  // useEffect(() => {
+  //   setNamecolor(theme);
+  //   if (theme === 'default') {
+  //     document?.documentElement?.setAttribute('data-theme', theme);
+  //   } else if (theme === 'light') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'dark') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'blue-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'semi-dark')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'bordered-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  // }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
-  };
+  // const toggleTheme = () => {
+  //   setTheme((prevTheme) => {
+  //     const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+  //     localStorage.setItem('theme', newTheme);
+  //     return newTheme;
+  //   });
+  // };
 
   const gotoProfile = () => {
     if (user_type === 'admin') {
@@ -283,6 +287,8 @@ const Header = () => {
     }
     setActiveForm(0);
   };
+  const { toggleTheme, isDarkMode } = useTheme();
+
   return (
     <>
       <header className="top-header">
@@ -298,10 +304,16 @@ const Header = () => {
           <ul className="navbar-nav gap-1 nav-right-links align-items-center">
             <li className="nav-item">
               <div className="toggle-mode nav-link" role="button">
-                <DarkModeOutlinedIcon
-                  onClick={toggleTheme}
+                {/* <IconButton
                   data-testid="theme-toggle"
-                />
+                  onClick={toggleTheme}
+                  color="inherit"
+                >
+                  {theme === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+                </IconButton> */}
+                <IconButton color="inherit" onClick={toggleTheme}>
+                  {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+                </IconButton>
               </div>
             </li>
             <li className="nav-item dropdown">

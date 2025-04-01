@@ -36,7 +36,7 @@ import {
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NameContext from '../Context/NameContext';
 
 const TabPanel: React.FC<{
@@ -362,10 +362,23 @@ const StudentContent = () => {
     <div>
       <div className="main-wrapper">
         <div className="main-content">
+          <div className="page-breadcrumb d-flex align-items-center mb-3">
+            <div className="breadcrumb-title pe-3">
+              <Link to={'/main/dashboard'} className="text-dark">
+                Dashboard
+              </Link>
+            </div>
+            <div className="ps-3">
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb mb-0 p-0">
+                  <li className="breadcrumb-item active" aria-current="page">
+                    My Content Library
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
           <Box sx={{ width: '100%', px: 0 }} className="custom-box">
-            {/* <Typography variant="h5" fontWeight="bold" mb={2}>
-              Course Library
-            </Typography> */}
             {studentProfile?.entity_name === 'college' && (
               <>
                 <Typography variant="h6" fontWeight="bold" mb={2}>

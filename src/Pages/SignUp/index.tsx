@@ -46,7 +46,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const value = 'student';
-  const [popupOtpCard, setPopupOtpCard] = useState(false);
+  const [popupOtpCard, setPopupOtpCard] = useState(true);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [errorEmail, setEmailError] = useState('');
   const [errorPhone, setPhoneError] = useState('');

@@ -899,10 +899,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           >
             {!academic ? (
               <>
-                <div className="col form_field_wrapper">
+                <div className="col-lg-3 form_field_wrapper">
                   <FormControl
                     required
-                    sx={{  minWidth: 220, width: '100%' }}
+                    className="w-100"
+                    size='small'
                   >
                     <InputLabel>Course</InputLabel>
                     <Select
@@ -938,10 +939,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     </Select>
                   </FormControl>
                 </div>
-                <div className=" col form_field_wrapper">
+                <div className=" col-lg-3 form_field_wrapper">
                   <FormControl
                     required
-                    sx={{  minWidth: 220, width: '100%' }}
+                    className="w-100"
+                    size='small'
                   >
                     <InputLabel id="semester-select-label">
                       Semester{' '}
@@ -1006,10 +1008,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               </>
             ) : (
               <>
-                <div className="col form_field_wrapper">
+                <div className="col-lg-3 form_field_wrapper">
                   <FormControl
                     required
-                    sx={{  minWidth: 220, width: '100%' }}
+                    className="w-100"
+                    size='small'
                     disabled
                   >
                     <InputLabel id="class-label" shrink>
@@ -1057,12 +1060,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     <div className="col-lg-3 form_field_wrapper">
                       <FormControl
                         required
-                        sx={{
-                          
-                          minWidth: 70,
-                          width: '100%',
-                          maxWidth: 200,
-                        }}
+                        size='small'
+                        className="w-100"
                       >
                         <InputLabel>Stream</InputLabel>
                         <Select
@@ -1121,8 +1120,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   )}
               </>
             )}
-            <div className="col form_field_wrapper">
-              <FormControl required sx={{  minWidth: 220, width: '100%' }}>
+            <div className="col-lg-3 form_field_wrapper">
+              <FormControl required className="w-100" size='small'>
                 <InputLabel>Subject</InputLabel>
                 <Select
                   name="subject_id"
@@ -1170,8 +1169,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 )}
               </FormControl>
             </div>
-            <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 220, width: '100%' }}>
+            <div className="col-lg-3 form_field_wrapper">
+              <FormControl required className="w-100" size='small'>
                 <InputLabel>Teachers</InputLabel>
                 <Select
                   name="teacher_id"
@@ -1210,11 +1209,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 )}
               </FormControl>
             </div>
-            <div className="col form_field_wrapper">
-              <FormControl sx={{ m: 1, minWidth: 180, width: '100%' }}>
+            <div className="col-lg-3 form_field_wrapper">
+              <FormControl className="w-100" size='small'>
                 <TextField
                   name="preference"
                   value={box.preference}
+                  size='small'
                   sx={{
                     backgroundColor: '#f5f5f5',
                   }}
@@ -1238,16 +1238,17 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               </FormControl>
             </div>
             <div
-              className="col form_field_wrapper"
+              className="col-lg-3 form_field_wrapper"
               style={{
                 paddingTop: validationErrors[index]?.score_in_percentage
                   ? 78
                   : '',
               }}
             >
-              <FormControl sx={{  minWidth: 180, width: '100%' }}>
+              <FormControl className="w-100" size='small'>
                 <TextField
                   name="score_in_percentage"
+                  size='small'
                   sx={{
                     backgroundColor: '#f5f5f5',
                   }}
@@ -1277,7 +1278,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   )}
               </FormControl>
             </div>
-            <div className="col form_field_wrapper">
+            <div className="col-lg-3 form_field_wrapper">
               <IconButton
                 onClick={addRow}
                 sx={{

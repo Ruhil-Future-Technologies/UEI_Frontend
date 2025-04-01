@@ -10,7 +10,7 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-
+import { useTheme } from '../../ThemeProvider';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -66,6 +66,7 @@ const Boxsetvalue = {
 const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   setActiveForm,
 }) => {
+  useTheme();
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
@@ -390,7 +391,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     newBoxes[index][field] = value;
     setBoxes1(newBoxes);
   };
-
+  
   return (
     <div className="mt-5">
       <form onSubmit={saveAcademicHistory}>
