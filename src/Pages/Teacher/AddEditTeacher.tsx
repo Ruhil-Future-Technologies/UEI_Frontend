@@ -589,7 +589,8 @@ const AddEditTeacher = () => {
         }));
         if (course.semester) {
           const filteredSubjects = allSubjects.filter(
-            (subject) => subject.semester_number === Number(course.semester),
+            (subject) =>
+              Number(subject.semester_number) === Number(course.semester),
           );
 
           setCourseSubjects((prev) => ({
