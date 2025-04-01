@@ -322,7 +322,7 @@ const TeacherDash = () => {
                               <StreamIcon />
                             </span>
                             <div className="">
-                              <h6>Streem</h6> <p>Science</p>
+                              <h6>Stream</h6> <p>Science</p>
                             </div>
                           </div>
                         </div>
