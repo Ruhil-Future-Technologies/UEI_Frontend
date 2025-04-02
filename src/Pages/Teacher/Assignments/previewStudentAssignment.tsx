@@ -5,38 +5,41 @@ import {
     Typography,
     Card,
     CardContent,
-    Button,
     Box,
     Chip,
     ListItem,
     ListItemText,
-    TextField,
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ScoreboardOutlinedIcon from '@mui/icons-material/ScoreboardOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from '../../Teacher/Assignments/CreateAssignments';
-import { toTitleCase } from '../../../utils/helpers';
+import { getColor, toTitleCase } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ReactQuill from "react-quill";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import "react-quill/dist/quill.snow.css";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TimerOffIcon from '@mui/icons-material/TimerOff';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 const PreviewStudentAssignment = () => {
     const navigate = useNavigate();
-    const { getData, putData } = useApi();
+    const { getData } = useApi();
     const { id } = useParams();
-
     const assignment_id = localStorage.getItem('assignment_id')
-    const [assignmentData, setAssignmentData] = useState<Assignment>();
+    const [assignmentData, setAssignmentData] = useState<Assignment>(
+        
+    );
     //const [todayDate, setTodayDate] = useState<Date>();
     const [remainingDays, setRemaingDays] = useState(0);
     const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
     const [value, setValue] = useState("");
     const quillRef = useRef<ReactQuill | null>(null);
-    const [isSubmited, setIssubmited] = useState(false);
-    const [providedPoints, setProvidedPoints] = useState(0);
+    const [statusCheck, setStatusCheck] = useState('Pending');
+    const [availableDuration, setAvailableDuration] = useState(0);
     const handleBack = () => {
         navigate(-1);
     };
@@ -50,10 +53,12 @@ const PreviewStudentAssignment = () => {
             getData(`/assignment/get/${assignment_id}`).then((response) => {
                 if (response?.status) {
                     setAssignmentData(response?.data);
-                    const dueDate = new Date(response?.due_date_time);
+                    const dueDate = new Date(response?.data?.due_date_time);
                     const today = new Date();
                     const differenceInMs = dueDate.getTime() - today.getTime();
-
+                    const availableDate = new Date(response?.data?.available_from);
+                    const durationDiff = dueDate.getTime() - availableDate.getTime()
+                    setAvailableDuration(Math.ceil(durationDiff / (1000 * 60 * 60 * 24)))
                     // Convert milliseconds to days (1 day = 86400000 ms)
                     const remainingDays = Math.ceil(differenceInMs / (1000 * 60 * 60 * 24));
                     setRemaingDays(dueDate.getTime() > today.getTime() ? remainingDays : 0)
@@ -76,11 +81,10 @@ const PreviewStudentAssignment = () => {
                 const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
                 console.log(filteredAssignment);
                 if (filteredAssignment.length > 0) {
-                    if (filteredAssignment[0]?.text) setValue(filteredAssignment[0].text);
-                    if (filteredAssignment[0]?.file) setAllSelectedfiles(filteredAssignment[0].file)
-                    setIssubmited(true)
-                } else {
-                    setIssubmited(false)
+                    if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
+                    if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
+                    if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
+                    if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
                 }
             }
         }).catch((error) => {
@@ -92,40 +96,14 @@ const PreviewStudentAssignment = () => {
         })
     }
 
-    const handlePointChange = (event: React.ChangeEvent<
-        HTMLInputElement
-    >) => {
-        const { value } = event.target
-        setProvidedPoints(Number(value))
-    }
+    // const handlePointChange = (event: React.ChangeEvent<
+    //     HTMLInputElement
+    // >) => {
+    //     const { value } = event.target
+    //     setProvidedPoints(Number(value))
+    // }
 
-    const submitAssignment = () => {
 
-        const formData = new FormData();
-
-        formData.append('assignment_id', assignmentData?.id as string)
-        formData.append('text', value)
-        allselectedfiles.forEach((file) => {
-            formData.append('file', file);
-        });
-        putData(`/assignment_submission/edit/{assignment_submission_uuid}`, formData).then((response) => {
-            if (response?.status) {
-                toast.success(response.message, {
-                    hideProgressBar: true,
-                    theme: 'colored',
-                    position: 'top-center'
-
-                })
-            }
-        }).catch((error) => {
-            toast.error(error.message, {
-                hideProgressBar: true,
-                theme: 'colored',
-                position: 'top-center'
-
-            })
-        })
-    }
 
     return (
         <>
@@ -136,8 +114,15 @@ const PreviewStudentAssignment = () => {
                             <div className="d-flex gap-1 align-items-center" role='button'> <ArrowBackIcon onClick={handleBack} className='me-1' />
 
 
-                                <Link to={'/main/dashboard'} className="text-dark">
+                                <Link to={'/teacher-dashboard'} className="text-dark">
                                     Dashboard
+                                </Link></div>
+
+                        </div>
+                        <div className="breadcrumb-title pe-3 ms-2">
+                            <div className="d-flex gap-1 align-items-center" role='button'>
+                                <Link to={'/teacher-dashboard/assignments'} className="text-dark">
+                                    Assignments List
                                 </Link></div>
 
                         </div>
@@ -156,13 +141,40 @@ const PreviewStudentAssignment = () => {
                             <Typography variant="h4" fontWeight="bold">
                                 {toTitleCase(assignmentData?.title || '')}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" className='d-inline-flex align-items-center gap-1 mt-2'>
-                                <AccessTimeIcon fontSize='small' /> Time remaining: {remainingDays} days | <ScoreboardOutlinedIcon fontSize='small' />Points: {assignmentData?.points}
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                className="d-inline-flex align-items-center gap-2 mt-2"
+                                style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                            >
+                                <AccessTimeIcon fontSize="small" /> Time remaining:
+                                <Chip label={remainingDays + " days"} style={{ backgroundColor: getColor(remainingDays, availableDuration), color: "#fff" }} /> |
+                                <ScoreboardOutlinedIcon fontSize="small" /> Points:
+                                <Chip label={assignmentData?.points} color="primary" /> |
+                                <TimerOffIcon fontSize="small" /> Late Submission:
+                                {assignmentData?.allow_late_submission ? <VerifiedIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />} |
+                                <PlaylistAddCheckIcon fontSize="small" /> Add in report:
+                                {assignmentData?.add_to_report ? <VerifiedIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />}
                             </Typography>
+
                         </div>
                         <div className="col-lg-5">
-                            <div className="d-flex align-items-center justify-content-end"><AccessTimeIcon /> <span className='text-danger ms-2 me-3'> Due: {assignmentData?.due_date_time}</span><Chip label="Pending" color="warning" /> </div>
+                            <div className="d-flex align-items-center justify-content-end">
+                                <AccessTimeIcon />
+                                <span
+                                    className="ms-2 me-3"
+                                    style={{
+                                        color: getColor(remainingDays,availableDuration),
+                                    }}
+                                >
+                                    Due: {assignmentData?.due_date_time}
+                                </span>
+                                {remainingDays != 0 || assignmentData?.allow_late_submission ?
+                                    <Chip label={statusCheck} color={statusCheck == 'Submitted' ? 'primary' : statusCheck == 'Graded' ? 'success' : 'error'} />
+                                    : <Chip label={'Expired'} color={'error'} />
 
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -173,7 +185,7 @@ const PreviewStudentAssignment = () => {
                                 Instructions
                             </Typography>
                             <ul>
-                            <div dangerouslySetInnerHTML={{ __html: assignmentData?.instructions ||''}} />
+                                <div dangerouslySetInnerHTML={{ __html: assignmentData?.instructions || '' }} />
                             </ul>
 
                             <hr className="my-4" />
@@ -182,9 +194,9 @@ const PreviewStudentAssignment = () => {
                                 <Typography variant="h6">Resources</Typography>
                                 <ul>
                                     {
-                                        assignmentData?.file?.map((file, index) => (
+                                        assignmentData?.files?.map((file, index) => (
                                             <li key={index}> {/* Ensure a unique key */}
-                                                <Link to={'#'}>{file.name}</Link>
+                                                <Link to={'#'}>{file as string}</Link>
                                             </li>
                                         ))
                                     }
@@ -238,30 +250,9 @@ const PreviewStudentAssignment = () => {
                             <div className='mt-2 mb-5'>
                                 <ReactQuill ref={quillRef} value={value} onChange={setValue} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
                             </div>
-                            <Box sx={{ textAlign: 'center' }}>
-                                <Typography variant="h6" className='mb-3'>Grade Score</Typography>
-                                <TextField
-                                    name='points'
-                                    placeholder='provide marks'
-                                    value={providedPoints}
-                                    sx={{ textAlign: 'center' }}
-                                    type='number'
-                                    onChange={handlePointChange}
-                                />
 
-
-                            </Box>
                         </CardContent>
                     </Card>
-                    {
-                        !isSubmited && (
-                            <Box sx={{ my: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
-                                <Button variant="contained" color="primary" onClick={submitAssignment}>
-                                    Submit Assignment
-                                </Button>
-                            </Box>
-                        )
-                    }
 
                 </div>
             </div>

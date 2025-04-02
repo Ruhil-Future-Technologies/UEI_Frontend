@@ -18,12 +18,17 @@ import ScoreboardOutlinedIcon from '@mui/icons-material/ScoreboardOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from '../../Teacher/Assignments/CreateAssignments';
-import { toTitleCase } from '../../../utils/helpers';
+import { getColor, toTitleCase } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
 import UploadBtn from '../../../Components/UploadBTN/UploadBtn';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ReactQuill from "react-quill";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TimerOffIcon from '@mui/icons-material/TimerOff';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import "react-quill/dist/quill.snow.css";
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
@@ -40,6 +45,7 @@ const PreviewAndSubmit = () => {
   const quillRef = useRef<ReactQuill | null>(null);
   const [isSubmited, setIssubmited] = useState(false);
   const [statusCheck, setStatusCheck] = useState('Pending');
+  const [availableDuration, setAvailableDuration] = useState(0);
 
   const handleBack = () => {
     navigate(-1);
@@ -55,6 +61,9 @@ const PreviewAndSubmit = () => {
         if (response?.status) {
           setAssignmentData(response?.data);
           const dueDate = new Date(response?.data?.due_date_time);
+          const availableDate = new Date(response?.data?.available_from);
+          const durationDiff = dueDate.getTime() - availableDate.getTime()
+          setAvailableDuration(Math.ceil(durationDiff / (1000 * 60 * 60 * 24)))
           const today = new Date();
           const differenceInMs = dueDate.getTime() - today.getTime();
           const remainingDays = Math.ceil(differenceInMs / (1000 * 60 * 60 * 24));
@@ -79,7 +88,7 @@ const PreviewAndSubmit = () => {
         console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
           if (filteredAssignment[0]?.text) setValue(filteredAssignment[0].text);
-          if (filteredAssignment[0]?.file) setAllSelectedfiles(filteredAssignment[0].file)
+          if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
           if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
           if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
           setIssubmited(true)
@@ -129,30 +138,30 @@ const PreviewAndSubmit = () => {
 
   const submitAssignment = () => {
 
-    let check=true;
-    if(value==''){
-    
-      check=true;
-    }else{
-      
-      check=false;
+    let check = true;
+    if (value == '') {
+
+      check = true;
+    } else {
+
+      check = false;
     }
 
-    if(allselectedfiles.length!<1){
+    if (allselectedfiles.length! < 1) {
       setDocument_error(true);
-      check=true;
-    }else{
-      check=false;
+      check = true;
+    } else {
+      check = false;
       setDocument_error(false);
     }
-if(check)return;
+    if (check) return;
     const formData = new FormData();
 
     formData.append('assignment_id', assignmentData?.id as string)
     formData.append('student_id', stud_id as string)
-    formData.append('text', value)
+    formData.append('description', value)
     allselectedfiles.forEach((file) => {
-      formData.append('file', file);
+      formData.append('files', file);
     });
     postData(`/assignment_submission/add`, formData).then((response) => {
       if (response?.status) {
@@ -243,9 +252,22 @@ if(check)return;
               <Typography variant="h4" fontWeight="bold">
                 {toTitleCase(assignmentData?.title || '')}
               </Typography>
-              <Typography variant="body2" color="text.secondary" className='d-inline-flex align-items-center gap-1 mt-2'>
-                <AccessTimeIcon fontSize='small' /> Time remaining: {remainingDays} days | <ScoreboardOutlinedIcon fontSize='small' />Points: {assignmentData?.points}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                className="d-inline-flex align-items-center gap-2 mt-2"
+                style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+              >
+                <AccessTimeIcon fontSize="small" /> Time remaining:
+                <Chip label={remainingDays + " days"} style={{ backgroundColor: getColor(remainingDays, availableDuration), color: "#fff" }} /> |
+                <ScoreboardOutlinedIcon fontSize="small" /> Points:
+                <Chip label={assignmentData?.points} color="primary" /> |
+                <TimerOffIcon fontSize="small" /> Late Submission:
+                {assignmentData?.allow_late_submission ? <VerifiedIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />} |
+                <PlaylistAddCheckIcon fontSize="small" /> Add in report:
+                {assignmentData?.add_to_report ? <VerifiedIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />}
               </Typography>
+
             </div>
             <div className="col-lg-5">
               <div className="d-flex align-items-center justify-content-end">
@@ -253,12 +275,16 @@ if(check)return;
                 <span
                   className="ms-2 me-3"
                   style={{
-                    color:remainingDays < 1 ? "red":remainingDays > 2 ? "green":"#FFA500",
+                    color: getColor(remainingDays, availableDuration),
                   }}
                 >
                   Due: {assignmentData?.due_date_time}
                 </span>
-                <Chip label={statusCheck} color={statusCheck == 'Submitted' ? 'primary' : statusCheck == 'Graded' ? 'success' : 'error'} />
+                {remainingDays != 0 || assignmentData?.allow_late_submission ?
+                  <Chip label={statusCheck} color={statusCheck == 'Submitted' ? 'primary' : statusCheck == 'Graded' ? 'success' : 'error'} />
+                  : <Chip label={'Expired'} color={'error'} />
+
+                }
               </div>
             </div>
           </div>
@@ -270,7 +296,7 @@ if(check)return;
               </Typography>
               <ul>
                 <li>
-                <div dangerouslySetInnerHTML={{ __html: assignmentData?.instructions ||''}} />
+                  <div dangerouslySetInnerHTML={{ __html: assignmentData?.instructions || '' }} />
                 </li>
               </ul>
 
@@ -280,9 +306,12 @@ if(check)return;
                 <Typography variant="h6">Resources</Typography>
                 <ul>
                   {
-                    assignmentData?.file?.map((file, index) => (
-                      <li key={index}> {/* Ensure a unique key */}
-                        <Link to={'#'}>{file.name}</Link>
+                    assignmentData?.files?.map((file, index) => (
+                      <li key={index} className='d-flex justify-content-between me-5'> {/* Ensure a unique key */}
+                        <Link to={file as string}>{file as string}</Link>
+                        <a href={file as string} download target="_blank" rel="noopener noreferrer">
+                          <GetAppOutlinedIcon />
+                        </a>
                       </li>
                     ))
                   }
@@ -352,7 +381,7 @@ if(check)return;
             </CardContent>
           </Card>
           {
-            !isSubmited && (
+            !isSubmited && (remainingDays == 0 ? assignmentData?.allow_late_submission : true) && (
               <Box sx={{ my: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
                 <Button variant="contained" color="primary" onClick={submitAssignment}>
                   Submit Assignment

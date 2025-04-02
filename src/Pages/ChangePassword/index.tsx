@@ -292,6 +292,27 @@ const ChangePassword = () => {
                                     </InputAdornment>
                                   ),
                                 }}
+                                sx={{
+                                  '& input::-ms-reveal, & input::-ms-clear': {
+                                    display: 'none',
+                                  },
+                                  '& input:-webkit-autofill': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:hover': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:focus': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:active': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                }}
                                 fullWidth
                               />
                               {touched?.newpassword && errors?.newpassword ? (
@@ -337,6 +358,27 @@ const ChangePassword = () => {
                                       </IconButton>
                                     </InputAdornment>
                                   ),
+                                }}
+                                sx={{
+                                  '& input::-ms-reveal, & input::-ms-clear': {
+                                    display: 'none',
+                                  },
+                                  '& input:-webkit-autofill': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:hover': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:focus': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:active': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
                                 }}
                                 fullWidth
                               />

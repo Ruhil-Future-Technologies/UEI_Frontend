@@ -67,7 +67,8 @@ import StudentDashboardCharts from '../Chart/StudentChart';
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage, namecolor }: any = context;
+  const { ProPercentage, setProPercentage, namecolor ,setActiveForm }: any = context;
+
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('_id');
   const userid = localStorage.getItem('user_uuid');
@@ -1043,10 +1044,12 @@ function MainContent() {
                   delete academic_history?.state_for_stateboard;
                 }
               } else {
+                console.log(academic_history)
                 if (academic_history?.course_id) {
                   getData(`course/edit/${academic_history?.course_id}`).then(
                     (response) => {
-                      setStudentCourse(response.data.course_name);
+                      console.log(response);
+                      setStudentCourse(response.data.course_data?.course_name);
                     },
                   );
                 }
@@ -1157,6 +1160,7 @@ function MainContent() {
       getData(`${profileURLadmin}/${userid}`)
         .then((data: any) => {
           if (data.code === 404) {
+            setActiveForm(0)
             navigate('/main/adminprofile');
           }
           if (data?.data) {

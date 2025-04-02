@@ -46,11 +46,11 @@ const Sidebar = () => {
     callAPI();
   }, []);
 
-  useEffect(() => {}, [menuList1]);
+  useEffect(() => { }, [menuList1]);
 
   useEffect(() => {
     if (user_type === 'admin') {
-      
+
       setDashboardURL('/main/DashBoard');
     } else if (user_type === 'institute') {
       setDashboardURL('/institution-dashboard');
@@ -206,31 +206,31 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li>
-                  <Link
-                    to="/main/student/assignment"
-                    onClick={removeMobileToggle}
-                  >
-                    <div className="parent-icon">
-                      <AssignmentOutlinedIcon />
-                    </div>
-                    <div className="menu-title">Your Assignments</div>
-                  </Link>
-                </li>
+                      <Link
+                        to="/main/student/assignment"
+                        onClick={removeMobileToggle}
+                      >
+                        <div className="parent-icon">
+                          <AssignmentOutlinedIcon />
+                        </div>
+                        <div className="menu-title">Your Assignments</div>
+                      </Link>
+                    </li>
                   </>
                 ) : (
                   ' '
-                //   <li>
-                //   <Link
-                //     to="/main/student/assignment"
-                //     onClick={removeMobileToggle}
-                //   >
-                //     <div className="parent-icon">
-                //       <LibraryBooksOutlinedIcon />
-                //     </div>
-                //     <div className="menu-title">Your Assignments</div>
-                //   </Link>
-                // </li>
-                  
+                  //   <li>
+                  //   <Link
+                  //     to="/main/student/assignment"
+                  //     onClick={removeMobileToggle}
+                  //   >
+                  //     <div className="parent-icon">
+                  //       <LibraryBooksOutlinedIcon />
+                  //     </div>
+                  //     <div className="menu-title">Your Assignments</div>
+                  //   </Link>
+                  // </li>
+
                 )}
               </>
             ) : (
@@ -257,9 +257,8 @@ const Sidebar = () => {
                             </a>
                             <ul
                               id={menu.id}
-                              className={`mm-collapse ${
-                                openMenu === menu.id ? 'mm-show' : ''
-                              }`}
+                              className={`mm-collapse ${openMenu === menu.id ? 'mm-show' : ''
+                                }`}
                             >
                               {menu?.submenus?.map(
                                 (submenu: any, index: number) => {
@@ -287,9 +286,8 @@ const Sidebar = () => {
                                   ) {
                                     return (
                                       <li
-                                        className={`${
-                                          openSubMenu ? 'mm-active' : ''
-                                        }`}
+                                        className={`${openSubMenu ? 'mm-active' : ''
+                                          }`}
                                         key={index}
                                       >
                                         <a
@@ -302,9 +300,8 @@ const Sidebar = () => {
                                           Institution
                                         </a>
                                         <ul
-                                          className={`mm-collapse ${
-                                            openSubMenu ? 'mm-show' : ''
-                                          }`}
+                                          className={`mm-collapse ${openSubMenu ? 'mm-show' : ''
+                                            }`}
                                         >
                                           <li>
                                             <Link to="/main/University">
@@ -381,13 +378,23 @@ const Sidebar = () => {
                           </>
                         ) : (
                           <>
-                            <li>
-                              <Link to={menu?.form_data?.form_url}>
-                                <div>{menu.menu_name}</div>
-                              </Link>
-                            </li>
+                            <a
+                              key={menu.id}
+                              className="has-arrow"
+                              onClick={() => toggleMenu(menu.id)}
+                              aria-expanded={openMenu === menu.id}
+                            >
+                             {' '}
+                              <div className="parent-icon">
+                                <AdminPanelSettingsOutlinedIcon />
+                              </div>
+                              <div className="menu-title">
+                                {menu.menu_name}{' '}
+                              </div>{' '}
+                            </a>
                           </>
-                        )}
+                        )
+                        }
                       </li>
                     );
                   })
@@ -428,7 +435,7 @@ const Sidebar = () => {
             </div>
           </div>
         )}
-      </aside>
+      </aside >
     </>
   );
 };

@@ -123,7 +123,7 @@ const Login = () => {
           localStorage.setItem('token', 'Bearer ' + data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
         } else {
-          if (data?.message === 'User is not verified') {
+          if (data?.message === 'User is not verified' || data?.message === 'Profile is not verified') {
             setPopupOtpCard(true);
           }
           setLoading(false);

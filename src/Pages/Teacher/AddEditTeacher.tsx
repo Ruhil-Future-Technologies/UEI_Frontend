@@ -888,6 +888,11 @@ const AddEditTeacher = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+          }else{
+            toast.error(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
           }
         })
         .catch((e: any) => {
