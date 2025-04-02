@@ -1044,10 +1044,12 @@ function MainContent() {
                   delete academic_history?.state_for_stateboard;
                 }
               } else {
+                console.log(academic_history)
                 if (academic_history?.course_id) {
                   getData(`course/edit/${academic_history?.course_id}`).then(
                     (response) => {
-                      setStudentCourse(response.data.course_name);
+                      console.log(response);
+                      setStudentCourse(response.data.course_data?.course_name);
                     },
                   );
                 }
