@@ -1192,21 +1192,26 @@ const AddEditTeacher = () => {
             const isDuplicate = updatedClasses.some(
               (class1: any, index1: number) => {
                 return updatedClasses.some((class2: any, index2: number) => {
-                  return (
-                    index1 !== index2 &&
-                    class1.class_id &&
-                    class2.class_id &&
-                    class1.stream &&
-                    class2.stream &&
-                    class1.class_id === class2.class_id &&
-                    class1.stream === class2.stream
+                  const isHigher = checkHigherClass(
+                    class1.class_id,
+                    dataClasses,
                   );
+
+                  return isHigher
+                    ? index1 !== index2 &&
+                        class1.class_id &&
+                        class2.class_id &&
+                        class1.stream &&
+                        class2.stream &&
+                        class1.class_id === class2.class_id &&
+                        class1.stream === class2.stream
+                    : index1 !== index2 && class1.class_id === class2.class_id;
                 });
               },
             );
 
             if (isDuplicate) {
-              toast.error('This class and stream combination already exists', {
+              toast.error('This class or stream combination already exists', {
                 hideProgressBar: true,
                 theme: 'colored',
               });
