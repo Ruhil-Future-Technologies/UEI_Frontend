@@ -659,7 +659,10 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowValue(showValue ? 0 : 1);
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
             }
           })
           .catch((e) => {
@@ -2792,35 +2795,41 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
   {
     accessorKey: 'is_active',
     header: 'Active/DeActive',
-    Cell: ({ cell, row }: any) => {
+    Cell: ({ cell, row, table }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
       const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
       const value = cell?.getValue();
-      const [showValue, setShowValue] = useState(value);
-      const [show, setShow] = useState(value ? true : false);
 
-      const active = (id: string, valueSet: any) => {
-        putData(`${valueSet ? MenuDeactive : MenuActive}/${id}`)
-          .then((data: any) => {
-            if (data.status) {
-              setShow((prevState) => !prevState);
-              setShowValue(showValue ? 0 : 1);
-              toast.success(data?.message);
-            }
-          })
-          .catch((e) => {
-            toast.error(e?.message, {
+      const active = async (id: string, currentValue: any) => {
+        try {
+          const data = await putData(
+            `${currentValue ? MenuDeactive : MenuActive}/${id}`,
+          );
+          if (data.status) {
+            table.options.meta?.updateData(
+              row.index,
+              'is_active',
+              currentValue ? 0 : 1,
+            );
+            toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
+          }
+        } catch (e: any) {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
           });
+        }
       };
+
       return (
         <Switch
-          isChecked={show}
-          onChange={() => active(row?.original?.id, showValue)}
-          label={show ? 'Active' : 'Deactive'}
+          isChecked={!!value}
+          onChange={() => active(row?.original?.id, value)}
+          label={value ? 'Active' : 'Deactive'}
           activeColor="#4CAF50"
           inactiveColor="#f44336"
         />
