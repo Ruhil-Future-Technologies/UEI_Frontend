@@ -38,7 +38,7 @@ export const Assignments = () => {
     save_draft: false,
     add_to_report: false,
     notify: false,
-    files: null, // File should be null initially
+    files: [], // File should be null initially
   }]);
   const [draftCount, setDreftCount] = useState(0)
   const teacher_uuid = localStorage.getItem('user_uuid');

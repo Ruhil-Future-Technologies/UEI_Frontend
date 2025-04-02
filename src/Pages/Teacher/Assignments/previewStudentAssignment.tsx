@@ -196,7 +196,7 @@ const PreviewStudentAssignment = () => {
                                     {
                                         assignmentData?.files?.map((file, index) => (
                                             <li key={index}> {/* Ensure a unique key */}
-                                                <Link to={'#'}>{file?.name}</Link>
+                                                <Link to={'#'}>{file as string}</Link>
                                             </li>
                                         ))
                                     }

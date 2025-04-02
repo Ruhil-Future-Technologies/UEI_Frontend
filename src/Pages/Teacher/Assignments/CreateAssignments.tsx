@@ -77,7 +77,7 @@ export interface Assignment {
   save_draft: boolean;
   add_to_report: boolean;
   notify: boolean;
-  files: File[] | null; // Assuming file is optional and a File object
+  files: File[] | string[]; // Assuming file is optional and a File object
 }
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
@@ -183,7 +183,7 @@ export const CreateAssignments = () => {
     save_draft: false,
     add_to_report: false,
     notify: false,
-    files: null, // File should be null initially
+    files: [], // File should be null initially
   });
   useEffect(() => {
     getSemester();
@@ -692,7 +692,7 @@ export const CreateAssignments = () => {
     const students  = selectedStudents.map(student => student.id);
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
-      formData.append('file', file);
+      formData.append('files', file);
     });
     if (selectedEntity.toLowerCase() === 'school') {
       const class_stream_subjects = boxesForSchool.reduce(
@@ -780,7 +780,7 @@ export const CreateAssignments = () => {
             save_draft: false,
             add_to_report: false,
             notify: false,
-            files: null, // File should be null initially
+            files: [], // File should be null initially
           });
           nevegate('/teacher-dashboard/assignments');
         });
@@ -814,7 +814,7 @@ export const CreateAssignments = () => {
               save_draft: false,
               add_to_report: false,
               notify: false,
-              files: null,
+              files: [],
             });
           }
         }).catch((response) => {

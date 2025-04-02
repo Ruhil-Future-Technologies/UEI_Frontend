@@ -160,7 +160,7 @@ export const qualifications = [
   'Doctor of Pharmacy (Pharm.D)',
   'Doctor of Business Administration (DBA)',
 ];
-const stream = ['Science', 'Commerce', 'Arts'];
+const stream = ['science', 'commerce', 'arts'];
 
 export interface Boxes {
   semester_number: string;

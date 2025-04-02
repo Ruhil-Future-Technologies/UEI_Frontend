@@ -28,6 +28,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import "react-quill/dist/quill.snow.css";
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const PreviewAndSubmit = () => {
   const quillRef = useRef<ReactQuill | null>(null);
   const [isSubmited, setIssubmited] = useState(false);
   const [statusCheck, setStatusCheck] = useState('Pending');
-  const [availableDuration,setAvailableDuration]=useState(0);
+  const [availableDuration, setAvailableDuration] = useState(0);
 
   const handleBack = () => {
     navigate(-1);
@@ -60,8 +61,8 @@ const PreviewAndSubmit = () => {
         if (response?.status) {
           setAssignmentData(response?.data);
           const dueDate = new Date(response?.data?.due_date_time);
-          const availableDate=new Date(response?.data?.available_from);
-          const durationDiff=dueDate.getTime() - availableDate.getTime()
+          const availableDate = new Date(response?.data?.available_from);
+          const durationDiff = dueDate.getTime() - availableDate.getTime()
           setAvailableDuration(Math.ceil(durationDiff / (1000 * 60 * 60 * 24)))
           const today = new Date();
           const differenceInMs = dueDate.getTime() - today.getTime();
@@ -87,7 +88,7 @@ const PreviewAndSubmit = () => {
         console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
           if (filteredAssignment[0]?.text) setValue(filteredAssignment[0].text);
-          if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].file)
+          if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
           if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
           if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
           setIssubmited(true)
@@ -258,7 +259,7 @@ const PreviewAndSubmit = () => {
                 style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
               >
                 <AccessTimeIcon fontSize="small" /> Time remaining:
-                <Chip label={remainingDays + " days"} style={{ backgroundColor: getColor(remainingDays,availableDuration), color: "#fff" }}  /> |
+                <Chip label={remainingDays + " days"} style={{ backgroundColor: getColor(remainingDays, availableDuration), color: "#fff" }} /> |
                 <ScoreboardOutlinedIcon fontSize="small" /> Points:
                 <Chip label={assignmentData?.points} color="primary" /> |
                 <TimerOffIcon fontSize="small" /> Late Submission:
@@ -274,7 +275,7 @@ const PreviewAndSubmit = () => {
                 <span
                   className="ms-2 me-3"
                   style={{
-                    color: getColor(remainingDays,availableDuration),
+                    color: getColor(remainingDays, availableDuration),
                   }}
                 >
                   Due: {assignmentData?.due_date_time}
@@ -306,8 +307,11 @@ const PreviewAndSubmit = () => {
                 <ul>
                   {
                     assignmentData?.files?.map((file, index) => (
-                      <li key={index}> {/* Ensure a unique key */}
-                        <Link to={'#'}>{file.name}</Link>
+                      <li key={index} className='d-flex justify-content-between me-5'> {/* Ensure a unique key */}
+                        <Link to={file as string}>{file as string}</Link>
+                        <a href={file as string} download target="_blank" rel="noopener noreferrer">
+                          <GetAppOutlinedIcon />
+                        </a>
                       </li>
                     ))
                   }

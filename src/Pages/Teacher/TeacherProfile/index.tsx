@@ -59,7 +59,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 //import axios from "axios";
 
 const TeacherProfile = () => {
-  const stream = ['Science', 'Commerce', 'Arts'];
+  const stream = ['science', 'commerce', 'arts'];
   const navigate = useNavigate();
   const teacherLoginId = localStorage.getItem('user_uuid');
   const context = useContext(NameContext);
@@ -1674,7 +1674,7 @@ const TeacherProfile = () => {
                                 {stream.map((item) => (
                                   <MenuItem
                                     key={item}
-                                    value={item.toLowerCase()}
+                                    value={item}
                                     sx={{
                                       backgroundColor: inputfield(namecolor),
                                       color: inputfieldtext(namecolor),
