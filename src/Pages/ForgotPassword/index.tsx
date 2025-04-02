@@ -19,7 +19,9 @@ import FullScreenLoader from '../Loader/FullScreenLoader';
 const Forgotpassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
+  const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
   const [email, setEmail] = useState('');
+  const [error, setError] = useState(""); 
   // const [msg, setMsg] = useState("");
   // const [value, setValue] = React.useState('student');
   const [isLoading, setIsLoading] = useState(false);
@@ -40,13 +42,25 @@ const Forgotpassword = () => {
     // document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
-  const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setValue((event.target as HTMLInputElement).value);
-  // };
+  const validateEmailOrPhone = (input: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/; // Adjust for different phone formats if needed
+    return emailRegex.test(input) || phoneRegex.test(input);
+  };
+  const handleChange =(value:any)=>{
+    setEmail(value);
+    if (validateEmailOrPhone(value)) {
+      setError(""); 
+    }
+  }
   const sendLink = (e: any) => {
-    setIsLoading(true);
     e.preventDefault();
+    setError("");
+    if (!validateEmailOrPhone(email)) {
+      setError("Please enter a valid email or phone number");
+      return;
+    }
+    setIsLoading(true);
     const UserSignUp = {
       email: email,
       // user_type: String(value),
@@ -190,11 +204,13 @@ const Forgotpassword = () => {
                         {/* <input type="text" className="form-control   h-52" autoFocus  placeholder="Enter Your Email / Phone"/> */}
 
                         <TextField
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => handleChange(e.target.value)}
                           id="input-with-icon-textfield"
                           placeholder="Email"
                           // variant="outlined"
                           fullWidth
+                          error={!!error}
+                          helperText={error}
                         />
                       </div>
                       <button

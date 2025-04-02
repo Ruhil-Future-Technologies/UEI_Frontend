@@ -51,7 +51,9 @@ const Content = () => {
     });
 
     getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data);
+      if (data.status) {
+        setDataClasses(data.data);
+      }
     });
     getData('/entity/list').then((data) => {
       if (data.status) {
@@ -258,6 +260,7 @@ const Content = () => {
                         columnVisibility,
                       }}
                       data={filteredContent}
+                      onColumnVisibilityChange={setColumnVisibility}
                       enableRowVirtualization
                       positionActionsColumn="first"
                       muiTablePaperProps={{
