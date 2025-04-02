@@ -55,11 +55,6 @@ const Content = () => {
         setDataClasses(data.data);
       }
     });
-    getData('/entity/list').then((data) => {
-      if (data.status) {
-        setEntity(data.data?.entityes_data);
-      }
-    });
     getData(`${ContentURL}`)
       .then((data) => {
         if (data.status) {
