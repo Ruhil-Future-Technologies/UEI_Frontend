@@ -63,7 +63,7 @@ const StudentProfile = () => {
   const [isProComplete1, setIsProComplete1] = useState(false);
   const context = React.useContext(NameContext);
 
-  const { activeForm, setActiveForm }: any = context;
+  const { activeForm, setActiveForm,setProImage }: any = context;
   const usertype: any = localStorage.getItem('user_type');
   const { getData } = useApi();
   const StudentId = localStorage.getItem('user_uuid');
@@ -192,8 +192,8 @@ const StudentProfile = () => {
                 getData(
                   `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
                 )
-                  .then(() => {
-                    // setprofileImage(imgdata.data);
+                  .then((data) => {
+                    setProImage(data?.data?.file_url);
                   })
                   .catch(() => {
                     // Handle error

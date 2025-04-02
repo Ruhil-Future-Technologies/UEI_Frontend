@@ -61,7 +61,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   // const [name, setName] = useState();
   // const [lastname, setlastName] = useState();
   // const [dob, setDob] = useState<Date | null>();
-  const [selectedFile] = useState();
+  const [selectedFile ,setSelectedFile] = useState();
   const [filePreview, setFilePreview] = useState(null);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [proFalg, setProFlag] = useState<boolean>(false);
@@ -114,7 +114,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           if (data?.data?.pic_path !== null ) {
             getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
               .then((imgdata: any) => {
-                setFilePreview(imgdata.data);
+                setFilePreview(imgdata?.data?.file_url);
               })
               .catch(() => {});
           }
@@ -263,6 +263,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         postFileData(`${'upload_file/upload'}`, formData)
           .then((data: any) => {
             if (data?.status) {
+              const fileUrl = data?.data?.url;
+            const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
+            setSelectedFile(fileName);
               toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -482,7 +485,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                   .then((data: any) => {
                     // setprofileImage(imgdata.data)
                     if (data.status) {
-                      setProImage(data.data);
+                      setProImage(data?.data?.file_url);
                     }
                   })
                   .catch((e) => {
@@ -534,7 +537,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                       .then((data: any) => {
                         // setprofileImage(imgdata.data)
                         if (data.status) {
-                          setProImage(data.data);
+                          setProImage(data?.data?.file_url);
                         }
                       })
                       .catch((e) => {

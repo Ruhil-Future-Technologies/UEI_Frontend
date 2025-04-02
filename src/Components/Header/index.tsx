@@ -157,7 +157,7 @@ const Header = () => {
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
                 .then((imgdata: any) => {
-                  setProImage(imgdata.data);
+                  setProImage(imgdata?.data?.file_url);
                 })
                 .catch(() => {});
             }
@@ -188,7 +188,7 @@ const Header = () => {
                 }`,
               )
                 .then((imgdata) => {
-                  setProImage(imgdata.data);
+                  setProImage(imgdata?.data?.file_url);
                 })
                 .catch(() => {});
             }

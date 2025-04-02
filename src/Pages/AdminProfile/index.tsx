@@ -19,7 +19,7 @@ export default function AdminProfile() {
   const [isProComplete1, setIsProComplete1] = React.useState(false);
   const context = React.useContext(NameContext);
 
-  const { activeForm, setActiveForm }: any = context;
+  const { activeForm, setActiveForm,setProImage }: any = context;
   const profileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
   const { getData } = useApi();
   const [isMobile, setIsMobile] = React.useState(false);
@@ -103,9 +103,9 @@ export default function AdminProfile() {
 
           if (basic_info && Object.keys(basic_info)?.length > 0) {
             if (data?.data?.pic_path !== null) {
-              getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
-                .then(() => {
-                  // setprofileImage(imgdata.data)
+              getData(`${'upload_file/get_image/' + data?.data?.admin_data?.pic_path}`)
+                .then((data) => {
+                  setProImage(data?.data?.file_url);
                 })
                 .catch(() => { });
             }
