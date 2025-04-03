@@ -67,6 +67,7 @@ const InstitutionProfile = () => {
   const [selectedEntity, setSelectedEntity] = useState('');
   const [filePreview, setFilePreview] = useState(null);
   const [documents, setDocuments] = useState<File[]>([]);
+  const [documentsDesplay, setDocumentsDesplay] = useState<string[]>([]);
   const [entityData, setEntityData] = useState<IEntity[]>([])
   const [universityData, setUniversityData] = useState<IUniversity[]>([]);
   const [instituteId, setInstituteId] = useState('');
@@ -136,8 +137,8 @@ const InstitutionProfile = () => {
           } else {
             setSelectedEntity("College");
           }
-          if (response?.data?.document?.length() > 0) {
-            setDocuments(response?.data.document)
+          if (response?.data?.documents?.length > 0) {
+            setDocumentsDesplay(response?.data.documents)
           }
         }
       });
@@ -745,14 +746,14 @@ const InstitutionProfile = () => {
                           onChange={handleFileChange}
                         />
                         <List>
-                          {documents.length > 0 ? (
-                            documents?.map((doc) => (
+                          {documentsDesplay.length > 0 ? (
+                            documentsDesplay?.map((doc) => (
                               <ListItem
-                                key={doc.name}
+                                key={doc}
                                 button
-                                onClick={() => handleDocumentClick(doc.name)}
+                                onClick={() => handleDocumentClick(doc)}
                               >
-                                <ListItemText primary={doc.name} />
+                                <ListItemText primary={doc} />
                               </ListItem>
                             ))
                           ) : (

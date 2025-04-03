@@ -210,33 +210,37 @@ const InstituteRegistrationForm = () => {
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    
     setDocument_error(false);
     setErrorMessage('');
-
-    if (files && event.target.name !== 'icon') {
-      const filesArray = Array.from(files);
-
-      // Check if any file is a duplicate
+  
+    if (!files) return;
+  
+    const filesArray = Array.from(files);
+  
+    // Check for duplicate files (compare name + lastModified for uniqueness)
     const duplicateFiles = filesArray.filter((file) =>
-      allselectedfiles.some((existingFile) => existingFile.name === file.name)
+      allselectedfiles.some(
+        (existingFile) => 
+          existingFile.name === file.name && 
+          existingFile.lastModified === file.lastModified
+      )
     );
-
+  
     if (duplicateFiles.length > 0) {
       setErrorMessage('This document has already been selected');
       return; // Stop execution to prevent adding duplicate files
     }
-
-      setAllSelectedfiles((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
-
-      // Reset the input field to allow selecting the same files again
-      event.target.value = '';
-    } else {
-      // setLogo(files);
-    }
+  
+    setAllSelectedfiles((prevFiles) => [
+      ...prevFiles, // Keep previously selected files
+      ...filesArray, // Add newly selected files
+    ]);
+  
+    // Reset input field to allow selecting the same files again
+    event.target.value = '';
   };
+  
 
   const validation = (name: string, value: string) => {
     if (
