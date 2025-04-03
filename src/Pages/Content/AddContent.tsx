@@ -393,10 +393,16 @@ const AddContent = () => {
       setDataCourses(data.data.course_data);
     });
     getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(data.data.subjects_data);
+      setCollegeSubjects(
+        data.data?.subjects_data.filter((subject: any) => subject.is_active) ||
+          [],
+      );
     });
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(data.data.subjects_data);
+      setSchoolSubjects(
+        data.data?.subjects_data.filter((subject: any) => subject.is_active) ||
+          [],
+      );
     });
     setIsInitialDataLoaded(true);
   }, []);
@@ -423,19 +429,32 @@ const AddContent = () => {
           setFilteredInstitutes([]);
         }
       }
+    } else if (content.entity_id) {
+      if (isSchoolEntity(content.entity_id)) {
+        setFilteredInstitutes(schoolInstitutes);
+      } else if (isCollegeEntity(content.entity_id)) {
+        if (content.university_id) {
+          const filtered = collegeInstitutes?.filter(
+            (institute) => institute.university_id === content.university_id,
+          );
+          setFilteredInstitutes(filtered);
+        } else {
+          setFilteredInstitutes([]);
+        }
+      }
     } else {
       setFilteredInstitutes([]);
     }
   }, [
     formRef.current?.values?.entity_id,
     formRef.current?.values?.university_id,
-    schoolInstitutes,
-    collegeInstitutes,
+
+    content.university_id,
+    content.entity_id,
   ]);
 
   useEffect(() => {
-    const institutionId =
-      formRef.current?.values?.institute_id || selectedInstitutionId;
+    const institutionId = content?.institute_id || selectedInstitutionId;
 
     if (
       user_type === 'institute' ||
@@ -459,7 +478,8 @@ const AddContent = () => {
     }
   }, [
     formRef.current?.values?.institute_id,
-    dataCourses,
+    content?.institute_id,
+
     teacherCourses,
     selectedInstitutionId,
     dataClasses,
@@ -560,7 +580,7 @@ const AddContent = () => {
         }
       }
     });
-  }, [content, collegeSubjects]);
+  }, [content?.courses, collegeSubjects]);
 
   useEffect(() => {
     const initialClasses = content.classes;
@@ -605,7 +625,7 @@ const AddContent = () => {
         }
       }
     });
-  }, [content, schoolSubjects]);
+  }, [content?.classes, schoolSubjects]);
 
   useEffect(() => {
     if (formRef.current?.values?.courses) {
@@ -638,7 +658,7 @@ const AddContent = () => {
         }
       });
     }
-  }, [formRef.current?.values?.courses, collegeSubjects]);
+  }, [content?.courses, collegeSubjects]);
 
   const isDuplicateCourseAndSemester = (courses: any[]): boolean => {
     const combinations = new Set();

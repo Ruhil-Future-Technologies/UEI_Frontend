@@ -43,9 +43,9 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
   const [contcodePhone, setContcodePhone] = useState('+91');
   const [phoneNum, setPhoneNum] = useState(localStorage.getItem('phone') ||'');
 
-  const [phoneNumerror, setPhoneNumerror] = useState({
-    phoneNum: '',
-  });
+  // const [phoneNumerror, setPhoneNumerror] = useState({
+  //   phoneNum: '',
+  // });
   const [email, setEmail] = useState(localStorage.getItem('email'));
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [errors, setErrors] = useState({
@@ -86,12 +86,12 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             ? 'Mobile number should be 10 digits'
             : '',
         });
-        setPhoneNumerror({
-          ...errors,
-          phoneNum: !/^(?!0{10})[0-9]{10}$/.test(value)
-            ? 'Mobile number should be 10 digits'
-            : '',
-        });
+        // setPhoneNumerror({
+        //   ...errors,
+        //   phoneNum: !/^(?!0{10})[0-9]{10}$/.test(value)
+        //     ? 'Mobile number should be 10 digits'
+        //     : '',
+        // });
         break;
       case 'whatsappNum':
         setWhatsappNum(value);
@@ -172,7 +172,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
     // event: React.FormEvent<HTMLFormElement>
     // event.preventDefault();
 
-    if (errors.phoneNum || errors.email || errors.whatsappNum) {
+    if ( errors.email || errors.whatsappNum) {
       // toast.error("Please fix the errors before submitting", {
       //   hideProgressBar: true,
       //   theme: "colored",
@@ -181,20 +181,20 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
       return;
     }
 
-    if (phoneNum?.length !== 10) {
-      setPhoneNumerror({
-        ...errors,
-        phoneNum: !/^(?!0{10})[0-9]{10}$/.test(phoneNum)
-          ? 'Mobile number should be 10 digits'
-          : '',
-      });
-      // toast.error("Phone number should be 10 digits", {
-      //   hideProgressBar: true,
-      //   theme: "colored",
-      //   position: "top-center"
-      // });
-      return;
-    }
+    // if (phoneNum?.length !== 10) {
+    //   // setPhoneNumerror({
+    //   //   ...errors,
+    //   //   phoneNum: !/^(?!0{10})[0-9]{10}$/.test(phoneNum)
+    //   //     ? 'Mobile number should be 10 digits'
+    //   //     : '',
+    //   // });
+    //   // toast.error("Phone number should be 10 digits", {
+    //   //   hideProgressBar: true,
+    //   //   theme: "colored",
+    //   //   position: "top-center"
+    //   // });
+    //   return;
+    // }
     const formData = new FormData();
 
     const payload = {
@@ -343,14 +343,14 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 name="phoneNum"
                 size='small'
                 value={phoneNum}
-                disabled={user_id ? !validateEmail(user_id) : false}
+                disabled
                 onChange={handleChange}
                 sx={{
                   backgroundColor: '#f5f5f5',
                 }}
                 required
-                error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
-                helperText={errors.phoneNum || phoneNumerror.phoneNum}
+                // error={!!errors.phoneNum || !!phoneNumerror.phoneNum}
+                // helperText={errors.phoneNum || phoneNumerror.phoneNum}
               />
             </div>
           </div>

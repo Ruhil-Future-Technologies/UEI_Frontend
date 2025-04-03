@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 //import BookIcon from '@mui/icons-material/Book';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined';
 
 import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from 'material-react-table';
 import { Chip, IconButton, Box, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle, } from '@mui/material';
@@ -38,10 +38,10 @@ export const Assignments = () => {
     save_draft: false,
     add_to_report: false,
     notify: false,
-    file: null, // File should be null initially
+    files: [], // File should be null initially
   }]);
-  const [draftCount,setDreftCount]=useState(0)
-  const teacher_uuid=localStorage.getItem('user_uuid');
+  const [draftCount, setDreftCount] = useState(0)
+  const teacher_uuid = localStorage.getItem('user_uuid');
 
   useEffect(() => {
     getListOfAssignments();
@@ -51,12 +51,12 @@ export const Assignments = () => {
     try {
       getData(`/assignment/list/`).then((response) => {
         if (response.data) {
-          const filteredassignment = response?.data?.filter((assignmnet:any)=>
-            assignmnet.created_by==teacher_uuid
+          const filteredassignment = response?.data?.filter((assignmnet: any) =>
+            assignmnet.created_by == teacher_uuid
           )
           setAssignmentData(filteredassignment)
-          const filteredassignmentcount = response?.data?.filter((assignmnet:any)=>
-            assignmnet.save_draft
+          const filteredassignmentcount = response?.data?.filter((assignmnet: any) =>
+            assignmnet.save_draft && assignmnet.created_by == teacher_uuid
           )
           setDreftCount(filteredassignmentcount.length)
         }
@@ -82,7 +82,7 @@ export const Assignments = () => {
   //   }
   // };
   const viewAssignmnet = (assignmentId: any) => {
-    console.log("view this assgnment", assignmentId)
+    localStorage.setItem('assignment_id', assignmentId)
     nevigate(`/teacher-dashboard/assignment-details/${assignmentId}`)
   }
   const editAssignmnet = (assignmentId: any) => {
@@ -168,7 +168,14 @@ export const Assignments = () => {
       accessorKey: 'subject',
       header: 'Subject',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
-        const courseKeys = row?.original?.course_semester_subjects;
+        let courseKeys = '';
+        if (row?.original?.course_semester_subjects) {
+
+          courseKeys = row?.original?.course_semester_subjects;
+        } else {
+          courseKeys = row?.original?.class_stream_subjects;
+        }
+
 
         if (!courseKeys || typeof courseKeys !== 'object') return <p>No subjects</p>;
 
@@ -179,8 +186,16 @@ export const Assignments = () => {
 
         return <p>{subjects.join(', ')}</p>;
       }
-    }
-    ,
+    },
+    {
+      header: 'Late Submition',
+      accessorKey: 'allow_late_submission',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const val = row?.original?.allow_late_submission
+        return <Chip label={val ? "Allowed" : 'Not Allowed'} color={val ? 'primary' : 'error'} />
+      }
+    },
+
     {
       accessorKey: 'status',
       header: 'Status',
@@ -336,7 +351,7 @@ export const Assignments = () => {
                     <h3 className="mb-0">986</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
-                    <AccessTimeFilledIcon className="svgwhite" />
+                    <CreditScoreOutlinedIcon className="svgwhite" />
                   </div>
                 </div>
                 <div className="d-flex align-items-center mt-3 gap-2">
@@ -355,7 +370,7 @@ export const Assignments = () => {
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
                     <p className="mb-1">Active Students</p>
-                    <h3 className="mb-0">{assignmentData.length-draftCount}</h3>
+                    <h3 className="mb-0">{assignmentData.length - draftCount}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
                     <GroupsIcon className="svgwhite" />

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Typography,
@@ -7,14 +7,6 @@ import {
   CardContent,
   Button,
   Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-
-  TextField,
   Chip,
   IconButton,
   ListItem,
@@ -26,21 +18,34 @@ import ScoreboardOutlinedIcon from '@mui/icons-material/ScoreboardOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from '../../Teacher/Assignments/CreateAssignments';
-import { toTitleCase } from '../../../utils/helpers';
+import { getColor, toTitleCase } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
 import UploadBtn from '../../../Components/UploadBTN/UploadBtn';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-
+import ReactQuill from "react-quill";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TimerOffIcon from '@mui/icons-material/TimerOff';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
+import "react-quill/dist/quill.snow.css";
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
-  const { getData } = useApi();
+  const { getData, postData } = useApi();
   const { id } = useParams();
+  const student_id = localStorage.getItem('user_uuid')
+  const stud_id = localStorage.getItem('student_id')
   const [assignmentData, setAssignmentData] = useState<Assignment>();
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
   const [document_error, setDocument_error] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+  const [value, setValue] = useState("");
+  const quillRef = useRef<ReactQuill | null>(null);
+  const [isSubmited, setIssubmited] = useState(false);
+  const [statusCheck, setStatusCheck] = useState('Pending');
+  const [availableDuration, setAvailableDuration] = useState(0);
 
   const handleBack = () => {
     navigate(-1);
@@ -55,13 +60,15 @@ const PreviewAndSubmit = () => {
       getData(`/assignment/get/${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
-          const dueDate = new Date(response?.due_date_time);
+          const dueDate = new Date(response?.data?.due_date_time);
+          const availableDate = new Date(response?.data?.available_from);
+          const durationDiff = dueDate.getTime() - availableDate.getTime()
+          setAvailableDuration(Math.ceil(durationDiff / (1000 * 60 * 60 * 24)))
           const today = new Date();
           const differenceInMs = dueDate.getTime() - today.getTime();
-
-          // Convert milliseconds to days (1 day = 86400000 ms)
           const remainingDays = Math.ceil(differenceInMs / (1000 * 60 * 60 * 24));
           setRemaingDays(dueDate.getTime() > today.getTime() ? remainingDays : 0)
+          isAssignmentSubmitedGet(response?.data?.id);
         }
       })
     } catch (error: any) {
@@ -73,6 +80,30 @@ const PreviewAndSubmit = () => {
     }
   }
 
+
+  const isAssignmentSubmitedGet = (assignmentId: string) => {
+    getData(`/assignment_submission/get/submissions/${student_id}`).then((response) => {
+      if (response?.status) {
+        const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
+        console.log(filteredAssignment);
+        if (filteredAssignment.length > 0) {
+          if (filteredAssignment[0]?.text) setValue(filteredAssignment[0].text);
+          if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
+          if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
+          if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
+          setIssubmited(true)
+        } else {
+          setIssubmited(false)
+        }
+      }
+    }).catch((error) => {
+      toast.error(error?.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+      })
+    })
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -104,6 +135,94 @@ const PreviewAndSubmit = () => {
 
   };
 
+
+  const submitAssignment = () => {
+
+    let check = true;
+    if (value == '') {
+
+      check = true;
+    } else {
+
+      check = false;
+    }
+
+    if (allselectedfiles.length! < 1) {
+      setDocument_error(true);
+      check = true;
+    } else {
+      check = false;
+      setDocument_error(false);
+    }
+    if (check) return;
+    const formData = new FormData();
+
+    formData.append('assignment_id', assignmentData?.id as string)
+    formData.append('student_id', stud_id as string)
+    formData.append('description', value)
+    allselectedfiles.forEach((file) => {
+      formData.append('files', file);
+    });
+    postData(`/assignment_submission/add`, formData).then((response) => {
+      if (response?.status) {
+
+        toast.success(response.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+
+        })
+        navigate('/main/student/assignment')
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+
+      })
+    })
+  }
+  useEffect(() => {
+    const editor = quillRef.current?.editor?.root;
+
+    if (editor) {
+      // Prevent Paste
+      editor.addEventListener("paste", (e) => {
+        e.preventDefault();
+      });
+
+      // Prevent Drag and Drop
+      editor.addEventListener("drop", (e) => {
+        e.preventDefault();
+      });
+
+      // Prevent Right-click Paste
+      editor.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
+
+      // Prevent Ctrl+V
+      editor.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && (e.key === "v" || e.key === "V")) {
+          e.preventDefault();
+        }
+      });
+    }
+
+    return () => {
+      if (editor) {
+        editor.removeEventListener("paste", (e) => e.preventDefault());
+        editor.removeEventListener("drop", (e) => e.preventDefault());
+        editor.removeEventListener("contextmenu", (e) => e.preventDefault());
+        editor.removeEventListener("keydown", (e) => {
+          if (e.ctrlKey && (e.key === "v" || e.key === "V")) {
+            e.preventDefault();
+          }
+        });
+      }
+    };
+  }, []);
   return (
     <>
       <div className="main-wrapper">
@@ -133,31 +252,51 @@ const PreviewAndSubmit = () => {
               <Typography variant="h4" fontWeight="bold">
                 {toTitleCase(assignmentData?.title || '')}
               </Typography>
-              <Typography variant="body2" color="text.secondary" className='d-inline-flex align-items-center gap-1 mt-2'>
-                <AccessTimeIcon fontSize='small' /> Time remaining: {remainingDays} days | <ScoreboardOutlinedIcon fontSize='small' />Points: {assignmentData?.points}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                className="d-inline-flex align-items-center gap-2 mt-2"
+                style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+              >
+                <AccessTimeIcon fontSize="small" /> Time remaining:
+                <Chip label={remainingDays + " days"} style={{ backgroundColor: getColor(remainingDays, availableDuration), color: "#fff" }} /> |
+                <ScoreboardOutlinedIcon fontSize="small" /> Points:
+                <Chip label={assignmentData?.points} color="primary" /> |
+                <TimerOffIcon fontSize="small" /> Late Submission:
+                {assignmentData?.allow_late_submission ? <VerifiedIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />} |
+                <PlaylistAddCheckIcon fontSize="small" /> Add in report:
+                {assignmentData?.add_to_report ? <VerifiedIcon style={{ color: 'green' }} /> : <HighlightOffIcon style={{ color: 'red' }} />}
               </Typography>
+
             </div>
             <div className="col-lg-5">
-              <div className="d-flex align-items-center justify-content-end"><AccessTimeIcon /> <span className='text-danger ms-2 me-3'> Due: {assignmentData?.due_date_time}</span><Chip label="Pending" color="warning" /> </div>
+              <div className="d-flex align-items-center justify-content-end">
+                <AccessTimeIcon />
+                <span
+                  className="ms-2 me-3"
+                  style={{
+                    color: getColor(remainingDays, availableDuration),
+                  }}
+                >
+                  Due: {assignmentData?.due_date_time}
+                </span>
+                {remainingDays != 0 || assignmentData?.allow_late_submission ?
+                  <Chip label={statusCheck} color={statusCheck == 'Submitted' ? 'primary' : statusCheck == 'Graded' ? 'success' : 'error'} />
+                  : <Chip label={'Expired'} color={'error'} />
 
+                }
+              </div>
             </div>
           </div>
 
-
           <Card sx={{ mt: 3 }}>
             <CardContent>
-              <Typography variant="h6">Assignment Description</Typography>
-              <Typography variant="body1" sx={{ mt: 1 }}>
-                Create a fully functional e-commerce website using React and
-                Node.js. The website should include the following features and
-                meet all specified requirements.
-              </Typography>
               <Typography variant="h6" className="mt-3">
                 Instructions
               </Typography>
               <ul>
                 <li>
-                  {assignmentData?.instructions}
+                  <div dangerouslySetInnerHTML={{ __html: assignmentData?.instructions || '' }} />
                 </li>
               </ul>
 
@@ -167,9 +306,12 @@ const PreviewAndSubmit = () => {
                 <Typography variant="h6">Resources</Typography>
                 <ul>
                   {
-                    assignmentData?.file?.map((file, index) => (
-                      <li key={index}> {/* Ensure a unique key */}
-                        <Link to={'#'}>{file.name}</Link>
+                    assignmentData?.files?.map((file, index) => (
+                      <li key={index} className='d-flex justify-content-between me-5'> {/* Ensure a unique key */}
+                        <Link to={file as string}>{file as string}</Link>
+                        <a href={file as string} download target="_blank" rel="noopener noreferrer">
+                          <GetAppOutlinedIcon />
+                        </a>
                       </li>
                     ))
                   }
@@ -233,65 +375,22 @@ const PreviewAndSubmit = () => {
                   <small> Please add at least one file.</small>
                 </p>
               }
-              <TextField
-                fullWidth
-                label="Add Remarks (Optional)"
-                multiline
-                rows={3}
-                sx={{ mt: 2 }}
-              />
+              <div className='mt-2 mb-5'>
+                <ReactQuill id='text' ref={quillRef} value={value} onChange={setValue} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
+              </div>
             </CardContent>
           </Card>
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <Typography variant="h6">Submission History</Typography>
-              <TableContainer sx={{ mt: 2 }}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <b>Date</b>
-                      </TableCell>
-                      <TableCell>
-                        <b>File Name</b>
-                      </TableCell>
-                      <TableCell>
-                        <b>Status</b>
-                      </TableCell>
-                      <TableCell>
-                        <b>Remarks</b>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Dec 10, 2023</TableCell>
-                      <TableCell>
-                        <a href="#">project_draft_v1.zip</a>
-                      </TableCell>
-                      <TableCell>Draft</TableCell>
-                      <TableCell>Initial project structure</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Dec 12, 2023</TableCell>
-                      <TableCell>
-                        <a href="#">project_draft_v2.zip</a>
-                      </TableCell>
-                      <TableCell>Draft</TableCell>
-                      <TableCell>Added core features</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
+          {
+            !isSubmited && (remainingDays == 0 ? assignmentData?.allow_late_submission : true) && (
+              <Box sx={{ my: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
+                <Button variant="contained" color="primary" onClick={submitAssignment}>
+                  Submit Assignment
+                </Button>
+                <Button variant="outlined">Save as Draft</Button>
+              </Box>
+            )
+          }
 
-          <Box sx={{ my: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
-            <Button variant="contained" color="primary">
-              Submit Assignment
-            </Button>
-            <Button variant="outlined">Save as Draft</Button>
-          </Box>
         </div>
       </div>
     </>

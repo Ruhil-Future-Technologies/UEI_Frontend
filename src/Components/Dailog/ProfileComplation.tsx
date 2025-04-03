@@ -850,7 +850,7 @@ export const ProfileDialog: FunctionComponent<{
     return date.toISOString();
   };
 
-  const saveAnswersforBasic = (answers: string[]) => {
+  const saveAnswersforBasic = async  (answers: string[]) => {
     const birthdate: any = parseDate(answers[1]);
     // Convert the birthdate to a Date object
     const birthdateObj = new Date(birthdate);
@@ -878,6 +878,25 @@ export const ProfileDialog: FunctionComponent<{
     const lastname = nameParts?.[1];
     const email = localStorage.getItem('email');
     const phone = localStorage.getItem('phone');
+    const formData = new FormData();
+    const nfile: any = uploadedFile;
+    formData.append('file', nfile)
+    let img_res: string = '';
+    if (formData.has('file')) {
+      try {
+        const data: any = await postFileData("upload_file/upload", formData);
+    
+        if (data?.status) {
+          setProImage(data?.data?.url);
+          const fileUrl = data?.data?.url;
+          const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
+          img_res = fileName // ✅ Now img_res is updated correctly
+        }
+      } catch (error) {
+        console.error("File upload failed", error);
+      }
+    }
+
     const payload = {
       user_uuid: Student_uuid,
       first_name: answeredData?.basic_info?.first_name || firstname,
@@ -890,7 +909,7 @@ export const ProfileDialog: FunctionComponent<{
       guardian_name:
         answeredData?.basic_info?.guardian_name || answers[6] || '',
       aim: answeredData?.basic_info?.aim || answers[2],
-      pic_path: answeredData?.basic_info?.pic_path || answers[7],
+      pic_path: img_res|| answeredData?.basic_info?.pic_path || answers[7],
       email: email,
       phone: phone
     };
@@ -909,38 +928,6 @@ export const ProfileDialog: FunctionComponent<{
           const nfile: any = uploadedFile;
           formData.append('file', nfile);
 
-          if (formData.has('file')) {
-            postFileData(`${'upload_file/upload'}`, formData)
-              .then((data: any) => {
-                if (data?.status) {
-                  setProImage(data?.image_url);
-                  // toast.success(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: 'colored',
-                  // });
-                } else if (data?.code === 404) {
-                  // toast.error(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: 'colored',
-                  // });
-                } else {
-                  // toast.error(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: 'colored',
-                  // });
-                }
-              })
-              .catch(() => {
-                // toast.error(e?.message, {
-                //   hideProgressBar: true,
-                //   theme: 'colored',
-                // });
-              });
-          }
-          // toast.success('Basic information saved successfully', {
-          //   hideProgressBar: true,
-          //   theme: 'colored',
-          // });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -1113,12 +1100,16 @@ export const ProfileDialog: FunctionComponent<{
       subject_id: selectSubject,
       preference: answers[length - 3],
       score_in_percentage: answers[length - 2],
+      ...((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school'&&
+       { class_id:answeredData?.academic_history?.class_id || answers[11]}
+      ),
+      
       sem_id:
         selectedInstituteType?.toLowerCase() === 'college' ||
           answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-      ...(answeredData?.academic_history?.institution_type === 'school' &&
+      ...((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school' &&
         answeredData?.academic_history?.stream && {
         stream: answeredData?.academic_history?.stream || answers[12],
       }),

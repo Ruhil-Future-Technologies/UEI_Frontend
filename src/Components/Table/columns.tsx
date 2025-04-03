@@ -247,6 +247,7 @@ export interface SubMenuRep0oDTO {
 }
 export interface StudentRep0oDTO {
   aim: MaybeNull<string>;
+  name?:string
   first_name: MaybeNull<string>;
   last_name: MaybeNull<string>;
   gender: MaybeNull<string>;

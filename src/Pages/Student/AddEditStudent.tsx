@@ -175,6 +175,9 @@ const AddEditStudent = () => {
         postFileData(`${'upload_file/upload'}`, formData)
           .then((data: any) => {
             if (data?.status) {
+              const fileUrl = data?.data?.url;
+              const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
+              setUploadedFile(fileName);
               toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',

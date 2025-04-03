@@ -187,7 +187,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         if (response?.data?.admin_data.pic_path !== null) {
           getData(`${'upload_file/get_image/' + response?.data?.admin_data.pic_path}`)
             .then((imgdata: any) => {
-              setFilePreview(imgdata.data);
+              setFilePreview(imgdata?.data?.file_url);
             })
             .catch(() => {});
         }
@@ -287,7 +287,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
         return;
       }
       //setError1("");
-      setSelectedFile(file.name);
+      // setSelectedFile(file.name);
       const reader: any = new FileReader();
       reader.onloadend = () => {
         setFilePreview(reader.result);
@@ -297,6 +297,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
       postFileData(`${'upload_file/upload'}`, formData)
         .then((data: any) => {
           if (data?.status) {
+            const fileUrl = data?.data?.url;
+            const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
+            setSelectedFile(fileName);
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -439,7 +442,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             )
               .then((data: any) => {
                 if (data.status) {
-                  setProImage(data.data);
+                  setProImage(data?.data?.file_url);
                 }
               })
               .catch((e) => {
@@ -508,7 +511,7 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
             )
               .then((data: any) => {
                 if (data.status) {
-                  setProImage(data.data);
+                  setProImage(data?.data?.file_url);
                 }
               })
               .catch((e) => {

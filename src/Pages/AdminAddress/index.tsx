@@ -196,8 +196,11 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
     }
   };
   useEffect(() => {
-    listData();
-  }, []);
+    if(adminId){
+      listData();
+    }
+   
+  }, [activeForm]);
 
   useEffect(() => {
     getData(`${'admin_address/get/' + UuId}`).then((response: any) => {
@@ -495,6 +498,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
       !city_col1 &&
       !contry_col1
     ) {
+      console.log(editFlag , tuched)
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
           const formData = new FormData();
