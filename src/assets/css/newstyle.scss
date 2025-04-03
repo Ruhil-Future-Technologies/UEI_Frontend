@@ -359,7 +359,7 @@ img {
 
   .chat-panel {
     //padding: 1rem;
-
+    height: calc(100vh - 105px)!important;
     grid-template-columns: 1fr !important;
     .left-side-history {
       position: fixed !important;
@@ -2209,6 +2209,10 @@ body .desk-card {
 
         display: flex;
         overflow: auto;
+
+        @media (max-width:724px) {
+          max-height: calc(100vh - 210px);
+        }
         .welcome-box {
           margin: 0;
           width: 100%;
@@ -2337,6 +2341,7 @@ body .desk-card {
                   p {
                     &:last-child {
                       margin-bottom: 0;
+                      color: white;
                     }
                   }
                 }
@@ -2677,9 +2682,10 @@ a {
   background-color: rgba($white, 0.7);
   backdrop-filter: blur(1px);
   .searchtext {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 500;
     color: black;
+    text-align: center;
   }
   .spinner {
     width: 44.8px;

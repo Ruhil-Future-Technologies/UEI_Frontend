@@ -1877,7 +1877,7 @@ const Chat = () => {
                       <button
                         type="button"
                         onClick={searchData}
-                        className="btn btn-primary p-0 overlap-button"
+                        className="btn btn-light p-0 overlap-button"
                       >
                         <ArrowUpwardOutlinedIcon />
                       </button>

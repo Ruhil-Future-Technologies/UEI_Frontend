@@ -420,7 +420,7 @@ const Sidebar = () => {
         </div>
         {user_type === 'student' && (
           <div className="sidebar-footer">
-            <div className="sidebar-nav">
+           
               <ul className="metismenu">
                 {Number(profileCompletion) === 100 && (
                   <li>
@@ -444,7 +444,7 @@ const Sidebar = () => {
                   </Link>
                 </li>
               </ul>
-            </div>
+           
           </div>
         )}
       </aside >

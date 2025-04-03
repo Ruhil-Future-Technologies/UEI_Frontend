@@ -533,7 +533,7 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
         display: flex;
         align-items: center;
         justify-content: left;
-        padding: 6px 16px;
+        padding: 6px;
         font-size: 15px;
         color: $menuLink_Color;
         outline-width: 0;
@@ -610,6 +610,23 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
 
   .sidebar-footer {
     margin-top: auto;
+
+    ul{
+      padding: 10px;
+      li{
+        a{
+          padding: 6px;
+          display: flex;
+          align-items: center;
+          color: #5f5f5f;
+          .menu-title{
+            margin-left: 10px;
+
+          }
+        }
+      
+      }
+    }
   }
   .menu-label {
     padding: 10px 16px 10px 16px;
