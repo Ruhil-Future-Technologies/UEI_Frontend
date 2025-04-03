@@ -3,11 +3,11 @@ name: CD Pipeline
 on:
   push:
     branches:
-      - QA
+      - UAT
 
 jobs:
   build:
-    name: Deploy to EC2 from QA Branch
+    name: Deploy to EC2 from UAT
     runs-on: ubuntu-latest
 
     steps:
@@ -58,23 +58,23 @@ jobs:
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v4
         with:
-          name: react-github-actions-build
+          name: react-github-actions-build-UAT
           path: build
 
       # Download the artifact from the build job
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-github-actions-build
+          name: react-github-actions-build-UAT
           path: build
 
       # Upload the artifact to EC2
       - name: Upload Artifact to EC2
         uses: easingthemes/ssh-deploy@main
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.QA_EC2_FE_SSH_PK }}
-          REMOTE_HOST: ${{ secrets.QA_EC2_FE_DNS }}
-          REMOTE_USER: ${{ secrets.QA_EC2_FE_USERNAME }}
-          TARGET: ${{ secrets.QA_EC2_FE_TARGET_DIR }}
+          SSH_PRIVATE_KEY: ${{ secrets.UAT_EC2_FE_SSH_PK }}
+          REMOTE_HOST: ${{ secrets.UAT_EC2_FE_DNS }}
+          REMOTE_USER: ${{ secrets.UAT_EC2_FE_USERNAME }}
+          TARGET: ${{ secrets.UAT_EC2_FE_TARGET_DIR }}
           SOURCE: build/
         continue-on-error: false
