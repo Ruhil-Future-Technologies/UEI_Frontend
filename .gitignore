@@ -28,4 +28,5 @@ package-lock.json
 # workflows
 .github/workflows/UAT_CD.yml
 .github/workflows/UAT_CI.yml
-
+.github/workflows/QA_CD.yml
+.github/workflows/QA_CI.yml
