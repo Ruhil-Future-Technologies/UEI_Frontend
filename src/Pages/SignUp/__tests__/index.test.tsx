@@ -43,27 +43,31 @@ describe('Signup Component', () => {
     const { getByText } = renderRoleComponent();
 
     expect(getByText('Sign Up')).toBeInTheDocument();
-    expect(getByText('Email/Phone')).toBeInTheDocument();
+    expect(getByText('Email')).toBeInTheDocument();
+    expect(getByText('Phone No.')).toBeInTheDocument();
     expect(getByText('Password')).toBeInTheDocument();
     expect(
       getByText('By Creating your account you have to agree with our'),
     ).toBeInTheDocument();
   });
 
-  it('validates email or phone input', () => {
+  it('validates email and phone inputs', () => {
     const { getByText, getByTestId } = renderRoleComponent();
-    const emailPhoneInput = getByTestId('emailphone').querySelector(
+    const emailInput = getByTestId('email').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const phoneInput = getByTestId('phone').querySelector(
       'input',
     ) as HTMLInputElement;
 
     // const submitButton = getByRole("button", { name: /Sign Up Now/i });
 
-    fireEvent.change(emailPhoneInput, { target: { value: 'invalid' } });
+    fireEvent.change(emailInput, { target: { value: 'invalid' } });
+    fireEvent.change(phoneInput, { target: { value: '123' } });
     // fireEvent.click(submitButton);
 
-    expect(
-      getByText(/Invalid email or phone number format/),
-    ).toBeInTheDocument();
+    expect(getByText(/Invalid email format/)).toBeInTheDocument();
+    expect(getByText(/Invalid phone number/)).toBeInTheDocument();
   });
 
   it('validates password input', () => {
@@ -114,7 +118,10 @@ describe('Signup Component', () => {
 
     const { getByRole, getByTestId } = renderRoleComponent();
 
-    const emailPhoneInput = getByTestId('emailphone').querySelector(
+    const emailInput = getByTestId('email').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    const phoneInput = getByTestId('phone').querySelector(
       'input',
     ) as HTMLInputElement;
     const passwordInput = getByTestId('Password').querySelector(
@@ -123,9 +130,10 @@ describe('Signup Component', () => {
     const termsCheckbox = getByTestId('checkbox');
     const submitButton = getByRole('button', { name: /Sign Up Now/i });
 
-    fireEvent.change(emailPhoneInput, {
+    fireEvent.change(emailInput, {
       target: { value: 'test@example.com' },
     });
+    fireEvent.change(phoneInput, { target: { value: '9876543210' } });
     fireEvent.change(passwordInput, { target: { value: 'ValidPass1!' } });
     fireEvent.click(termsCheckbox);
     fireEvent.click(submitButton);
@@ -134,8 +142,10 @@ describe('Signup Component', () => {
       expect(mockPostData).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          userid: 'test@example.com',
+          email: 'test@example.com',
+          phone: '9876543210',
           password: 'ValidPass1!',
+          user_type: 'student',
         }),
       );
     });
@@ -145,7 +155,11 @@ describe('Signup Component', () => {
     mockPostData.mockRejectedValue(new Error('An unexpected error occurred'));
     const { getByRole, getByTestId } = renderRoleComponent();
 
-    const emailPhoneInput = getByTestId('emailphone').querySelector(
+    const emailInput = getByTestId('email').querySelector(
+      'input',
+    ) as HTMLInputElement;
+
+    const phoneInput = getByTestId('phone').querySelector(
       'input',
     ) as HTMLInputElement;
     const passwordInput = getByTestId('Password').querySelector(
@@ -154,9 +168,8 @@ describe('Signup Component', () => {
     const termsCheckbox = getByTestId('checkbox');
     const submitButton = getByRole('button', { name: /Sign Up Now/i });
 
-    fireEvent.change(emailPhoneInput, {
-      target: { value: 'test@example.com' },
-    });
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.change(phoneInput, { target: { value: '9876543210' } });
     fireEvent.change(passwordInput, { target: { value: 'ValidPass1!' } });
     fireEvent.click(termsCheckbox);
     fireEvent.click(submitButton);

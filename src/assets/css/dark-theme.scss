@@ -178,8 +178,9 @@
       color: #dee2e6 !important;
     }
   }
-  .chat-result {
-    background-color: #000 !important;
+  .chat-panel .left-side-history{
+    background-color: #1b1f22;
+   
   }
   .chat-content-leftside .chat-left-msg {
     background-image: linear-gradient(
@@ -497,6 +498,9 @@
   .sidebar-nav {
     .metismenu {
       background: 0 0;
+      height: 70vh !important;
+      overflow-y: auto !important;
+      padding-bottom: 80px !important;
 
       a {
         color: $color_1;

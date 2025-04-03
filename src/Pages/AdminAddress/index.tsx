@@ -21,48 +21,21 @@ interface AdminAddress {
   address_type?: string;
 }
 
-// let isToastActive = false;
-
-// const showErrorToast = (message: string) => {
-//   if (isToastActive) return;
-
-//   isToastActive = true;
-
-//   toast.error(message, {
-//     onClose: () => {
-//       isToastActive = false;
-//     },
-//     hideProgressBar: true,
-//     theme: "colored",
-//     position: "top-center"
-//   });
-// };
-
 const AdminAddress: React.FC<ChildComponentProps> = () => {
   const context = useContext(NameContext);
 
   const { activeForm, setActiveForm }: any = context;
   const adminId = localStorage.getItem('_id');
-
+  const UuId = localStorage.getItem('user_uuid');
   const { namecolor }: any = context;
   const { getData, postData, putData } = useApi();
   const [adminAddress, setadminAddress] = useState<AdminAddress>({
     address_type: 'current_address',
   });
-
-  // const [adminAddress1, setadminAddress1] = useState<AdminAddress>({
-  //   address_type: "current_address",
-  // });
-
   const [permanentAddress, setPermanentAddress] = useState<AdminAddress>({
     address_type: 'permanent_address',
   });
-
-  // const [permanentAddress1, setPermanentAddress1] = useState<AdminAddress>({
-  //   address_type: "permanent",
-  // });
   const [editFlag, setEditFlag] = useState<boolean>(false);
-  // const [pincode, setPincode] = useState("");
   const [contry_col, setcontry_col] = useState<boolean>(false);
   const [add_col, setAdd_col] = useState<boolean>(false);
   const [city_colerror, setCity_colerror] = useState<boolean>(false);
@@ -89,9 +62,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   const [isFocusedstate, setIsFocusedstate] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownstateRef = useRef<HTMLDivElement>(null);
-
-  // const [editaddress,seteditaddress] = useState(false);
-
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
     const handleFocusstate = () => setIsFocusedstate(true);
@@ -159,12 +129,12 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
   };
 
   const listData = async () => {
-    getData(`${'admin_address/edit/' + adminId}`)
-      .then((response: any) => {
-        if (response?.status === 200) {
+    try {
+      getData(`${'admin_address/get/' + UuId}`).then((response: any) => {
+        if (response?.status) {
           let add1: any;
           let add2: any;
-          response?.data.forEach((address: any) => {
+          response?.data.admin_addresses_data.forEach((address: any) => {
             if (address?.address_type === 'permanent_address') {
               setPermanentAddress(address);
 
@@ -205,44 +175,41 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           if (equal) {
             setChecked(true);
           }
-        } else if (response?.status === 404) {
+        } else if (response?.code === 404) {
           setEditFlag(true);
+        } else {
           // toast.error(response?.message, {
           //   hideProgressBar: true,
-          //   theme: "colored",
+          //   theme: 'colored',
+          //   position: 'top-center',
           // });
-        } else {
-          toast.error(response?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
         }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
+      });
+    } catch (error: any) {
+      if (error.code !== 404) {
+        toast.error(error?.message, {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
         });
-      });
+      }
+    }
   };
   useEffect(() => {
-    listData();
-  }, []);
+    if(adminId){
+      listData();
+    }
+   
+  }, [activeForm]);
 
   useEffect(() => {
-    getData(`${'admin_address/edit/' + adminId}`).then((response: any) => {
-      if (response?.status === 200) {
-        response?.data.forEach((address: any) => {
+    getData(`${'admin_address/get/' + UuId}`).then((response: any) => {
+      if (response?.status) {
+        response?.data.admin_addresses_data.forEach((address: any) => {
           if (address?.address_type === 'permanent_address') {
-            //setPermanentAddress(address);
-            //setPermanentAddress1(address);
             setEditableCurrectPerm(true);
             setTuchedPram(false);
           } else if (address?.address_type === 'current_address') {
-            // setadminAddress(address);
-            // setadminAddress1(address);
             setEditableCurrect(true);
             setTuchedCurrent(false);
           } else {
@@ -378,13 +345,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           }
         }
       }
-      // if(name==='pincode')
-      //   {
-      //         setErrors({
-      //           ...errors,
-      //           permanentpin: !validatePincode(value) ? 'Please enter a valid Pincode Only numbers allowed.' : '',
-      //         });
-      //   }
       setPermanentAddress((prevState) => ({ ...prevState, [name]: value }));
     }
   };
@@ -501,8 +461,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
       !validatePincode(adminAddress.pincode)
     ) {
       setpincode_col(true);
-      // toast.error("Pincode is invalid");
-      // showErrorToast("Entered Pincode is invalid");
     } else {
       setpincode_col(false);
     }
@@ -523,12 +481,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
       admin_id: adminId,
       ...permanentAddress,
     };
-
-    // const eq = deepEqual(adminAddress1, currentAddressPayload);
-    // const permanentAddressEq = deepEqual(
-    //   permanentAddress1,
-    //   permanentAddressPayload
-    // );
     if (
       (!hasPermanentAddressFields || validPermanentAddress) &&
       adminAddress?.address1 &&
@@ -546,11 +498,19 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
       !city_col1 &&
       !contry_col1
     ) {
+      console.log(editFlag , tuched)
       if (editFlag && tuched) {
         const addAddress = async (addressType: string, addressPayload: any) => {
+          const formData = new FormData();
+          // Loop through each key in the payload and append it if it's not null or undefined
+          Object.entries(addressPayload).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              formData.append(key, value as string);
+            }
+          });
           try {
-            const data = await postData('/admin_address/add', addressPayload);
-            if (data?.status === 200) {
+            const data = await postData('/admin_address/add', formData);
+            if (data?.status) {
               toast.success(`${addressType} address saved successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -598,13 +558,21 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           addressType: string,
           addressPayload: any,
         ) => {
+          const formData = new FormData();
+
+          // Loop through each key in the payload and append it if it's not null or undefined
+          Object.entries(addressPayload).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              formData.append(key, value as string);
+            }
+          });
           try {
             const data = await putData(
-              '/admin_address/edit/' + adminId,
-              addressPayload,
+              '/admin_address/edit/' + addressPayload.id,
+              formData,
             );
 
-            if (data?.status === 200) {
+            if (data?.status) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -614,12 +582,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               setTuched(false);
 
               if (tuchedPram && tuchedCurrent) {
-                // if (!eq && !permanentAddressEq) {
-                //   // block of code to write the address
-                // } else {
-                //   setActiveForm((prev: number) => prev + 1);
-                // }
-
                 await setTuchedCurrent(false);
                 await setTuchedPram(false);
                 setActiveForm(2);
@@ -628,7 +590,7 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               } else if (!tuchedPram && tuchedCurrent) {
                 setActiveForm(2);
               }
-            } else if (data?.status === 201) {
+            } else if (data?.code === 201) {
               toast.success(`${addressType} address updated successfully`, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -642,14 +604,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               setTuchedPram(false);
               setActiveForm(2);
             } else setActiveForm(2);
-            // else {
-
-            // toast.error(`Failed to update ${addressType} address`, {
-            //   hideProgressBar: true,
-            //   theme: "colored",
-            // });
-
-            // }
           } catch (error) {
             if (error instanceof Error) {
               toast.error(error?.message, {
@@ -709,9 +663,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
         setadminAddress((prevState) => ({ ...prevState, ['state']: '' }));
         setstate_col(true);
         setcontry_col(false);
-        // if(adminAddress1.country === value && adminAddress1.state === adminAddress.state ){
-        //   setstate_col(false)
-        // }
       } else if (name === 'state') {
         setadminAddress((prevState) => ({ ...prevState, ['state']: value }));
         setstate_col(false);
@@ -874,7 +825,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               <p style={{ color: 'red' }}>Please enter City name.</p>
             )}
           </div>
-          {/* {error.city && <span style={{ color: 'red' }}>{error.city}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
@@ -906,7 +856,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               <p style={{ color: 'red' }}>Please enter District name.</p>
             )}
           </div>
-          {/* {error.district && <span style={{ color: 'red' }}>{error.district}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
@@ -924,9 +873,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
             onChange={(e) => handleInputChange(e, 'current')}
             required
             autoComplete="off"
-
-            // error={!!errors.currentpin}
-            // helperText={errors.currentpin}
           />
           <div>
             {' '}
@@ -1012,7 +958,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
 
             autoComplete="off"
           />
-          {/* {error.address2 && <span style={{ color: 'red' }}>{error.address2}</span>} */}
         </div>
 
         <div className="col-6 pb-3 form_field_wrapper" ref={dropdownRef}>
@@ -1095,7 +1040,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               </p>
             )}
           </div>
-          {/* {error.city && <span style={{ color: 'red' }}>{error.city}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
@@ -1122,8 +1066,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               </p>
             )}
           </div>
-
-          {/* {error.district && <span style={{ color: 'red' }}>{error.district}</span>} */}
         </div>
         <div className="col-6 pb-3 form_field_wrapper">
           <label className="col-form-label">
@@ -1149,7 +1091,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
               </p>
             )}
           </div>
-          {/* {error.pincode && <span style={{ color: 'red' }}>{error.pincode}</span>} */}
         </div>
         <div className="col-lg-12">
           <div className="mt-3 d-flex align-items-center justify-content-between">
@@ -1173,16 +1114,6 @@ const AdminAddress: React.FC<ChildComponentProps> = () => {
           </div>
         </div>
       </div>
-      {/* <div className="d-flex justify-content-center">
-        <Button
-          className="mainbutton"
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          {editFlag ? "save" : "Save Changes"}
-        </Button>
-      </div> */}
     </form>
   );
 };

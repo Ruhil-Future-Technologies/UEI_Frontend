@@ -63,10 +63,11 @@ const StudentProfile = () => {
   const [isProComplete1, setIsProComplete1] = useState(false);
   const context = React.useContext(NameContext);
 
-  const { activeForm, setActiveForm }: any = context;
+  const { activeForm, setActiveForm,setProImage }: any = context;
   const usertype: any = localStorage.getItem('user_type');
   const { getData } = useApi();
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
+  const checkbasicinfo= localStorage.getItem('student_id')
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   // const navigator = useNavigate();
   const countKeysWithValue = (obj: any): number => {
@@ -173,7 +174,7 @@ const StudentProfile = () => {
             const academic_history = data.data.academic_history;
             //   let contact = data.data.contact;
             const contact = {
-              // email_id: data?.data?.contact?.email_id,
+              email_id: data?.data?.contact?.email_id,
               id: data?.data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
               mobile_isd_call: data?.data?.contact?.mobile_isd_call,
@@ -187,12 +188,12 @@ const StudentProfile = () => {
             let sectionCount = 0;
 
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.basic_info?.pic_path !== null) {
                 getData(
                   `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
                 )
-                  .then(() => {
-                    // setprofileImage(imgdata.data);
+                  .then((data) => {
+                    setProImage(data?.data?.file_url);
                   })
                   .catch(() => {
                     // Handle error
@@ -581,7 +582,7 @@ const StudentProfile = () => {
             <div className="row">
               <div className="col-lg-12 px-0">
                 <div
-                  className="card rounded-5 mt-3 bg-transparent-mb"
+                  className="card rounded-5 mt-3 bg-transparent-mb removecardm"
                   style={{ border: '0' }}
                 >
                   <div className="card-body p-0">
@@ -615,11 +616,11 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                ref={(el) => (stepsRef.current[1] = el!)}
+                                 ref={(el) => (stepsRef.current[1] = el!)}
                                 className={`step ${
                                   activeForm === 1 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(1)}
+                                onClick={checkbasicinfo ? () => setActiveForm(1) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -632,11 +633,12 @@ const StudentProfile = () => {
                                 <div className="step-label">Address</div>
                               </div>
                               <div
-                                ref={(el) => (stepsRef.current[2] = el!)}
+                                 ref={(el) => (stepsRef.current[2] = el!)}
                                 className={`step ${
                                   activeForm === 2 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(2)}
+                                // onClick={() => setActiveForm(2)}
+                                onClick={checkbasicinfo ? () => setActiveForm(2) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -651,11 +653,11 @@ const StudentProfile = () => {
                                 </div>
                               </div>
                               <div
-                                ref={(el) => (stepsRef.current[3] = el!)}
+                                 ref={(el) => (stepsRef.current[3] = el!)}
                                 className={`step ${
                                   activeForm === 3 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(3)}
+                                onClick={checkbasicinfo ? () => setActiveForm(3) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -675,7 +677,8 @@ const StudentProfile = () => {
                                 className={`step ${
                                   activeForm === 4 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(4)}
+                                //onClick={() => setActiveForm(4)}
+                                onClick={checkbasicinfo ? () => setActiveForm(4) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -695,7 +698,8 @@ const StudentProfile = () => {
                                 className={`step ${
                                   activeForm === 5 ? 'active' : ''
                                 }`}
-                                onClick={() => setActiveForm(5)}
+                               // onClick={() => setActiveForm(5)}
+                               onClick={checkbasicinfo ? () => setActiveForm(5) : () => setActiveForm(1)}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div

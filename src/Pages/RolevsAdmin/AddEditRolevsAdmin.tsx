@@ -81,14 +81,14 @@ const AddEditRoleVsAdmin = () => {
   const callAPI = async () => {
     getData(`${RoleURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.rolees_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataRole(filteredData || []);
         // setDataRole(data?.data||[])
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -98,14 +98,17 @@ const AddEditRoleVsAdmin = () => {
       });
     getData(`${AdminURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
-        );
-        setDataAdmin(filteredData || []);
+        if(data.status){
+          const filteredData = data?.data?.admines_data?.filter(
+            (item: any) => item?.is_active,
+          );
+          setDataAdmin(filteredData || []);
+        }
+        
         // setDataAdmin(data?.data||[])
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -123,7 +126,7 @@ const AddEditRoleVsAdmin = () => {
           });
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -157,11 +160,16 @@ const AddEditRoleVsAdmin = () => {
   useEffect(() => {
     callAPI();
   }, []);
-  const handleSubmit = async (rolevsadminData: IRolevsAdmin) => {
+  const handleSubmit = async (rolevsadminData: any) => {
+    const formData = new FormData();
+
+    Object.keys(rolevsadminData).forEach((key) => {
+      formData.append(key, rolevsadminData[key]);
+    });
     if (id) {
-      putData(`${RolevsAdminEditURL}/${id}`, rolevsadminData)
+      putData(`${RolevsAdminEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             navigator('/main/RoleVsUser');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -181,9 +189,9 @@ const AddEditRoleVsAdmin = () => {
           });
         });
     } else {
-      postData(`${RolevsAdminAddURL}`, rolevsadminData)
+      postData(`${RolevsAdminAddURL}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             // navigator('/main/RoleVsUser')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -209,7 +217,7 @@ const AddEditRoleVsAdmin = () => {
     }
   };
   const rolevsadminSchema = Yup.object().shape({
-    role_master_id: Yup.string().required('Please select Role matser'),
+    role_master_id: Yup.string().required('Please select Role Matser'),
     admin_id: Yup.string().required('Please select Admin'),
   });
   return (

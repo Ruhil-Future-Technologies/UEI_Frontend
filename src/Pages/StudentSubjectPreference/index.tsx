@@ -39,6 +39,8 @@ interface Box {
   sem_id: string;
   class_id: string;
   stream: string;
+  teacher_id: string;
+  teachers?: any[]; // Add the 'teachers' property
 }
 interface Course {
   id: string;
@@ -50,7 +52,12 @@ interface Subject {
   subject_name: string;
   subject_id: string;
 }
-
+interface Teacher {
+  subject_list: any;
+  id: string;
+  first_name: string;
+  last_name: string;
+}
 interface PropsItem {
   setActiveForm: React.Dispatch<React.SetStateAction<number>>;
   handleReset: () => Promise<void>;
@@ -79,6 +86,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
+  const [teachersAll, setTeachersAll] = useState<Teacher[]>([]);
   const navigate = useNavigate();
   // const [pervalidet, setpervalidet] = useState(false);
   const [validationErrors, setValidationErrors] = useState<{
@@ -98,6 +106,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       subject_error: boolean;
       preference_error: any;
       percentage_error: any;
+      teacher_error: any;
     };
   }>({});
 
@@ -123,11 +132,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   // Fetch data from the endpoints
   const getacademic = async () => {
     getData(`${'new_student_academic_history/get/' + StudentId}`)
-      .then((response: any) => {
-        if (response.status === 200) {
+      .then(async (response: any) => {
+        if (response.status) {
           setAcademic(
             response?.data[0]?.institution_type === 'school' ? true : false,
           );
+          if (response?.data[0]?.institution_type) {
+            await getSubject(response?.data[0]?.institution_type);
+          }
           setBoxes((prevBoxes) =>
             prevBoxes.map((box) => ({
               ...box,
@@ -140,7 +152,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           if (response?.data?.[0]?.class_id) {
             getData(`/class/get/${response?.data?.[0]?.class_id}`).then(
               (classResponse: any) => {
-                if (classResponse.status === 200) {
+                if (classResponse.status) {
                   // Set particularClass as an array
                   setParticularClass([classResponse.data.class_name]);
                 } else {
@@ -162,8 +174,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   const getclass = async () => {
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
+        if (response.status) {
+          const filteredData = response?.data?.classes_data?.filter(
             (item: any) => item?.is_active === true,
           );
 
@@ -198,17 +210,23 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       });
   };
   useEffect(() => {
-    if (activeForm === 5) {
-      getacademic();
-      getclass();
-    }
+    const fetchData = async () => {
+      if (activeForm === 5) {
+        if (StudentId) {
+          await getacademic();
+          getPrefrencelist();
+        }
+        getclass();
+      }
+    };
+    fetchData();
   }, [activeForm]);
   const getCourse = async () => {
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.course_data?.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           // setCourses(response.data);
@@ -222,18 +240,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         });
       });
   };
-  const getSubject = async () => {
-    if (academic) {
+  const getSubject = async (type: any) => {
+    if (type == 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data?.filter(
+              (item: any) => item?.is_active,
             );
             // setSubjects(filteredData || []);
 
             if (
-              boxes[0]?.stream === '' ||
+              boxes[0]?.stream === 'general' ||
               boxes[0]?.stream === undefined ||
               boxes[0]?.stream === null
             ) {
@@ -262,9 +280,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     } else {
       getData('college_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data?.filter(
+              (item: any) => item?.is_active,
             );
             // setSubjects(filteredData || []);
             const filterData = filteredData?.filter(
@@ -284,12 +302,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           });
         });
     }
-  };
-  const getPrefrence = async () => {
-    getData('/subject_preference/list')
+    getData(`/teacher/teachers_list_for_student/${StudentId}`)
       .then((response: any) => {
-        if (response.status === 200) {
-          // setSubjectPreferences(response.data);
+        if (response.status) {
+
+          const filteredData = response?.data?.teachers
+
+          setTeachersAll(filteredData || []);
         }
       })
       .catch((e) => {
@@ -298,13 +317,98 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           theme: 'colored',
           position: 'top-center',
         });
-      });
+      })
   };
+
   const getPrefrencelist = async () => {
-    getData('/subject_preference/edit/' + StudentId)
+    let subjectData: any = [];
+    let filteredData: any = [];
+    let entity: any;
+    let teacherlist: any = [];
+    await getData(`${'new_student_academic_history/get/' + StudentId}`)
+      .then(async (response: any) => {
+        if (response.status) {
+          if (response?.data[0]?.institution_type == 'school') {
+            entity = 'school';
+            await getData('school_subject/list')
+              .then((response: any) => {
+                if (response.status) {
+                  filteredData = response?.data?.subjects_data?.filter(
+                    (item: any) => item?.is_active,
+                  );
+                }
+              })
+              .catch(() => {
+                // empty
+              });
+          } else {
+            getData('college_subject/list')
+              .then((response: any) => {
+                if (response.status) {
+                  entity = 'college'
+                  filteredData = response?.data?.subjects_data?.filter(
+                    (item: any) => item?.is_active,
+                  );
+                }
+              })
+              .catch(() => {
+                //empty
+              });
+          }
+        }
+      })
+      .catch(() => {
+        // empty
+      });
+    getData(`/teacher/teachers_list_for_student/${StudentId}`)
+      .then((response: any) => {
+        if (response.status) {
+
+          const filteredData = response?.data?.teachers
+
+          teacherlist = filteredData || []
+        }
+      })
+      .catch(() => {
+        // empty
+      })
+    getData('/subject_preference/get/' + StudentId)
       .then((data: any) => {
-        if (data?.status === 200) {
-          data?.data.map((item: any, index: number) => {
+        if (data?.data.length > 0) {
+          data?.data?.map(async (item: any, index: number) => {
+            if (entity == 'school') {
+
+              if (
+                item?.stream === '' ||
+                item?.stream === undefined ||
+                item?.stream === null
+              ) {
+                const filterData = filteredData?.filter(
+                  // (items: any) => items?.class_id == item?.class_id ,
+                  (items: any) =>item?.class_id !== null ? items?.class_id == item?.class_id : items?.subject_id == item.subject_id ,
+                );
+                subjectData = filterData || [];
+              } else {
+                const filterData = filteredData?.filter(
+                  (items: any) =>
+                    items?.class_id == item?.class_id &&
+                    items?.stream == item?.stream,
+                );
+                subjectData = filterData || [];
+              }
+            } else {
+              const filterData = filteredData?.filter(
+                (item: any) =>
+                  item?.course_id === boxes[0]?.course_id &&
+                  item?.semester_id === boxes[0]?.sem_id,
+              );
+              subjectData = filterData || [];
+            }
+            const subjectname = subjectData?.filter((subject: Subject) => subject.subject_id == item?.subject_id)
+            const selectedSubject = subjectname[0]?.subject_name?.toLowerCase();
+            const teacherData = teacherlist?.filter((teacher: Teacher) =>
+              teacher.subject_list.some((sub: any) => sub.toLowerCase() === selectedSubject)
+            );
             const newBox: Box = {
               id: item.id,
               course_id: item?.course_id,
@@ -314,9 +418,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               sem_id: item?.sem_id,
               class_id: item?.class_id,
               stream: item?.stream,
+              teacher_id: item?.teacher_id,
+              teachers: teacherData,
             };
+
             if (!boxes.some((box) => box.id === newBox.id)) {
-              // setBoxes([...boxes, newBox]);
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               setInitialState({
                 course_id: String(item?.course_id),
@@ -325,20 +431,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 score_in_percentage: item?.score_in_percentage,
                 student_id: String(item?.student_id),
                 sem_id: String(item?.sem_id),
+                teacher_id: String(item?.teacher_id),
+                teachers: teacherData,
               });
-              //setBoxes11((prevBoxes) => [...prevBoxes, newBox]);
+
             }
-            // getData(`/class/get/${data?.data?.[0]?.class_id}`).then(
-            //   (response: any) => {
-            //     if (response.status === 200) {
-            //       setParticularClass(response.data.class_name);
-            //     } else setParticularClass("");
-            //   }
-            // );
-            // Fetch class name for each preference item based on the index
+
             if (item.class_id) {
               getData(`/class/get/${item.class_id}`).then((response: any) => {
-                if (response.status === 200) {
+                if (response.status) {
                   // Optionally, log or store class name using the index to ensure uniqueness
                   setParticularClass((prevClasses: any) => {
                     const updatedClasses: any = [...prevClasses];
@@ -356,39 +457,63 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               });
             }
           });
-        } else if (data?.status === 404) {
-          setBoxes([
-            {
-              id: 0,
-              course_id: '',
-              subject_id: '',
-              preference: '',
-              score_in_percentage: '',
-              sem_id: '',
-              class_id: '',
-              stream: '',
-            },
-          ]);
+        } else if (data?.code === 404) {
+          if (data?.code === 404) {
+            setBoxes([
+              {
+                id: 0,
+                course_id: '',
+                subject_id: '',
+                preference: '',
+                score_in_percentage: '',
+                sem_id: '',
+                class_id: '',
+                stream: '',
+                teacher_id: '',
+                teachers: [],
+              },
+            ]);
+            getacademic()
+          } else {
+            setBoxes([
+              {
+                id: 0,
+                course_id: '',
+                subject_id: '',
+                preference: '',
+                score_in_percentage: '',
+                sem_id: '',
+                class_id: '',
+                stream: '',
+                teacher_id: '',
+                teachers: [],
+              },
+            ]);
+          }
+
           setEditFlag(true);
         } else {
           // empty
         }
       })
       .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
+        if (e.status !== 400 || e.status !== 404) {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
+
       });
   };
 
   const getSemester = async () => {
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
           // setCourses(response.data);
@@ -403,17 +528,20 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       });
   };
   useEffect(() => {
-    getCourse();
-    getSemester();
-    getPrefrence();
-    getacademic();
-    getPrefrencelist();
-    // getSubject();
-  }, []);
+    const fetchData = async () => {
+      getCourse();
+      getSemester();
+      //getPrefrence();
+      await getacademic();
 
-  useEffect(() => {
-    getSubject();
-  }, [academic]);
+      if (StudentId) {
+        getPrefrencelist();
+      }
+    }
+    fetchData()
+    // getSubject();
+  }, [activeForm]);
+
   useEffect(() => {
     // const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
     const semesterCount = semester?.filter(
@@ -431,7 +559,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       setSubjects(filterData);
     } else {
       if (
-        boxes[0]?.stream === '' ||
+        boxes[0]?.stream === 'general' ||
         boxes[0]?.stream === undefined ||
         boxes[0]?.stream === null
       ) {
@@ -458,10 +586,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     setIsSubjectPrefTuch(true);
     const newBoxes: any = [...boxes];
     const newValidationErrors = { ...validationErrors };
-    // if (field === 'course_id') {
-    //   const subjectData = subjectsAll.filter((item:any) => item.course_id === value)
-    //   setSubjects(subjectData)
-    // }
+    if (field === 'subject_id') {
+      const subjectname = subjects?.filter((subject) => subject.subject_id === value)
+      const selectedSubject = subjectname[0]?.subject_name?.toLowerCase();
+      const teacherData = teachersAll.filter((teacher) =>
+        teacher.subject_list.some((sub: any) => sub.toLowerCase() === selectedSubject)
+      );
+      newBoxes[index] = {
+        ...newBoxes[index],
+        teachers: teacherData, // Assign teachers only for this row
+        teacher_id: "", // Reset selected teacher when subject changes
+      };
+    }
     if (field === 'course_id') {
       const semesterCount = semester.filter(
         (item: any) => item.course_id === value,
@@ -477,15 +613,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       );
       setSubjects(subjectData);
     }
-    // if(field ==='preference'){
-    //   console.log("inside 1111111111");
-    //   if( /^[a-zA-Z]+$/.test(value)){
-    //     console.log("inside 22222222222");
-    //     setPreferenceValidations(false)
-    //   }else{
-    //     setPreferenceValidations(true)
-    //   }
-    // }
     if (field === 'class_id') {
       const subjectData = subjectsAll.filter(
         (item: any) => item.class_id === value,
@@ -495,7 +622,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       try {
         const response = await getData(`/class/get/${value}`);
 
-        if (response.status === 200) {
+        if (response.status) {
           setParticularClass((prevClasses: any) => {
             const updatedClasses: any = [...prevClasses];
             updatedClasses[index] = response.data.class_name; // store class name by index
@@ -519,7 +646,6 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     }
 
     if (field === 'score_in_percentage') {
-      // Allow empty value
       if (value === '') {
         newBoxes[index][field] = value;
         delete newValidationErrors[index]?.[field];
@@ -528,15 +654,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         return;
       }
 
-      // Validate the score_in_percentage using regex
-      const regex = /^(100(\.0{1,2})?|[0-9]?[0-9](\.[0-9]{1,2})?)$/;
-      if (!regex.test(value)) {
+      // Ensure value is properly formatted as a string
+      const trimmedValue = String(value).trim();
+
+      // Updated regex to accept 10-100 with up to 2 decimal places
+      const regex = /^(100|[1-9][0-9])(\.\d{1,2})?$/;
+      if (!regex.test(trimmedValue)) {
         if (!newValidationErrors[index]) {
           newValidationErrors[index] = {};
         }
         newValidationErrors[index][field] = true;
         setValidationErrors(newValidationErrors);
-        return;
+        // return;
       } else {
         if (newValidationErrors[index]) {
           delete newValidationErrors[index][field];
@@ -547,6 +676,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         setValidationErrors(newValidationErrors);
       }
     }
+
     newBoxes[index][field] = value;
     setBoxes(newBoxes);
     validateFields(index, field);
@@ -556,7 +686,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     try {
       const response = await getData(`/class/get/${boxes[0]?.class_id}`);
 
-      if (response.status === 200) {
+      if (response.status) {
         setParticularClass((prevClasses: any) => {
           const updatedClasses: any = [...prevClasses];
           updatedClasses[boxes?.length] = response.data.class_name; // store class name by index
@@ -580,12 +710,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     const newBox: Box = {
       id: 0,
       course_id: boxes[0]?.course_id || '',
-      subject_id: boxes[0]?.subject_id || '',
+      // subject_id: boxes[0]?.subject_id || '',
+      subject_id: '',
       preference: '',
       score_in_percentage: '',
       sem_id: boxes[0]?.sem_id || '',
       class_id: boxes[0]?.class_id || '',
-      stream: boxes[0]?.stream || '',
+      stream: boxes[0]?.stream || 'general',
+      teacher_id: '',
+      teachers: boxes[0]?.teachers || []
     };
     setBoxes([...boxes, newBox]);
   };
@@ -625,6 +758,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         !box?.subject_id ||
         !box?.preference ||
         !box?.score_in_percentage ||
+        !box?.teacher_id ||
         !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(box?.preference)
       ) {
         valid = false;
@@ -632,10 +766,11 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           ...prevError,
           [index]: {
             subject_error: !box?.subject_id,
+            teacher_error: !box?.teacher_id,
             preference_error: boxes[index]?.preference
               ? !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(
-                  boxes[index]?.preference.trim(),
-                )
+                boxes[index]?.preference.trim(),
+              )
               : !boxes[index]?.preference,
             percentage_error: !box?.score_in_percentage,
           },
@@ -648,12 +783,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     let eq;
     try {
       const promises = boxes.map(async (box, index) => {
+        const formData = new FormData();
+
         const submissionData = {
           student_id: StudentId,
           // course_id: String(box.course_id),
           // subject_id: String(box.subject_id),
           ...(box.course_id ? { course_id: String(box.course_id) } : {}),
           ...(box.subject_id ? { subject_id: String(box.subject_id) } : {}),
+          ...(box.teacher_id ? { teacher_id: String(box.teacher_id) } : {}),
           preference: box.preference,
           score_in_percentage: box.score_in_percentage,
           // sem_id:String(box.sem_id),
@@ -662,28 +800,30 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           ...(box.sem_id ? { sem_id: String(box.sem_id) } : {}), // Include sem_id only if it's not null or undefined
           ...(box.class_id ? { class_id: String(box.class_id) } : {}), // Include class_id only if it's not null or undefined
           ...(['class_11', 'class_12'].includes(particularClass[index]) &&
-          box.stream
+            box.stream
             ? { stream: String(box.stream) }
             : {}), // Include stream only if particularClass is class_11 or class_12
-        };
+        } as any;
+
         initial = submissionData;
         eq = deepEqual(initialState, submissionData);
 
+        Object.keys(submissionData).forEach((key) => {
+          formData.append(key, submissionData[key]);
+        });
+
         if (editFlag) {
-          return postData('/subject_preference/add', submissionData);
+          return postData('/subject_preference/add', formData);
         } else {
           if (box.id === 0) {
             if (!eq === true) {
-              return postData('/subject_preference/add', submissionData);
+              return postData('/subject_preference/add', formData);
             }
           } else {
             // eslint-disable-next-line no-lone-blocks
             {
               if (!eq === true) {
-                return putData(
-                  '/subject_preference/edit/' + box.id,
-                  submissionData,
-                );
+                return putData('/subject_preference/edit/' + box.id, formData);
               } else {
                 return Promise.resolve(undefined); // Skip update, return null
               }
@@ -700,7 +840,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         (result) => result !== null && result !== undefined,
       );
       const allSuccessful = filteredResults.every(
-        (result) => result?.status === 200,
+        (result) => result?.status,
       );
 
       if (allSuccessful) {
@@ -731,16 +871,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         }
         setInitialState(initial);
 
-        // getPrefrencelist()
-        // setBoxes11(boxes)
       } else {
-        // toast.error("Some entries failed to save", {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-        // getPrefrencelist()
+
         setInitialState(initial);
-        // setBoxes11(boxes)
+
       }
     } catch (error: any) {
       toast.error(error?.message, {
@@ -751,13 +885,15 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       // }
     }
   };
-  console.log(error[0]?.preference_error);
   return (
     <div>
       <form>
+        <b className="font-weight-bold profiletext mb-4 d-block">
+          Subject prefrence
+        </b>
         {boxes?.map((box, index) => (
           <div
-            className="row d-flex align-items-center"
+            className="row d-flex align-items-center g-4 mb-3 mb-md-4"
             key={box.id}
             style={{ marginBottom: '5px' }}
           >
@@ -766,7 +902,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 <div className="col form_field_wrapper">
                   <FormControl
                     required
-                    sx={{ m: 1, minWidth: 220, width: '100%' }}
+                    sx={{ minWidth: 220, width: '100%' }}
                   >
                     <InputLabel>Course</InputLabel>
                     <Select
@@ -805,7 +941,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 <div className=" col form_field_wrapper">
                   <FormControl
                     required
-                    sx={{ m: 1, minWidth: 220, width: '100%' }}
+                    sx={{ minWidth: 220, width: '100%' }}
                   >
                     <InputLabel id="semester-select-label">
                       Semester{' '}
@@ -873,7 +1009,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 <div className="col form_field_wrapper">
                   <FormControl
                     required
-                    sx={{ m: 1, minWidth: 220, width: '100%' }}
+                    sx={{ minWidth: 220, width: '100%' }}
                     disabled
                   >
                     <InputLabel id="class-label" shrink>
@@ -922,7 +1058,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                       <FormControl
                         required
                         sx={{
-                          m: 1,
+
                           minWidth: 70,
                           width: '100%',
                           maxWidth: 200,
@@ -986,44 +1122,91 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               </>
             )}
             <div className="col form_field_wrapper">
-              <FormControl required sx={{ m: 1, minWidth: 220, width: '100%' }}>
+              <FormControl required sx={{ minWidth: 220, width: '100%' }}>
                 <InputLabel>Subject</InputLabel>
                 <Select
                   name="subject_id"
                   value={box.subject_id}
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    '& .MuiSelect-icon': {
-                      color: fieldIcon(namecolor),
-                    },
-                  }}
+
                   onChange={(e) =>
                     handleInputChange(index, 'subject_id', e.target.value)
                   }
                   label="Subject"
                   onBlur={() => validateFields(index, 'subject_id')}
                 >
-                  {subjects.map((subject) => (
-                    <MenuItem
-                      key={subject.subject_id}
-                      value={subject.subject_id}
-                      // sx={{
-                      //   backgroundColor: inputfield(namecolor),
-                      //   color: inputfieldtext(namecolor),
-                      //   "&:hover": {
-                      //     backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                      //   },
-                      // }}
-                      sx={commonStyle(namecolor)}
-                    >
-                      {subject.subject_name}
-                    </MenuItem>
-                  ))}
+                  {subjects
+                    ?.filter((subject) => subject.subject_id === box.subject_id)
+                    ?.map((subject) => (
+                      <MenuItem
+                        key={subject.subject_id}
+                        value={subject.subject_id}
+                        disabled
+                        sx={commonStyle(namecolor)}
+                      >
+                        {subject.subject_name}
+                      </MenuItem>
+                    ))}
+                  {subjects
+                    ?.filter(
+                      (subject) =>
+                        !boxes?.some(
+                          (b) => b.subject_id === subject.subject_id,
+                        ),
+                    )
+                    ?.map((subject) => (
+                      <MenuItem
+                        key={subject.subject_id}
+                        value={subject.subject_id}
+                        sx={commonStyle(namecolor)}
+                      >
+                        {subject.subject_name}
+                      </MenuItem>
+                    ))}
                 </Select>
                 {error[index]?.subject_error && box?.subject_id == '' && (
                   <FormHelperText style={{ color: 'red' }}>
                     Subject is required
                   </FormHelperText>
+                )}
+              </FormControl>
+            </div>
+            <div className="col form_field_wrapper">
+              <FormControl required sx={{ m: 1, minWidth: 220, width: '100%' }}>
+                <InputLabel>Teachers</InputLabel>
+                <Select
+                  name="teacher_id"
+                  value={box.teacher_id}
+                  sx={{
+                    backgroundColor: '#f5f5f5',
+                    '& .MuiSelect-icon': {
+                      color: fieldIcon(namecolor),
+                    },
+                  }}
+                  onChange={(e) => handleInputChange(index, "teacher_id", e.target.value)}
+                  label="Teacher"
+                >
+                  {/* Show selected teacher first (disabled) */}
+                  {box.teachers
+                    ?.filter((teacher) => teacher.id === box.teacher_id)
+                    ?.map((teacher) => (
+                      <MenuItem key={teacher.id} value={teacher.id} disabled sx={commonStyle(namecolor)}>
+                        {teacher.first_name+" "+teacher.last_name}
+                      </MenuItem>
+                    ))}
+
+                  {/* Show available teachers excluding already selected ones in other rows */}
+                  {box.teachers
+                    ?.filter((teacher) => !boxes.some((b) => b.teacher_id === teacher.id))
+                    ?.map((teacher) => (
+                      <MenuItem key={teacher.id} value={teacher.id} sx={commonStyle(namecolor)}>
+                         {teacher.first_name+" "+teacher.last_name}
+                      </MenuItem>
+                    ))}
+                </Select>
+
+                {/* Error message */}
+                {error[index]?.teacher_error && box?.teacher_id === "" && (
+                  <FormHelperText style={{ color: "red" }}>Teacher is required</FormHelperText>
                 )}
               </FormControl>
             </div>
@@ -1062,7 +1245,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   : '',
               }}
             >
-              <FormControl sx={{ m: 1, minWidth: 180, width: '100%' }}>
+              <FormControl sx={{ minWidth: 180, width: '100%' }}>
                 <TextField
                   name="score_in_percentage"
                   sx={{
@@ -1132,7 +1315,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               Save Subject Preference
             </Button>
           </div> */}
-          <div className="mt-3 d-flex align-items-center justify-content-between">
+          <div className="mt-5 d-flex align-items-center justify-content-between">
             <button
               type="button"
               className="btn btn-outline-dark prev-btn px-lg-4  rounded-pill"

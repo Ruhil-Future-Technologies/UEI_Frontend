@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import useApi from '../../hooks/useAPI';
@@ -41,8 +41,7 @@ const AdminFeedback: React.FC = () => {
     };
 
     postData('/feedback/add', payload).then((response) => {
-      console.log(response);
-      if (response.status === 200) {
+      if (response.status) {
         toast.success('question added successfully', {
           hideProgressBar: true,
           theme: 'colored',

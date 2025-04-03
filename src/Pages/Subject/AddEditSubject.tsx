@@ -47,23 +47,20 @@ const AddEditSubject = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const userdata = JSON.parse(localStorage.getItem('userdata') || '');
+  const user_uuid = localStorage.getItem('user_uuid');
   const charPattern = /^[a-zA-Z0-9\s@#$%^&*()_+={}[\]:;"'<>,.?/\\|!~`-]*$/;
 
   const initialState = {
     subject_name: '',
     institution_id: '',
-    created_by: userdata?.id,
+    created_by: user_uuid,
     semester_id: '',
     course_id: '',
     menu_image: '',
     pdf_content: '',
   };
   const [subject, setSubject] = useState<any>(initialState);
-  // const [subject_namecol, setSubjectNamevalid] = useState<boolean>(false);
-  // const [selectedFile, setSelectedFile] = React.useState("");
   const formRef = useRef<FormikProps<ISubjectForm>>(null);
-
   const location = useLocation();
   const Menulist: any = localStorage.getItem('menulist1');
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -89,49 +86,55 @@ const AddEditSubject = () => {
   ) {
     navigator('/main/Subject');
   }
-
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+        const filteredData = data?.data.filter(
+          (item) =>
+            item.is_active && item.is_approve && (item.entity_type).toLowerCase() == 'college',
+        );
         setinstituteList(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
-        toast.error(e?.message, {
+        const errorMessage = e?.response?.data?.message || e?.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
         });
       });
     getData(`${CourseListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+      .then((data) => {
+        const filteredData = data?.data?.course_data?.filter(
+          (item: any) => item.is_active,
+        );
         setCourseList(filteredData);
         setCourseListAll(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
-        toast.error(e?.message, {
+        const errorMessage = e?.response?.data?.message || e?.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
         });
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.code === 200) {
+          const filteredData = response?.data?.semesters_data?.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
-        toast.error(error?.message, {
+        const errorMessage = error?.response?.data?.message || error?.message ;
+        toast.error(errorMessage, {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center',
@@ -140,10 +143,13 @@ const AddEditSubject = () => {
     if (id) {
       getData(`${SubjectGETURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSubject(data?.data);
+          if (data.status) {
+            setSubject(data?.data?.subject_data);
+          }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -222,19 +228,21 @@ const AddEditSubject = () => {
   };
 
   const handleSubmit1 = () => {
+    const formData = new FormData();
     const submitData = {
       subject_name: (subject[''] as string) || subject?.subject_name,
       pdf_content: subject?.pdf_content || '',
       semester_id: subject.semester_id,
       course_id: subject.course_id,
       institution_id: subject.institution_id,
-    };
+    } as any;
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
-          // const linesInfo = data || [];
-          // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -248,7 +256,8 @@ const AddEditSubject = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -259,17 +268,21 @@ const AddEditSubject = () => {
     subjectData: ISubjectForm,
     { resetForm }: FormikHelpers<ISubjectForm>,
   ) => {
+    const formData = new FormData();
     const submitData = {
       subject_name: subjectData.subject_name,
       pdf_content: subjectData?.menu_image || '',
       semester_id: subjectData.semester_id,
       course_id: subjectData.course_id,
       institution_id: subjectData.institution_id,
-    };
+    } as any;
     if (id) {
-      putData(`${SubjectEditURL}/${id}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      putData(`${SubjectEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Subject');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -283,15 +296,19 @@ const AddEditSubject = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
         });
     } else {
-      postData(`${SubjectAddURL}`, submitData)
+      Object.keys(submitData).forEach((key) => {
+        formData.append(key, submitData[key]);
+      });
+      postData(`${SubjectAddURL}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -307,7 +324,8 @@ const AddEditSubject = () => {
           }
         })
         .catch((e) => {
-          toast.error(e?.message, {
+          const errorMessage = e?.response?.data?.message || e?.message ;
+          toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -328,14 +346,10 @@ const AddEditSubject = () => {
       ),
     description: Yup.string(),
     menu_image: Yup.string(),
-    semester_id: Yup.string().required('Please select Semester name'),
+    semester_id: Yup.string().required('Please select Semester'),
     course_id: Yup.string().required('Please select Course name'),
     institution_id: Yup.string().required('Please select institute name'),
   });
-
-  // const maxSemester = totalSemester && totalSemester?.length > 0
-  // ? Math.max(...totalSemester?.map((item: { semester_number: any; }) => item?.semester_number))
-  // : 0;
   return (
     <>
       <div className="main-wrapper">
@@ -367,7 +381,6 @@ const AddEditSubject = () => {
               >
                 {({ errors, values, touched, handleBlur }: any) => (
                   <Form>
-                    {/* <form onSubmit={(e) => handleSubmit(e, subject)}> */}
                     <div className="row">
                       <div className="col-md-4">
                         <div className="form_field_wrapper">
@@ -403,7 +416,7 @@ const AddEditSubject = () => {
                               {instituteList.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
-                                  key={`${item.institution_name}-${idx + 1}`}
+                                  key={`${item.institute_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
@@ -413,14 +426,18 @@ const AddEditSubject = () => {
                                     },
                                   }}
                                 >
-                                  {item.institution_name}
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.institution_id === 'string' &&
-                                errors.institution_id}
-                            </Typography>
+                            {touched?.institution_id &&
+                            errors?.institution_id ? (
+                              <p style={{ color: 'red' }}>
+                                {errors?.institution_id}
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -475,10 +492,13 @@ const AddEditSubject = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.course_id === 'string' &&
-                                errors.course_id}
-                            </Typography>
+                            {touched?.course_id && errors?.course_id ? (
+                              <p style={{ color: 'red' }}>
+                                {errors?.course_id}
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -516,22 +536,6 @@ const AddEditSubject = () => {
                                 },
                               }}
                             >
-                              {/* {  [...Array(maxSemester)]?.map((_, index) => (
-                                <MenuItem
-                                  key={`${index + 1}`}
-                                  value={index + 1}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    "&:hover": {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
-                                >
-                                  Semester {index + 1}
-                                </MenuItem>
-                              ))} */}
                               {totalSemester
                                 ?.sort(
                                   (a: any, b: any) =>
@@ -554,10 +558,14 @@ const AddEditSubject = () => {
                                   </MenuItem>
                                 ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.semester_id === 'string' &&
-                                errors?.semester_id}
-                            </Typography>
+
+                            {touched?.semester_id && errors?.semester_id ? (
+                              <p style={{ color: 'red' }}>
+                                {errors?.semester_id}
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -598,9 +606,6 @@ const AddEditSubject = () => {
                             <input
                               type="file"
                               accept=".pdf,.doc,.docx"
-                              // onChange={(event) =>
-                              //   setSelectedFile(event.target.value)
-                              // }
                               onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>,
                               ) => handleChange(e, 'menu_image')}
@@ -628,7 +633,6 @@ const AddEditSubject = () => {
                         </button>
                       )}
                     </div>
-                    {/* </form> */}
                   </Form>
                 )}
               </Formik>

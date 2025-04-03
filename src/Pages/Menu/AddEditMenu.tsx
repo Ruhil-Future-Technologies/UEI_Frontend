@@ -47,7 +47,9 @@ const AddEditMenu = () => {
     if (id) {
       getData(`${MenuEditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setMenu(data?.data);
+          if(data.status){
+            setMenu(data?.data?.menu_data);
+          }
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -100,10 +102,18 @@ const AddEditMenu = () => {
     menuData: IMenuForm,
     { resetForm }: FormikHelpers<IMenuForm>,
   ) => {
+    const formData =new FormData();
+
+    Object.entries(menuData).forEach(([key,value])=>{
+       if(value !== undefined && value!==null){
+        formData.append(key ,value);
+       }
+    })
+
     if (id) {
-      putData(`${MenuEditURL}/${id}`, menuData)
+      putData(`${MenuEditURL}/${id}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             Navigate('/main/Menu');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -123,9 +133,9 @@ const AddEditMenu = () => {
           });
         });
     } else {
-      postData(`${MenuAddURL}`, menuData)
+      postData(`${MenuAddURL}`, formData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success(data.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -159,8 +169,8 @@ const AddEditMenu = () => {
         'Please enter a valid Menu name only characters allowed.',
       ),
     priority: Yup.string()
-      .required('Please enter valid Menu sequence number')
-      .matches(numberPattern, 'Please enter a valid Menu sequence number.'),
+      .required('Please enter valid Menu Sequence number')
+      .matches(numberPattern, 'Please enter a valid Menu Sequence number.'),
     menu_image: Yup.string(),
   });
 
@@ -229,7 +239,7 @@ const AddEditMenu = () => {
                             component={TextField}
                             type="text"
                             name="priority"
-                            label="Menu sequence *"
+                            label="Menu Sequence *"
                             value={values?.priority}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,

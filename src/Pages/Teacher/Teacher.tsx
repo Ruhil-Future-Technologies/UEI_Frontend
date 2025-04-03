@@ -20,39 +20,54 @@ import { toast } from 'react-toastify';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-import { QUERY_KEYS_TEACHER } from '../../utils/const';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_TEACHER,
+} from '../../utils/const';
+import {
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Visibility,
+} from '@mui/icons-material';
+import { TeacherDetailsDialog } from './TeacherDetailsDialog';
 
 const Teacher = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-
-  // const location = useLocation();
-  // const pathSegments = location.pathname.split('/').filter(Boolean);
-  // const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  // const Menulist: any = localStorage.getItem('menulist1');
-  // const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
-
-  // useEffect(() => {
-  //   setFilteredData(
-  //     dataaccess(Menulist, lastSegment, { urlcheck: '' }, { datatest: '' }),
-  //   );
-  // }, [Menulist, lastSegment]);
 
   const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
   const DeleteTeacherURL = QUERY_KEYS_TEACHER.TEACHER_DELETE;
   const columns11 = TEACHER_COLUMNS;
   const navigate = useNavigate();
   const { getData, putData, loading } = useApi();
+  const [entity, setEntity] = useState<any[]>([]);
   const [dataTeacher, setDataTeacher] = useState<any[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
   const [activeTab, setActiveTab] = useState(0);
   const [filteredTeachers, setFilteredTeachers] = useState<any[]>([]);
+  const [activeSubTab, setActiveSubTab] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<any>({});
+  const [, setDataClasses] = useState<any[]>([]);
+  const [schoolInstitutes, setSchoolInstitutes] = useState<any[]>([]);
+  const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+
+  const isSchoolEntity = (entityId: string | string[]): boolean => {
+    const selectedEntity = entity?.find((entity) => entity.id === entityId);
+    return selectedEntity?.entity_type?.toLowerCase() === 'school';
+  };
+
+  const isCollegeEntity = (entityId: string | string[]): boolean => {
+    const selectedEntity = entity?.find((entity) => entity.id === entityId);
+    return selectedEntity?.entity_type?.toLowerCase() === 'college';
+  };
 
   useEffect(() => {
-    const updatedColumns = columns11.map((column: any) => {
+    const updatedColumns = columns11?.map((column: any) => {
       if (column.accessorKey === 'email') {
         const maxWidth = Math.max(
           ...dataTeacher.map((item) =>
@@ -77,14 +92,46 @@ const Teacher = () => {
   }, [dataTeacher, columns11]);
 
   const callAPI = async () => {
+    getData('/entity/list').then((data) => {
+      if (data.status) {
+        setEntity(data.data?.entityes_data);
+      }
+    });
+    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
+      const allInstitutes = data.data;
+      const schoolInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
+      );
+      const collegeInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
+      );
+      setSchoolInstitutes(schoolInstitutes);
+      setCollegeInstitutes(collegeInstitutes);
+    });
+
+    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
+      setDataClasses(data.data);
+    });
     getData(`${TeacherURL}`)
       .then((data: { data: any[] }) => {
         if (data.data) {
-          setDataTeacher(data?.data);
+          const teacherData = data.data.map((teacher: any) => {
+            const createdDateTime = teacher?.created_at;
+            const updatedDateTime = teacher?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            teacher.created_at = created_time.toLocaleString();
+            teacher.updated_at = updated_time.toLocaleString();
+            return teacher;
+          });
+          setDataTeacher(teacherData);
+        } else {
+          setDataTeacher([]);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -102,15 +149,168 @@ const Teacher = () => {
     setActiveTab(newValue);
   };
 
+  const handleSubTabChange = (
+    _event: React.SyntheticEvent,
+    newValue: number,
+  ) => {
+    setActiveSubTab(newValue);
+  };
+
   useEffect(() => {
     if (activeTab === 0) {
-      setFilteredTeachers(
-        dataTeacher.filter((teacher) => teacher.is_approve === true),
+      const approvedTeachers = dataTeacher.filter(
+        (teacher) => teacher.is_approve === true,
       );
+
+      const college: any = entity.filter(
+        (ent) => ent.entity_type.toLowerCase() == 'college',
+      );
+      const school: any = entity.filter(
+        (ent) => ent.entity_type.toLowerCase() == 'school',
+      );
+
+      setFilteredTeachers([]);
+
+      setTimeout(() => {
+        if (activeSubTab === 0) {
+          setColumnVisibility({
+            university_id: true,
+            course_id: true,
+            class_id: false,
+            class_stream_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institute_id') {
+              return {
+                ...column,
+                header: 'College Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const collegeTeachers = approvedTeachers
+            .filter((teacher) => teacher.entity_id == college[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                class_id: null,
+                className: '-',
+                class_name: '-',
+              };
+            });
+
+          setFilteredTeachers(collegeTeachers);
+        } else {
+          setColumnVisibility({
+            university_id: false,
+            course_id: false,
+            class_stream_subjects: true,
+            course_semester_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institute_id') {
+              return {
+                ...column,
+                header: 'School Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const schoolTeachers = approvedTeachers
+            .filter((teacher) => teacher.entity_id == school[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                course_semester_subjects: null,
+                university_id: null,
+                course_name: '-',
+                university_name: '-',
+              };
+            });
+          setFilteredTeachers(schoolTeachers);
+        }
+      }, 0);
+    } else if (activeTab === 1) {
+      const pendingTeachers = dataTeacher.filter(
+        (teacher) => teacher.is_approve === false,
+      );
+
+      const college: any = entity.filter((ent) => ent.entity_type == 'college');
+      const school: any = entity.filter((ent) => ent.entity_type == 'school');
+
+      setFilteredTeachers([]);
+
+      setTimeout(() => {
+        if (activeSubTab === 0) {
+          setColumnVisibility({
+            university_id: true,
+            course_id: true,
+            class_id: false,
+            class_stream_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institute_id') {
+              return {
+                ...column,
+                header: 'College Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const collegeTeachers = pendingTeachers
+            .filter((teacher) => teacher.entity_id == college[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                class_id: null,
+                className: '-',
+                class_name: '-',
+              };
+            });
+
+          setFilteredTeachers(collegeTeachers);
+        } else {
+          setColumnVisibility({
+            university_id: false,
+            course_id: false,
+            class_stream_subjects: true,
+            course_semester_subjects: false,
+          });
+          const updatedColumns = columns11.map((column) => {
+            if (column.accessorKey === 'institute_id') {
+              return {
+                ...column,
+                header: 'School Name',
+              };
+            }
+            return column;
+          });
+          setColumns(updatedColumns);
+
+          const schoolTeachers = pendingTeachers
+            .filter((teacher) => teacher.entity_id == school[0]?.id)
+            .map((teacher) => {
+              return {
+                ...teacher,
+                course_semester_subjects: null,
+                university_id: null,
+                course_name: '-',
+                university_name: '-',
+              };
+            });
+          setFilteredTeachers(schoolTeachers);
+        }
+      }, 0);
     } else {
       setFilteredTeachers(dataTeacher.filter((teacher) => !teacher.is_approve));
     }
-  }, [activeTab, dataTeacher]);
+  }, [activeTab, activeSubTab, dataTeacher, entity]);
 
   const handleApproveTeacher = (id: number) => {
     putData(`${QUERY_KEYS_TEACHER.TEACHER_APPROVE}/${id}`)
@@ -122,7 +322,7 @@ const Teacher = () => {
         callAPI();
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -142,7 +342,7 @@ const Teacher = () => {
         callAPI();
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -152,8 +352,92 @@ const Teacher = () => {
       });
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedTeacher([]);
+  };
+
+  const handleTeacherDetails = (id: number) => {
+    const teacherDetail = JSON.parse(
+      JSON.stringify(dataTeacher?.find((teacher) => teacher?.id == id)),
+    );
+
+    const full_name =
+      teacherDetail?.first_name + ' ' + teacherDetail?.last_name;
+    if (teacherDetail) {
+      teacherDetail.full_name = full_name;
+      delete teacherDetail.first_name;
+      delete teacherDetail.last_name;
+      delete teacherDetail.is_active;
+      delete teacherDetail.is_approve;
+      delete teacherDetail.is_deleted;
+      delete teacherDetail.is_kyc_verified;
+      delete teacherDetail.role_id;
+      delete teacherDetail.pic_path;
+    }
+
+    const isSchool = isSchoolEntity(teacherDetail?.entity_id);
+    const isCollege = isCollegeEntity(teacherDetail?.entity_id);
+
+    if (isSchool) {
+      const school = schoolInstitutes.find(
+        (school) => school.id == teacherDetail?.institution_id,
+      );
+
+      teacherDetail.entity_type = 'school';
+      teacherDetail.school_name = school?.institution_name;
+      teacherDetail.classes = Object.create(
+        null,
+        Object.getOwnPropertyDescriptors(
+          JSON.parse(JSON.stringify(teacherDetail.class_stream_subjects)),
+        ),
+      );
+
+      delete teacherDetail.class_stream_subjects;
+      delete teacherDetail.entity_id;
+      delete teacherDetail.course_semester_subjects;
+      delete teacherDetail.institution_id;
+      delete teacherDetail.university_id;
+      delete teacherDetail.course_id;
+    } else if (isCollege) {
+      const college = collegeInstitutes.find(
+        (college) => college.id == teacherDetail.institution_id,
+      );
+
+      teacherDetail.entity_type = 'college';
+      teacherDetail.college_name = college?.institution_name;
+      teacherDetail.university_name = college?.university_name;
+      teacherDetail.courses = teacherDetail?.course_semester_subjects;
+
+      delete teacherDetail.class_id;
+      delete teacherDetail.stream;
+      delete teacherDetail.entity_id;
+      delete teacherDetail.class_stream_subjects;
+      delete teacherDetail.institution_id;
+      delete teacherDetail.university_id;
+      delete teacherDetail.course_id;
+      delete teacherDetail.course_semester_subjects;
+    }
+    delete teacherDetail?.teacher_login_id;
+    delete teacherDetail?.teacher_id;
+
+    setSelectedTeacher(teacherDetail);
+    setOpen(true);
+  };
+
   const handleEditFile = (id: number) => {
-    navigate(`edit-teacher/${id}`);
+    const current_teacher = dataTeacher.find(
+      (teacher) => teacher.user_uuid == id,
+    );
+
+    if (current_teacher.is_active) {
+      navigate(`edit-teacher/${id}`);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handlecancel = () => {
@@ -161,8 +445,18 @@ const Teacher = () => {
   };
 
   const handleDeleteFiles = (id: number) => {
-    setDataDeleteId(id);
-    setDataDelete(true);
+    const current_teacher = dataTeacher.find(
+      (teacher) => teacher.user_uuid == id,
+    );
+    if (current_teacher.is_active) {
+      setDataDeleteId(id);
+      setDataDelete(true);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handleDelete = (id: number | undefined) => {
@@ -176,7 +470,7 @@ const Teacher = () => {
         setDataDelete(false);
       })
       .catch((e: any) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -185,7 +479,6 @@ const Teacher = () => {
         });
       });
   };
-
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -217,13 +510,48 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Teachers" />
-                    <Tab label="Pending Teachers" />
+                    <Tab
+                      label="Total Teachers"
+                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                    ></Tab>
+                    <Tab
+                      label="Pending Teachers"
+                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                    />
                   </Tabs>
+
+                  {activeTab === 0 && (
+                    <Tabs value={activeSubTab} onChange={handleSubTabChange}>
+                      <Tab
+                        label="College"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
+                      <Tab
+                        label="School"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
+                    </Tabs>
+                  )}
+                  {activeTab === 1 && (
+                    <Tabs value={activeSubTab} onChange={handleSubTabChange}>
+                      <Tab
+                        label="College"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
+                      <Tab
+                        label="School"
+                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      />
+                    </Tabs>
+                  )}
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
                       data={filteredTeachers}
+                      state={{
+                        columnVisibility,
+                      }}
+                      onColumnVisibilityChange={setColumnVisibility}
                       enableRowVirtualization
                       positionActionsColumn="first"
                       muiTablePaperProps={{
@@ -246,23 +574,6 @@ const Teacher = () => {
                             width: '140px',
                           }}
                         >
-                          {/* {filteredData?.form_data?.is_update === true && (
-                            <Tooltip arrow placement="right" title="Edit">
-                              <IconButton
-                                sx={{
-                                  width: '35px',
-                                  height: '35px',
-                                  color: tabletools(namecolor),
-                                }}
-                                onClick={() => {
-                                  //   handleEditFile(row?.row?.original?.id);
-                                  console.log('handleEditFile');
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )} */}
                           {row.row.original.is_approve ? (
                             <>
                               <Tooltip arrow placement="right" title="Edit">
@@ -274,11 +585,11 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleEditFile(
-                                      row?.row?.original?.teacher_login_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
-                                  <EditIcon />
+                                  <EditIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Delete">
@@ -290,11 +601,25 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleDeleteFiles(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
-                                  <TrashIcon />
+                                  <TrashIcon style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(row?.row?.original?.id)
+                                  }
+                                >
+                                  <Visibility style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                             </>
@@ -309,11 +634,11 @@ const Teacher = () => {
                                   }}
                                   onClick={() =>
                                     handleApproveTeacher(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
-                                  <CheckIcon />
+                                  <CheckIcon style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip arrow placement="right" title="Reject">
@@ -321,56 +646,38 @@ const Teacher = () => {
                                   sx={{
                                     width: '35px',
                                     height: '35px',
-                                    color: tabletools(namecolor),
+                                    // color: tabletools(namecolor),
                                   }}
                                   onClick={() =>
                                     handleRejectTeacher(
-                                      row?.row?.original?.teacher_id,
+                                      row?.row?.original?.user_uuid,
                                     )
                                   }
                                 >
-                                  <CloseIcon />
+                                  <CloseIcon style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(row?.row?.original?.id)
+                                  }
+                                >
+                                  <Visibility style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                             </>
                           )}
-
-                          {/* <Tooltip arrow placement="right" title="Edit">
-                            <IconButton
-                              sx={{
-                                width: '35px',
-                                height: '35px',
-                                color: tabletools(namecolor),
-                              }}
-                              onClick={() => {
-                                console.log({ row });
-
-                                handleEditFile(row?.row?.original?.teacher_id);
-                                console.log('handleEditFile');
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip arrow placement="right" title="Delete">
-                            <IconButton
-                              sx={{
-                                width: '35px',
-                                height: '35px',
-                                color: tabletools(namecolor),
-                              }}
-                              onClick={() => {
-                                console.log({ row });
-
-                                handleDeleteFiles(
-                                  row?.row?.original?.teacher_id,
-                                );
-                                console.log('handleDeleteFiles');
-                              }}
-                            >
-                              <TrashIcon />
-                            </IconButton>
-                          </Tooltip> */}
+                          <TeacherDetailsDialog
+                            open={open}
+                            selectedTeacher={selectedTeacher}
+                            onClose={handleClose}
+                          />
                         </Box>
                       )}
                     />
@@ -385,7 +692,7 @@ const Teacher = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete Teacher?"
+        title="Teacher"
       />
     </>
   );

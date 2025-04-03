@@ -57,7 +57,8 @@ export const hasSubMenu = (menuListdata: any, menuName: any) => {
         ?.replace(/\s+/g, '')
         .toLowerCase();
       const normalizedMenuName = menuName?.replace(/\s+/g, '').toLowerCase();
-      return normalizedSubmenuName === normalizedMenuName;
+      console.log(normalizedSubmenuName);
+      return normalizedMenuName;
     });
     // console.log(`Checking menu: ${menu.menu_name.toLowerCase()}, hasSubMenu: ${hasSubMenu} `);
     return hasSubMenu;
@@ -71,31 +72,30 @@ export const dataaccess = (
   datatest: any,
 ) => {
   let filteredData = null;
-  // console.log("tttt===",urlcheck?.urlcheck,datatest)
   JSON.parse(Menulist)?.forEach((data: any) => {
     if (data?.menu_name.toLowerCase() === lastSegment) {
       filteredData = data; // Found a match in the main menu
     } else {
-      const result = data?.submenus?.find((menu: any) =>
-        menu?.menu_name.toLowerCase() === urlcheck?.urlcheck
-          ? datatest?.datatest
-          : menu?.menu_name.toLowerCase() === lastSegment,
-      );
+      const result = data?.submenus?.find((menu: any) => {
+        if (menu?.menu_name.toLowerCase() === urlcheck?.urlcheck) {
+          return datatest?.datatest;
+        }
+        // Extract the last segment of submenu_url for comparison
+        const lastSegmentFromURL = menu?.submenu_url?.substring(menu?.submenu_url?.lastIndexOf("/") + 1);  
+        return lastSegmentFromURL?.toLowerCase() === lastSegment?.toLowerCase();
+      });
       if (result) {
-        // Found a match in the submenu
         filteredData = {
           ...data,
-          submenus: [result], // Include only the matched submenu
+          submenus: [result],
         };
       }
     }
   });
 
   if (filteredData) {
-    // setFilteredData(filteredData);
     return filteredData;
   } else {
-    // setFilteredData(null);
     return null;
   }
 };
@@ -218,8 +218,8 @@ export const commonStyle = (namecolor: any) => ({
     color: 'black !important',
   },
   '&.Mui-selected, &:focus': {
-    backgroundColor: '#F7F0FE',
-    color: 'black !important',
+    //backgroundColor: '#F7F0FE',
+    //color: 'black !important',
   },
 });
 export const fieldIcon = (textcolor: any) => {
@@ -230,3 +230,36 @@ export const fieldIcon = (textcolor: any) => {
   };
   return inputtext[textcolor];
 };
+
+export const toTitleCase=(str: string): string =>{
+  return str
+    .toLowerCase() // Convert everything to lowercase first
+    .split(" ") // Split by spaces
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+    .join(" "); // Join words back together
+}
+
+export const getColor = (value: number, max: number) => {
+  const mid = max / 2; // Midpoint where it's fully orange
+
+  if (value >= max) return "#4CAF50"; // Fully Green (Success)
+  if (value <= 0) return "#FF0000";  // Fully Red (Danger)
+
+  let red, green;
+
+  if (value > mid) {
+    // Transition from Green → Orange
+    const factor = (max - value) / (max - mid);
+    red = Math.floor(factor * 255);   // Increase red
+    green = Math.floor(76 + factor * (165 - 76)); // Reduce green slightly
+  } else {
+    // Transition from Orange → Red
+    const factor = value / mid;
+    red = 255;  // Keep fully red
+    green = Math.floor(factor * 165); // Reduce green
+  }
+
+  return `rgb(${red}, ${green}, 0)`;
+};
+
+

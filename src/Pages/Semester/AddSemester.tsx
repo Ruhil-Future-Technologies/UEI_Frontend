@@ -33,13 +33,13 @@ const AddSemester = () => {
   const semesterUpdateURL = QUERY_KEYS_SEMESTER.SEMESTER_UPDATE;
   const InstituteListURL = QUERY_KEYS.GET_INSTITUTES;
   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
-  const { postData, getData, putData } = useApi();
+  const { postDataJson, getData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
 
   const initialState = {
     course_id: '',
-    institution_id: '',
+    institute_id: '',
     semester_number: '',
   };
   const [semester, setSemester] = useState<any>(initialState);
@@ -49,11 +49,14 @@ const AddSemester = () => {
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
       .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
+        const filteredData = data?.data?.filter(
+          (item) =>
+            item.is_active && item.is_approve && item.entity_type == 'college',
+        );
         setinstituteList(filteredData);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -62,12 +65,16 @@ const AddSemester = () => {
         });
       });
     getData(`${CourseListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter((item) => item.is_active === 1);
-        setCourseList(filteredData);
+      .then((data) => {
+        if (data.status) {
+          const filteredData = data?.data?.course_data?.filter(
+            (item: any) => item.is_active,
+          );
+          setCourseList(filteredData);
+        }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -78,7 +85,7 @@ const AddSemester = () => {
     if (id) {
       getData(`${SemestereditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
-          setSemester(data?.data);
+          setSemester(data?.data?.semester_data);
         })
         .catch((e) => {
           toast.error(e?.message, {
@@ -92,16 +99,20 @@ const AddSemester = () => {
     callAPI();
   }, []);
   const handleSubmit = async (semesterData: any, { resetForm }: any) => {
+    const formData = new FormData();
     const semPayload = {
       course_id: semesterData.course,
-      institution_id: semesterData.institute,
-      semester_number: semesterData?.semester_name,
-    };
-
+      institute_id: semesterData.institute,
+      semester_number: Number(semesterData?.semester_name),
+    } as any;
     if (id) {
+      Object.keys(semPayload).forEach((key) => {
+        formData.append(key, semPayload[key]);
+      });
+
       putData(`${semesterUpdateURL}/${id}`, semPayload)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Semester');
             resetForm();
             toast.success(data.message, {
@@ -122,9 +133,12 @@ const AddSemester = () => {
           });
         });
     } else {
-      postData(`${SemesterAddURL}`, semPayload)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      Object.keys(semPayload).forEach((key) => {
+        formData.append(key, semPayload[key]);
+      });
+      postDataJson(`${SemesterAddURL}`, semPayload)
+        .then((data) => {
+          if (data.status) {
             toast.success(data.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -169,7 +183,7 @@ const AddSemester = () => {
                 }
                 initialValues={{
                   semester_name: semester?.semester_number,
-                  institute: semester?.institution_id,
+                  institute: semester?.institute_id,
                   course: semester?.course_id,
                 }}
                 enableReinitialize
@@ -210,7 +224,7 @@ const AddSemester = () => {
                               {instituteList.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
-                                  key={`${item.institution_name}-${idx + 1}`}
+                                  key={`${item.institute_name}-${idx + 1}`}
                                   sx={{
                                     backgroundColor: inputfield(namecolor),
                                     color: inputfieldtext(namecolor),
@@ -220,14 +234,15 @@ const AddSemester = () => {
                                     },
                                   }}
                                 >
-                                  {item.institution_name}
+                                  {item.institute_name}
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.institute === 'string' &&
-                                errors.institute}
-                            </Typography>
+                            {touched?.institute && errors?.institute && (
+                              <p className="error">
+                                {String(errors.institute)}
+                              </p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -298,10 +313,9 @@ const AddSemester = () => {
                                                                 >{item.course_name}</MenuItem>
                                                             ))} */}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.course === 'string' &&
-                                errors.course}
-                            </Typography>
+                            {touched?.course && errors?.course && (
+                              <p className="error">{String(errors.course)}</p>
+                            )}
                           </FormControl>
                         </div>
                       </div>
@@ -338,7 +352,7 @@ const AddSemester = () => {
                               }}
                             >
                               {/* Generate menu items for semesters 1 to 8 */}
-                              {[...Array(8)].map((_, index) => (
+                              {[...Array(14)].map((_, index) => (
                                 <MenuItem
                                   key={`${index + 1}`}
                                   value={index + 1}
@@ -355,10 +369,13 @@ const AddSemester = () => {
                                 </MenuItem>
                               ))}
                             </Select>
-                            <Typography variant="body2" color="error">
-                              {typeof errors?.semester_name === 'string' &&
-                                errors.semester_name}
-                            </Typography>
+
+                            {touched?.semester_name &&
+                              errors?.semester_name && (
+                                <p className="error">
+                                  {String(errors.semester_name)}
+                                </p>
+                              )}
                           </FormControl>
                         </div>
                       </div>
@@ -366,8 +383,7 @@ const AddSemester = () => {
 
                     <div className=" mt-3">
                       <button className="btn btn-primary mainbutton">
-                        {' '}
-                        Save
+                        {id ? 'Update' : 'Save'}
                       </button>
                     </div>
                   </Form>

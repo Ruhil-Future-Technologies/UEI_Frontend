@@ -20,12 +20,12 @@ export const DeleteDialog: FunctionComponent<{
     aria-labelledby="alert-dialog-title"
     aria-describedby="alert-dialog-description"
   >
-    <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+    <DialogTitle id="alert-dialog-title">Delete {title}?</DialogTitle>
     <DialogContent>
       <DialogContentText id="alert-dialog-description">
         Are you sure you want to delete this{' '}
-        {`${title === 'Delete chat ?' ? 'chat?' : 'file?'}`} This action cannot
-        be undone.
+        {title === 'Delete chat ?' ? 'chat?' : title}? This action cannot be
+        undone.
       </DialogContentText>
     </DialogContent>
     <DialogActions>

@@ -10,6 +10,25 @@
 }
 
 @media screen and (max-width: 1024px) {
+  
+ body .removecardm{
+    border: 0!important;
+    border-radius: 0!important;
+    box-shadow: none!important;
+    .card-body{
+      padding: 0!important;
+    }
+  }
+  .MuiDialog-paper{
+  margin: 12px!important;
+}
+.MuiDialogTitle-root, .MuiDialogContent-root{
+  padding-left: 1rem!important;
+  padding-right: 1rem!important;
+}
+.MuiInputBase-inputSizeSmall{
+  padding: 8.5px!important;
+}
   .email-header {
     border-top-left-radius: 0.25rem;
   }

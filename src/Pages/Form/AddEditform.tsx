@@ -93,14 +93,15 @@ const AddEditForm = () => {
   const callAPI = async () => {
     getData(`${MenuURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
-        );
-        setDataMenu(filteredData || []);
-        // setDataMenu(data?.data||[])
+        if (data?.status) {
+          const filteredData = data?.data?.menues_data.filter(
+            (item: any) => item?.is_active,
+          );
+          setDataMenu(filteredData || []);
+        }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -110,14 +111,15 @@ const AddEditForm = () => {
       });
     getData(`${SubMenuURL}`)
       .then((data: any) => {
-        const filteredData = data?.data?.filter(
-          (item: any) => item?.is_active === 1,
-        );
-        setDataSubMenu(filteredData || []);
-        // setDataSubMenu(data?.data||[])
+        if (data?.status) {
+          const filteredData = data?.data?.submenus_data.filter(
+            (item: any) => item?.is_active,
+          );
+          setDataSubMenu(filteredData || []);
+        }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -127,15 +129,17 @@ const AddEditForm = () => {
       });
     if (id) {
       getData(`${FormEditURL}${id ? `/${id}` : ''}`).then((data: any) => {
-        const datavalue = data?.data;
-        setForm({
-          form_name: datavalue?.form_name,
-          menu_master_id: datavalue?.menu_master_id,
-          sub_menu_master_id: datavalue?.sub_menu_master_id,
-          form_url: datavalue?.form_url,
-          form_description: datavalue?.form_description,
-          is_menu_visible: datavalue?.is_menu_visible,
-        });
+        if (data?.status) {
+          const datavalue = data?.data?.form_data;
+          setForm({
+            form_name: datavalue?.form_name,
+            menu_master_id: datavalue?.menu_master_id,
+            sub_menu_master_id: datavalue?.sub_menu_master_id,
+            form_url: datavalue?.form_url,
+            form_description: datavalue?.form_description,
+            is_menu_visible: datavalue?.is_menu_visible,
+          });
+        }
       });
     }
   };
@@ -188,7 +192,7 @@ const AddEditForm = () => {
     sub_menu_master_id: string;
     form_url: string;
     form_description: string;
-    is_menu_visible: boolean;
+    is_menu_visible: boolean |string ;
   }) => {
     formData.menu_master_id = String(formData.menu_master_id);
     formData.sub_menu_master_id = String(formData.sub_menu_master_id);
@@ -197,22 +201,24 @@ const AddEditForm = () => {
     const isPathAvailable = routes.some((route) => route.path === pathToCheck);
     let formdata1 = {};
     if (formData.sub_menu_master_id === '') {
+      console.log(formData.is_menu_visible);
       formdata1 = {
         form_name: formData.form_name,
         menu_master_id: formData.menu_master_id,
 
         form_url: formData.form_url,
         form_description: formData.form_description,
-        is_menu_visibl: formData.is_menu_visible,
+        is_menu_visibl: formData.is_menu_visible==true ? 'True':'False',
       };
     } else {
+      formData.is_menu_visible=formData.is_menu_visible==true?'True':'False'
       formdata1 = formData;
     }
 
     if (id && isPathAvailable) {
       putData(`${FormEditURL}/${id}`, formdata1)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             navigator('/main/Form');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -227,7 +233,7 @@ const AddEditForm = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -239,7 +245,7 @@ const AddEditForm = () => {
       if (isPathAvailable) {
         postData(`${FormAddURL}`, formdata1)
           .then((data: any) => {
-            if (data?.status === 201) {
+            if (data?.code === 201) {
               // navigator('/main/Form')
               toast.success(data.message, {
                 hideProgressBar: true,
@@ -263,7 +269,7 @@ const AddEditForm = () => {
             }
           })
           .catch((e) => {
-            if (e?.response?.status === 401) {
+            if (e?.response?.code === 401) {
               navigator('/');
             }
             toast.error(e?.message, {
@@ -283,7 +289,7 @@ const AddEditForm = () => {
         FormNamePattern,
         'Please enter a valid Form name only characters allowed.',
       ),
-    menu_master_id: Yup.string().required('Menu master is required'),
+    menu_master_id: Yup.string().required('Menu Master is required'),
     // sub_menu_master_id: Yup.string().required('Sub Menu Master is required'),
     form_url: Yup.string().required('Form URL is required'),
     form_description: Yup.string(),
@@ -433,7 +439,7 @@ const AddEditForm = () => {
                                     },
                                   }}
                                 >
-                                  {item.menu_name}
+                                  {item?.sub_menu_name}
                                 </MenuItem>
                               ))}
                             </Select>
@@ -453,7 +459,7 @@ const AddEditForm = () => {
                           <TextField
                             inputProps={{ 'data-testid': 'form_name' }}
                             type="text"
-                            label="Form Name *"
+                            label="Form name *"
                             name="form_name"
                             value={values.form_name}
                             variant="outlined"
@@ -570,6 +576,7 @@ const AddEditForm = () => {
                         <button
                           data-testid="save_btn"
                           className="btn btn-primary mainbutton"
+                          type="submit"
                         >
                           {id ? 'Update' : 'Save'}
                         </button>
@@ -579,6 +586,7 @@ const AddEditForm = () => {
 
                           onClick={privewurl}
                           className="btn btn-outline-primary ms-3"
+                          type="button"
                         >
                           Preivew
                         </button>

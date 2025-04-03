@@ -1,7 +1,8 @@
 import React from 'react';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -63,11 +64,11 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="study.html">
+              <Link to="/teacher-dashboard/Content">
                 <div className="parent-icon">
-                  <LocalLibraryOutlinedIcon />
+                  <LibraryBooksOutlinedIcon />
                 </div>
-                <div className="menu-title">Study Materials</div>
+                <div className="menu-title">Content Library</div>
               </Link>
             </li>
             <li>
@@ -76,6 +77,14 @@ const TeacherSideVar = () => {
                   <InfoOutlinedIcon />
                 </div>
                 <div className="menu-title">Feedback</div>
+              </Link>
+            </li>
+            <li>
+              <Link to="/teacher-dashboard/assignments">
+                <div className="parent-icon">
+                  <AssignmentOutlinedIcon />
+                </div>
+                <div className="menu-title">Assignments</div>
               </Link>
             </li>
             {/* <!-- <li>

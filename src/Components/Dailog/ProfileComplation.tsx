@@ -8,7 +8,7 @@ import React, {
   useRef,
   useContext,
 } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import './stylechat.css'; // Import your CSS file
 import useApi from '../../hooks/useAPI';
 import glogo from '../../assets/img/logo-white.svg';
@@ -38,6 +38,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ChatDialogClose } from './ChatDialogClose';
 import { styled } from '@mui/material/styles';
 import Course from '../../Pages/Course/Course';
+import { Teacher } from '../../Pages/TeacherRgistrationForm';
 //import { Initializable } from '@mui/x-charts/internals';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -99,8 +100,11 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 interface Institute {
   id: number;
   institution_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: string;
+  is_active: number;
+  is_approve: boolean;
+  entity_type?: string;
 }
 
 interface Course {
@@ -170,7 +174,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const context = useContext(NameContext);
   const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const Student_uuid = localStorage.getItem('user_uuid');
   const usertype = localStorage.getItem('user_type');
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState('');
@@ -195,6 +199,8 @@ export const ProfileDialog: FunctionComponent<{
   const [university, setUniversity] = useState<University[]>([]);
   const [semester, setSemester] = useState<Semester[]>([]);
   const [semesterpre, setSemesterpre] = useState<Semester[]>([]);
+  const [teacherList, setTeacherList] = useState<Teacher[]>([]);
+  //const [filteredTeacherList, setFilteredTeacherList] = useState<Teacher[]>([]);
 
   const [selectedHobby, setSelectedHobby] = useState<any>('');
   const [selectedLanguage, setSelectedLanguage] = useState<any>('');
@@ -204,6 +210,8 @@ export const ProfileDialog: FunctionComponent<{
   const [selectCourse, setSelectedCourse] = useState<any>('');
   const [selectUniversity, setSelectedUniversity] = useState<any>('');
   const [selectSemester, setSelectedSemester] = useState<any>('');
+ // const [selectSubjectName, setSelectedSubjectName] = useState<any>('');
+  const [selectTeacher, setSelectedTeacher] = useState<any>('');
   const [selectSemesterpre, setSelectedSemesterpre] = useState<any>('');
   const [selectSubject, setSelectedSubject] = useState<any>('');
   const [selectedInstituteType, setSelectedInstituteType] = useState<any>('');
@@ -211,7 +219,9 @@ export const ProfileDialog: FunctionComponent<{
   const [selectedAcademicState, setSelectedAcademicState] = useState<any>('');
   const [selectedClass, setSelectedClass] = useState<any>('');
   const [selectedStream, setSelectedStream] = useState<any>('');
+  
   const [selectedLearningStyle, setSelectedLearningStyle] = useState<any>('');
+
   // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>('');
 
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -239,6 +249,10 @@ export const ProfileDialog: FunctionComponent<{
   const [filterdQuestions1, setFilterdQuestions1] = useState<{
     [key: string]: string[];
   }>({});
+
+  // const [mobile, setMobile] = useState('');
+  // const user_id = localStorage.getItem('userid');
+  const isEmail = (id: any) => /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(id);
 
   // const [open, setOpen] = useState(true);
 
@@ -284,17 +298,22 @@ export const ProfileDialog: FunctionComponent<{
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const callAPI = async () => {
     if (usertype === 'student') {
-      getData(`${profileURL}/${StudentId}`)
-        .then((data: any) => {
-          if (data.status === 200) {
-            //  navigate('/main/Dashboard');
-            setAnsweredData(data.data);
+      const user_id = localStorage.getItem('userid');
 
+      if (!isEmail(user_id)) {
+        // setMobile(user_id ? user_id : '');
+      }
+
+      getData(`${profileURL}/${Student_uuid}`)
+        .then((data: any) => {
+          if (data.status) {
+            setAnsweredData(data.data);
+            localStorage.setItem('register_num', data?.data?.register_num);
             if (data?.data?.academic_history?.institution_type === 'school') {
               getData(
                 `/class/get/${data?.data?.academic_history?.class_id}`,
               ).then((response: any) => {
-                if (response.status === 200) {
+                if (response.status) {
                   setSelectedClass({
                     label: response.data.class_name,
                     value: response.data.class_id,
@@ -332,6 +351,7 @@ export const ProfileDialog: FunctionComponent<{
       "What is your guardian's name?",
       'Upload your profile picture',
       'Hi! Please provide your academic information! What is your institute type?',
+      'Please select your school name',
       'Please select your board',
       'Please select your state',
       'Please select your class',
@@ -346,13 +366,14 @@ export const ProfileDialog: FunctionComponent<{
       'Select your known language',
       'What is your proficiency in the selected language?',
       'Please select your mobile number country code',
-      'What is your mobile number?',
+      // 'What is your mobile number?',
       'What is your WhatsApp number?',
       'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
       'Please select your semester ?',
       'Select your subject name',
       'What is your preference?',
       'Add your score in percentage',
+      'Please select a teacher',
       'Please select your current country of residence',
       'Which state do you currently reside in?',
       'Which district do you currently live in?',
@@ -462,18 +483,20 @@ export const ProfileDialog: FunctionComponent<{
     if (answeredData?.academic_history?.institution_type === 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             if (answeredData?.academic_history?.class_id) {
-              const filteredData = response?.data?.filter(
+              const filteredData = response?.data?.subjects_data?.filter(
                 (item: any) =>
-                  item?.is_active === 1 &&
-                  item?.class_id === answeredData?.academic_history?.class_id,
+                  item?.is_active &&
+                  item?.class_id === answeredData?.academic_history?.class_id &&
+                  (answeredData?.academic_history?.stream
+                    ? item.stream == answeredData?.academic_history?.stream
+                    : true)
               );
-
               setSubjects(filteredData || []);
             } else {
               const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1,
+                (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
             }
@@ -489,10 +512,10 @@ export const ProfileDialog: FunctionComponent<{
     } else {
       getData('college_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data?.filter(
               (item: any) =>
-                item?.is_active === 1 &&
+                item?.is_active &&
                 item.course_id === answeredData?.academic_history?.course_id &&
                 item.semester_id === answeredData?.academic_history?.sem_id,
             );
@@ -511,257 +534,285 @@ export const ProfileDialog: FunctionComponent<{
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const filteredQuestions = initialQuestions;
   useEffect(() => {
-    setAnswers([]);
-    if (currentSection) {
-      const fetchProfileData = async () => {
-        try {
-          const data = await getData(`${profileURL}/${StudentId}`);
-          if (data.status === 200) {
-            setAnsweredData(data.data);
-
-            // Get the values from the fetched data
-            const guardianName = data?.data?.basic_info?.father_name || '';
-            const subjectPref =
-              data?.data?.subject_preference?.score_in_percentage || '';
-            const contact = data?.data?.contact?.mobile_no_call || '';
-            const language = data?.data?.language_known?.language_id || '';
-            const hobby = data?.data?.hobby?.hobby_id || '';
-            const instituteType =
-              data?.data?.academic_history?.institution_type || '';
-            const address = data?.data?.address?.address1 || '';
-
-            if (guardianName) {
-              filteredQuestions.basic = filteredQuestions.basic.filter(
-                (_, index) => index > 7,
-              );
-            }
-            if (instituteType) {
-              // Skip institution type-related questions
-              if (instituteType === 'school') {
-                const questionsToRemove = [
-                  'Hi! Please provide your academic information! What is your institute type?',
-                  'Please select your board',
-                  'Please select your state',
-                  'Please select your class',
-                  'Please select your stream',
-                  'Please select your university',
-                  'Please select your institution',
-                  'Please select your course',
-                  'Please select your semester',
-                  'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
-                  'What is your learning style?',
-                  'Please select year',
-                  'Please select your semester ?',
-                ];
+    if (usertype === 'student') {
+      setAnswers([]);
+      if (currentSection) {
+        const fetchProfileData = async () => {
+          try {
+            const data = await getData(`${profileURL}/${Student_uuid}`);
+            if (data.status) {
+              setAnsweredData(data.data);
+              localStorage.setItem('student_id', data?.data?.basic_info?.id);
+              // Get the values from the fetched data
+              const guardianName = data?.data?.basic_info?.father_name || '';
+              const subjectPref =
+                data?.data?.subject_preference?.score_in_percentage || '';
+              const contact = data?.data?.contact?.mobile_no_call || '';
+              const language = data?.data?.language_known?.language_id || '';
+              const hobby = data?.data?.hobby?.hobby_id || '';
+              const instituteType =
+                data?.data?.academic_history?.institution_type || '';
+              const address = data?.data?.address?.address1 || '';
+              if (guardianName) {
                 filteredQuestions.basic = filteredQuestions.basic.filter(
-                  (question) => !questionsToRemove.includes(question),
+                  (_, index) => index > 7,
                 );
-              } else {
-                const questionsToRemove = [
-                  'Hi! Please provide your academic information! What is your institute type?',
-                  'Please select your board',
-                  'Please select your state',
-                  'Please select your class',
-                  'Please select your stream',
-                  'Please select your university',
-                  'Please select your institution',
-                  'Please select your course',
-                  'Please select your semester',
-                  'What is your learning style?',
-                  'Please select year',
-                  'Select your subject name',
-                ];
+              }
+              if (instituteType) {
+                // Skip institution type-related questions
+                if (instituteType === 'school') {
+                  setSelectedStream(data?.data?.academic_history?.stream ? data?.data?.academic_history?.stream : 'general');
+                  const questionsToRemove = [
+                    'Hi! Please provide your academic information! What is your institute type?',
+                    'Please select your school name',
+                    'Please select your board',
+                    'Please select your state',
+                    'Please select your class',
+                    'Please select your stream',
+                    'Please select your university',
+                    'Please select your institution',
+                    'Please select your course',
+                    'Please select your semester',
+                    'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
+                    'What is your learning style?',
+                    'Please select year',
+                    'Please select your semester ?',
+                  ];
+                  filteredQuestions.basic = filteredQuestions.basic.filter(
+                    (question) => !questionsToRemove.includes(question),
+                  );
+                } else {
+                  setSelectedCourse(data?.data?.academic_history?.course_id);
+                  const questionsToRemove = [
+                    'Hi! Please provide your academic information! What is your institute type?',
+                    'Please select your school name',
+                    'Please select your board',
+                    'Please select your state',
+                    'Please select your class',
+                    'Please select your stream',
+                    'Please select your university',
+                    'Please select your institution',
+                    'Please select your course',
+                    'Please select your semester',
+                    'What is your learning style?',
+                    'Please select year',
+                    'Select your subject name',
+                  ];
+                  filteredQuestions.basic = filteredQuestions.basic.filter(
+                    (question) => !questionsToRemove.includes(question),
+                  );
+                }
+                setSelectedInstituteType(instituteType);
+              }
+              if (hobby) {
                 filteredQuestions.basic = filteredQuestions.basic.filter(
-                  (question) => !questionsToRemove.includes(question),
+                  (question) => question !== 'Hi, Please choose your hobbies',
+                );
+              }
+              if (language) {
+                filteredQuestions.basic = filteredQuestions.basic.filter(
+                  (question) =>
+                    ![
+                      'Select your known language',
+                      'What is your proficiency in the selected language?',
+                    ].includes(question),
+                );
+              }
+              if (contact) {
+                filteredQuestions.basic = filteredQuestions.basic.filter(
+                  (question) =>
+                    ![
+                      'What is your WhatsApp number?',
+                      'What is your mobile number?',
+                      'Please select your mobile number country code',
+                    ].includes(question),
+                );
+              }
+              if (subjectPref) {
+                filteredQuestions.basic = filteredQuestions.basic.filter(
+                  (question) =>
+                    ![
+                      'Add your score in percentage',
+                      'What is your preference?',
+                      'Select your subject name',
+                      'Please select a teacher',
+                      'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
+                      'Please select your semester ?',
+                    ].includes(question),
+                );
+              }
+              if (address) {
+                filteredQuestions.basic = filteredQuestions.basic.filter(
+                  (question) =>
+                    ![
+                      'Please select your current country of residence',
+                      'Which state do you currently reside in?',
+                      'Which district do you currently live in?',
+                      'Which city do you live in?',
+                      'What is your Pin code?',
+                      'What is your first address?',
+                      'What is your second address?',
+                    ].includes(question),
                 );
               }
             }
-            if (hobby) {
-              filteredQuestions.basic = filteredQuestions.basic.filter(
-                (question) => question !== 'Hi, Please choose your hobbies',
-              );
-            }
-            if (language) {
-              filteredQuestions.basic = filteredQuestions.basic.filter(
-                (question) =>
-                  ![
-                    'Select your known language',
-                    'What is your proficiency in the selected language?',
-                  ].includes(question),
-              );
-            }
-            if (contact) {
-              filteredQuestions.basic = filteredQuestions.basic.filter(
-                (question) =>
-                  ![
-                    'What is your WhatsApp number?',
-                    'What is your mobile number?',
-                    'Please select your mobile number country code',
-                  ].includes(question),
-              );
-            }
-            if (subjectPref) {
-              filteredQuestions.basic = filteredQuestions.basic.filter(
-                (question) =>
-                  ![
-                    'Add your score in percentage',
-                    'What is your preference?',
-                    'Select your subject name',
-                    'Hi, Please provide your subject preference information! what is your course name to which your subject belongs?',
-                    'Please select your semester ?',
-                  ].includes(question),
-              );
-            }
-            if (address) {
-              filteredQuestions.basic = filteredQuestions.basic.filter(
-                (question) =>
-                  ![
-                    'Please select your current country of residence',
-                    'Which state do you currently reside in?',
-                    'Which district do you currently live in?',
-                    'Which city do you live in?',
-                    'What is your Pin code?',
-                    'What is your first address?',
-                    'What is your second address?',
-                  ].includes(question),
-              );
-            }
+
+            setFilterdQuestions1(filteredQuestions);
+            // Update state after filtering
+            // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
+            setCurrentQuestionIndex(0);
+            setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
+          } catch (error) {
+            console.error('Error fetching profile data:', error);
           }
+        };
 
-          setFilterdQuestions1(filteredQuestions);
-          // Update state after filtering
-          // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
-          setCurrentQuestionIndex(0);
-          setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
-        } catch (error) {
-          console.error('Error fetching profile data:', error);
-        }
-      };
+        fetchProfileData();
 
-      fetchProfileData();
+        setCurrentQuestionIndex(
+          Number(mapping[filteredQuestions.basic?.[0]]?.[0]),
+        );
+        setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
+      }
 
-      setCurrentQuestionIndex(
-        Number(mapping[filteredQuestions.basic?.[0]]?.[0]),
-      );
-      setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
+      getData('/class/list')
+        .then((response: any) => {
+          if (response.status) {
+            const filteredData = response?.data?.classes_data?.filter(
+              (item: any) => item?.is_active,
+            );
+            setClasses(filteredData || []);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+      getData('/university/list')
+        .then(async (response: any) => {
+          if (response.status) {
+            const filteredData = await response?.data?.universities_data?.filter(
+              (item: any) => item?.is_active,
+            );
+            setUniversity(filteredData || []);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+      getData('/semester/list')
+        .then(async (response: any) => {
+          if (response.status) {
+            const filteredData = await response?.data?.semesters_data?.filter(
+              (item: any) => item?.is_active,
+            );
+            setSemester(filteredData || []);
+            setSemesterpre(filteredData || []);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+      getData('/institute/list')
+        .then(async (response: any) => {
+          if (response.status) {
+            const filteredData = await response?.data?.filter(
+              (item: any) => item?.is_active && item.is_approve,
+            );
+            setInstitutes(filteredData || []);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+
+      getData('/course/list')
+        .then((response: any) => {
+          if (response.status) {
+            const filteredData = response?.data?.course_data?.filter(
+              (item: any) => item?.is_active,
+            );
+            setCourses(filteredData || []);
+            setCoursesAll(filteredData || []);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+
+      getData('hobby/list')
+        .then((data: any) => {
+          if (data?.status) {
+            const filteredData = data?.data?.hobby_data?.filter(
+              (item: any) => item?.is_active,
+            );
+            setAllHobbies(filteredData || []);
+            // setAllHobbies(data?.data);
+          }
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+
+      getData('language/list')
+        .then((data: any) => {
+          if (data?.status) {
+            const filteredData = data?.data?.languagees_data?.filter(
+              (item: any) => item?.is_active,
+            );
+            setAllLanguage(filteredData || []);
+            // setAllLanguage(data?.data);
+          }
+        })
+        .catch((e) => {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        });
+
+      getSubject();
     }
-
-    getData('/class/list')
-      .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active,
-          );
-          setClasses(filteredData || []);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-    getData('/university/list')
-      .then(async (response: any) => {
-        if (response.status === 200) {
-          const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1,
-          );
-          setUniversity(filteredData || []);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-    getData('/semester/list')
-      .then(async (response: any) => {
-        if (response.status === 200) {
-          const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1,
-          );
-          setSemester(filteredData || []);
-          setSemesterpre(filteredData || []);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-    getData('/institution/list')
-      .then(async (response: any) => {
-        if (response.status === 200) {
-          const filteredData = await response?.data?.filter(
-            (item: any) => item?.is_active === 1,
-          );
-          setInstitutes(filteredData || []);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-
-    getData('/course/list')
-      .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
-          );
-          setCourses(filteredData || []);
-          setCoursesAll(filteredData || []);
-        }
-      })
-      .catch((error) => {
-        toast.error(error?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-
-    getData('hobby/list')
-      .then((data: any) => {
-        if (data?.status === 200) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
-          );
-          setAllHobbies(filteredData || []);
-          // setAllHobbies(data?.data);
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-
-    getData('language/list')
-      .then((data: any) => {
-        if (data?.status === 200) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
-          );
-          setAllLanguage(filteredData || []);
-          // setAllLanguage(data?.data);
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-
-    getSubject();
   }, [currentSection, isOpen]);
 
+  const getTeahcersList = (subject:any) => {
+    const student_id=localStorage.getItem('student_id')
+    if(student_id){
+      getData(`/teacher/teachers_list_for_student/${student_id}`).then((data) => {
+        if (data.status) {
+          console.log(data.data);
+          const filteredTeacher = data.data?.teachers?.filter((teacher:any) =>
+            teacher?.subject_list?.includes(subject)
+          );
+            setTeacherList(filteredTeacher);
+        }
+      }).catch((error) => {
+        toast.error(error.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+        })
+      })
+    }
+  
+  }
   useEffect(() => {
     // Scroll to the bottom of the chat box whenever messages update
     if (chatBoxRef.current) {
@@ -799,7 +850,7 @@ export const ProfileDialog: FunctionComponent<{
     return date.toISOString();
   };
 
-  const saveAnswersforBasic = (answers: string[]) => {
+  const saveAnswersforBasic = async  (answers: string[]) => {
     const birthdate: any = parseDate(answers[1]);
     // Convert the birthdate to a Date object
     const birthdateObj = new Date(birthdate);
@@ -825,8 +876,29 @@ export const ProfileDialog: FunctionComponent<{
     const nameParts: string[] = fullName?.split(' ');
     const firstname = nameParts?.[0];
     const lastname = nameParts?.[1];
+    const email = localStorage.getItem('email');
+    const phone = localStorage.getItem('phone');
+    const formData = new FormData();
+    const nfile: any = uploadedFile;
+    formData.append('file', nfile)
+    let img_res: string = '';
+    if (formData.has('file')) {
+      try {
+        const data: any = await postFileData("upload_file/upload", formData);
+    
+        if (data?.status) {
+          setProImage(data?.data?.url);
+          const fileUrl = data?.data?.url;
+          const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
+          img_res = fileName // ✅ Now img_res is updated correctly
+        }
+      } catch (error) {
+        console.error("File upload failed", error);
+      }
+    }
+
     const payload = {
-      student_login_id: StudentId,
+      user_uuid: Student_uuid,
       first_name: answeredData?.basic_info?.first_name || firstname,
       last_name: answeredData?.basic_info?.last_name || lastname,
       // gender: answers[1],
@@ -837,53 +909,25 @@ export const ProfileDialog: FunctionComponent<{
       guardian_name:
         answeredData?.basic_info?.guardian_name || answers[6] || '',
       aim: answeredData?.basic_info?.aim || answers[2],
-      pic_path: answeredData?.basic_info?.pic_path || answers[7],
+      pic_path: img_res|| answeredData?.basic_info?.pic_path || answers[7],
+      email: email,
+      phone: phone
     };
 
     postData(`${'student/add'}`, payload)
       .then((data: any) => {
-        if (data.status === 200) {
+        if (data.status) {
           // toast.success(data?.message, {
           //   hideProgressBar: true,
           //   theme: 'colored',
           // });
+          callAPI();
+          localStorage.setItem('student_id', data?.data?.id);
           setNamepro(data?.first_name);
           const formData = new FormData();
           const nfile: any = uploadedFile;
           formData.append('file', nfile);
 
-          if (formData.has('file')) {
-            postFileData(`${'upload_file/upload'}`, formData)
-              .then((data: any) => {
-                if (data?.status === 200) {
-                  setProImage(data?.image_url);
-                  // toast.success(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: 'colored',
-                  // });
-                } else if (data?.status === 404) {
-                  // toast.error(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: 'colored',
-                  // });
-                } else {
-                  // toast.error(data?.message, {
-                  //   hideProgressBar: true,
-                  //   theme: 'colored',
-                  // });
-                }
-              })
-              .catch(() => {
-                // toast.error(e?.message, {
-                //   hideProgressBar: true,
-                //   theme: 'colored',
-                // });
-              });
-          }
-          // toast.success('Basic information saved successfully', {
-          //   hideProgressBar: true,
-          //   theme: 'colored',
-          // });
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -904,28 +948,31 @@ export const ProfileDialog: FunctionComponent<{
     // let phoneNum = contfullPhone?.split(' ');
     // const contfullPhonewtsp = answer[21];
     // let phoneNumwtsp = contfullPhonewtsp?.split(' ');
-    const email = localStorage.getItem('userid');
+    const email = localStorage.getItem('email');
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       mobile_isd_call: answeredData?.contact?.mobile_isd_call || phone,
-      mobile_no_call:
-        answeredData?.contact?.mobile_no_call ||
-        answer[answer.length - 1] === ''
-          ? answer[answer.length - 2]
-          : answer[answer.length - 3],
+      mobile_no_call: localStorage.getItem('register_num'),
+
       mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
       mobile_no_watsapp:
         answeredData?.contact?.mobile_no_watsapp ||
-        answer[answer.length - 1] === ''
+          answer[answer.length - 1] === ''
           ? answer[answer.length - 1]
           : answer[answer.length - 2],
 
       email_id: answeredData?.contact?.email_id || email,
-    };
+    } as any;
+    const formData = new FormData();
+
+
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
 
     postData(`${'student_contact/add'}`, payload)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           // toast.success(data?.message, {
           //   hideProgressBar: true,
           //   theme: 'colored',
@@ -947,7 +994,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswerforAddress = (answers: string[]) => {
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
 
       address1:
         answeredData?.address?.address1 || answers[answers.length - 1] === ''
@@ -979,7 +1026,7 @@ export const ProfileDialog: FunctionComponent<{
     };
 
     postData('/student_address/add', payload).then((response) => {
-      if (response.status === 200) {
+      if (response.status) {
         // toast.success('Address information saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -995,82 +1042,48 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswersforacadmichistory = (answers: string[]) => {
     const length = answers.length;
+    const classname = classes.find(
+      (item) =>
+        String(item.id) === String(answers[answers.length - 1]) ||
+        String(item.id) === String(answers[answers.length - 2]),
+    )?.class_name;
+    const selectedInstituteTypeLower = selectedInstituteType?.toLowerCase();
     const payload = {
-      student_id: StudentId,
-      institution_type:
-        answeredData?.academic_history?.institution_type ||
-        selectedInstituteType,
-      board:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'school'
-          ? answeredData?.academic_history?.board || selectedBoard
-          : null,
-      state_for_stateboard:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'school'
-          ? answeredData?.academic_history?.state_for_stateboard ||
-            selectedAcademicState?.toLowerCase()
-          : null,
-      institute_id:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'college'
-          ? answeredData?.academic_history?.institute_id ||
-            selectedInstitute?.toString()
-          : null,
-      course_id:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'college'
-          ? answeredData?.academic_history?.course_id ||
-            selectCourse?.toString()
-          : null,
-      learning_style:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'college'
-          ? answeredData?.academic_history?.learning_style ||
-            selectedLearningStyle
-          : null,
-      class_id:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'school'
-          ? answeredData?.academic_history?.class_id ||
-            typeof answers[length - 2] === 'number'
+      student_id: localStorage.getItem('student_id'),
+      ...(selectedInstituteType && {
+        institution_type: selectedInstituteType,
+      }),
+      ...(selectedInstituteTypeLower === 'school' && {
+        board: selectedBoard,
+        ...(selectedAcademicState && {
+          state_for_stateboard: selectedAcademicState?.toLowerCase(),
+        }),
+        class_id:
+          classname === 'class_11' || classname === 'class_12'
             ? answers[length - 2]?.toString()
-            : answers[length - 1]?.toString()
-          : null,
-      // year: answeredData?.academic_history?.year || answers[18] || '',
-      year:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'college'
-          ? answeredData?.academic_history?.year ||
-            (answers[length - 1]
-              ? dayjs(answers[length - 1], ['DD/MM/YYYY', 'YYYY'])
-                  ?.year()
-                  ?.toString()
-              : '')
-          : '',
-      stream:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'school'
-          ? answeredData?.academic_history?.stream ||
-            typeof answers[length - 2] === 'number'
-            ? answers[length - 1]
-            : null
-          : null,
-      university_id:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'college'
-          ? answeredData?.academic_history?.university_id ||
-            answers[answers.length - 6]
-          : null,
-      sem_id:
-        answeredData?.academic_history?.institution_type?.toLowerCase() ||
-        selectedInstituteType?.toLowerCase() === 'college'
-          ? answeredData?.academic_history?.sem_id || answers[length - 3]
-          : null,
-    };
+            : answers[length - 1]?.toString(),
+        // ...((classname === 'class_11' || classname === 'class_12') && {
+        //   stream: answers[length - 1]
+        // }),
+          ...(classname === 'class_11' || classname === 'class_12'
+            ? { stream: answers[length - 1] }
+            : { stream: 'general' }) // Default to 'General' for other classes
+        
 
+      }),
+      institute_id: selectedInstitute?.toString(),
+      ...(selectedInstituteTypeLower === 'college' && {
+        course_id: selectCourse?.toString(),
+        learning_style: selectedLearningStyle,
+        year: (answers[length - 1]
+          ? dayjs(answers[length - 1], ['DD/MM/YYYY', 'YYYY'])?.year()?.toString()
+          : ''),
+        university_id: answers[answers.length - 6],
+        sem_id: answers[length - 3],
+      }),
+    };
     postData('/new_student_academic_history/add', payload).then((response) => {
-      if (response.status === 200) {
+      if (response.status) {
         // toast.success('Academic hinstory information saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -1087,30 +1100,31 @@ export const ProfileDialog: FunctionComponent<{
   const saveAnswerforsubjectpreference = (answers: string[]) => {
     const length = answers.length;
     const payload = {
-      student_id: StudentId,
-      subject_id: answeredData?.subject_preference?.id || selectSubject,
-      preference:
-        answeredData?.subject_preference?.preference || answers[length - 3],
-      score_in_percentage:
-        answeredData?.subject_preference?.score_in_percentage ||
-        answers[length - 2],
+      student_id: localStorage.getItem('student_id'),
+      subject_id: selectSubject,
+      preference: answers[length - 3],
+      score_in_percentage: answers[length - 2],
+      ...((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school'&&
+       { class_id:answeredData?.academic_history?.class_id || answers[11]}
+      ),
+      
       sem_id:
         selectedInstituteType?.toLowerCase() === 'college' ||
-        answeredData?.academic_history?.institution_type === 'college'
+          answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-
-      ...(answeredData?.academic_history?.institution_type === 'school' &&
+      ...((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school' &&
         answeredData?.academic_history?.stream && {
-          stream: answeredData?.academic_history?.stream || answers[12],
-        }),
+        stream: answeredData?.academic_history?.stream || answers[12],
+      }),
       ...((answeredData?.academic_history?.institution_type === 'college' ||
         selectedInstituteType?.toLowerCase() === 'college') && {
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
+      teacher_id: answers[length - 1]
     };
     postData('/subject_preference/add', payload).then((response) => {
-      if (response.status === 200) {
+      if (response.status) {
         // toast.success('Subject Preference information saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -1156,7 +1170,7 @@ export const ProfileDialog: FunctionComponent<{
     label: option.course_name,
   }));
   const universitySelectOptions = university?.map((option) => ({
-    value: option.university_id,
+    value: option.id,
     label: option.university_name,
   }));
 
@@ -1165,28 +1179,34 @@ export const ProfileDialog: FunctionComponent<{
     label: `Semester ${option?.semester_number}`,
   }));
 
+  const teacherSelectOption = teacherList?.map((option) => ({
+    value: option.id,
+    label: `${option.first_name} ${option.last_name}`
+  }));
+
   const semlable = semester?.filter(
     (item) => item?.semester_id === selectSemester,
   );
   const semesterSelectOptionspre = selectSemester
     ? [
-        {
-          value: selectSemester,
-          label: `Semester ${semlable[0]?.semester_number}`,
-        },
-      ]
+      {
+        value: selectSemester,
+        label: `Semester ${semlable[0]?.semester_number}`,
+      },
+    ]
     : semesterpre[0]?.semester_id
       ? [
-          {
-            value: semesterpre[0]?.semester_id,
-            label: `Semester ${semesterpre[0]?.semester_number}`,
-          },
-        ]
+        {
+          value: semesterpre[0]?.semester_id,
+          label: `Semester ${semesterpre[0]?.semester_number}`,
+        },
+      ]
       : [];
+
 
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
-    label: option.institution_name,
+    label: option.institute_name,
   }));
   const languageOptions = alllanguage.map((option) => ({
     value: option.id,
@@ -1290,13 +1310,13 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveanswerForHobbeis = () => {
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       hobby_id: answeredData?.hobby?.hobby_id || selectedHobby,
     };
 
     if (selectedHobby) {
       postData('student_hobby/add', payload).then((response) => {
-        if (response.status === 200) {
+        if (response.status) {
           // toast.success('Your hobbies saved successfully', {
           //   hideProgressBar: true,
           //   theme: 'colored',
@@ -1313,14 +1333,14 @@ export const ProfileDialog: FunctionComponent<{
 
   const saveAnswerForLanguage = () => {
     const payload = {
-      student_id: StudentId,
+      student_id: localStorage.getItem('student_id'),
       language_id:
         answeredData?.language_known?.language_id || selectedLanguage,
       proficiency:
         answeredData?.language_known?.proficiency || selectedproficiency,
     };
     postData('student_language_known/add', payload).then((response) => {
-      if (response.status === 200) {
+      if (response.status) {
         // toast.success('Your language saved successfully', {
         //   hideProgressBar: true,
         //   theme: 'colored',
@@ -1558,7 +1578,6 @@ export const ProfileDialog: FunctionComponent<{
       setgName(false);
     }
 
-    //console.log(checkChanges);
     const updatedAnswers = [...answers, ''];
     const filteredAnswers = updatedAnswers.filter((item) => item !== undefined);
     setAnswers(filteredAnswers);
@@ -1785,8 +1804,7 @@ export const ProfileDialog: FunctionComponent<{
 
         if (whatsappnumbet) {
           saveAnswersforContact([...answers, e.currentTarget.value]);
-        } else if (persentegequestion)
-          saveAnswerforsubjectpreference([...answers, e.currentTarget.value]);
+        }
         else if (secondaddressquestion)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
@@ -2256,9 +2274,9 @@ export const ProfileDialog: FunctionComponent<{
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         getData('school_subject/list')
           .then((response: any) => {
-            if (response.status === 200) {
-              const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1,
+            if (response.status) {
+              const filteredData = response?.data?.subjects_data?.filter(
+                (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
               // setSubjects(response.data);
@@ -2272,6 +2290,14 @@ export const ProfileDialog: FunctionComponent<{
               position: 'top-center',
             });
           });
+
+        const filteredInstitution = institutes.filter(
+          (item) =>
+            item.is_active &&
+            item.entity_type == 'school' &&
+            item.is_approve == true,
+        );
+        setInstitutes(filteredInstitution);
       } else {
         const questionsToRemove = [
           'Please select your board',
@@ -2279,6 +2305,7 @@ export const ProfileDialog: FunctionComponent<{
           'Please select your class',
           'Select your subject name',
           'Please select your stream',
+          'Please select your school name'
         ];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
           (question) => !questionsToRemove.includes(question),
@@ -2289,9 +2316,9 @@ export const ProfileDialog: FunctionComponent<{
 
         getData('college_subject/list')
           .then((response: any) => {
-            if (response.status === 200) {
-              const filteredData = response?.data?.filter(
-                (item: any) => item?.is_active === 1,
+            if (response.status) {
+              const filteredData = response?.data?.subjects_data?.filter(
+                (item: any) => item?.is_active,
               );
               setSubjects(filteredData || []);
               // setSubjects(response.data);
@@ -2384,7 +2411,6 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.value, type: 'answer' as const },
     ];
-
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -2550,7 +2576,10 @@ export const ProfileDialog: FunctionComponent<{
 
   const handleDropdownChangeuniversity = (e: any) => {
     const filteredInstitution = institutes.filter(
-      (item) => item.university_id === e.value,
+      (item) =>
+        item.university_id === e.value &&
+        item.is_active &&
+        item.is_approve == true,
     );
     setInstitutes(filteredInstitution);
     const updatedAnswers = [...answers];
@@ -2610,6 +2639,33 @@ export const ProfileDialog: FunctionComponent<{
       setCurrentQuestionIndex(0);
     }
   };
+
+  const handleDropdownChangeTeacher = (e: any) => {
+    const currentQuestions = filterdQuestions1['basic'];
+    const updatedAnswers = [...answers];
+    updatedAnswers[answers.length] = e.value;
+    setSelectedTeacher(e.value);
+    setAnswers(updatedAnswers);
+    const updatedMessages = [
+      ...messages,
+      { text: e.label, type: 'answer' as const },
+    ];
+    if (teacherQuestion) saveAnswerforsubjectpreference(updatedAnswers);
+    if (currentQuestionIndex < currentQuestions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setMessages([
+        ...updatedMessages,
+        {
+          text: currentQuestions[currentQuestionIndex + 1],
+          type: 'question' as const,
+        },
+      ]);
+    } else {
+      setMessages(updatedMessages);
+      proceedToNextSection(currentSection!);
+      setCurrentQuestionIndex(0);
+    }
+  }
   const handleDropdownChangesemesterpre = (e: any) => {
     // const courses = courses.filter((item)=> item.course_name === answers[] )
     const filteredsubject = subjects.filter(
@@ -2628,7 +2684,6 @@ export const ProfileDialog: FunctionComponent<{
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
-
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setMessages([
@@ -2649,12 +2704,24 @@ export const ProfileDialog: FunctionComponent<{
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
     setSelectedSubject(e.value);
+   // setSelectedSubjectName(e.label)
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1['basic'];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
+   
+    getTeahcersList(e.label);
+    
+    const filteredsempre = semesterpre.filter(
+      (item) =>
+      (item.semester_id === answeredData?.academic_history?.sem_id
+      )
+    );
+
+    setSemesterpre(filteredsempre);
+
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -2845,6 +2912,7 @@ export const ProfileDialog: FunctionComponent<{
   const semisterprepquestion =
     getLastQuestion() == 'Please select your semester ?';
 
+  const schoolnameQuestion = getLastQuestion() == 'Please select your school name';
   const stylequestion = getLastQuestion() == 'What is your learning style?';
   const yearquesiton = getLastQuestion() == 'Please select year';
   const hobbyquestion = getLastQuestion() == 'Hi, Please choose your hobbies';
@@ -2860,6 +2928,7 @@ export const ProfileDialog: FunctionComponent<{
     getLastQuestion() == 'Which state do you currently reside in?';
   const persentegequestion =
     getLastQuestion() == 'Add your score in percentage';
+  const teacherQuestion = getLastQuestion() == 'Please select a teacher';
   const verylastquestion =
     getLastQuestion() == 'Thanks for providing your personal information';
 
@@ -2868,7 +2937,6 @@ export const ProfileDialog: FunctionComponent<{
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
-
   return (
     <>
       <div
@@ -2909,16 +2977,14 @@ export const ProfileDialog: FunctionComponent<{
                   return (
                     <div
                       key={index}
-                      className={`message-wrapper d-flex mb-3 ${
-                        message.type === 'question'
-                          ? 'justify-content-start'
-                          : 'justify-content-end'
-                      }`}
+                      className={`message-wrapper d-flex mb-3 ${message.type === 'question'
+                        ? 'justify-content-start'
+                        : 'justify-content-end'
+                        }`}
                     >
                       <div
-                        className={`message-bubble p-3 ${
-                          message.type === 'question' ? 'left' : 'right'
-                        }`}
+                        className={`message-bubble p-3 ${message.type === 'question' ? 'left' : 'right'
+                          }`}
                         style={{
                           maxWidth: '80%',
                           backgroundColor:
@@ -3103,6 +3169,15 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSemester}
                     />
+                  ) : teacherQuestion ? (
+                    <Select
+                      className="dropdown-wrapper"
+                      onChange={handleDropdownChangeTeacher}
+                      options={teacherSelectOption}
+                      placeholder="Select an option"
+                      menuPlacement="top"
+                      value={selectTeacher}
+                    />
                   ) : semisterprepquestion ? (
                     <Select
                       className="dropdown-wrapper"
@@ -3112,7 +3187,7 @@ export const ProfileDialog: FunctionComponent<{
                       menuPlacement="top"
                       value={selectSemesterpre}
                     />
-                  ) : institutequestion ? (
+                  ) : institutequestion || schoolnameQuestion ? (
                     <Select
                       className="dropdown-wrapper"
                       onChange={handleDropdownChangeInstitute}
@@ -3425,21 +3500,21 @@ export const ProfileDialog: FunctionComponent<{
                       {(guardianquestion ||
                         whatsappnumbet ||
                         secondaddressquestion) && (
-                        <p
-                          style={{
-                            position: 'absolute',
-                            top: '50%',
-                            right: '10px', // Adjust this value to move the button horizontally
-                            transform: 'translateY(-50%)',
-                            cursor: 'pointer',
-                            // color: chattextbgright(namecolor),
-                            margin: 0,
-                          }}
-                          onClick={handleSkip}
-                        >
-                          Skip
-                        </p>
-                      )}
+                          <p
+                            style={{
+                              position: 'absolute',
+                              top: '50%',
+                              right: '10px', // Adjust this value to move the button horizontally
+                              transform: 'translateY(-50%)',
+                              cursor: 'pointer',
+                              // color: chattextbgright(namecolor),
+                              margin: 0,
+                            }}
+                            onClick={handleSkip}
+                          >
+                            Skip
+                          </p>
+                        )}
                     </div>
                   )}
                 </div>

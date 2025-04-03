@@ -55,13 +55,23 @@ const Entity = () => {
 
   const callAPI = async () => {
     getData(`${EntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        if (data.data) {
-          setDataEntity(data?.data);
+      .then((data) => {
+        if (data.status) {
+          const entityData = data.data.entityes_data.map((entity: any) => {
+            const createdDateTime = entity?.created_at;
+            const updatedDateTime = entity?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            entity.created_at = created_time.toLocaleString();
+            entity.updated_at = updated_time.toLocaleString();
+            return entity;
+          });
+          setDataEntity(entityData);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -90,8 +100,8 @@ const Entity = () => {
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteEntityURL}/${id}`)
-      .then((data: { message: string; status: any }) => {
-        if (data.status === 200) {
+      .then((data: { message: string; status: boolean }) => {
+        if (data.status) {
           toast.success('Entity deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -106,7 +116,7 @@ const Entity = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -227,7 +237,7 @@ const Entity = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Entity"
       />
     </>
   );

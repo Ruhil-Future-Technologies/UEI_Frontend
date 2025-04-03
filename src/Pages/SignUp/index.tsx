@@ -12,6 +12,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  ListItem,
+  List,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
@@ -34,17 +36,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import { QUERY_KEYS } from '../../utils/const';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import registerHero from '../../assets/img/register-hero.png';
+import OtpCard from '../../Components/Dailog/OtpCard';
 const Signup = () => {
   const signupUrl = QUERY_KEYS.POST_SIGNUP;
   const navigate = useNavigate();
-  const { postData, loading } = useApi();
+  const { postData, postDataJson, loading } = useApi();
   const [password, setPassword] = useState('');
 
-  const [emailphone, setEmailphone] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const value = 'student';
-  const userId = 'Email';
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [errorEmail, setEmailError] = useState('');
+  const [errorPhone, setPhoneError] = useState('');
+  const [errorPhoneValidation, setErrorPhoneValidation] =
+    useState<boolean>(false);
+  const [errorEmailValidation, setErrorEmailValidation] =
+    useState<boolean>(false);
   const [errorPassword, setPasswordError] = useState('');
 
   const [CheckTermandcondi, setCheckTermandcondi] = useState(true);
@@ -71,22 +80,26 @@ const Signup = () => {
   }, []);
 
   useEffect(() => {
-    if (emailphone && password) {
+    if (email && password) {
       setuserValue('');
     }
-  }, [emailphone, password]);
+  }, [email, password]);
 
   const register = async (e: React.FormEvent<HTMLFormElement>) => {
     // setIsLoading(true);
     e.preventDefault();
     // Validate email/phone and password
-    if (validateInput(emailphone) && validatePassword(password)) {
+    if (
+      errorEmailValidation &&
+      errorPhoneValidation &&
+      validatePassword(password)
+    ) {
       // setLoading(true);
       const UserSignUp = {
-        userid:
-          userId === 'Email' || userId === 'Phone' ? String(emailphone) : '',
+        email: String(email),
         password: String(password),
         user_type: String(value),
+        phone: String(phone),
       };
 
       const emptyKeys: string[] = [];
@@ -104,44 +117,38 @@ const Signup = () => {
           }
         }
       }
-
-      // If no empty fields, proceed with registration
       if (emptyKeys.length === 0) {
         try {
           const data = await postData(signupUrl, UserSignUp);
-
-          if (data?.status === 200) {
+          if (data?.status === true) {
             // setLoading(false);
+            setPopupOtpCard(true);
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            // setIsLoading(false);
-            navigate('/');
-          } else if (
-            data?.status === 400 &&
-            data?.message === 'Userid already exists'
-          ) {
-            // setLoading(false);
+            localStorage.setItem('user_uuid', data?.data.user_uuid);
+            localStorage.setItem('email', data?.data.email);
+            localStorage.setItem('phone', data?.data.phone);
+            localStorage.setItem('user_type', data?.data.user_type);
+          } else {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            // setLoading(false);
-            // setIsLoading(false);
-          } else {
-            // setIssuccess(true);
-            // setMsg(data?.message);
           }
         } catch (error) {
-          // setLoading(false);
-          // setIsLoading(false);
           let errorMessage = 'An unexpected error occurred';
 
-          if (error instanceof Error) {
-            errorMessage = error?.message;
+          if (
+            (error as any)?.response &&
+            (error as any)?.response.data &&
+            (error as any)?.response?.data?.message
+          ) {
+            errorMessage = (error as any)?.response?.data?.message;
+          } else if ((error as any)?.message) {
+            errorMessage = (error as Error)?.message;
           }
-          //  setLoading(false);
           toast.error(errorMessage, {
             hideProgressBar: true,
             theme: 'colored',
@@ -151,40 +158,109 @@ const Signup = () => {
     }
   };
 
-  const validateInput = (value: string): boolean => {
-    if (!value) {
-      setEmailError('Please enter an email or phone number');
-      return false;
+  const handleSubmit = (otp: string) => {
+    const payload = {
+      email: email,
+      otp: otp,
+    };
+    try {
+      postDataJson(`/auth/verify-otp`, payload).then((data) => {
+        if (data.status === true) {
+          handleSuccessfulLogin(data.data);
+        } else {
+          toast.error(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        }
+      });
+    } catch (error: any) {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
     }
+  };
 
-    const phoneRegex = /^[0-9]{10}$/;
+  const handleSuccessfulLogin = (data: any) => {
+    localStorage.setItem('token', 'Bearer ' + data?.access_token);
+    localStorage.setItem('userid', data?.data?.userid);
+    localStorage.setItem('lastRoute', window.location.pathname);
+
+    const tokenLifespan = 7100; // token lifespan in seconds (1 hour)
+    // Calculate the expiry time
+    const expiryTime = Date.now() + tokenLifespan * 1000;
+    localStorage.setItem('tokenExpiry', expiryTime.toString());
+
+    toast.success('User logged in successfully', {
+      hideProgressBar: true,
+      theme: 'colored',
+      autoClose: 500,
+    });
+    const userType = localStorage.getItem('user_type');
+    if (userType === 'student') {
+      navigate('/main/Dashboard');
+    }
+  };
+  const validateInput = (value: string, name: string): boolean => {
+    const phoneRegex = /^(?!0{10})[0-9]{10}$/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (phoneRegex.test(value) || emailRegex.test(value)) {
-      setEmailError('');
-      return true;
-    } else {
-      setEmailError('Invalid email or phone number format');
-      return false;
+    let valid = true;
+    if (name === 'email_id') {
+      if (!value) {
+        setEmailError('Please enter an email');
+        valid = false;
+        setErrorEmailValidation(false);
+      }
+      if (emailRegex.test(value)) {
+        setEmailError('');
+        valid = true;
+        setErrorEmailValidation(true);
+      } else {
+        setEmailError('Invalid email format');
+        valid = false;
+        setErrorEmailValidation(false);
+      }
     }
-  };
 
+    if (name === 'phone_no') {
+      if (!value) {
+        setPhoneError('Please enter valid Phone No');
+        valid = false;
+        setErrorPhoneValidation(false);
+      }
+      if (phoneRegex.test(value)) {
+        setPhoneError('');
+        valid = true;
+        setErrorPhoneValidation(true);
+      } else {
+        setPhoneError('Invalid  phone number');
+        valid = false;
+        setErrorPhoneValidation(false);
+      }
+    }
+    return valid;
+  };
   const handleChangeData = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    if (!emailphone) {
-      setEmailError('Please fill out this field test');
-      // You can set your custom error message logic here if needed
-    }
-    setEmailphone(value);
-    validateInput(value);
-  };
+    const { value, name } = e.target;
 
+    if (name == 'email_id') {
+      if (!email) {
+        setEmailError('Please fill out this field test');
+      }
+      setEmail(value);
+    }
+    if (name == 'phone_no') {
+      setPhone(value);
+    }
+    validateInput(value, name);
+  };
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setPasswordError(''); // Clear error message when password is changed
     validatePassword(e.target.value);
   };
-
   const validatePassword = (password: string) => {
     const uppercaseRegex = /[A-Z]/;
     const lowercaseRegex = /[a-z]/;
@@ -213,10 +289,8 @@ const Signup = () => {
   };
   const handleTermandCondi = (e: ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
-
     setCheckTermandcondi(!isChecked);
   };
-
   const handleTACpopup = () => {
     setPopupTermandcondi(true);
   };
@@ -325,16 +399,56 @@ const Signup = () => {
                     >
                       <div className="mb-3">
                         <label htmlFor="" className="form-label">
-                          Email/Phone
+                          Email
                         </label>
                         <TextField
-                          data-testid="emailphone"
-                          id="emailphone"
-                          value={emailphone}
+                          data-testid="email"
+                          id="email"
+                          name="email_id"
+                          value={email}
                           onChange={handleChangeData}
-                          placeholder="Email or Mobile Number"
+                          placeholder="Enter your email"
                           error={!!errorEmail}
                           helperText={errorEmail}
+                          required={true}
+                          fullWidth
+                          sx={{
+                            '& input:-webkit-autofill': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important', // Set the background color you want
+                              WebkitTextFillColor: 'black !important', // Set the text color you want
+                            },
+                            '& input:-webkit-autofill:hover': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
+                            },
+                            '& input:-webkit-autofill:focus': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
+                            },
+                            '& input:-webkit-autofill:active': {
+                              WebkitBoxShadow:
+                                '0 0 0 1000px white inset !important',
+                              WebkitTextFillColor: 'black !important',
+                            },
+                          }}
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="" className="form-label">
+                          Phone No.
+                        </label>
+                        <TextField
+                          data-testid="phone"
+                          id="phone"
+                          name="phone_no"
+                          value={phone}
+                          onChange={handleChangeData}
+                          placeholder="Enter phone number"
+                          error={!!errorPhone}
+                          helperText={errorPhone}
                           required={true}
                           fullWidth
                           sx={{
@@ -450,7 +564,7 @@ const Signup = () => {
                             }}
                           >
                             {' '}
-                            Terms and Condition
+                            Terms and Conditions
                           </a>
                         </label>
                       </div>
@@ -472,7 +586,7 @@ const Signup = () => {
                           to="/institute-registration"
                           style={{ color: '#9943EC' }}
                         >
-                          <u>Register As Institute</u>
+                          <u>Register As Institution</u>
                         </Link>
                         <Link
                           to="/teacher-registration"
@@ -502,6 +616,44 @@ const Signup = () => {
             </div>
           </div>
         </section>
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={(otp: string) => handleSubmit(otp)}
+          email={email}
+        />
+        <footer className="login-footer">
+          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <List
+            sx={{
+              display: 'inline-flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              padding: 0,
+            }}
+          >
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/privacypolicy" color="primary">
+                Privacy Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/refundpolicy" color="primary">
+                Refund Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/Disclaimer" color="primary">
+                Disclaimer
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="/ServicesAgreement" color="primary">
+                End User Aggrement
+              </Link>
+            </ListItem>
+          </List>
+        </footer>
       </div>
     </>
   );

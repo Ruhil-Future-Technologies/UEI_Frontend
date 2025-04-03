@@ -42,19 +42,30 @@ const Hobby = () => {
 
   const callAPI = async () => {
     getData(`${HobbyURL}`)
-      .then((data: { data: HobbyRep0oDTO[] }) => {
-        if (data.data) {
-          setDataHobby(data?.data);
+      .then((data) => {
+        if (data.status) {
+          const hobbyData = data?.data?.hobby_data?.map((hobby: any) => {
+            const createdDateTime = hobby?.created_at;
+            const updatedDateTime = hobby?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            hobby.created_at = created_time.toLocaleString();
+            hobby.updated_at = updated_time.toLocaleString();
+            return hobby;
+          });
+          setDataHobby(hobbyData);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
+        } else {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
       });
   };
 
@@ -198,7 +209,7 @@ const Hobby = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Hobby"
       />
     </>
   );

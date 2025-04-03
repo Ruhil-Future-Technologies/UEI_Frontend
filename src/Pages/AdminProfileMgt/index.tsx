@@ -44,8 +44,8 @@ const steps = [
   'Admin Profession',
 ];
 
-const adminId = localStorage.getItem('_id');
-console.log(adminId);
+const adminId = localStorage.getItem('user_uuid');
+
 export default function AdminProfileMgt() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -141,8 +141,8 @@ function AdminAddress() {
 
   useEffect(() => {
     getData('admin_address/edit/' + adminId).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+
+      if (data?.status) {
         setAddress1(data?.data.address1);
         setAddress2(data?.data.address2);
         setAddressType(data?.data.address_type);
@@ -157,7 +157,6 @@ function AdminAddress() {
 
   const submitHandle = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('working');
     const paylod = {
       admin_id: adminId,
       address1: address1,
@@ -171,7 +170,6 @@ function AdminAddress() {
     };
     //console.log(paylod)
     postData('admin_address/add', paylod).then((data: any) => {
-      console.log(data);
       if (data?.state === 200) {
         toast.success('address saved', {
           hideProgressBar: true,
@@ -309,13 +307,12 @@ function AdminBasicInfo() {
     { id: 0, department_name: '' },
   ]);
   const [adminDepartment, setAdminDepartment] = useState<string>('');
-  const adminId = localStorage.getItem('_id');
-  console.log(adminId);
+  const adminId = localStorage.getItem('user_uuid');
 
   useEffect(() => {
-    getData(`${'admin_basicinfo/edit/' + adminId}`).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+    getData(`${'admin/edit/' + adminId}`).then((data: any) => {
+
+      if (data?.status) {
         setAdminFName(data?.data.first_name);
         setAdminLName(data?.data.last_name);
         // setAdminDOB(data?.data.dob);
@@ -330,8 +327,8 @@ function AdminBasicInfo() {
       }
     });
     getData(`${'department/list'}`).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+
+      if (data?.status) {
         setAllDepartment(data?.data);
         //console.log("hello")
       }
@@ -360,9 +357,15 @@ function AdminBasicInfo() {
       is_kyc_verified: true,
       pic_path: selectedFile,
     };
-    postData('admin_basicinfo/add', paylod).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+    const formData= new FormData();
+    Object.entries(paylod).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+          formData.append(key, value as string);
+      }
+  });
+    postData('admin/add', formData).then((data: any) => {
+
+      if (data?.status) {
         toast.success('info saved successfully', {
           hideProgressBar: true,
           theme: 'colored',
@@ -598,8 +601,8 @@ function AdminDescription() {
 
   useEffect(() => {
     getData('admin_profile_description/edit/' + adminId).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+
+      if (data?.status) {
         setDesctiption(data?.data.description);
         //console.log("working")
       }
@@ -612,8 +615,8 @@ function AdminDescription() {
       description: description,
     };
     postData('admin_profile_description/add', paylod).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+ 
+      if (data?.status) {
         toast.success('description saved', {
           hideProgressBar: true,
           theme: 'colored',
@@ -656,8 +659,8 @@ function AdmincontactDtails() {
   const [email, setEmail] = useState('');
   useEffect(() => {
     getData('admin_contact/edit/' + adminId).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+
+      if (data?.status) {
         setContcodeWtsap(data?.data.mobile_isd_watsapp);
         setWhatsappNum(data?.data.mobile_no_watsapp);
         setContcodePhone(data?.data.mobile_isd_call);
@@ -676,10 +679,10 @@ function AdmincontactDtails() {
       mobile_no_watsapp: whatsappNum,
       email_id: email,
     };
-    console.log(paylod);
+
     postData('admin_contact/add', paylod).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+
+      if (data?.status) {
         toast.success('contact saved', {
           hideProgressBar: true,
           theme: 'colored',
@@ -792,26 +795,22 @@ function AdminProfession() {
 
   useEffect(() => {
     getData('institution/list').then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+      if (data?.status) {
         setInstitude(data?.data);
       }
     });
     getData('course/list').then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+      if (data?.status) {
         setCourse(data?.data);
       }
     });
     getData('subject/list').then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+      if (data?.status) {
         setSubject(data?.data);
       }
     });
     getData('admin_profession/edit/' + adminId).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+      if (data?.status) {
         setSelectInstitude(data?.data.institution_id);
         setSelectCourse(data?.data.course_id);
         setSelectSubject(data?.data.subject_id);
@@ -826,10 +825,8 @@ function AdminProfession() {
       course_id: selectCourse,
       subject_id: selectSubject,
     };
-    console.log(paylod);
     postData('admin_profession/add', paylod).then((data: any) => {
-      console.log(data);
-      if (data?.status === 200) {
+      if (data?.status) {
         toast.success('profession saved', {
           hideProgressBar: true,
           theme: 'colored',

@@ -6,7 +6,8 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import "../../assets/css/newstyle.scss";
 import './stylechat.css'; // Import your CSS file
 import useApi from '../../hooks/useAPI';
 import { toast } from 'react-toastify';
@@ -56,7 +57,7 @@ interface Option {
 }
 
 const ProfileChat: React.FC = () => {
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const usertype = localStorage.getItem('user_type');
   const { getData, postData, postFileData } = useApi();
   const [phone, setPhone] = useState('');
@@ -203,7 +204,7 @@ const ProfileChat: React.FC = () => {
         { text: initialQuestions[currentSection][0], type: 'question' },
       ]);
     }
-    getData('/institution/list')
+    getData('/institute/list')
       .then(async (response: any) => {
         if (response.status === 200) {
           const filteredData = await response?.data?.filter(
@@ -739,7 +740,6 @@ const ProfileChat: React.FC = () => {
   let hitcount = 1;
 
   const handleclickdate = () => {
-    console.log('test ss', datecheck);
     if (datecheck) {
       if (currentQuestionIndex == 14) {
         if (datecheck > answers[13]) {

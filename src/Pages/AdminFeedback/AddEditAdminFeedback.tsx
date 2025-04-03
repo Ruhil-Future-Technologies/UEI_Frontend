@@ -43,13 +43,15 @@ const AddEditAdminFeedback = () => {
   useEffect(() => {
     if (id) {
       getData(`${GetFeedbackURL}`).then((data: any) => {
-        const datavalue = data?.data;
+        const datavalue = data?.data?.feedbacks_data;
 
-        const getByIdFeedbackData = datavalue.filter(
+        const getByIdFeedbackData = datavalue?.filter(
           (data: any) => data.id == id,
         );
-        const optionStringify = getByIdFeedbackData[0].options;
-        const optionData = optionStringify.map((str: any) => {
+        const optionStringify = getByIdFeedbackData[0]?.options
+          ? JSON.parse(getByIdFeedbackData[0]?.options)
+          : [];
+        const optionData = optionStringify?.map((str: any) => {
           return { option: str };
         });
 
@@ -76,9 +78,16 @@ const AddEditAdminFeedback = () => {
       options: stringifyOptions,
     };
 
+    const formData1 = new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData1.append(key, value);
+      }
+    });
+
     if (id) {
-      putData(`${FeedbackEditURL}/${id}`, payload).then((response) => {
-        if (response.status === 200) {
+      putData(`${FeedbackEditURL}/${id}`, formData1).then((response) => {
+        if (response.status) {
           toast.success('question added successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -90,8 +99,8 @@ const AddEditAdminFeedback = () => {
         }
       });
     } else {
-      postData(`${FeedbackAddURL}`, payload).then((response) => {
-        if (response.status === 200) {
+      postData(`${FeedbackAddURL}`, formData1).then((response) => {
+        if (response.status) {
           toast.success('question added successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -152,7 +161,7 @@ const AddEditAdminFeedback = () => {
                 <Form>
                   <div className="row gy-4">
                     <div className="col-md-4">
-                      <div className="form_field_wrapper">
+                      <div className="form_field_wrapper mb-4 mt-2">
                         <TextField
                           label="Question *"
                           name="question"

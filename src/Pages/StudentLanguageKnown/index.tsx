@@ -98,7 +98,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
     if (id !== 0) {
       deleteData(`/student_language_knowndelete/${id}`)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             toast.success('Language deleted successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -119,7 +119,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
   const getdatalanguage = async () => {
     getData(`student_language_known/edit/${StudentId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           //   const lenduageIds = data.data.language_id;
           //setSelectedLeng(lenduageIds);
           data.data.forEach((item: any) => {
@@ -133,7 +133,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
               setInitialState((prevBoxes: any) => [...prevBoxes, newBox]);
             }
           });
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setBoxes([{ id: 0, language_id: '', proficiency: '' }]);
           setEditFlag(true);
         } else {
@@ -155,9 +155,9 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
   useEffect(() => {
     getData('language/list')
       .then((data: any) => {
-        if (data?.status === 200) {
-          const filteredData = data?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (data?.status) {
+          const filteredData = data?.data?.languagees_data?.filter(
+            (item: any) => item?.is_active,
           );
           setAllLanguage(filteredData || []);
           // setAllLanguage(data?.data);
@@ -170,43 +170,47 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
           position: 'top-center',
         });
       });
-    getdatalanguage();
-  }, []);
+    if (StudentId) {
+      getdatalanguage();
+    }
+  }, [activeForm]);
 
   useEffect(() => {
-    getData(`student_language_known/edit/${StudentId}`).then((data: any) => {
-      if (data?.status === 200) {
-        //   const lenduageIds = data.data.language_id;
-        //setSelectedLeng(lenduageIds);
+    if (StudentId) {
+      getData(`student_language_known/edit/${StudentId}`).then((data: any) => {
+        if (data?.status) {
+          //   const lenduageIds = data.data.language_id;
+          //setSelectedLeng(lenduageIds);
 
-        const newLanageage = data?.data?.filter((items: any) =>
-          boxes.some((box: Box) => box.id === items.id || box.id == 0),
-        );
+          const newLanageage = data?.data?.filter((items: any) =>
+            boxes.some((box: Box) => box.id === items.id || box.id == 0),
+          );
 
-        const newBoxes: Box[] = newLanageage.map((item: any) => ({
-          id: item.id,
-          language_id: item.language_id,
-          proficiency: item.proficiency,
-        }));
+          const newBoxes: Box[] = newLanageage.map((item: any) => ({
+            id: item.id,
+            language_id: item.language_id,
+            proficiency: item.proficiency,
+          }));
 
-        if (newBoxes.length > 0) {
-          setBoxes((prevBoxes: Box[]) => [
-            ...prevBoxes.filter((box: Box) => box.id != 0),
-            ...newBoxes.filter(
-              (newBox: Box) =>
-                !prevBoxes.some((box: Box) => box.id === newBox.id),
-            ),
-          ]);
-          setInitialState((prevBoxes: Box[]) => [
-            ...prevBoxes,
-            ...newBoxes.filter(
-              (newBox: Box) =>
-                !prevBoxes.some((box: Box) => box.id === newBox.id),
-            ),
-          ]);
+          if (newBoxes.length > 0) {
+            setBoxes((prevBoxes: Box[]) => [
+              ...prevBoxes.filter((box: Box) => box.id != 0),
+              ...newBoxes.filter(
+                (newBox: Box) =>
+                  !prevBoxes.some((box: Box) => box.id === newBox.id),
+              ),
+            ]);
+            setInitialState((prevBoxes: Box[]) => [
+              ...prevBoxes,
+              ...newBoxes.filter(
+                (newBox: Box) =>
+                  !prevBoxes.some((box: Box) => box.id === newBox.id),
+              ),
+            ]);
+          }
         }
-      }
-    });
+      });
+    }
   }, [activeForm]);
 
   const saveLanguage = async () => {
@@ -233,22 +237,28 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
     const eq = deepEqual(initialAdminState, boxes);
 
     const promises = boxes.map((box) => {
+      const formData = new FormData();
+
       const payload = {
         student_id: StudentId,
         language_id: box.language_id,
         proficiency: box.proficiency,
-      };
+      } as any;
+
+      Object.keys(payload).forEach((key) => {
+        formData.append(key, payload[key]);
+      });
 
       if (isLanguageUpdated) {
         if (editFlag || box.id === 0) {
-          return postData('student_language_known/add', payload);
+          return postData('student_language_known/add', formData);
         } else if (!eq) {
-          return putData('student_language_known/edit/' + box.id, payload);
+          return putData('student_language_known/edit/' + box.id, formData);
         } else {
-          return Promise.resolve({ status: 204 }); // Skip update
+          return Promise.resolve({ code: 204 }); // Skip update
         }
       } else {
-        return Promise.resolve({ status: 204 });
+        return Promise.resolve({ code: 204 });
       }
     });
 
@@ -267,7 +277,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
       //   });
       // }
       const successfulResults = results.filter(
-        (res: { status: number }) => res.status === 200,
+        (res: { code: number }) => res.code === 201,
       );
 
       if (successfulResults?.length > 0) {
@@ -320,9 +330,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
         }
 
         // getdatalanguage()
-      } else if (
-        results.some((res: { status: number }) => res.status !== 204)
-      ) {
+      } else if (results.some((res: { code: number }) => res.code !== 204)) {
         // toast.error("Some data failed to save", {
         //     hideProgressBar: true,
         //     theme: "colored",
@@ -402,154 +410,141 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
           <b> Language Known</b>
         </p>
         {boxes.map((box, index) => (
-          <div
-            className="row d-flex justify-content-start align-items-center mt-4 "
-            key={index}
-          >
-            <div className="col form_field_wrapper ">
-              <FormControl
-                required
+          <div className="d-flex gap-3 mb-2 align-items-center" key={index}>
+            <FormControl
+            size="small"
+              required
+              sx={{
+                
+                mt:
+                  error[index]?.language_error && box.language_id == '' ? 4 : 1,
+              }}
+              fullWidth
+            >
+              <InputLabel id={`language-label-${box.id}`}>Language</InputLabel>
+              <Select
+                labelId={`language-label-${box.id}`}
+                id={`language-select-${box.id}`}
+                name={`language_${box.id}`}
+                value={box.language_id}
+                label="Language *"
                 sx={{
-                  m: 1,
-                  mt:
-                    error[index]?.language_error && box.language_id == ''
-                      ? 4
-                      : 1,
+                  backgroundColor: '#f5f5f5',
+                  '& .MuiSelect-icon': {
+                    color: fieldIcon(namecolor),
+                  },
                 }}
-                fullWidth
+                onChange={(e) => handleChange(e, index)}
+                MenuProps={MenuProps}
+                onBlur={() => validateFields(index, 'language')}
               >
-                <InputLabel id={`language-label-${box.id}`}>
-                  Language
-                </InputLabel>
-                <Select
-                  labelId={`language-label-${box.id}`}
-                  id={`language-select-${box.id}`}
-                  name={`language_${box.id}`}
-                  value={box.language_id}
-                  label="Language *"
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    '& .MuiSelect-icon': {
-                      color: fieldIcon(namecolor),
-                    },
-                  }}
-                  onChange={(e) => handleChange(e, index)}
-                  MenuProps={MenuProps}
-                  onBlur={() => validateFields(index, 'language')}
-                >
-                  {/* Render the selected language as a disabled MenuItem at the top */}
-                  {alllanguage
-                    .filter((lang) => lang.id === box.language_id)
-                    .map((lang) => (
-                      <MenuItem
-                        key={lang.id}
-                        value={lang.id}
-                        disabled
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          fontWeight: 'bold',
-                          '&:hover': {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                          '&.Mui-selected': {
-                            backgroundColor: inputfield(namecolor),
-                          },
-                          '&.Mui-selected, &:focus': {
-                            backgroundColor: inputfield(namecolor),
-                          },
-                        }}
-                      >
-                        {lang.language_name}
-                      </MenuItem>
-                    ))}
-
-                  {/* Render the rest of the languages except the ones already selected in other boxes */}
-                  {alllanguage
-                    .filter(
-                      (lang) =>
-                        lang.id !== box.language_id &&
-                        !boxes.some((b) => b.language_id === lang.id),
-                    )
-                    .map((lang) => (
-                      <MenuItem
-                        key={lang.id}
-                        value={lang.id}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          '&:hover': {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                          '&.Mui-selected': {
-                            backgroundColor: inputfield(namecolor),
-                          },
-                          '&.Mui-selected, &:focus': {
-                            backgroundColor: inputfield(namecolor),
-                          },
-                        }}
-                      >
-                        {lang.language_name}
-                      </MenuItem>
-                    ))}
-                </Select>
-                {error[index]?.language_error && box.language_id == '' && (
-                  <FormHelperText style={{ color: 'red' }}>
-                    Language is required
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </div>
-            <div className="col form_field_wrapper">
-              <FormControl
-                required
-                sx={{
-                  m: 1,
-                  mt:
-                    error[index]?.proficiency_error && box.proficiency == ''
-                      ? 4
-                      : 1,
-                }}
-                fullWidth
-              >
-                <InputLabel id={`proficiency-label-${box.id}`}>
-                  Proficiency
-                </InputLabel>
-                <Select
-                  labelId={`proficiency-label-${box.id}`}
-                  id={`proficiency-select-${box.id}`}
-                  name={`proficiency_${box.id}`}
-                  value={box.proficiency}
-                  sx={{
-                    backgroundColor: '#f5f5f5',
-                    '& .MuiSelect-icon': {
-                      color: fieldIcon(namecolor),
-                    },
-                  }}
-                  label="Proficiency *"
-                  onChange={(e) => handleChange1(e, index)}
-                  MenuProps={MenuProps}
-                  onBlur={() => validateFields(index, 'proficiency')}
-                >
-                  {menuItems.map((item) => (
+                {/* Render the selected language as a disabled MenuItem at the top */}
+                {alllanguage
+                  .filter((lang) => lang.id === box.language_id)
+                  .map((lang) => (
                     <MenuItem
-                      key={item}
-                      value={item}
-                      sx={commonStyle(namecolor)}
+                      key={lang.id}
+                      value={lang.id}
+                      disabled
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        fontWeight: 'bold',
+                        '&:hover': {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: inputfield(namecolor),
+                        },
+                        '&.Mui-selected, &:focus': {
+                          backgroundColor: inputfield(namecolor),
+                        },
+                      }}
                     >
-                      {item.charAt(0).toUpperCase() + item.slice(1)}
+                      {lang.language_name}
                     </MenuItem>
                   ))}
-                </Select>
-                {error[index]?.proficiency_error && box.proficiency == '' && (
-                  <FormHelperText style={{ color: 'red' }}>
-                    Proficiency is required
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </div>
-            <div className="col form_field_wrapper d-flex">
-              <IconButton
+
+                {/* Render the rest of the languages except the ones already selected in other boxes */}
+                {alllanguage
+                  .filter(
+                    (lang) =>
+                      lang.id !== box.language_id &&
+                      !boxes.some((b) => b.language_id === lang.id),
+                  )
+                  .map((lang) => (
+                    <MenuItem
+                      key={lang.id}
+                      value={lang.id}
+                      sx={{
+                        backgroundColor: inputfield(namecolor),
+                        color: inputfieldtext(namecolor),
+                        '&:hover': {
+                          backgroundColor: inputfieldhover(namecolor),
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: inputfield(namecolor),
+                        },
+                        '&.Mui-selected, &:focus': {
+                          backgroundColor: inputfield(namecolor),
+                        },
+                      }}
+                    >
+                      {lang.language_name}
+                    </MenuItem>
+                  ))}
+              </Select>
+              {error[index]?.language_error && box.language_id == '' && (
+                <FormHelperText style={{ color: 'red' }}>
+                  Language is required
+                </FormHelperText>
+              )}
+            </FormControl>
+            <FormControl
+            size="small"
+              required
+              sx={{
+                
+                mt:
+                  error[index]?.proficiency_error && box.proficiency == ''
+                    ? 4
+                    : 1,
+              }}
+              fullWidth
+            >
+              <InputLabel id={`proficiency-label-${box.id}`}>
+                Proficiency
+              </InputLabel>
+              <Select
+                labelId={`proficiency-label-${box.id}`}
+                id={`proficiency-select-${box.id}`}
+                name={`proficiency_${box.id}`}
+                value={box.proficiency}
+                sx={{
+                  backgroundColor: '#f5f5f5',
+                  '& .MuiSelect-icon': {
+                    color: fieldIcon(namecolor),
+                  },
+                }}
+                label="Proficiency *"
+                onChange={(e) => handleChange1(e, index)}
+                MenuProps={MenuProps}
+                onBlur={() => validateFields(index, 'proficiency')}
+              >
+                {menuItems.map((item) => (
+                  <MenuItem key={item} value={item} sx={commonStyle(namecolor)}>
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+              {error[index]?.proficiency_error && box.proficiency == '' && (
+                <FormHelperText style={{ color: 'red' }}>
+                  Proficiency is required
+                </FormHelperText>
+              )}
+            </FormControl>
+           <div className="d-flex pt-2">
+           <IconButton
                 onClick={addRow}
                 sx={{
                   width: '35px',
@@ -571,10 +566,10 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
                   <DeleteOutlineOutlinedIcon />
                 </IconButton>
               )}
-            </div>
+           </div>
           </div>
         ))}
-        <div className="row justify-content-center">
+        <div className="row justify-content-center mt-4">
           {/* <div className="col-md-12 d-flex justify-content-center">
             <Button
               className="btn btn-primary mainbutton"

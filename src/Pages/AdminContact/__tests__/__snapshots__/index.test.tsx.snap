@@ -288,7 +288,7 @@ exports[`Admin Contect Component Should render Aadmin contect component correctl
           data-testid="submitForm"
           type="button"
         >
-          Next
+          Submit
         </button>
       </div>
     </div>

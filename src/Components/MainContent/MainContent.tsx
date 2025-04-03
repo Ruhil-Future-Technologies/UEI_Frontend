@@ -59,15 +59,19 @@ import Chatbot from '../../Pages/Chatbot';
 import theme from '../../theme';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
+import { ChatTable } from '../../Pages/Chat/Tablechat';
+import StudentDashboardCharts from '../Chart/StudentChart';
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage, namecolor }: any = context;
+  const { ProPercentage, setProPercentage, namecolor ,setActiveForm }: any = context;
+
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('_id');
+  const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
 
   const getMenuList = () => {
@@ -116,8 +120,6 @@ function MainContent() {
   const chatRef = useRef<HTMLInputElement>(null);
 
   const usertype: any = localStorage.getItem('user_type');
-  // const userdata = JSON.parse(localStorage?.getItem("userdata") || "/{/}/");
-  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
   const [isExpanded, setIsExpanded] = useState(false);
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
@@ -435,7 +437,7 @@ function MainContent() {
     } else if (usertype === 'teacher') {
       setUserName('teacher');
     } else {
-      setUserName('admin');
+      setUserName('institute');
     }
   }, [usertype]);
 
@@ -463,7 +465,7 @@ function MainContent() {
   //   basicinfo = JSON.parse(profileData);
   // }
 
-  const { postData, getData, loading } = useApi();
+  const { postDataJson, getData, loading } = useApi();
   const [stats, setStats] = useState({
     institutionCount: 0,
     studentCount: 0,
@@ -904,10 +906,15 @@ function MainContent() {
   };
 
   const callAPIStudent = async () => {
-    if (usertype === 'student') {
-      getData(`${profileURL}/${StudentId}`)
+    if (usertype === 'student' && userid !== null) {
+      getData(`${profileURL}/${userid}`)
         .then((data: any) => {
           if (data.data) {
+            if (data?.data?.basic_info?.id) {
+              localStorage.setItem('userdata', JSON.stringify(data.data));
+              localStorage.setItem('_id', data?.data?.basic_info.id);
+              localStorage.setItem('register_num', data?.data?.register_num);
+            }
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
             const basic_info = {
@@ -954,14 +961,14 @@ function MainContent() {
             let sectionCount = 0;
 
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.basic_info?.pic_path !== null) {
                 getData(
                   `${
                     'upload_file/get_image/' + data?.data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata.data);
+                    setprofileImage(imgdata?.data?.file_url);
                   })
                   .catch(() => {
                     // Handle error
@@ -1010,14 +1017,18 @@ function MainContent() {
               if (academic_history?.institution_type === 'school') {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
-                    (response) =>
+                    (response) => {
                       setStudentClass(
-                        response.data.class_name
+                        response.data.class_data.class_name
+
                           .replace('_', ' ')
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace('_', ' ').slice(1),
-                      ),
+                          response.data.class_data.class_name
+                            .replace('_', ' ')
+                            .slice(1),
+                      );
+                    },
                   );
                 }
                 delete academic_history?.course_id;
@@ -1033,10 +1044,12 @@ function MainContent() {
                   delete academic_history?.state_for_stateboard;
                 }
               } else {
+                console.log(academic_history)
                 if (academic_history?.course_id) {
                   getData(`course/edit/${academic_history?.course_id}`).then(
                     (response) => {
-                      setStudentCourse(response.data.course_name);
+                      console.log(response);
+                      setStudentCourse(response.data.course_data?.course_name);
                     },
                   );
                 }
@@ -1072,7 +1085,6 @@ function MainContent() {
               Object.keys(subject_preference)?.length > 0
             ) {
               if (academic_history?.institution_type === 'school') {
-                // console.log("test subject pref school",subject_preference)
                 delete subject_preference?.course_name;
                 delete subject_preference?.course_id;
                 delete subject_preference?.sem_id;
@@ -1112,6 +1124,9 @@ function MainContent() {
           }
         })
         .catch((e) => {
+          if (e.response.code === 404) {
+            setDataCompleted(true);
+          }
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1127,7 +1142,6 @@ function MainContent() {
     if (usertype === 'student') {
       try {
         const [chatCount] = await Promise.all([
-          // getData(`${chatlisturl}/${userdata?.id}`),
           getData('/chat/api/chat-summary'),
         ]);
         setStudent({
@@ -1143,68 +1157,85 @@ function MainContent() {
 
   const callAPIAdmin = async () => {
     if (usertype === 'admin') {
-      getData(`${profileURLadmin}/${StudentId}`)
+      getData(`${profileURLadmin}/${userid}`)
         .then((data: any) => {
+          if (data.code === 404) {
+            setActiveForm(0)
+            navigate('/main/adminprofile');
+          }
           if (data?.data) {
+            if (data?.data?.admin_data?.basic_info) {
+              sessionStorage.setItem(
+                'userdata',
+                JSON.stringify(data?.data?.admin_data?.basic_info),
+              );
+              localStorage.setItem(
+                '_id',
+                data?.data?.admin_data?.basic_info.id,
+              );
+            }
+
             // setProfileData(data?.data)
             // let basic_info = data?.data?.basic_info
             const basic_info = {
-              dob: data?.data?.basic_info?.dob,
-              father_name: data?.data?.basic_info?.father_name,
-              first_name: data?.data?.basic_info?.first_name,
-              gender: data?.data?.basic_info?.gender,
-              id: data?.data?.basic_info?.id,
+              dob: data?.data?.admin_data?.basic_info?.dob,
+              father_name: data?.data?.admin_data?.basic_info?.father_name,
+              first_name: data?.data?.admin_data?.basic_info?.first_name,
+              gender: data?.data?.admin_data?.basic_info?.gender,
+              id: data?.data?.admin_data?.basic_info?.id,
               last_modified_datetime:
-                data?.data.basic_info?.last_modified_datetime,
-              last_name: data?.data?.basic_info?.last_name,
-              mother_name: data?.data?.basic_info?.mother_name,
+                data?.data?.admin_data?.basic_info?.last_modified_datetime,
+              last_name: data?.data?.admin_data?.basic_info?.last_name,
+              mother_name: data?.data?.admin_data?.basic_info?.mother_name,
               admin_registration_no:
-                data?.data?.basic_info?.admin_registration_no,
-              department_id: data?.data?.basic_info?.department_id,
-              guardian_name: data?.data?.basic_info?.guardian_name,
+                data?.data?.admin_data?.basic_info?.admin_registration_no,
+              department_id: data?.data?.admin_data?.basic_info?.department_id,
+              guardian_name: data?.data?.admin_data?.basic_info?.guardian_name,
             };
             // let address = data?.data?.address
             const address = {
-              address1: data?.data?.address?.address1,
-              country: data?.data?.address?.country,
-              state: data?.data?.address?.state,
-              city: data?.data?.address?.city,
-              district: data?.data?.address?.district,
-              pincode: data?.data?.address?.pincode,
+              address1: data?.data?.admin_data?.address?.address1,
+              country: data?.data?.admin_data?.address?.country,
+              state: data?.data?.admin_data?.address?.state,
+              city: data?.data?.admin_data?.address?.city,
+              district: data?.data?.admin_data?.address?.district,
+              pincode: data?.data?.admin_data?.address?.pincode,
             };
             // let language = data?.data?.language_known
             const language = {
-              language_id: data?.data?.language_known?.language_id,
-              proficiency: data?.data?.language_known?.proficiency,
+              language_id: data?.data?.admin_data?.language_known?.language_id,
+              proficiency: data?.data?.admin_data?.language_known?.proficiency,
             };
-            const description = data?.data?.admin_description;
+            const description = data?.data?.admin_data?.admin_description;
             // let contact = data?.data?.contact
             const contact = {
               // email_id: data?.data?.contact?.email_id,
-              id: data?.data?.contact?.id,
+              id: data?.data?.admin_data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
-              mobile_isd_call: data?.data?.contact?.mobile_isd_call,
-              mobile_no_call: data?.data?.contact?.mobile_no_call,
+              mobile_isd_call: data?.data?.admin_data?.contact?.mobile_isd_call,
+              mobile_no_call: data?.data?.admin_data?.contact?.mobile_no_call,
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
             // let profession = data?.data?.profession
             const profession = {
-              course_id: data?.data?.profession?.course_id,
-              subject_id: data?.data?.profession?.subject_id,
-              institution_id: data?.data?.profession?.institution_id,
+              course_id: data?.data?.admin_data?.profession?.course_id,
+              subject_id: data?.data?.admin_data?.profession?.subject_id,
+              institution_id:
+                data?.data?.admin_data?.profession?.institution_id,
             };
-            const hobby = data?.data?.hobby;
+            const hobby = data?.data?.admin_data?.hobby;
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.admin_data?.basic_info?.pic_path !== null) {
                 getData(
                   `${
-                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                    'upload_file/get_image/' +
+                    data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata?.data);
+                    setprofileImage(imgdata?.data?.file_url);
                   })
                   .catch(() => {});
               }
@@ -1269,23 +1300,14 @@ function MainContent() {
             } else {
               sectionCount++;
             }
-            // console.log("---- ddd eee",sectionCount)
             if (sectionCount > 0) {
               let overallPercentage = totalPercentage / sectionCount;
-              // setoverallProfilePercentage(overallPercentage); // Set the overall percentage
               overallPercentage = Math.round(overallPercentage);
-              // const nandata = 100 - overallPercentage;
-
-              // console.log("overallPercentage sss", nandata,overallPercentage);
               localStorage.setItem(
                 'Profile_completion',
                 JSON.stringify(overallPercentage),
               );
               setProPercentage(overallPercentage);
-              // console.log("---- ddd",overallPercentage)
-              // if(overallPercentage !== 100){
-              //     setDatacomplated(true)
-              // }
             }
           }
         })
@@ -1332,7 +1354,7 @@ function MainContent() {
             collegeRes,
             teacherRes,
           ] = await Promise.allSettled([
-            getData('/institution/list'),
+            getData('/institute/list'),
             getData('/student/list'),
             // getData("/subject/list"),
             getData('/entity/list'),
@@ -1356,23 +1378,23 @@ function MainContent() {
           //     : 0;
           const entityCount =
             entityRes?.status === 'fulfilled'
-              ? entityRes?.value?.data?.length || 0
+              ? entityRes?.value?.data?.entityes_data?.length || 0
               : 0;
           const departmentCount =
             departmentRes?.status === 'fulfilled'
-              ? departmentRes?.value?.data?.length || 0
+              ? departmentRes?.value?.data?.departments_data?.length || 0
               : 0;
           const courseCount =
             courseRes?.status === 'fulfilled'
-              ? courseRes?.value?.data?.length || 0
+              ? courseRes?.value?.data?.course_data?.length || 0
               : 0;
           const schoolsubjectCount =
             schoolRes?.status === 'fulfilled'
-              ? schoolRes?.value?.data?.length || 0
+              ? schoolRes?.value?.data?.subjects_data?.length || 0
               : 0;
           const collegesubjectCount =
             collegeRes?.status === 'fulfilled'
-              ? collegeRes?.value?.data?.length || 0
+              ? collegeRes?.value?.data?.subjects_data?.length || 0
               : 0;
           const teacherCount =
             teacherRes?.status === 'fulfilled'
@@ -1437,7 +1459,7 @@ function MainContent() {
           ]);
           const studentCoursedata =
             studentCoursecount?.status === 'fulfilled'
-              ? studentCoursecount?.value?.data || 0
+              ? studentCoursecount?.value?.data?.result || 0
               : 0;
 
           setStatsCourse(studentCoursedata);
@@ -1543,7 +1565,7 @@ function MainContent() {
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
     setSearch('');
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${StudentId}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1594,7 +1616,7 @@ function MainContent() {
     // let rag_payload = {};
     if (selectedchat?.question !== '') {
       payload = {
-        student_id: StudentId,
+        student_id: userid,
         question: search,
         prompt: prompt,
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
@@ -1614,11 +1636,11 @@ function MainContent() {
       };
       // rag_payload = {
       //   user_query: search,
-      //   student_id: StudentId,
+      //   student_id: userid,
       // };
     } else {
       payload = {
-        student_id: StudentId,
+        student_id: userid,
         question: search,
         prompt: prompt,
         course:
@@ -1629,7 +1651,7 @@ function MainContent() {
       };
       // rag_payload = {
       //   user_query: search,
-      //   student_id: StudentId,
+      //   student_id: userid,
       // };
     }
 
@@ -1642,7 +1664,7 @@ function MainContent() {
       setchatData((prevState: any) => [...prevState, newData]);
       setChatLoader(false);
       setSearch('');
-      getData(`${chatlisturl}/${userdata?.id}`)
+      getData(`${chatlisturl}/${StudentId}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1658,7 +1680,7 @@ function MainContent() {
         });
     };
 
-    postData(`${ChatURL}`, payload)
+    postDataJson(`${ChatURL}`, payload)
       .then((data) => {
         // if (data.status === 200) {
         //   handleResponse(data);
@@ -1668,9 +1690,9 @@ function MainContent() {
           setLoaderMsg('Searching result from Rag model');
 
           if (profileDatas?.academic_history?.institution_type === 'school') {
-            postData(`${ChatRAGURL}`, {
+            postDataJson(`${ChatRAGURL}`, {
               user_query: search,
-              student_id: StudentId,
+              student_id: userid,
               school_college_selection:
                 profileDatas.academic_history.institution_type,
               board_selection:
@@ -1716,6 +1738,7 @@ function MainContent() {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1724,7 +1747,7 @@ function MainContent() {
                     response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -1737,9 +1760,9 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
-                    student_id: StudentId,
+                    student_id: userid,
                     class_or_course_selection: profileDatas?.class.name,
                   })
                     .then((response) => {
@@ -1750,13 +1773,13 @@ function MainContent() {
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -1769,9 +1792,9 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
-                  student_id: StudentId,
+                  student_id: userid,
                   class_or_course_selection: profileDatas?.class.name,
                 })
                   .then((response) => {
@@ -1782,13 +1805,13 @@ function MainContent() {
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   }),
@@ -1806,16 +1829,13 @@ function MainContent() {
             } = profileDatas?.academic_history || {};
             const { subject_name, course_name } =
               profileDatas?.subject_preference || {};
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
-            // )
             const university: any =
-              university_list_data.filter(
+              university_list_data?.filter(
                 (university: any) => university.university_id == university_id,
               ) || null;
             const queryParams = {
               user_query: search,
-              student_id: StudentId,
+              student_id: userid,
               school_college_selection: institution_type || null,
               board_selection: board || null,
               state_board_selection: state_for_stateboard || null,
@@ -1827,10 +1847,7 @@ function MainContent() {
               year: year || null,
               subject: subject_name || null,
             };
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            // )
-            return postData(`${ChatRAGURL}`, queryParams)
+            return postDataJson(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   function formatAnswer(answer: any) {
@@ -1862,6 +1879,7 @@ function MainContent() {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1870,7 +1888,7 @@ function MainContent() {
                     response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -1883,9 +1901,9 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
-                    student_id: StudentId,
+                    student_id: userid,
                     class_or_course_selection: course_name,
                   })
                     .then((response) => {
@@ -1896,13 +1914,13 @@ function MainContent() {
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -1916,9 +1934,9 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
-                  student_id: StudentId,
+                  student_id: userid,
                   class_or_course_selection: course_name,
                 })
                   .then((response) => {
@@ -1929,13 +1947,13 @@ function MainContent() {
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   });
@@ -1953,7 +1971,7 @@ function MainContent() {
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status === 200) {
                 // handleResponse(data);
@@ -1968,16 +1986,16 @@ function MainContent() {
           // let Ollamapayload = {
           //   user_query: search,
           // };
-          // return postData(`${ChatURLOLLAMA}`, Ollamapayload);
+          // return postDataJson(`${ChatURLOLLAMA}`, Ollamapayload);
           setLoaderMsg('Fetching Data from Ollama model.');
           // return getData(
           //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
           //     search
           //   )}`
           // );
-          return postData(`${ChatOLLAMAURL}`, {
+          return postDataJson(`${ChatOLLAMAURL}`, {
             user_query: search,
-            student_id: StudentId,
+            student_id: userid,
             class_or_course_selection:
               profileDatas?.academic_history?.institution_type === 'school'
                 ? profileDatas?.class.name
@@ -1996,7 +2014,7 @@ function MainContent() {
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status === 200) {
                 // handleResponse(data);
@@ -2008,7 +2026,7 @@ function MainContent() {
           handleResponsereg(data);
         } else if (data?.status === 404) {
           setLoaderMsg('Fetching data from Chat-GPT API.');
-          return postData(`${ChatURLAI}`, payload);
+          return postDataJson(`${ChatURLAI}`, payload);
         } else if (data) {
           handleError(data);
         }
@@ -2234,9 +2252,9 @@ function MainContent() {
     //     search
     //   )}`
     // )
-    postData(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatOLLAMAURL}`, {
       user_query: search,
-      student_id: StudentId,
+      student_id: userid,
       class_or_course_selection:
         profileDatas?.academic_history?.institution_type === 'school'
           ? profileDatas?.class.name
@@ -2250,11 +2268,11 @@ function MainContent() {
             chat_question: search,
             response: response?.answer,
           };
-          postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
         }
       })
       .catch(() => {
-        postData(`${ChatURLAI}`, payload)
+        postDataJson(`${ChatURLAI}`, payload)
           .then((response) => handleResponse(response))
           .catch((error) => handleError(error));
       });
@@ -2291,9 +2309,6 @@ function MainContent() {
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem('chatData');
-    // const chatflagged = localStorage?.getItem("chatsaved");
-    // console.log("chatData testing save",chatDataString);
-
     let chatData: any;
 
     if (chatDataString) {
@@ -2321,21 +2336,21 @@ function MainContent() {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: StudentId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: StudentId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     }
 
-    await postData(`${chataddconversationurl}`, chat_payload)
+    await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         // setChatSaved(false);
         // toast.success(chatdata?.message, {
@@ -2375,11 +2390,9 @@ function MainContent() {
         console.error('Error copying text: ', err);
       });
   };
-
   return (
     <>
       {loader && !chatLoader && <FullScreenLoader />}
-      {/* {basicinfo!==null && basicinfo?.basic_info && userName === 'admin' ?  */}
       {userName === 'admin' ? (
         <>
           <div className="main-wrapper">
@@ -2992,7 +3005,7 @@ function MainContent() {
                 </div>
               </div> */}
 
-              <div className="row mt-lg-4 g-4">
+              <div className="row my-lg-4 g-4">
                 <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
                   <div className="card w-100 overflow-hidden rounded-4 shadow-none desk-card">
                     <div className="card-header bg-primary-20 border-bottom-0">
@@ -3353,6 +3366,11 @@ function MainContent() {
                                             }}
                                           />
                                         )}
+                                        {chat?.table_code && (
+                                          <ChatTable
+                                            tableCode={chat?.table_code}
+                                          />
+                                        )}
                                       </div>
                                       <ul className="ansfooter">
                                         <ThumbUpAltOutlinedIcon
@@ -3709,6 +3727,7 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
+                <StudentDashboardCharts />
               </div>
             </div>
           </main>

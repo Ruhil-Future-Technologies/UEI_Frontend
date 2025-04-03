@@ -23,7 +23,7 @@ import {
 import NameContext from '../Context/NameContext';
 
 interface ISubMenuForm {
-  menu_name: string;
+  sub_menu_name: string;
   priority: string;
   menu_master_id: string;
 }
@@ -33,14 +33,14 @@ const AddEditSubmenu = () => {
   const SubmenuMenuURL = QUERY_KEYS_SUBMENU.GET_MENU;
   const SubmenuAddURL = QUERY_KEYS_SUBMENU.SUBMENU_ADD;
   const SubmenuEditURL = QUERY_KEYS_SUBMENU.SUBMENU_EDIT;
-  const { getData, postData, putData } = useApi();
+  const { getData, postDataJson, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
   const charPattern = /^[a-zA-Z\s]*$/;
   const numberPattern = /^\d+$/;
 
   const initialState = {
-    menu_name: '',
+    sub_menu_name: '',
     menu_master_id: '',
     priority: '',
   };
@@ -79,8 +79,8 @@ const AddEditSubmenu = () => {
       .then((data: any) => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
-        const filteredData = data?.data.filter(
-          (item: any) => item?.is_active === 1,
+        const filteredData = data?.data?.menues_data?.filter(
+          (item: any) => item?.is_active,
         );
         setDataMenu(filteredData);
         // setDataMenu(data?.data)
@@ -138,7 +138,7 @@ const AddEditSubmenu = () => {
     if (id) {
       putData(`${SubmenuEditURL}/${id}`, submenuData)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Submenu');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -158,11 +158,11 @@ const AddEditSubmenu = () => {
           });
         });
     } else {
-      postData(`${SubmenuAddURL}`, submenuData)
+      postDataJson(`${SubmenuAddURL}`, submenuData)
         .then((data: any) => {
           // const linesInfo = data || [];
           // dispatch(setLine(linesInfo))
-          if (data.status === 200) {
+          if (data.status) {
             // navigator('/main/Submenu')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -170,7 +170,7 @@ const AddEditSubmenu = () => {
             });
             resetForm({ values: initialState });
           } else {
-            toast.error('Please add menu first', {
+            toast.error(data.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
@@ -185,16 +185,16 @@ const AddEditSubmenu = () => {
     }
   };
   const submenuSchema = Yup.object().shape({
-    menu_name: Yup.string()
-      .required('Please enter submenu name')
+    sub_menu_name: Yup.string()
+      .required('Please enter Submenu name')
       .matches(
         charPattern,
         'Please enter valid Submenu name only characters allowed.',
       ),
     priority: Yup.string()
-      .required('Please enter valid menu sequence number')
-      .matches(numberPattern, 'Please enter valid menu sequence number.'),
-    menu_master_id: Yup.string().required('Please select menu name'),
+      .required('Please enter valid Menu Sequence number')
+      .matches(numberPattern, 'Please enter valid Menu Sequence number.'),
+    menu_master_id: Yup.string().required('Please select Menu name'),
   });
 
   return (
@@ -216,7 +216,7 @@ const AddEditSubmenu = () => {
                   handleSubmit(formData, formikHelpers)
                 }
                 initialValues={{
-                  menu_name: submenu?.menu_name,
+                  sub_menu_name: submenu?.sub_menu_name,
                   priority: submenu?.priority,
                   menu_master_id: submenu?.menu_master_id,
                 }}
@@ -316,15 +316,15 @@ const AddEditSubmenu = () => {
                           <Field
                             component={TextField}
                             type="text"
-                            name="menu_name"
+                            name="sub_menu_name"
                             label="Submenu name *"
-                            value={values?.menu_name}
+                            value={values?.sub_menu_name}
                             onChange={(
                               e: React.ChangeEvent<HTMLInputElement>,
-                            ) => handleChange(e, 'menu_name')}
+                            ) => handleChange(e, 'sub_menu_name')}
                           />
-                          {touched?.menu_name && errors?.menu_name ? (
-                            <p style={{ color: 'red' }}>{errors?.menu_name}</p>
+                          {touched?.sub_menu_name && errors?.sub_menu_name ? (
+                            <p style={{ color: 'red' }}>{errors?.sub_menu_name}</p>
                           ) : (
                             <></>
                           )}

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
+  QUERY_KEYS,
   QUERY_KEYS_ADMIN_BASIC_INFO,
   QUERY_KEYS_STUDENT,
 } from '../../utils/const';
@@ -43,7 +44,8 @@ const Header = () => {
     setProPercentage,
     setActiveForm,
   }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
+  const StuId = localStorage.getItem('_id');
   const navigator = useNavigate();
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const adminProfileURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -51,17 +53,59 @@ const Header = () => {
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const { getData } = useApi();
-  const handlogout = () => {
+  const { getData, postData } = useApi();
+  const [dashboardURL, setDashboardURL] = useState('');
+
+  const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  // const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
+
+  const saveChat = async () => {
+    const chatDataString = localStorage?.getItem('chatData');
+
+    let chatData: any;
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
+
+    let chat_payload;
+
+    if (Array.isArray(chatData)) {
+      chat_payload = {
+        student_id: StuId,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
+      };
+
+      try {
+        await postData(`${chataddconversationurl}`, chat_payload);
+
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
+      } catch (e: any) {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      }
+    }
+  };
+
+  const handlogout = async () => {
+    await saveChat();
     setProPercentage(0);
-    localStorage.removeItem('chatData');
+    localStorage.removeItem('theme');
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
-    localStorage.removeItem('userid');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');
@@ -71,6 +115,16 @@ const Header = () => {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('id');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('teacher_id');
+    localStorage.removeItem('institute_id');
+    localStorage.removeItem('hasReloaded');
+    localStorage.removeItem('register_num');
+    sessionStorage.removeItem('userdata');
     synth.cancel();
     navigator('/');
     logoutpro();
@@ -98,12 +152,12 @@ const Header = () => {
               last_name: basic_info?.last_name,
               gender: basic_info?.gender,
             });
-            if (data?.data?.basic_info?.pic_path !== '') {
+            if (data?.data?.basic_info?.pic_path !== null) {
               getData(
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
                 .then((imgdata: any) => {
-                  setProImage(imgdata.data);
+                  setProImage(imgdata?.data?.file_url);
                 })
                 .catch(() => {});
             }
@@ -126,7 +180,7 @@ const Header = () => {
               last_name: adminInfo?.last_name,
               gender: adminInfo?.gender,
             });
-            if (response?.data?.basic_info?.pic_path !== '') {
+            if (response?.data?.basic_info?.pic_path !== null) {
               getData(
                 `${
                   'upload_file/get_image/' +
@@ -134,7 +188,7 @@ const Header = () => {
                 }`,
               )
                 .then((imgdata) => {
-                  setProImage(imgdata.data);
+                  setProImage(imgdata?.data?.file_url);
                 })
                 .catch(() => {});
             }
@@ -151,8 +205,14 @@ const Header = () => {
   useEffect(() => {
     if (user_type === 'admin') {
       getAdminDetails();
+      setDashboardURL('/main/DashBoard');
+    } else if (user_type === 'institute') {
+      setDashboardURL('/institution-dashboard');
+    } else if (user_type === 'teacher') {
+      setDashboardURL('/teacher-dashboard');
     } else {
       callAPI();
+      setDashboardURL('/main/DashBoard');
     }
   }, []);
 
@@ -193,6 +253,7 @@ const Header = () => {
     else if (theme === 'bordered-theme')
       document?.documentElement?.setAttribute('data-bs-theme', theme);
   }, [theme]);
+
   const toggleTheme = () => {
     setTheme((prevTheme) => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
@@ -200,10 +261,28 @@ const Header = () => {
       return newTheme;
     });
   };
-  const handelStateofProfile = () => {
+
+  const gotoProfile = () => {
+    if (user_type === 'admin') {
+      getAdminDetails();
+      navigator('/main/adminprofile');
+      setDashboardURL('/main/DashBoard');
+    } else if (user_type === 'institute') {
+      navigator('/institution-dashboard/profile');
+      setDashboardURL('/institution-dashboard');
+    } else if (user_type === 'teacher') {
+      navigator('/teacher-dashboard/profile');
+      setDashboardURL('/teacher-dashboard');
+    } else {
+      navigator('/main/StudentProfile');
+      callAPI();
+      setDashboardURL('/main/DashBoard');
+      setTimeout(() => {
+        window.location.reload();
+      }, 20);
+    }
     setActiveForm(0);
   };
-
   return (
     <>
       <header className="top-header">
@@ -511,21 +590,16 @@ const Header = () => {
                   </div>
                 </div>
                 <hr className="dropdown-divider" />
-                <Link
+                <button
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
-                  to={
-                    user_type === 'student'
-                      ? '/main/StudentProfile'
-                      : '/main/adminprofile'
-                  }
-                  onClick={handelStateofProfile}
+                  onClick={gotoProfile}
                 >
                   <PersonOutlineOutlinedIcon />
                   Profile
-                </Link>
+                </button>
                 <Link
                   className="dropdown-item d-flex align-items-center gap-2 py-2"
-                  to="/main/DashBoard"
+                  to={dashboardURL}
                 >
                   <DashboardOutlinedIcon />
                   Dashboard

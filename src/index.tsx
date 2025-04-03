@@ -28,7 +28,6 @@ const tokenExpiry = localStorage.getItem('tokenExpiry');
 const isTokenExpired = () => {
   if (token && tokenExpiry) {
     const currentTime = Date.now();
-    // console.log("test expire time in",currentTime,tokenExpiry)
     if (currentTime > parseInt(tokenExpiry)) {
       return true;
     } else {
@@ -58,8 +57,4 @@ root.render(
     </NameProvider>
   </ThemeProvider>,
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

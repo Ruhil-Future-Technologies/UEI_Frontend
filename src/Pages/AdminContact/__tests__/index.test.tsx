@@ -34,7 +34,7 @@ describe('Admin Contect Component', () => {
       name: /previous/i,
     });
     const nextbutten = getByRole('button', {
-      name: /next/i,
+      name: /Submit/i,
     });
     expect(getByTestId('county_pcode')).toBeInTheDocument();
     expect(getByTestId('county_wpcode')).toBeInTheDocument();

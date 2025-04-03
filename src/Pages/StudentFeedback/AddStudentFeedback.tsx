@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { TextField } from '@mui/material';
 import useApi from '../../hooks/useAPI';
-import CommonModal from '../../Components/CommonModal';
+// import CommonModal from '../../Components/CommonModal';
 import ThemeSidebar from '../../Components/ThemeSidebar/ThemeSidebar';
 
 interface Question {
@@ -14,8 +14,8 @@ interface Question {
   answer?: string;
 }
 const AddStudentFeedback = () => {
-  const StudentId = localStorage.getItem('_id');
-  const { getData, postData } = useApi();
+  const StudentId = localStorage.getItem('student_id')?localStorage.getItem('student_id'):localStorage.getItem('_id');
+  const { getData, postDataJson } = useApi();
 
   const [questions, setQuestions] = useState<Question[]>([]);
 
@@ -27,7 +27,7 @@ const AddStudentFeedback = () => {
   const [selectAnswer, setSelectAnswer] = useState<string>('');
   const [studentFlag, setStudentFlag] = useState<boolean>(true);
   const [errors, setErrors] = useState<any>({});
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const [themeMode, setThemeMode] = useState<string>('');
 
   const [finalList, setFinalList] = useState<any>([]);
@@ -39,16 +39,16 @@ const AddStudentFeedback = () => {
 
   useEffect(() => {
     getData(`${'/feedback/list'}`).then((data) => {
-      if (data.status === 200) {
-        setQuestions(data.data);
+      if (data.status) {
+        setQuestions(data.data?.feedbacks_data);
       }
     });
     getData(`${'/feedback/student_feedback'}/${StudentId}`).then((data) => {
-      if (data.status === 200) {
-        if (data.data.length > 0) {
-          setAnsweredQuestions(data.data);
+      if (data.status) {
+        if (data.data.feedbacks_data.length > 0) {
+          setAnsweredQuestions(data?.data?.feedbacks_data);
           setStudentFlag(false);
-          setIsOpen(true);
+          // setIsOpen(true);
         }
       }
     });
@@ -106,7 +106,7 @@ const AddStudentFeedback = () => {
     const newErrors: any = {};
     questions.forEach((question: any) => {
       if (!selectAnswer[question.id]) {
-        newErrors[question.id] = 'This question is required.';
+        newErrors[question.id] = 'This Question is required.';
       }
     });
     setErrors(newErrors);
@@ -114,6 +114,7 @@ const AddStudentFeedback = () => {
   };
 
   const handleSubmit = () => {
+    const formData = new FormData();
     if (validateForm()) {
       const updatedAnswers = [
         ...answeredQuestions,
@@ -126,10 +127,13 @@ const AddStudentFeedback = () => {
       const payload = {
         student_id: StudentId,
         feedbacks: updatedAnswers,
-      };
-      postData('/feedback/student_feedback', payload)
+      } as any;
+      Object.keys(payload).forEach((key) => {
+        formData.append(key, payload[key]);
+      });
+       postDataJson('/feedback/student_feedback', payload)
         .then((response) => {
-          if (response.status === 200) {
+          if (response.status) {
             toast.success('Feedback sent successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -153,7 +157,6 @@ const AddStudentFeedback = () => {
     e.preventDefault();
     setMessage(e.target.value);
   };
-
   return (
     <>
       {studentFlag ? (
@@ -189,7 +192,7 @@ const AddStudentFeedback = () => {
                           </label>
                           <div className="row g-2">
                             {question?.options?.length > 0 ? (
-                              question?.options.map(
+                              JSON.parse(question?.options || "[]").map(
                                 (option: any, index: number) => (
                                   <div className="col-lg-6" key={index}>
                                     <div className="form-check">
@@ -295,7 +298,7 @@ const AddStudentFeedback = () => {
                 </div>
               </div>
               <div className="feedback">
-                <h1>You have already submitted your feedback</h1>
+                <h1>You have already submitted your feedback.</h1>
                 <div className="feedback-questions">
                   {
                     <>
@@ -307,7 +310,7 @@ const AddStudentFeedback = () => {
                           </label>
                           <div className="row g-2">
                             {question?.options?.length > 0 ? (
-                              question?.options.map(
+                              JSON.parse(question?.options || "[]").map(
                                 (option: any, index: number) => (
                                   <div className="col-lg-6" key={index}>
                                     <div className="form-check">
@@ -367,11 +370,11 @@ const AddStudentFeedback = () => {
               </div>
             </div>
           </div>
-          <CommonModal
-            message={'You have already submitted your feedback.'}
+          {/* <CommonModal
+            message={'You have successfully submitted your Feedback.'}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
-          />
+          /> */}
         </>
       )}
 

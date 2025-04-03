@@ -6,7 +6,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import {
   FormControl,
   IconButton,
-  InputLabel,
+  //InputLabel,
+  List,
+  ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -32,6 +34,8 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'react-toastify/dist/ReactToastify.css';
+import OtpCard from '../../Components/Dailog/OtpCard';
+
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
@@ -39,19 +43,19 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     toast.dismiss();
-    const login_id = localStorage.getItem('_id');
+    const login_id = localStorage.getItem('user_uuid');
     if (login_id) {
       navigate('/main/DashBoard');
     }
   }, []);
 
-  const { postData } = useApi();
+  const { postDataJson } = useApi();
 
   const navigator = useNavigate();
   const [password, setPassword] = useState('');
   const [emailphone, setEmailphone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const userId = 'Email';
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [value, setValue] = React.useState('student');
   const loginUrl = QUERY_KEYS.POST_LOGIN;
@@ -96,8 +100,7 @@ const Login = () => {
         setLoading(true);
       }
       const UserSignUp = {
-        userid:
-          userId === 'Email' || userId === 'Phone' ? String(emailphone) : '',
+        email: String(emailphone),
         password: String(password),
         user_type: String(value),
       };
@@ -113,23 +116,16 @@ const Login = () => {
       } else {
         setuserValue('');
       }
-
       try {
-        const data = await postData(loginUrl, UserSignUp);
-        if (data?.status === 200) {
+        const data = await postDataJson(loginUrl, UserSignUp);
+        if (data?.status) {
           setLoading(false);
-          await localStorage.setItem('token', data?.token);
+          localStorage.setItem('token', 'Bearer ' + data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
-        } else if (
-          data?.status === 404 &&
-          data?.message === 'Invalid userid or password'
-        ) {
-          setLoading(false);
-          toast.error('Invalid userid or password', {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
         } else {
+          if (data?.message === 'User is not verified' || data?.message === 'Profile is not verified') {
+            setPopupOtpCard(true);
+          }
           setLoading(false);
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -147,15 +143,37 @@ const Login = () => {
     }
   };
 
-  const handleSuccessfulLogin = (data: any, password: string) => {
-    console.log(data)
-    localStorage.setItem('token', data?.token);
-    localStorage.setItem('user_type', data?.data?.user_type);
-    localStorage.setItem('userid', data?.data?.userid);
-    localStorage.setItem('pd', password);
-    localStorage.setItem('userdata', JSON.stringify(data?.data));
-    localStorage.setItem('_id', data?.data?.id);
+  const handleSubmit = (otp: string) => {
+    const payload = {
+      email: emailphone,
+      otp: otp,
+    };
+    postDataJson(`/auth/verify-otp`, payload).then((data) => {
+      if (data.status) {
+        handleSuccessfulLogin(data);
+        toast.success(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+        setPopupOtpCard(false);
+      } else {
+        toast.error(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
+    });
+  };
+  const handleSuccessfulLogin = (data: any, password?: string) => {
+    localStorage.setItem('token', 'Bearer ' + data?.data?.access_token);
+    localStorage.setItem('user_type', value);
+    localStorage.setItem('user_uuid', data?.data?.user_uuid);
+    localStorage.setItem('pd', password || '');
+
     localStorage.setItem('lastRoute', window.location.pathname);
+    localStorage.setItem('email', data?.data.email);
+    localStorage.setItem('phone', data?.data.phone);
 
     const tokenLifespan = 7100; // token lifespan in seconds (1 hour)
     // Calculate the expiry time
@@ -169,7 +187,7 @@ const Login = () => {
     });
 
     //const userType = data.data.user_type?'institute':data.data.user_type;
-    const userType = data.data.user_type;
+    const userType = value;
     if (userType === 'admin') {
       navigator('/main/Dashboard');
     } else if (userType === 'student') {
@@ -422,13 +440,14 @@ const Login = () => {
                             )}
                           </div>
                           <div>
+                            <label
+                              htmlFor="passwordInput"
+                              className="form-label"
+                            >
+                              Role
+                            </label>
                             <FormControl fullWidth>
-                              <InputLabel>Role</InputLabel>
-                              <Select
-                                value={value}
-                                onChange={handleChange}
-                                label="Role"
-                              >
+                              <Select value={value} onChange={handleChange}>
                                 <MenuItem value="student">Student</MenuItem>
                                 <MenuItem value="admin">Admin</MenuItem>
                                 <MenuItem value="institute">Institute</MenuItem>
@@ -527,6 +546,44 @@ const Login = () => {
             </div>
           </div>
         </section>
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={(e: any) => handleSubmit(e)}
+          email={emailphone}
+        />
+        <footer className="login-footer">
+          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <List
+            sx={{
+              display: 'inline-flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              padding: 0,
+            }}
+          >
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="privacypolicy" color="primary">
+                Privacy Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="refundpolicy" color="primary">
+                Refund Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="Disclaimer" color="primary">
+                Disclaimer
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="ServicesAgreement" color="primary">
+                End User Aggrement
+              </Link>
+            </ListItem>
+          </List>
+        </footer>
       </div>
     </>
   );

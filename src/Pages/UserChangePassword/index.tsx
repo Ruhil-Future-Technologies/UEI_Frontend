@@ -25,7 +25,7 @@ const UserChangePassword = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const user_type = localStorage.getItem('user_type');
-  const email = localStorage.getItem('userid');
+  const email = localStorage.getItem('email');
   const { postData } = useApi();
 
   const [password, setPassword] = useState('');
@@ -75,7 +75,7 @@ const UserChangePassword = () => {
     if (emptyKeys.length === 0) {
       postData(`${changepassUrl}`, UserSignUp)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             // navigator('/')
             toast.success(
               'Your Password has been changed successfuly! Please try to login again with new password',
@@ -89,7 +89,7 @@ const UserChangePassword = () => {
             setOldPassword('');
             setConfPassword('');
           } else if (
-            data?.status === 404 &&
+            data?.code === 404 &&
             data?.message === 'Invalid userid or password'
           ) {
             toast.error('Invalid userid or password', {
@@ -115,7 +115,21 @@ const UserChangePassword = () => {
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string,
   ) => {
+    const newValue = e.target.value;
     formRef?.current?.setFieldValue(fieldName, e.target.value);
+
+    if (fieldName === 'password' || fieldName === 'confpassword') {
+      const oldPasswordValue = formRef?.current?.values.oldpassword;
+      if (newValue === oldPasswordValue && oldPasswordValue !== '') {
+        formRef?.current?.setFieldError(
+          fieldName,
+          'New Password cannot be the same as the old Password.',
+        );
+        formRef?.current?.setFieldTouched(fieldName, true);
+        return;
+      }
+    }
+
     await formRef?.current?.validateField(fieldName);
     if (
       formRef?.current?.errors?.[fieldName as keyof changepasswordform] !==
@@ -130,7 +144,7 @@ const UserChangePassword = () => {
   };
   const changePasswordSchema = Yup.object().shape({
     oldpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
@@ -143,20 +157,24 @@ const UserChangePassword = () => {
         lowercaseRegex,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       )
-      .matches(
-        numberRegex,
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
-      )
+
       .matches(
         specialCharRegex,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
       ),
 
     password: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
+      )
+      .test(
+        'not-same-as-old',
+        'New Password cannot be the same as the old Password.',
+        function (value) {
+          return value !== this.parent.oldpassword;
+        },
       )
       .matches(
         uppercaseRegex,
@@ -176,10 +194,17 @@ const UserChangePassword = () => {
       ),
 
     confpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
+      )
+      .test(
+        'not-same-as-old',
+        'New Password cannot be the same as the old Password.',
+        function (value) {
+          return value !== this.parent.oldpassword;
+        },
       )
       .matches(
         uppercaseRegex,

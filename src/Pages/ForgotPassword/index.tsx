@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
+// import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import useApi from '../../hooks/useAPI';
 import gLogo from '../../assets/img/logo-white.svg';
 import loginImage from '../../assets/img/login-image.png';
@@ -19,9 +19,11 @@ import FullScreenLoader from '../Loader/FullScreenLoader';
 const Forgotpassword = () => {
   const { postData } = useApi();
   const navigate = useNavigate();
+  const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
   const [email, setEmail] = useState('');
+  const [error, setError] = useState(""); 
   // const [msg, setMsg] = useState("");
-  const [value, setValue] = React.useState('student');
+  // const [value, setValue] = React.useState('student');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -40,20 +42,32 @@ const Forgotpassword = () => {
     // document.documentElement.setAttribute('data-theme', theme);
   }, []);
 
-  const forgotpassUrl = QUERY_KEYS.FORGOT_PASSWORD;
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
+  const validateEmailOrPhone = (input: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/; // Adjust for different phone formats if needed
+    return emailRegex.test(input) || phoneRegex.test(input);
   };
+  const handleChange =(value:any)=>{
+    setEmail(value);
+    if (validateEmailOrPhone(value)) {
+      setError(""); 
+    }
+  }
   const sendLink = (e: any) => {
-    setIsLoading(true);
     e.preventDefault();
+    setError("");
+    if (!validateEmailOrPhone(email)) {
+      setError("Please enter a valid email or phone number");
+      return;
+    }
+    setIsLoading(true);
     const UserSignUp = {
       email: email,
-      user_type: String(value),
+      // user_type: String(value),
     };
     postData(`${forgotpassUrl}`, UserSignUp)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status === true) {
           // setMsg(data?.message);
           toast.success(data?.message, {
             hideProgressBar: true,
@@ -171,7 +185,7 @@ const Forgotpassword = () => {
                     <form method="" className="mb-3">
                       <div className="mb-4">
                         <div className="mb-4">
-                          <RadioGroup row value={value} onChange={handleChange}>
+                          {/* <RadioGroup row value={value} onChange={handleChange}>
                             <FormControlLabel
                               value="student"
                               control={<Radio />}
@@ -182,7 +196,7 @@ const Forgotpassword = () => {
                               control={<Radio />}
                               label="Admin"
                             />
-                          </RadioGroup>
+                          </RadioGroup> */}
                         </div>
                         <label htmlFor="" className="form-label">
                           Email / Phone
@@ -190,11 +204,13 @@ const Forgotpassword = () => {
                         {/* <input type="text" className="form-control   h-52" autoFocus  placeholder="Enter Your Email / Phone"/> */}
 
                         <TextField
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => handleChange(e.target.value)}
                           id="input-with-icon-textfield"
                           placeholder="Email"
                           // variant="outlined"
                           fullWidth
+                          error={!!error}
+                          helperText={error}
                         />
                       </div>
                       <button

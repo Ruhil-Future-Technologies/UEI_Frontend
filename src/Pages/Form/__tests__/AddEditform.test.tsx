@@ -151,7 +151,7 @@ describe('AddEditForm', () => {
       expect(getByText(/Form name is required/)).toBeInTheDocument(),
     );
     await waitFor(() =>
-      expect(getByText(/Menu master is required/)).toBeInTheDocument(),
+      expect(getByText(/Menu Master is required/)).toBeInTheDocument(),
     );
     await waitFor(() =>
       expect(getByText(/Form URL is required/)).toBeInTheDocument(),

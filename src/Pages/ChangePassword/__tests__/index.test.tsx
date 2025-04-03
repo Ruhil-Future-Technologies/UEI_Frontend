@@ -37,7 +37,7 @@ describe('Change Password Component', () => {
 
     // Wait for validation errors to appear
     await waitFor(() => {
-      const errorMessages = getAllByText('Please enter a password');
+      const errorMessages = getAllByText('Please enter a Password');
       expect(errorMessages).toHaveLength(2); // Check if there are 2 error messages
       errorMessages.forEach((message) => {
         expect(message).toBeInTheDocument(); // Verify each message is in the document

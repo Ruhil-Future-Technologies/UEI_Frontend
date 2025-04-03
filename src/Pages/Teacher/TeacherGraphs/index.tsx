@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApexOptions } from 'apexcharts';
 import Chart from 'react-apexcharts';
-const TeacherGraoh = () => {
+const TeacherGraph = () => {
   const chartSeries = [
     { name: 'Exams', data: [10, 20, 35, 15, 25, 5, 15] },
     { name: 'Materials', data: [5, 25, 20, 22, 18, 12, 8] },
@@ -287,17 +287,17 @@ const TeacherGraoh = () => {
                 </button>
                 <ul className="dropdown-menu">
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className="dropdown-item" href="">
                       Action
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className="dropdown-item" href="">
                       Another action
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <a className="dropdown-item" href="">
                       Something else here
                     </a>
                   </li>
@@ -384,4 +384,4 @@ const TeacherGraoh = () => {
   );
 };
 
-export default TeacherGraoh;
+export default TeacherGraph;
