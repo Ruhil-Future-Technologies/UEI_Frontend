@@ -36,7 +36,6 @@ const Teacher = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
 
-
   const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
   const DeleteTeacherURL = QUERY_KEYS_TEACHER.TEACHER_DELETE;
   const columns11 = TEACHER_COLUMNS;
@@ -163,8 +162,12 @@ const Teacher = () => {
         (teacher) => teacher.is_approve === true,
       );
 
-      const college: any = entity.filter((ent) => (ent.entity_type).toLowerCase() == 'college');
-      const school: any = entity.filter((ent) => (ent.entity_type).toLowerCase() == 'school');
+      const college: any = entity.filter(
+        (ent) => ent.entity_type.toLowerCase() == 'college',
+      );
+      const school: any = entity.filter(
+        (ent) => ent.entity_type.toLowerCase() == 'school',
+      );
 
       setFilteredTeachers([]);
 
@@ -423,7 +426,18 @@ const Teacher = () => {
   };
 
   const handleEditFile = (id: number) => {
-    navigate(`edit-teacher/${id}`);
+    const current_teacher = dataTeacher.find(
+      (teacher) => teacher.user_uuid == id,
+    );
+
+    if (current_teacher.is_active) {
+      navigate(`edit-teacher/${id}`);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handlecancel = () => {
@@ -431,8 +445,18 @@ const Teacher = () => {
   };
 
   const handleDeleteFiles = (id: number) => {
-    setDataDeleteId(id);
-    setDataDelete(true);
+    const current_teacher = dataTeacher.find(
+      (teacher) => teacher.user_uuid == id,
+    );
+    if (current_teacher.is_active) {
+      setDataDeleteId(id);
+      setDataDelete(true);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handleDelete = (id: number | undefined) => {
@@ -550,7 +574,6 @@ const Teacher = () => {
                             width: '140px',
                           }}
                         >
-
                           {row.row.original.is_approve ? (
                             <>
                               <Tooltip arrow placement="right" title="Edit">
@@ -593,9 +616,7 @@ const Teacher = () => {
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() =>
-                                    handleTeacherDetails(
-                                      row?.row?.original?.id,
-                                    )
+                                    handleTeacherDetails(row?.row?.original?.id)
                                   }
                                 >
                                   <Visibility style={{ fill: '#547476' }} />
@@ -644,9 +665,7 @@ const Teacher = () => {
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() =>
-                                    handleTeacherDetails(
-                                      row?.row?.original?.id,
-                                    )
+                                    handleTeacherDetails(row?.row?.original?.id)
                                   }
                                 >
                                   <Visibility style={{ fill: '#547476' }} />

@@ -1062,9 +1062,13 @@ export const ProfileDialog: FunctionComponent<{
           classname === 'class_11' || classname === 'class_12'
             ? answers[length - 2]?.toString()
             : answers[length - 1]?.toString(),
-        ...((classname === 'class_11' || classname === 'class_12') && {
-          stream: answers[length - 1]
-        }),
+        // ...((classname === 'class_11' || classname === 'class_12') && {
+        //   stream: answers[length - 1]
+        // }),
+          ...(classname === 'class_11' || classname === 'class_12'
+            ? { stream: answers[length - 1] }
+            : { stream: 'general' }) // Default to 'General' for other classes
+        
 
       }),
       institute_id: selectedInstitute?.toString(),

@@ -384,7 +384,8 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 item?.stream === null
               ) {
                 const filterData = filteredData?.filter(
-                  (items: any) => items?.class_id == item?.class_id,
+                  // (items: any) => items?.class_id == item?.class_id ,
+                  (items: any) =>item?.class_id !== null ? items?.class_id == item?.class_id : items?.subject_id == item.subject_id ,
                 );
                 subjectData = filterData || [];
               } else {
@@ -1197,7 +1198,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     ?.filter((teacher) => !boxes.some((b) => b.teacher_id === teacher.id))
                     ?.map((teacher) => (
                       <MenuItem key={teacher.id} value={teacher.id} sx={commonStyle(namecolor)}>
-                        {teacher.first_name}
+                         {teacher.first_name+" "+teacher.last_name}
                       </MenuItem>
                     ))}
                 </Select>
