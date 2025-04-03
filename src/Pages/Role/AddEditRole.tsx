@@ -119,11 +119,6 @@ const AddEditRole = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
-          } else if (data.code === 400) {
-            toast.error('Role name already exists', {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
@@ -148,11 +143,6 @@ const AddEditRole = () => {
             });
             resetForm({ values: initialState });
             // setRole({ role_name: ""})
-          } else if (data.code === 400) {
-            toast.error('Role name already exists', {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
