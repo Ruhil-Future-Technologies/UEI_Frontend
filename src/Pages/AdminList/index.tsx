@@ -8,12 +8,14 @@ import { toast } from "react-toastify";
 import { TrashIcon } from "../../assets";
 import { tabletools } from "../../utils/helpers";
 import NameContext from "../Context/NameContext";
+import { QUERY_KEYS_ADMIN_BASIC_INFO } from "../../utils/const";
 
 
 const AdminList = () => {
     const colunms = ADMIN_LIST_COLUMNS
     const context = useContext(NameContext);
     const { namecolor }: any = context;
+    const adminAllDataURL = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_ALLDATA;
     const { getData, deleteData } = useApi();
     const [adminList, setAdminList] = useState<Admin[]>([{
         id: 0,
@@ -34,7 +36,7 @@ const AdminList = () => {
 
     const getAdminList = () => {
         try {
-            getData(`https://qaapi.gyansetu.ai/admin/alldata`).then((response) => {
+            getData(adminAllDataURL).then((response) => {
                 if (response?.status) {
                     setAdminList(response.data?.admines_data)
                 }
