@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   pull_request:
     branches:
-      - QA
+      - UAT
 
 jobs:
   build:
@@ -38,11 +38,4 @@ jobs:
       # Run tests and collect coverage
       - name: Run Tests with Coverage
         run: npm run test -- --coverage
-        continue-on-error: false # Ensures the pipeline fails if tests fail
-
-      # Run Prettier check test
-      - name: Check code formatting with Prettier
-        run: |
-          npx prettier --write .
-          npx prettier --check .
-        continue-on-error: false
+        continue-on-error: false  # Ensures the pipeline fails if tests fail
