@@ -206,6 +206,7 @@ export const QUERY_KEYS_ADMIN_BASIC_INFO = {
   ADMIN_EDIT_BASIC_INFO: '/admin/edit',
   ADMIN_GET_PROFILE: '/admin/getProfile',
   ADMIN_GET_ALLDATA: '/admin/alldata'
+
 };
 export const QUERY_KEYS_STUDENT_ADDRESS = {
   GET_ADMIN_STUDENT_ADDRESS: '/student_address/list',
