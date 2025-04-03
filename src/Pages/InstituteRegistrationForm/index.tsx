@@ -105,7 +105,7 @@ const InstituteRegistrationForm = () => {
   const [school_name_error, setSchool_name_error] = useState(false);
   const [email_id_error, setEmail_id_error] = useState(false);
   const [mobile_no_error, setMobile_no_error] = useState(false);
-  // const [website_error, setWebsite_error] = useState(false);
+   const [website_error, setWebsite_error] = useState(false);
   const [country_error, setCountry_error] = useState(false);
   const [state_error, setState_error] = useState(false);
   const [city_error, setCity_error] = useState(false);
@@ -323,6 +323,17 @@ const InstituteRegistrationForm = () => {
     }
     if (name === 'state') {
       setState_error(value === '' ? true : false);
+    }
+    if (
+      !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value) && name === 'website_url'
+    ) {
+      if(value==''){
+        setWebsite_error(false);
+      }else{
+        setWebsite_error(true);
+      }
+    }else{
+      setWebsite_error(false);  
     }
   };
 
@@ -616,6 +627,17 @@ const InstituteRegistrationForm = () => {
         setEmail_id_error(false);
       }
 
+      if (
+        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+          valueInstitute.website_url,
+        )&& valueInstitute.website_url!=''
+      ) {
+        setWebsite_error(true);
+        valid = true;
+      }else{
+        setWebsite_error(false);
+      }
+
       if (!/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())) {
         setMobile_no_error(true);
         valid = true;
@@ -863,7 +885,7 @@ const InstituteRegistrationForm = () => {
                           variant="outlined"
                         />
 
-                        {/* <div>
+                        <div>
                         {website_error === true && (
                           <p
                             className="error-text"
@@ -872,7 +894,7 @@ const InstituteRegistrationForm = () => {
                             <small>Please enter a valid Website.</small>
                           </p>
                         )}
-                      </div> */}
+                      </div>
                       </div>
                     </div>
                     {selectedEntity.toLowerCase() === 'school' ? (

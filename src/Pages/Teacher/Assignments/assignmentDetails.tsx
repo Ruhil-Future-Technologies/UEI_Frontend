@@ -63,7 +63,7 @@ const AssignmentDetails = () => {
                         position: 'top-center'
 
                     })
-                    //window.location.reload();
+                    window.location.reload();
                 }
             }).catch((error) => {
                 toast.error(error.message, {

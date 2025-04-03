@@ -166,13 +166,13 @@ const InstitutionProfile = () => {
       formData.append('file', file);
       postFileData(`${'upload_file/upload'}`, formData)
         .then((data: any) => {
-          if (data?.status === 200) {
+          if (data?.status) {
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
             });
-          } else if (data?.status === 404) {
+          } else if (data?.code) {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
