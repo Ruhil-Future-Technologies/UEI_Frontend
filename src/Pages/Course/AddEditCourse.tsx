@@ -131,8 +131,34 @@ const AddEditCourse = () => {
     formRef.current?.resetForm();
   }, [institute]);
   const handleSubmit = async (courseData: any) => {
+    const formatCourseName = (courseName: string) => {
+      courseName = courseName.trim().toLowerCase();
+
+      const courseMap: { [key: string]: string } = {
+        btech: 'B.Tech',
+        bcom: 'B.Com',
+        mtech: 'M.Tech',
+        mcom: 'M.Com',
+        msc: 'M.Sc',
+        bsc: 'B.Sc',
+      };
+
+      if (courseMap[courseName]) {
+        return courseMap[courseName];
+      }
+
+      if (courseName.includes('.')) {
+        return courseName
+          .split('.')
+          .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+          .join('.');
+      }
+
+      return courseName.toUpperCase();
+    };
+
     const coursedata = {
-      course_name: courseData.course_name,
+      course_name: formatCourseName(courseData.course_name),
       institution_id: courseData.institute,
       duration: JSON.stringify(courseData.duration),
     };
@@ -146,7 +172,7 @@ const AddEditCourse = () => {
               theme: 'colored',
             });
           } else {
-            toast.error(data.message, {
+            toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });

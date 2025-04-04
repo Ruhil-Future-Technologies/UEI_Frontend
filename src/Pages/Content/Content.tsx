@@ -55,11 +55,6 @@ const Content = () => {
         setDataClasses(data.data);
       }
     });
-    getData('/entity/list').then((data) => {
-      if (data.status) {
-        setEntity(data.data?.entityes_data);
-      }
-    });
     getData(`${ContentURL}`)
       .then((data) => {
         if (data.status) {
@@ -176,10 +171,19 @@ const Content = () => {
     } else if (user_type === 'institute' || user_type === 'teacher') {
       setFilteredContent(dataContent);
     }
-  }, [activeTab, dataContent, entity]);
+  }, [activeTab, dataContent, entity, columns11]);
 
   const handleEditFile = (id: number) => {
-    navigate(`edit-content/${id}`);
+    const current_content = dataContent.find((content) => content.id == id);
+
+    if (current_content.is_active) {
+      navigate(`edit-content/${id}`);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handlecancel = () => {
@@ -187,8 +191,16 @@ const Content = () => {
   };
 
   const handleDeleteFiles = (id: number) => {
-    setDataDeleteId(id);
-    setDataDelete(true);
+    const current_content = dataContent.find((content) => content.id == id);
+    if (current_content.is_active) {
+      setDataDeleteId(id);
+      setDataDelete(true);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handleDelete = (id: number | undefined) => {
@@ -255,6 +267,21 @@ const Content = () => {
                   )}
                   <Box marginTop="10px">
                     <MaterialReactTable
+                      meta={{
+                        updateData: (
+                          rowIndex: number,
+                          columnId: string,
+                          value: any,
+                        ) => {
+                          setFilteredContent((prev) =>
+                            prev.map((row, index) =>
+                              index === rowIndex
+                                ? { ...row, [columnId]: value }
+                                : row,
+                            ),
+                          );
+                        },
+                      }}
                       columns={columns}
                       state={{
                         columnVisibility,

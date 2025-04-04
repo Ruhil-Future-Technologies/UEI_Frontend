@@ -968,7 +968,7 @@ function MainContent() {
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata.data);
+                    setprofileImage(imgdata?.data?.file_url);
                   })
                   .catch(() => {
                     // Handle error
@@ -1235,7 +1235,7 @@ function MainContent() {
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata?.data);
+                    setprofileImage(imgdata?.data?.file_url);
                   })
                   .catch(() => {});
               }

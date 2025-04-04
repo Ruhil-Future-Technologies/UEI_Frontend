@@ -160,7 +160,7 @@ describe('AddEditRole Component', () => {
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        'Role name already exists',
+        'Role with the same name already exists',
         expect.any(Object),
       );
     });
