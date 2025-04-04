@@ -797,7 +797,6 @@ export const ProfileDialog: FunctionComponent<{
     if(student_id){
       getData(`/teacher/teachers_list_for_student/${student_id}`).then((data) => {
         if (data.status) {
-          console.log(data.data);
           const filteredTeacher = data.data?.teachers?.filter((teacher:any) =>
             teacher?.subject_list?.includes(subject)
           );
@@ -1123,7 +1122,6 @@ export const ProfileDialog: FunctionComponent<{
       }),
       teacher_id: answers[length - 1]
     };
-    console.log(payload);
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status) {
         // toast.success('Subject Preference information saved successfully', {
