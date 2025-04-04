@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -19,11 +20,10 @@ import {
   Functions,
   HistoryEdu,
 } from '@mui/icons-material';
-import { MaterialReactTable } from 'material-react-table';
+import { MaterialReactTable, } from 'material-react-table';
 const StudentQuiz = () => {
   const navigate = useNavigate();
   const quizId = 1;
-
   const quizStats = [
     {
       icon: <CheckCircle color="success" />,
@@ -199,6 +199,7 @@ const StudentQuiz = () => {
                 enableColumnResizing
                 muiTableBodyRowProps={{ hover: true }}
               />
+
             </div>
           </div>
         </Box>
