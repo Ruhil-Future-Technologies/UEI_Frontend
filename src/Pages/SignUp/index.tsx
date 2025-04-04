@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 // import  { SnackbarOrigin } from "@mui/material/Snackbar";
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { ThemeProviderWrapper } from '../../ThemeProvider';
 import {
   Dialog,
   DialogTitle,
@@ -63,21 +64,21 @@ const Signup = () => {
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    const theme = localStorage?.getItem('theme') || '';
-    if (theme === 'light') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'dark') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'blue-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'semi-dark')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'bordered-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else document?.documentElement?.setAttribute('data-bs-theme', theme);
-    // document.documentElement.setAttribute('data-theme', theme);
-  }, []);
+  // useEffect(() => {
+  //   const theme = localStorage?.getItem('theme') || '';
+  //   if (theme === 'light') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'dark') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'blue-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'semi-dark')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'bordered-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   // document.documentElement.setAttribute('data-theme', theme);
+  // }, []);
 
   useEffect(() => {
     if (email && password) {
@@ -298,7 +299,7 @@ const Signup = () => {
     setPopupTermandcondi(false);
   };
   return (
-    <>
+    <ThemeProviderWrapper>
       {loading && <FullScreenLoader />}
 
       <div className="without-login">
@@ -655,7 +656,7 @@ const Signup = () => {
           </List>
         </footer>
       </div>
-    </>
+    </ThemeProviderWrapper>
   );
 };
 

@@ -9,6 +9,11 @@
   .quiz-panel{
     background-color:  var(--bs-body-bg-2) !important;;
   }
+  .assignbtngrp{
+    button[aria-pressed='false']{
+      background-color: transparent!important;
+    }
+  }
   .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card {
     background-color: #212529 !important;
   }

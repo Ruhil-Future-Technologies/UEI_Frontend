@@ -639,7 +639,7 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null || availableFrom.isBefore(dayjs(), "day")) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
     } else {
@@ -1345,57 +1345,52 @@ export const CreateAssignments = () => {
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item active" aria-current="page">
-                  Assignments
+                  Create Assignments
                 </li>
               </ol>
             </nav>
           </div>
         </div>
 
-        <div className="card p-lg-4 bg-m-transparent">
-          <div className="cardbody p-0 p-lg-2">
-            <div className="container">
+        <Typography variant="subtitle1" className="my-2">
+          Assignment Type
+        </Typography>
+        <div className="overflow-auto">
+          <ToggleButtonGroup
+            value={assignmentType}
+            exclusive
+            onChange={(_, newValue) => setAssignmentType(newValue)}            
+            className="assignbtngrp"
+          >
+            <ToggleButton value="written">
+              <AssignmentIcon /> Written
+            </ToggleButton>
+            <ToggleButton value="quiz">
+              <QuizIcon /> Quiz
+            </ToggleButton>
+            <ToggleButton value="project">
+              <AccountTreeIcon /> Project
+            </ToggleButton>
+            <ToggleButton value="presentation">
+              <PresentToAllIcon />
+              Presentation
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+
+        <div className="card p-lg-3  mt-4 mt-lg-0">
+          <div className="cardbody p-2">
+            <div className="container-fluid">
               <div className="row justify-content-center">
-                <div className="col-lg-9">
+                <div className="col-lg-12">
                   <div className="row g-4">
+                    
                     <div className="col-12">
-                      <Typography variant="subtitle1" className="mb-2">
-                        Assignment Type
-                      </Typography>
-                      <div className="overflow-auto">
-                        <ToggleButtonGroup
-                          value={assignmentType}
-                          exclusive
-                          onChange={(_, newValue) =>
-                            setAssignmentType(newValue)
-                          }
-                          fullWidth
-                          className="assignbtngrp"
-                        >
-                          <ToggleButton value="written">
-                            {' '}
-                            <AssignmentIcon /> Written
-                          </ToggleButton>
-                          <ToggleButton value="quiz">
-                            <QuizIcon /> Quiz
-                          </ToggleButton>
-                          <ToggleButton value="project">
-                            <AccountTreeIcon /> Project
-                          </ToggleButton>
-                          <ToggleButton value="presentation">
-                            {' '}
-                            <PresentToAllIcon />
-                            Presentation
-                          </ToggleButton>
-                        </ToggleButtonGroup>
-                      </div>
-                    </div>
-                    <div className="col-12">
-                      <Typography variant="h5" className="mb-4 fw-bold">
+                      <Typography variant="h6" className="mb-4 fw-bold">
                         Create{' '}
-                        {assignmentType !== 'quiz' ? 'Assignment' : 'Quiz'}
+                        {assignmentType !== 'Quiz' ? 'Assignment' : 'Quiz'}
                       </Typography>
-                      {assignmentType !== 'quiz' && (
+                      {assignmentType !== 'Quiz' && (
                         <TextField
                           fullWidth
                           label="Assignment Title"
@@ -1412,13 +1407,49 @@ export const CreateAssignments = () => {
                       )}
                     </div>
 
+                    <div className="col-6">
+                      <TextField
+                        fullWidth
+                        label="Contact Email"
+                        variant="outlined"
+                        name="contact_email"
+                        disabled
+                        onChange={handleChanges}
+                        type="email"
+                        value={assignmentData.contact_email}
+                        autoComplete="off"
+                      />
+                      {contact_email_email && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please enter a valid Email Id.</small>
+                        </p>
+                      )}
+                    </div>
+
                     {assignmentType !== 'quiz' && (
                       <>
                         {' '}
+                        <div className="col-lg-6">
+                          <TextField
+                            fullWidth
+                            label="Points"
+                            variant="outlined"
+                            name="points"
+                            onChange={handleChanges}
+                            type="number"
+                            inputProps={{ min: '0' }}
+                            value={assignmentData.points}
+                          />
+                          {point_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please enter a valid points.</small>
+                            </p>
+                          )}
+                        </div>
                         <div className="col-12">
-                          <Typography variant="subtitle1">
+                          <label className='col-form-label'>
                             Attachments
-                          </Typography>
+                          </label>
                           <input
                             type="file"
                             accept=".pdf,.doc,.docx"
@@ -1464,29 +1495,14 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                        <div className="col-lg-6">
-                          <TextField
-                            fullWidth
-                            label="Points"
-                            variant="outlined"
-                            name="points"
-                            onChange={handleChanges}
-                            type="number"
-                            inputProps={{ min: '0' }}
-                            value={assignmentData.points}
-                          />
-                          {point_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please enter a valid points.</small>
-                            </p>
-                          )}
-                        </div>
+                        
                       </>
                     )}
                     {assignmentType === 'quiz' && (
-                      <div className=" col-12 ">
-                        <div className="row g-4">
-                          <div className="col-md-4 col-12">
+                      <>
+
+                        
+                          <div className="col-md-6 col-12">
                             <FormControl fullWidth className="">
                               <InputLabel id="level-select-label">
                                 Level
@@ -1516,8 +1532,11 @@ export const CreateAssignments = () => {
                               </p>
                             )}
                           </div>
-                          <h5>Number of Questions for Each Mark</h5>
-                          <div className="col-md-4 col-12">
+                          <div className="col-12">
+                            <label className='col-form-label pb-0'>Number of Questions for Each Mark</label>
+                          </div>
+                          
+                          <div className="col-md-2 col-12">
                             <TextField
                               label="One Mark"
                               type="number"
@@ -1536,7 +1555,7 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
-                          <div className="col-md-4 col-12">
+                          <div className="col-md-2 col-12">
                             <TextField
                               label="Two Marks"
                               type="number"
@@ -1555,7 +1574,7 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
-                          <div className="col-md-4 col-12">
+                          <div className="col-md-2 col-12">
                             <TextField
                               label="Three Marks"
                               type="number"
@@ -1574,7 +1593,7 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
-                          <div className="col-md-4 col-12">
+                          <div className="col-md-2 col-12">
                             <TextField
                               label="Four Marks"
                               type="number"
@@ -1593,7 +1612,7 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
-                          <div className="col-md-4 col-12">
+                          <div className="col-md-2 col-12">
                             <TextField
                               label="Five Marks"
                               type="number"
@@ -1613,7 +1632,7 @@ export const CreateAssignments = () => {
                             />
                           </div>
 
-                          <div className="col-md-4 col-12">
+                          <div className="col-md-2 col-12">
                             <TextField
                               label="Total Questions"
                               type="number"
@@ -1631,10 +1650,9 @@ export const CreateAssignments = () => {
                               </small>
                             </p>
                           )}
-                        </div>
-
-                        <TextField
-                          className="mt-4"
+                       
+                        <div className="col-lg-12">
+                        <TextField                          
                           label="Topic"
                           type="text"
                           value={topic}
@@ -1647,26 +1665,11 @@ export const CreateAssignments = () => {
                             <small> Please enter a valid Topic</small>
                           </p>
                         )}
-                      </div>
+                        </div>
+                       
+                      </>
                     )}
-                    <div className="col-6">
-                      <TextField
-                        fullWidth
-                        label="Contact Email"
-                        variant="outlined"
-                        name="contact_email"
-                        disabled
-                        onChange={handleChanges}
-                        type="email"
-                        value={assignmentData.contact_email}
-                        autoComplete="off"
-                      />
-                      {contact_email_email && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please enter a valid Email Id.</small>
-                        </p>
-                      )}
-                    </div>
+                    
                     <div className="col-12 mt-3 mb-5">
                       <label className="col-form-label">
                         Instructions<span>*</span>
@@ -2073,7 +2076,7 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               label="Available From"
                               value={availableFrom}
-                              minDate={dayjs()} 
+                              minDate={dayjs()}
                               onChange={handleAvailableFromChange}
                               slots={{
                                 textField: (params) => (

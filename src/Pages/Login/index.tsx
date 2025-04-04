@@ -3,6 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import { ThemeProviderWrapper } from '../../ThemeProvider';
 import {
   FormControl,
   IconButton,
@@ -69,21 +70,21 @@ const Login = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setValue((event.target as HTMLInputElement).value);
   };
-  useEffect(() => {
-    const theme = localStorage?.getItem('theme') || '';
-    if (theme === 'light') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'dark') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'blue-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'semi-dark')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'bordered-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else document?.documentElement?.setAttribute('data-bs-theme', theme);
-    // document.documentElement.setAttribute('data-theme', theme);
-  }, []);
+  // useEffect(() => {
+  //   const theme = localStorage?.getItem('theme') || 'light';
+  //   if (theme === 'light') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'dark') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'blue-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'semi-dark')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'bordered-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   // document.documentElement.setAttribute('data-theme', theme);
+  // }, []);
 
   useEffect(() => {
     if (emailphone && password) {
@@ -226,7 +227,7 @@ const Login = () => {
   };
 
   return (
-    <>
+    <ThemeProviderWrapper>
       {loading && <FullScreenLoader />}
       <div className="without-login">
         <header className="container-fluid mb-5 py-3 d-none d-lg-block">
@@ -585,7 +586,7 @@ const Login = () => {
           </List>
         </footer>
       </div>
-    </>
+    </ThemeProviderWrapper>
   );
 };
 

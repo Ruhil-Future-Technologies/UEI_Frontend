@@ -18,14 +18,16 @@ $form-check-input-bg: rgba($primary, 0.2);
 $form-check-input-border: 1px solid rgba($primary, 0.4);
 $max-items: 100;
 $text-color: #4b5563;
-
+$enable-dark-mode: true;
+$enable-css-custom-properties: true;
 // Import Bootstrap SCSS (after defining variables)
 @import '~bootstrap/scss/functions'; // Ensure functions are available
 @import '~bootstrap/scss/variables'; // Load default variables
 @import '~bootstrap/scss/mixins'; // Load mixins
 
 // Now import the full Bootstrap library
-@import '~bootstrap/scss/bootstrap';
+//@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap.scss';
 
 // //Required Bootstrap imports
 // @import "bootstrap/variables";
@@ -73,6 +75,9 @@ body,
 a,
 p {
   font-family: 'Inter', system-ui !important;
+}
+.row{
+  box-sizing: border-box;
 }
 ul {
   margin: 0;
@@ -293,16 +298,16 @@ img {
   font-size: 10px !important;
 }
 @media (max-width: 428px) {
-
-  .text-m-16{
-    font-size: 16px!important;
+  
+  .text-m-16 {
+    font-size: 16px !important;
   }
-  .text-m-14{
-    font-size: 14px!important;
+  .text-m-14 {
+    font-size: 14px !important;
   }
-  body .bg-m-transparent{
-    background-color: transparent!important;
-    box-shadow: none!important;
+  body .bg-m-transparent {
+    background-color: transparent !important;
+    box-shadow: none !important;
   }
   .mobile-profile {
     img {
@@ -361,7 +366,7 @@ img {
 
   .chat-panel {
     //padding: 1rem;
-    height: calc(100vh - 105px)!important;
+    height: calc(100vh - 105px) !important;
     grid-template-columns: 1fr !important;
     .left-side-history {
       position: fixed !important;
@@ -915,6 +920,7 @@ body .desk-card {
   -webkit-tap-highlight-color: transparent;
   transform: translateY(0);
   --bs-btn-font-weight: 500;
+  box-sizing: border-box;
 }
 
 .btn-danger {
@@ -2212,7 +2218,7 @@ body .desk-card {
         display: flex;
         overflow: auto;
 
-        @media (max-width:724px) {
+        @media (max-width: 724px) {
           max-height: calc(100vh - 210px);
         }
         .welcome-box {
@@ -2840,10 +2846,7 @@ a {
   display: none !important;
 }
 
-.MuiFormLabel-root {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-}
+
 
 .freechatbox {
   position: fixed;
@@ -2874,7 +2877,7 @@ a {
         box-shadow:
           rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
           rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
-        line-height: 1rem;
+      
         border-radius: 8px !important;
         font-size: 15px;
         &.left {
@@ -2954,8 +2957,8 @@ a {
   opacity: 0;
   color: $secondary !important;
   transition: opacity 0.3s ease;
-  width: 32px!important;
-  height: 32px!important;
+  width: 32px !important;
+  height: 32px !important;
   background-color: $white;
   border-radius: 5px;
   border: 1px solid #f7f7f7;
@@ -2978,8 +2981,8 @@ a {
 .swiper-button-next {
   right: -10px !important;
 }
-.svgwhite{
-  path{
+.svgwhite {
+  path {
     fill: $white;
   }
 }
@@ -2994,19 +2997,33 @@ a {
 }
 .assignbtngrp {
   display: flex;
-  gap: 10px;
-
+  gap: 1rem;
+  margin-bottom: 1rem;
   button {
-    border: 1px solid #e5e7eb !important;
+    border: 1px solid rgba($primary, 0.2) !important;
     border-radius: 8px !important;
     color: #4b5563;
-    min-height: 86px;
+    min-height: 90px;
+    min-width: 170px;
+    flex-direction: column;
+    gap: 0.4rem;
+    background-color: $white;
+    &:hover{
+      background-color: $primary;
+      color: $white;
+    }
   }
   button[aria-pressed='true'] {
-    background-color: rgba($primary, 0.1);
+    background-color: $primary;
     border: 1px solid rgba($primary, 0.7) !important;
-    color: $primary;
+    color: $white;
+    &:hover{
+      background-color: $primary;
+      color: $white;
+    }
   }
+
+
 }
 
 .fileslistitem {
@@ -3030,58 +3047,58 @@ a {
   overflow: auto;
 }
 
-.quiz-panel{
+.quiz-panel {
   display: grid;
   grid-template-columns: 1fr 320px;
   background-color: $white;
   min-height: 100vh;
-  .rebtns{
+  .rebtns {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
     grid-gap: 0.5rem;
-    button{
+    button {
       min-width: auto;
       width: 100%;
       border-radius: 8px;
     }
   }
 
-  .left-cards{
+  .left-cards {
     border-right: 1px solid rgba($primary, 0.2);
-    .optiongrp{
+    .optiongrp {
       margin-left: 0.9rem;
       margin-top: 1rem;
-      .optionscss{
+      .optionscss {
         border: 1px solid rgba($primary, 0.2);
         margin-bottom: 1rem;
         border-radius: 0.5rem;
-       }
+      }
     }
-   
   }
-  .right-cards{
-    .quiz-hint{
+  .right-cards {
+    .quiz-hint {
       margin: 2rem 0;
-      li{
+      li {
         display: flex;
         gap: 1rem;
         align-items: center;
         font-size: 14px;
         margin-bottom: 0.5rem;
-        span{
+        span {
           width: 16px;
           height: 16px;
           display: block;
           border-radius: 2px;
         }
       }
-      @media (max-width: 428px){
+      @media (max-width: 428px) {
         display: flex;
         justify-content: space-between;
       }
     }
   }
-  .left-cards, .right-cards{
+  .left-cards,
+  .right-cards {
     padding: 1.2rem;
   }
 
@@ -3089,7 +3106,7 @@ a {
     grid-template-columns: 1fr;
   }
 }
-.incirclere{
+.incirclere {
   aspect-ratio: 1;
   padding: 1rem;
   background-color: $primary;
@@ -3102,27 +3119,81 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  h1{
+  h1 {
     color: $white;
     font-size: 2rem;
-    span{
+    span {
       display: block;
       font-size: 1rem;
     }
   }
 }
 
-.quizsubre{
+.quizsubre {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1.5rem;
   flex-wrap: wrap;
-  li{
-display: flex;
-gap: .5rem;
-align-items: center;
-span{
-  display: block;
+  li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    span {
+      display: block;
+    }
+  }
 }
+
+
+.carddlex{
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  span{
+    background-color: $primary;
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg{
+      width: 32px;
+      height: 32px;
+      path{
+        fill: white;
+      }
+    }
+  }
+  h6{font-weight: bold; margin-bottom: 0.1rem;}
+  p{
+    margin-bottom: 0;
+    color: #4B5563;
+  }
+
+ 
+}
+.totallist{
+  display: flex;
+  align-items: center;
+  gap:0.4rem;
+  margin-top: 2rem;
+  h6{
+    color: #6B7280;
+    font-weight: 400;
+    margin-bottom: 0;
+  }
+  span{
+   
+    display: block;
+
+    svg{
+      path{fill: #6B7280;}
+    }
+
+  }
+  p{
+    margin-bottom: 0;
+   
   }
 }
