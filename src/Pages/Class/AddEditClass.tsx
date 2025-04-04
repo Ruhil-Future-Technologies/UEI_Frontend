@@ -226,7 +226,7 @@ const AddEditClass = () => {
                                   },
                                 }}
                               >
-                                {`class_${item}`}
+                                {`class ${item}`}
                               </MenuItem>
                             ))}
                           </Select>

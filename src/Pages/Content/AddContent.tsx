@@ -1916,7 +1916,7 @@ const AddContent = () => {
                                               },
                                             }}
                                           >
-                                            {cls.class_name}
+                                            {cls.class_name.replace('class_', 'Class ')}
                                           </MenuItem>
                                         ))}
                                       </Select>

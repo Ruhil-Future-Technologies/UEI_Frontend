@@ -262,15 +262,15 @@ exports[`Class Component renders correctly 1`] = `
                                 <div
                                   class="Mui-TableHeadCell-Content-Wrapper MuiBox-root css-lapokc"
                                 >
-                                  Class name 
+                                  Class Name
                                 </div>
                                 <span
-                                  aria-label="Sort by Class name  descending"
+                                  aria-label="Sort by Class Name descending"
                                   class="MuiBadge-root css-1c32n2y-MuiBadge-root"
                                   data-mui-internal-clone-element="true"
                                 >
                                   <span
-                                    aria-label="Sort by Class name  descending"
+                                    aria-label="Sort by Class Name descending"
                                     class="MuiButtonBase-root MuiTableSortLabel-root Mui-active css-118d58w-MuiButtonBase-root-MuiTableSortLabel-root"
                                     role="button"
                                     tabindex="0"
