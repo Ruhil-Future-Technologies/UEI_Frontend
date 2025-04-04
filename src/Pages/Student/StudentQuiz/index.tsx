@@ -20,36 +20,10 @@ import {
   Functions,
   HistoryEdu,
 } from '@mui/icons-material';
-import { MaterialReactTable, MRT_Cell, MRT_Column, MRT_ColumnDef, MRT_Row, MRT_TableInstance } from 'material-react-table';
+import { MaterialReactTable, } from 'material-react-table';
 const StudentQuiz = () => {
   const navigate = useNavigate();
   const quizId = 1;
-
-  const columns: MRT_ColumnDef<any>[] = [
-    { accessorKey: 'quiz', header: 'Quiz Name' },
-    { accessorKey: 'date', header: 'Date Taken' },
-    { accessorKey: 'score', header: 'Score' },
-    { accessorKey: 'time', header: 'Time Taken' },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      Cell: ({
-        cell,
-      }: {
-        cell: MRT_Cell<any, any>;
-        column: MRT_Column<any, any>;
-        row: MRT_Row<any>;
-        table: MRT_TableInstance<any>;
-        renderedCellValue: React.ReactNode;
-      }) => (
-        <Typography
-          color={cell.getValue() === 'Failed' ? 'error' : 'success'}
-        >
-          {cell.getValue()}
-        </Typography>
-      ),
-    },
-  ];
   const quizStats = [
     {
       icon: <CheckCircle color="success" />,
