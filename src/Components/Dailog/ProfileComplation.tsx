@@ -3396,11 +3396,7 @@ export const ProfileDialog: FunctionComponent<{
                     </>
                   ) : hobbyquestion ? (
                     <div
-                      style={{
-                        position: 'relative',
-                        display: 'inline-block',
-                        width: '100%',
-                      }}
+                      className='d-flex align-items-center gap-2'
                     >
                       <Select
                         className="dropdown-wrapper"
@@ -3413,19 +3409,9 @@ export const ProfileDialog: FunctionComponent<{
                           container: (base) => ({ ...base, width: '90%' }),
                         }}
                       />
-                      <p
-                        style={{
-                          position: 'absolute',
-                          top: '50%',
-                          right: '10px',
-                          transform: 'translateY(-50%)',
-                          cursor: 'pointer',
-                          margin: 0,
-                        }}
-                        onClick={handleSkip}
-                      >
+                      <span onClick={handleSkip} role='button' className='pe-2 py-2'>
                         Skip
-                      </p>
+                      </span>
                     </div>
                   ) : countrylist ? (
                     <Select

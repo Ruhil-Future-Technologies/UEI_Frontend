@@ -8,7 +8,7 @@ import {
   // Button,
   FormControl,
   FormControlLabel,
-  FormLabel,
+  //FormLabel,
   //Grid,
   // InputLabel,
   // MenuItem,
@@ -16,10 +16,11 @@ import {
   RadioGroup,
   // Select,
   //TextField,
-  Typography,
+  //Typography,
 } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import useApi from '../../hooks/useAPI';
+
 import {
   LocalizationProvider,
   //DateTimePicker,
@@ -647,9 +648,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">
+            <label id="demo-row-radio-buttons-group-label" className='col-form-label'>
               Gender *
-            </FormLabel>
+            </label>
             <RadioGroup
               data-testid="gender"
               row
@@ -696,9 +697,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
         </div>
         <div className="col-md-6 pb-3 form_field_wrapper">
-          <Typography className="profiletext" variant="body1">
+          <label className="profiletext col-form-label">
             Date of Birth <span>*</span>
-          </Typography>
+          </label>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {/* <DatePicker
               // label="Date of Birth"
@@ -712,8 +713,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               maxDate={maxSelectableDate}
             
             /> */}
-            <Box width={300}>
+            <Box className="w-100">
               <DatePicker
+                className='w-100'
                 aria-label="datepicker_label"
                 value={dayjs(basicInfo?.dob)}
                 onChange={handleDateChange}
@@ -730,6 +732,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     variant: 'outlined',
                     helperText: error,
                     error: Boolean(error),
+                    size: "small",
                     inputProps: {
                       maxLength: 10,
                       'aria-label': 'datepicker_label',

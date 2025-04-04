@@ -391,9 +391,9 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
     <>
       <div className="row">
         <div className="col-12">
-          <p className="font-weight-bold profiletext">
-            <b> Hobbies</b>
-          </p>
+         
+            <b className='font-weight-bold profiletext mb-2 d-block'> Hobbies</b>
+        
         </div>
       </div>
       <div className="row form_field_wrapper mb-4">
@@ -406,9 +406,9 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
       </div>
 
       <form>
-        <p className="font-weight-bold profiletext mt-4">
-          <b> Language Known</b>
-        </p>
+        <b className="font-weight-bold profiletext mb-1 d-block">
+           Language Known
+        </b>
         {boxes.map((box, index) => (
           <div className="d-flex gap-3 mb-2 align-items-center" key={index}>
             <FormControl

@@ -11,6 +11,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import MetisMenu from '@metismenu/react';
 import useApi from '../../hooks/useAPI';
@@ -206,14 +207,25 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li>
+                          <Link
+                            to="/main/student/assignment"
+                            onClick={removeMobileToggle}
+                          >
+                            <div className="parent-icon">
+                              <AssignmentOutlinedIcon />
+                            </div>
+                            <div className="menu-title">Your Assignments</div>
+                          </Link>
+                        </li>
+                    <li>
                       <Link
-                        to="/main/student/assignment"
+                        to="/main/student/quiz"
                         onClick={removeMobileToggle}
                       >
                         <div className="parent-icon">
-                          <AssignmentOutlinedIcon />
+                          <QuestionAnswerOutlinedIcon />
                         </div>
-                        <div className="menu-title">Your Assignments</div>
+                        <div className="menu-title">Quiz</div>
                       </Link>
                     </li>
                   </>
@@ -408,7 +420,7 @@ const Sidebar = () => {
         </div>
         {user_type === 'student' && (
           <div className="sidebar-footer">
-            <div className="sidebar-nav">
+           
               <ul className="metismenu">
                 {Number(profileCompletion) === 100 && (
                   <li>
@@ -432,7 +444,7 @@ const Sidebar = () => {
                   </Link>
                 </li>
               </ul>
-            </div>
+           
           </div>
         )}
       </aside >

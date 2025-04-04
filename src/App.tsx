@@ -106,6 +106,8 @@ import StudentAssignments from './Pages/Student/StudentAssignment';
 import PreviewAndSubmit from './Pages/Student/StudentAssignment/previewAndSubmit';
 import AdminList from './Pages/AdminList';
 import PreviewStudentAssignment from './Pages/Teacher/Assignments/previewStudentAssignment';
+import StudentQuiz from './Pages/Student/StudentQuiz';
+import QuizPage from './Pages/Student/StudentQuiz/Quiz';
 
 function App() {
   const navigate = useNavigate();
@@ -360,6 +362,14 @@ function App() {
             element={
               <Protected Component={PreviewAndSubmit} menuName="content" />
             }
+          />
+          <Route
+            path="/main/student/quiz"
+            element={<Protected Component={StudentQuiz} menuName="content" />}
+          />
+          <Route
+            path="/main/student/quiz/:id"
+            element={<Protected Component={QuizPage} menuName="content" />}
           />
           <Route
             path="/main/chat"
