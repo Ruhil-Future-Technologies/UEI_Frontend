@@ -170,7 +170,7 @@ const AddEditAdminFeedback = () => {
           <div className="card-body">
             {/* <Typography variant="h6"> */}
             <div className="card-title">
-              {id ? 'Edit' : 'Add'} Feedback Questions dfgdg
+              {id ? 'Edit' : 'Add'} Feedback Questions
             </div>
             <Formik
               onSubmit={(values, formikHelpers) =>
