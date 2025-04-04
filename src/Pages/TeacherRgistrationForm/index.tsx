@@ -729,6 +729,7 @@ const TeacherRegistrationPage = () => {
       setTeaching_experience_error(false);
     }
     if (allselectedfiles.length < 1) {
+      valid1 = true;
       setDocument_error(true);
     } else {
       setDocument_error(false);

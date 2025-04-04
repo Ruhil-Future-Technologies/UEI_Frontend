@@ -52,7 +52,7 @@ const AssignmentDetails = () => {
     };
 
     const handleSave = (Submition_id: any) => {
-        if (assignmentData?.points && tempMarks < assignmentData?.points && tempMarks != '') {
+        if (assignmentData?.points && tempMarks <= assignmentData?.points && tempMarks != '') {
             const formData = new FormData();
             formData.append('graded_points', tempMarks);
             putData(`/assignment_submission/edit/${Submition_id}`, formData).then((response) => {
@@ -63,7 +63,7 @@ const AssignmentDetails = () => {
                         position: 'top-center'
 
                     })
-                    //window.location.reload();
+                    window.location.reload();
                 }
             }).catch((error) => {
                 toast.error(error.message, {

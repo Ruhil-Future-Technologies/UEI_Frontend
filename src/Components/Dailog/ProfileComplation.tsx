@@ -797,7 +797,6 @@ export const ProfileDialog: FunctionComponent<{
     if(student_id){
       getData(`/teacher/teachers_list_for_student/${student_id}`).then((data) => {
         if (data.status) {
-          console.log(data.data);
           const filteredTeacher = data.data?.teachers?.filter((teacher:any) =>
             teacher?.subject_list?.includes(subject)
           );
@@ -1104,7 +1103,7 @@ export const ProfileDialog: FunctionComponent<{
       subject_id: selectSubject,
       preference: answers[length - 3],
       score_in_percentage: answers[length - 2],
-      ...((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school'&&
+      ...(((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school' || selectedInstituteType.toLowerCase()=='school') &&
        { class_id:answeredData?.academic_history?.class_id || answers[11]}
       ),
       
@@ -1113,7 +1112,7 @@ export const ProfileDialog: FunctionComponent<{
           answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-      ...((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school' &&
+      ...(((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school'|| selectedInstituteType.toLowerCase()=='school') &&
         answeredData?.academic_history?.stream && {
         stream: answeredData?.academic_history?.stream || answers[12],
       }),

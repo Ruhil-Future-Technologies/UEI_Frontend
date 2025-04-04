@@ -96,7 +96,19 @@ const AddEditAdminFeedback = () => {
           navigate('/main/feedback');
           // setOptions([""]);
           // setQuestion("");
+        }else{
+          toast.error(response?.message,{
+            hideProgressBar:true,
+            theme:'colored',
+            position:'top-center'
+          })
         }
+      }).catch((error)=>{
+        toast.error(error?.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+        })
       });
     } else {
       postData(`${FeedbackAddURL}`, formData1).then((response) => {
@@ -109,8 +121,20 @@ const AddEditAdminFeedback = () => {
           navigate('/main/feedback');
           // setOptions([""]);
           // setQuestion("");
-        }
-      });
+        }else{
+                toast.error(response?.message,{
+                  hideProgressBar:true,
+                  theme:'colored',
+                  position:'top-center'
+                })
+              }
+            }).catch((error)=>{
+              toast.error(error?.message,{
+                hideProgressBar:true,
+                theme:'colored',
+                position:'top-center'
+              })
+            });
     }
   };
 

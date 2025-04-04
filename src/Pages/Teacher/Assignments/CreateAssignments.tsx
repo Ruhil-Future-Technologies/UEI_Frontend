@@ -612,7 +612,7 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), "day")) {
       setAvailableFrom_error(true);
       valid1 = true;
     } else {
@@ -1613,6 +1613,7 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               label="Available From"
                               value={availableFrom}
+                              minDate={dayjs()} 
                               onChange={handleAvailableFromChange}
                               slots={{
                                 textField: (params) => (

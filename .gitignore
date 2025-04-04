@@ -25,7 +25,3 @@ yarn-error.log*
 package-lock.json
 
 .env
-# workflows
-.github/workflows/UAT_CD.yml
-.github/workflows/UAT_CI.yml
-
