@@ -11,6 +11,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import MetisMenu from '@metismenu/react';
 import useApi from '../../hooks/useAPI';
@@ -46,11 +47,10 @@ const Sidebar = () => {
     callAPI();
   }, []);
 
-  useEffect(() => { }, [menuList1]);
+  useEffect(() => {}, [menuList1]);
 
   useEffect(() => {
     if (user_type === 'admin') {
-
       setDashboardURL('/main/DashBoard');
     } else if (user_type === 'institute') {
       setDashboardURL('/institution-dashboard');
@@ -216,6 +216,17 @@ const Sidebar = () => {
                         <div className="menu-title">Your Assignments</div>
                       </Link>
                     </li>
+                    <li>
+                      <Link
+                        to="/main/student/quiz"
+                        onClick={removeMobileToggle}
+                      >
+                        <div className="parent-icon">
+                          <QuestionAnswerOutlinedIcon />
+                        </div>
+                        <div className="menu-title">Quiz</div>
+                      </Link>
+                    </li>
                   </>
                 ) : (
                   ' '
@@ -230,7 +241,6 @@ const Sidebar = () => {
                   //     <div className="menu-title">Your Assignments</div>
                   //   </Link>
                   // </li>
-
                 )}
               </>
             ) : (
@@ -257,8 +267,9 @@ const Sidebar = () => {
                             </a>
                             <ul
                               id={menu.id}
-                              className={`mm-collapse ${openMenu === menu.id ? 'mm-show' : ''
-                                }`}
+                              className={`mm-collapse ${
+                                openMenu === menu.id ? 'mm-show' : ''
+                              }`}
                             >
                               {menu?.submenus?.map(
                                 (submenu: any, index: number) => {
@@ -286,8 +297,9 @@ const Sidebar = () => {
                                   ) {
                                     return (
                                       <li
-                                        className={`${openSubMenu ? 'mm-active' : ''
-                                          }`}
+                                        className={`${
+                                          openSubMenu ? 'mm-active' : ''
+                                        }`}
                                         key={index}
                                       >
                                         <a
@@ -300,8 +312,9 @@ const Sidebar = () => {
                                           Institution
                                         </a>
                                         <ul
-                                          className={`mm-collapse ${openSubMenu ? 'mm-show' : ''
-                                            }`}
+                                          className={`mm-collapse ${
+                                            openSubMenu ? 'mm-show' : ''
+                                          }`}
                                         >
                                           <li>
                                             <Link to="/main/University">
@@ -384,7 +397,6 @@ const Sidebar = () => {
                               onClick={() => toggleMenu(menu.id)}
                               aria-expanded={openMenu === menu.id}
                             >
-                             {' '}
                               <div className="parent-icon">
                                 <AdminPanelSettingsOutlinedIcon />
                               </div>
@@ -393,8 +405,7 @@ const Sidebar = () => {
                               </div>{' '}
                             </a>
                           </>
-                        )
-                        }
+                        )}
                       </li>
                     );
                   })
@@ -435,7 +446,7 @@ const Sidebar = () => {
             </div>
           </div>
         )}
-      </aside >
+      </aside>
     </>
   );
 };

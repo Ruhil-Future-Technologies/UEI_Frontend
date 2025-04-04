@@ -17,15 +17,15 @@ $bg-gray: #f5f5f5;
 $form-check-input-bg: rgba($primary, 0.2);
 $form-check-input-border: 1px solid rgba($primary, 0.4);
 $max-items: 100;
-$text-color: #4B5563;
+$text-color: #4b5563;
 
 // Import Bootstrap SCSS (after defining variables)
-@import "~bootstrap/scss/functions"; // Ensure functions are available
-@import "~bootstrap/scss/variables"; // Load default variables
-@import "~bootstrap/scss/mixins";    // Load mixins
+@import '~bootstrap/scss/functions'; // Ensure functions are available
+@import '~bootstrap/scss/variables'; // Load default variables
+@import '~bootstrap/scss/mixins'; // Load mixins
 
 // Now import the full Bootstrap library
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/scss/bootstrap';
 
 // //Required Bootstrap imports
 // @import "bootstrap/variables";
@@ -69,16 +69,20 @@ $text-color: #4B5563;
 @import 'responsive';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-body, a, p {
+body,
+a,
+p {
   font-family: 'Inter', system-ui !important;
- 
 }
-ul{
+ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-p, ul li{ color: $text-color;}
+p,
+ul li {
+  color: $text-color;
+}
 .mh-56 {
   min-height: 3.5rem;
 }
@@ -289,9 +293,9 @@ img {
   font-size: 10px !important;
 }
 @media (max-width: 428px) {
-  body .bg-m-transparent{
-    background-color: transparent!important;
-    box-shadow: none!important;
+  body .bg-m-transparent {
+    background-color: transparent !important;
+    box-shadow: none !important;
   }
   .mobile-profile {
     img {
@@ -337,14 +341,12 @@ img {
 }
 
 @media (max-width: 1024px) {
-
   .swiper-button-prev,
-.swiper-button-next{
-  opacity: 1!important;
-}
-  .search-filter{
-    margin-right: 0!important;
-
+  .swiper-button-next {
+    opacity: 1 !important;
+  }
+  .search-filter {
+    margin-right: 0 !important;
   }
   .chat-panel .left-side-history .history-list li ul li {
     opacity: 1 !important;
@@ -2931,26 +2933,25 @@ a {
 //   }
 // }
 
-
-.swiper-container{
+.swiper-container {
   position: relative;
 }
 .swiper-button-prev,
 .swiper-button-next {
-   opacity: 0;
-  color: $secondary!important;
+  opacity: 0;
+  color: $secondary !important;
   transition: opacity 0.3s ease;
-  width: 32px!important;
-  height: 32px!important;
+  width: 32px !important;
+  height: 32px !important;
   background-color: white;
   border-radius: 5px;
   border: 1px solid #f7f7f7;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:  rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
-  &::after{
-    font-size: 1.2rem!important;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  &::after {
+    font-size: 1.2rem !important;
   }
 }
 
@@ -2958,52 +2959,52 @@ a {
 .swiper-container:hover .swiper-button-next {
   opacity: 1;
 }
-.swiper-button-prev{
-  left: -10px!important;
+.swiper-button-prev {
+  left: -10px !important;
 }
-.swiper-button-next{
-  right: -10px!important;
+.swiper-button-next {
+  right: -10px !important;
 }
-.svgwhite{
-  path{
+.svgwhite {
+  path {
     fill: white;
   }
 }
-.uploadfile{
+.uploadfile {
   padding: 4rem 1rem;
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content:center ;
-  border: 2px  dashed #D1D5DB;
+  justify-content: center;
+  border: 2px dashed #d1d5db;
   border-radius: 8px;
 }
-.assignbtngrp{
+.assignbtngrp {
   display: flex;
   gap: 10px;
 
-  button{
-    border: 1px solid #E5E7EB!important;
-    border-radius: 8px!important; 
-    color: #4B5563; 
-    min-height: 86px;  
+  button {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    color: #4b5563;
+    min-height: 86px;
   }
-  button[aria-pressed="true"]{
+  button[aria-pressed='true'] {
     background-color: rgba($primary, 0.1);
-    border: 1px solid rgba($primary, 0.7)!important;
+    border: 1px solid rgba($primary, 0.7) !important;
     color: $primary;
   }
 }
 
-.fileslistitem{
-  background-color: #F9FAFB;
+.fileslistitem {
+  background-color: #f9fafb;
 }
-.pinwi-20{
-  svg{
+.pinwi-20 {
+  svg {
     width: 20px;
     height: 20px;
-    path{
-      fill: #6B7280;
+    path {
+      fill: #6b7280;
     }
   }
 }
@@ -3012,6 +3013,101 @@ a {
   padding: 1.5rem 0 !important;
 }
 
-.overflow-auto{
+.overflow-auto {
   overflow: auto;
+}
+
+.quiz-panel {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  background-color: white;
+  min-height: 100vh;
+  .rebtns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+    grid-gap: 0.5rem;
+    button {
+      min-width: auto;
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+
+  .left-cards {
+    border-right: 1px solid rgba($primary, 0.2);
+    .optiongrp {
+      margin-left: 0.9rem;
+      margin-top: 1rem;
+
+      .optionscss {
+        // border: 10px solid rgba($primary, 0.2);
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+      }
+    }
+  }
+  .right-cards {
+    .quiz-hint {
+      margin: 2rem 0;
+      li {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 0.5rem;
+        span {
+          width: 16px;
+          height: 16px;
+          display: block;
+          border-radius: 2px;
+        }
+      }
+      @media (max-width: 428px) {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+  .left-cards,
+  .right-cards {
+    padding: 1.2rem;
+  }
+
+  @media (max-width: 428px) {
+    grid-template-columns: 1fr;
+  }
+}
+.score-content {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  h1 {
+    font-size: 2rem;
+    margin: 0;
+
+    span {
+      display: block;
+      font-size: 1rem;
+    }
+  }
+}
+
+.MuiCircularProgress-root {
+  color: $primary;
+}
+.quizsubre {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1.5rem;
+  flex-wrap: wrap;
+  li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    span {
+      display: block;
+    }
+  }
 }
