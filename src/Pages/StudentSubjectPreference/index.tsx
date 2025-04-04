@@ -853,9 +853,10 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             });
           }
           await handleReset();
-          setTimeout(async () => {
-            await navigate('/'); // Navigate after 2 seconds (adjust as necessary)
-          }, 1000);
+          navigate('/main/DashBoard');
+          // setTimeout(async () => {
+          //   await navigate('/'); // Navigate after 2 seconds (adjust as necessary)
+          // }, 1000);
         } else {
           if (!eq === true && isSubjectPrefTuch) {
             toast.success('Subject Preference updated successfully', {
@@ -865,9 +866,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             });
           }
 
-          setTimeout(async () => {
-            await navigate('/'); // Navigate after 2 seconds (adjust as necessary)
-          }, 1000);
+         navigate('/main/DashBoard')
         }
         setInitialState(initial);
 

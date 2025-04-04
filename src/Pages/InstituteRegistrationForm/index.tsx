@@ -105,7 +105,7 @@ const InstituteRegistrationForm = () => {
   const [school_name_error, setSchool_name_error] = useState(false);
   const [email_id_error, setEmail_id_error] = useState(false);
   const [mobile_no_error, setMobile_no_error] = useState(false);
-  // const [website_error, setWebsite_error] = useState(false);
+   const [website_error, setWebsite_error] = useState(false);
   const [country_error, setCountry_error] = useState(false);
   const [state_error, setState_error] = useState(false);
   const [city_error, setCity_error] = useState(false);
@@ -210,33 +210,37 @@ const InstituteRegistrationForm = () => {
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    
     setDocument_error(false);
     setErrorMessage('');
-
-    if (files && event.target.name !== 'icon') {
-      const filesArray = Array.from(files);
-
-      // Check if any file is a duplicate
+  
+    if (!files) return;
+  
+    const filesArray = Array.from(files);
+  
+    // Check for duplicate files (compare name + lastModified for uniqueness)
     const duplicateFiles = filesArray.filter((file) =>
-      allselectedfiles.some((existingFile) => existingFile.name === file.name)
+      allselectedfiles.some(
+        (existingFile) => 
+          existingFile.name === file.name && 
+          existingFile.lastModified === file.lastModified
+      )
     );
-
+  
     if (duplicateFiles.length > 0) {
       setErrorMessage('This document has already been selected');
       return; // Stop execution to prevent adding duplicate files
     }
-
-      setAllSelectedfiles((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
-
-      // Reset the input field to allow selecting the same files again
-      event.target.value = '';
-    } else {
-      // setLogo(files);
-    }
+  
+    setAllSelectedfiles((prevFiles) => [
+      ...prevFiles, // Keep previously selected files
+      ...filesArray, // Add newly selected files
+    ]);
+  
+    // Reset input field to allow selecting the same files again
+    event.target.value = '';
   };
+  
 
   const validation = (name: string, value: string) => {
     if (
@@ -319,6 +323,17 @@ const InstituteRegistrationForm = () => {
     }
     if (name === 'state') {
       setState_error(value === '' ? true : false);
+    }
+    if (
+      !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value) && name === 'website_url'
+    ) {
+      if(value==''){
+        setWebsite_error(false);
+      }else{
+        setWebsite_error(true);
+      }
+    }else{
+      setWebsite_error(false);  
     }
   };
 
@@ -612,6 +627,17 @@ const InstituteRegistrationForm = () => {
         setEmail_id_error(false);
       }
 
+      if (
+        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+          valueInstitute.website_url,
+        )&& valueInstitute.website_url!=''
+      ) {
+        setWebsite_error(true);
+        valid = true;
+      }else{
+        setWebsite_error(false);
+      }
+
       if (!/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())) {
         setMobile_no_error(true);
         valid = true;
@@ -859,7 +885,7 @@ const InstituteRegistrationForm = () => {
                           variant="outlined"
                         />
 
-                        {/* <div>
+                        <div>
                         {website_error === true && (
                           <p
                             className="error-text"
@@ -868,7 +894,7 @@ const InstituteRegistrationForm = () => {
                             <small>Please enter a valid Website.</small>
                           </p>
                         )}
-                      </div> */}
+                      </div>
                       </div>
                     </div>
                     {selectedEntity.toLowerCase() === 'school' ? (

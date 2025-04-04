@@ -187,7 +187,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
               position: 'top-center',
             });
             getContact();
-            navigate('/');
+            navigate('/main/DashBoard')
             // setActiveForm((prev) => prev + 1);
           }
         } catch (error: any) {
@@ -214,7 +214,7 @@ const AdminContactDetails: React.FC<ChildComponentProps> = ({
                   });
                   // setActiveForm((prev) => prev + 1);
                   getContact();
-                  navigate('/');
+                  navigate('/main/DashBoard')
                 } else {
                   toast.error('Something went wrong ', {
                     hideProgressBar: true,
