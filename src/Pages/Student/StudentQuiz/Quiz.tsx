@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -296,7 +297,7 @@ const QuizPage = () => {
                   </div>
                   <p className='text-dark text-center fs-4 mt-4 fw-bold mb-1'>Excellent Work!</p>
                   <p className="text-center mb-4">
-                    You've completed the Mathematics Quiz
+                    You have completed the Mathematics Quiz
                   </p>
 
                   <div className="card bg-primary-20 mb-0">
