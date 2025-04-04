@@ -765,11 +765,16 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
 
 export const Class_COLUMNS: MRT_ColumnDef<IClass>[] = [
   // const columns: any[] = [
-  {
-    accessorKey: 'class_name',
-    header: 'Class name ',
-    size: 150,
-  },
+    {
+      accessorKey: 'class_name',
+      header: 'Class Name',
+      size: 150,
+      Cell: ({ cell }: { cell: any }) => {
+        const value = cell?.getValue(); // e.g., "class_01"
+        const formatted = value?.replace('class_', 'Class ');
+        return <span>{formatted}</span>;
+      },
+    },
   {
     accessorKey: 'created_by',
     header: 'Created By',
@@ -2478,7 +2483,12 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     accessorKey: 'class_name',
     header: 'Class Name',
     size: 150,
-  },
+    Cell: ({ cell }: { cell: any }) => {
+      const value = cell?.getValue(); // e.g., "class_01"
+      const formatted = value?.replace('class_', 'Class ');
+      return <span>{formatted}</span>;
+    },
+  }
 ];
 
 export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
@@ -2685,7 +2695,7 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
         }
       }, [entity_id]);
 
-      return <span>{className}</span>;
+      return <span>{className.replace('class_', 'Class ')}</span>;
     },
   },
   {

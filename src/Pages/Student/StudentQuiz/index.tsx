@@ -202,7 +202,25 @@ const StudentQuiz = () => {
           <div className="card rounded-4">
             <div className="card-body">
               <MaterialReactTable
-                columns={columns}
+                columns={[
+                  { accessorKey: 'quiz', header: 'Quiz Name' },
+                  { accessorKey: 'date', header: 'Date Taken' },
+                  { accessorKey: 'score', header: 'Score' },
+                  { accessorKey: 'time', header: 'Time Taken' },
+                  {
+                    accessorKey: 'status',
+                    header: 'Status',
+                    Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+                      <Typography
+                        color={
+                          cell.getValue() === 'Failed' ? 'error' : 'success'
+                        }
+                      >
+                        {cell.getValue()}
+                      </Typography>
+                    ),
+                  },
+                ]}
                 data={recentResults}
                 enableColumnResizing
                 muiTableBodyRowProps={{ hover: true }}

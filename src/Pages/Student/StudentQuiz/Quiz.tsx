@@ -297,7 +297,7 @@ const QuizPage = () => {
                   </div>
                   <p className='text-dark text-center fs-4 mt-4 fw-bold mb-1'>Excellent Work!</p>
                   <p className="text-center mb-4">
-                    You have completed the Mathematics Quiz
+                    You&apos;ve completed the Mathematics Quiz
                   </p>
 
                   <div className="card bg-primary-20 mb-0">
