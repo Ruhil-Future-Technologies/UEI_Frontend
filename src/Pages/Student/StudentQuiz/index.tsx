@@ -184,7 +184,7 @@ const StudentQuiz = () => {
                   {
                     accessorKey: 'status',
                     header: 'Status',
-                    Cell: ({ cell }) => (
+                    Cell: ({ cell }: { cell: { getValue: () => string } }) => (
                       <Typography
                         color={
                           cell.getValue() === 'Failed' ? 'error' : 'success'

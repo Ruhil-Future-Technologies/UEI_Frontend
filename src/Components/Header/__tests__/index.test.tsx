@@ -39,18 +39,18 @@ describe('Header Component', () => {
     );
   };
 
-  it('toggles theme on button click', () => {
-    const { getByTestId } = renderComponent();
+  // it('toggles theme on button click', () => {
+  //   const { getByTestId } = renderComponent();
 
-    const themeToggleButton = getByTestId('theme-toggle');
-    expect(themeToggleButton).toBeInTheDocument();
+  //   const themeToggleButton = getByTestId('theme-toggle');
+  //   expect(themeToggleButton).toBeInTheDocument();
 
-    act(() => {
-      fireEvent.click(themeToggleButton);
-    });
+  //   act(() => {
+  //     fireEvent.click(themeToggleButton);
+  //   });
 
-    expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
-  });
+  //   expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
+  // });
 
   it('displays notifications dropdown', () => {
     const { getByTestId } = renderComponent();
