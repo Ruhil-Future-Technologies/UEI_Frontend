@@ -80,10 +80,18 @@ const QuizModal: React.FC<QuizModalProps> = ({
       ...updatedQuestions[questionIndex],
       selected: !updatedQuestions[questionIndex].selected,
     };
+    const selectedQuestions = currentQuizData?.questions?.filter(
+      (q) => q.selected,
+    );
+    const totalMarks = selectedQuestions.reduce(
+      (sum, q) => sum + (q.marks || 0),
+      0,
+    );
 
     setCurrentQuizData({
       ...currentQuizData,
       questions: updatedQuestions,
+      points: totalMarks,
     });
 
     const allSelected = updatedQuestions.every((q) => q.selected);
@@ -92,6 +100,14 @@ const QuizModal: React.FC<QuizModalProps> = ({
 
   const handleSelectAllQuestions = () => {
     if (!currentQuizData) return;
+
+    const selectedQuestions = currentQuizData?.questions?.filter(
+      (q) => q.selected,
+    );
+    const totalMarks = selectedQuestions.reduce(
+      (sum, q) => sum + (q.marks || 0),
+      0,
+    );
 
     const updatedAllSelected = !allQuestionsSelected;
     setAllQuestionsSelected(updatedAllSelected);
@@ -104,14 +120,24 @@ const QuizModal: React.FC<QuizModalProps> = ({
     setCurrentQuizData({
       ...currentQuizData,
       questions: updatedQuestions,
+      points: totalMarks,
     });
   };
 
   const handleSave = () => {
+    const selectedQuestions = currentQuizData?.questions?.filter(
+      (q) => q.selected,
+    );
+    const totalMarks = selectedQuestions.reduce(
+      (sum, q) => sum + (q.marks || 0),
+      0,
+    );
+
     if (currentQuizData) {
       const filteredData = {
         ...currentQuizData,
         questions: currentQuizData?.questions?.filter((q) => q.selected),
+        points: totalMarks,
       };
       onSave(filteredData);
     }
@@ -152,7 +178,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
             }
             label="Select All Questions"
           />
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
+          <Typography variant="h6" color="text.secondary">
             {currentQuizData?.questions?.filter((q) => q?.selected).length} of{' '}
             {currentQuizData?.questions?.length} questions selected | Total
             marks: {getTotalSelectedMarks()}

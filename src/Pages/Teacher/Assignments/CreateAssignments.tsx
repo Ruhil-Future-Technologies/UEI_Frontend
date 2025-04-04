@@ -196,10 +196,11 @@ export const CreateAssignments = () => {
   const [quizData, setQuizData] = useState<any>({});
   const [level, setLevel] = useState('');
   const [questions, setQuestions] = useState<any>([
-    { one: null, two: null, three: null, four: null, five: null },
+    { one: 0, two: 0, three: 0, four: 0, five: 0 },
   ]);
   const [topic, setTopic] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQuizGenerated, setIsQuizGenerated] = useState(false);
 
   const totalQuestions = questions.reduce(
     (acc: any, curr: any) =>
@@ -663,6 +664,8 @@ export const CreateAssignments = () => {
     if (selectedStudents.length < 1) {
       setErrorSelectStudent(true);
       valid1 = true;
+    } else {
+      setErrorSelectStudent(false);
     }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
@@ -789,7 +792,7 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        formData.forEach((k, v) => console.log({ k, v }));
+        formData.forEach((k, v) => console.log({ v, k }));
 
         postData('assignment/add', formData).then((response) => {
           if (response.status) {
@@ -873,6 +876,30 @@ export const CreateAssignments = () => {
     console.log({ assignmentData });
 
     let valid1 = false;
+    if (!topic) {
+      setTopic_error(true);
+
+      valid1 = true;
+    } else {
+      setTopic_error(false);
+    }
+
+    if (!level) {
+      setLevel_error(true);
+
+      valid1 = true;
+    } else {
+      setLevel_error(false);
+    }
+    console.log({ totalQuestions });
+
+    if (totalQuestions < 1) {
+      setQuestions_error(true);
+
+      valid1 = true;
+    } else {
+      setQuestions_error(false);
+    }
     if (assignmentData)
       if (assignmentData.instructions == '') {
         setInstructoins_error(true);
@@ -917,7 +944,12 @@ export const CreateAssignments = () => {
     if (error != null) {
       valid1 = true;
     }
-
+    if (selectedStudents.length < 1) {
+      setErrorSelectStudent(true);
+      valid1 = true;
+    } else {
+      setErrorSelectStudent(false);
+    }
     let valid = true;
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -948,7 +980,7 @@ export const CreateAssignments = () => {
             [index]: {
               course_id_error: !box.course_id,
               semester_number_error: !box.semester_number,
-              subjects_error: !box.subjects?.length, // Ensures subjects is not empty
+              subjects_error: !box.subjects?.length,
             },
           }));
         }
@@ -958,7 +990,6 @@ export const CreateAssignments = () => {
     if (valid1) return;
 
     if (!valid) return;
-    console.log({ setLevel_error, setTopic_error, setQuestions_error });
 
     // const response = await axios.post('/api/quiz/getData', {
     //   // Your request params here
@@ -1104,14 +1135,178 @@ export const CreateAssignments = () => {
     };
     setQuizData(response.data);
     setIsModalOpen(true);
+    setIsQuizGenerated(true);
   };
 
   const handleSaveQuiz = (updatedQuizData: any) => {
-    // Do something with the updated quiz data
+    console.log({ assignmentData });
+
     console.log('Updated quiz data:', updatedQuizData);
 
-    // You can make another API call here to save the changes
-    // axios.post('/api/quiz/save', updatedQuizData);
+    const payload: any = { ...updatedQuizData };
+
+    let valid1 = false;
+    if (assignmentData)
+      if (assignmentData.instructions == '') {
+        setInstructoins_error(true);
+
+        valid1 = true;
+      } else {
+        setInstructoins_error(false);
+      }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)) {
+      setContact_email_error(true);
+
+      valid1 = true;
+    } else {
+      setContact_email_error(false);
+    }
+
+    if (availableFrom == null) {
+      setAvailableFrom_error(true);
+
+      valid1 = true;
+    } else {
+      setAvailableFrom_error(false);
+    }
+
+    if (dueDate == null) {
+      setDue_date_error(true);
+
+      valid1 = true;
+    } else {
+      setDue_date_error(false);
+    }
+
+    if (dueTime == null) {
+      setDueTime_error(true);
+
+      valid1 = true;
+    } else {
+      setDueTime_error(false);
+    }
+
+    if (error != null) {
+      valid1 = true;
+    }
+    if (selectedStudents.length < 1) {
+      setErrorSelectStudent(true);
+      valid1 = true;
+    } else {
+      setErrorSelectStudent(false);
+    }
+    let valid = true;
+
+    if (selectedEntity.toLowerCase() === 'school') {
+      boxesForSchool.forEach((box, index) => {
+        if (
+          !box.class_id ||
+          (box.stream === '' ? false : !box.stream) ||
+          !box.subjects?.length
+        ) {
+          valid = false;
+
+          setErrorForClass_stream_subject((prevError) => ({
+            ...prevError,
+            [index]: {
+              class_id_error: !box.class_id,
+              stream_error: !box.stream,
+              subjects_error: !box.subjects?.length,
+            },
+          }));
+        }
+      });
+    } else {
+      boxes.forEach((box, index) => {
+        if (!box.course_id || !box.semester_number || !box.subjects?.length) {
+          valid = false;
+          setErrorForCourse_semester_subject((prevError) => ({
+            ...prevError,
+            [index]: {
+              course_id_error: !box.course_id,
+              semester_number_error: !box.semester_number,
+              subjects_error: !box.subjects?.length,
+            },
+          }));
+        }
+      });
+    }
+
+    if (valid1) return;
+
+    if (!valid) return;
+
+    // const students = selectedStudents.map((student) => student.id);
+    const students = [
+      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
+      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
+      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+    ];
+    payload.allow_multiple_attempt = String(allowMultipleAttempt);
+    payload.allow_late_submission = String(allowLateSubmission);
+    payload.available_from = String(availableFrom);
+    payload.due_date_time = String(mergeDateAndTime());
+    payload.students = students;
+    payload.add_to_report = String(addToStudentRepost);
+    payload.notify = String(sendNotification);
+
+    if (selectedEntity.toLowerCase() === 'school') {
+      const class_stream_subjects = boxesForSchool.reduce(
+        (acc, boxesForSchool) => {
+          const { class_id, stream, subjects } = boxesForSchool;
+          const streamKey = stream === '' ? 'general' : stream || 'general';
+          if (!acc[class_id]) {
+            acc[class_id] = {};
+          }
+
+          if (!acc[class_id][streamKey]) {
+            acc[class_id][streamKey] = [];
+          }
+
+          const subjectString = Array.isArray(subjects)
+            ? subjects.join('')
+            : subjects;
+
+          acc[class_id][streamKey] = [subjectString];
+
+          return acc;
+        },
+        {} as Record<string, Record<string, string[]>>,
+      );
+      payload.class_stream_subjects = class_stream_subjects;
+    } else {
+      const course_semester_subjects = boxes.reduce(
+        (acc, box) => {
+          const { course_id, semester_number, subjects } = box;
+
+          if (!acc[course_id]) {
+            acc[course_id] = {};
+          }
+
+          if (!acc[course_id][semester_number]) {
+            acc[course_id][semester_number] = [];
+          }
+
+          acc[course_id][semester_number] = [
+            ...new Set([...acc[course_id][semester_number], ...subjects]),
+          ];
+
+          const subjectString = Array.isArray(subjects)
+            ? subjects.join('')
+            : subjects;
+
+          acc[course_id][semester_number] = [subjectString];
+          return acc;
+        },
+        {} as Record<string, Record<string, string[]>>,
+      );
+      payload.course_semester_subjects = course_semester_subjects;
+    }
+
+    console.log({ payload });
+
+    // make post call here to save quiz data and assignment detail
   };
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
@@ -1298,7 +1493,13 @@ export const CreateAssignments = () => {
       ...prev,
       ['save_draft']: true,
     }));
-    submitAssignment();
+    if (assignmentType !== 'quiz') {
+      submitAssignment();
+    } else {
+      console.log({ quizData });
+
+      handleSaveQuiz(quizData);
+    }
   };
   const mergeDateAndTime = () => {
     if (!dueDate || !dueTime) return null;
@@ -1405,7 +1606,7 @@ export const CreateAssignments = () => {
                           onChange={handleChanges}
                         />
                       )}
-                      {title_error && (
+                      {title_error && assignmentType != 'quiz' && (
                         <p className="error-text " style={{ color: 'red' }}>
                           <small> Please enter a valid Title.</small>
                         </p>
@@ -1497,6 +1698,7 @@ export const CreateAssignments = () => {
                                 labelId="level-select-label"
                                 id="level-select"
                                 value={level}
+                                disabled={isQuizGenerated}
                                 onChange={(e) => setLevel(e.target.value)}
                               >
                                 <MenuItem value="easy">Easy</MenuItem>
@@ -1520,7 +1722,8 @@ export const CreateAssignments = () => {
                           <div className="col-md-4 col-12">
                             <TextField
                               label="One Mark"
-                              type="number"
+                              type="text"
+                              disabled={isQuizGenerated}
                               value={questions[0].one}
                               onChange={(e) => {
                                 const value = Number(e.target.value);
@@ -1539,7 +1742,8 @@ export const CreateAssignments = () => {
                           <div className="col-md-4 col-12">
                             <TextField
                               label="Two Marks"
-                              type="number"
+                              type="text"
+                              disabled={isQuizGenerated}
                               value={questions[0].two}
                               onChange={(e) => {
                                 const value = Number(e.target.value);
@@ -1558,7 +1762,8 @@ export const CreateAssignments = () => {
                           <div className="col-md-4 col-12">
                             <TextField
                               label="Three Marks"
-                              type="number"
+                              type="text"
+                              disabled={isQuizGenerated}
                               value={questions[0].three}
                               onChange={(e) => {
                                 const value = Number(e.target.value);
@@ -1577,7 +1782,8 @@ export const CreateAssignments = () => {
                           <div className="col-md-4 col-12">
                             <TextField
                               label="Four Marks"
-                              type="number"
+                              type="text"
+                              disabled={isQuizGenerated}
                               value={questions[0].four}
                               onChange={(e) => {
                                 const value = Number(e.target.value);
@@ -1596,7 +1802,8 @@ export const CreateAssignments = () => {
                           <div className="col-md-4 col-12">
                             <TextField
                               label="Five Marks"
-                              type="number"
+                              type="text"
+                              disabled={isQuizGenerated}
                               value={questions[0].five}
                               onChange={(e) => {
                                 const value = Number(e.target.value);
@@ -1637,6 +1844,7 @@ export const CreateAssignments = () => {
                           className="mt-4"
                           label="Topic"
                           type="text"
+                          disabled={isQuizGenerated}
                           value={topic}
                           onChange={(e) => setTopic(e.target.value)}
                           fullWidth
@@ -2199,11 +2407,14 @@ export const CreateAssignments = () => {
                       {assignmentType == 'written' ||
                       assignmentType == 'project' ||
                       assignmentType == 'presentation' ||
-                      (assignmentType == 'quiz' && isModalOpen) ? (
+                      (assignmentType == 'quiz' && isQuizGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
                           <Button
                             variant="contained"
                             color="primary"
+                            onClick={() =>
+                              assignmentType === 'quiz' && setIsModalOpen(true)
+                            }
                             style={{ marginTop: 20, marginRight: 10 }}
                           >
                             Preview
@@ -2226,7 +2437,11 @@ export const CreateAssignments = () => {
                             variant="contained"
                             color="success"
                             style={{ marginTop: 20 }}
-                            onClick={submitAssignment}
+                            onClick={
+                              assignmentType !== 'quiz'
+                                ? submitAssignment
+                                : () => handleSaveQuiz(quizData)
+                            }
                           >
                             Publish
                           </Button>
