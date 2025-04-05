@@ -282,6 +282,7 @@ const StudentProfile = () => {
             }
 
             if (contact && Object.keys(contact).length > 0) {
+              delete contact?.email_id
               const totalCount = Object.keys(contact).length;
               const filledCount = countKeysWithValue(contact);
               const percentage = (filledCount / totalCount) * 100;
