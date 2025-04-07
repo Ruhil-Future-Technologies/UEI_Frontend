@@ -963,6 +963,7 @@ const TeacherRegistrationPage = () => {
 
       if (duplicateFiles.length > 0) {
         setErrorMessage('This document has already been selected');
+        event.target.value = '';
         return; // Stop execution to prevent adding duplicate files
       }
 
@@ -1155,6 +1156,7 @@ const TeacherRegistrationPage = () => {
     setAllSelectedfiles((previous) =>
       previous.filter((_, ind) => ind !== index),
     );
+    setErrorMessage('');
   };
 
   const steps = [

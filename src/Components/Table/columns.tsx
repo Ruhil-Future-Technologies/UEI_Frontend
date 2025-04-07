@@ -2451,44 +2451,51 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     accessorKey: 'pdf_file_name',
     header: 'File Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'pdf_path',
     header: 'File Path',
     enableSorting: false,
     enableColumnActions: false,
-    size: 150,
-  },
-  {
-    accessorKey: 'upload_date_time',
-    header: 'Uploaded At',
+    enableResizing: true,
     size: 150,
   },
   {
     accessorKey: 'board_name',
     header: 'Board Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'state_board_name',
     header: 'State Board Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'stream_name',
     header: 'Stream Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'class_name',
     header: 'Class Name',
+    enableResizing: false,
     size: 150,
     Cell: ({ cell }: { cell: any }) => {
       const value = cell?.getValue(); // e.g., "class_01"
       const formatted = value?.replace('class_', 'Class ');
       return <span>{formatted}</span>;
     },
-  }
+  },
+  {
+    accessorKey: 'upload_date_time',
+    header: 'Uploaded At',
+    size: 150,
+    enableResizing: false,
+  },
 ];
 
 export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
@@ -2496,6 +2503,7 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     accessorKey: 'pdf_file_name',
     header: 'File Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'pdf_path',
@@ -2503,32 +2511,46 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     enableSorting: false,
     enableColumnActions: false,
     size: 150,
-  },
-  {
-    accessorKey: 'upload_date_time',
-    header: 'Uploaded At',
-    size: 150,
+    enableResizing: true,
   },
   {
     accessorKey: 'university_name',
     header: 'University Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'college_name',
     header: 'Collage Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'course_name',
     header: 'Course Name',
     size: 150,
+    enableResizing: false,
   },
   {
     accessorKey: 'year',
     header: 'Year',
     size: 150,
+    enableResizing: false,
   },
+  {
+    accessorKey: 'upload_date_time',
+    header: 'Uploaded At',
+    size: 150,
+    enableResizing: false,
+  },
+       {
+      id:"null",
+      header: "",
+      accessorKey: "",
+      size: 20,
+      enableResizing:false,
+      enableColumnActions:false,
+    },
 ];
 
 export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
