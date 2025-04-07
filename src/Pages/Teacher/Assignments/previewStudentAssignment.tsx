@@ -35,7 +35,7 @@ const PreviewStudentAssignment = () => {
     );
     //const [todayDate, setTodayDate] = useState<Date>();
     const [remainingDays, setRemaingDays] = useState(0);
-    const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+    const [allselectedfiles, setAllSelectedfiles] = useState<any[]>([]);
     const [value, setValue] = useState("");
     const quillRef = useRef<ReactQuill | null>(null);
     const [statusCheck, setStatusCheck] = useState('Pending');
@@ -196,7 +196,7 @@ const PreviewStudentAssignment = () => {
                                     {
                                         assignmentData?.files?.map((file, index) => (
                                             <li key={index}> {/* Ensure a unique key */}
-                                                <Link to={'#'}>{file as string}</Link>
+                                                <Link to={file as string}>{file as string}</Link>
                                             </li>
                                         ))
                                     }
@@ -236,7 +236,10 @@ const PreviewStudentAssignment = () => {
                                         <div className="pinwi-20">
                                             <AttachFileIcon />
                                         </div>
-                                        <ListItemText primary={file.name} />
+                                        <a href={file}>
+                                        <ListItemText primary={file} />
+                                        </a>
+                                        
                                     </ListItem>
 
                                 )) : (

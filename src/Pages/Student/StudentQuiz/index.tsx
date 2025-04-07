@@ -20,7 +20,6 @@ import {
   HistoryEdu,
 } from '@mui/icons-material';
 import { MaterialReactTable } from 'material-react-table';
-
 const StudentQuiz = () => {
   const navigate = useNavigate();
   const quizId = 1;

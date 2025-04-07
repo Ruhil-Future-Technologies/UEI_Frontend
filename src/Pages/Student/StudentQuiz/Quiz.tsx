@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ConfettiExplosion from 'react-confetti-explosion';
 import {
   Button,
   Radio,
@@ -17,13 +15,10 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  CircularProgress,
 } from '@mui/material';
 import { AccessTimeOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ForumIcon from '@mui/icons-material/Forum';
-import NameContext from '../../Context/NameContext';
-
 interface Question {
   id: number;
   question: string;
@@ -87,11 +82,6 @@ const quizData: Question[] = [
     correctAnswer: 'Mars',
   },
 ];
-const getMessage = (score: number) => {
-  if (score >= 80) return 'Excellent Work! 🎉';
-  if (score >= 50) return 'Good Job! Keep Practicing!';
-  return 'Better luck next time!';
-};
 
 const QuizPage = () => {
   const navigate = useNavigate();
@@ -107,13 +97,7 @@ const QuizPage = () => {
     [key: number]: boolean;
   }>({});
   const [showResults, setShowResults] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(300);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const context = useContext(NameContext);
-  const { namecolor }: any = context;
-
-  console.log({ namecolor });
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes timer
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -121,8 +105,6 @@ const QuizPage = () => {
       return () => clearTimeout(timer);
     } else {
       setShowResults(true);
-
-      setShowConfetti(false);
     }
   }, [timeLeft]);
 
@@ -159,24 +141,11 @@ const QuizPage = () => {
 
   const handleSubmit = () => {
     setShowResults(true);
-    setIsSubmit(true);
   };
   const correctCount = Object.keys(selectedAnswers).filter((qId) =>
     isCorrectAnswer(parseInt(qId)),
   ).length;
   const scorePercentage = (correctCount / quizData.length) * 100;
-
-  useEffect(() => {
-    let confettiTimer: any;
-
-    if (showResults && scorePercentage > 80) {
-      confettiTimer = setTimeout(() => {
-        setShowConfetti(true);
-      }, 300);
-    }
-
-    return () => clearTimeout(confettiTimer);
-  }, [showResults, scorePercentage]);
 
   return (
     <div className="main-wrapper">
@@ -217,7 +186,7 @@ const QuizPage = () => {
                   Complete all questions. You can review your answers before
                   final submission.
                 </Typography>
-                <small>Duration: 60 minutes • Total Questions: 30 • Points: 100</small>
+                
                 <div className="d-flex justify-content-between my-3 align-items-center">
                   <small className=" fw-medium d-block text-m-14">
                     Question {currentQuestionIndex + 1} of {quizData.length}
@@ -244,52 +213,28 @@ const QuizPage = () => {
               </Typography>
             </div>
 
+            <p className="fs-18 fw-medium mb-2">
+              Question {currentQuestionIndex + 1}
+            </p>
             <Typography variant="body1" className="text-dark fs-5" gutterBottom>
               {quizData[currentQuestionIndex].question}
             </Typography>
-
             <RadioGroup
               className="optiongrp"
               value={selectedAnswers[quizData[currentQuestionIndex].id] || ''}
               onChange={handleAnswerChange}
             >
-              {quizData[currentQuestionIndex].options.map((option, index) => {
-                const isLocked =
-                  lockedAnswers[quizData[currentQuestionIndex].id];
-                const correctAnswer =
-                  quizData[currentQuestionIndex].correctAnswer;
-                const selectedAnswer =
-                  selectedAnswers[quizData[currentQuestionIndex].id];
-                const isCorrect = option === correctAnswer;
-                const isSelectedWrong =
-                  isSubmit && option === selectedAnswer && !isCorrect;
-
-                return (
-                  <FormControlLabel
-                    key={index}
-                    value={option}
-                    control={<Radio />}
-                    sx={{
-                      borderRadius: '10px',
-                      marginTop: '5px',
-                      width: '100%',
-                      padding: '2px 10px 2px 5px',
-
-                      border: isSubmit
-                        ? isCorrect
-                          ? '2px solid green'
-                          : isSelectedWrong
-                            ? '2px solid red'
-                            : '2px solid var(--bs-purple)'
-                        : '2px solid var(--bs-purple)',
-                    }}
-                    label={<div>{option}</div>}
-                    disabled={isLocked}
-                  />
-                );
-              })}
+              {quizData[currentQuestionIndex].options.map((option, index) => (
+                <FormControlLabel
+                  className="optionscss"
+                  key={index}
+                  value={option}
+                  control={<Radio />}
+                  label={option}
+                  disabled={lockedAnswers[quizData[currentQuestionIndex].id]}
+                />
+              ))}
             </RadioGroup>
-
             <Box
               sx={{
                 display: 'flex',
@@ -346,104 +291,32 @@ const QuizPage = () => {
                 </DialogTitle>
 
                 <DialogContent>
-                  {showConfetti && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 9999,
-                        pointerEvents: 'none',
-                      }}
-                    >
-                      <ConfettiExplosion />
-                    </div>
-                  )}
-
-                  <Box
-                    position="relative"
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ margin: '0 auto' }}
-                  >
-                    <Box
-                      position="relative"
-                      sx={{ width: '120px', height: '120px' }}
-                    >
-                      <CircularProgress
-                        variant="determinate"
-                        value={100}
-                        size={120}
-                        thickness={4}
-                        sx={{
-                          color: 'rgba(128, 0, 128, 0.2)',
-                          position: 'absolute',
-                          left: 0,
-                          top: 0,
-                        }}
-                      />
-
-                      <CircularProgress
-                        variant="determinate"
-                        value={scorePercentage}
-                        size={120}
-                        thickness={4}
-                        sx={{
-                          color: '$primary',
-                          position: 'absolute',
-                          left: 0,
-                          top: 0,
-                        }}
-                      />
-
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          bottom: 0,
-                          right: 0,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <div className="score-content">
-                          <h1>
-                            {scorePercentage.toFixed(0)}% <span>Score</span>{' '}
-                          </h1>
-                        </div>
-                      </Box>
-                    </Box>
-                  </Box>
-                  <p className="text-dark text-center fs-4 mt-4 fw-bold mb-1">
-                    {getMessage(scorePercentage)}
-                  </p>
-
+                  <div className="incirclere">
+                    <h1>{scorePercentage.toFixed(0)}% <span>Score</span>  </h1>
+                   
+                  </div>
+                  <p className='text-dark text-center fs-4 mt-4 fw-bold mb-1'>Excellent Work!</p>
                   <p className="text-center mb-4">
-                    You&apos;ve completed the Mathematics Quiz
+                    You've completed the Mathematics Quiz
                   </p>
 
                   <div className="card bg-primary-20 mb-0">
                     <div className="card-body">
-                      <ul className="quizsubre">
+                      <ul className='quizsubre'>
                         <li>
-                          <AccessTimeOutlined color="primary" />
+                          <AccessTimeOutlined color='primary' />
                           <div className="">
                             <span>Time Taken:</span>
-                            <span className="text-dark">
+                            <span className='text-dark'>
                               {((300 - timeLeft) / 60).toFixed(2)} mins
                             </span>
                           </div>
                         </li>
                         <li>
-                          <ForumIcon color="primary" />
+                          <ForumIcon color='primary'/>
                           <div className="">
                             <span>Questions:</span>
-                            <span className="text-dark">
+                            <span className='text-dark'>
                               {correctCount}/{quizData.length} Correct
                             </span>
                           </div>
@@ -454,7 +327,7 @@ const QuizPage = () => {
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: 'center' }}>
                   <button
-                    className="btn btn-primary rounded-pill mb-4 px-4"
+                    className='btn btn-primary rounded-pill mb-4 px-4'
                     onClick={() => setShowResults(false)}
                   >
                     Go To Results
@@ -473,12 +346,12 @@ const QuizPage = () => {
                     sx={{
                       backgroundColor:
                         currentQuestionIndex === q.id - 1
-                          ? '#9943EC'
+                          ? '#9943EC' // Blue for current question
                           : lockedAnswers[q.id]
                             ? isCorrectAnswer(q.id)
-                              ? '#4CAF50'
-                              : '#F44336'
-                            : '#9E9E9E',
+                              ? '#4CAF50' // Green for correct
+                              : '#F44336' // Red for incorrect
+                            : '#9E9E9E', // Gray for unanswered
                       color: 'white',
                     }}
                     onClick={() => setCurrentQuestionIndex(q.id - 1)}

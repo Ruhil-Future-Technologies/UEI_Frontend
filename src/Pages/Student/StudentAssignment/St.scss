@@ -1,0 +1,54 @@
+.ribbon {
+  font-size: 12px; /* Even smaller */
+  position: relative;
+  display: inline-block;
+  margin: 0.5em; /* Minimal margin */
+  text-align: center;
+}
+
+.text {
+  display: inline-block;
+  padding: 0.1em 0.3em; /* Minimal padding */
+  min-width: 7em; /* Super small width */
+  line-height: 1em;
+  background: #FFD72A;
+  position: relative;
+}
+
+.ribbon:before {
+  top: 0.05em;
+  left: 0.05em;
+  width: 1%;
+  height: 0.5%;
+  border: none;
+  background: #EBECED;
+  z-index: -2;
+}
+
+.text:before {
+  bottom: 100%;
+  left: 0;
+  border-width: 0.2em 0.3em 0 0; /* Smaller border */
+  border-color: transparent #FC9544 transparent transparent;
+}
+
+.text:after {
+  top: 100%;
+  right: 0;
+  border-width: 0.2em 0.7em 0 0; /* Smaller border */
+  border-color: #FC9544 transparent transparent transparent;
+}
+
+.ribbon:after, .bold:before {
+  top: 0.2em;
+  right: -0.8em; /* Adjusted */
+  border-width: 0.4em 0.4em 0.4em 1em; /* Much smaller */
+  border-color: #FECC30 transparent #FECC30 #FECC30;
+  z-index: -1;
+}
+
+.bold:before {
+  border-color: #EBECED transparent #EBECED #EBECED;
+  top: 0.3em;
+  right: -1em;
+}

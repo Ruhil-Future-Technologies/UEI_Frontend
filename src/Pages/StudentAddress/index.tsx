@@ -756,10 +756,10 @@ const StudentAddress: React.FC<ChildComponentProps> = () => {
     <form>
       <div className="row form_field_wrapper">
         <div className="col-12">
-          <h5 className="font-weight-bold profiletext">
-            {' '}
-            <b>Current Address</b>
-          </h5>
+          <b className="font-weight-bold profiletext mb-2 d-block">
+           
+            Current Address
+          </b>
         </div>
       </div>
       <div className="row">

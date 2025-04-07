@@ -534,7 +534,7 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
         display: flex;
         align-items: center;
         justify-content: left;
-        padding: 6px 16px;
+        padding: 6px;
         font-size: 15px;
         color: $menuLink_Color;
         outline-width: 0;
@@ -611,6 +611,23 @@ $dropdownAnimation: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0s normal forwards 1
 
   .sidebar-footer {
     margin-top: auto;
+
+    ul{
+      padding: 10px;
+      li{
+        a{
+          padding: 6px;
+          display: flex;
+          align-items: center;
+          color: #5f5f5f;
+          .menu-title{
+            margin-left: 10px;
+
+          }
+        }
+      
+      }
+    }
   }
   .menu-label {
     padding: 10px 16px 10px 16px;
@@ -1929,55 +1946,3 @@ font-size: 14px;
   }
 }
 
-.carddlex{
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  span{
-    background-color: $primary;
-    border-radius: 8px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    svg{
-      width: 32px;
-      height: 32px;
-      path{
-        fill: white;
-      }
-    }
-  }
-  h6{font-weight: bold; margin-bottom: 0.1rem;}
-  p{
-    margin-bottom: 0;
-    color: #4B5563;
-  }
-
- 
-}
-.totallist{
-  display: flex;
-  align-items: center;
-  gap:0.4rem;
-  margin-top: 2rem;
-  h6{
-    color: #6B7280;
-    font-weight: 400;
-    margin-bottom: 0;
-  }
-  span{
-   
-    display: block;
-
-    svg{
-      path{fill: #6B7280;}
-    }
-
-  }
-  p{
-    margin-bottom: 0;
-    color: #1A1A1A;
-  }
-}

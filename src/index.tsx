@@ -14,9 +14,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NameProvider } from './Pages/Context/NameContext';
 
-import { ThemeProvider } from '@mui/material/styles';
+//import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProviderWrapper } from './ThemeProvider';
 //import CssBaseline from '@mui/material/CssBaseline'; // Optional: Normalize styles
-import theme from './theme'; // Path to your theme.ts
+//import theme from './theme'; // Path to your theme.ts
 
 // import 'bootstrap/dist/css/bootstrap.css';
 
@@ -39,7 +40,7 @@ const isTokenExpired = () => {
 };
 
 root.render(
-  <ThemeProvider theme={theme}>
+  <ThemeProviderWrapper>
     <NameProvider>
       <BrowserRouter>
         {isTokenExpired() ? (
@@ -55,6 +56,6 @@ root.render(
         <App />
       </BrowserRouter>
     </NameProvider>
-  </ThemeProvider>,
+  </ThemeProviderWrapper>,
 );
 reportWebVitals();

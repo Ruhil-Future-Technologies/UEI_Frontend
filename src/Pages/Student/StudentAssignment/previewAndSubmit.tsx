@@ -173,6 +173,13 @@ const PreviewAndSubmit = () => {
 
         })
         navigate('/main/student/assignment')
+      }else{
+        toast.error(response.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+  
+        })
       }
     }).catch((error) => {
       toast.error(error.message, {
