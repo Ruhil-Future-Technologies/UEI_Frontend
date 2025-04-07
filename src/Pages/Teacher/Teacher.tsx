@@ -68,8 +68,10 @@ const Teacher = () => {
     return selectedEntity?.entity_type?.toLowerCase() === 'college';
   };
 
-  const getInstituteName = (id: string) => {
-    return collegeInstitutes?.find((inst) => inst.id == id)?.institute_name;
+  const getInstituteName = (id: string, type: string) => {
+    return type === 'college'
+      ? collegeInstitutes?.find((inst) => inst.id == id)?.institute_name
+      : schoolInstitutes?.find((inst) => inst.id == id)?.institute_name;
   };
 
   const getUniversityName = (id: string) => {
@@ -79,11 +81,10 @@ const Teacher = () => {
 
   const getCourseOrClassName = (id: string, type: string) => {
     if (type === 'school') {
-      console.log({ classId: id, dataClasses });
-
-      const currentClass = dataClasses?.class_data?.find((cls: any) => {
+      const currentClass = dataClasses?.classes_data?.find((cls: any) => {
         return cls.id == Number(id);
       });
+
       return currentClass?.class_name;
     } else if (type === 'college') {
       const course: any = dataCourses?.course_data?.find((course: any) => {
@@ -221,7 +222,6 @@ const Teacher = () => {
             return column;
           });
           setColumns(updatedColumns);
-          console.log({ approvedTeachers });
 
           const collegeTeachers = approvedTeachers
             .filter((teacher) => teacher.entity_id == college[0]?.id)
@@ -232,7 +232,10 @@ const Teacher = () => {
 
               return {
                 ...teacher,
-                institute_name: getInstituteName(teacher.institute_id),
+                institute_name: getInstituteName(
+                  teacher.institute_id,
+                  'college',
+                ),
                 university_name: getUniversityName(teacher.university_id),
                 course_name: getCourseOrClassName(firstKey, 'college'),
                 class_id: null,
@@ -240,8 +243,6 @@ const Teacher = () => {
                 class_name: '-',
               };
             });
-
-          console.log({ collegeTeachers });
 
           setFilteredTeachers(collegeTeachers);
         } else {
@@ -265,14 +266,23 @@ const Teacher = () => {
           const schoolTeachers = approvedTeachers
             .filter((teacher) => teacher.entity_id == school[0]?.id)
             .map((teacher) => {
-              const keys = Object.keys(teacher.class_stream_subjects);
+              let classStreamSubjects = teacher.class_stream_subjects;
+
+              if (typeof classStreamSubjects === 'string') {
+                classStreamSubjects = JSON.parse(classStreamSubjects);
+              }
+
+              const keys = Object.keys(classStreamSubjects);
 
               const firstKey = keys[0];
 
               return {
                 ...teacher,
                 course_semester_subjects: null,
-                university_id: null,
+                institute_name: getInstituteName(
+                  teacher.institute_id,
+                  'school',
+                ),
                 class_name: getCourseOrClassName(firstKey, 'school'),
                 course_name: '-',
                 university_name: '-',
@@ -297,10 +307,11 @@ const Teacher = () => {
             university_name: true,
             course_name: true,
             class_name: false,
+            is_active: false,
             class_stream_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institute_id') {
+            if (column.accessorKey === 'institute_name') {
               return {
                 ...column,
                 header: 'College Name',
@@ -313,8 +324,17 @@ const Teacher = () => {
           const collegeTeachers = pendingTeachers
             .filter((teacher) => teacher.entity_id == college[0]?.id)
             .map((teacher) => {
+              const keys = Object.keys(teacher.course_semester_subjects);
+
+              const firstKey = keys[0];
               return {
                 ...teacher,
+                institute_name: getInstituteName(
+                  teacher.institute_id,
+                  'college',
+                ),
+                university_name: getUniversityName(teacher.university_id),
+                course_name: getCourseOrClassName(firstKey, 'college'),
                 class_id: null,
                 className: '-',
                 class_name: '-',
@@ -326,11 +346,12 @@ const Teacher = () => {
           setColumnVisibility({
             university_name: false,
             course_name: false,
+            is_active: false,
             class_stream_subjects: true,
             course_semester_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institute_id') {
+            if (column.accessorKey === 'institute_name') {
               return {
                 ...column,
                 header: 'School Name',
@@ -343,10 +364,25 @@ const Teacher = () => {
           const schoolTeachers = pendingTeachers
             .filter((teacher) => teacher.entity_id == school[0]?.id)
             .map((teacher) => {
+              let classStreamSubjects = teacher.class_stream_subjects;
+
+              if (typeof classStreamSubjects === 'string') {
+                classStreamSubjects = JSON.parse(classStreamSubjects);
+              }
+
+              const keys = Object.keys(classStreamSubjects);
+
+              const firstKey = keys[0];
+
               return {
                 ...teacher,
                 course_semester_subjects: null,
-                university_id: null,
+                institute_name: getInstituteName(
+                  teacher.institute_id,
+                  'school',
+                ),
+                class_name: getCourseOrClassName(firstKey, 'school'),
+
                 course_name: '-',
                 university_name: '-',
               };

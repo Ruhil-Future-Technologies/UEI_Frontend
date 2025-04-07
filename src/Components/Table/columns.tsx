@@ -483,109 +483,11 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
     accessorKey: 'class_name',
     header: 'Class',
     size: 150,
-    // Cell: ({ row }: any) => {
-    //   const { getData } = useApi();
-    //   const [className, setClassName] = useState<string>('-');
-    //   const [, setClassList] = useState([]);
-    //   const entity_id = row.original.entity_id;
-    //   const class_id = row.original.class_stream_subjects;
-
-    //   useEffect(() => {
-    //     if (entity_id) {
-    //       console.log('class called');
-    //       getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
-    //         .then((data) => {
-    //           setClassList(data?.data?.classes_data);
-    //           return getData('/entity/list');
-    //         })
-    //         .then((entityResponse: any) => {
-    //           if (entityResponse.status) {
-    //             const entity = entityResponse?.data?.entityes_data.find(
-    //               (e: any) => e.id === Number(entity_id),
-    //             );
-
-    //             if (entity?.entity_type === 'school' && class_id) {
-    //               const class_id_arr = Object.keys(class_id);
-
-    //               setClassList((prevClasses) => {
-    //                 const class_name_arr = prevClasses.filter((cls: any) => {
-    //                   const id = cls.id.toString();
-
-    //                   return class_id_arr.includes(id);
-    //                 });
-
-    //                 setClassName(
-    //                   class_name_arr.map((c: any) => c.class_name).join(', '),
-    //                 );
-
-    //                 return prevClasses;
-    //               });
-    //             }
-    //           }
-    //         })
-    //         .catch((error) => {
-    //           console.error('Error fetching data:', error);
-    //         });
-    //     }
-    //   }, [entity_id]);
-
-    //   return <span>{className}</span>;
-    // },
   },
   {
     accessorKey: 'course_name',
     header: 'Course',
     size: 150,
-    // Cell: ({ row }: any) => {
-    //   const { getData } = useApi();
-    //   const [courseName, setCourseName] = useState<string>('-');
-    //   const [, setCourseList] = useState([]);
-    //   const course_id = row?.original?.course_semester_subjects;
-    //   const entity_id = row.original.entity_id;
-
-    //   useEffect(() => {
-    //     if (entity_id) {
-    //       console.log('course called');
-    //       getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
-    //         .then((data) => {
-    //           setCourseList(data?.data?.course_data);
-    //           return getData('/entity/list');
-    //         })
-    //         .then((entityResponse: any) => {
-    //           if (entityResponse.status) {
-    //             const entity = entityResponse?.data?.entityes_data.find(
-    //               (e: any) => e.id === Number(entity_id),
-    //             );
-
-    //             if (entity?.entity_type === 'college' && course_id) {
-    //               const course_id_arr = Object.keys(course_id);
-
-    //               setCourseList((prevCourses) => {
-    //                 const course_name_arr = prevCourses.filter(
-    //                   (course: any) => {
-    //                     const id = course.id.toString();
-
-    //                     return course_id_arr.includes(id);
-    //                   },
-    //                 );
-
-    //                 setCourseName(
-    //                   course_name_arr.map((c: any) => c.course_name).join(', '),
-    //                 );
-
-    //                 return prevCourses;
-    //               });
-    //             }
-    //           }
-    //         })
-    //         .catch((error) => {
-    //           console.error('Error fetching data:', error);
-    //         });
-    //     }
-    //   }, [entity_id]);
-
-    //   return <span>{courseName}</span>;
-    // },
   },
   {
     accessorKey: 'is_active',
