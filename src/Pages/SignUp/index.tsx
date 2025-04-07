@@ -47,7 +47,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const value = 'student';
-  const [popupOtpCard, setPopupOtpCard] = useState(true);
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [errorEmail, setEmailError] = useState('');
   const [errorPhone, setPhoneError] = useState('');
@@ -508,31 +508,7 @@ const Signup = () => {
                                 </InputAdornment>
                               ),
                             }}
-                            sx={{
-                              '& input::-ms-reveal, & input::-ms-clear': {
-                                display: 'none',
-                              },
-                              '& input:-webkit-autofill': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important', // Set the background color you want
-                                WebkitTextFillColor: 'black !important', // Set the text color you want
-                              },
-                              '& input:-webkit-autofill:hover': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important',
-                                WebkitTextFillColor: 'black !important',
-                              },
-                              '& input:-webkit-autofill:focus': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important',
-                                WebkitTextFillColor: 'black !important',
-                              },
-                              '& input:-webkit-autofill:active': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important',
-                                WebkitTextFillColor: 'black !important',
-                              },
-                            }}
+                            
                             fullWidth
                           />
                           {uservalue === 'password' && (
@@ -570,14 +546,14 @@ const Signup = () => {
                         </label>
                       </div>
                       <button
-                        className="btn btn-secondary w-100 mh-56 rounded-pill"
+                        className="btn btn-primary w-100 mh-56 rounded-pill"
                         disabled={CheckTermandcondi}
                       >
                         Sign Up Now
                       </button>
                       <p className="my-4 text-center">
                         Already have an account?{' '}
-                        <Link to="/" style={{ color: '#9943EC' }}>
+                        <Link to="/" >
                           {' '}
                           <u>Sign in here </u>
                         </Link>
@@ -585,13 +561,13 @@ const Signup = () => {
                       <div className="d-flex justify-content-between">
                         <Link
                           to="/institute-registration"
-                          style={{ color: '#9943EC' }}
+                          
                         >
                           <u>Register As Institution</u>
                         </Link>
                         <Link
                           to="/teacher-registration"
-                          style={{ color: '#9943EC' }}
+                          
                         >
                           <u>Register As Teacher</u>
                         </Link>

@@ -14,6 +14,7 @@
       background-color: transparent!important;
     }
   }
+
   .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card {
     background-color: #212529 !important;
   }
@@ -47,7 +48,7 @@
   }
   .access-card {
     background-color: $headerbg !important;
-
+    background: none!important;
     svg {
       path {
         fill: #939aa0;
