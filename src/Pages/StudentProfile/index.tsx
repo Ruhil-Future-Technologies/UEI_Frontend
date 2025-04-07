@@ -30,6 +30,7 @@ import { useLocation } from 'react-router-dom';
 // } from "../../utils/helpers";
 import AcademicHistory from '../AcademicHistory/AcademicHistory';
 import NameContext from '../Context/NameContext';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 // import "../../assets/css/main.min.css";
 // import "../../assets/css/newstyle.min.css";
 export interface ChildComponentProps {
@@ -65,7 +66,7 @@ const StudentProfile = () => {
 
   const { activeForm, setActiveForm,setProImage }: any = context;
   const usertype: any = localStorage.getItem('user_type');
-  const { getData } = useApi();
+  const { getData,loading } = useApi();
   const StudentId = localStorage.getItem('user_uuid');
   const checkbasicinfo= localStorage.getItem('student_id')
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
@@ -282,6 +283,7 @@ const StudentProfile = () => {
             }
 
             if (contact && Object.keys(contact).length > 0) {
+              delete contact?.email_id
               const totalCount = Object.keys(contact).length;
               const filledCount = countKeysWithValue(contact);
               const percentage = (filledCount / totalCount) * 100;
@@ -544,6 +546,7 @@ const StudentProfile = () => {
           </div>
         </div>
       </div> */}
+      {loading && <FullScreenLoader />}
       <div className="main-wrapper">
         <div className="main-content">
           <div className="container mb-5">

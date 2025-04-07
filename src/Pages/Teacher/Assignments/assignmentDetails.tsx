@@ -139,7 +139,7 @@ const AssignmentDetails = () => {
                             <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
                                 <TableRow>
                                     <TableCell><strong>Student</strong></TableCell>
-                                    <TableCell><strong>Submitted</strong></TableCell>
+                                    <TableCell><strong>Submission Time & Date</strong></TableCell>
                                     <TableCell><strong>Status</strong></TableCell>
                                     <TableCell><strong>Grade</strong></TableCell>
                                     <TableCell><strong>Actions</strong></TableCell>
