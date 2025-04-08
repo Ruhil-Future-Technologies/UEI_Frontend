@@ -888,7 +888,7 @@ const AddEditTeacher = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
-          }else{
+          } else {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -1505,6 +1505,7 @@ const AddEditTeacher = () => {
                           component={TextField}
                           label="Mobile Number*"
                           name="phone"
+                          inputProps={{ maxLength: 10 }}
                           value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'phone')
@@ -2406,6 +2407,7 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
+                          inputProps={{ maxLength: 6 }}
                           label="Pincode *"
                           name="pincode"
                           value={values?.pincode}
