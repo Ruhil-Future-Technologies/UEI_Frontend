@@ -217,6 +217,7 @@ const QuizPage = () => {
                   Complete all questions. You can review your answers before
                   final submission.
                 </Typography>
+                <small>Duration: 60 minutes • Total Questions: 30 • Points: 100</small>
                 <div className="d-flex justify-content-between my-3 align-items-center">
                   <small className=" fw-medium d-block text-m-14">
                     Question {currentQuestionIndex + 1} of {quizData.length}
@@ -271,7 +272,7 @@ const QuizPage = () => {
                     sx={{
                       borderRadius: '10px',
                       marginTop: '5px',
-                      width: '40%',
+                      width: '100%',
                       padding: '2px 10px 2px 5px',
 
                       border: isSubmit

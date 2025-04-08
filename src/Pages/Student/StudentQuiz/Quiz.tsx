@@ -187,6 +187,7 @@ const QuizPage = () => {
                   Complete all questions. You can review your answers before
                   final submission.
                 </Typography>
+                
                 <div className="d-flex justify-content-between my-3 align-items-center">
                   <small className=" fw-medium d-block text-m-14">
                     Question {currentQuestionIndex + 1} of {quizData.length}

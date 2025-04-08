@@ -1359,7 +1359,7 @@ export const CreateAssignments = () => {
           <ToggleButtonGroup
             value={assignmentType}
             exclusive
-            onChange={(_, newValue) => setAssignmentType(newValue)}            
+            onChange={(_, newValue) => setAssignmentType(newValue)}
             className="assignbtngrp"
           >
             <ToggleButton value="written">
@@ -1384,7 +1384,6 @@ export const CreateAssignments = () => {
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <div className="row g-4">
-                    
                     <div className="col-12">
                       <Typography variant="h6" className="mb-4 fw-bold">
                         Create{' '}
@@ -1447,9 +1446,7 @@ export const CreateAssignments = () => {
                           )}
                         </div>
                         <div className="col-12">
-                          <label className='col-form-label'>
-                            Attachments
-                          </label>
+                          <label className="col-form-label">Attachments</label>
                           <input
                             type="file"
                             accept=".pdf,.doc,.docx"
@@ -1495,181 +1492,176 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                        
                       </>
                     )}
                     {assignmentType === 'quiz' && (
                       <>
+                        <div className="col-md-6 col-12">
+                          <FormControl fullWidth className="">
+                            <InputLabel id="level-select-label">
+                              Level
+                            </InputLabel>
 
-                        
-                          <div className="col-md-6 col-12">
-                            <FormControl fullWidth className="">
-                              <InputLabel id="level-select-label">
-                                Level
-                              </InputLabel>
+                            <Select
+                              label="Level"
+                              labelId="level-select-label"
+                              id="level-select"
+                              value={level}
+                              onChange={(e) => setLevel(e.target.value)}
+                            >
+                              <MenuItem value="easy">Easy</MenuItem>
 
-                              <Select
-                                label="Level"
-                                labelId="level-select-label"
-                                id="level-select"
-                                value={level}
-                                onChange={(e) => setLevel(e.target.value)}
-                              >
-                                <MenuItem value="easy">Easy</MenuItem>
+                              <MenuItem value="medium">Medium</MenuItem>
 
-                                <MenuItem value="medium">Medium</MenuItem>
+                              <MenuItem value="hard">Hard</MenuItem>
+                            </Select>
+                          </FormControl>
 
-                                <MenuItem value="hard">Hard</MenuItem>
-                              </Select>
-                            </FormControl>
-
-                            {level_error && (
-                              <p
-                                className="error-text "
-                                style={{ color: 'red' }}
-                              >
-                                <small> Please Select a level</small>
-                              </p>
-                            )}
-                          </div>
-                          <div className="col-12">
-                            <label className='col-form-label pb-0'>Number of Questions for Each Mark</label>
-                          </div>
-                          
-                          <div className="col-md-2 col-12">
-                            <TextField
-                              label="One Mark"
-                              type="number"
-                              value={questions[0].one}
-                              onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setQuestions((prevState: any) => {
-                                  const updatedQuestions = [...prevState];
-                                  updatedQuestions[0] = {
-                                    ...updatedQuestions[0],
-                                    one: value,
-                                  };
-                                  return updatedQuestions;
-                                });
-                              }}
-                              fullWidth
-                            />
-                          </div>
-                          <div className="col-md-2 col-12">
-                            <TextField
-                              label="Two Marks"
-                              type="number"
-                              value={questions[0].two}
-                              onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setQuestions((prevState: any) => {
-                                  const updatedQuestions = [...prevState];
-                                  updatedQuestions[0] = {
-                                    ...updatedQuestions[0],
-                                    two: value,
-                                  };
-                                  return updatedQuestions;
-                                });
-                              }}
-                              fullWidth
-                            />
-                          </div>
-                          <div className="col-md-2 col-12">
-                            <TextField
-                              label="Three Marks"
-                              type="number"
-                              value={questions[0].three}
-                              onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setQuestions((prevState: any) => {
-                                  const updatedQuestions = [...prevState];
-                                  updatedQuestions[0] = {
-                                    ...updatedQuestions[0],
-                                    three: value,
-                                  };
-                                  return updatedQuestions;
-                                });
-                              }}
-                              fullWidth
-                            />
-                          </div>
-                          <div className="col-md-2 col-12">
-                            <TextField
-                              label="Four Marks"
-                              type="number"
-                              value={questions[0].four}
-                              onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setQuestions((prevState: any) => {
-                                  const updatedQuestions = [...prevState];
-                                  updatedQuestions[0] = {
-                                    ...updatedQuestions[0],
-                                    four: value,
-                                  };
-                                  return updatedQuestions;
-                                });
-                              }}
-                              fullWidth
-                            />
-                          </div>
-                          <div className="col-md-2 col-12">
-                            <TextField
-                              label="Five Marks"
-                              type="number"
-                              value={questions[0].five}
-                              onChange={(e) => {
-                                const value = Number(e.target.value);
-                                setQuestions((prevState: any) => {
-                                  const updatedQuestions = [...prevState];
-                                  updatedQuestions[0] = {
-                                    ...updatedQuestions[0],
-                                    five: value,
-                                  };
-                                  return updatedQuestions;
-                                });
-                              }}
-                              fullWidth
-                            />
-                          </div>
-
-                          <div className="col-md-2 col-12">
-                            <TextField
-                              label="Total Questions"
-                              type="number"
-                              disabled
-                              value={totalQuestions}
-                              // onChange={(e) => setQuestions(e.target.value)}
-                              fullWidth
-                            />
-                          </div>
-                          {questions_error && (
+                          {level_error && (
                             <p className="error-text " style={{ color: 'red' }}>
-                              <small>
-                                {' '}
-                                Please enter a valid Number of Questions
-                              </small>
+                              <small> Please Select a level</small>
                             </p>
                           )}
-                       
-                        <div className="col-lg-12">
-                        <TextField                          
-                          label="Topic"
-                          type="text"
-                          value={topic}
-                          onChange={(e) => setTopic(e.target.value)}
-                          fullWidth
-                        />
+                        </div>
+                        <div className="col-12">
+                          <label className="col-form-label pb-0">
+                            Number of Questions for Each Mark
+                          </label>
+                        </div>
 
-                        {topic_error && (
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="One Mark"
+                            type="number"
+                            value={questions[0].one}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  one: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Two Marks"
+                            type="number"
+                            value={questions[0].two}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  two: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Three Marks"
+                            type="number"
+                            value={questions[0].three}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  three: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Four Marks"
+                            type="number"
+                            value={questions[0].four}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  four: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Five Marks"
+                            type="number"
+                            value={questions[0].five}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  five: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Total Questions"
+                            type="number"
+                            disabled
+                            value={totalQuestions}
+                            // onChange={(e) => setQuestions(e.target.value)}
+                            fullWidth
+                          />
+                        </div>
+                        {questions_error && (
                           <p className="error-text " style={{ color: 'red' }}>
-                            <small> Please enter a valid Topic</small>
+                            <small>
+                              {' '}
+                              Please enter a valid Number of Questions
+                            </small>
                           </p>
                         )}
+
+                        <div className="col-lg-12">
+                          <TextField
+                            label="Topic"
+                            type="text"
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            fullWidth
+                          />
+
+                          {topic_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please enter a valid Topic</small>
+                            </p>
+                          )}
                         </div>
-                       
                       </>
                     )}
-                    
+
                     <div className="col-12 mt-3 mb-5">
                       <label className="col-form-label">
                         Instructions<span>*</span>
