@@ -91,7 +91,7 @@ const AddEditStudent = () => {
           (std: any) => std.user_uuid == id,
         )[0];
         if (filteredStudent?.pic_path) {
-          setFilePreview(filteredStudent?.pic_path);
+          setFilePreview(filteredStudent?.pic_path); 
         }
         filteredStudent.dob = dayjs(filteredStudent.dob);
         setStudent(filteredStudent);
@@ -274,7 +274,7 @@ const AddEditStudent = () => {
       guardian_name: studentData?.guardian_name,
       is_kyc_verified: studentData?.is_kyc_verified,
       // pic_path:isBase64Image?studentData.image_name :fileName  ,
-      pic_path: uploadedfile ? uploadedfile : studentData?.image_name,
+      pic_path: uploadedfile ? uploadedfile : studentData?.pic_path?.split('/').pop() || studentData?.image_name,
       // pic_path:studentData?.pic_path,
       // student_login_id: id,
       student_login_id: student?.student_login_id,

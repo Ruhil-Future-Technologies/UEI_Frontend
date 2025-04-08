@@ -1685,7 +1685,7 @@ const TeacherRegistrationPage = () => {
                             role="button"
                             fontSize="small"
                           />{' '}
-                          Documents & Logo
+                          Documents
                         </h5>
                       </div>
                       <div className="col-md-6 col-12 ">
