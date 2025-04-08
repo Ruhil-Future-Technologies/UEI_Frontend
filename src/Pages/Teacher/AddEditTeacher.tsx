@@ -149,7 +149,7 @@ const AddEditTeacher = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
-  const genderOptions = ['Male', 'Female'];
+  const genderOptions = ['male', 'female'];
   const [dob, setDob] = useState<any>(null);
   const navigate = useNavigate();
   const [, setStreams] = useState<string[]>([]);

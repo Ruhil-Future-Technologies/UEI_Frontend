@@ -77,6 +77,7 @@ const Institute = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [activeTab, setActiveTab] = useState(0);
+  const [activeSubTab, setActiveSubTab] = useState(0);
   const [filteredInstitutes, setFilteredInstitutes] = useState<any[]>([]);
   const [selectedInstitute, setSelectedInstitute] = useState<InstituteDetails>(
     [],
@@ -155,23 +156,51 @@ const Institute = () => {
     setActiveTab(newValue);
   };
 
+  const handleEnityChange = (
+    _event: React.SyntheticEvent,
+    newValue: number,
+  ) => {
+    setActiveSubTab(newValue);
+  };
+
   useEffect(() => {
     if (activeTab === 0) {
-      setFilteredInstitutes(
-        dataInstitute.filter((insitute) => insitute.is_approve === true),
+      const approvedInstitutes = dataInstitute.filter(
+        (insitute) => insitute.is_approve === true,
       );
-      setColumnVisibility({
-        is_active: true,
-      });
+
+      if (activeSubTab === 0) {
+        setFilteredInstitutes(
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
+        );
+      } else {
+        setFilteredInstitutes(
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
+        );
+      }
     } else {
-      setFilteredInstitutes(
-        dataInstitute.filter((insitute) => !insitute.is_approve),
+      const approvedInstitutes = dataInstitute.filter(
+        (insitute) => !insitute.is_approve,
       );
-      setColumnVisibility({
-        is_active: false,
-      });
+      if (activeSubTab === 0) {
+        setFilteredInstitutes(
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
+        );
+      } else {
+        setFilteredInstitutes(
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
+        );
+      }
     }
-  }, [activeTab, dataInstitute]);
+  }, [activeTab, activeSubTab, dataInstitute]);
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteInstituteURL}/${id}`)
@@ -298,6 +327,26 @@ const Institute = () => {
                     <Tab
                       label="Pending Institute"
                       className={activeTab === 1 ? '' : 'text-color'}
+                    />
+                  </Tabs>
+                  <Tabs value={activeSubTab} onChange={handleEnityChange}>
+                    <Tab
+                      label="School"
+                      className={activeSubTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="College"
+                      className={activeSubTab === 1 ? '' : 'text-color'}
+                    />
+                  </Tabs>
+                  <Tabs value={activeSubTab} onChange={handleEnityChange}>
+                    <Tab
+                      label="School"
+                      className={activeSubTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="College"
+                      className={activeSubTab === 1 ? '' : 'text-color'}
                     />
                   </Tabs>
                   <Box marginTop="10px">
