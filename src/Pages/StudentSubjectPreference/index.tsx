@@ -210,6 +210,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       });
   };
   useEffect(() => {
+    setBoxes([]);
     const fetchData = async () => {
       if (activeForm === 5) {
         if (StudentId) {
@@ -326,13 +327,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     let filteredData: any = [];
     let entity: any;
     let teacherlist: any = [];
-    let class_id:any;
-    let course_id:any;
+    let class_id:any=0;
+    let course_id:any=0;
     let semester_id:any;
     await getData(`${'new_student_academic_history/get/' + StudentId}`)
       .then(async (response: any) => {
         if (response.status) {
-          
+          console.log(response?.data,boxes)
           setBoxes((prevBoxes) =>
             prevBoxes.map((box) => ({
               ...box,
@@ -394,11 +395,12 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       .catch(() => {
         // empty
       })
-    getData('/subject_preference/get/' + StudentId)
+   await getData('/subject_preference/get/' + StudentId)
       .then((data: any) => {
         if (data?.data.length > 0) {
           data?.data?.map(async (item: any, index: number) => {
             if (entity == 'school') {
+              console.log(class_id!=item?.class_id)
               if(class_id!=item?.class_id){
                 const newBox: Box = {
                   id: item.id,
@@ -412,6 +414,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   teacher_id:'',
                   teachers: teacherlist,
                 };
+                console.log(boxes,newBox.id,!boxes.some((box) => box.id === newBox.id))
                 if (!boxes.some((box) => box.id === newBox.id)) {
                   setBoxes((prevBoxes) => [...prevBoxes, newBox]);
                 }
@@ -479,6 +482,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               teacher_id: item?.teacher_id,
               teachers: teacherlist,
             };
+            console.log(!boxes.some((box) => box.id === newBox.id));
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               setInitialState({
@@ -910,6 +914,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: 'top-center',
             });
           }
+          setBoxes([{
+            id: 0,
+            course_id: '',
+            subject_id: '',
+            preference: '',
+            score_in_percentage: '',
+            sem_id: '',
+            class_id: '',
+            stream: '',
+            teacher_id: '',
+            teachers: []
+          }])
           await handleReset();
           navigate('/main/DashBoard');
           // setTimeout(async () => {
@@ -923,7 +939,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: 'top-center',
             });
           }
-
+          setBoxes([{
+            id: 0,
+            course_id: '',
+            subject_id: '',
+            preference: '',
+            score_in_percentage: '',
+            sem_id: '',
+            class_id: '',
+            stream: '',
+            teacher_id: '',
+            teachers: []
+          }])
           navigate('/main/DashBoard')
         }
         setInitialState(initial);
