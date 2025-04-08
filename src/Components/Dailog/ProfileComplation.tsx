@@ -3243,6 +3243,7 @@ export const ProfileDialog: FunctionComponent<{
                           }}
                         >
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <div className="w-100">
                             <DatePicker
                               //  open={open}
                               // open={true}
@@ -3253,12 +3254,14 @@ export const ProfileDialog: FunctionComponent<{
                               disableFuture
                               format={'DD/MM/YYYY'}
                               maxDate={maxSelectableDate}
+                              className="w-100"
                               // value={datecheck}
                               slotProps={{
                                 field: {
                                   readOnly: true,
                                 },
                                 textField: {
+                                  
                                   sx: {
                                     '& .MuiInputLabel-root': {
                                       // paddingLeft: '0px',
@@ -3269,7 +3272,7 @@ export const ProfileDialog: FunctionComponent<{
                                       // flexDirection: 'row-reverse',
                                       color: chatdatetext(namecolor), // Change the label text color
                                       backgroundColor: 'transperent',
-                                      paddingLeft: '100px',
+                                      
                                       paddingRight: '50px',
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
@@ -3292,13 +3295,13 @@ export const ProfileDialog: FunctionComponent<{
                                   // onClick: handleOpen
                                 },
                               }}
-                            />
+                            /></div>
                             <button
                               className="chat_search_btn"
                               style={{
                                 position: 'absolute',
                                 right: '10px',
-                                top: '50%',
+                                top: '49%',
                                 transform: 'translateY(-50%)',
                                 border: 'none',
                                 background: 'none',

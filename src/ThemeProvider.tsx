@@ -18,11 +18,19 @@ export const useTheme = () => {
 };
 
 export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    // default to light if not set
+    const stored = localStorage.getItem("isDarkMode");
+    return stored === "true"; // or false if nothing is stored
+  });
+  
+  
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", isDarkMode ? "dark" : "light");
+    localStorage.setItem("isDarkMode", String(isDarkMode));
   }, [isDarkMode]);
+  
+  
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);
@@ -54,9 +62,7 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ 
           root: {
             textTransform: "none",
             borderRadius: "4px",
-            "&:hover": {
-              backgroundColor: "#b26bef",
-            },
+            
           },
         },
       },
@@ -64,10 +70,7 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ 
         styleOverrides: {
           root: {
             backgroundColor: isDarkMode ? "#333" : "#fff",
-            color: isDarkMode ? "#fff" : "#000",
-            "&:focus": {
-              backgroundColor: isDarkMode ? "#444" : "#f0f0f0",
-            },
+            color: isDarkMode ? "#fff" : "#000",            
           },
         },
       },

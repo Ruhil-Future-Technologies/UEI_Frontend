@@ -322,7 +322,7 @@ const Header = () => {
                   <h5 className="notiy-title mb-0">Notifications</h5>
                   <div className="dropdown">
                     <button
-                      className="btn-secondary dropdown-toggle dropdown-toggle-nocaret option"
+                      className="btn-light dropdown-toggle dropdown-toggle-nocaret option"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"

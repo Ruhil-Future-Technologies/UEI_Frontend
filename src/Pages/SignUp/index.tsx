@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 // import  { SnackbarOrigin } from "@mui/material/Snackbar";
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { ThemeProviderWrapper } from '../../ThemeProvider';
 import {
   Dialog,
   DialogTitle,
@@ -63,21 +64,21 @@ const Signup = () => {
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    const theme = localStorage?.getItem('theme') || '';
-    if (theme === 'light') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'dark') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'blue-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'semi-dark')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'bordered-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else document?.documentElement?.setAttribute('data-bs-theme', theme);
-    // document.documentElement.setAttribute('data-theme', theme);
-  }, []);
+  // useEffect(() => {
+  //   const theme = localStorage?.getItem('theme') || '';
+  //   if (theme === 'light') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'dark') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'blue-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'semi-dark')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'bordered-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   // document.documentElement.setAttribute('data-theme', theme);
+  // }, []);
 
   useEffect(() => {
     if (email && password) {
@@ -298,7 +299,7 @@ const Signup = () => {
     setPopupTermandcondi(false);
   };
   return (
-    <>
+    <ThemeProviderWrapper>
       {loading && <FullScreenLoader />}
 
       <div className="without-login">
@@ -507,31 +508,7 @@ const Signup = () => {
                                 </InputAdornment>
                               ),
                             }}
-                            sx={{
-                              '& input::-ms-reveal, & input::-ms-clear': {
-                                display: 'none',
-                              },
-                              '& input:-webkit-autofill': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important', // Set the background color you want
-                                WebkitTextFillColor: 'black !important', // Set the text color you want
-                              },
-                              '& input:-webkit-autofill:hover': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important',
-                                WebkitTextFillColor: 'black !important',
-                              },
-                              '& input:-webkit-autofill:focus': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important',
-                                WebkitTextFillColor: 'black !important',
-                              },
-                              '& input:-webkit-autofill:active': {
-                                WebkitBoxShadow:
-                                  '0 0 0 1000px white inset !important',
-                                WebkitTextFillColor: 'black !important',
-                              },
-                            }}
+                            
                             fullWidth
                           />
                           {uservalue === 'password' && (
@@ -569,14 +546,14 @@ const Signup = () => {
                         </label>
                       </div>
                       <button
-                        className="btn btn-secondary w-100 mh-56 rounded-pill"
+                        className="btn btn-primary w-100 mh-56 rounded-pill"
                         disabled={CheckTermandcondi}
                       >
                         Sign Up Now
                       </button>
                       <p className="my-4 text-center">
                         Already have an account?{' '}
-                        <Link to="/" style={{ color: '#9943EC' }}>
+                        <Link to="/" >
                           {' '}
                           <u>Sign in here </u>
                         </Link>
@@ -584,13 +561,13 @@ const Signup = () => {
                       <div className="d-flex justify-content-between">
                         <Link
                           to="/institute-registration"
-                          style={{ color: '#9943EC' }}
+                          
                         >
                           <u>Register As Institution</u>
                         </Link>
                         <Link
                           to="/teacher-registration"
-                          style={{ color: '#9943EC' }}
+                          
                         >
                           <u>Register As Teacher</u>
                         </Link>
@@ -655,7 +632,7 @@ const Signup = () => {
           </List>
         </footer>
       </div>
-    </>
+    </ThemeProviderWrapper>
   );
 };
 
