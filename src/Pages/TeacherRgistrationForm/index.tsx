@@ -848,7 +848,8 @@ const TeacherRegistrationPage = () => {
         const class_stream_subjects = boxesForSchool.reduce(
           (acc, boxesForSchool) => {
             const { class_id, stream, subjects } = boxesForSchool;
-            const streamKey = stream === '' ? 'general' : stream?.toLowerCase() || 'general';
+            const streamKey =
+              stream === '' ? 'general' : stream?.toLowerCase() || 'general';
             if (!acc[class_id]) {
               acc[class_id] = {};
             }
@@ -958,7 +959,9 @@ const TeacherRegistrationPage = () => {
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
       const duplicateFiles = filesArray.filter((file) =>
-        allselectedfiles.some((existingFile) => existingFile.name === file.name)
+        allselectedfiles.some(
+          (existingFile) => existingFile.name === file.name,
+        ),
       );
 
       if (duplicateFiles.length > 0) {
@@ -1098,7 +1101,8 @@ const TeacherRegistrationPage = () => {
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
-              value.toString().toLowerCase() && item.class_id === boxesForSchool[index].class_id
+                value.toString().toLowerCase() &&
+              item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
             ...updatedBox,
@@ -2003,13 +2007,13 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForCourse_semester_subject[index]
                               ?.course_id_error === true && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select Course name.</small>
-                                </p>
-                              )}
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select Course name.</small>
+                              </p>
+                            )}
                           </div>
 
                           {/* Semester Selection */}
@@ -2043,13 +2047,13 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForCourse_semester_subject[index]
                               ?.semester_number_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Semester.</small>
-                                </p>
-                              )}
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Semester.</small>
+                              </p>
+                            )}
                           </div>
 
                           {/* Subjects Selection */}
@@ -2104,15 +2108,15 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForCourse_semester_subject[index]
                               ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
                           </div>
                           <div>
                             {(selectedEntity.toLowerCase() === 'college' ||
@@ -2146,7 +2150,7 @@ const TeacherRegistrationPage = () => {
                           {/* Class Selection */}
                           <div
                             className={box.selected_class_name}
-                          //className="col-md-6 col-12"
+                            //className="col-md-6 col-12"
                           >
                             {/* <label className="col-form-label">
                             Class<span>*</span>
@@ -2174,13 +2178,13 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForClass_stream_subject[index]
                               ?.class_id_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Class.</small>
-                                </p>
-                              )}
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Class.</small>
+                              </p>
+                            )}
                           </div>
                           {box.is_Stream && (
                             <div className="col-md-4 col-12 ">
@@ -2235,13 +2239,13 @@ const TeacherRegistrationPage = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.stream_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Stream.</small>
-                                  </p>
-                                )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Stream.</small>
+                                </p>
+                              )}
                             </div>
                           )}
                           <div className={box.selected_class_name}>
@@ -2295,15 +2299,15 @@ const TeacherRegistrationPage = () => {
                             </FormControl>
                             {errorForClass_stream_subject[index]
                               ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
                           </div>
 
                           <div>
@@ -2358,7 +2362,14 @@ const TeacherRegistrationPage = () => {
                           )}
                         </div>
                         <div>
-                          {errorMessage && <p style={{ color: 'red' }} className="text-red-500">{errorMessage}</p>}
+                          {errorMessage && (
+                            <p
+                              style={{ color: 'red' }}
+                              className="text-red-500"
+                            >
+                              {errorMessage}
+                            </p>
+                          )}
                           {document_error && (
                             <p className="error-text " style={{ color: 'red' }}>
                               <small>
@@ -2471,40 +2482,40 @@ const TeacherRegistrationPage = () => {
               </div>
             </Box>
           )}
+          <footer className="login-footer bg-light">
+            <p className="mb-0">Copyright © 2025. All right reserved.</p>
+            <List
+              sx={{
+                display: 'inline-flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                padding: 0,
+              }}
+            >
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/privacypolicy" color="primary">
+                  Privacy Policy
+                </LinkReact>
+              </ListItem>
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/refundpolicy" color="primary">
+                  Refund Policy
+                </LinkReact>
+              </ListItem>
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/Disclaimer" color="primary">
+                  Disclaimer
+                </LinkReact>
+              </ListItem>
+              <ListItem sx={{ width: 'auto', padding: 0 }}>
+                <LinkReact to="/ServicesAgreement" color="primary">
+                  End User Aggrement
+                </LinkReact>
+              </ListItem>
+            </List>
+          </footer>
         </Box>
       </Box>
-      <footer className="login-footer">
-        <p className="mb-0">Copyright © 2025. All right reserved.</p>
-        <List
-          sx={{
-            display: 'inline-flex',
-            flexWrap: 'wrap',
-            gap: 2,
-            padding: 0,
-          }}
-        >
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/privacypolicy" color="primary">
-              Privacy Policy
-            </LinkReact>
-          </ListItem>
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/refundpolicy" color="primary">
-              Refund Policy
-            </LinkReact>
-          </ListItem>
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/Disclaimer" color="primary">
-              Disclaimer
-            </LinkReact>
-          </ListItem>
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/ServicesAgreement" color="primary">
-              End User Aggrement
-            </LinkReact>
-          </ListItem>
-        </List>
-      </footer>
     </>
   );
 };

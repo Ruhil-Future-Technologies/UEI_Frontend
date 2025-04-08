@@ -1443,7 +1443,7 @@ const Chat = () => {
                   showHistory ? 'showhistory' : ''
                 }`}
               >
-                <div className="d-lg-none mb-4 ms-auto d-flex">
+                <div className="d-xl-none mb-4 ms-auto d-flex">
                   <button className="btn btn-outline-secondary ms-auto btn-sm d-flex align-items-center justify-content-center">
                     <CloseOutlinedIcon onClick={() => setShowHistory(false)} />
                   </button>
@@ -1615,7 +1615,7 @@ const Chat = () => {
                 </div>
               </div>
             )}
-            <div className="main-chat-panel">
+            <div className="main-chat-panel p-0 p-lg-4">
               <div className="inner-panel">
                 {Id !== undefined ? (
                   <div className="chat-header2">
@@ -1639,7 +1639,7 @@ const Chat = () => {
                     ) : (
                       <></>
                     )}
-                    <div className="me-auto d-lg-none">
+                    <div className="me-auto d-xl-none">
                       <SyncAltOutlinedIcon
                         onClick={() => setShowHistory(!showHistory)}
                       />

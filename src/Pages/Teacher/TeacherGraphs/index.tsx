@@ -318,7 +318,7 @@ const TeacherGraph = () => {
         </div>
       </div>
       <div className="col-xl-5 d-flex align-items-stretch">
-        <div className="row w-100">
+        <div className="row ">
           <div className="col-lg-6">
             <div className="card w-100 rounded-4">
               <div className="card-body">

@@ -98,17 +98,9 @@ ul {
 .fs-12 {
   font-size: 12px !important;
 }
-.btn-outline-primary {
-  color: $primary !important;
-  border-color: $primary !important;
-  &:hover {
-    color: $white !important;
-    background-color: $primary !important;
-  }
-}
-.text-primary {
-  color: $primary !important;
-}
+
+
+
 .btn-secondary {
   background-color: $secondary !important;
   border-color: $secondary !important;
@@ -384,7 +376,7 @@ img {
 
     .main-chat-panel {
       width: 100% !important;
-      padding: 0 !important;
+     // padding: 0 !important;
       border-left: 0 !important;
 
       .mobile-chat-header {
@@ -503,6 +495,7 @@ img {
   .progress-line {
     left: 4% !important;
     transform: translateX(-4%) !important;
+    top: 50%!important;
   }
 
   .wizard-content .form-control,
@@ -2198,7 +2191,7 @@ body .desk-card {
   }
 
   .main-chat-panel {
-    padding: 1rem 1rem 1.7rem;
+    padding: 1rem 1rem 0rem;
     height: 100%;
 
     .inner-panel {
@@ -2208,7 +2201,7 @@ body .desk-card {
 
       .chat-result {
         height: 100%;
-        max-height: calc(100vh - 210px);
+        max-height: calc(100vh - 240px);
         margin-bottom: 5px;
         position: relative;
 
@@ -3193,5 +3186,12 @@ a {
   p{
     margin-bottom: 0;
    
+  }
+}
+
+.mw-180px{
+  min-width: 180px;
+  @media (max-width:724px) {
+    width: 100%;
   }
 }

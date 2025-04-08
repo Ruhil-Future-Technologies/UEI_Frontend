@@ -49,7 +49,7 @@ const TeacherSideVar = () => {
           {/* <!--navigation--> */}
           <ul className="metismenu" id="sidenav">
             <li>
-              <Link to="/teacher-dashboard">
+              <Link to="/teacher-dashboard" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <HomeOutlinedIcon />
                 </div>
@@ -57,7 +57,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/chat">
+              <Link to="/teacher-dashboard/chat" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <ChatOutlinedIcon />
                 </div>
@@ -65,7 +65,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/Content">
+              <Link to="/teacher-dashboard/Content" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <LibraryBooksOutlinedIcon />
                 </div>
@@ -73,7 +73,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/feedback">
+              <Link to="/teacher-dashboard/feedback" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <InfoOutlinedIcon />
                 </div>
@@ -81,7 +81,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/assignments">
+              <Link to="/teacher-dashboard/assignments" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <AssignmentOutlinedIcon />
                 </div>
