@@ -1043,6 +1043,7 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
             alt="profile"
             height="50px"
             width="50px"
+            style={{ borderRadius: '50%', objectFit: 'cover' }}
           />
         </div>
       );

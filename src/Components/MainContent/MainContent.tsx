@@ -28,7 +28,6 @@ import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -49,7 +48,7 @@ import chatLogo from '../../assets/img/chat-logo.svg';
 import maleImage from '../../assets/img/avatars/male.png';
 import femaleImage from '../../assets/img/avatars/female.png';
 import robotImage from '../../assets/img/robot.png';
-import { fieldIcon, hasSubMenu } from '../../utils/helpers';
+import {  datadashboard, fieldIcon } from '../../utils/helpers';
 import FullScreenLoader from '../../Pages/Loader/FullScreenLoader';
 import NameContext from '../../Pages/Context/NameContext';
 import { ProfileDialog } from '../Dailog/ProfileComplation';
@@ -61,24 +60,19 @@ import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
 import { ChatTable } from '../../Pages/Chat/Tablechat';
 import StudentDashboardCharts from '../Chart/StudentChart';
+import StatCard from './StatCard';
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage, namecolor ,setActiveForm }: any = context;
+  const { ProPercentage, setProPercentage, namecolor, setActiveForm }: any = context;
 
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('_id');
   const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
-
-  const getMenuList = () => {
-    const menuList = localStorage.getItem('menulist1');
-    return menuList ? JSON.parse(menuList) : [];
-  };
-  const menudata = getMenuList();
 
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -162,7 +156,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -197,7 +191,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -963,8 +957,7 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== null) {
                 getData(
-                  `${
-                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
@@ -1024,9 +1017,9 @@ function MainContent() {
                           .replace('_', ' ')
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_data.class_name
-                            .replace('_', ' ')
-                            .slice(1),
+                        response.data.class_data.class_name
+                          .replace('_', ' ')
+                          .slice(1),
                       );
                     },
                   );
@@ -1044,11 +1037,9 @@ function MainContent() {
                   delete academic_history?.state_for_stateboard;
                 }
               } else {
-                console.log(academic_history)
                 if (academic_history?.course_id) {
                   getData(`course/edit/${academic_history?.course_id}`).then(
                     (response) => {
-                      console.log(response);
                       setStudentCourse(response.data.course_data?.course_name);
                     },
                   );
@@ -1229,15 +1220,14 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info)?.length > 0) {
               if (data?.data?.admin_data?.basic_info?.pic_path !== null) {
                 getData(
-                  `${
-                    'upload_file/get_image/' +
-                    data?.data?.admin_data?.basic_info?.pic_path
+                  `${'upload_file/get_image/' +
+                  data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
                     setprofileImage(imgdata?.data?.file_url);
                   })
-                  .catch(() => {});
+                  .catch(() => { });
               }
 
               const totalcount = Object.keys(basic_info)?.length;
@@ -1581,15 +1571,15 @@ function MainContent() {
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -2105,32 +2095,6 @@ function MainContent() {
   //   //`${stats1.Student_Profile}% Profile`
   // ];
 
-  // const EntityExists = hasSubMenu(menudata, "Entity");
-  const InstitutionsExists = hasSubMenu(menudata, 'Institute');
-  const StudentsExists = hasSubMenu(menudata, 'Student');
-  const CoursesExists = hasSubMenu(menudata, 'Course');
-  const SubjectsExists = hasSubMenu(menudata, 'Subject');
-  const DepartmentExists = hasSubMenu(menudata, 'Department');
-
-  // const CustomTooltip = ({ active, payload }: any) => {
-  //   if (active && payload && payload.length) {
-  //     const dataPoint = payload[0].payload;
-  //     return (
-  //       <div
-  //         style={{
-  //           backgroundColor: "white",
-  //           padding: "5px",
-  //           border: "1px solid #ccc",
-  //         }}
-  //       >
-  //         <p>{dataPoint.label}</p>
-  //         <p>{`Points: ${dataPoint.value}`}</p>
-  //         <p>{`Rank: ${dataPoint.rank}`}</p>
-  //       </div>
-  //     );
-  //   }
-  //   return null;
-  // };
 
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === 'Enter') {
@@ -2181,7 +2145,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => {};
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2245,13 +2209,6 @@ function MainContent() {
         stream: profileDatas?.subject,
       };
     }
-
-    // getData(
-    //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-    //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-    //     search
-    //   )}`
-    // )
     postDataJson(`${ChatOLLAMAURL}`, {
       user_query: search,
       student_id: userid,
@@ -2352,12 +2309,6 @@ function MainContent() {
 
     await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
-        // setChatSaved(false);
-        // toast.success(chatdata?.message, {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-        // callAPI();
         fetchStudentData();
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
@@ -2390,6 +2341,61 @@ function MainContent() {
         console.error('Error copying text: ', err);
       });
   };
+  const isMenuEmpty = !menuList || menuList.length === 0;
+  
+  const statCardsData = [
+    {
+      icon: <PermContactCalendarIcon />,
+      value: stats.entityCount,
+      label: 'Total Entities',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Entity") ? '/main/Entity' : '#',
+      // to: '#',
+      // showAlways: isMenuEmpty, // special card only in empty menu
+    },
+    {
+      icon: <PermContactCalendarIcon />,
+      value: stats.institutionCount,
+      label: 'Total Institutions',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Institute") ? '/main/Institute' : '#',
+    },
+    {
+      icon: <PersonAddIcon />,
+      value: stats.teacherCount,
+      label: 'Teachers',
+      to: isMenuEmpty ? '#' : '/main/Teacher',
+    },
+    {
+      icon: <PersonAddIcon />,
+      value: stats.studentCount,
+      label: 'Students',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Student") ? '/main/Student' : '#',
+    },
+    {
+      icon: <LibraryBooksIcon />,
+      value: stats.courseCount,
+      label: 'Courses',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Course") ? '/main/Course' : '#',
+      trendIcon: <ExpandLessIcon />,
+      textColor: 'text-danger',
+    },
+    {
+      icon: <AutoStoriesIcon />,
+      value: stats.schoolsubjectCount + stats.collegesubjectCount,
+      label: 'Subjects',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Subject") ? '/main/Subject' : '#',
+      trendIcon: <ExpandLessIcon />,
+      textColor: 'text-danger',
+    },
+    {
+      icon: <CollectionsBookmarkIcon />,
+      value: stats.departmentCount,
+      label: 'Department',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Department")? '/main/Department' : '#',
+      trendIcon: <ExpandLessIcon />,
+      textColor: 'text-danger',
+    },
+  ];
+  
   return (
     <>
       {loader && !chatLoader && <FullScreenLoader />}
@@ -2398,276 +2404,13 @@ function MainContent() {
           <div className="main-wrapper">
             <main className="main-content">
               <section className="row">
-                {menuList == null || menuList?.length === 0 ? (
-                  <>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.entityCount}</h4>
-                            <p className="mb-0">Total Entities</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.institutionCount}</h4>
-                            <p className="mb-0">Total Institutions</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.studentCount}</h4>
-                            <p className="mb-0">Total Students</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.courseCount}</h4>
-                            <p className="mb-0">Total Courses</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">
-                              {stats.collegesubjectCount +
-                                stats?.schoolsubjectCount}
-                            </h4>
-                            <p className="mb-0">Total Subjects</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <CollectionsBookmarkIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.departmentCount}</h4>
-                            <p className="mb-0">Total Departments</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={InstitutionsExists ? '/main/Institute' : '#'}
-                        className="card"
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.institutionCount}</h4>
-                            <p className="mb-0">Total Institutions</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
+                <div className="row">
+                  {statCardsData
+                    .map((card, index) => (
+                      <StatCard key={index} {...card} />
+                    ))}
+                </div>
 
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link to={'/main/Teacher'} className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PersonAddIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.teacherCount}</h4>
-                            <p className="mb-0">Teachers</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={StudentsExists ? '/main/Student' : ''}
-                        className="card"
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PersonAddIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.studentCount}</h4>
-                            <p className="mb-0">Students</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={CoursesExists ? '/main/Course' : '#'}
-                        className="card "
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <LibraryBooksIcon />
-                            </div>
-                            <div>
-                              <span className="text-danger d-flex align-items-center">
-                                +24% <ExpandLessIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.courseCount}</h4>
-                            <p className="mb-0">Courses</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={SubjectsExists ? '/main/Subject' : '#'}
-                        className="card "
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <AutoStoriesIcon />
-                            </div>
-                            <div>
-                              <span className="text-danger d-flex align-items-center">
-                                +24% <ExpandLessIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            {/* <h4 className="mb-0">{stats.subjectCount}</h4> */}
-                            <h4 className="mb-0">
-                              {stats.schoolsubjectCount +
-                                stats.collegesubjectCount}
-                            </h4>
-                            <p className="mb-0">Subjects</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={DepartmentExists ? '/main/Department' : '#'}
-                        className="card "
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <CollectionsBookmarkIcon />
-                            </div>
-                            <div>
-                              <span className="text-danger d-flex align-items-center">
-                                +24% <ExpandLessIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.departmentCount}</h4>
-                            <p className="mb-0">Department</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  </>
-                )}
               </section>
               <section className="row">
                 <div className="col-lg-6">
@@ -2894,117 +2637,10 @@ function MainContent() {
         </>
       ) : userName === 'student' ? (
         <>
-          {/* <main className="main-content">
-            <section className="stats stats12">
-              <Link
-                to={stats1.Student_Profile === 100 ? "/main/Chat" : ""}
-                className="stat-item"
-              >
-                <div>
-                  <p>Starred Chat</p>
-                  <h2>{student.chatHistory}</h2>
-                </div>
-              </Link>
-              <Link
-                to={stats1.Student_Profile === 100 ? "/main/Chat" : ""}
-                className="stat-item stats3"
-              >
-                <div>
-                  <p>Chat</p>
-                  <h2>{student.chatCount}</h2>
-                </div>
-              </Link>
-            </section>
-            <section className="piecharts">
-              <div className="chart">
-                <div style={{ marginBottom: "20px" }}>
-                  <span
-                    style={{
-                      fontSize: "1.2rem",
-                      color: "#7f8c8d",
-                      fontFamily: "sans-serif",
-                    }}
-                  >
-                    Student profile completion
-                  </span>
-                  <br />
-                </div>
 
-                <PieChart
-                  className="pie"
-                  series={[
-                    {
-                      data: pieData1,
-                      highlightScope: { faded: "global", highlighted: "item" },
-                      faded: {
-                        innerRadius: 30,
-                        additionalRadius: -30,
-                        color: "gray",
-                      },
-                      valueFormatter: (v, { dataIndex }) => {
-                        const { value } = pieData1[dataIndex];
-                        return `${value}%`;
-                      },
-                      cx: 110,
-                    },
-                  ]}
-                  slotProps={{
-                    legend: {
-                      hidden: true, // Show the legend
-                    },
-                  }}
-                  // width={450}
-                  height={200}
-                />
-                <span className="chart_content">
-                  <div
-                    style={{
-                      width: "20px",
-                      height: " 20px",
-                      backgroundColor: "#02b2af",
-                      marginRight: "10px",
-                    }}
-                  ></div>
-                  Profile completion {stats1?.Student_Profile} %
-                </span>
-              </div>
-            </section>
-          </main> */}
           <main className="main-wrapper">
             <div className="main-content">
-              {/* <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div className="breadcrumb-title pe-3">Dashboard</div>
-                <div className="ps-3">
-                  <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb mb-0 p-0">
-                      <li className="breadcrumb-item">
-                        <a href="#">
-                          <i className="bx bx-home-alt"></i>
-                        </a>
-                      </li>
-                      <li
-                        // className="breadcrumb-item"
-                        aria-current="page"
-                      >
-                        Report
-                      </li>
-                    </ol>
-                  </nav>
-                </div>
-                <div className="ms-auto">
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary rounded-pill px-lg-4"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#staticBackdrop"
-                    >
-                      Settings
-                    </button>
-                  </div>
-                </div>
-              </div> */}
-
+             
               <div className="row my-lg-4 g-4">
                 <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
                   <div className="card w-100 overflow-hidden rounded-4 shadow-none desk-card">
@@ -3017,7 +2653,7 @@ function MainContent() {
                                 profileImage
                                   ? profileImage
                                   : profileDatas?.basic_info?.gender.toLowerCase() ===
-                                      'female'
+                                    'female'
                                     ? femaleImage
                                     : maleImage
                               }
@@ -3045,33 +2681,6 @@ function MainContent() {
                                 </IconButton>
                               </div>
 
-                              {/* <div className="d-flex justify-content-between gap-2 flex-wrap  align-items-center">
-                                <i className="fs-12">
-                                  Student Standard{" "}
-                                  <span className="d-lg-block"> Account </span>
-                                </i>
-                                <button className="btn btn-primary fs-12 rounded-pill btn-sm  text-nowrap ps-3">
-                                  Upgrade <KeyboardArrowRightIcon />
-                                </button>
-                              </div> */}
-
-                              {/* <div className="">
-                                <div
-                                  className="progress mb-0"
-                                  style={{ height: "5px" }}
-                                >
-                                  <div
-                                    className="progress-bar bg-grd-success"
-                                    role="progressbar"
-                                    style={{
-                                      width: `${stats1?.Student_Profile}%`,
-                                    }}
-                                    aria-valuenow={25}
-                                    aria-valuemin={0}
-                                    aria-valuemax={100}
-                                  ></div>
-                                </div>
-                              </div> */}
                             </div>
                           </div>
                         </div>
@@ -3118,28 +2727,11 @@ function MainContent() {
                             Profile Completed
                           </h6>
                         </div>
-                        <div style={{ color: `#9943EC` }}>{`${
-                          stats1?.Student_Profile >= 90
+                        <div style={{ color: `#9943EC` }}>{`${stats1?.Student_Profile >= 90
                             ? 100
                             : stats1?.Student_Profile
-                        }%`}</div>
+                          }%`}</div>
                       </div>
-
-                      {/* <div className="d-flex align-items-center gap-3 mb-3">
-                        <div className="flex-grow-1">
-                          <h6 className="mb-0 fw-normal fs-14">Aadhar KYC</h6>
-                        </div>
-                        <div style={{ color: `#9943EC` }}>Pending</div>
-                      </div> */}
-
-                      {/* <div className="d-flex align-items-center gap-3">
-                        <div className="flex-grow-1">
-                          <h6 className="mb-0 fw-normal">
-                            Student Standard Account
-                          </h6>
-                        </div>
-                        <div style={{ color: `#9943EC` }}>Upgrade</div>
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -3176,14 +2768,13 @@ function MainContent() {
                                 ? `${profileDatas?.subject_preference?.subject_name}`
                                 : ''}
                             </p>
-                            {/* <small className="text-success">Completed</small> */}
                           </Link>
                           <div className="">
                             <p className="mb-0 fs-6">
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                    ?.score_in_percentage
+                                  ?.score_in_percentage
                                 : ''}
                             </p>
                           </div>
@@ -3205,45 +2796,6 @@ function MainContent() {
                           </div>
                         </div>
 
-                        {/* <div className="d-flex align-items-center gap-4">
-                          <a
-                            href="#"
-                            className="d-flex gap-0 flex-grow-1 flex-column text-start nav-link"
-                          >
-                            <p className="mb-0">Economics</p>
-                            <small className="text-primary">Inprogress</small>
-                          </a>
-                          <div className="">
-                            <p className="mb-0 fs-6">45%</p>
-                          </div>
-                          <div className="">
-                            <p className="mb-0 data-attributes">
-                              <span data-peity='{ "fill": ["#0d6efd", "rgb(0 0 0 / 10%)"], "innerRadius": 14, "radius": 18 }'>
-                                3/7
-                              </span>
-                            </p>
-                          </div>
-                        </div> */}
-
-                        {/* <div className="d-flex align-items-center gap-4">
-                          <a
-                            href="#"
-                            className="d-flex gap-0 flex-grow-1 flex-column text-start nav-link"
-                          >
-                            <p className="mb-0">History</p>
-                            <small className="text-primary">Inprogress</small>
-                          </a>
-                          <div className="">
-                            <p className="mb-0 fs-6">65%</p>
-                          </div>
-                          <div className="">
-                            <p className="mb-0 data-attributes">
-                              <span data-peity='{ "fill": ["#0d6efd", "rgb(0 0 0 / 10%)"], "innerRadius": 14, "radius": 18 }'>
-                                5/7
-                              </span>
-                            </p>
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -3381,7 +2933,7 @@ function MainContent() {
                                             fontSize: '14px',
                                             color:
                                               likedStates[index] === 'liked' ||
-                                              chat.like_dislike === true
+                                                chat.like_dislike === true
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -3392,13 +2944,13 @@ function MainContent() {
                                                 : 'pointer',
                                             transform:
                                               likedStates[index] === 'liked' ||
-                                              chat.like_dislike === true
+                                                chat.like_dislike === true
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                              chat.like_dislike !== true
+                                                chat.like_dislike !== true
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -3412,7 +2964,7 @@ function MainContent() {
                                             color:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                              chat.like_dislike === false
+                                                chat.like_dislike === false
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -3424,13 +2976,13 @@ function MainContent() {
                                             transform:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                              chat.like_dislike === false
+                                                chat.like_dislike === false
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                              chat.like_dislike !== false
+                                                chat.like_dislike !== false
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -3734,17 +3286,7 @@ function MainContent() {
           <ThemeSidebar themeMode={themeMode} setThemeMode={setThemeMode} />
         </>
       ) : (
-        // :
-        // userName === 'teacher' ?
-
-        //    <>
-        //   <main className="main-content">
-
-        //       <Teacher/>
-        //     </main>
-        //    </>
-
-        <></>
+            <></>
       )}
       <ProfileDialog
         isOpen={dataCompleted}

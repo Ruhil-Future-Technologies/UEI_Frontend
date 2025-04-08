@@ -35,7 +35,6 @@ export function deepEqual(a: any, b: any) {
 }
 
 export const hasSubMenu = (menuListdata: any, menuName: any) => {
-  // console.log("Type of menuListdata:", typeof menuListdata);
   if (!Array.isArray(menuListdata)) {
     console.error('menuListdata is not an array:', menuListdata);
     return false;
@@ -97,6 +96,37 @@ export const dataaccess = (
     return filteredData;
   } else {
     return null;
+  }
+};
+
+export const datadashboard = (
+  Menulist: any,
+  lastSegment: any,
+) => {
+  let filteredData = null;
+  JSON.parse(Menulist)?.forEach((data: any) => {
+    if (data?.menu_name.toLowerCase() === lastSegment) {
+      filteredData = data; // Found a match in the main menu
+    } else {
+      const result = data?.submenus?.find((menu: any) => {
+       
+        // Extract the last segment of submenu_url for comparison
+        const lastSegmentFromURL = menu?.submenu_url?.substring(menu?.submenu_url?.lastIndexOf("/") + 1);  
+        return lastSegmentFromURL?.toLowerCase() === lastSegment?.toLowerCase();
+      });
+      if (result) {
+        filteredData = {
+          ...data,
+          submenus: [result],
+        };
+      }
+    }
+  });
+
+  if (filteredData) {
+    return true;
+  } else {
+    return false;
   }
 };
 
