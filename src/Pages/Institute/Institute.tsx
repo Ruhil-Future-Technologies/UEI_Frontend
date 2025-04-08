@@ -85,6 +85,7 @@ const Institute = () => {
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
   const [open, setOpen] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   // Calculate and update column widths based on content length
   useEffect(() => {
@@ -159,10 +160,16 @@ const Institute = () => {
       setFilteredInstitutes(
         dataInstitute.filter((insitute) => insitute.is_approve === true),
       );
+      setColumnVisibility({
+        is_active: true,
+      });
     } else {
       setFilteredInstitutes(
         dataInstitute.filter((insitute) => !insitute.is_approve),
       );
+      setColumnVisibility({
+        is_active: false,
+      });
     }
   }, [activeTab, dataInstitute]);
 
@@ -284,13 +291,23 @@ const Institute = () => {
                     )}
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Institute" className={activeTab === 0 ? "": "text-color"}/>
-                    <Tab label="Pending Institute" className={activeTab === 1 ? "": "text-color"}/>
+                    <Tab
+                      label="Total Institute"
+                      className={activeTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="Pending Institute"
+                      className={activeTab === 1 ? '' : 'text-color'}
+                    />
                   </Tabs>
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
                       // data={ dataInstitute }
+                      state={{
+                        columnVisibility,
+                      }}
+                      onColumnVisibilityChange={setColumnVisibility}
                       data={
                         filteredData?.form_data?.is_search
                           ? filteredInstitutes
