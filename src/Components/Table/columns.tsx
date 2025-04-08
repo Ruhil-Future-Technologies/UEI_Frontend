@@ -1119,7 +1119,9 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
                 theme: 'colored',
               });
 
-              window.location.reload();
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
             }
           })
           .catch((e) => {
@@ -2396,14 +2398,14 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     size: 150,
     enableResizing: false,
   },
-       {
-      id:"null",
-      header: "",
-      accessorKey: "",
-      size: 20,
-      enableResizing:false,
-      enableColumnActions:false,
-    },
+  {
+    id: 'null',
+    header: '',
+    accessorKey: '',
+    size: 20,
+    enableResizing: false,
+    enableColumnActions: false,
+  },
 ];
 
 export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
