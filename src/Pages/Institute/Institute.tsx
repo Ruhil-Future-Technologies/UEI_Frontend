@@ -86,6 +86,7 @@ const Institute = () => {
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
   const [open, setOpen] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   // Calculate and update column widths based on content length
   useEffect(() => {
@@ -155,38 +156,56 @@ const Institute = () => {
     setActiveTab(newValue);
   };
 
-  const handleEnityChange=(_event: React.SyntheticEvent, newValue: number)=>{
-    setActiveSubTab(newValue)
-  }
+  const handleEnityChange = (
+    _event: React.SyntheticEvent,
+    newValue: number,
+  ) => {
+    setActiveSubTab(newValue);
+  };
 
   useEffect(() => {
     if (activeTab === 0) {
-     
-     const approvedInstitutes=dataInstitute.filter((insitute) => insitute.is_approve === true);
-    
+      const approvedInstitutes = dataInstitute.filter(
+        (insitute) => insitute.is_approve === true,
+      );
+      setColumnVisibility({
+        is_active: true,
+      });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
-          approvedInstitutes.filter((insitute) => insitute.entity_type=== 'school'),
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
         );
       } else {
         setFilteredInstitutes(
-          approvedInstitutes.filter((insitute) => insitute.entity_type=== 'college'),
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
         );
       }
     } else {
- 
-      const approvedInstitutes= dataInstitute.filter((insitute) => !insitute.is_approve);
+      const approvedInstitutes = dataInstitute.filter(
+        (insitute) => !insitute.is_approve,
+      );
+      setColumnVisibility({
+        is_active: false,
+      });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
-          approvedInstitutes.filter((insitute) => insitute.entity_type=== 'school'),
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
         );
       } else {
         setFilteredInstitutes(
-          approvedInstitutes.filter((insitute) => insitute.entity_type=== 'college'),
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
         );
       }
     }
-  }, [activeTab,activeSubTab,dataInstitute]);
+  }, [activeTab, activeSubTab, dataInstitute]);
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteInstituteURL}/${id}`)
@@ -306,17 +325,34 @@ const Institute = () => {
                     )}
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Institute" className={activeTab === 0 ? "": "text-color"}/>
-                    <Tab label="Pending Institute" className={activeTab === 1 ? "": "text-color"}/>
+                    <Tab
+                      label="Total Institute"
+                      className={activeTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="Pending Institute"
+                      className={activeTab === 1 ? '' : 'text-color'}
+                    />
                   </Tabs>
                   <Tabs value={activeSubTab} onChange={handleEnityChange}>
-                    <Tab label="School" className={activeSubTab===0?"":"text-color"}/>
-                    <Tab label="College" className={activeSubTab===1?"":"text-color"}/>
+                    <Tab
+                      label="School"
+                      className={activeSubTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="College"
+                      className={activeSubTab === 1 ? '' : 'text-color'}
+                    />
                   </Tabs>
+
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
                       // data={ dataInstitute }
+                      state={{
+                        columnVisibility,
+                      }}
+                      onColumnVisibilityChange={setColumnVisibility}
                       data={
                         filteredData?.form_data?.is_search
                           ? filteredInstitutes
@@ -426,7 +462,7 @@ const Institute = () => {
                                   }}
                                   onClick={() => {
                                     handleRejectInstitute(
-                                      row?.row?.original?.id,
+                                      row?.row?.original?.user_uuid,
                                     );
                                   }}
                                 >
