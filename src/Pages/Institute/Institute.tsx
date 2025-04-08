@@ -168,7 +168,9 @@ const Institute = () => {
       const approvedInstitutes = dataInstitute.filter(
         (insitute) => insitute.is_approve === true,
       );
-
+      setColumnVisibility({
+        is_active: true,
+      });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
           approvedInstitutes.filter(
@@ -186,6 +188,9 @@ const Institute = () => {
       const approvedInstitutes = dataInstitute.filter(
         (insitute) => !insitute.is_approve,
       );
+      setColumnVisibility({
+        is_active: false,
+      });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
           approvedInstitutes.filter(
@@ -339,16 +344,7 @@ const Institute = () => {
                       className={activeSubTab === 1 ? '' : 'text-color'}
                     />
                   </Tabs>
-                  <Tabs value={activeSubTab} onChange={handleEnityChange}>
-                    <Tab
-                      label="School"
-                      className={activeSubTab === 0 ? '' : 'text-color'}
-                    />
-                    <Tab
-                      label="College"
-                      className={activeSubTab === 1 ? '' : 'text-color'}
-                    />
-                  </Tabs>
+
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
