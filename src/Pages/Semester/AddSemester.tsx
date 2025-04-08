@@ -30,6 +30,7 @@ const AddSemester = () => {
   const { namecolor }: any = context;
   const SemesterAddURL = QUERY_KEYS_SEMESTER.SEMESTER_ADD;
   const SemestereditURL = QUERY_KEYS_SEMESTER.SEMESTER_GET;
+  const SemesterList = QUERY_KEYS_SEMESTER.GET_SEMESTER;
   const semesterUpdateURL = QUERY_KEYS_SEMESTER.SEMESTER_UPDATE;
   const InstituteListURL = QUERY_KEYS.GET_INSTITUTES;
   const CourseListURL = QUERY_KEYS_COURSE.GET_COURSE;
@@ -45,6 +46,7 @@ const AddSemester = () => {
   const [semester, setSemester] = useState<any>(initialState);
   const [instituteList, setinstituteList] = useState<any[]>([]);
   const [courseList, setCourseList] = useState<any[]>([]);
+  const [allsemesterData, setAllSemesterData] = useState<any>([]);
 
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
@@ -82,6 +84,19 @@ const AddSemester = () => {
           theme: 'colored',
         });
       });
+    getData(`${SemesterList}`)
+      .then((data: { data: any }) => {
+        setAllSemesterData(data?.data?.semesters_data);
+      })
+      .catch((e) => {
+        if (e?.response?.code === 401) {
+          navigator('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
     if (id) {
       getData(`${SemestereditURL}${id ? `/${id}` : ''}`)
         .then((data: any) => {
@@ -105,6 +120,24 @@ const AddSemester = () => {
       institute_id: semesterData.institute,
       semester_number: Number(semesterData?.semester_name),
     } as any;
+
+    const alreadyExits = allsemesterData.find((sem: any) => {
+      if (
+        sem.institute_id === semPayload.institute_id &&
+        sem.course_id === semPayload.course_id &&
+        sem.semester_number === semPayload.semester_number
+      ) {
+        return true;
+      }
+    });
+
+    if (alreadyExits) {
+      toast.error('Semester already exits', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+      return;
+    }
     if (id) {
       Object.keys(semPayload).forEach((key) => {
         formData.append(key, semPayload[key]);

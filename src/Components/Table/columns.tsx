@@ -470,177 +470,24 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
   { accessorKey: 'phone', header: 'Phone', size: 200, minSize: 200 },
   { accessorKey: 'email', header: 'Email', size: 200 },
   {
-    accessorKey: 'institute_id',
+    accessorKey: 'institute_name',
     header: 'Institute Name',
     size: 200,
-    Cell: ({ cell }: any) => {
-      const { getData } = useApi();
-      const [institute_name, setInstituteName] = useState<string>('-');
-      const institute_id = cell.getValue();
-
-      useEffect(() => {
-        getData('/institute/list')
-          .then((response: any) => {
-            if (response.status) {
-              const matchingEntity = response.data.find(
-                (institute: any) => institute.id === institute_id,
-              );
-
-              if (matchingEntity) {
-                setInstituteName(matchingEntity.institute_name);
-              }
-            }
-          })
-          .catch((error) => {
-            toast.error(error?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-            });
-          });
-      }, [institute_id]);
-
-      return <span>{institute_name}</span>;
-    },
   },
   {
-    accessorKey: 'university_id',
+    accessorKey: 'university_name',
     header: 'University Name',
     size: 200,
-    Cell: ({ row }: any) => {
-      const { getData } = useApi();
-      const [university_name, setUniversityName] = useState('');
-      const institute_id = row.original.institute_id;
-
-      useEffect(() => {
-        if (institute_id) {
-          getData('/institute/list')
-            .then((response: any) => {
-              if (response.status) {
-                const matchingEntity = response.data.find(
-                  (institute: any) => institute.id === institute_id,
-                );
-                if (matchingEntity) {
-                  setUniversityName(matchingEntity.university_name);
-                }
-              }
-            })
-            .catch((error) => {
-              toast.error(error?.message, {
-                hideProgressBar: true,
-                theme: 'colored',
-              });
-            });
-        }
-      }, [institute_id]);
-
-      return <span>{university_name}</span>;
-    },
   },
   {
-    accessorKey: 'class_id',
+    accessorKey: 'class_name',
     header: 'Class',
     size: 150,
-    Cell: ({ row }: any) => {
-      const { getData } = useApi();
-      const [className, setClassName] = useState<string>('-');
-      const [, setClassList] = useState([]);
-      const entity_id = row.original.entity_id;
-      const class_id = row.original.class_stream_subjects;
-
-      useEffect(() => {
-        if (entity_id) {
-          getData(`${QUERY_KEYS_CLASS.GET_CLASS}`)
-            .then((data) => {
-              setClassList(data?.data?.classes_data);
-              return getData('/entity/list');
-            })
-            .then((entityResponse: any) => {
-              if (entityResponse.status) {
-                const entity = entityResponse?.data?.entityes_data.find(
-                  (e: any) => e.id === Number(entity_id),
-                );
-
-                if (entity?.entity_type === 'school' && class_id) {
-                  const class_id_arr = Object.keys(class_id);
-
-                  setClassList((prevClasses) => {
-                    const class_name_arr = prevClasses.filter((cls: any) => {
-                      const id = cls.id.toString();
-
-                      return class_id_arr.includes(id);
-                    });
-
-                    setClassName(
-                      class_name_arr.map((c: any) => c.class_name).join(', '),
-                    );
-
-                    return prevClasses;
-                  });
-                }
-              }
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error);
-            });
-        }
-      }, [entity_id]);
-
-      return <span>{className}</span>;
-    },
   },
   {
-    accessorKey: 'course_id',
+    accessorKey: 'course_name',
     header: 'Course',
     size: 150,
-    Cell: ({ row }: any) => {
-      const { getData } = useApi();
-      const [courseName, setCourseName] = useState<string>('-');
-      const [, setCourseList] = useState([]);
-      const course_id = row?.original?.course_semester_subjects;
-      const entity_id = row.original.entity_id;
-
-      useEffect(() => {
-        if (entity_id) {
-          getData(`${QUERY_KEYS_COURSE.GET_COURSE}`)
-            .then((data) => {
-              setCourseList(data?.data?.course_data);
-              return getData('/entity/list');
-            })
-            .then((entityResponse: any) => {
-              if (entityResponse.status) {
-                const entity = entityResponse?.data?.entityes_data.find(
-                  (e: any) => e.id === Number(entity_id),
-                );
-
-                if (entity?.entity_type === 'college' && course_id) {
-                  const course_id_arr = Object.keys(course_id);
-
-                  setCourseList((prevCourses) => {
-                    const course_name_arr = prevCourses.filter(
-                      (course: any) => {
-                        const id = course.id.toString();
-
-                        return course_id_arr.includes(id);
-                      },
-                    );
-
-                    setCourseName(
-                      course_name_arr.map((c: any) => c.course_name).join(', '),
-                    );
-
-                    return prevCourses;
-                  });
-                }
-              }
-            })
-            .catch((error) => {
-              console.error('Error fetching data:', error);
-            });
-        }
-      }, [entity_id]);
-
-      return <span>{courseName}</span>;
-    },
   },
   {
     accessorKey: 'is_active',
@@ -652,6 +499,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
       const value = cell?.getValue();
       const [showValue, setShowValue] = useState(value);
       const [show, setShow] = useState(value ? true : false);
+      console.log('is_active called');
 
       const active = (id: string, valueSet: any) => {
         putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
@@ -765,16 +613,16 @@ export const Entity_COLUMNS: MRT_ColumnDef<IEntity>[] = [
 
 export const Class_COLUMNS: MRT_ColumnDef<IClass>[] = [
   // const columns: any[] = [
-    {
-      accessorKey: 'class_name',
-      header: 'Class Name',
-      size: 150,
-      Cell: ({ cell }: { cell: any }) => {
-        const value = cell?.getValue(); // e.g., "class_01"
-        const formatted = value?.replace('class_', 'Class ');
-        return <span>{formatted}</span>;
-      },
+  {
+    accessorKey: 'class_name',
+    header: 'Class Name',
+    size: 150,
+    Cell: ({ cell }: { cell: any }) => {
+      const value = cell?.getValue(); // e.g., "class_01"
+      const formatted = value?.replace('class_', 'Class ');
+      return <span>{formatted}</span>;
     },
+  },
   {
     accessorKey: 'created_by',
     header: 'Created By',
@@ -1266,8 +1114,14 @@ export const STUDENT_COLUMNS: MRT_ColumnDef<any>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
-              toast.success(data?.message);
-              window.location.reload();
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
             }
           })
           .catch((e) => {
@@ -2490,6 +2344,7 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
       return <span>{formatted}</span>;
     },
   },
+
   {
     accessorKey: 'upload_date_time',
     header: 'Uploaded At',
@@ -2543,14 +2398,14 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     size: 150,
     enableResizing: false,
   },
-       {
-      id:"null",
-      header: "",
-      accessorKey: "",
-      size: 20,
-      enableResizing:false,
-      enableColumnActions:false,
-    },
+  {
+    id: 'null',
+    header: '',
+    accessorKey: '',
+    size: 20,
+    enableResizing: false,
+    enableColumnActions: false,
+  },
 ];
 
 export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [

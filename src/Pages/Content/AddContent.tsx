@@ -793,6 +793,7 @@ const AddContent = () => {
         hideProgressBar: true,
         theme: 'colored',
       });
+      setLoading(false);
       return;
     }
     if (contentData?.url) {
@@ -1916,7 +1917,10 @@ const AddContent = () => {
                                               },
                                             }}
                                           >
-                                            {cls.class_name.replace('class_', 'Class ')}
+                                            {cls.class_name.replace(
+                                              'class_',
+                                              'Class ',
+                                            )}
                                           </MenuItem>
                                         ))}
                                       </Select>
