@@ -417,7 +417,7 @@ const Institute = () => {
                                   }}
                                   onClick={() => {
                                     handleRejectInstitute(
-                                      row?.row?.original?.id,
+                                      row?.row?.original?.user_uuid,
                                     );
                                   }}
                                 >
