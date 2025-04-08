@@ -341,7 +341,7 @@ img {
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
   .swiper-button-prev,
   .swiper-button-next {
     opacity: 1 !important;
@@ -2201,7 +2201,7 @@ body .desk-card {
 
       .chat-result {
         height: 100%;
-        max-height: calc(100vh - 240px);
+        max-height: calc(100vh - 220px);
         margin-bottom: 5px;
         position: relative;
 
@@ -2209,7 +2209,7 @@ body .desk-card {
         overflow: auto;
 
         @media (max-width: 724px) {
-          max-height: calc(100vh - 210px);
+          max-height: calc(100vh - 220px);
         }
         .welcome-box {
           margin: 0;
@@ -2357,7 +2357,7 @@ body .desk-card {
 
     .chat-input {
       border-radius: 100px;
-
+      margin-top: auto;
       position: relative;
 
       input {
