@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   TextField,
   Button,
@@ -84,6 +84,9 @@ export interface Assignment {
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
+  const location = useLocation();
+  const { type } = location.state || {};
+  console.log({ assignmentType: type });
 
   const { id } = useParams();
 
@@ -96,7 +99,9 @@ export const CreateAssignments = () => {
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const teacher_id = localStorage.getItem('teacher_id');
   const teacherId = localStorage.getItem('user_uuid');
-  const [assignmentType, setAssignmentType] = useState('written');
+  const [assignmentType, setAssignmentType] = useState(
+    type !== 'quiz' ? 'written' : 'quiz',
+  );
   const [files, setFiles] = useState<File[]>([]);
   const nevegate = useNavigate();
   const quillRef = useRef<ReactQuill | null>(null);
@@ -138,6 +143,8 @@ export const CreateAssignments = () => {
   const [level_error, setLevel_error] = useState(false);
   const [questions_error, setQuestions_error] = useState(false);
   const [topic_error, setTopic_error] = useState(false);
+  const [quiz_timer, setQuizTimer] = useState('');
+  const [quiz_timer_error, setQuizTimer_error] = useState(false);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -196,17 +203,31 @@ export const CreateAssignments = () => {
   const [quizData, setQuizData] = useState<any>({});
   const [level, setLevel] = useState('');
   const [questions, setQuestions] = useState<any>([
-    { one: 0, two: 0, three: 0, four: 0, five: 0 },
+    { one: '', two: '', three: '', four: '', five: '' },
   ]);
   const [topic, setTopic] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuizGenerated, setIsQuizGenerated] = useState(false);
+  const [quizPayload, setQuizPayload] = useState<any>({});
+  const [totalQuestions, setTotalQuestion] = useState<any>('');
 
-  const totalQuestions = questions.reduce(
-    (acc: any, curr: any) =>
-      acc + curr.one + curr.two + curr.three + curr.four + curr.five,
-    0,
-  );
+  const getTotal = (questions: Record<string, any>[]) => {
+    const total = questions.reduce((acc, obj) => {
+      for (const value of Object.values(obj)) {
+        const num = Number(value);
+        if (!isNaN(num)) acc += num;
+      }
+      return acc;
+    }, 0);
+
+    setTotalQuestion(total);
+  };
+
+  console.log({ questions });
+
+  useEffect(() => {
+    getTotal(questions);
+  }, [questions]);
 
   useEffect(() => {
     getSemester();
@@ -718,9 +739,10 @@ export const CreateAssignments = () => {
     //const students = selectedStudents.map((student) => String(student.id))
     // const students = selectedStudents.map((student) => student.id);
     const students = [
-      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
-      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
-      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+      '592c4e18-65fe-4bbe-8236-2ffeaa2ef73a',
+      'af149e45-790a-4962-8489-5a3061b8fa05',
+      '24e589dd-8b90-4e51-bf75-0ff90ea544dc',
+      '65f58d54-20f8-4368-ad39-b4d44658ce3c',
     ];
 
     formData.append('assign_to_students', JSON.stringify(students));
@@ -950,6 +972,15 @@ export const CreateAssignments = () => {
     } else {
       setErrorSelectStudent(false);
     }
+
+    if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
+      setQuizTimer_error(true);
+
+      valid1 = true;
+    } else {
+      setQuizTimer_error(false);
+    }
+
     let valid = true;
 
     if (selectedEntity.toLowerCase() === 'school') {
@@ -1135,16 +1166,9 @@ export const CreateAssignments = () => {
     };
     setQuizData(response.data);
     setIsModalOpen(true);
-    setIsQuizGenerated(true);
   };
 
-  const handleSaveQuiz = (updatedQuizData: any) => {
-    console.log({ assignmentData });
-
-    console.log('Updated quiz data:', updatedQuizData);
-
-    const payload: any = { ...updatedQuizData };
-
+  const handleSubmitQuiz = () => {
     let valid1 = false;
     if (assignmentData)
       if (assignmentData.instructions == '') {
@@ -1185,6 +1209,14 @@ export const CreateAssignments = () => {
       valid1 = true;
     } else {
       setDueTime_error(false);
+    }
+
+    if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
+      setQuizTimer_error(true);
+
+      valid1 = true;
+    } else {
+      setQuizTimer_error(false);
     }
 
     if (error != null) {
@@ -1237,11 +1269,23 @@ export const CreateAssignments = () => {
 
     if (!valid) return;
 
-    // const students = selectedStudents.map((student) => student.id);
+    console.log({ quizPayload });
+    console.log('Now make post req to Save Quiz Data');
+
+    // make post call here to save quiz data and assignment detail
+  };
+
+  const handleSaveQuiz = (updatedQuizData: any) => {
+    console.log({ assignmentData });
+
+    console.log('Updated quiz data:', updatedQuizData);
+
+    const payload: any = { ...updatedQuizData }; // const students = selectedStudents.map((student) => student.id);
     const students = [
-      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
-      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
-      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+      '592c4e18-65fe-4bbe-8236-2ffeaa2ef73a',
+      'af149e45-790a-4962-8489-5a3061b8fa05',
+      '24e589dd-8b90-4e51-bf75-0ff90ea544dc',
+      '65f58d54-20f8-4368-ad39-b4d44658ce3c',
     ];
     payload.allow_multiple_attempt = String(allowMultipleAttempt);
     payload.allow_late_submission = String(allowLateSubmission);
@@ -1250,6 +1294,8 @@ export const CreateAssignments = () => {
     payload.students = students;
     payload.add_to_report = String(addToStudentRepost);
     payload.notify = String(sendNotification);
+    payload.save_draft = String(saveAsDraft);
+    payload.timer = String(quiz_timer);
 
     if (selectedEntity.toLowerCase() === 'school') {
       const class_stream_subjects = boxesForSchool.reduce(
@@ -1304,9 +1350,9 @@ export const CreateAssignments = () => {
       payload.course_semester_subjects = course_semester_subjects;
     }
 
-    console.log({ payload });
-
-    // make post call here to save quiz data and assignment detail
+    setQuizPayload(payload);
+    setIsQuizGenerated(true);
+    return;
   };
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
@@ -1488,17 +1534,21 @@ export const CreateAssignments = () => {
     }
   };
   const handleSaveAsDraft = () => {
+    console.log('save draft called');
+    setQuizPayload((prevState: any) => ({
+      ...prevState,
+      ['save_draft']: true,
+    }));
     setSaveAsDraft((prev) => !prev);
     setAssignmentData((prev) => ({
       ...prev,
       ['save_draft']: true,
     }));
+
     if (assignmentType !== 'quiz') {
       submitAssignment();
     } else {
-      console.log({ quizData });
-
-      handleSaveQuiz(quizData);
+      handleSubmitQuiz();
     }
   };
   const mergeDateAndTime = () => {
@@ -1563,19 +1613,25 @@ export const CreateAssignments = () => {
             onChange={(_, newValue) => setAssignmentType(newValue)}
             className="assignbtngrp"
           >
-            <ToggleButton value="written">
-              <AssignmentIcon /> Written
-            </ToggleButton>
-            <ToggleButton value="quiz">
-              <QuizIcon /> Quiz
-            </ToggleButton>
-            <ToggleButton value="project">
-              <AccountTreeIcon /> Project
-            </ToggleButton>
-            <ToggleButton value="presentation">
-              <PresentToAllIcon />
-              Presentation
-            </ToggleButton>
+            {type !== 'quiz' && (
+              <>
+                <ToggleButton value="written">
+                  <AssignmentIcon /> Written
+                </ToggleButton>
+                <ToggleButton value="project">
+                  <AccountTreeIcon /> Project
+                </ToggleButton>
+                <ToggleButton value="presentation">
+                  <PresentToAllIcon />
+                  Presentation
+                </ToggleButton>
+              </>
+            )}
+            {type == 'quiz' && (
+              <ToggleButton value="quiz">
+                <QuizIcon /> Quiz
+              </ToggleButton>
+            )}
           </ToggleButtonGroup>
         </div>
 
@@ -1588,9 +1644,9 @@ export const CreateAssignments = () => {
                     <div className="col-12">
                       <Typography variant="h6" className="mb-4 fw-bold">
                         Create{' '}
-                        {assignmentType !== 'Quiz' ? 'Assignment' : 'Quiz'}
+                        {assignmentType !== 'quiz' ? 'Assignment' : 'Quiz'}
                       </Typography>
-                      {assignmentType !== 'Quiz' && (
+                      {assignmentType !== 'quiz' && (
                         <TextField
                           fullWidth
                           label="Assignment Title"
@@ -1703,15 +1759,15 @@ export const CreateAssignments = () => {
                               Level
                             </InputLabel>
 
-                              <Select
-                                label="Level"
-                                labelId="level-select-label"
-                                id="level-select"
-                                value={level}
-                                disabled={isQuizGenerated}
-                                onChange={(e) => setLevel(e.target.value)}
-                              >
-                                <MenuItem value="easy">Easy</MenuItem>
+                            <Select
+                              label="Level"
+                              labelId="level-select-label"
+                              id="level-select"
+                              value={level}
+                              disabled={isQuizGenerated}
+                              onChange={(e) => setLevel(e.target.value)}
+                            >
+                              <MenuItem value="easy">Easy</MenuItem>
 
                               <MenuItem value="medium">Medium</MenuItem>
 
@@ -1735,6 +1791,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="One Mark"
                             type="number"
+                            disabled={isQuizGenerated}
                             value={questions[0].one}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1754,6 +1811,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Two Marks"
                             type="number"
+                            disabled={isQuizGenerated}
                             value={questions[0].two}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1773,6 +1831,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Three Marks"
                             type="number"
+                            disabled={isQuizGenerated}
                             value={questions[0].three}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1792,6 +1851,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Four Marks"
                             type="number"
+                            disabled={isQuizGenerated}
                             value={questions[0].four}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1811,6 +1871,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Five Marks"
                             type="number"
+                            disabled={isQuizGenerated}
                             value={questions[0].five}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1850,6 +1911,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Topic"
                             type="text"
+                            disabled={isQuizGenerated}
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
                             fullWidth
@@ -1870,6 +1932,7 @@ export const CreateAssignments = () => {
                       </label>
                       <ReactQuill
                         id="text"
+                        readOnly={isQuizGenerated}
                         placeholder="instuctions"
                         ref={quillRef}
                         value={assignmentData.instructions}
@@ -2340,6 +2403,27 @@ export const CreateAssignments = () => {
                               </p>
                             )}
                           </div>
+                          {type === 'quiz' && (
+                            <div className="col-lg-4">
+                              <TextField
+                                type="number"
+                                label="Quiz Duration (minutes)"
+                                value={quiz_timer}
+                                inputProps={{ min: 0 }}
+                                onChange={(e) => setQuizTimer(e.target.value)}
+                                fullWidth
+                                margin="normal"
+                              />
+                              {quiz_timer_error && (
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  Please enter quiz timer.
+                                </p>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </LocalizationProvider>
                     </div>
@@ -2430,7 +2514,7 @@ export const CreateAssignments = () => {
                             onClick={
                               assignmentType !== 'quiz'
                                 ? submitAssignment
-                                : () => handleSaveQuiz(quizData)
+                                : handleSubmitQuiz
                             }
                           >
                             Publish
