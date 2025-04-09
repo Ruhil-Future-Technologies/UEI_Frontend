@@ -192,15 +192,7 @@
   .top-header {
     .navbar {
       left: 0 !important;
-      .dropdown {
-        position: static;
-        .dropdown-menu {
-          width: 100%;
-          &::after {
-            display: none;
-          }
-        }
-      }
+      
       .mega-menu-widgets {
         padding: 1rem;
         position: relative;
@@ -213,6 +205,7 @@
 
   .main-wrapper {
     margin-left: 0 !important;
+    
   }
 
   /*page footer*/
@@ -220,10 +213,11 @@
   .page-footer {
     left: 0px !important;
     text-align: center;
-    padding: 0.5rem;
-    height: auto !important;
+    padding: 1rem 0.5rem!important;
+    height: 70px !important;
     bottom: 0 !important;
     font-size: 11px;
+    background-color: transparent!important;
     a {
       font-size: 11px;
     }

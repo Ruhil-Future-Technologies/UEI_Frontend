@@ -1791,13 +1791,13 @@ form select.error:focus {
   @media (min-width: 1024px) {
     display: grid;
     height: 100vh;
+    grid-template-columns: 300px 1fr;
     .access1-card {
       margin-top: 4rem;
     }
   }
 
-  grid-template-columns: 400px 1fr;
-  height: 100vh;
+  
 
   .MuiStepper-vertical {
     height: max-content;
@@ -1858,14 +1858,13 @@ form select.error:focus {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   
   .login-footer {
     padding: 0.8rem;
     flex-wrap: wrap;
     display: flex;
     justify-content: space-between;
-
+ margin-top: auto;
     a,
     p {
       font-size: 0.8rem;
@@ -1946,55 +1945,3 @@ font-size: 14px;
   }
 }
 
-.carddlex{
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  span{
-    background-color: $primary;
-    border-radius: 8px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    svg{
-      width: 32px;
-      height: 32px;
-      path{
-        fill: white;
-      }
-    }
-  }
-  h6{font-weight: bold; margin-bottom: 0.1rem;}
-  p{
-    margin-bottom: 0;
-    color: #4B5563;
-  }
-
- 
-}
-.totallist{
-  display: flex;
-  align-items: center;
-  gap:0.4rem;
-  margin-top: 2rem;
-  h6{
-    color: #6B7280;
-    font-weight: 400;
-    margin-bottom: 0;
-  }
-  span{
-   
-    display: block;
-
-    svg{
-      path{fill: #6B7280;}
-    }
-
-  }
-  p{
-    margin-bottom: 0;
-    color: #1A1A1A;
-  }
-}
