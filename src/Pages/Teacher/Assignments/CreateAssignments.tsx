@@ -208,14 +208,19 @@ export const CreateAssignments = () => {
   );
 
   useEffect(() => {
-    getSemester();
-    getCourses();
-    getStudentsForTeacher();
-    getTeacherProfileInfo();
+    const fetchData= async()=>{
+     await getStudentsForTeacher();
+     await  getSemester();
+     await getCourses();
+     await getTeacherProfileInfo();
+    }
+    fetchData();
     //getListOfStudnetsForAssignment();
   }, []);
-
-  const getAssignmentInfo = () => {
+  // useEffect(() => {
+  
+  // }, [id]);
+  const getAssignmentInfo = (students:StudentRep0oDTO[]) => {
     if (id) {
       try {
         getData(`/assignment/get/${id}`)
@@ -236,6 +241,11 @@ export const CreateAssignments = () => {
               setDueDate(dayjs(extractedDate));
               setDueTime(dayjs(response?.data?.due_date_time));
               setAvailableFrom(dayjs(response?.data?.available_from));
+              const selectedStudents = students?.filter((student) =>
+                response?.data?.assign_to_students?.includes(student.id)
+              ) || [];
+              console.log(selectedStudents);
+              setSelectedStudents(selectedStudents)
             }
             if (response.data.class_stream_subjects == null) {
               const allSubject: SubjectRep0oDTO[] =
@@ -252,7 +262,7 @@ export const CreateAssignments = () => {
                   semester_number: semester_number,
                   subjects:
                     response.data.course_semester_subjects[CourseKey][
-                      semester_number
+                    semester_number
                     ],
                   filteredSemesters: allsemesters.filter(
                     (item) => item.course_id == CourseKey,
@@ -285,10 +295,10 @@ export const CreateAssignments = () => {
                       stream == 'general'
                         ? allSubject.filter((item) => item.class_id == classKey)
                         : allSubject.filter(
-                            (item) =>
-                              item.class_id == classKey &&
-                              item.stream == stream,
-                          ),
+                          (item) =>
+                            item.class_id == classKey &&
+                            item.stream == stream,
+                        ),
                   }),
                 ),
               );
@@ -312,9 +322,7 @@ export const CreateAssignments = () => {
       }
     }
   };
-  useEffect(() => {
-    getAssignmentInfo();
-  }, [id]);
+ 
   const getSubjects = async (type: string): Promise<any> => {
     try {
       const url = type === 'college' ? getSubjectCollege : getsubjectSchool;
@@ -527,6 +535,7 @@ export const CreateAssignments = () => {
       setSelectedStudents([]);
       setSelectAll(false);
     }
+    setErrorSelectStudent(false);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -585,6 +594,7 @@ export const CreateAssignments = () => {
         .then((response) => {
           if (response.status) {
             setListOfStudent(response.data);
+            getAssignmentInfo(response.data);
           }
         })
         .catch((error) => {
@@ -702,7 +712,7 @@ export const CreateAssignments = () => {
     if (!valid) return;
     const formData = new FormData();
     formData.append('title', assignmentData.title);
-    formData.append('type', assignmentData.type);
+    formData.append('type', assignmentType);
     formData.append('contact_email', assignmentData.contact_email);
     formData.append('allow_late_submission', String(allowLateSubmission));
     formData.append('due_date_time', String(mergeDateAndTime()));
@@ -713,12 +723,12 @@ export const CreateAssignments = () => {
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
-    // const students = selectedStudents.map((student) => student.id);
-    const students = [
-      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
-      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
-      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
-    ];
+    const students = selectedStudents.map((student) => student.id);
+    // const students = [
+    //   'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
+    //   '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
+    //   'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+    // ];
 
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
@@ -1268,7 +1278,7 @@ export const CreateAssignments = () => {
           const filteredSubjects = totleSubject.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
-                value.toString().toLowerCase() &&
+              value.toString().toLowerCase() &&
               item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
@@ -1313,6 +1323,14 @@ export const CreateAssignments = () => {
     return mergedDateTime;
   };
 
+  const checkStudent=(newValue:any)=>{
+    if(newValue.length==0){
+      setErrorSelectStudent(true)
+    }else{
+      setErrorSelectStudent(false);
+    }  
+
+  }
   useEffect(() => {
     if (availableFrom == null && availableFrom_error) {
       setAvailableFrom_error(true);
@@ -1482,7 +1500,7 @@ export const CreateAssignments = () => {
                                 <div className="pinwi-20">
                                   <AttachFileIcon />
                                 </div>
-                                <ListItemText primary={file.name} />
+                                <ListItemText primary={file.name as any || file as any} />
                               </ListItem>
                             ))}
                           </List>
@@ -1724,13 +1742,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.course_id_error === true && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please enter a valid Course.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please enter a valid Course.</small>
+                                  </p>
+                                )}
                             </div>
 
                             {/* Semester Selection */}
@@ -1770,13 +1788,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.semester_number_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Semester.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Semester.</small>
+                                  </p>
+                                )}
                             </div>
 
                             {/* Subjects Selection */}
@@ -1816,15 +1834,15 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
                             </div>
                           </div>
                         ))}
@@ -1860,13 +1878,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.class_id_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Class.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Class.</small>
+                                  </p>
+                                )}
                             </div>
                             {box.is_Stream && (
                               <div className="col-md-4 col-12 mb-3">
@@ -1924,13 +1942,13 @@ export const CreateAssignments = () => {
                                 </FormControl>
                                 {errorForClass_stream_subject[index]
                                   ?.stream_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Stream.</small>
-                                  </p>
-                                )}
+                                    <p
+                                      className="error-text"
+                                      style={{ color: 'red' }}
+                                    >
+                                      <small>Please select a Stream.</small>
+                                    </p>
+                                  )}
                               </div>
                             )}
                             <div className={box.selected_class_name}>
@@ -1969,15 +1987,15 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
                             </div>
                           </div>
                         ))}
@@ -2001,6 +2019,7 @@ export const CreateAssignments = () => {
                           value={selectedStudents}
                           onChange={(_, newValue) => {
                             setSelectedStudents(newValue);
+                            checkStudent(newValue);
                             setSelectAll(
                               newValue.length === listOfStudent?.length,
                             );
@@ -2081,7 +2100,7 @@ export const CreateAssignments = () => {
                                 className="error-text"
                                 style={{ color: 'red' }}
                               >
-                                <small>Please select a available date.</small>
+                                <small>Please select today or a future date.</small>
                               </p>
                             )}
                           </div>
@@ -2193,9 +2212,9 @@ export const CreateAssignments = () => {
                     </div>
                     <div className="col-lg-12">
                       {assignmentType == 'written' ||
-                      assignmentType == 'project' ||
-                      assignmentType == 'presentation' ||
-                      (assignmentType == 'quiz' && isModalOpen) ? (
+                        assignmentType == 'project' ||
+                        assignmentType == 'presentation' ||
+                        (assignmentType == 'quiz' && isModalOpen) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
                           <Button
                             variant="contained"
