@@ -1288,99 +1288,155 @@ const StudentDashboardCharts = () => {
 
   return (
     <>
-      <div className="">
-        <div className="controls">
-          <div className="control-group">
-            <label>Month:</label>
-            <select
-              value={activeMonth}
-              onChange={(e) => setActiveMonth(e.target.value)}
-            >
-              {getMonths().map((month: any) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="tabs-container">
-            <div className="tabs">
-              <button
-                className={`tab ${activeTab === 'daily' ? 'active' : ''}`}
-                onClick={() => setActiveTab('daily')}
-              >
-                Daily
-              </button>
-              <button
-                className={`tab ${activeTab === 'weekly' ? 'active' : ''}`}
-                onClick={() => setActiveTab('weekly')}
-              >
-                Weekly
-              </button>
-              <button
-                className={`tab ${activeTab === 'monthly' ? 'active' : ''}`}
-                onClick={() => setActiveTab('monthly')}
-              >
-                Monthly
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className="col-l2">
+        <div className="row mb-5 mb-lg-0">
+          <div className="col-12">
+            <div className="d-flex gap-3 align-items-end mb-3 flex-wrap">
+              <div className="mw-180px">
+                <label className="col-form-label">Month:</label>
+                <select
+                  className="form-select mw-180px"
+                  value={activeMonth}
+                  onChange={(e) => setActiveMonth(e.target.value)}
+                >
+                  {getMonths().map((month: any) => (
+                    <option key={month} value={month}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="tabs-container">
+                <div
+                  className="btn-group mw-180px"
+                  role="group"
+                  aria-label="Tab selection"
+                >
+                  <input
+                    type="radio"
+                    className="btn-check"
+                    name="tabOptions"
+                    id="tabDaily"
+                    autoComplete="off"
+                    checked={activeTab === 'daily'}
+                    onChange={() => setActiveTab('daily')}
+                  />
+                  <label className="btn btn-outline-primary" htmlFor="tabDaily">
+                    Daily
+                  </label>
 
-      <div
-        className={
-          activeTab !== 'daily'
-            ? 'col-xl-6 col-lg-6 mb-4'
-            : 'col-xl-12 col-lg-12'
-        }
-      >
-        <div className="card shadow h-100">
-          <div className="card-body">
-            <ReactApexChart
-              options={learningTimeData.options}
-              series={learningTimeData.series}
-              type="line"
-              height={400}
-            />
-          </div>
-        </div>
-      </div>
-      {activeTab !== 'daily' && (
-        <div className="col-xl-6 col-lg-6 mb-4">
-          <div className="card shadow h-100">
-            <div className="card-body">
-              <ReactApexChart
-                options={studyStreaksData.options}
-                series={studyStreaksData.series}
-                type="line"
-                height={400}
-              />
+                  <input
+                    type="radio"
+                    className="btn-check"
+                    name="tabOptions"
+                    id="tabWeekly"
+                    autoComplete="off"
+                    checked={activeTab === 'weekly'}
+                    onChange={() => setActiveTab('weekly')}
+                  />
+                  <label
+                    className="btn btn-outline-primary"
+                    htmlFor="tabWeekly"
+                  >
+                    Weekly
+                  </label>
+
+                  <input
+                    type="radio"
+                    className="btn-check"
+                    name="tabOptions"
+                    id="tabMonthly"
+                    autoComplete="off"
+                    checked={activeTab === 'monthly'}
+                    onChange={() => setActiveTab('monthly')}
+                  />
+                  <label
+                    className="btn btn-outline-primary"
+                    htmlFor="tabMonthly"
+                  >
+                    Monthly
+                  </label>
+                </div>
+
+                {/* <div className="tabs">
+                  <button
+                    className={`tab ${activeTab === 'daily' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('daily')}
+                  >
+                    Daily
+                  </button>
+                  <button
+                    className={`tab ${activeTab === 'weekly' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('weekly')}
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    className={`tab ${activeTab === 'monthly' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('monthly')}
+                  >
+                    Monthly
+                  </button>
+                </div> */}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      <div className="col-xl-6 col-lg-6 mb-4">
-        <div className="card shadow h-100">
-          <div className="card-body">
-            <ReactApexChart
-              options={academicPerformanceData.options}
-              series={academicPerformanceData.series}
-              type="bar"
-              height={350}
-            />
+
+          <div
+            className={
+              activeTab !== 'daily'
+                ? 'col-xl-6 col-lg-6 mb-4'
+                : 'col-xl-12 col-lg-12'
+            }
+          >
+            <div className="card shadow h-100">
+              <div className="card-body">
+                <ReactApexChart
+                  options={learningTimeData.options}
+                  series={learningTimeData.series}
+                  type="line"
+                  height={400}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="col-xl-6 col-lg-6 mb-4">
-        <div className="card shadow h-100">
-          <div className="card-body">
-            <ReactApexChart
-              options={completionRateData.options}
-              series={completionRateData.series}
-              type="bar"
-              height={350}
-            />
+          {activeTab !== 'daily' && (
+            <div className="col-xl-6 col-lg-6 mb-4">
+              <div className="card shadow h-100">
+                <div className="card-body">
+                  <ReactApexChart
+                    options={studyStreaksData.options}
+                    series={studyStreaksData.series}
+                    type="line"
+                    height={400}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="col-xl-6 col-lg-6 mb-4">
+            <div className="card shadow h-100">
+              <div className="card-body">
+                <ReactApexChart
+                  options={academicPerformanceData.options}
+                  series={academicPerformanceData.series}
+                  type="bar"
+                  height={350}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-xl-6 col-lg-6 mb-4">
+            <div className="card shadow h-100">
+              <div className="card-body">
+                <ReactApexChart
+                  options={completionRateData.options}
+                  series={completionRateData.series}
+                  type="bar"
+                  height={350}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

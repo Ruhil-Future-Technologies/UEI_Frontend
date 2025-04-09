@@ -60,6 +60,7 @@ import NameContext from '../../Context/NameContext';
 import dayjs, { Dayjs } from 'dayjs';
 import { Autocomplete, Chip } from '@mui/material';
 import ReactQuill from 'react-quill';
+import QuizModal from './QuizModal';
 
 export interface Assignment {
   id?: string;
@@ -67,6 +68,7 @@ export interface Assignment {
   type: string;
   contact_email: string;
   allow_late_submission: boolean;
+  allow_multiple_attempt?: boolean;
   due_date_time: string; // Consider using Date if working with Date objects
   available_from: string; // Consider using Date if working with Date objects
   assign_to_students: string[]; // Converted from string representation to an actual array
@@ -100,6 +102,7 @@ export const CreateAssignments = () => {
   const quillRef = useRef<ReactQuill | null>(null);
   const [availableFrom, setAvailableFrom] = useState<Dayjs | null>(null);
   const [allowLateSubmission, setAllowLateSubmission] = useState(false);
+  const [allowMultipleAttempt, setAllowMultipleAttempt] = useState(false);
   const [addToStudentRepost, setAddToStudentRepost] = useState(true);
   const [sendNotification, setSendNotification] = useState(true);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
@@ -131,7 +134,10 @@ export const CreateAssignments = () => {
   const [due_date_error, setDue_date_error] = useState(false);
   const [dueTime_error, setDueTime_error] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [errorselectStudent,setErrorSelectStudent]=useState(false);
+  const [errorselectStudent, setErrorSelectStudent] = useState(false);
+  const [level_error, setLevel_error] = useState(false);
+  const [questions_error, setQuestions_error] = useState(false);
+  const [topic_error, setTopic_error] = useState(false);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -172,9 +178,10 @@ export const CreateAssignments = () => {
 
   const [assignmentData, setAssignmentData] = useState<Assignment>({
     title: '',
-    type: 'written',
+    type: '',
     contact_email: localStorage.getItem('email') || '',
     allow_late_submission: false,
+    allow_multiple_attempt: false,
     due_date_time: '', // Or new Date().toISOString() if using Date type
     available_from: '', // Or new Date().toISOString() if using Date type
     assign_to_students: [],
@@ -185,6 +192,21 @@ export const CreateAssignments = () => {
     notify: false,
     files: [], // File should be null initially
   });
+
+  const [quizData, setQuizData] = useState<any>({});
+  const [level, setLevel] = useState('');
+  const [questions, setQuestions] = useState<any>([
+    { one: null, two: null, three: null, four: null, five: null },
+  ]);
+  const [topic, setTopic] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const totalQuestions = questions.reduce(
+    (acc: any, curr: any) =>
+      acc + curr.one + curr.two + curr.three + curr.four + curr.five,
+    0,
+  );
+
   useEffect(() => {
     getSemester();
     getCourses();
@@ -230,7 +252,7 @@ export const CreateAssignments = () => {
                   semester_number: semester_number,
                   subjects:
                     response.data.course_semester_subjects[CourseKey][
-                    semester_number
+                      semester_number
                     ],
                   filteredSemesters: allsemesters.filter(
                     (item) => item.course_id == CourseKey,
@@ -261,14 +283,12 @@ export const CreateAssignments = () => {
                       stream === 'general' ? 'col-6' : 'col-4',
                     filteredSubjects:
                       stream == 'general'
-                        ? allSubject.filter(
-                          (item) => item.class_id == classKey,
-                        )
+                        ? allSubject.filter((item) => item.class_id == classKey)
                         : allSubject.filter(
-                          (item) =>
-                            item.class_id == classKey &&
-                            item.stream == stream,
-                        ),
+                            (item) =>
+                              item.class_id == classKey &&
+                              item.stream == stream,
+                          ),
                   }),
                 ),
               );
@@ -294,7 +314,6 @@ export const CreateAssignments = () => {
   };
   useEffect(() => {
     getAssignmentInfo();
-
   }, [id]);
   const getSubjects = async (type: string): Promise<any> => {
     try {
@@ -390,11 +409,20 @@ export const CreateAssignments = () => {
             getClasslist(classIds);
 
             const Subjects = Object.entries(
-              data.data.class_stream_subjects as Record<string, Record<string, string[]>>
-            ).flatMap(([, subjects]) =>  // Ignore the first key (e.g., "8")
-              Object.entries(subjects).flatMap(([streamName, subjectArray]) =>
-                subjectArray.map((subject) => ({ stream: streamName, subject }))
-              )
+              data.data.class_stream_subjects as Record<
+                string,
+                Record<string, string[]>
+              >,
+            ).flatMap(
+              (
+                [, subjects], // Ignore the first key (e.g., "8")
+              ) =>
+                Object.entries(subjects).flatMap(([streamName, subjectArray]) =>
+                  subjectArray.map((subject) => ({
+                    stream: streamName,
+                    subject,
+                  })),
+                ),
             );
 
             setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject));
@@ -479,7 +507,6 @@ export const CreateAssignments = () => {
       });
   };
 
-
   // const getListOfStudnetsForAssignment = () => {
 
   //   getData(`/assignment_submission/get/students/${teacher_id}`).then((response) => {
@@ -523,7 +550,7 @@ export const CreateAssignments = () => {
       ...prev,
       instructions: value, // Update the 'instructions' field in state
     }));
-    validation("instructions", value);
+    validation('instructions', value);
   };
 
   const validation = (name: string, value: string) => {
@@ -612,7 +639,7 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    if (availableFrom == null || availableFrom.isBefore(dayjs(), "day")) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
     } else {
@@ -633,8 +660,8 @@ export const CreateAssignments = () => {
     if (error != null) {
       valid1 = true;
     }
-    if(selectedStudents.length<1){
-      setErrorSelectStudent(true)
+    if (selectedStudents.length < 1) {
+      setErrorSelectStudent(true);
       valid1 = true;
     }
     let valid = true;
@@ -677,10 +704,7 @@ export const CreateAssignments = () => {
     formData.append('title', assignmentData.title);
     formData.append('type', assignmentData.type);
     formData.append('contact_email', assignmentData.contact_email);
-    formData.append(
-      'allow_late_submission',
-      String(allowLateSubmission),
-    );
+    formData.append('allow_late_submission', String(allowLateSubmission));
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
@@ -689,7 +713,13 @@ export const CreateAssignments = () => {
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
-    const students  = selectedStudents.map(student => student.id);
+    // const students = selectedStudents.map((student) => student.id);
+    const students = [
+      'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
+      '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
+      'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+    ];
+
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
       formData.append('files', file);
@@ -759,6 +789,8 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
+        formData.forEach((k, v) => console.log({ k, v }));
+
         postData('assignment/add', formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -793,37 +825,39 @@ export const CreateAssignments = () => {
       }
     } else {
       try {
-        putData(`/assignment/edit/${id}`, formData).then((response) => {
-          if (response.status) {
-            toast.success(response.message, {
+        putData(`/assignment/edit/${id}`, formData)
+          .then((response) => {
+            if (response.status) {
+              toast.success(response.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+                position: 'top-center',
+              });
+              nevegate('/teacher-dashboard/assignments');
+              setAssignmentData({
+                title: '',
+                type: 'written',
+                contact_email: '',
+                allow_late_submission: false,
+                due_date_time: '',
+                available_from: '',
+                assign_to_students: [],
+                instructions: '',
+                points: '',
+                save_draft: false,
+                add_to_report: false,
+                notify: false,
+                files: [],
+              });
+            }
+          })
+          .catch((response) => {
+            toast.error(response.message, {
               hideProgressBar: true,
               theme: 'colored',
               position: 'top-center',
             });
-            nevegate('/teacher-dashboard/assignments');
-            setAssignmentData({
-              title: '',
-              type: 'written',
-              contact_email: '',
-              allow_late_submission: false,
-              due_date_time: '',
-              available_from: '',
-              assign_to_students: [],
-              instructions: '',
-              points: '',
-              save_draft: false,
-              add_to_report: false,
-              notify: false,
-              files: [],
-            });
-          }
-        }).catch((response) => {
-          toast.error(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
           });
-        });
       } catch (error: any) {
         toast.error(error.message, {
           hideProgressBar: true,
@@ -832,6 +866,252 @@ export const CreateAssignments = () => {
         });
       }
     }
+  };
+
+  const generateQuiz = async () => {
+    console.log({ topic, level, questions });
+    console.log({ assignmentData });
+
+    let valid1 = false;
+    if (assignmentData)
+      if (assignmentData.instructions == '') {
+        setInstructoins_error(true);
+
+        valid1 = true;
+      } else {
+        setInstructoins_error(false);
+      }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)) {
+      setContact_email_error(true);
+
+      valid1 = true;
+    } else {
+      setContact_email_error(false);
+    }
+
+    if (availableFrom == null) {
+      setAvailableFrom_error(true);
+
+      valid1 = true;
+    } else {
+      setAvailableFrom_error(false);
+    }
+
+    if (dueDate == null) {
+      setDue_date_error(true);
+
+      valid1 = true;
+    } else {
+      setDue_date_error(false);
+    }
+
+    if (dueTime == null) {
+      setDueTime_error(true);
+
+      valid1 = true;
+    } else {
+      setDueTime_error(false);
+    }
+
+    if (error != null) {
+      valid1 = true;
+    }
+
+    let valid = true;
+
+    if (selectedEntity.toLowerCase() === 'school') {
+      boxesForSchool.forEach((box, index) => {
+        if (
+          !box.class_id ||
+          (box.stream === '' ? false : !box.stream) ||
+          !box.subjects?.length
+        ) {
+          valid = false;
+
+          setErrorForClass_stream_subject((prevError) => ({
+            ...prevError,
+            [index]: {
+              class_id_error: !box.class_id,
+              stream_error: !box.stream,
+              subjects_error: !box.subjects?.length,
+            },
+          }));
+        }
+      });
+    } else {
+      boxes.forEach((box, index) => {
+        if (!box.course_id || !box.semester_number || !box.subjects?.length) {
+          valid = false;
+          setErrorForCourse_semester_subject((prevError) => ({
+            ...prevError,
+            [index]: {
+              course_id_error: !box.course_id,
+              semester_number_error: !box.semester_number,
+              subjects_error: !box.subjects?.length, // Ensures subjects is not empty
+            },
+          }));
+        }
+      });
+    }
+
+    if (valid1) return;
+
+    if (!valid) return;
+    console.log({ setLevel_error, setTopic_error, setQuestions_error });
+
+    // const response = await axios.post('/api/quiz/getData', {
+    //   // Your request params here
+    // });
+    const response = {
+      data: {
+        title: 'Web Development Quiz for B.C.A',
+        questions: [
+          {
+            question: "What is the purpose of the 'viewport' meta tag in HTML?",
+            options: [
+              'To set the page background color',
+              "To control the page's dimensions and scaling on different devices",
+              'To define the character encoding for the HTML document',
+              'To specify the document type',
+            ],
+            answer:
+              "To control the page's dimensions and scaling on different devices",
+            reason:
+              "The viewport meta tag helps ensure proper rendering on mobile devices by controlling the page's width and zoom level.",
+            marks: 1,
+          },
+          {
+            question:
+              'Which of the following is NOT a valid way to declare a variable in JavaScript?',
+            options: [
+              'let x = 5;',
+              'const y = 10;',
+              'var z = 15;',
+              'int w = 20;',
+            ],
+            answer: 'int w = 20;',
+            reason:
+              "JavaScript doesn't use 'int' for variable declaration. It uses 'let', 'const', or 'var'.",
+            marks: 1,
+          },
+          {
+            question: 'What does AJAX stand for in web development?',
+            options: [
+              'Asynchronous JavaScript and XML',
+              'Advanced JavaScript and XHTML',
+              'Automated JSON and XML',
+              'Active Java and XSLT',
+            ],
+            answer: 'Asynchronous JavaScript and XML',
+            reason:
+              'AJAX allows web pages to be updated asynchronously by exchanging data with a web server behind the scenes.',
+            marks: 1,
+          },
+          {
+            question:
+              'Which CSS property is used to create a flexible container?',
+            options: [
+              'flex-box',
+              'display: flex',
+              'flexible-container',
+              'flex-wrap',
+            ],
+            answer: 'display: flex',
+            reason:
+              "The 'display: flex' property establishes a flex container, enabling flexible box layout for its children.",
+            marks: 1,
+          },
+          {
+            question:
+              "What is the purpose of the 'use strict' directive in JavaScript?",
+            options: [
+              'To enable new ECMAScript features',
+              'To enforce stricter parsing and error handling',
+              'To improve performance',
+              'To enable browser compatibility mode',
+            ],
+            answer: 'To enforce stricter parsing and error handling',
+            reason:
+              "'use strict' enables strict mode, which catches common coding bloopers and prevents unsafe actions.",
+            marks: 1,
+          },
+          {
+            question: 'Which HTTP method is idempotent?',
+            options: ['POST', 'GET', 'PATCH', 'DELETE'],
+            answer: 'GET',
+            reason:
+              'GET requests are idempotent, meaning multiple identical requests should have the same effect as a single request.',
+            marks: 2,
+          },
+          {
+            question:
+              "What is the purpose of the 'localStorage' object in web browsers?",
+            options: [
+              'To store session data',
+              'To cache external resources',
+              'To store data with no expiration date',
+              'To manage browser cookies',
+            ],
+            answer: 'To store data with no expiration date',
+            reason:
+              'localStorage allows web applications to store key-value pairs in a web browser with no expiration date.',
+            marks: 2,
+          },
+          {
+            question:
+              'Which of the following is a valid way to include an external JavaScript file?',
+            options: [
+              "<script href='script.js'>",
+              "<script src='script.js'>",
+              "<javascript src='script.js'>",
+              "<link rel='script' href='script.js'>",
+            ],
+            answer: "<script src='script.js'>",
+            reason:
+              "The correct way to include an external JavaScript file is using the 'src' attribute in a <script> tag.",
+            marks: 3,
+          },
+          {
+            question: "What does the 'async' attribute do in a script tag?",
+            options: [
+              'Executes the script immediately',
+              'Loads the script asynchronously and executes it immediately',
+              'Loads the script asynchronously and executes it when loaded',
+              'Prevents the script from loading',
+            ],
+            answer:
+              'Loads the script asynchronously and executes it when loaded',
+            reason:
+              "The 'async' attribute allows the script to be downloaded asynchronously without blocking page rendering, and executes as soon as it's available.",
+            marks: 3,
+          },
+          {
+            question: 'Which of the following is NOT a valid HTTP status code?',
+            options: [
+              '200 OK',
+              '404 Not Found',
+              '500 Internal Server Error',
+              '600 Server Timeout',
+            ],
+            answer: '600 Server Timeout',
+            reason:
+              '600 is not a standard HTTP status code. Valid status codes range from 100 to 599.',
+            marks: 3,
+          },
+        ],
+      },
+    };
+    setQuizData(response.data);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveQuiz = (updatedQuizData: any) => {
+    // Do something with the updated quiz data
+    console.log('Updated quiz data:', updatedQuizData);
+
+    // You can make another API call here to save the changes
+    // axios.post('/api/quiz/save', updatedQuizData);
   };
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
@@ -987,7 +1267,9 @@ export const CreateAssignments = () => {
         if (name === 'stream') {
           const filteredSubjects = totleSubject.filter(
             (item) =>
-              String(item.stream).toLowerCase() == value.toString().toLowerCase() && item.class_id === boxesForSchool[index].class_id,
+              String(item.stream).toLowerCase() ==
+                value.toString().toLowerCase() &&
+              item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
             ...updatedBox,
@@ -1049,7 +1331,6 @@ export const CreateAssignments = () => {
     }
   }, [dueDate, availableFrom, dueTime]);
 
-    
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1064,132 +1345,67 @@ export const CreateAssignments = () => {
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item active" aria-current="page">
-                  Assignments
+                  Create Assignments
                 </li>
               </ol>
             </nav>
           </div>
         </div>
 
-        <div className="card p-lg-4 bg-m-transparent">
-          <div className="cardbody p-0 p-lg-2">
-            <div className="container">
+        <Typography variant="subtitle1" className="my-2">
+          Assignment Type
+        </Typography>
+        <div className="overflow-auto">
+          <ToggleButtonGroup
+            value={assignmentType}
+            exclusive
+            onChange={(_, newValue) => setAssignmentType(newValue)}
+            className="assignbtngrp"
+          >
+            <ToggleButton value="written">
+              <AssignmentIcon /> Written
+            </ToggleButton>
+            <ToggleButton value="quiz">
+              <QuizIcon /> Quiz
+            </ToggleButton>
+            <ToggleButton value="project">
+              <AccountTreeIcon /> Project
+            </ToggleButton>
+            <ToggleButton value="presentation">
+              <PresentToAllIcon />
+              Presentation
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+
+        <div className="card p-lg-3  mt-4 mt-lg-0">
+          <div className="cardbody p-2">
+            <div className="container-fluid">
               <div className="row justify-content-center">
-                <div className="col-lg-9">
+                <div className="col-lg-12">
                   <div className="row g-4">
                     <div className="col-12">
-                      <Typography variant="h5" className="mb-4 fw-bold">
-                        Create Assignment
+                      <Typography variant="h6" className="mb-4 fw-bold">
+                        Create{' '}
+                        {assignmentType !== 'Quiz' ? 'Assignment' : 'Quiz'}
                       </Typography>
-                      <TextField
-                        fullWidth
-                        label="Assignment Title"
-                        variant="outlined"
-                        name="title"
-                        value={assignmentData.title}
-                        onChange={handleChanges}
-                      />
+                      {assignmentType !== 'Quiz' && (
+                        <TextField
+                          fullWidth
+                          label="Assignment Title"
+                          variant="outlined"
+                          name="title"
+                          value={assignmentData.title}
+                          onChange={handleChanges}
+                        />
+                      )}
                       {title_error && (
                         <p className="error-text " style={{ color: 'red' }}>
                           <small> Please enter a valid Title.</small>
                         </p>
                       )}
                     </div>
-                    <div className="col-12">
-                      <Typography variant="subtitle1" className="mb-2">
-                        Assignment Type
-                      </Typography>
-                      <div className="overflow-auto">
-                        <ToggleButtonGroup
-                          value={assignmentType}
-                          exclusive
-                          onChange={(_, newValue) => setAssignmentType(newValue)}
-                          fullWidth
-                          className="assignbtngrp"
-                        >
-                          <ToggleButton value="written">
-                            {' '}
-                            <AssignmentIcon /> Written
-                          </ToggleButton>
-                          <ToggleButton value="quiz">
-                            <QuizIcon /> Quiz
-                          </ToggleButton>
-                          <ToggleButton value="project">
-                            <AccountTreeIcon /> Project
-                          </ToggleButton>
-                          <ToggleButton value="presentation">
-                            {' '}
-                            <PresentToAllIcon />
-                            Presentation
-                          </ToggleButton>
-                        </ToggleButtonGroup>
-                      </div>
 
-                    </div>
-                    <div className="col-12">
-                      <Typography variant="subtitle1">Attachments</Typography>
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange}
-                        multiple
-                        name="file"
-                        style={{ display: 'none' }}
-                        id="file-upload"
-                      />
-                      <label htmlFor="file-upload" className="uploadfile">
-                        <Button
-                          variant="contained"
-                          component="span"
-                          startIcon={<CloudUploadIcon />}
-                        >
-                          Browse Files
-                        </Button>
-                      </label>
-                      <List>
-                        {files.map((file, index) => (
-                          <ListItem
-                            className="fileslistitem"
-                            key={index}
-                            secondaryAction={
-                              <IconButton
-                                edge="end"
-                                onClick={() => handleFileRemove(index)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            }
-                          >
-                            <div className="pinwi-20">
-                              <AttachFileIcon />
-                            </div>
-                            <ListItemText primary={file.name} />
-                          </ListItem>
-                        ))}
-                      </List>
-                      {file_error && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small> Please add at least one file.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-lg-6">
-                      <TextField
-                        fullWidth
-                        label="Points"
-                        variant="outlined"
-                        name="points"
-                        onChange={handleChanges}
-                        type="number"
-                        inputProps={{ min: '0' }}
-                        value={assignmentData.points}
-                      />
-                      {point_error && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please enter a valid points.</small>
-                        </p>
-                      )}
-                    </div>
                     <div className="col-6">
                       <TextField
                         fullWidth
@@ -1208,18 +1424,256 @@ export const CreateAssignments = () => {
                         </p>
                       )}
                     </div>
+
+                    {assignmentType !== 'quiz' && (
+                      <>
+                        {' '}
+                        <div className="col-lg-6">
+                          <TextField
+                            fullWidth
+                            label="Points"
+                            variant="outlined"
+                            name="points"
+                            onChange={handleChanges}
+                            type="number"
+                            inputProps={{ min: '0' }}
+                            value={assignmentData.points}
+                          />
+                          {point_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please enter a valid points.</small>
+                            </p>
+                          )}
+                        </div>
+                        <div className="col-12">
+                          <label className="col-form-label">Attachments</label>
+                          <input
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            onChange={handleFileChange}
+                            multiple
+                            name="file"
+                            style={{ display: 'none' }}
+                            id="file-upload"
+                          />
+                          <label htmlFor="file-upload" className="uploadfile">
+                            <Button
+                              variant="contained"
+                              component="span"
+                              startIcon={<CloudUploadIcon />}
+                            >
+                              Browse Files
+                            </Button>
+                          </label>
+                          <List>
+                            {files.map((file, index) => (
+                              <ListItem
+                                className="fileslistitem"
+                                key={index}
+                                secondaryAction={
+                                  <IconButton
+                                    edge="end"
+                                    onClick={() => handleFileRemove(index)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                }
+                              >
+                                <div className="pinwi-20">
+                                  <AttachFileIcon />
+                                </div>
+                                <ListItemText primary={file.name} />
+                              </ListItem>
+                            ))}
+                          </List>
+                          {file_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please add at least one file.</small>
+                            </p>
+                          )}
+                        </div>
+                      </>
+                    )}
+                    {assignmentType === 'quiz' && (
+                      <>
+                        <div className="col-md-6 col-12">
+                          <FormControl fullWidth className="">
+                            <InputLabel id="level-select-label">
+                              Level
+                            </InputLabel>
+
+                            <Select
+                              label="Level"
+                              labelId="level-select-label"
+                              id="level-select"
+                              value={level}
+                              onChange={(e) => setLevel(e.target.value)}
+                            >
+                              <MenuItem value="easy">Easy</MenuItem>
+
+                              <MenuItem value="medium">Medium</MenuItem>
+
+                              <MenuItem value="hard">Hard</MenuItem>
+                            </Select>
+                          </FormControl>
+
+                          {level_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please Select a level</small>
+                            </p>
+                          )}
+                        </div>
+                        <div className="col-12">
+                          <label className="col-form-label pb-0">
+                            Number of Questions for Each Mark
+                          </label>
+                        </div>
+
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="One Mark"
+                            type="number"
+                            value={questions[0].one}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  one: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Two Marks"
+                            type="number"
+                            value={questions[0].two}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  two: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Three Marks"
+                            type="number"
+                            value={questions[0].three}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  three: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Four Marks"
+                            type="number"
+                            value={questions[0].four}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  four: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Five Marks"
+                            type="number"
+                            value={questions[0].five}
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              setQuestions((prevState: any) => {
+                                const updatedQuestions = [...prevState];
+                                updatedQuestions[0] = {
+                                  ...updatedQuestions[0],
+                                  five: value,
+                                };
+                                return updatedQuestions;
+                              });
+                            }}
+                            fullWidth
+                          />
+                        </div>
+
+                        <div className="col-md-2 col-12">
+                          <TextField
+                            label="Total Questions"
+                            type="number"
+                            disabled
+                            value={totalQuestions}
+                            // onChange={(e) => setQuestions(e.target.value)}
+                            fullWidth
+                          />
+                        </div>
+                        {questions_error && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small>
+                              {' '}
+                              Please enter a valid Number of Questions
+                            </small>
+                          </p>
+                        )}
+
+                        <div className="col-lg-12">
+                          <TextField
+                            label="Topic"
+                            type="text"
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            fullWidth
+                          />
+
+                          {topic_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please enter a valid Topic</small>
+                            </p>
+                          )}
+                        </div>
+                      </>
+                    )}
+
                     <div className="col-12 mt-3 mb-5">
                       <label className="col-form-label">
                         Instructions<span>*</span>
                       </label>
                       <ReactQuill
                         id="text"
-                        placeholder='instuctions'
+                        placeholder="instuctions"
                         ref={quillRef}
                         value={assignmentData.instructions}
-                        onChange={handleQuillChange}  // Use the new handler
+                        onChange={handleQuillChange} // Use the new handler
                         theme="snow"
-                        style={{ height: "120px", borderRadius: "8px" }}
+                        style={{ height: '120px', borderRadius: '8px' }}
                       />
                       {instructions_error && (
                         <p className="error-text" style={{ color: 'red' }}>
@@ -1232,10 +1686,7 @@ export const CreateAssignments = () => {
                       {selectedEntity.toLowerCase() === 'college' &&
                         boxes.length > 0 &&
                         boxes.map((box, index) => (
-                          <div
-                            key={index}
-                            className="row g-4"
-                          >
+                          <div key={index} className="row g-4">
                             {/* Course Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
@@ -1257,10 +1708,15 @@ export const CreateAssignments = () => {
                                 >
                                   {filteredcoursesData
                                     .filter((course) =>
-                                      teacherCourse?.includes(String(course.id)),
+                                      teacherCourse?.includes(
+                                        String(course.id),
+                                      ),
                                     )
                                     .map((course) => (
-                                      <MenuItem key={course.id} value={course.id}>
+                                      <MenuItem
+                                        key={course.id}
+                                        value={course.id}
+                                      >
                                         {course.course_name}
                                       </MenuItem>
                                     ))}
@@ -1268,13 +1724,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.course_id_error === true && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please enter a valid Course.</small>
-                                  </p>
-                                )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please enter a valid Course.</small>
+                                </p>
+                              )}
                             </div>
 
                             {/* Semester Selection */}
@@ -1314,13 +1770,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.semester_number_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Semester.</small>
-                                  </p>
-                                )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Semester.</small>
+                                </p>
+                              )}
                             </div>
 
                             {/* Subjects Selection */}
@@ -1360,25 +1816,22 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.subjects_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select at least one subject.
-                                    </small>
-                                  </p>
-                                )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please select at least one subject.
+                                  </small>
+                                </p>
+                              )}
                             </div>
                           </div>
                         ))}
                       {selectedEntity.toLowerCase() === 'school' &&
                         boxesForSchool.length > 0 &&
                         boxesForSchool.map((box, index) => (
-                          <div
-                            key={index}
-                            className="row"
-                          >
+                          <div key={index} className="row">
                             {/* Class Selection */}
                             <div className={box.selected_class_name}>
                               {/* <label className="col-form-label">
@@ -1407,13 +1860,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.class_id_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Class.</small>
-                                  </p>
-                                )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Class.</small>
+                                </p>
+                              )}
                             </div>
                             {box.is_Stream && (
                               <div className="col-md-4 col-12 mb-3">
@@ -1443,7 +1896,8 @@ export const CreateAssignments = () => {
                                     MenuProps={{
                                       PaperProps: {
                                         style: {
-                                          backgroundColor: inputfield(namecolor),
+                                          backgroundColor:
+                                            inputfield(namecolor),
                                           color: inputfieldtext(namecolor),
                                         },
                                       },
@@ -1454,7 +1908,8 @@ export const CreateAssignments = () => {
                                         key={item}
                                         value={item}
                                         sx={{
-                                          backgroundColor: inputfield(namecolor),
+                                          backgroundColor:
+                                            inputfield(namecolor),
                                           color: inputfieldtext(namecolor),
                                           '&:hover': {
                                             backgroundColor:
@@ -1469,13 +1924,13 @@ export const CreateAssignments = () => {
                                 </FormControl>
                                 {errorForClass_stream_subject[index]
                                   ?.stream_error && (
-                                    <p
-                                      className="error-text"
-                                      style={{ color: 'red' }}
-                                    >
-                                      <small>Please select a Stream.</small>
-                                    </p>
-                                  )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Stream.</small>
+                                  </p>
+                                )}
                               </div>
                             )}
                             <div className={box.selected_class_name}>
@@ -1514,15 +1969,15 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.subjects_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select at least one subject.
-                                    </small>
-                                  </p>
-                                )}
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please select at least one subject.
+                                  </small>
+                                </p>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -1530,19 +1985,25 @@ export const CreateAssignments = () => {
                     <div className="col-12">
                       <Box>
                         <FormControlLabel
-                          control={<Checkbox checked={selectAll} onChange={handleChange} />}
+                          control={
+                            <Checkbox
+                              checked={selectAll}
+                              onChange={handleChange}
+                            />
+                          }
                           label="Select All"
-                        />{"("+selectedStudents?.length+")"}
+                        />
+                        {'(' + selectedStudents?.length + ')'}
                         <Autocomplete
                           multiple
                           options={listOfStudent || []}
-                          getOptionLabel={(option) =>
-                            `${option.name}`
-                          }
+                          getOptionLabel={(option) => `${option.name}`}
                           value={selectedStudents}
                           onChange={(_, newValue) => {
                             setSelectedStudents(newValue);
-                            setSelectAll(newValue.length === listOfStudent?.length);
+                            setSelectAll(
+                              newValue.length === listOfStudent?.length,
+                            );
                           }}
                           renderInput={(params) => (
                             <TextField
@@ -1571,7 +2032,9 @@ export const CreateAssignments = () => {
                                 const tagProps = getTagProps({ index });
 
                                 return (
-                                  <React.Fragment key={option.id || `${option.name}-${index}`}>
+                                  <React.Fragment
+                                    key={option.id || `${option.name}-${index}`}
+                                  >
                                     <Chip
                                       {...tagProps} // Spread other props WITHOUT key
                                       label={`${option.name}`}
@@ -1581,9 +2044,6 @@ export const CreateAssignments = () => {
                               })}
                             </Box>
                           )}
-
-
-
                           sx={{
                             '& .MuiAutocomplete-inputRoot': {
                               flexWrap: 'wrap',
@@ -1594,16 +2054,11 @@ export const CreateAssignments = () => {
                             },
                           }}
                         />
-                        {
-                          errorselectStudent &&(
-                            <p
-                            className="error-text"
-                            style={{ color: 'red' }}
-                          >
+                        {errorselectStudent && (
+                          <p className="error-text" style={{ color: 'red' }}>
                             <small>Please select at least one student</small>
                           </p>
-                          )
-                        }
+                        )}
                       </Box>
                     </div>
                     <div className="col-lg-12">
@@ -1613,7 +2068,7 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               label="Available From"
                               value={availableFrom}
-                              minDate={dayjs()} 
+                              minDate={dayjs()}
                               onChange={handleAvailableFromChange}
                               slots={{
                                 textField: (params) => (
@@ -1699,6 +2154,19 @@ export const CreateAssignments = () => {
                           }
                           label="Allow late submissions"
                         />
+                        {assignmentType === 'quiz' && (
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={allowMultipleAttempt}
+                                onChange={(e) =>
+                                  setAllowMultipleAttempt(e.target.checked)
+                                }
+                              />
+                            }
+                            label="Allow multiple attempt"
+                          />
+                        )}
                         <FormControlLabel
                           control={
                             <Checkbox
@@ -1724,34 +2192,53 @@ export const CreateAssignments = () => {
                       </div>
                     </div>
                     <div className="col-lg-12">
-                      <div className="d-flex align-items-center gap-2 justify-content-end">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginTop: 20, marginRight: 10 }}
-                        >
-                          Preview
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
-                          style={{
-                            marginTop: 20,
-                            marginRight: 10,
-                          }}
-                          onClick={handleSaveAsDraft}
-                        >
-                          Save as Draft
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="success"
-                          style={{ marginTop: 20 }}
-                          onClick={submitAssignment}
-                        >
-                          Publish
-                        </Button>
-                      </div>
+                      {assignmentType == 'written' ||
+                      assignmentType == 'project' ||
+                      assignmentType == 'presentation' ||
+                      (assignmentType == 'quiz' && isModalOpen) ? (
+                        <div className="d-flex align-items-center gap-2 justify-content-end">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ marginTop: 20, marginRight: 10 }}
+                          >
+                            Preview
+                          </Button>
+
+                          <Button
+                            variant="outlined"
+                            color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
+                            style={{
+                              marginTop: 20,
+
+                              marginRight: 10,
+                            }}
+                            onClick={handleSaveAsDraft}
+                          >
+                            Save as Draft
+                          </Button>
+
+                          <Button
+                            variant="contained"
+                            color="success"
+                            style={{ marginTop: 20 }}
+                            onClick={submitAssignment}
+                          >
+                            Publish
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="d-flex align-items-center gap-2 justify-content-end">
+                          <Button
+                            variant="contained"
+                            color="success"
+                            style={{ marginTop: 20 }}
+                            onClick={generateQuiz}
+                          >
+                            Generate Quiz
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1759,6 +2246,12 @@ export const CreateAssignments = () => {
             </div>
           </div>
         </div>
+        <QuizModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          quizData={quizData}
+          onSave={handleSaveQuiz}
+        />
       </div>
     </div>
   );

@@ -113,9 +113,15 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' &&
         uName.toLowerCase() === 'assignment-details' &&
         parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
-        (usertype === 'teacher' &&
-          uName.toLowerCase() === 'student-assignment-details' &&
-          parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'student-assignment-details' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'quizzes'
+        : '') ||
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'quiz-details' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
       (usertype === 'teacher' ? mName.toLowerCase() === 'content' : '') ||
       (usertype === 'teacher' ? mName.toLowerCase() === 'add-content' : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'edit-content'

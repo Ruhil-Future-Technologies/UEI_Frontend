@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import {
   CheckCircle,
-  BarChart,
   Event,
   AccessTime,
   ListAlt,
@@ -30,11 +29,11 @@ const StudentQuiz = () => {
       title: 'Completed Quizzes',
       value: 24,
     },
-    {
-      icon: <BarChart color="primary" />,
-      title: 'Average Score',
-      value: '85%',
-    },
+    // {
+    //   icon: <BarChart color="primary" />,
+    //   title: 'Average Score',
+    //   value: '85%',
+    // },
     { icon: <Event color="warning" />, title: 'Upcoming Quizzes', value: 5 },
   ];
 
@@ -115,8 +114,18 @@ const StudentQuiz = () => {
                   <div className="card-body d-flex gap-3">
                     {stat.icon}
                     <Box>
-                      <Typography variant="subtitle2" className='fs-6 fw-semibold text-'>{stat.title}</Typography>
-                      <Typography variant="h6" className='fs-3 fw-bold text-dark lh-1 mt-2 mb-0'>{stat.value}</Typography>
+                      <Typography
+                        variant="subtitle2"
+                        className="fs-6 fw-semibold text-"
+                      >
+                        {stat.title}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        className="fs-3 fw-bold text-dark lh-1 mt-2 mb-0"
+                      >
+                        {stat.value}
+                      </Typography>
                     </Box>
                   </div>
                 </div>
@@ -135,11 +144,11 @@ const StudentQuiz = () => {
                   <div className="card-body">
                     <Box display="flex" alignItems="center" gap={1}>
                       <Avatar>{quiz.icon}</Avatar>
-                      <Typography variant="subtitle1" className='fw-semibold'>
+                      <Typography variant="subtitle1" className="fw-semibold">
                         {quiz.subject}
                       </Typography>
                     </Box>
-                    <h6 className='mt-4 fw-semibold fs-5 text-dark'>
+                    <h6 className="mt-4 fw-semibold fs-5 text-dark">
                       {quiz.title}
                     </h6>
                     <Box
@@ -147,10 +156,10 @@ const StudentQuiz = () => {
                       justifyContent="space-between"
                       sx={{ mt: 1 }}
                     >
-                      <div className='small'>
+                      <div className="small">
                         <AccessTime fontSize="small" /> {quiz.time}
                       </div>
-                      <div className='small'>
+                      <div className="small">
                         <ListAlt fontSize="small" /> {quiz.questions} Questions
                       </div>
                     </Box>
@@ -184,7 +193,7 @@ const StudentQuiz = () => {
                   {
                     accessorKey: 'status',
                     header: 'Status',
-                    Cell: ({ cell }: { cell: { getValue: () => string } }) => (
+                    Cell: ({ cell }: any) => (
                       <Typography
                         color={
                           cell.getValue() === 'Failed' ? 'error' : 'success'

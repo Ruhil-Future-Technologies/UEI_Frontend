@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@fancyapps/ui": "^5.0.36",
     "@fullcalendar/core": "^6.1.10",
     "@fullcalendar/daygrid": "^6.1.10",
     "@fullcalendar/interaction": "^6.1.10",
@@ -37,6 +38,7 @@
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-chartjs-2": "^5.2.0",
+    "react-confetti-explosion": "^2.1.2",
     "react-country-region-selector": "^3.6.1",
     "react-datepicker": "^6.9.0",
     "react-dom": "^18.2.0",
