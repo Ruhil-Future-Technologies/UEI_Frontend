@@ -156,7 +156,7 @@ const Header = () => {
               last_name: basic_info?.last_name,
               gender: basic_info?.gender,
             });
-            if (data?.data?.basic_info?.pic_path !== null) {
+            if (data?.data?.basic_info?.pic_path !== null && data?.status) {
               getData(
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
@@ -184,7 +184,7 @@ const Header = () => {
               last_name: adminInfo?.last_name,
               gender: adminInfo?.gender,
             });
-            if (response?.data?.admin_data?.basic_info?.pic_path !== null) {
+            if (response?.data?.admin_data?.basic_info?.pic_path !== null && response?.status) {
               getData(
                 `${
                   'upload_file/get_image/' +
