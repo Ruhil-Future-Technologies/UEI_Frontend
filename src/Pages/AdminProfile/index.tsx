@@ -102,7 +102,7 @@ export default function AdminProfile() {
           let sectionCount = 0;
 
           if (basic_info && Object.keys(basic_info)?.length > 0) {
-            if (data?.data?.pic_path !== null) {
+            if (data?.data?.pic_path !== null && data?.status) {
               getData(`${'upload_file/get_image/' + data?.data?.admin_data?.pic_path}`)
                 .then((data) => {
                   setProImage(data?.data?.file_url);

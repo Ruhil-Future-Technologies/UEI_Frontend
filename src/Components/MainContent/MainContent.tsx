@@ -67,7 +67,7 @@ import StatCard from './StatCard';
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage, namecolor, setActiveForm }: any = context;
+  const { ProPercentage, setProPercentage, namecolor, setActiveForm, proImage, setProImage }: any = context;
 
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('_id');
@@ -85,7 +85,7 @@ function MainContent() {
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const [profileDatas, setProfileDatas] = useState<any>({});
-  const [profileImage, setprofileImage] = useState<any>();
+  // const [profileImage, setprofileImage] = useState<any>();
   const [dataCompleted, setDataCompleted] = useState(false);
   const [themeMode, setThemeMode] = useState('');
   const [studentClass, setStudentClass] = useState('');
@@ -953,15 +953,15 @@ function MainContent() {
 
             let totalPercentage = 0;
             let sectionCount = 0;
-
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== null) {
+              if (data?.data?.basic_info?.pic_path !== null && data?.status) {
                 getData(
                   `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata?.data?.file_url);
+                    // setprofileImage(imgdata?.data?.file_url);
+                    setProImage(imgdata?.data?.file_url);
                   })
                   .catch(() => {
                     // Handle error
@@ -1225,7 +1225,8 @@ function MainContent() {
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata?.data?.file_url);
+                    // setprofileImage(imgdata?.data?.file_url);
+                    setProImage(imgdata?.data?.file_url);
                   })
                   .catch(() => { });
               }
@@ -2650,9 +2651,8 @@ function MainContent() {
                           <div className="d-flex align-items-center gap-lg-3 gap-2 mobile-profile">
                             <img
                               src={
-                                profileImage
-                                  ? profileImage
-                                  : profileDatas?.basic_info?.gender.toLowerCase() ===
+                                proImage ? 
+                                proImage  : profileDatas?.basic_info?.gender.toLowerCase() ===
                                     'female'
                                     ? femaleImage
                                     : maleImage
