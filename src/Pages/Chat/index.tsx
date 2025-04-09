@@ -39,10 +39,12 @@ import '../../assets/css/main.scss';
 import { useTheme } from '@mui/material/styles';
 import { ImageModal } from '../../Components/ImageModal';
 import { ChatTable } from './Tablechat';
-import { stopSpeech, textToSpeech } from './speech';
+import useTextToSpeech from './speech';
+// import { stopSpeech, textToSpeech } from './speech';
 
 
 const Chat = () => {
+  const { textToSpeech, stopSpeech } = useTextToSpeech();
   const userid = localStorage.getItem('user_uuid') || '';
   const studentid = localStorage.getItem('_id') || '';
   const [loading, setLoading] = useState(false);
