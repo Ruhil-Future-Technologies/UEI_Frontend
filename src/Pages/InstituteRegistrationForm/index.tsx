@@ -52,6 +52,7 @@ import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import BusinessIcon from '@mui/icons-material/Business';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import WestIcon from '@mui/icons-material/West';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -80,7 +81,7 @@ const InstituteRegistrationForm = () => {
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
 
-  const { postRegisterData, getForRegistration, postDataJson } = useApi();
+  const { postRegisterData, getForRegistration, postDataJson ,loading} = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
     institute_name: '',
@@ -758,6 +759,7 @@ const InstituteRegistrationForm = () => {
  // console.log(dataUniversity);
   return (
     <>
+        {loading && <FullScreenLoader />}
       <Box sx={{ width: '100%' }} className="Stepperform">
         <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
           <div className="logoui mb-4">
