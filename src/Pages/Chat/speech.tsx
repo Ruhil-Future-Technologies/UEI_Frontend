@@ -27,32 +27,65 @@ const useTextToSpeech = () => {
             }
         }
     };
-    const textToSpeech = async (texts: string, index: number) => {
-        // Example: Ensure it's a string
-    const text = Array.isArray(texts) ? texts[0] : texts;
 
-        const payload = {
-            text,
-            lang: "en",
-            language_code: "en-IN",
-            voice_name: "en-IN-Wavenet-E"
-        }
-        try {
-            stopSpeech(index); // Stop any previous playback
-            const response = await postDataJson("chat/translation", payload);
-            const audioBlob = base64ToBlob(response?.data?.audio_base64, "audio/mpeg");
-            const audioUrl = URL.createObjectURL(audioBlob);
-            const audioElement = new Audio(audioUrl);
-            audioInstances[index] = audioElement;
-            audioElement.play();
+    const MAX_CHARS = 300; // Adjust based on what your API handles comfortably
+    const splitTextIntoChunks = (text: string, maxLength: number): string[] => {
+        const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+        const chunks: string[] = [];
+        let currentChunk = '';
 
-            audioElement.onended = () => {
-                delete audioInstances[index];
-            };
-        } catch (err) {
-            console.error("Error playing audio:", err);
+        for (const sentence of sentences) {
+            if ((currentChunk + sentence).length <= maxLength) {
+                currentChunk += sentence;
+            } else {
+                if (currentChunk) chunks.push(currentChunk.trim());
+                currentChunk = sentence;
+            }
         }
+        if (currentChunk) chunks.push(currentChunk.trim());
+
+        return chunks;
     };
+    const textToSpeech = async (texts: string, index: number) => {
+        stopSpeech(index); // Stop any previous playback
+        // Example: Ensure it's a string
+        const text = Array.isArray(texts) ? texts[0] : texts;
+        const chunks = splitTextIntoChunks(text, MAX_CHARS);
+        let currentAudioIndex = 0;
+
+        const playChunk = async () => {
+            if (currentAudioIndex >= chunks.length) {
+                delete audioInstances[index];
+                return;
+            }
+
+            const payload = {
+                text: chunks[currentAudioIndex],
+                lang: "en",
+                language_code: "en-IN",
+                voice_name: "en-IN-Wavenet-E"
+            };
+
+            try {
+                const response = await postDataJson("chat/translation", payload);
+                const audioBlob = base64ToBlob(response?.data?.audio_base64, "audio/mpeg");
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audioElement = new Audio(audioUrl);
+
+                audioInstances[index] = audioElement;
+                audioElement.play();
+
+                audioElement.onended = () => {
+                    currentAudioIndex++;
+                    playChunk(); // Play next chunk
+                };
+            } catch (err) {
+                console.error("Error playing chunk:", err);
+            }
+        };
+
+        playChunk();
+    }
 
     return { textToSpeech, stopSpeech };
 };
