@@ -75,6 +75,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.UAT_EC2_FE_SSH_PK }}
           REMOTE_HOST: ${{ secrets.UAT_EC2_FE_DNS }}
           REMOTE_USER: ${{ secrets.UAT_EC2_FE_USERNAME }}
-          TARGET: ${{ secrets.UAT_EC2_FE_TARGET_DIR_NEW }}
+          TARGET: ${{ secrets.UAT_EC2_FE_TARGET_DIR }}
           SOURCE: build/
         continue-on-error: false
