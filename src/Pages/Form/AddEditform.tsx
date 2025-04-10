@@ -76,6 +76,7 @@ const AddEditForm = () => {
     : pathSegments[pathSegments.length - 2].toLowerCase();
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
   const [dataUrl, setDataUrl] = useState(false);
+  const [isChanges,setIsChanges] = useState(true);
 
   useEffect(() => {
     setFilteredData(
@@ -91,6 +92,7 @@ const AddEditForm = () => {
   }
 
   const callAPI = async () => {
+
     getData(`${MenuURL}`)
       .then((data: any) => {
         if (data?.status) {
@@ -145,6 +147,7 @@ const AddEditForm = () => {
   };
 
   const handleChange = async (e: any) => {
+    setIsChanges(false);
     formRef?.current?.setFieldValue(e.target.name, e.target.value);
     const err = await formRef?.current?.validateForm();
     if (err && Object.keys(err).length > 0) {
@@ -167,6 +170,7 @@ const AddEditForm = () => {
   const handleChangemenuVisible = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    setIsChanges(false);
     const { name, value } = e.target;
     const booleanValue = value === 'true';
     formRef?.current?.setFieldValue(e.target.name, e.target.value);
@@ -225,6 +229,7 @@ const AddEditForm = () => {
               theme: 'colored',
             });
             setDataUrl(false);
+            setIsChanges(true);
           } else {
             toast.error(data.message, {
               hideProgressBar: true,
@@ -246,6 +251,7 @@ const AddEditForm = () => {
         postData(`${FormAddURL}`, formdata1)
           .then((data: any) => {
             if (data?.code === 201) {
+              setIsChanges(true);
               // navigator('/main/Form')
               toast.success(data.message, {
                 hideProgressBar: true,
@@ -574,6 +580,7 @@ const AddEditForm = () => {
                       </div>
                       <div className="col-lg-12">
                         <button
+                          disabled={isChanges}
                           data-testid="save_btn"
                           className="btn btn-primary mainbutton"
                           type="submit"
