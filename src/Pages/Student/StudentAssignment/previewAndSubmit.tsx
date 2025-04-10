@@ -41,6 +41,7 @@ const PreviewAndSubmit = () => {
   const [remainingDays, setRemaingDays] = useState(0);
   const [document_error, setDocument_error] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+  const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<string[]>([]); 
   const [value, setValue] = useState("");
   const quillRef = useRef<ReactQuill | null>(null);
   const [isSubmited, setIssubmited] = useState(false);
@@ -87,8 +88,8 @@ const PreviewAndSubmit = () => {
         const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
         console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
-          if (filteredAssignment[0]?.text) setValue(filteredAssignment[0].text);
-          if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
+          if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
+          if (filteredAssignment[0]?.files) setAllSelectedfilesToShow(filteredAssignment[0].files)
           if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
           if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
           setIssubmited(true)
@@ -173,6 +174,13 @@ const PreviewAndSubmit = () => {
 
         })
         navigate('/main/student/assignment')
+      }else{
+        toast.error(response.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center'
+  
+        })
       }
     }).catch((error) => {
       toast.error(error.message, {
@@ -351,7 +359,9 @@ const PreviewAndSubmit = () => {
                   handleFileChange={handleFileChange}
                 />
               </Box>
-              {allselectedfiles.map((file, index) => (
+
+              {statusCheck =='Pending' ?
+              allselectedfiles.map((file, index) => (
                 <ListItem
                   className="fileslistitem"
                   key={index}
@@ -369,7 +379,23 @@ const PreviewAndSubmit = () => {
                   </div>
                   <ListItemText primary={file.name} />
                 </ListItem>
-              ))}
+              )):
+              allselectedfilesToShow.map((file, index) => (
+                <ListItem
+                  className="fileslistitem"
+                  key={index}
+                >
+                  <div className="pinwi-20">
+                    <AttachFileIcon />
+                  </div>
+                  <a href={file}>
+                  <ListItemText primary={file} />
+                  </a>
+                </ListItem>
+              ))
+
+              }
+              
               {document_error &&
                 <p className="error-text " style={{ color: 'red' }}>
                   <small> Please add at least one file.</small>

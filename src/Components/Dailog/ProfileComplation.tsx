@@ -797,7 +797,6 @@ export const ProfileDialog: FunctionComponent<{
     if(student_id){
       getData(`/teacher/teachers_list_for_student/${student_id}`).then((data) => {
         if (data.status) {
-          console.log(data.data);
           const filteredTeacher = data.data?.teachers?.filter((teacher:any) =>
             teacher?.subject_list?.includes(subject)
           );
@@ -1104,7 +1103,7 @@ export const ProfileDialog: FunctionComponent<{
       subject_id: selectSubject,
       preference: answers[length - 3],
       score_in_percentage: answers[length - 2],
-      ...((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school'&&
+      ...(((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school' || selectedInstituteType.toLowerCase()=='school') &&
        { class_id:answeredData?.academic_history?.class_id || answers[11]}
       ),
       
@@ -1113,7 +1112,7 @@ export const ProfileDialog: FunctionComponent<{
           answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-      ...((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school' &&
+      ...(((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school'|| selectedInstituteType.toLowerCase()=='school') &&
         answeredData?.academic_history?.stream && {
         stream: answeredData?.academic_history?.stream || answers[12],
       }),
@@ -3244,6 +3243,7 @@ export const ProfileDialog: FunctionComponent<{
                           }}
                         >
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <div className="w-100">
                             <DatePicker
                               //  open={open}
                               // open={true}
@@ -3254,12 +3254,14 @@ export const ProfileDialog: FunctionComponent<{
                               disableFuture
                               format={'DD/MM/YYYY'}
                               maxDate={maxSelectableDate}
+                              className="w-100"
                               // value={datecheck}
                               slotProps={{
                                 field: {
                                   readOnly: true,
                                 },
                                 textField: {
+                                  
                                   sx: {
                                     '& .MuiInputLabel-root': {
                                       // paddingLeft: '0px',
@@ -3270,7 +3272,7 @@ export const ProfileDialog: FunctionComponent<{
                                       // flexDirection: 'row-reverse',
                                       color: chatdatetext(namecolor), // Change the label text color
                                       backgroundColor: 'transperent',
-                                      paddingLeft: '100px',
+                                      
                                       paddingRight: '50px',
                                     },
                                     '& .MuiOutlinedInput-notchedOutline': {
@@ -3293,13 +3295,13 @@ export const ProfileDialog: FunctionComponent<{
                                   // onClick: handleOpen
                                 },
                               }}
-                            />
+                            /></div>
                             <button
                               className="chat_search_btn"
                               style={{
                                 position: 'absolute',
                                 right: '10px',
-                                top: '50%',
+                                top: '49%',
                                 transform: 'translateY(-50%)',
                                 border: 'none',
                                 background: 'none',
@@ -3397,11 +3399,7 @@ export const ProfileDialog: FunctionComponent<{
                     </>
                   ) : hobbyquestion ? (
                     <div
-                      style={{
-                        position: 'relative',
-                        display: 'inline-block',
-                        width: '100%',
-                      }}
+                      className='d-flex align-items-center gap-2'
                     >
                       <Select
                         className="dropdown-wrapper"
@@ -3414,19 +3412,9 @@ export const ProfileDialog: FunctionComponent<{
                           container: (base) => ({ ...base, width: '90%' }),
                         }}
                       />
-                      <p
-                        style={{
-                          position: 'absolute',
-                          top: '50%',
-                          right: '10px',
-                          transform: 'translateY(-50%)',
-                          cursor: 'pointer',
-                          margin: 0,
-                        }}
-                        onClick={handleSkip}
-                      >
+                      <span onClick={handleSkip} role='button' className='pe-2 py-2'>
                         Skip
-                      </p>
+                      </span>
                     </div>
                   ) : countrylist ? (
                     <Select

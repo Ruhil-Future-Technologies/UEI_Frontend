@@ -6,6 +6,24 @@
   $headerbg: #212529;
   $date_text: #d5d5d5 !important;
   $mui_date_bg: #32363b !important;
+  .quiz-panel{
+    background-color:  var(--bs-body-bg-2) !important;;
+  }
+  .assignbtngrp{
+    button[aria-pressed='false']{
+      background-color: transparent!important;
+    }
+  }
+
+  .text-secondary{
+    color: $headingColor!important;
+  }
+.chart-wrapper {
+  background-color: var(--bs-body-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
   .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card {
     background-color: #212529 !important;
   }
@@ -16,6 +34,11 @@
     padding-top: 0px !important;
     padding-bottom: 0px !important;
   }
+  .MuiMenuItem-root {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: white;
+  }
+  
   .seprator span {
     background-color: $headerbg;
   }
@@ -34,7 +57,7 @@
   }
   .access-card {
     background-color: $headerbg !important;
-
+    background: none!important;
     svg {
       path {
         fill: #939aa0;
@@ -117,7 +140,7 @@
   .wizard-content .progress-bar,
   .chat-top-header-menu a {
     background-color: #32363b !important;
-    border-color: #32363b !important;
+    border-color: #585c61 !important;
   }
   .btn-outline-dark {
     border-color: #32363b;
@@ -154,8 +177,13 @@
       background-color: #939aa0 !important;
     }
   }
+  
   .btn-outline-light {
     background-color: #212529 !important;
+    color: #d5d5d5 !important;
+  }
+  .btn-outline-secondary {
+    border-color: #d5d5d5 !important;
     color: #d5d5d5 !important;
   }
   .bg-light,

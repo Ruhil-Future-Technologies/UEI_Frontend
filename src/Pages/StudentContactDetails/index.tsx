@@ -124,7 +124,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           setContcodeWtsap(data?.data.mobile_isd_watsapp);
           setWhatsappNum(data?.data.mobile_no_watsapp);
           setContcodePhone(data?.data.mobile_isd_call);
-          setPhoneNum(data?.data.mobile_no_call ? data?.data.mobile_no_call:localStorage.getItem('phone'));
+          setPhoneNum(data?.data.mobile_no_call!="null" ? data?.data.mobile_no_call:localStorage.getItem('phone'));
           setEmail(data?.data.email_id?data?.data.email:localStorage.getItem('email'));
 
           setInitialState({
@@ -311,6 +311,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                   labelId="demo-simple-select-label"
                   data-testid="county_pcode"
                   id="demo-simple-select"
+                  size='small'
                   sx={{
                     backgroundColor: '#f5f5f5',
                     '& .MuiSelect-icon': {
@@ -340,6 +341,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 type="text"
                 placeholder="Enter Mobile number"
                 name="phoneNum"
+                size='small'
                 value={phoneNum}
                 disabled
                 onChange={handleChange}
@@ -371,6 +373,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   data-testid="county_wpcode"
+                  size='small'
                   value={contcodeWtsap}
                   sx={{
                     backgroundColor: '#f5f5f5',
@@ -399,6 +402,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
                 data-testid="whtmobile_num"
                 placeholder="Enter Whatsapp number"
                 className="form-control w-100"
+                size='small'
                 value={whatsappNum}
                 sx={{
                   backgroundColor: '#f5f5f5',
@@ -413,7 +417,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
           </div>
         </div>
 
-        <div className="col-lg-12 ">        
+        <div className="col-lg-6 ">        
          
           <label className="col-form-label"> Email Id </label>
 
@@ -421,6 +425,7 @@ const StudentcontactDetails: React.FC<ChildComponentProps> = ({
             type="email"
             className="form-control"
             data-testid="email_id"
+            size='small'
             // placeholder='Enter Email Id'
             name="email"
             value={email}

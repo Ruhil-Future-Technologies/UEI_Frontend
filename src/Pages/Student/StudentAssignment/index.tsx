@@ -7,8 +7,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from "material-react-table
 import { Assignment } from "../../Teacher/Assignments/CreateAssignments";
 import { toast } from "react-toastify";
 import PreviewIcon from '@mui/icons-material/Preview';
-
-
+import './St.scss';
 
 const StudentAssignments = () => {
 
@@ -36,6 +35,23 @@ const StudentAssignments = () => {
     {
       accessorKey: 'title',
       header: 'Title',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const AsisgnmnetTitle = row?.original?.title;
+        const is_addtoereport=row?.original?.add_to_report
+        console.log(is_addtoereport);
+        return (
+          <div className="box">
+            {is_addtoereport==true &&
+              <p className="ribbon">
+              <span className="text"> Add to report</span>
+            </p>
+            }
+            
+            <div>{AsisgnmnetTitle}</div>
+          </div>
+
+        );
+      }
     },
     {
       accessorKey: 'due_date_time',
@@ -77,7 +93,7 @@ const StudentAssignments = () => {
       }
     },
     {
-      header: 'Late Submition',
+      header: 'Late Submission',
       accessorKey: 'allow_late_submission',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const val = row?.original?.allow_late_submission
@@ -138,7 +154,7 @@ const StudentAssignments = () => {
   const isAssignmentSubmited = (assignmentId: string) => {
     console.log(assignmentsSubmited)
     const assign = assignmentsSubmited.filter((item) => item?.assignment_id == assignmentId)
-    console.log(assign[0],assign.length,assign[0]?.is_graded)
+    console.log(assign[0], assign.length, assign[0]?.is_graded)
     if (assign.length > 0) {
       return assign[0]?.is_submitted ? (
         <Chip label="Submitted" color="primary" />

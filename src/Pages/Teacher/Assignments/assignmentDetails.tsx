@@ -34,7 +34,7 @@ interface Students {
     graded_points: string;
     submission_date: string;
     assignment_submition_id: string;
-    student_uuid:string;
+    student_uuid: string;
 }
 
 const AssignmentDetails = () => {
@@ -52,7 +52,7 @@ const AssignmentDetails = () => {
     };
 
     const handleSave = (Submition_id: any) => {
-        if (assignmentData?.points && tempMarks < assignmentData?.points && tempMarks != '') {
+        if (assignmentData?.points && tempMarks <= assignmentData?.points && tempMarks != '') {
             const formData = new FormData();
             formData.append('graded_points', tempMarks);
             putData(`/assignment_submission/edit/${Submition_id}`, formData).then((response) => {
@@ -63,7 +63,7 @@ const AssignmentDetails = () => {
                         position: 'top-center'
 
                     })
-                    //window.location.reload();
+                    window.location.reload();
                 }
             }).catch((error) => {
                 toast.error(error.message, {
@@ -139,7 +139,7 @@ const AssignmentDetails = () => {
                             <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
                                 <TableRow>
                                     <TableCell><strong>Student</strong></TableCell>
-                                    <TableCell><strong>Submitted</strong></TableCell>
+                                    <TableCell><strong>Submission Time & Date</strong></TableCell>
                                     <TableCell><strong>Status</strong></TableCell>
                                     <TableCell><strong>Grade</strong></TableCell>
                                     <TableCell><strong>Actions</strong></TableCell>
@@ -178,20 +178,25 @@ const AssignmentDetails = () => {
                                                     </IconButton>
                                                 </div>
                                             ) : (
-                                                <Typography onClick={() => handleEdit(student.student_id)} sx={{ cursor: "pointer" }}>
-                                                    {student.graded_points == 'Not Graded' ? `NG/ ${assignmentData?.points}` : `${student.graded_points}/ ${assignmentData?.points}`}
+                                                <Typography
+                                                    onClick={student.is_submitted ==true ? () => handleEdit(student.student_id) : undefined}
+                                                    sx={{ cursor: student.is_submitted ? "pointer" : "default", color: student.is_submitted ? "inherit" : "gray" }}
+                                                >
+                                                    {student.graded_points === 'Not Graded'
+                                                        ? `NG/ ${assignmentData?.points}`
+                                                        : `${student.graded_points}/ ${assignmentData?.points}`}
                                                 </Typography>
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            {student.is_submitted ==true ? (
+                                            {student.is_submitted == true ? (
                                                 <IconButton color="primary" onClick={() => gotoPreview(student?.student_uuid)}>
                                                     <VisibilityIcon />
                                                 </IconButton>
                                             ) : (
                                                 <VisibilityIcon color="disabled" />
                                             )}
-                                            {student.is_submitted ==true? " Preview" : " Not Submitted"}
+                                            {student.is_submitted == true ? " Preview" : " Not Submitted"}
                                         </TableCell>
                                     </TableRow>
                                 ))}

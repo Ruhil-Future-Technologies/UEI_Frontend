@@ -3,6 +3,7 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -48,7 +49,7 @@ const TeacherSideVar = () => {
           {/* <!--navigation--> */}
           <ul className="metismenu" id="sidenav">
             <li>
-              <Link to="/teacher-dashboard">
+              <Link to="/teacher-dashboard" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <HomeOutlinedIcon />
                 </div>
@@ -56,7 +57,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/chat">
+              <Link to="/teacher-dashboard/chat" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <ChatOutlinedIcon />
                 </div>
@@ -64,7 +65,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/Content">
+              <Link to="/teacher-dashboard/Content" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <LibraryBooksOutlinedIcon />
                 </div>
@@ -72,7 +73,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/feedback">
+              <Link to="/teacher-dashboard/feedback" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <InfoOutlinedIcon />
                 </div>
@@ -80,11 +81,22 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/assignments">
+              <Link to="/teacher-dashboard/assignments" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <AssignmentOutlinedIcon />
                 </div>
                 <div className="menu-title">Assignments</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/teacher-dashboard/quizzes"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <QuestionAnswerOutlinedIcon />
+                </div>
+                <div className="menu-title">Quiz</div>
               </Link>
             </li>
             {/* <!-- <li>

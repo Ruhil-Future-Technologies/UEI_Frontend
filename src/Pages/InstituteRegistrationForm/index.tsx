@@ -52,6 +52,7 @@ import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import BusinessIcon from '@mui/icons-material/Business';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import WestIcon from '@mui/icons-material/West';
+import FullScreenLoader from '../Loader/FullScreenLoader';
 interface Institute {
   institute_name: string;
   university_id: string;
@@ -80,7 +81,7 @@ const InstituteRegistrationForm = () => {
   const InstituteAddURL = QUERY_KEYS.INSTITUTE_ADD;
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
 
-  const { postRegisterData, getForRegistration, postDataJson } = useApi();
+  const { postRegisterData, getForRegistration, postDataJson ,loading} = useApi();
   const [dataUniversity, setDataUniversity] = useState<IUniversity[]>([]);
   const [valueInstitute, setValueInstitute] = useState<Institute>({
     institute_name: '',
@@ -105,7 +106,7 @@ const InstituteRegistrationForm = () => {
   const [school_name_error, setSchool_name_error] = useState(false);
   const [email_id_error, setEmail_id_error] = useState(false);
   const [mobile_no_error, setMobile_no_error] = useState(false);
-  // const [website_error, setWebsite_error] = useState(false);
+   const [website_error, setWebsite_error] = useState(false);
   const [country_error, setCountry_error] = useState(false);
   const [state_error, setState_error] = useState(false);
   const [city_error, setCity_error] = useState(false);
@@ -210,33 +211,38 @@ const InstituteRegistrationForm = () => {
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    
     setDocument_error(false);
     setErrorMessage('');
-
-    if (files && event.target.name !== 'icon') {
-      const filesArray = Array.from(files);
-
-      // Check if any file is a duplicate
+  
+    if (!files) return;
+  
+    const filesArray = Array.from(files);
+  
+    // Check for duplicate files (compare name + lastModified for uniqueness)
     const duplicateFiles = filesArray.filter((file) =>
-      allselectedfiles.some((existingFile) => existingFile.name === file.name)
+      allselectedfiles.some(
+        (existingFile) => 
+          existingFile.name === file.name && 
+          existingFile.lastModified === file.lastModified
+      )
     );
-
+  
     if (duplicateFiles.length > 0) {
       setErrorMessage('This document has already been selected');
+      event.target.value = '';
       return; // Stop execution to prevent adding duplicate files
     }
-
-      setAllSelectedfiles((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
-
-      // Reset the input field to allow selecting the same files again
-      event.target.value = '';
-    } else {
-      // setLogo(files);
-    }
+  
+    setAllSelectedfiles((prevFiles) => [
+      ...prevFiles, // Keep previously selected files
+      ...filesArray, // Add newly selected files
+    ]);
+  
+    // Reset input field to allow selecting the same files again
+    event.target.value = '';
   };
+  
 
   const validation = (name: string, value: string) => {
     if (
@@ -319,6 +325,17 @@ const InstituteRegistrationForm = () => {
     }
     if (name === 'state') {
       setState_error(value === '' ? true : false);
+    }
+    if (
+      !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(value) && name === 'website_url'
+    ) {
+      if(value==''){
+        setWebsite_error(false);
+      }else{
+        setWebsite_error(true);
+      }
+    }else{
+      setWebsite_error(false);  
     }
   };
 
@@ -581,6 +598,7 @@ const InstituteRegistrationForm = () => {
     setAllSelectedfiles((previous) =>
       previous.filter((_, ind) => ind !== index),
     );
+    setErrorMessage('');
   };
 
   const steps = [
@@ -610,6 +628,17 @@ const InstituteRegistrationForm = () => {
         valid = true;
       } else {
         setEmail_id_error(false);
+      }
+
+      if (
+        !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+          valueInstitute.website_url,
+        )&& valueInstitute.website_url!=''
+      ) {
+        setWebsite_error(true);
+        valid = true;
+      }else{
+        setWebsite_error(false);
       }
 
       if (!/^(?!0{10})[0-9]{10}$/.test(valueInstitute.mobile_no.trim())) {
@@ -730,6 +759,7 @@ const InstituteRegistrationForm = () => {
  // console.log(dataUniversity);
   return (
     <>
+        {loading && <FullScreenLoader />}
       <Box sx={{ width: '100%' }} className="Stepperform">
         <div className="p-lg-4 bg-primary-20 flex-column d-none d-lg-flex">
           <div className="logoui mb-4">
@@ -859,7 +889,7 @@ const InstituteRegistrationForm = () => {
                           variant="outlined"
                         />
 
-                        {/* <div>
+                        <div>
                         {website_error === true && (
                           <p
                             className="error-text"
@@ -868,7 +898,7 @@ const InstituteRegistrationForm = () => {
                             <small>Please enter a valid Website.</small>
                           </p>
                         )}
-                      </div> */}
+                      </div>
                       </div>
                     </div>
                     {selectedEntity.toLowerCase() === 'school' ? (
@@ -1414,40 +1444,41 @@ const InstituteRegistrationForm = () => {
             handleOtpSuccess={(otp: string) => handleOtpSubmit(otp)}
             email={valueInstitute.email_id}
           />
+          <footer className="login-footer bg-light">
+                      <p className="mb-0">Copyright © 2025. All right reserved.</p>
+                      <List
+                        sx={{
+                          display: 'inline-flex',
+                          flexWrap: 'wrap',
+                          gap: 2,
+                          padding: 0,
+                        }}
+                      >
+                        <ListItem sx={{ width: 'auto', padding: 0 }}>
+                          <LinkReact to="/privacypolicy" color="primary">
+                            Privacy Policy
+                          </LinkReact>
+                        </ListItem>
+                        <ListItem sx={{ width: 'auto', padding: 0 }}>
+                          <LinkReact to="/refundpolicy" color="primary">
+                            Refund Policy
+                          </LinkReact>
+                        </ListItem>
+                        <ListItem sx={{ width: 'auto', padding: 0 }}>
+                          <LinkReact to="/Disclaimer" color="primary">
+                            Disclaimer
+                          </LinkReact>
+                        </ListItem>
+                        <ListItem sx={{ width: 'auto', padding: 0 }}>
+                          <LinkReact to="/ServicesAgreement" color="primary">
+                            End User Aggrement
+                          </LinkReact>
+                        </ListItem>
+                      </List>
+                    </footer>
         </Box>
       </Box>
-      <footer className="login-footer">
-        <p className="mb-0">Copyright © 2025. All right reserved.</p>
-        <List
-          sx={{
-            display: 'inline-flex',
-            flexWrap: 'wrap',
-            gap: 2,
-            padding: 0,
-          }}
-        >
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/privacypolicy" color="primary">
-              Privacy Policy
-            </LinkReact>
-          </ListItem>
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/refundpolicy" color="primary">
-              Refund Policy
-            </LinkReact>
-          </ListItem>
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/Disclaimer" color="primary">
-              Disclaimer
-            </LinkReact>
-          </ListItem>
-          <ListItem sx={{ width: 'auto', padding: 0 }}>
-            <LinkReact to="/ServicesAgreement" color="primary">
-              End User Aggrement
-            </LinkReact>
-          </ListItem>
-        </List>
-      </footer>
+     
     </>
   );
 };

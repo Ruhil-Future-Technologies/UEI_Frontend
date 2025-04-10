@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import {
   Box,
   Tabs,
@@ -17,17 +17,20 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Dialog,
-  DialogContent,
-  IconButton,
+ // Dialog,
+ // DialogContent,
+ // IconButton,
 } from '@mui/material';
 import NoteIcon from '@mui/icons-material/Note';
 import ArticleIcon from '@mui/icons-material/Article';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import CloseIcon from '@mui/icons-material/Close';
+//import CloseIcon from '@mui/icons-material/Close';
 import Ebook from './../../assets/img/ebook.jpg';
 import useApi from '../../hooks/useAPI';
+import { Fancybox } from '@fancyapps/ui';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
+
 import {
   QUERY_KEYS_CONTENT,
   QUERY_KEYS_SEMESTER,
@@ -36,8 +39,10 @@ import {
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import NameContext from '../Context/NameContext';
+import { Link, useNavigate } from 'react-router-dom';
+//import NameContext from '../Context/NameContext';
+
+Fancybox.bind('[data-fancybox]', {});
 
 const TabPanel: React.FC<{
   value: number;
@@ -63,14 +68,14 @@ const TabPanel: React.FC<{
 };
 
 const StudentContent = () => {
-  const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  //const context = useContext(NameContext);
+  //const { namecolor }: any = context;
   const ContentURL = QUERY_KEYS_CONTENT.GET_CONTENT;
 
   const [tabIndex, setTabIndex] = useState(0);
 
-  const [videoOpen, setVideoOpen] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState('');
+  //const [videoOpen, setVideoOpen] = useState(false);
+  //const [selectedVideo, setSelectedVideo] = useState('');
   const { getData } = useApi();
   const navigate = useNavigate();
   const [videoLectures, setVideoLectures] = useState([]);
@@ -87,10 +92,10 @@ const StudentContent = () => {
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [filteredResearchPapers, setFilteredResearchPapers] = useState([]);
 
-  const handleVideoOpen = (videoUrl: string) => {
-    setSelectedVideo(videoUrl);
-    setVideoOpen(true);
-  };
+  // const handleVideoOpen = (videoUrl: string) => {
+  //   setSelectedVideo(videoUrl);
+  //   setVideoOpen(true);
+  // };
 
   const callAPI = async () => {
     try {
@@ -367,10 +372,23 @@ const StudentContent = () => {
     <div>
       <div className="main-wrapper">
         <div className="main-content">
+          <div className="page-breadcrumb d-flex align-items-center mb-3">
+            <div className="breadcrumb-title pe-3">
+              <Link to={'/main/dashboard'} className="text-dark">
+                Dashboard
+              </Link>
+            </div>
+            <div className="ps-3">
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb mb-0 p-0">
+                  <li className="breadcrumb-item active" aria-current="page">
+                    My Content Library
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
           <Box sx={{ width: '100%', px: 0 }} className="custom-box">
-            {/* <Typography variant="h5" fontWeight="bold" mb={2}>
-              Course Library
-            </Typography> */}
             {studentProfile?.entity_name === 'college' && (
               <>
                 <Typography variant="h6" fontWeight="bold" mb={2}>
@@ -403,9 +421,7 @@ const StudentContent = () => {
                         <Tab
                           key={sub?.subject_id}
                           label={sub?.subject_name}
-                          sx={{
-                            color: namecolor === 'dark' ? 'white' : 'black',
-                          }}
+                         
                         />
                       );
                     })
@@ -414,9 +430,7 @@ const StudentContent = () => {
                         <Tab
                           key={sub?.subject_id}
                           label={sub?.subject_name}
-                          sx={{
-                            color: namecolor === 'dark' ? 'white' : 'black',
-                          }}
+                         
                         />
                       );
                     })}
@@ -457,7 +471,7 @@ const StudentContent = () => {
                   {videos.map((video: any) => (
                     <div className="col-lg-3" key={video.id}>
                       <Card
-                        onClick={() => handleVideoOpen(video.url[0].url)}
+                       // onClick={() => handleVideoOpen(video.url[0].url)}
                         sx={{
                           borderRadius: 2,
                           boxShadow: 2,
@@ -465,21 +479,28 @@ const StudentContent = () => {
                           cursor: 'pointer',
                         }}
                       >
-                        <CardMedia
-                          component="img"
-                          height="180"
-                          image="https://plus.unsplash.com/premium_photo-1695186450459-8d3c896ca573?q=80&w=768"
-                          alt={video.title}
-                        />
-                        <CardContent>
-                          <Typography variant="h6" fontWeight="bold">
-                            {video.description}
-                          </Typography>
+                        <a
+                          data-fancybox="gallery"
+                          href={video.url[0].url}
+                          data-caption={video.description}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                          <CardMedia
+                            component="img"
+                            height="180"
+                            image="https://plus.unsplash.com/premium_photo-1695186450459-8d3c896ca573?q=80&w=768"
+                            alt={video.title}
+                          />
+                          <CardContent>
+                            <Typography variant="h6" fontWeight="bold">
+                              {video.description}
+                            </Typography>
 
-                          <Typography variant="body2" fontWeight="500" mt={1}>
-                            👤 {video.author}
-                          </Typography>
-                        </CardContent>
+                            <Typography variant="body2" fontWeight="500" mt={1}>
+                              👤 {video.author}
+                            </Typography>
+                          </CardContent>
+                        </a>
                       </Card>
                     </div>
                   ))}
@@ -610,7 +631,7 @@ const StudentContent = () => {
             />
           </Box>
 
-          <Dialog
+          {/* <Dialog
             open={videoOpen}
             onClose={() => setVideoOpen(false)}
             maxWidth="md"
@@ -631,7 +652,7 @@ const StudentContent = () => {
                 allowFullScreen
               ></iframe>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
         </div>
       </div>
     </div>

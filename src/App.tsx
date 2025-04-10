@@ -106,6 +106,9 @@ import StudentAssignments from './Pages/Student/StudentAssignment';
 import PreviewAndSubmit from './Pages/Student/StudentAssignment/previewAndSubmit';
 import AdminList from './Pages/AdminList';
 import PreviewStudentAssignment from './Pages/Teacher/Assignments/previewStudentAssignment';
+import StudentQuiz from './Pages/Student/StudentQuiz';
+import QuizPage from './Pages/Student/StudentQuiz/QuizPage';
+import TeacherQuizPage from './Pages/Teacher/Quiz';
 
 function App() {
   const navigate = useNavigate();
@@ -308,10 +311,18 @@ function App() {
           />
           <Route
             path="/teacher-dashboard/student-assignment-details/:id"
-            element={
-              <Protected Component={PreviewStudentAssignment} />
-            }
+            element={<Protected Component={PreviewStudentAssignment} />}
           />
+
+          <Route
+            path="/teacher-dashboard/quizzes"
+            element={<Protected Component={TeacherQuizPage} />}
+          />
+          <Route
+            path="/teacher-dashboard/quiz-details/:id"
+            element={<Protected Component={AssignmentDetails} />}
+          />
+
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
@@ -360,6 +371,15 @@ function App() {
             element={
               <Protected Component={PreviewAndSubmit} menuName="content" />
             }
+          />
+
+          <Route
+            path="/main/student/quiz"
+            element={<Protected Component={StudentQuiz} menuName="content" />}
+          />
+          <Route
+            path="/main/student/quiz/:id"
+            element={<Protected Component={QuizPage} menuName="content" />}
           />
           <Route
             path="/main/chat"
