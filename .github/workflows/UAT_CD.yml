@@ -68,13 +68,15 @@ jobs:
           name: react-github-actions-build-UAT
           path: build
 
+          
       # Upload the artifact to EC2
       - name: Upload Artifact to EC2
+        id: ssh-upload
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.UAT_EC2_FE_SSH_PK }}
           REMOTE_HOST: ${{ secrets.UAT_EC2_FE_DNS }}
           REMOTE_USER: ${{ secrets.UAT_EC2_FE_USERNAME }}
-          TARGET: ${{ secrets.UAT_EC2_FE_TARGET_DIR }}
-          SOURCE: build/
+          TARGET: ${{ secrets.UAT_EC2_FE_TARGET_DIR_NEW }}
+          SOURCE: /build/
         continue-on-error: false
