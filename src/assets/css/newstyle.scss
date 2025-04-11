@@ -2859,7 +2859,8 @@ a {
     margin-bottom: 1rem;
     margin-right: 1rem;
     .chat-box {
-      padding: 0.5rem !important;
+      padding-top: 0.5rem;
+      padding-bottom: 10rem !important;
       height: 400px;
       overflow: auto;
       .message-bubble {
@@ -2873,6 +2874,9 @@ a {
         &.left {
           background-color: $white !important;
         }
+      }
+      .message-wrapper{
+        padding: 0 0.5rem;
       }
     }
   }
@@ -2910,7 +2914,7 @@ a {
     select {
       border-radius: 12px;
       border: 0;
-      min-height: 42px;
+      min-height: 48px;
     }
   }
 }
@@ -3194,4 +3198,8 @@ a {
   @media (max-width:724px) {
     width: 100%;
   }
+}
+
+.footermargin{
+  padding-bottom: 4rem;
 }

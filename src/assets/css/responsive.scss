@@ -230,7 +230,7 @@
   }
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 1024px) {
   .search-popup {
     position: fixed !important;
     top: 0 !important;
@@ -248,13 +248,15 @@
 
       .afterheader {
         .chat-box {
-          height: 84vh !important;
+          height: 100vh !important;
           overflow: auto;
           scrollbar-width: initial !important;
+          background-image: url("../img/chat-bg.svg");
+          background-size: cover;
         }
         .chatinput-body {
           position: fixed;
-          bottom: 0rem;
+          bottom: 1rem;
           left: 1rem;
           right: 1rem;
           width: auto;

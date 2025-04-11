@@ -14,7 +14,10 @@ import useApi from '../../hooks/useAPI';
 import glogo from '../../assets/img/logo-white.svg';
 import { toast } from 'react-toastify';
 import IconButton from '@mui/material/IconButton';
-import { Button, FormControlLabel, Switch } from '@mui/material';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useTheme } from '../../ThemeProvider';
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
@@ -36,66 +39,10 @@ import {
 } from '../../utils/helpers';
 import CloseIcon from '@mui/icons-material/Close';
 import { ChatDialogClose } from './ChatDialogClose';
-import { styled } from '@mui/material/styles';
+//import { styled } from '@mui/material/styles';
 import Course from '../../Pages/Course/Course';
 import { Teacher } from '../../Pages/TeacherRgistrationForm';
 //import { Initializable } from '@mui/x-charts/internals';
-
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-  width: 50,
-  height: 28,
-  padding: 8,
-  '& .MuiSwitch-switchBase': {
-    margin: 1,
-    padding: 0,
-    transform: 'translateX(6px)',
-    '&.Mui-checked': {
-      color: '#fff',
-      transform: 'translateX(22px)',
-      '& .MuiSwitch-thumb:before': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='20' width='20' viewBox='0 0 20 20'><path fill='${encodeURIComponent(
-          '#fff',
-        )}' d='M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z'/></svg>')`,
-      },
-      '& + .MuiSwitch-track': {
-        opacity: 1,
-        backgroundColor: '#aab4be',
-        ...theme.applyStyles('dark', {
-          backgroundColor: '#8796A5',
-        }),
-      },
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    backgroundColor: '#001e3c',
-    width: 24,
-    height: 24,
-    '&::before': {
-      content: "''",
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      left: 0,
-      top: 0,
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='20' width='20' viewBox='0 0 20 20'><path fill='${encodeURIComponent(
-        '#fff',
-      )}' d='M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z'/></svg>')`,
-    },
-    ...theme.applyStyles('dark', {
-      backgroundColor: '#003892',
-    }),
-  },
-  '& .MuiSwitch-track': {
-    opacity: 1,
-    backgroundColor: '#aab4be',
-    borderRadius: 20 / 2,
-    ...theme.applyStyles('dark', {
-      backgroundColor: '#8796A5',
-    }),
-  },
-}));
 
 interface Institute {
   id: number;
@@ -173,7 +120,7 @@ export const ProfileDialog: FunctionComponent<{
   // };
 
   const context = useContext(NameContext);
-  const { namecolor, setNamecolor, setNamepro, setProImage }: any = context;
+  const { namecolor, setNamepro, setProImage }: any = context;
   const Student_uuid = localStorage.getItem('user_uuid');
   const usertype = localStorage.getItem('user_type');
   const { getData, postData, postFileData } = useApi();
@@ -210,7 +157,7 @@ export const ProfileDialog: FunctionComponent<{
   const [selectCourse, setSelectedCourse] = useState<any>('');
   const [selectUniversity, setSelectedUniversity] = useState<any>('');
   const [selectSemester, setSelectedSemester] = useState<any>('');
- // const [selectSubjectName, setSelectedSubjectName] = useState<any>('');
+  // const [selectSubjectName, setSelectedSubjectName] = useState<any>('');
   const [selectTeacher, setSelectedTeacher] = useState<any>('');
   const [selectSemesterpre, setSelectedSemesterpre] = useState<any>('');
   const [selectSubject, setSelectedSubject] = useState<any>('');
@@ -219,7 +166,7 @@ export const ProfileDialog: FunctionComponent<{
   const [selectedAcademicState, setSelectedAcademicState] = useState<any>('');
   const [selectedClass, setSelectedClass] = useState<any>('');
   const [selectedStream, setSelectedStream] = useState<any>('');
-  
+
   const [selectedLearningStyle, setSelectedLearningStyle] = useState<any>('');
 
   // const [selectedAcademicYear, setSelectedAcademicYear] = useState<any>('');
@@ -238,7 +185,7 @@ export const ProfileDialog: FunctionComponent<{
   const [preferenceError, setpreferenceError] = useState(false);
   const [pincode, setpincode] = useState(false);
   const [per, setper] = useState(false);
-  const [checked, setchecked] = useState(false);
+ // const [checked, setchecked] = useState(false);
   const [closemodel, setclosemodel] = useState(false);
   const [goal, setGoal] = useState(false);
   const [firstaddress, setFirstAddress] = useState(false);
@@ -491,7 +438,7 @@ export const ProfileDialog: FunctionComponent<{
                   item?.class_id === answeredData?.academic_history?.class_id &&
                   (answeredData?.academic_history?.stream
                     ? item.stream == answeredData?.academic_history?.stream
-                    : true)
+                    : true),
               );
               setSubjects(filteredData || []);
             } else {
@@ -561,7 +508,11 @@ export const ProfileDialog: FunctionComponent<{
               if (instituteType) {
                 // Skip institution type-related questions
                 if (instituteType === 'school') {
-                  setSelectedStream(data?.data?.academic_history?.stream ? data?.data?.academic_history?.stream : 'general');
+                  setSelectedStream(
+                    data?.data?.academic_history?.stream
+                      ? data?.data?.academic_history?.stream
+                      : 'general',
+                  );
                   const questionsToRemove = [
                     'Hi! Please provide your academic information! What is your institute type?',
                     'Please select your school name',
@@ -661,7 +612,9 @@ export const ProfileDialog: FunctionComponent<{
             // Update state after filtering
             // const firstQuestionIndex = Number(mapping[filteredQuestions.basic?.[0]]?.[0]);
             setCurrentQuestionIndex(0);
-            setMessages([{ text: filteredQuestions.basic[0], type: 'question' }]);
+            setMessages([
+              { text: filteredQuestions.basic[0], type: 'question' },
+            ]);
           } catch (error) {
             console.error('Error fetching profile data:', error);
           }
@@ -693,9 +646,10 @@ export const ProfileDialog: FunctionComponent<{
       getData('/university/list')
         .then(async (response: any) => {
           if (response.status) {
-            const filteredData = await response?.data?.universities_data?.filter(
-              (item: any) => item?.is_active,
-            );
+            const filteredData =
+              await response?.data?.universities_data?.filter(
+                (item: any) => item?.is_active,
+              );
             setUniversity(filteredData || []);
           }
         })
@@ -792,26 +746,27 @@ export const ProfileDialog: FunctionComponent<{
     }
   }, [currentSection, isOpen]);
 
-  const getTeahcersList = (subject:any) => {
-    const student_id=localStorage.getItem('student_id')
-    if(student_id){
-      getData(`/teacher/teachers_list_for_student/${student_id}`).then((data) => {
-        if (data.status) {
-          const filteredTeacher = data.data?.teachers?.filter((teacher:any) =>
-            teacher?.subject_list?.includes(subject)
-          );
+  const getTeahcersList = (subject: any) => {
+    const student_id = localStorage.getItem('student_id');
+    if (student_id) {
+      getData(`/teacher/teachers_list_for_student/${student_id}`)
+        .then((data) => {
+          if (data.status) {
+            const filteredTeacher = data.data?.teachers?.filter(
+              (teacher: any) => teacher?.subject_list?.includes(subject),
+            );
             setTeacherList(filteredTeacher);
-        }
-      }).catch((error) => {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center'
+          }
         })
-      })
+        .catch((error) => {
+          toast.error(error.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        });
     }
-  
-  }
+  };
   useEffect(() => {
     // Scroll to the bottom of the chat box whenever messages update
     if (chatBoxRef.current) {
@@ -849,7 +804,7 @@ export const ProfileDialog: FunctionComponent<{
     return date.toISOString();
   };
 
-  const saveAnswersforBasic = async  (answers: string[]) => {
+  const saveAnswersforBasic = async (answers: string[]) => {
     const birthdate: any = parseDate(answers[1]);
     // Convert the birthdate to a Date object
     const birthdateObj = new Date(birthdate);
@@ -879,20 +834,20 @@ export const ProfileDialog: FunctionComponent<{
     const phone = localStorage.getItem('phone');
     const formData = new FormData();
     const nfile: any = uploadedFile;
-    formData.append('file', nfile)
+    formData.append('file', nfile);
     let img_res: string = '';
     if (formData.has('file')) {
       try {
-        const data: any = await postFileData("upload_file/upload", formData);
-    
+        const data: any = await postFileData('upload_file/upload', formData);
+
         if (data?.status) {
           setProImage(data?.data?.url);
           const fileUrl = data?.data?.url;
           const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
-          img_res = fileName // ✅ Now img_res is updated correctly
+          img_res = fileName; // ✅ Now img_res is updated correctly
         }
       } catch (error) {
-        console.error("File upload failed", error);
+        console.error('File upload failed', error);
       }
     }
 
@@ -908,9 +863,9 @@ export const ProfileDialog: FunctionComponent<{
       guardian_name:
         answeredData?.basic_info?.guardian_name || answers[6] || '',
       aim: answeredData?.basic_info?.aim || answers[2],
-      pic_path: img_res|| answeredData?.basic_info?.pic_path || answers[7],
+      pic_path: img_res || answeredData?.basic_info?.pic_path || answers[7],
       email: email,
-      phone: phone
+      phone: phone,
     };
 
     postData(`${'student/add'}`, payload)
@@ -926,7 +881,6 @@ export const ProfileDialog: FunctionComponent<{
           const formData = new FormData();
           const nfile: any = uploadedFile;
           formData.append('file', nfile);
-
         } else {
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -956,14 +910,13 @@ export const ProfileDialog: FunctionComponent<{
       mobile_isd_watsapp: answeredData?.contact?.mobile_isd_watsapp || phone,
       mobile_no_watsapp:
         answeredData?.contact?.mobile_no_watsapp ||
-          answer[answer.length - 1] === ''
+        answer[answer.length - 1] === ''
           ? answer[answer.length - 1]
           : answer[answer.length - 2],
 
       email_id: answeredData?.contact?.email_id || email,
     } as any;
     const formData = new FormData();
-
 
     Object.keys(payload).forEach((key) => {
       formData.append(key, payload[key]);
@@ -1064,19 +1017,19 @@ export const ProfileDialog: FunctionComponent<{
         // ...((classname === 'class_11' || classname === 'class_12') && {
         //   stream: answers[length - 1]
         // }),
-          ...(classname === 'class_11' || classname === 'class_12'
-            ? { stream: answers[length - 1] }
-            : { stream: 'general' }) // Default to 'General' for other classes
-        
-
+        ...(classname === 'class_11' || classname === 'class_12'
+          ? { stream: answers[length - 1] }
+          : { stream: 'general' }), // Default to 'General' for other classes
       }),
       institute_id: selectedInstitute?.toString(),
       ...(selectedInstituteTypeLower === 'college' && {
         course_id: selectCourse?.toString(),
         learning_style: selectedLearningStyle,
-        year: (answers[length - 1]
-          ? dayjs(answers[length - 1], ['DD/MM/YYYY', 'YYYY'])?.year()?.toString()
-          : ''),
+        year: answers[length - 1]
+          ? dayjs(answers[length - 1], ['DD/MM/YYYY', 'YYYY'])
+              ?.year()
+              ?.toString()
+          : '',
         university_id: answers[answers.length - 6],
         sem_id: answers[length - 3],
       }),
@@ -1103,24 +1056,28 @@ export const ProfileDialog: FunctionComponent<{
       subject_id: selectSubject,
       preference: answers[length - 3],
       score_in_percentage: answers[length - 2],
-      ...(((answeredData?.academic_history?.institution_type)?.toLowerCase() === 'school' || selectedInstituteType.toLowerCase()=='school') &&
-       { class_id:answeredData?.academic_history?.class_id || answers[11]}
-      ),
-      
+      ...((answeredData?.academic_history?.institution_type?.toLowerCase() ===
+        'school' ||
+        selectedInstituteType.toLowerCase() == 'school') && {
+        class_id: answeredData?.academic_history?.class_id || answers[11],
+      }),
+
       sem_id:
         selectedInstituteType?.toLowerCase() === 'college' ||
-          answeredData?.academic_history?.institution_type === 'college'
+        answeredData?.academic_history?.institution_type === 'college'
           ? answers[length - 4]
           : null,
-      ...(((answeredData?.academic_history?.institution_type)?.toLowerCase()  === 'school'|| selectedInstituteType.toLowerCase()=='school') &&
+      ...((answeredData?.academic_history?.institution_type?.toLowerCase() ===
+        'school' ||
+        selectedInstituteType.toLowerCase() == 'school') &&
         answeredData?.academic_history?.stream && {
-        stream: answeredData?.academic_history?.stream || answers[12],
-      }),
+          stream: answeredData?.academic_history?.stream || answers[12],
+        }),
       ...((answeredData?.academic_history?.institution_type === 'college' ||
         selectedInstituteType?.toLowerCase() === 'college') && {
         course_id: answeredData?.academic_history?.course_id || selectCourse,
       }),
-      teacher_id: answers[length - 1]
+      teacher_id: answers[length - 1],
     };
     postData('/subject_preference/add', payload).then((response) => {
       if (response.status) {
@@ -1180,7 +1137,7 @@ export const ProfileDialog: FunctionComponent<{
 
   const teacherSelectOption = teacherList?.map((option) => ({
     value: option.id,
-    label: `${option.first_name} ${option.last_name}`
+    label: `${option.first_name} ${option.last_name}`,
   }));
 
   const semlable = semester?.filter(
@@ -1188,20 +1145,19 @@ export const ProfileDialog: FunctionComponent<{
   );
   const semesterSelectOptionspre = selectSemester
     ? [
-      {
-        value: selectSemester,
-        label: `Semester ${semlable[0]?.semester_number}`,
-      },
-    ]
-    : semesterpre[0]?.semester_id
-      ? [
         {
-          value: semesterpre[0]?.semester_id,
-          label: `Semester ${semesterpre[0]?.semester_number}`,
+          value: selectSemester,
+          label: `Semester ${semlable[0]?.semester_number}`,
         },
       ]
+    : semesterpre[0]?.semester_id
+      ? [
+          {
+            value: semesterpre[0]?.semester_id,
+            label: `Semester ${semesterpre[0]?.semester_number}`,
+          },
+        ]
       : [];
-
 
   const instituteSelectOptions = institutes.map((option) => ({
     value: option.id,
@@ -1803,8 +1759,7 @@ export const ProfileDialog: FunctionComponent<{
 
         if (whatsappnumbet) {
           saveAnswersforContact([...answers, e.currentTarget.value]);
-        }
-        else if (secondaddressquestion)
+        } else if (secondaddressquestion)
           saveAnswerforAddress([...answers, e.currentTarget.value]);
 
         if (answers.length === 10) {
@@ -2304,7 +2259,7 @@ export const ProfileDialog: FunctionComponent<{
           'Please select your class',
           'Select your subject name',
           'Please select your stream',
-          'Please select your school name'
+          'Please select your school name',
         ];
         filterdQuestions1['basic'] = filterdQuestions1['basic'].filter(
           (question) => !questionsToRemove.includes(question),
@@ -2664,7 +2619,7 @@ export const ProfileDialog: FunctionComponent<{
       proceedToNextSection(currentSection!);
       setCurrentQuestionIndex(0);
     }
-  }
+  };
   const handleDropdownChangesemesterpre = (e: any) => {
     // const courses = courses.filter((item)=> item.course_name === answers[] )
     const filteredsubject = subjects.filter(
@@ -2703,24 +2658,21 @@ export const ProfileDialog: FunctionComponent<{
     const updatedAnswers = [...answers];
     updatedAnswers[answers.length] = e.label;
     setSelectedSubject(e.value);
-   // setSelectedSubjectName(e.label)
+    // setSelectedSubjectName(e.label)
     setAnswers(updatedAnswers);
     const currentQuestions = filterdQuestions1['basic'];
     const updatedMessages = [
       ...messages,
       { text: e.label, type: 'answer' as const },
     ];
-   
+
     getTeahcersList(e.label);
-    
+
     const filteredsempre = semesterpre.filter(
-      (item) =>
-      (item.semester_id === answeredData?.academic_history?.sem_id
-      )
+      (item) => item.semester_id === answeredData?.academic_history?.sem_id,
     );
 
     setSemesterpre(filteredsempre);
-
 
     if (currentQuestionIndex < currentQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -2839,13 +2791,13 @@ export const ProfileDialog: FunctionComponent<{
       setCurrentQuestionIndex(0);
     }
   };
-  const handleChange = (themes: any) => {
-    setchecked(!checked);
+  // const handleChange = (themes: any) => {
+  //   setchecked(!checked);
 
-    document?.documentElement?.setAttribute('data-bs-theme', themes);
-    setNamecolor(themes);
-    localStorage.setItem('theme', themes);
-  };
+  //   document?.documentElement?.setAttribute('data-bs-theme', themes);
+  //   setNamecolor(themes);
+  //   localStorage.setItem('theme', themes);
+  // };
   const handlecancel = () => {
     setclosemodel(false);
   };
@@ -2911,7 +2863,8 @@ export const ProfileDialog: FunctionComponent<{
   const semisterprepquestion =
     getLastQuestion() == 'Please select your semester ?';
 
-  const schoolnameQuestion = getLastQuestion() == 'Please select your school name';
+  const schoolnameQuestion =
+    getLastQuestion() == 'Please select your school name';
   const stylequestion = getLastQuestion() == 'What is your learning style?';
   const yearquesiton = getLastQuestion() == 'Please select year';
   const hobbyquestion = getLastQuestion() == 'Hi, Please choose your hobbies';
@@ -2936,6 +2889,8 @@ export const ProfileDialog: FunctionComponent<{
   // }
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
+  const { toggleTheme, isDarkMode } = useTheme();
+  
   return (
     <>
       <div
@@ -2948,22 +2903,14 @@ export const ProfileDialog: FunctionComponent<{
         <div className="profilechatinner">
           <div className="proheader">
             <div className="me-auto">
-              {' '}
-              <img src={glogo} width="20" alt="" /> Add your information <br />{' '}
+              <img src={glogo} width="20" alt="" /> Add your information <br />
               for better services
             </div>
-            <FormControlLabel
-              className="me-0"
-              control={
-                <MaterialUISwitch
-                  sx={{ m: 0 }}
-                  size="small"
-                  checked={checked}
-                  onChange={() => handleChange(checked ? 'light' : 'dark')}
-                />
-              }
-              label=""
-            />
+            <div className="toggle-mode nav-link" role="button">
+              <IconButton color="inherit" onClick={toggleTheme}>
+                {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </div>
             <IconButton onClick={() => setclosemodel(true)} aria-label="close">
               <CloseIcon />
             </IconButton>
@@ -2976,14 +2923,16 @@ export const ProfileDialog: FunctionComponent<{
                   return (
                     <div
                       key={index}
-                      className={`message-wrapper d-flex mb-3 ${message.type === 'question'
-                        ? 'justify-content-start'
-                        : 'justify-content-end'
-                        }`}
+                      className={`message-wrapper d-flex mb-3 ${
+                        message.type === 'question'
+                          ? 'justify-content-start'
+                          : 'justify-content-end'
+                      }`}
                     >
                       <div
-                        className={`message-bubble p-3 ${message.type === 'question' ? 'left' : 'right'
-                          }`}
+                        className={`message-bubble p-3 ${
+                          message.type === 'question' ? 'left' : 'right'
+                        }`}
                         style={{
                           maxWidth: '80%',
                           backgroundColor:
@@ -3244,58 +3193,58 @@ export const ProfileDialog: FunctionComponent<{
                         >
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <div className="w-100">
-                            <DatePicker
-                              //  open={open}
-                              // open={true}
-                              label={'Date of Birth'}
-                              onChange={handleDateChange}
-                              // onAccept={() => setOpen(false)} // Close on date selection
-                              // onClose={() => setOpen(false)}  // Close on outside click
-                              disableFuture
-                              format={'DD/MM/YYYY'}
-                              maxDate={maxSelectableDate}
-                              className="w-100"
-                              // value={datecheck}
-                              slotProps={{
-                                field: {
-                                  readOnly: true,
-                                },
-                                textField: {
-                                  
-                                  sx: {
-                                    '& .MuiInputLabel-root': {
-                                      // paddingLeft: '0px',
-                                      color: chatdatetext(namecolor), // Change the label text color
-                                      backgroundColor: 'transperent',
-                                    },
-                                    '& .MuiInputBase-root': {
-                                      // flexDirection: 'row-reverse',
-                                      color: chatdatetext(namecolor), // Change the label text color
-                                      backgroundColor: 'transperent',
-                                      
-                                      paddingRight: '50px',
-                                    },
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                      // borderColor: 'transperent',
-                                    },
-                                    '& .MuiInputAdornment-root': {
-                                      // color: chatdatetext(namecolor), // Change the color of the calendar icon
-                                    },
-                                    '& .MuiInputBase-input': {
-                                      minHeight: '15px !important',
+                              <DatePicker
+                                //  open={open}
+                                // open={true}
+                                label={'Date of Birth'}
+                                onChange={handleDateChange}
+                                // onAccept={() => setOpen(false)} // Close on date selection
+                                // onClose={() => setOpen(false)}  // Close on outside click
+                                disableFuture
+                                format={'DD/MM/YYYY'}
+                                maxDate={maxSelectableDate}
+                                className="w-100"
+                                // value={datecheck}
+                                slotProps={{
+                                  field: {
+                                    readOnly: true,
+                                  },
+                                  textField: {
+                                    sx: {
+                                      '& .MuiInputLabel-root': {
+                                        // paddingLeft: '0px',
+                                        color: chatdatetext(namecolor), // Change the label text color
+                                        backgroundColor: 'transperent',
+                                      },
+                                      '& .MuiInputBase-root': {
+                                        // flexDirection: 'row-reverse',
+                                        color: chatdatetext(namecolor), // Change the label text color
+                                        backgroundColor: 'transperent',
+
+                                        paddingRight: '50px',
+                                      },
+                                      '& .MuiOutlinedInput-notchedOutline': {
+                                        // borderColor: 'transperent',
+                                      },
+                                      '& .MuiInputAdornment-root': {
+                                        // color: chatdatetext(namecolor), // Change the color of the calendar icon
+                                      },
+                                      '& .MuiInputBase-input': {
+                                        minHeight: '15px !important',
+                                      },
                                     },
                                   },
-                                },
-                                inputAdornment: {
-                                  sx: {
-                                    '& .MuiSvgIcon-root': {
-                                      color: chatcalandericon(namecolor), // Ensure the icon color is changed
+                                  inputAdornment: {
+                                    sx: {
+                                      '& .MuiSvgIcon-root': {
+                                        color: chatcalandericon(namecolor), // Ensure the icon color is changed
+                                      },
                                     },
+                                    // onClick: handleOpen
                                   },
-                                  // onClick: handleOpen
-                                },
-                              }}
-                            /></div>
+                                }}
+                              />
+                            </div>
                             <button
                               className="chat_search_btn"
                               style={{
@@ -3344,28 +3293,7 @@ export const ProfileDialog: FunctionComponent<{
                                 field: {
                                   readOnly: true,
                                 },
-                                textField: {
-                                  sx: {
-                                    '& .MuiInputLabel-root': {
-                                      // paddingLeft: '0px',
-                                      color: chatdatetext(namecolor), // Change the label text color
-                                      backgroundColor: 'transperent',
-                                    },
-                                    '& .MuiInputBase-root': {
-                                      // flexDirection: 'row-reverse',
-                                      color: chatdatetext(namecolor), // Change the label text color
-                                      backgroundColor: 'transperent',
-                                      paddingLeft: '100px',
-                                      paddingRight: '50px',
-                                    },
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                      // borderColor: 'transperent',
-                                    },
-                                    '& .MuiInputAdornment-root': {
-                                      // color: chatdatetext(namecolor), // Change the color of the calendar icon
-                                    },
-                                  },
-                                },
+
                                 inputAdornment: {
                                   sx: {
                                     '& .MuiSvgIcon-root': {
@@ -3398,9 +3326,7 @@ export const ProfileDialog: FunctionComponent<{
                       </div>
                     </>
                   ) : hobbyquestion ? (
-                    <div
-                      className='d-flex align-items-center gap-2'
-                    >
+                    <div className="d-flex align-items-center gap-2">
                       <Select
                         className="dropdown-wrapper"
                         onChange={handleDropdownChangehobby}
@@ -3412,7 +3338,11 @@ export const ProfileDialog: FunctionComponent<{
                           container: (base) => ({ ...base, width: '90%' }),
                         }}
                       />
-                      <span onClick={handleSkip} role='button' className='pe-2 py-2'>
+                      <span
+                        onClick={handleSkip}
+                        role="button"
+                        className="pe-2 py-2"
+                      >
                         Skip
                       </span>
                     </div>
@@ -3488,21 +3418,21 @@ export const ProfileDialog: FunctionComponent<{
                       {(guardianquestion ||
                         whatsappnumbet ||
                         secondaddressquestion) && (
-                          <p
-                            style={{
-                              position: 'absolute',
-                              top: '50%',
-                              right: '10px', // Adjust this value to move the button horizontally
-                              transform: 'translateY(-50%)',
-                              cursor: 'pointer',
-                              // color: chattextbgright(namecolor),
-                              margin: 0,
-                            }}
-                            onClick={handleSkip}
-                          >
-                            Skip
-                          </p>
-                        )}
+                        <p
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            right: '10px', // Adjust this value to move the button horizontally
+                            transform: 'translateY(-50%)',
+                            cursor: 'pointer',
+                            // color: chattextbgright(namecolor),
+                            margin: 0,
+                          }}
+                          onClick={handleSkip}
+                        >
+                          Skip
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
