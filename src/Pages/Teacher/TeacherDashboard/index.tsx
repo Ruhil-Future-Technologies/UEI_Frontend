@@ -500,7 +500,7 @@ const TeacherDash = () => {
                 <img src={goaling} alt="" />
                 <h6 className="fs-18  fw-bold">Set Target</h6>
                 <small className="d-block mb-3">
-                  Set Targets, Reminders and your classes times
+                  Set Targets, Reminders and your class times
                 </small>
                 <button className="btn btn-outline-secondary rounded-pill btn-sm px-lg-3">
                   Start

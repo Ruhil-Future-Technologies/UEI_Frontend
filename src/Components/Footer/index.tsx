@@ -21,7 +21,7 @@ const Footer = () => {
         {/* <div className="credits text-white">Designed & developed by <a href="#" target="_blank" className="text-pink"> Sakshem IT Solution Pvt. Ltd.</a></div> */}
         {/* <p className="mb-0">Designed & developed by <a href="#" target="_blank" className="text-pink text-decoration-none"> Sakshem IT Solution Pvt. Ltd.</a></p> */}
         <p className="mb-0">
-          Copyright © {new Date().getFullYear()}. All right reserved.
+          Copyright © {new Date().getFullYear()}. All rights reserved.
         </p>
         <List
           sx={{ display: 'inline-flex', flexWrap: 'wrap', columnGap: 2, rowGap: '2px', padding: 0, justifyContent: 'center' }}
@@ -43,7 +43,7 @@ const Footer = () => {
           </ListItem>
           <ListItem sx={{ width: 'auto', padding: 0 }}>
             <Link to="/ServicesAgreement" color="primary">
-              End User Aggrement
+              End User Agreement
             </Link>
           </ListItem>
         </List>
