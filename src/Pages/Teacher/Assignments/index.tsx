@@ -33,7 +33,7 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 
 export const Assignments = () => {
   const { getData, putData } = useApi();
-  const nevigate = useNavigate();
+  const navigate = useNavigate();
   const [openCard, setOpenCard] = useState(false);
 
   const [dataDeleteId, setDataDeleteId] = useState('');
@@ -98,10 +98,12 @@ export const Assignments = () => {
   // };
   const viewAssignmnet = (assignmentId: any) => {
     localStorage.setItem('assignment_id', assignmentId);
-    nevigate(`/teacher-dashboard/assignment-details/${assignmentId}`);
+    navigate(`/teacher-dashboard/assignment-details/${assignmentId}`);
   };
   const editAssignmnet = (assignmentId: any) => {
-    nevigate(`/teacher-dashboard/edit-assignment/${assignmentId}`);
+    navigate(`/teacher-dashboard/edit-assignment/${assignmentId}`, {
+      state: { type: 'written' },
+    });
   };
   const deleteAssignment = () => {
     try {

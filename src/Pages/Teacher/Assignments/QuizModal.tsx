@@ -19,6 +19,7 @@ import {
   ListItem,
   ListItemText,
   Chip,
+  TextField,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -35,7 +36,7 @@ interface Question {
 
 interface QuizData {
   title: string;
-  questions: Question[]; // Changed from list_of_questions to questions
+  questions: Question[];
   [key: string]: any;
 }
 
@@ -54,6 +55,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
 }) => {
   const [currentQuizData, setCurrentQuizData] = useState<QuizData | null>(null);
   const [allQuestionsSelected, setAllQuestionsSelected] = useState(false);
+  const [editableTitle, setEditableTitle] = useState('');
 
   useEffect(() => {
     if (quizData) {
@@ -65,6 +67,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
         })),
       };
       setCurrentQuizData(initializedData);
+      setEditableTitle(quizData.title || '');
     }
   }, [quizData]);
 
@@ -80,10 +83,18 @@ const QuizModal: React.FC<QuizModalProps> = ({
       ...updatedQuestions[questionIndex],
       selected: !updatedQuestions[questionIndex].selected,
     };
+    const selectedQuestions = currentQuizData?.questions?.filter(
+      (q) => q.selected,
+    );
+    const totalMarks = selectedQuestions.reduce(
+      (sum, q) => sum + (q.marks || 0),
+      0,
+    );
 
     setCurrentQuizData({
       ...currentQuizData,
       questions: updatedQuestions,
+      points: totalMarks,
     });
 
     const allSelected = updatedQuestions.every((q) => q.selected);
@@ -92,6 +103,14 @@ const QuizModal: React.FC<QuizModalProps> = ({
 
   const handleSelectAllQuestions = () => {
     if (!currentQuizData) return;
+
+    const selectedQuestions = currentQuizData?.questions?.filter(
+      (q) => q.selected,
+    );
+    const totalMarks = selectedQuestions.reduce(
+      (sum, q) => sum + (q.marks || 0),
+      0,
+    );
 
     const updatedAllSelected = !allQuestionsSelected;
     setAllQuestionsSelected(updatedAllSelected);
@@ -104,18 +123,39 @@ const QuizModal: React.FC<QuizModalProps> = ({
     setCurrentQuizData({
       ...currentQuizData,
       questions: updatedQuestions,
+      points: totalMarks,
     });
   };
 
   const handleSave = () => {
     if (currentQuizData) {
-      const filteredData = {
+      const selectedQuestions = currentQuizData.questions
+        .filter((q) => q.selected)
+        .map((question) => {
+          const questionCopy = { ...question };
+          delete questionCopy.selected;
+          return questionCopy;
+        });
+
+      const totalMarks = selectedQuestions.reduce(
+        (sum, q) => sum + (q.marks || 0),
+        0,
+      );
+
+      const filteredData: any = {
         ...currentQuizData,
-        questions: currentQuizData?.questions?.filter((q) => q.selected),
+        title: editableTitle,
+        questions: selectedQuestions,
+        points: totalMarks,
       };
+
       onSave(filteredData);
     }
     onClose();
+  };
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditableTitle(event.target.value);
   };
 
   const getTotalSelectedMarks = () => {
@@ -129,9 +169,15 @@ const QuizModal: React.FC<QuizModalProps> = ({
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">
-            Quiz Title: {currentQuizData.title}
-          </Typography>
+          <TextField
+            value={editableTitle}
+            onChange={handleTitleChange}
+            label="Quiz Title"
+            variant="outlined"
+            size="small"
+            fullWidth
+            sx={{ maxWidth: '70%', marginTop: '10px' }}
+          />
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -152,7 +198,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
             }
             label="Select All Questions"
           />
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
+          <Typography variant="subtitle1" color="text.secondary">
             {currentQuizData?.questions?.filter((q) => q?.selected).length} of{' '}
             {currentQuizData?.questions?.length} questions selected | Total
             marks: {getTotalSelectedMarks()}
