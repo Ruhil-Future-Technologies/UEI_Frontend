@@ -241,14 +241,14 @@ export const commonStyle = (namecolor: any) => ({
   color: inputfieldtext(namecolor),
   '&:hover': {
     backgroundColor: inputfieldhover(namecolor),
-    color: 'black !important',
+    //color: 'black !important',
   },
   '&.Mui-selected': {
-    backgroundColor: inputfield(namecolor),
-    color: 'black !important',
+   // backgroundColor: inputfield(namecolor),
+   // color: 'black !important',
   },
   '&.Mui-selected, &:focus': {
-    //backgroundColor: '#F7F0FE',
+   // backgroundColor: '#F7F0FE',
     //color: 'black !important',
   },
 });

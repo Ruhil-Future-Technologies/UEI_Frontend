@@ -474,7 +474,7 @@ const Login = () => {
                           <div
                             data-testid="btn-sign"
                             onClick={() => setShowForm(true)}
-                            className="btn btn-secondary w-100 outsecbtn rounded-pill"
+                            className="btn btn-primary w-100 outsecbtn rounded-pill"
                           >
                             Sign in with Email / Phone
                           </div>
