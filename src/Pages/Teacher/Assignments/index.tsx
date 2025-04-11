@@ -210,7 +210,7 @@ export const Assignments = () => {
       },
     },
     {
-      header: 'Late Submition',
+      header: 'Late Submission',
       accessorKey: 'allow_late_submission',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const val = row?.original?.allow_late_submission;
@@ -357,7 +357,7 @@ export const Assignments = () => {
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
-                    <p className="mb-1">Dreft Submissions</p>
+                    <p className="mb-1">Draft Submissions</p>
                     <h3 className="mb-0">{draftCount}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">

@@ -85,7 +85,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   //const [preferenceValidations, setPreferenceValidations] = useState(false)
   const [courses, setCourses] = useState<Course[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
+  //const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
   const [teachersAll, setTeachersAll] = useState<Teacher[]>([]);
   const navigate = useNavigate();
   // const [pervalidet, setpervalidet] = useState(false);
@@ -130,47 +130,47 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     }));
   };
   // Fetch data from the endpoints
-  const getacademic = async () => {
-    getData(`${'new_student_academic_history/get/' + StudentId}`)
-      .then(async (response: any) => {
-        if (response.status) {
-          setAcademic(
-            response?.data[0]?.institution_type === 'school' ? true : false,
-          );
-          if (response?.data[0]?.institution_type) {
-            await getSubject(response?.data[0]?.institution_type);
-          }
-          setBoxes((prevBoxes) =>
-            prevBoxes.map((box) => ({
-              ...box,
-              class_id: response?.data[0]?.class_id,
-              stream: response?.data[0]?.stream,
-              course_id: response?.data[0]?.course_id,
-              sem_id: response?.data[0]?.sem_id,
-            })),
-          );
-          if (response?.data?.[0]?.class_id) {
-            getData(`/class/get/${response?.data?.[0]?.class_id}`).then(
-              (classResponse: any) => {
-                if (classResponse.status) {
-                  // Set particularClass as an array
-                  setParticularClass([classResponse.data.class_name]);
-                } else {
-                  setParticularClass([]);
-                }
-              },
-            );
-          }
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
-      });
-  };
+  // const getacademic = async () => {
+  //   getData(`${'new_student_academic_history/get/' + StudentId}`)
+  //     .then(async (response: any) => {
+  //       if (response.status) {
+  //         setAcademic(
+  //           response?.data[0]?.institution_type === 'school' ? true : false,
+  //         );
+  //         if (response?.data[0]?.institution_type) {
+  //           await getSubject(response?.data[0]?.institution_type);
+  //         }
+  //         setBoxes((prevBoxes) =>
+  //           prevBoxes.map((box) => ({
+  //             ...box,
+  //             class_id: response?.data[0]?.class_id,
+  //             stream: response?.data[0]?.stream,
+  //             course_id: response?.data[0]?.course_id,
+  //             sem_id: response?.data[0]?.sem_id,
+  //           })),
+  //         );
+  //         if (response?.data?.[0]?.class_id) {
+  //           getData(`/class/get/${response?.data?.[0]?.class_id}`).then(
+  //             (classResponse: any) => {
+  //               if (classResponse.status) {
+  //                 // Set particularClass as an array
+  //                 setParticularClass([classResponse.data.class_name]);
+  //               } else {
+  //                 setParticularClass([]);
+  //               }
+  //             },
+  //           );
+  //         }
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       toast.error(e?.message, {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //         position: 'top-center',
+  //       });
+  //     });
+  // };
   const getclass = async () => {
     getData('/class/list')
       .then((response: any) => {
@@ -210,19 +210,21 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
       });
   };
   useEffect(() => {
+    setBoxes([]);
     const fetchData = async () => {
       if (activeForm === 5) {
         if (StudentId) {
-          await getacademic();
-          getPrefrencelist();
+         await getCourse();
+         await getSemester();
+         await getclass();
+         await getPrefrencelist();
         }
-        getclass();
       }
     };
     fetchData();
   }, [activeForm]);
   const getCourse = async () => {
-    getData('/course/list')
+   await getData('/course/list')
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.course_data?.filter(
@@ -240,101 +242,118 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         });
       });
   };
-  const getSubject = async (type: any) => {
-    if (type == 'school') {
-      getData('school_subject/list')
-        .then((response: any) => {
-          if (response.status) {
-            const filteredData = response?.data?.subjects_data?.filter(
-              (item: any) => item?.is_active,
-            );
-            // setSubjects(filteredData || []);
+  // const getSubject = async (type: any) => {
+  //   if (type == 'school') {
+  //     getData('school_subject/list')
+  //       .then((response: any) => {
+  //         if (response.status) {
+  //           const filteredData = response?.data?.subjects_data?.filter(
+  //             (item: any) => item?.is_active,
+  //           );
+  //           // setSubjects(filteredData || []);
 
-            if (
-              boxes[0]?.stream === 'general' ||
-              boxes[0]?.stream === undefined ||
-              boxes[0]?.stream === null
-            ) {
-              const filterData = filteredData?.filter(
-                (item: any) => item?.class_id === boxes[0]?.class_id,
-              );
-              setSubjects(filterData || []);
-            } else {
-              const filterData = filteredData?.filter(
-                (item: any) =>
-                  item?.class_id === boxes[0]?.class_id &&
-                  item?.stream === boxes[0]?.stream,
-              );
-              setSubjects(filterData || []);
-            }
-            setSubjectsAll(filteredData || []);
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-        });
-    } else {
-      getData('college_subject/list')
-        .then((response: any) => {
-          if (response.status) {
-            const filteredData = response?.data?.subjects_data?.filter(
-              (item: any) => item?.is_active,
-            );
-            // setSubjects(filteredData || []);
-            const filterData = filteredData?.filter(
-              (item: any) =>
-                item?.course_id === boxes[0]?.course_id &&
-                item?.semester_id === boxes[0]?.sem_id,
-            );
-            setSubjects(filterData || []);
-            setSubjectsAll(filteredData || []);
-          }
-        })
-        .catch((e) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-        });
-    }
-    getData(`/teacher/teachers_list_for_student/${StudentId}`)
-      .then((response: any) => {
-        if (response.status) {
+  //           if (
+  //             boxes[0]?.stream === 'general' ||
+  //             boxes[0]?.stream === undefined ||
+  //             boxes[0]?.stream === null
+  //           ) {
+  //             const filterData = filteredData?.filter(
+  //               (item: any) => item?.class_id === boxes[0]?.class_id,
+  //             );
+  //             setSubjects(filterData || []);
+  //           } else {
+  //             const filterData = filteredData?.filter(
+  //               (item: any) =>
+  //                 item?.class_id === boxes[0]?.class_id &&
+  //                 item?.stream === boxes[0]?.stream,
+  //             );
+  //             setSubjects(filterData || []);
+  //           }
+  //           setSubjectsAll(filteredData || []);
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         toast.error(e?.message, {
+  //           hideProgressBar: true,
+  //           theme: 'colored',
+  //           position: 'top-center',
+  //         });
+  //       });
+  //   } else {
+  //     getData('college_subject/list')
+  //       .then((response: any) => {
+  //         if (response.status) {
+  //           const filteredData = response?.data?.subjects_data?.filter(
+  //             (item: any) => item?.is_active,
+  //           );
+  //           // setSubjects(filteredData || []);
+  //           const filterData = filteredData?.filter(
+  //             (item: any) =>
+  //               item?.course_id === boxes[0]?.course_id &&
+  //               item?.semester_id === boxes[0]?.sem_id,
+  //           );
+  //           setSubjects(filterData || []);
+  //           setSubjectsAll(filteredData || []);
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         toast.error(e?.message, {
+  //           hideProgressBar: true,
+  //           theme: 'colored',
+  //           position: 'top-center',
+  //         });
+  //       });
+  //   }
+  //   getData(`/teacher/teachers_list_for_student/${StudentId}`)
+  //     .then((response: any) => {
+  //       if (response.status) {
 
-          const filteredData = response?.data?.teachers
+  //         const filteredData = response?.data?.teachers
 
-          setTeachersAll(filteredData || []);
-        }
-      })
-      .catch((e) => {
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
-      })
-  };
+  //         setTeachersAll(filteredData || []);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       toast.error(e?.message, {
+  //         hideProgressBar: true,
+  //         theme: 'colored',
+  //         position: 'top-center',
+  //       });
+  //     })
+  // };
 
   const getPrefrencelist = async () => {
-    let subjectData: any = [];
+    //let subjectData: any = [];
     let filteredData: any = [];
     let entity: any;
     let teacherlist: any = [];
+    let class_id:any=0;
+    let course_id:any=0;
+    let semester_id:any;
     await getData(`${'new_student_academic_history/get/' + StudentId}`)
       .then(async (response: any) => {
         if (response.status) {
+          console.log(response?.data,boxes)
+          setBoxes((prevBoxes) =>
+            prevBoxes.map((box) => ({
+              ...box,
+              class_id: response?.data[0]?.class_id,
+              stream: response?.data[0]?.stream,
+              course_id: response?.data[0]?.course_id,
+              sem_id: response?.data[0]?.sem_id,
+            })),
+          );
           if (response?.data[0]?.institution_type == 'school') {
+            setAcademic(
+              response?.data[0]?.institution_type === 'school' ? true : false,
+            );
+            class_id=response?.data[0]?.class_id;
             entity = 'school';
             await getData('school_subject/list')
-              .then((response: any) => {
-                if (response.status) {
-                  filteredData = response?.data?.subjects_data?.filter(
-                    (item: any) => item?.is_active,
+              .then((data: any) => {
+                if (data.status) {
+                  filteredData = data?.data?.subjects_data?.filter(
+                    (item: any) => item?.is_active && item?.class_id == response?.data[0]?.class_id && (response?.data[0].stream != 'general' ? item?.stream == response?.data[0].stream : true),
                   );
                 }
               })
@@ -342,12 +361,14 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 // empty
               });
           } else {
-            getData('college_subject/list')
-              .then((response: any) => {
-                if (response.status) {
+            course_id=response?.data[0]?.course_id;
+            semester_id=response?.data[0]?.sem_id;
+            await getData('college_subject/list')
+              .then((data: any) => {
+                if (data.status) {
                   entity = 'college'
-                  filteredData = response?.data?.subjects_data?.filter(
-                    (item: any) => item?.is_active,
+                  filteredData = data?.data?.subjects_data?.filter(
+                    (item: any) => item?.is_active && item?.course_id == response?.data[0]?.course_id && item?.semester_id==response?.data[0]?.sem_id,
                   );
                 }
               })
@@ -355,12 +376,13 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 //empty
               });
           }
+          setSubjects(filteredData)
         }
       })
       .catch(() => {
         // empty
       });
-    getData(`/teacher/teachers_list_for_student/${StudentId}`)
+   await getData(`/teacher/teachers_list_for_student/${StudentId}`)
       .then((response: any) => {
         if (response.status) {
 
@@ -368,47 +390,86 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
 
           teacherlist = filteredData || []
         }
+        setTeachersAll(teacherlist);
       })
       .catch(() => {
         // empty
       })
-    getData('/subject_preference/get/' + StudentId)
+   await getData('/subject_preference/get/' + StudentId)
       .then((data: any) => {
         if (data?.data.length > 0) {
           data?.data?.map(async (item: any, index: number) => {
             if (entity == 'school') {
-
-              if (
-                item?.stream === '' ||
-                item?.stream === undefined ||
-                item?.stream === null
-              ) {
-                const filterData = filteredData?.filter(
-                  // (items: any) => items?.class_id == item?.class_id ,
-                  (items: any) =>item?.class_id !== null ? items?.class_id == item?.class_id : items?.subject_id == item.subject_id ,
-                );
-                subjectData = filterData || [];
-              } else {
-                const filterData = filteredData?.filter(
-                  (items: any) =>
-                    items?.class_id == item?.class_id &&
-                    items?.stream == item?.stream,
-                );
-                subjectData = filterData || [];
+              console.log(class_id!=item?.class_id)
+              if(class_id!=item?.class_id){
+                const newBox: Box = {
+                  id: item.id,
+                  course_id: '',
+                  subject_id: '',
+                  preference: '',
+                  score_in_percentage: '',
+                  sem_id: '',
+                  class_id: class_id,
+                  stream: item?.stream,
+                  teacher_id:'',
+                  teachers: teacherlist,
+                };
+                console.log(boxes,newBox.id,!boxes.some((box) => box.id === newBox.id))
+                if (!boxes.some((box) => box.id === newBox.id)) {
+                  setBoxes((prevBoxes) => [...prevBoxes, newBox]);
+                }
+                return;
               }
+              // if (
+              //   item?.stream === '' ||
+              //   item?.stream === undefined ||
+              //   item?.stream === null
+              // ) {
+              //   // const filterData = filteredData?.filter(
+              //   //   // (items: any) => items?.class_id == item?.class_id ,
+              //   //   (items: any) =>item?.class_id !== null ? items?.class_id == item?.class_id : items?.subject_id == item.subject_id ,
+              //   // );
+              //   subjectData = filteredData || [];
+              // } else {
+              //   // const filterData = filteredData?.filter(
+              //   //   (items: any) =>
+              //   //     items?.class_id == item?.class_id &&
+              //   //     items?.stream == item?.stream,
+              //   // );
+              //   subjectData = filteredData || [];
+              // }
             } else {
-              const filterData = filteredData?.filter(
-                (item: any) =>
-                  item?.course_id === boxes[0]?.course_id &&
-                  item?.semester_id === boxes[0]?.sem_id,
-              );
-              subjectData = filterData || [];
+              if( course_id != item?.course_id){
+                const newBox: Box = {
+                  id: item.id,
+                  course_id: course_id,
+                  subject_id: '',
+                  preference: '',
+                  score_in_percentage: '',
+                  sem_id:semester_id,
+                  class_id: '',
+                  stream:'',
+                  teacher_id:'',
+                  teachers: teacherlist,
+                };
+                if (!boxes.some((box) => box.id === newBox.id)) {
+                  setBoxes((prevBoxes) => [...prevBoxes, newBox]);
+                }
+                return;
+              }
+              // const filterData = filteredData?.filter(
+              //   (item: any) =>
+              //     item?.course_id === boxes[0]?.course_id &&
+              //     item?.semester_id === boxes[0]?.sem_id,
+              // );
+              //subjectData = filterData || [];
             }
-            const subjectname = subjectData?.filter((subject: Subject) => subject.subject_id == item?.subject_id)
-            const selectedSubject = subjectname[0]?.subject_name?.toLowerCase();
-            const teacherData = teacherlist?.filter((teacher: Teacher) =>
-              teacher.subject_list.some((sub: any) => sub.toLowerCase() === selectedSubject)
-            );
+           // setSubjects(subjectData);
+            // const subjectname = subjectData?.filter((subject: Subject) => subject.subject_id == item?.subject_id)
+            // const selectedSubject = subjectname[0]?.subject_name?.toLowerCase();
+            // const teacherData = teacherlist?.filter((teacher: Teacher) =>
+            //   teacher.subject_list.some((sub: any) => sub.toLowerCase() === selectedSubject)
+            // );
             const newBox: Box = {
               id: item.id,
               course_id: item?.course_id,
@@ -419,9 +480,9 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               class_id: item?.class_id,
               stream: item?.stream,
               teacher_id: item?.teacher_id,
-              teachers: teacherData,
+              teachers: teacherlist,
             };
-
+            console.log(!boxes.some((box) => box.id === newBox.id));
             if (!boxes.some((box) => box.id === newBox.id)) {
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
               setInitialState({
@@ -432,7 +493,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                 student_id: String(item?.student_id),
                 sem_id: String(item?.sem_id),
                 teacher_id: String(item?.teacher_id),
-                teachers: teacherData,
+                teachers: teacherlist,
               });
 
             }
@@ -462,18 +523,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
             setBoxes([
               {
                 id: 0,
-                course_id: '',
+                course_id: course_id,
                 subject_id: '',
                 preference: '',
                 score_in_percentage: '',
-                sem_id: '',
-                class_id: '',
+                sem_id: semester_id,
+                class_id: class_id,
                 stream: '',
                 teacher_id: '',
                 teachers: [],
               },
             ]);
-            getacademic()
+            // getacademic()
           } else {
             setBoxes([
               {
@@ -509,7 +570,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
   };
 
   const getSemester = async () => {
-    getData('/semester/list')
+    await getData('/semester/list')
       .then((response: any) => {
         if (response.status) {
           const filteredData = response?.data?.semesters_data?.filter(
@@ -527,20 +588,20 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         });
       });
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      getCourse();
-      getSemester();
-      //getPrefrence();
-      await getacademic();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     getCourse();
+  //     getSemester();
+  //     //getPrefrence();
+  //     // await getacademic();
 
-      if (StudentId) {
-        getPrefrencelist();
-      }
-    }
-    fetchData()
-    // getSubject();
-  }, [activeForm]);
+  //     if (StudentId) {
+  //       getPrefrencelist();
+  //     }
+  //   }
+  //   fetchData()
+  //   // getSubject();
+  // }, [activeForm]);
 
   useEffect(() => {
     // const semesterCount = semester?.filter((item: any) => item?.semester_number === boxes[0]?.sem_id)
@@ -549,34 +610,35 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     );
     setTotalSemester(semesterCount);
   }, [StudentId, semester, boxes]);
-  useEffect(() => {
-    if (!academic) {
-      const filterData = subjectsAll?.filter(
-        (item: any) =>
-          item?.course_id === boxes[0]?.course_id &&
-          item?.semester_id === boxes[0]?.sem_id,
-      );
-      setSubjects(filterData);
-    } else {
-      if (
-        boxes[0]?.stream === 'general' ||
-        boxes[0]?.stream === undefined ||
-        boxes[0]?.stream === null
-      ) {
-        const filterData = subjectsAll?.filter(
-          (item: any) => item?.class_id === boxes[0]?.class_id,
-        );
-        setSubjects(filterData);
-      } else {
-        const filterData = subjectsAll?.filter(
-          (item: any) =>
-            item?.class_id === boxes[0]?.class_id &&
-            item?.stream === boxes[0]?.stream,
-        );
-        setSubjects(filterData);
-      }
-    }
-  }, [boxes, academic]);
+  // useEffect(() => {
+  //   if (!academic) {
+  //     const filterData = subjectsAll?.filter(
+  //       (item: any) =>
+  //         item?.course_id === boxes[0]?.course_id &&
+  //         item?.semester_id === boxes[0]?.sem_id,
+  //     );
+  //     setSubjects(filterData);
+  //   } else {
+  //     if (
+  //       boxes[0]?.stream === 'general' ||
+  //       boxes[0]?.stream === undefined ||
+  //       boxes[0]?.stream === null
+  //     ) {
+  //       console.log(subjectsAll,boxes)
+  //       const filterData = subjectsAll?.filter(
+  //         (item: any) => item?.class_id === boxes[0]?.class_id,
+  //       );
+  //       setSubjects(filterData);
+  //     } else {
+  //       const filterData = subjectsAll?.filter(
+  //         (item: any) =>
+  //           item?.class_id === boxes[0]?.class_id &&
+  //           item?.stream === boxes[0]?.stream,
+  //       );
+  //       setSubjects(filterData);
+  //     }
+  //   }
+  // }, [boxes, academic]);
 
   const handleInputChange = async (
     index: number,
@@ -598,23 +660,23 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
         teacher_id: "", // Reset selected teacher when subject changes
       };
     }
-    if (field === 'course_id') {
-      const semesterCount = semester.filter(
-        (item: any) => item.course_id === value,
-      );
-      setTotalSemester(semesterCount);
-    }
-    if (field === 'sem_id') {
-      const semesterCount = subjectsAll.filter(
-        (item: any) => item.course_id === newBoxes[0].course_id,
-      );
-      const subjectData = semesterCount.filter(
-        (item: any) => item.semester_id === value,
-      );
-      setSubjects(subjectData);
-    }
+    // if (field === 'course_id') {
+    //   const semesterCount = semester.filter(
+    //     (item: any) => item.course_id === value,
+    //   );
+    //   setTotalSemester(semesterCount);
+    // }
+    // if (field === 'sem_id') {
+    //   const semesterCount = subjects.filter(
+    //     (item: any) => item.course_id === newBoxes[0].course_id,
+    //   );
+    //   const subjectData = semesterCount.filter(
+    //     (item: any) => item.semester_id === value,
+    //   );
+    //   setSubjects(subjectData);
+    // }
     if (field === 'class_id') {
-      const subjectData = subjectsAll.filter(
+      const subjectData = subjects.filter(
         (item: any) => item.class_id === value,
       );
       setSubjects(subjectData);
@@ -852,6 +914,18 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: 'top-center',
             });
           }
+          setBoxes([{
+            id: 0,
+            course_id: '',
+            subject_id: '',
+            preference: '',
+            score_in_percentage: '',
+            sem_id: '',
+            class_id: '',
+            stream: '',
+            teacher_id: '',
+            teachers: []
+          }])
           await handleReset();
           navigate('/main/DashBoard');
           // setTimeout(async () => {
@@ -865,8 +939,19 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
               position: 'top-center',
             });
           }
-
-         navigate('/main/DashBoard')
+          setBoxes([{
+            id: 0,
+            course_id: '',
+            subject_id: '',
+            preference: '',
+            score_in_percentage: '',
+            sem_id: '',
+            class_id: '',
+            stream: '',
+            teacher_id: '',
+            teachers: []
+          }])
+          navigate('/main/DashBoard')
         }
         setInitialState(initial);
 
@@ -1188,7 +1273,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     ?.filter((teacher) => teacher.id === box.teacher_id)
                     ?.map((teacher) => (
                       <MenuItem key={teacher.id} value={teacher.id} disabled sx={commonStyle(namecolor)}>
-                        {teacher.first_name+" "+teacher.last_name}
+                        {teacher.first_name + " " + teacher.last_name}
                       </MenuItem>
                     ))}
 
@@ -1197,7 +1282,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                     ?.filter((teacher) => !boxes.some((b) => b.teacher_id === teacher.id))
                     ?.map((teacher) => (
                       <MenuItem key={teacher.id} value={teacher.id} sx={commonStyle(namecolor)}>
-                         {teacher.first_name+" "+teacher.last_name}
+                        {teacher.first_name + " " + teacher.last_name}
                       </MenuItem>
                     ))}
                 </Select>

@@ -267,8 +267,7 @@ const Sidebar = () => {
                               className="has-arrow"
                               onClick={() => toggleMenu(menu.id)}
                               aria-expanded={openMenu === menu.id}
-                            >
-                              {' '}
+                            >                             
                               <div className="parent-icon">
                                 <AdminPanelSettingsOutlinedIcon />
                               </div>

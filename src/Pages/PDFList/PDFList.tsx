@@ -186,6 +186,7 @@ const PDFList = () => {
                       }
                       data={fileList}
                       enableRowVirtualization
+                      enableColumnResizing
                       positionActionsColumn="first"
                       muiTablePaperProps={{
                         elevation: 0,

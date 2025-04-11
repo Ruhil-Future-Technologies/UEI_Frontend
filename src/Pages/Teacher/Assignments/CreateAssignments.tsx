@@ -64,6 +64,7 @@ import QuizModal from './QuizModal';
 
 export interface Assignment {
   id?: string;
+  S;
   title: string;
   type: string;
   contact_email: string;
@@ -140,11 +141,6 @@ export const CreateAssignments = () => {
   const [dueTime_error, setDueTime_error] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorselectStudent, setErrorSelectStudent] = useState(false);
-  const [level_error, setLevel_error] = useState(false);
-  const [questions_error, setQuestions_error] = useState(false);
-  const [topic_error, setTopic_error] = useState(false);
-  const [quiz_timer, setQuizTimer] = useState('');
-  const [quiz_timer_error, setQuizTimer_error] = useState(false);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -203,41 +199,31 @@ export const CreateAssignments = () => {
   const [quizData, setQuizData] = useState<any>({});
   const [level, setLevel] = useState('');
   const [questions, setQuestions] = useState<any>([
-    { one: '', two: '', three: '', four: '', five: '' },
+    { one: null, two: null, three: null, four: null, five: null },
   ]);
   const [topic, setTopic] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isQuizGenerated, setIsQuizGenerated] = useState(false);
-  const [quizPayload, setQuizPayload] = useState<any>({});
-  const [totalQuestions, setTotalQuestion] = useState<any>('');
 
-  const getTotal = (questions: Record<string, any>[]) => {
-    const total = questions.reduce((acc, obj) => {
-      for (const value of Object.values(obj)) {
-        const num = Number(value);
-        if (!isNaN(num)) acc += num;
-      }
-      return acc;
-    }, 0);
-
-    setTotalQuestion(total);
-  };
-
-  console.log({ questions });
+  const totalQuestions = questions.reduce(
+    (acc: any, curr: any) =>
+      acc + curr.one + curr.two + curr.three + curr.four + curr.five,
+    0,
+  );
 
   useEffect(() => {
-    getTotal(questions);
-  }, [questions]);
-
-  useEffect(() => {
-    getSemester();
-    getCourses();
-    getStudentsForTeacher();
-    getTeacherProfileInfo();
+    const fetchData = async () => {
+      await getStudentsForTeacher();
+      await getSemester();
+      await getCourses();
+      await getTeacherProfileInfo();
+    };
+    fetchData();
     //getListOfStudnetsForAssignment();
   }, []);
+  // useEffect(() => {
 
-  const getAssignmentInfo = () => {
+  // }, [id]);
+  const getAssignmentInfo = (students: StudentRep0oDTO[]) => {
     if (id) {
       try {
         getData(`/assignment/get/${id}`)
@@ -258,6 +244,12 @@ export const CreateAssignments = () => {
               setDueDate(dayjs(extractedDate));
               setDueTime(dayjs(response?.data?.due_date_time));
               setAvailableFrom(dayjs(response?.data?.available_from));
+              const selectedStudents =
+                students?.filter((student) =>
+                  response?.data?.assign_to_students?.includes(student.id),
+                ) || [];
+              console.log(selectedStudents);
+              setSelectedStudents(selectedStudents);
             }
             if (response.data.class_stream_subjects == null) {
               const allSubject: SubjectRep0oDTO[] =
@@ -549,6 +541,7 @@ export const CreateAssignments = () => {
       setSelectedStudents([]);
       setSelectAll(false);
     }
+    setErrorSelectStudent(false);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -607,6 +600,7 @@ export const CreateAssignments = () => {
         .then((response) => {
           if (response.status) {
             setListOfStudent(response.data);
+            getAssignmentInfo(response.data);
           }
         })
         .catch((error) => {
@@ -726,7 +720,7 @@ export const CreateAssignments = () => {
     if (!valid) return;
     const formData = new FormData();
     formData.append('title', assignmentData.title);
-    formData.append('type', assignmentData.type);
+    formData.append('type', assignmentType);
     formData.append('contact_email', assignmentData.contact_email);
     formData.append('allow_late_submission', String(allowLateSubmission));
     formData.append('due_date_time', String(mergeDateAndTime()));
@@ -737,14 +731,7 @@ export const CreateAssignments = () => {
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
-    // const students = selectedStudents.map((student) => student.id);
-    const students = [
-      '592c4e18-65fe-4bbe-8236-2ffeaa2ef73a',
-      'af149e45-790a-4962-8489-5a3061b8fa05',
-      '24e589dd-8b90-4e51-bf75-0ff90ea544dc',
-      '65f58d54-20f8-4368-ad39-b4d44658ce3c',
-    ];
-
+    const students = selectedStudents.map((student) => student.id);
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
       formData.append('files', file);
@@ -814,7 +801,7 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        formData.forEach((k, v) => console.log({ v, k }));
+        formData.forEach((k, v) => console.log({ k, v }));
 
         postData('assignment/add', formData).then((response) => {
           if (response.status) {
@@ -898,30 +885,6 @@ export const CreateAssignments = () => {
     console.log({ assignmentData });
 
     let valid1 = false;
-    if (!topic) {
-      setTopic_error(true);
-
-      valid1 = true;
-    } else {
-      setTopic_error(false);
-    }
-
-    if (!level) {
-      setLevel_error(true);
-
-      valid1 = true;
-    } else {
-      setLevel_error(false);
-    }
-    console.log({ totalQuestions });
-
-    if (totalQuestions < 1) {
-      setQuestions_error(true);
-
-      valid1 = true;
-    } else {
-      setQuestions_error(false);
-    }
     if (assignmentData)
       if (assignmentData.instructions == '') {
         setInstructoins_error(true);
@@ -966,20 +929,6 @@ export const CreateAssignments = () => {
     if (error != null) {
       valid1 = true;
     }
-    if (selectedStudents.length < 1) {
-      setErrorSelectStudent(true);
-      valid1 = true;
-    } else {
-      setErrorSelectStudent(false);
-    }
-
-    if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
-      setQuizTimer_error(true);
-
-      valid1 = true;
-    } else {
-      setQuizTimer_error(false);
-    }
 
     let valid = true;
 
@@ -1011,7 +960,7 @@ export const CreateAssignments = () => {
             [index]: {
               course_id_error: !box.course_id,
               semester_number_error: !box.semester_number,
-              subjects_error: !box.subjects?.length,
+              subjects_error: !box.subjects?.length, // Ensures subjects is not empty
             },
           }));
         }
@@ -1021,6 +970,7 @@ export const CreateAssignments = () => {
     if (valid1) return;
 
     if (!valid) return;
+    console.log({ setLevel_error, setTopic_error, setQuestions_error });
 
     // const response = await axios.post('/api/quiz/getData', {
     //   // Your request params here
@@ -1168,191 +1118,12 @@ export const CreateAssignments = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmitQuiz = () => {
-    let valid1 = false;
-    if (assignmentData)
-      if (assignmentData.instructions == '') {
-        setInstructoins_error(true);
-
-        valid1 = true;
-      } else {
-        setInstructoins_error(false);
-      }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)) {
-      setContact_email_error(true);
-
-      valid1 = true;
-    } else {
-      setContact_email_error(false);
-    }
-
-    if (availableFrom == null) {
-      setAvailableFrom_error(true);
-
-      valid1 = true;
-    } else {
-      setAvailableFrom_error(false);
-    }
-
-    if (dueDate == null) {
-      setDue_date_error(true);
-
-      valid1 = true;
-    } else {
-      setDue_date_error(false);
-    }
-
-    if (dueTime == null) {
-      setDueTime_error(true);
-
-      valid1 = true;
-    } else {
-      setDueTime_error(false);
-    }
-
-    if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
-      setQuizTimer_error(true);
-
-      valid1 = true;
-    } else {
-      setQuizTimer_error(false);
-    }
-
-    if (error != null) {
-      valid1 = true;
-    }
-    if (selectedStudents.length < 1) {
-      setErrorSelectStudent(true);
-      valid1 = true;
-    } else {
-      setErrorSelectStudent(false);
-    }
-    let valid = true;
-
-    if (selectedEntity.toLowerCase() === 'school') {
-      boxesForSchool.forEach((box, index) => {
-        if (
-          !box.class_id ||
-          (box.stream === '' ? false : !box.stream) ||
-          !box.subjects?.length
-        ) {
-          valid = false;
-
-          setErrorForClass_stream_subject((prevError) => ({
-            ...prevError,
-            [index]: {
-              class_id_error: !box.class_id,
-              stream_error: !box.stream,
-              subjects_error: !box.subjects?.length,
-            },
-          }));
-        }
-      });
-    } else {
-      boxes.forEach((box, index) => {
-        if (!box.course_id || !box.semester_number || !box.subjects?.length) {
-          valid = false;
-          setErrorForCourse_semester_subject((prevError) => ({
-            ...prevError,
-            [index]: {
-              course_id_error: !box.course_id,
-              semester_number_error: !box.semester_number,
-              subjects_error: !box.subjects?.length,
-            },
-          }));
-        }
-      });
-    }
-
-    if (valid1) return;
-
-    if (!valid) return;
-
-    console.log({ quizPayload });
-    console.log('Now make post req to Save Quiz Data');
-
-    // make post call here to save quiz data and assignment detail
-  };
-
   const handleSaveQuiz = (updatedQuizData: any) => {
-    console.log({ assignmentData });
-
+    // Do something with the updated quiz data
     console.log('Updated quiz data:', updatedQuizData);
 
-    const payload: any = { ...updatedQuizData }; // const students = selectedStudents.map((student) => student.id);
-    const students = [
-      '592c4e18-65fe-4bbe-8236-2ffeaa2ef73a',
-      'af149e45-790a-4962-8489-5a3061b8fa05',
-      '24e589dd-8b90-4e51-bf75-0ff90ea544dc',
-      '65f58d54-20f8-4368-ad39-b4d44658ce3c',
-    ];
-    payload.allow_multiple_attempt = String(allowMultipleAttempt);
-    payload.allow_late_submission = String(allowLateSubmission);
-    payload.available_from = String(availableFrom);
-    payload.due_date_time = String(mergeDateAndTime());
-    payload.students = students;
-    payload.add_to_report = String(addToStudentRepost);
-    payload.notify = String(sendNotification);
-    payload.save_draft = String(saveAsDraft);
-    payload.timer = String(quiz_timer);
-
-    if (selectedEntity.toLowerCase() === 'school') {
-      const class_stream_subjects = boxesForSchool.reduce(
-        (acc, boxesForSchool) => {
-          const { class_id, stream, subjects } = boxesForSchool;
-          const streamKey = stream === '' ? 'general' : stream || 'general';
-          if (!acc[class_id]) {
-            acc[class_id] = {};
-          }
-
-          if (!acc[class_id][streamKey]) {
-            acc[class_id][streamKey] = [];
-          }
-
-          const subjectString = Array.isArray(subjects)
-            ? subjects.join('')
-            : subjects;
-
-          acc[class_id][streamKey] = [subjectString];
-
-          return acc;
-        },
-        {} as Record<string, Record<string, string[]>>,
-      );
-      payload.class_stream_subjects = class_stream_subjects;
-    } else {
-      const course_semester_subjects = boxes.reduce(
-        (acc, box) => {
-          const { course_id, semester_number, subjects } = box;
-
-          if (!acc[course_id]) {
-            acc[course_id] = {};
-          }
-
-          if (!acc[course_id][semester_number]) {
-            acc[course_id][semester_number] = [];
-          }
-
-          acc[course_id][semester_number] = [
-            ...new Set([...acc[course_id][semester_number], ...subjects]),
-          ];
-
-          const subjectString = Array.isArray(subjects)
-            ? subjects.join('')
-            : subjects;
-
-          acc[course_id][semester_number] = [subjectString];
-          return acc;
-        },
-        {} as Record<string, Record<string, string[]>>,
-      );
-      payload.course_semester_subjects = course_semester_subjects;
-    }
-
-    setQuizPayload(payload);
-    setIsQuizGenerated(true);
-    return;
+    // You can make another API call here to save the changes
+    // axios.post('/api/quiz/save', updatedQuizData);
   };
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
@@ -1564,6 +1335,13 @@ export const CreateAssignments = () => {
     return mergedDateTime;
   };
 
+  const checkStudent = (newValue: any) => {
+    if (newValue.length == 0) {
+      setErrorSelectStudent(true);
+    } else {
+      setErrorSelectStudent(false);
+    }
+  };
   useEffect(() => {
     if (availableFrom == null && availableFrom_error) {
       setAvailableFrom_error(true);
@@ -1603,37 +1381,61 @@ export const CreateAssignments = () => {
           </div>
         </div>
 
-        <Typography variant="subtitle1" className="my-2">
-          Assignment Type
-        </Typography>
-        <div className="overflow-auto">
-          <ToggleButtonGroup
-            value={assignmentType}
-            exclusive
-            onChange={(_, newValue) => setAssignmentType(newValue)}
-            className="assignbtngrp"
-          >
-            {type !== 'quiz' && (
-              <>
-                <ToggleButton value="written">
-                  <AssignmentIcon /> Written
-                </ToggleButton>
-                <ToggleButton value="project">
-                  <AccountTreeIcon /> Project
-                </ToggleButton>
-                <ToggleButton value="presentation">
-                  <PresentToAllIcon />
-                  Presentation
-                </ToggleButton>
-              </>
-            )}
-            {type == 'quiz' && (
-              <ToggleButton value="quiz">
-                <QuizIcon /> Quiz
-              </ToggleButton>
-            )}
-          </ToggleButtonGroup>
-        </div>
+        <div className="card p-lg-4 bg-m-transparent">
+          <div className="cardbody p-0 p-lg-2">
+            <div className="container">
+              <div className="row justify-content-center">
+                <div className="col-lg-9">
+                  <div className="row g-4">
+                    <div className="col-12">
+                      <Typography variant="h5" className="mb-4 fw-bold">
+                        Create Assignment
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        label="Assignment Title"
+                        variant="outlined"
+                        name="title"
+                        value={assignmentData.title}
+                        onChange={handleChanges}
+                      />
+                      {title_error && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small> Please enter a valid Title.</small>
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-12">
+                      <Typography variant="subtitle1" className="mb-2">
+                        Assignment Type
+                      </Typography>
+                      <div className="overflow-auto">
+                        <ToggleButtonGroup
+                          value={assignmentType}
+                          exclusive
+                          onChange={(_, newValue) =>
+                            setAssignmentType(newValue)
+                          }
+                          fullWidth
+                          className="assignbtngrp"
+                        >
+                          <ToggleButton value="written">
+                            {' '}
+                            <AssignmentIcon /> Written
+                          </ToggleButton>
+                          <ToggleButton value="quiz">
+                            <QuizIcon /> Quiz
+                          </ToggleButton>
+                          <ToggleButton value="project">
+                            <AccountTreeIcon /> Project
+                          </ToggleButton>
+                          <ToggleButton value="presentation">
+                            {' '}
+                            <PresentToAllIcon />
+                            Presentation
+                          </ToggleButton>
+                        </ToggleButtonGroup>
+                      </div>
 
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="cardbody p-2">
@@ -1644,9 +1446,9 @@ export const CreateAssignments = () => {
                     <div className="col-12">
                       <Typography variant="h6" className="mb-4 fw-bold">
                         Create{' '}
-                        {assignmentType !== 'quiz' ? 'Assignment' : 'Quiz'}
+                        {assignmentType !== 'Quiz' ? 'Assignment' : 'Quiz'}
                       </Typography>
-                      {assignmentType !== 'quiz' && (
+                      {assignmentType !== 'Quiz' && (
                         <TextField
                           fullWidth
                           label="Assignment Title"
@@ -1656,7 +1458,7 @@ export const CreateAssignments = () => {
                           onChange={handleChanges}
                         />
                       )}
-                      {title_error && assignmentType != 'quiz' && (
+                      {title_error && (
                         <p className="error-text " style={{ color: 'red' }}>
                           <small> Please enter a valid Title.</small>
                         </p>
@@ -1739,7 +1541,7 @@ export const CreateAssignments = () => {
                                 <div className="pinwi-20">
                                   <AttachFileIcon />
                                 </div>
-                                <ListItemText primary={file.name} />
+                                <ListItemText primary={file.name as any || file as any} />
                               </ListItem>
                             ))}
                           </List>
@@ -1764,7 +1566,6 @@ export const CreateAssignments = () => {
                               labelId="level-select-label"
                               id="level-select"
                               value={level}
-                              disabled={isQuizGenerated}
                               onChange={(e) => setLevel(e.target.value)}
                             >
                               <MenuItem value="easy">Easy</MenuItem>
@@ -1791,7 +1592,6 @@ export const CreateAssignments = () => {
                           <TextField
                             label="One Mark"
                             type="number"
-                            disabled={isQuizGenerated}
                             value={questions[0].one}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1811,7 +1611,6 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Two Marks"
                             type="number"
-                            disabled={isQuizGenerated}
                             value={questions[0].two}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1831,7 +1630,6 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Three Marks"
                             type="number"
-                            disabled={isQuizGenerated}
                             value={questions[0].three}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1851,7 +1649,6 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Four Marks"
                             type="number"
-                            disabled={isQuizGenerated}
                             value={questions[0].four}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1871,7 +1668,6 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Five Marks"
                             type="number"
-                            disabled={isQuizGenerated}
                             value={questions[0].five}
                             onChange={(e) => {
                               const value = Number(e.target.value);
@@ -1911,7 +1707,6 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Topic"
                             type="text"
-                            disabled={isQuizGenerated}
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
                             fullWidth
@@ -1932,7 +1727,6 @@ export const CreateAssignments = () => {
                       </label>
                       <ReactQuill
                         id="text"
-                        readOnly={isQuizGenerated}
                         placeholder="instuctions"
                         ref={quillRef}
                         value={assignmentData.instructions}
@@ -2346,7 +2140,9 @@ export const CreateAssignments = () => {
                                 className="error-text"
                                 style={{ color: 'red' }}
                               >
-                                <small>Please select a available date.</small>
+                                <small>
+                                  Please select today or a future date.
+                                </small>
                               </p>
                             )}
                           </div>
@@ -2479,48 +2275,65 @@ export const CreateAssignments = () => {
                     </div>
                     <div className="col-lg-12">
                       {assignmentType == 'written' ||
+                        assignmentType == 'project' ||
+                        assignmentType == 'presentation' ||
+                        (assignmentType == 'quiz' && isModalOpen) ? (
+                        {assignmentType == 'written' ||
                       assignmentType == 'project' ||
                       assignmentType == 'presentation' ||
                       (assignmentType == 'quiz' && isQuizGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() =>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() =>
                               assignmentType === 'quiz' && setIsModalOpen(true)
                             }
                             style={{ marginTop: 20, marginRight: 10 }}
-                          >
-                            Preview
-                          </Button>
+                            >
+                              Preview
+                            </Button>
 
+  
                           <Button
-                            variant="outlined"
-                            color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
-                            style={{
-                              marginTop: 20,
+                              variant="outlined"
+                              color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
+                              style={{
+                                marginTop: 20,
 
+  
                               marginRight: 10,
-                            }}
-                            onClick={handleSaveAsDraft}
-                          >
-                            Save as Draft
-                          </Button>
+                              }}
+                              onClick={handleSaveAsDraft}
+                            >
+                              Save as Draft
+                            </Button>
 
+  
                           <Button
-                            variant="contained"
-                            color="success"
-                            style={{ marginTop: 20 }}
-                            onClick={
+                              variant="contained"
+                              color="success"
+                              style={{ marginTop: 20 }}
+                              onClick={
                               assignmentType !== 'quiz'
                                 ? submitAssignment
                                 : handleSubmitQuiz
                             }
-                          >
-                            Publish
-                          </Button>
-                        </div>
+                            >
+                              Publish
+                            </Button>
+                          </div>
                       ) : (
+                        <div className="d-flex align-items-center gap-2 justify-content-end">
+                          <Button
+                            variant="contained"
+                            color="success"
+                            style={{ marginTop: 20 }}
+                            onClick={generateQuiz}
+                          >
+                            Generate Quiz
+                          </Button>
+                          ) : (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
                           <Button
                             variant="contained"
@@ -2532,12 +2345,20 @@ export const CreateAssignments = () => {
                           </Button>
                         </div>
                       )}
+                        )}
+                    </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+        </div>
+        <QuizModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          quizData={quizData}
+          onSave={handleSaveQuiz}
+        />
         </div>
         <QuizModal
           open={isModalOpen}

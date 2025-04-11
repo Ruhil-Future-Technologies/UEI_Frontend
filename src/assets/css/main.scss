@@ -1791,13 +1791,13 @@ form select.error:focus {
   @media (min-width: 1024px) {
     display: grid;
     height: 100vh;
+    grid-template-columns: 300px 1fr;
     .access1-card {
       margin-top: 4rem;
     }
   }
 
-  grid-template-columns: 400px 1fr;
-  height: 100vh;
+  
 
   .MuiStepper-vertical {
     height: max-content;
@@ -1858,14 +1858,13 @@ form select.error:focus {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   
   .login-footer {
     padding: 0.8rem;
     flex-wrap: wrap;
     display: flex;
     justify-content: space-between;
-
+ margin-top: auto;
     a,
     p {
       font-size: 0.8rem;

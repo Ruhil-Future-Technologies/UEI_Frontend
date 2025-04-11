@@ -156,7 +156,7 @@ const Header = () => {
               last_name: basic_info?.last_name,
               gender: basic_info?.gender,
             });
-            if (data?.data?.basic_info?.pic_path !== null) {
+            if (data?.data?.basic_info?.pic_path !== null && data?.status) {
               getData(
                 `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path}`,
               )
@@ -176,7 +176,7 @@ const Header = () => {
       .then((response) => {
         if (response?.data) {
           sessionStorage.setItem('profileData', JSON.stringify(response.data));
-          const adminInfo = response.data.basic_info;
+          const adminInfo = response?.data?.admin_data?.basic_info;
           if (adminInfo && Object.keys(adminInfo).length > 0) {
             setGender(adminInfo?.gender);
             setNamepro({
@@ -184,11 +184,11 @@ const Header = () => {
               last_name: adminInfo?.last_name,
               gender: adminInfo?.gender,
             });
-            if (response?.data?.basic_info?.pic_path !== null) {
+            if (response?.data?.admin_data?.basic_info?.pic_path !== null && response?.status) {
               getData(
                 `${
                   'upload_file/get_image/' +
-                  response?.data?.basic_info?.pic_path
+                  response?.data?.admin_data?.basic_info?.pic_path
                 }`,
               )
                 .then((imgdata) => {
@@ -242,29 +242,6 @@ const Header = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setNamecolor(theme);
-  //   if (theme === 'default') {
-  //     document?.documentElement?.setAttribute('data-theme', theme);
-  //   } else if (theme === 'light') {
-  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
-  //   } else if (theme === 'dark') {
-  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
-  //   } else if (theme === 'blue-theme')
-  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
-  //   else if (theme === 'semi-dark')
-  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
-  //   else if (theme === 'bordered-theme')
-  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
-  // }, [theme]);
-
-  // const toggleTheme = () => {
-  //   setTheme((prevTheme) => {
-  //     const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-  //     localStorage.setItem('theme', newTheme);
-  //     return newTheme;
-  //   });
-  // };
 
   const gotoProfile = () => {
     if (user_type === 'admin') {
@@ -304,13 +281,6 @@ const Header = () => {
           <ul className="navbar-nav gap-1 nav-right-links align-items-center">
             <li className="nav-item">
               <div className="toggle-mode nav-link" role="button">
-                {/* <IconButton
-                  data-testid="theme-toggle"
-                  onClick={toggleTheme}
-                  color="inherit"
-                >
-                  {theme === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
-                </IconButton> */}
                 <IconButton color="inherit" onClick={toggleTheme}>
                   {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
                 </IconButton>
@@ -352,7 +322,7 @@ const Header = () => {
                   <h5 className="notiy-title mb-0">Notifications</h5>
                   <div className="dropdown">
                     <button
-                      className="btn-secondary dropdown-toggle dropdown-toggle-nocaret option"
+                      className="btn-light dropdown-toggle dropdown-toggle-nocaret option"
                       type="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -418,7 +388,7 @@ const Header = () => {
                           </div>
                           <div className="">
                             <h5 className="notify-title">
-                              Congratulations Jhon.
+                              Congratulations Jhon...
                             </h5>
                             <p className="mb-0 notify-desc">
                               Many congtars jhons. You have won the gifts.

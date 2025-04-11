@@ -6,15 +6,26 @@
   $headerbg: #212529;
   $date_text: #d5d5d5 !important;
   $mui_date_bg: #32363b !important;
-  .quiz-panel{
-    background-color:  var(--bs-body-bg-2) !important;;
+  .quiz-panel {
+    background-color: var(--bs-body-bg-2) !important;
   }
-  .assignbtngrp{
-    button[aria-pressed='false']{
-      background-color: transparent!important;
+  .assignbtngrp {
+    button[aria-pressed='false'] {
+      background-color: transparent !important;
     }
   }
-
+  .chat-box {
+    background-image: none !important;
+  }
+  .text-secondary {
+    color: $headingColor !important;
+  }
+  .chart-wrapper {
+    background-color: var(--bs-body-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
   .chat-panel .main-chat-panel .inner-panel .chat-result ul li .chat-card {
     background-color: #212529 !important;
   }
@@ -27,9 +38,9 @@
   }
   .MuiMenuItem-root {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: white;
+    color: white;
   }
-  
+
   .seprator span {
     background-color: $headerbg;
   }
@@ -48,7 +59,7 @@
   }
   .access-card {
     background-color: $headerbg !important;
-    background: none!important;
+    background: none !important;
     svg {
       path {
         fill: #939aa0;
@@ -168,7 +179,7 @@
       background-color: #939aa0 !important;
     }
   }
-  
+
   .btn-outline-light {
     background-color: #212529 !important;
     color: #d5d5d5 !important;
@@ -197,9 +208,8 @@
       color: #dee2e6 !important;
     }
   }
-  .chat-panel .left-side-history{
+  .chat-panel .left-side-history {
     background-color: #1b1f22;
-   
   }
   .chat-content-leftside .chat-left-msg {
     background-image: linear-gradient(

@@ -57,6 +57,22 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ 
       },
     },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          html: {
+            // Required to avoid white flash on autofill
+            WebkitTextSizeAdjust: "100%",
+          },
+          "input:-webkit-autofill": {
+            WebkitBoxShadow: `${isDarkMode ? "0 0 0 1000px #32363b" : "0 0 0 1000px #fff"} inset !important`,
+            boxShadow: `${isDarkMode ? "0 0 0 1000px #32363b" : "0 0 0 1000px #fff"} inset !important`,
+            WebkitTextFillColor: `${isDarkMode ? "#fff" : "#000"} !important`,
+            caretColor: `${isDarkMode ? "#fff" : "#000"} !important`,
+            transition: "background-color 5000s ease-in-out 0s",
+          },
+        },
+      },
+      
       MuiButton: {
         styleOverrides: {
           root: {

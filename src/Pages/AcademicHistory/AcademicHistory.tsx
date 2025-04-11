@@ -63,6 +63,7 @@ interface Course {
   course_name: string;
   course_id: string;
   institution_id: string;
+  is_active?:boolean;
 }
 interface University {
   id: number;
@@ -363,6 +364,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
                 // setCheckBoxes((prevBoxes) => [...prevBoxes, newBox]);
               }
             });
+            const filterDataCourse = coursesAll.filter(
+              (item) => item.institution_id === data?.data?.[0]?.institute_id,
+            );
+            setCourses(filterDataCourse);
           } else if (data?.code === 404) {
             setBoxes([
               {
@@ -621,10 +626,10 @@ const AcademicHistory: React.FC<ChildComponentProps> = ({
           item.is_approve == true,
       );
       setInstitutes(filterDataInstitute);
-      const filterDataCourse = coursesAll.filter(
-        (item) => item.institution_id === boxes[0].institute_id,
-      );
-      setCourses(filterDataCourse);
+      // const filterDataCourse = coursesAll.filter(
+      //   (item) => item.institution_id === boxes[0].institute_id,
+      // );
+      // setCourses(filterDataCourse);
       // const semesterCount = semester.filter((item) => item.course_id === boxes[0].course_id)
       // setTotalSemester(semesterCount)
     }

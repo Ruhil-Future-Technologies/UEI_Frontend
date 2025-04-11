@@ -149,7 +149,7 @@ const AddEditTeacher = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
-  const genderOptions = ['Male', 'Female'];
+  const genderOptions = ['male', 'female'];
   const [dob, setDob] = useState<any>(null);
   const navigate = useNavigate();
   const [, setStreams] = useState<string[]>([]);
@@ -888,7 +888,7 @@ const AddEditTeacher = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
-          }else{
+          } else {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
@@ -1505,6 +1505,7 @@ const AddEditTeacher = () => {
                           component={TextField}
                           label="Mobile Number*"
                           name="phone"
+                          inputProps={{ maxLength: 10 }}
                           value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                             handleChange(e, 'phone')
@@ -2406,6 +2407,7 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
+                          inputProps={{ maxLength: 6 }}
                           label="Pincode *"
                           name="pincode"
                           value={values?.pincode}

@@ -192,15 +192,7 @@
   .top-header {
     .navbar {
       left: 0 !important;
-      .dropdown {
-        position: static;
-        .dropdown-menu {
-          width: 100%;
-          &::after {
-            display: none;
-          }
-        }
-      }
+      
       .mega-menu-widgets {
         padding: 1rem;
         position: relative;
@@ -213,6 +205,7 @@
 
   .main-wrapper {
     margin-left: 0 !important;
+    
   }
 
   /*page footer*/
@@ -220,10 +213,11 @@
   .page-footer {
     left: 0px !important;
     text-align: center;
-    padding: 0.5rem;
-    height: auto !important;
+    padding: 1rem 0.5rem!important;
+    height: 70px !important;
     bottom: 0 !important;
     font-size: 11px;
+    background-color: transparent!important;
     a {
       font-size: 11px;
     }
@@ -236,7 +230,7 @@
   }
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 1024px) {
   .search-popup {
     position: fixed !important;
     top: 0 !important;
@@ -254,13 +248,15 @@
 
       .afterheader {
         .chat-box {
-          height: 84vh !important;
+          height: 100vh !important;
           overflow: auto;
           scrollbar-width: initial !important;
+          background-image: url("../img/chat-bg.svg");
+          background-size: cover;
         }
         .chatinput-body {
           position: fixed;
-          bottom: 0rem;
+          bottom: 1rem;
           left: 1rem;
           right: 1rem;
           width: auto;

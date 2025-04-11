@@ -38,6 +38,7 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import FullScreenLoader from '../Loader/FullScreenLoader';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface IContentForm {
   subjects: string[];
@@ -793,6 +794,7 @@ const AddContent = () => {
         hideProgressBar: true,
         theme: 'colored',
       });
+      setLoading(false);
       return;
     }
     if (contentData?.url) {
@@ -1383,12 +1385,38 @@ const AddContent = () => {
         });
       });
   };
+
+
+  const handleBack = () => {
+    navigate(-1); // navigates to the previous page
+  };
+
   return (
     <>
       {' '}
       {loading && <FullScreenLoader />}
       <div className="main-wrapper">
         <div className="main-content">
+          <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div className="breadcrumb-title pe-3">  
+              <div className="d-flex align-items-center gap-2">
+              <ArrowBackIcon role="button" onClick={handleBack}/>           
+              <a className="text-dark" href="/teacher-dashboard">
+                Dashboard
+              </a>
+              </div>
+              
+            </div>
+            <div className="ps-3">
+              <nav aria-label="breadcrumb">
+                <ol className="breadcrumb mb-0 p-0">
+                  <li className="breadcrumb-item active" aria-current="page">
+                    <div className="main_title">{id ? 'Edit' : 'Add'} Content</div>
+                  </li>
+                </ol>
+              </nav>
+            </div>
+          </div>
           <div className="card p-lg-3">
             <div className="card-body">
               <Typography variant="h6">
@@ -1916,7 +1944,10 @@ const AddContent = () => {
                                               },
                                             }}
                                           >
-                                            {cls.class_name}
+                                            {cls.class_name.replace(
+                                              'class_',
+                                              'Class ',
+                                            )}
                                           </MenuItem>
                                         ))}
                                       </Select>

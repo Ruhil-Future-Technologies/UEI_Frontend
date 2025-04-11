@@ -19,11 +19,10 @@ import {
   Functions,
   HistoryEdu,
 } from '@mui/icons-material';
-import { MaterialReactTable } from 'material-react-table';
+import { MaterialReactTable, } from 'material-react-table';
 const StudentQuiz = () => {
   const navigate = useNavigate();
   const quizId = 1;
-
   const quizStats = [
     {
       icon: <CheckCircle color="success" />,
@@ -209,6 +208,7 @@ const StudentQuiz = () => {
                 enableColumnResizing
                 muiTableBodyRowProps={{ hover: true }}
               />
+
             </div>
           </div>
         </Box>

@@ -93,7 +93,7 @@ const StudentAssignments = () => {
       }
     },
     {
-      header: 'Late Submition',
+      header: 'Late Submission',
       accessorKey: 'allow_late_submission',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const val = row?.original?.allow_late_submission

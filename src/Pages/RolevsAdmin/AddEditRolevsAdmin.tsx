@@ -346,7 +346,7 @@ const AddEditRoleVsAdmin = () => {
                                     },
                                   }}
                                 >
-                                  {item.first_name}
+                                  {item.first_name+" "+item.last_name}
                                 </MenuItem>
                               ))}
                             </Select>

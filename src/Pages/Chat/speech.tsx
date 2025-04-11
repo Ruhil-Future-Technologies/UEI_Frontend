@@ -1,71 +1,93 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ElevenLabsClient } from "elevenlabs";
+import useApi from '../../hooks/useAPI';
 
-const client = new ElevenLabsClient({ apiKey: "sk_5c40f43be58ba384e26500279e398f26fd3144059852fde8" });
+const audioInstances: Record<number, HTMLAudioElement | null> = {};
+const useTextToSpeech = () => {
+    const { postDataJson } = useApi();
 
-const audioInstances: Record<number, HTMLAudioElement | null> = {}; // Store multiple audio instances by index
+    const base64ToBlob = (base64: string, mimeType: string): Blob => {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length)
+            .fill(0)
+            .map((_, i) => byteCharacters.charCodeAt(i));
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mimeType });
+    };
 
-const textToSpeech = async (text: string, index: number) => {
-    try {
-        // Stop all previous instances except the current one
-        stopSpeech(index);
+    const stopSpeech = (indexToKeep: number) => {
 
-        // const response = await client.textToSpeech.convert(
-        //     "Sm1seazb4gs7RSlUVw7c",
-        //     {
-        //         output_format: "mp3_44100_128",
-        //         text: text,
-        //         model_id: "eleven_flash_v2_5",
-        //     }
-        // );
-       const response = await client.textToSpeech.convertAsStream(
-            "Sm1seazb4gs7RSlUVw7c",
-            {
-                output_format: "mp3_44100_128",
-                text: text,
-                model_id: "eleven_flash_v2_5",
+        if (audioInstances[indexToKeep]) {
+            audioInstances[indexToKeep]?.pause();
+            audioInstances[indexToKeep]?.remove();
+            delete audioInstances[indexToKeep];
+        }
+        for (const key in audioInstances) {
+            if (+key !== indexToKeep && audioInstances[key]) {
+                audioInstances[key]?.pause();
+                delete audioInstances[key];
             }
-        )
-
-        // Convert Readable Stream to ArrayBuffer
-        const audioChunks: Uint8Array[] = [];
-        for await (const chunk of response as any) {
-            audioChunks.push(chunk);
         }
+    };
 
-        // Create a Blob from the chunks
-        const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+    const MAX_CHARS = 300; // Adjust based on what your API handles comfortably
+    const splitTextIntoChunks = (text: string, maxLength: number): string[] => {
+        const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+        const chunks: string[] = [];
+        let currentChunk = '';
 
-        // Generate an Object URL for playback
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audioElement = new Audio(audioUrl);
+        for (const sentence of sentences) {
+            if ((currentChunk + sentence).length <= maxLength) {
+                currentChunk += sentence;
+            } else {
+                if (currentChunk) chunks.push(currentChunk.trim());
+                currentChunk = sentence;
+            }
+        }
+        if (currentChunk) chunks.push(currentChunk.trim());
 
-        audioInstances[index] = audioElement; // Store the new audio instance
-        audioElement.play();
+        return chunks;
+    };
+    const textToSpeech = async (texts: string, index: number) => {
+        stopSpeech(index); // Stop any previous playback
+        // Example: Ensure it's a string
+        const text = Array.isArray(texts) ? texts[0] : texts;
+        const chunks = splitTextIntoChunks(text, MAX_CHARS);
+        let currentAudioIndex = 0;
 
-        // When the speech finishes, clean up the instance and update UI
-        audioElement.onended = () => {
-            delete audioInstances[index]; // Remove instance
+        const playChunk = async () => {
+            if (currentAudioIndex >= chunks.length) {
+                delete audioInstances[index];
+                return;
+            }
+
+            const payload = {
+                text: chunks[currentAudioIndex],
+                lang: "en",
+                language_code: "en-IN",
+                voice_name: "en-IN-Wavenet-E"
+            };
+
+            try {
+                const response = await postDataJson("chat/translation", payload);
+                const audioBlob = base64ToBlob(response?.data?.audio_base64, "audio/mpeg");
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audioElement = new Audio(audioUrl);
+
+                audioInstances[index] = audioElement;
+                audioElement.play();
+
+                audioElement.onended = () => {
+                    currentAudioIndex++;
+                    playChunk(); // Play next chunk
+                };
+            } catch (err) {
+                console.error("Error playing chunk:", err);
+            }
         };
-    } catch (error) {
-        console.error("Error generating speech:", error);
+
+        playChunk();
     }
+
+    return { textToSpeech, stopSpeech };
 };
 
-// Function to stop all audio except the given index
-const stopSpeech = (indexToKeep: number) => {
-    if (audioInstances[indexToKeep]) {
-        audioInstances[indexToKeep]?.pause();
-        audioInstances[indexToKeep]?.remove(); // Stop and remove the audio
-        delete audioInstances[indexToKeep];
-    }
-    for (const key in audioInstances) {
-        const idx = Number(key);
-        if (idx !== indexToKeep && audioInstances[idx]) {
-            audioInstances[idx]?.pause();
-            delete audioInstances[idx]; // Remove reference
-        }
-    }
-};
-
-export { textToSpeech, stopSpeech };
+export default useTextToSpeech;

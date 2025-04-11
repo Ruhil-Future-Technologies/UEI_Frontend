@@ -462,11 +462,9 @@ const TeacherDashboardCharts = () => {
     <div className="">
       <div className="subject-performance-container  mt-4">
         {teacher?.entity_type === 'college' && (
-          <div
-            className="filters-container"
-            style={{ marginBottom: '20px', display: 'flex', gap: '16px' }}
-          >
-            <FormControl variant="outlined" style={{ minWidth: '200px' }}>
+          <div className='row mb-4 gy-3'>
+            <div className="col-lg-2">
+            <FormControl variant="outlined"  className='w-100'>
               <InputLabel id="course-select-label">Course</InputLabel>
               <Select
                 labelId="course-select-label"
@@ -482,8 +480,10 @@ const TeacherDashboardCharts = () => {
                 ))}
               </Select>
             </FormControl>
-
-            <FormControl variant="outlined" style={{ minWidth: '200px' }}>
+            </div>
+            
+            <div className="col-lg-2">
+            <FormControl variant="outlined" className='w-100'>
               <InputLabel id="semester-select-label">Semester</InputLabel>
               <Select
                 labelId="semester-select-label"
@@ -503,6 +503,8 @@ const TeacherDashboardCharts = () => {
                 ))}
               </Select>
             </FormControl>
+            </div>
+            
           </div>
         )}
         {teacher?.entity_type === 'school' && (
@@ -529,7 +531,7 @@ const TeacherDashboardCharts = () => {
           </div>
         )}
       </div>
-      <div className="charts-container">
+      <div className="charts-container mb-4">
         {renderPerformanceData(transformedSubjectData)}
         {renderCompletionData(transformedSubjectData)}
       </div>
