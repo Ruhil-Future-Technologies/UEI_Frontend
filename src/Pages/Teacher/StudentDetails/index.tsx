@@ -28,7 +28,7 @@ export const StudentDetails = () => {
     { accessorKey: 'fname', header: 'First Name' },
     { accessorKey: 'lname', header: 'Last Name' },
     { accessorKey: 'email', header: 'Email' },
-    { accessorKey: 'mobile', header: 'Email' },
+    { accessorKey: 'mobile', header: 'Mobile' },
     { accessorKey: 'gender', header: 'Gender' },
     { accessorKey: 'dob', header: 'DOB' },
   ];
