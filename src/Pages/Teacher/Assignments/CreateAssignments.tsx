@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   TextField,
   Button,
@@ -64,7 +64,6 @@ import QuizModal from './QuizModal';
 
 export interface Assignment {
   id?: string;
-  S;
   title: string;
   type: string;
   contact_email: string;
@@ -85,9 +84,6 @@ export interface Assignment {
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  const location = useLocation();
-  const { type } = location.state || {};
-  console.log({ assignmentType: type });
 
   const { id } = useParams();
 
@@ -100,9 +96,7 @@ export const CreateAssignments = () => {
   const CourseURL = QUERY_KEYS_COURSE.GET_COURSE;
   const teacher_id = localStorage.getItem('teacher_id');
   const teacherId = localStorage.getItem('user_uuid');
-  const [assignmentType, setAssignmentType] = useState(
-    type !== 'quiz' ? 'written' : 'quiz',
-  );
+  const [assignmentType, setAssignmentType] = useState('written');
   const [files, setFiles] = useState<File[]>([]);
   const nevegate = useNavigate();
   const quillRef = useRef<ReactQuill | null>(null);
@@ -141,6 +135,9 @@ export const CreateAssignments = () => {
   const [dueTime_error, setDueTime_error] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorselectStudent, setErrorSelectStudent] = useState(false);
+  const [level_error, setLevel_error] = useState(false);
+  const [questions_error, setQuestions_error] = useState(false);
+  const [topic_error, setTopic_error] = useState(false);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -326,9 +323,7 @@ export const CreateAssignments = () => {
       }
     }
   };
-  useEffect(() => {
-    getAssignmentInfo();
-  }, [id]);
+
   const getSubjects = async (type: string): Promise<any> => {
     try {
       const url = type === 'college' ? getSubjectCollege : getsubjectSchool;
@@ -679,8 +674,6 @@ export const CreateAssignments = () => {
     if (selectedStudents.length < 1) {
       setErrorSelectStudent(true);
       valid1 = true;
-    } else {
-      setErrorSelectStudent(false);
     }
     let valid = true;
     if (selectedEntity.toLowerCase() === 'school') {
@@ -732,6 +725,12 @@ export const CreateAssignments = () => {
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
     const students = selectedStudents.map((student) => student.id);
+    // const students = [
+    //   'f8ef4dc8-7e36-4a9a-a9a3-5b722192353d',
+    //   '325ff321-8765-4c61-a6ca-c58ff78e0d1b',
+    //   'd302ec8a-e48f-4c5c-91b2-8486304f0327',
+    // ];
+
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
       formData.append('files', file);
@@ -1305,22 +1304,12 @@ export const CreateAssignments = () => {
     }
   };
   const handleSaveAsDraft = () => {
-    console.log('save draft called');
-    setQuizPayload((prevState: any) => ({
-      ...prevState,
-      ['save_draft']: true,
-    }));
     setSaveAsDraft((prev) => !prev);
     setAssignmentData((prev) => ({
       ...prev,
       ['save_draft']: true,
     }));
-
-    if (assignmentType !== 'quiz') {
-      submitAssignment();
-    } else {
-      handleSubmitQuiz();
-    }
+    submitAssignment();
   };
   const mergeDateAndTime = () => {
     if (!dueDate || !dueTime) return null;
@@ -1381,61 +1370,31 @@ export const CreateAssignments = () => {
           </div>
         </div>
 
-        <div className="card p-lg-4 bg-m-transparent">
-          <div className="cardbody p-0 p-lg-2">
-            <div className="container">
-              <div className="row justify-content-center">
-                <div className="col-lg-9">
-                  <div className="row g-4">
-                    <div className="col-12">
-                      <Typography variant="h5" className="mb-4 fw-bold">
-                        Create Assignment
-                      </Typography>
-                      <TextField
-                        fullWidth
-                        label="Assignment Title"
-                        variant="outlined"
-                        name="title"
-                        value={assignmentData.title}
-                        onChange={handleChanges}
-                      />
-                      {title_error && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small> Please enter a valid Title.</small>
-                        </p>
-                      )}
-                    </div>
-                    <div className="col-12">
-                      <Typography variant="subtitle1" className="mb-2">
-                        Assignment Type
-                      </Typography>
-                      <div className="overflow-auto">
-                        <ToggleButtonGroup
-                          value={assignmentType}
-                          exclusive
-                          onChange={(_, newValue) =>
-                            setAssignmentType(newValue)
-                          }
-                          fullWidth
-                          className="assignbtngrp"
-                        >
-                          <ToggleButton value="written">
-                            {' '}
-                            <AssignmentIcon /> Written
-                          </ToggleButton>
-                          <ToggleButton value="quiz">
-                            <QuizIcon /> Quiz
-                          </ToggleButton>
-                          <ToggleButton value="project">
-                            <AccountTreeIcon /> Project
-                          </ToggleButton>
-                          <ToggleButton value="presentation">
-                            {' '}
-                            <PresentToAllIcon />
-                            Presentation
-                          </ToggleButton>
-                        </ToggleButtonGroup>
-                      </div>
+        <Typography variant="subtitle1" className="my-2">
+          Assignment Type
+        </Typography>
+        <div className="overflow-auto">
+          <ToggleButtonGroup
+            value={assignmentType}
+            exclusive
+            onChange={(_, newValue) => setAssignmentType(newValue)}
+            className="assignbtngrp"
+          >
+            <ToggleButton value="written">
+              <AssignmentIcon /> Written
+            </ToggleButton>
+            <ToggleButton value="quiz">
+              <QuizIcon /> Quiz
+            </ToggleButton>
+            <ToggleButton value="project">
+              <AccountTreeIcon /> Project
+            </ToggleButton>
+            <ToggleButton value="presentation">
+              <PresentToAllIcon />
+              Presentation
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
 
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="cardbody p-2">
@@ -1541,7 +1500,9 @@ export const CreateAssignments = () => {
                                 <div className="pinwi-20">
                                   <AttachFileIcon />
                                 </div>
-                                <ListItemText primary={file.name as any || file as any} />
+                                <ListItemText
+                                  primary={(file.name as any) || (file as any)}
+                                />
                               </ListItem>
                             ))}
                           </List>
@@ -2060,6 +2021,7 @@ export const CreateAssignments = () => {
                           value={selectedStudents}
                           onChange={(_, newValue) => {
                             setSelectedStudents(newValue);
+                            checkStudent(newValue);
                             setSelectAll(
                               newValue.length === listOfStudent?.length,
                             );
@@ -2199,27 +2161,6 @@ export const CreateAssignments = () => {
                               </p>
                             )}
                           </div>
-                          {type === 'quiz' && (
-                            <div className="col-lg-4">
-                              <TextField
-                                type="number"
-                                label="Quiz Duration (minutes)"
-                                value={quiz_timer}
-                                inputProps={{ min: 0 }}
-                                onChange={(e) => setQuizTimer(e.target.value)}
-                                fullWidth
-                                margin="normal"
-                              />
-                              {quiz_timer_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  Please enter quiz timer.
-                                </p>
-                              )}
-                            </div>
-                          )}
                         </div>
                       </LocalizationProvider>
                     </div>
@@ -2275,65 +2216,41 @@ export const CreateAssignments = () => {
                     </div>
                     <div className="col-lg-12">
                       {assignmentType == 'written' ||
-                        assignmentType == 'project' ||
-                        assignmentType == 'presentation' ||
-                        (assignmentType == 'quiz' && isModalOpen) ? (
-                        {assignmentType == 'written' ||
                       assignmentType == 'project' ||
                       assignmentType == 'presentation' ||
-                      (assignmentType == 'quiz' && isQuizGenerated) ? (
+                      (assignmentType == 'quiz' && isModalOpen) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() =>
-                              assignmentType === 'quiz' && setIsModalOpen(true)
-                            }
+                          <Button
+                            variant="contained"
+                            color="primary"
                             style={{ marginTop: 20, marginRight: 10 }}
-                            >
-                              Preview
-                            </Button>
+                          >
+                            Preview
+                          </Button>
 
-  
                           <Button
-                              variant="outlined"
-                              color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
-                              style={{
-                                marginTop: 20,
+                            variant="outlined"
+                            color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
+                            style={{
+                              marginTop: 20,
 
-  
                               marginRight: 10,
-                              }}
-                              onClick={handleSaveAsDraft}
-                            >
-                              Save as Draft
-                            </Button>
+                            }}
+                            onClick={handleSaveAsDraft}
+                          >
+                            Save as Draft
+                          </Button>
 
-  
-                          <Button
-                              variant="contained"
-                              color="success"
-                              style={{ marginTop: 20 }}
-                              onClick={
-                              assignmentType !== 'quiz'
-                                ? submitAssignment
-                                : handleSubmitQuiz
-                            }
-                            >
-                              Publish
-                            </Button>
-                          </div>
-                      ) : (
-                        <div className="d-flex align-items-center gap-2 justify-content-end">
                           <Button
                             variant="contained"
                             color="success"
                             style={{ marginTop: 20 }}
-                            onClick={generateQuiz}
+                            onClick={submitAssignment}
                           >
-                            Generate Quiz
+                            Publish
                           </Button>
-                          ) : (
+                        </div>
+                      ) : (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
                           <Button
                             variant="contained"
@@ -2345,20 +2262,12 @@ export const CreateAssignments = () => {
                           </Button>
                         </div>
                       )}
-                        )}
-                    </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-        </div>
-        <QuizModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          quizData={quizData}
-          onSave={handleSaveQuiz}
-        />
+          </div>
         </div>
         <QuizModal
           open={isModalOpen}
