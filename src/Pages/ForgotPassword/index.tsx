@@ -221,7 +221,7 @@ const Forgotpassword = () => {
                         Send Link
                       </button>
                       <p className="text-center">
-                        Remember Now{' '}
+                        Remember now?{' '}
                         <Link
                           to="/"
                           className="fw-semibold"
@@ -230,7 +230,7 @@ const Forgotpassword = () => {
                           }}
                         >
                           {' '}
-                          Sign In here
+                          Sign in here
                         </Link>
                       </p>
                     </form>

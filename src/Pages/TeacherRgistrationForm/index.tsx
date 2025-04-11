@@ -1537,12 +1537,13 @@ const TeacherRegistrationPage = () => {
 
                     <div className="row d-flex justify-content-center g-4">
                       <div className="col-md-6 col-12 ">
-                        <label className={`col-form-label`}>
+                        {/* <label className={`col-form-label`}>
                           Country<span>*</span>
-                        </label>
+                        </label> */}
                         <CountryDropdown
                           classes="form-select custom-dropdown"
-                          defaultOptionLabel={teacher.country}
+                          //defaultOptionLabel={teacher.country}
+                          defaultOptionLabel="Select your country"
                           value={teacher.country || ''}
                           onChange={(e: string) =>
                             handleInputChangecountry(e, 'country')
@@ -1556,13 +1557,14 @@ const TeacherRegistrationPage = () => {
                       </div>
 
                       <div className="col-md-6 col-12 ">
-                        <label className="col-form-label">
+                        {/* <label className="col-form-label">
                           State<span>*</span>
-                        </label>
+                        </label> */}
                         <RegionDropdown
                           data-testid="perStateDropdown"
                           classes="form-select custom-dropdown"
-                          defaultOptionLabel={teacher.state || ''}
+                          //defaultOptionLabel={teacher.state || ''}
+                          defaultOptionLabel="Select your state"
                           country={teacher.country || ''}
                           value={teacher.state || ''}
                           // onChange={(val) => setRegion(val)}
@@ -2458,7 +2460,7 @@ const TeacherRegistrationPage = () => {
                   </div> */}
 
                     <Dialog open={popupTermandCondi} onClose={handleClose}>
-                      <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                      <DialogTitle>{'Terms and Conditions'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
                           Content of Gyanshetu Terms and Conditions...... will
@@ -2483,7 +2485,7 @@ const TeacherRegistrationPage = () => {
             </Box>
           )}
           <footer className="login-footer bg-light">
-            <p className="mb-0">Copyright © 2025. All right reserved.</p>
+            <p className="mb-0">Copyright © 2025. All rights reserved.</p>
             <List
               sx={{
                 display: 'inline-flex',
@@ -2509,7 +2511,7 @@ const TeacherRegistrationPage = () => {
               </ListItem>
               <ListItem sx={{ width: 'auto', padding: 0 }}>
                 <LinkReact to="/ServicesAgreement" color="primary">
-                  End User Aggrement
+                  End User Agreement
                 </LinkReact>
               </ListItem>
             </List>

@@ -47,7 +47,7 @@ describe('Signup Component', () => {
     expect(getByText('Phone No.')).toBeInTheDocument();
     expect(getByText('Password')).toBeInTheDocument();
     expect(
-      getByText('By Creating your account you have to agree with our'),
+      getByText('By creating your account, you agree to our'),
     ).toBeInTheDocument();
   });
 

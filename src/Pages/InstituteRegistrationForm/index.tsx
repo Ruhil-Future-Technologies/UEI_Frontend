@@ -1109,12 +1109,12 @@ const InstituteRegistrationForm = () => {
                         </h5>
                       </div>
                       <div className="col-md-6 col-12 ">
-                        <label className={`col-form-label`}>
+                        {/* <label className={`col-form-label`}>
                           Country<span>*</span>
-                        </label>
+                        </label> */}
                         <CountryDropdown
                           classes="form-select custom-dropdown"
-                          defaultOptionLabel={valueInstitute.country}
+                          defaultOptionLabel="Select your country"
                           value={valueInstitute.country || ''}
                           onChange={(e: string) =>
                             handleInputChangecountry(e, 'country')
@@ -1128,13 +1128,13 @@ const InstituteRegistrationForm = () => {
                       </div>
 
                       <div className="col-md-6 col-12 ">
-                        <label className="col-form-label">
+                        {/* <label className="col-form-label">
                           State<span>*</span>
-                        </label>
+                        </label> */}
                         <RegionDropdown
                           data-testid="perStateDropdown"
                           classes="form-select custom-dropdown"
-                          defaultOptionLabel={valueInstitute.state || ''}
+                          defaultOptionLabel="Select your state"
                           country={valueInstitute.country || ''}
                           value={valueInstitute.state || ''}
                           // onChange={(val) => setRegion(val)}
@@ -1420,7 +1420,7 @@ const InstituteRegistrationForm = () => {
                       </div> */}
 
                     <Dialog open={popupTermandCondi} onClose={handleClose}>
-                      <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                      <DialogTitle>{'Terms and Conditions'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
                           Content of Gyansetu Terms and Conditions...... will
@@ -1445,7 +1445,7 @@ const InstituteRegistrationForm = () => {
             email={valueInstitute.email_id}
           />
           <footer className="login-footer bg-light">
-                      <p className="mb-0">Copyright © 2025. All right reserved.</p>
+                      <p className="mb-0">Copyright © 2025. All rights reserved.</p>
                       <List
                         sx={{
                           display: 'inline-flex',
@@ -1471,7 +1471,7 @@ const InstituteRegistrationForm = () => {
                         </ListItem>
                         <ListItem sx={{ width: 'auto', padding: 0 }}>
                           <LinkReact to="/ServicesAgreement" color="primary">
-                            End User Aggrement
+                            End User Agreement
                           </LinkReact>
                         </ListItem>
                       </List>
