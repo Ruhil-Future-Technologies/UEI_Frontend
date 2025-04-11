@@ -14,9 +14,10 @@ import useApi from '../../hooks/useAPI';
 import glogo from '../../assets/img/logo-white.svg';
 import { toast } from 'react-toastify';
 import IconButton from '@mui/material/IconButton';
-import { Button, } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useTheme } from '../../ThemeProvider';
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
@@ -38,12 +39,10 @@ import {
 } from '../../utils/helpers';
 import CloseIcon from '@mui/icons-material/Close';
 import { ChatDialogClose } from './ChatDialogClose';
-// import { styled } from '@mui/material/styles';
+//import { styled } from '@mui/material/styles';
 import Course from '../../Pages/Course/Course';
 import { Teacher } from '../../Pages/TeacherRgistrationForm';
 //import { Initializable } from '@mui/x-charts/internals';
-
-import { useTheme } from '../../ThemeProvider';
 
 interface Institute {
   id: number;
@@ -186,7 +185,7 @@ export const ProfileDialog: FunctionComponent<{
   const [preferenceError, setpreferenceError] = useState(false);
   const [pincode, setpincode] = useState(false);
   const [per, setper] = useState(false);
-  //const [checked, setchecked] = useState(false);
+ // const [checked, setchecked] = useState(false);
   const [closemodel, setclosemodel] = useState(false);
   const [goal, setGoal] = useState(false);
   const [firstaddress, setFirstAddress] = useState(false);
@@ -2891,6 +2890,7 @@ export const ProfileDialog: FunctionComponent<{
   const sixYearsAgo = dayjs()?.subtract(6, 'year');
   const maxSelectableDate = dayjs(sixYearsAgo);
   const { toggleTheme, isDarkMode } = useTheme();
+  
   return (
     <>
       <div
@@ -2907,10 +2907,10 @@ export const ProfileDialog: FunctionComponent<{
               for better services
             </div>
             <div className="toggle-mode nav-link" role="button">
-                <IconButton color="inherit" onClick={toggleTheme}>
-                  {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
-                </IconButton>
-              </div>
+              <IconButton color="inherit" onClick={toggleTheme}>
+                {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </div>
             <IconButton onClick={() => setclosemodel(true)} aria-label="close">
               <CloseIcon />
             </IconButton>
