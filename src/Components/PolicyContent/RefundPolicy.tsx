@@ -45,7 +45,7 @@ const RefundPolicy = () => {
                   </p>
                   <h6 className="fw-bold">Cancellations &amp; Refunds</h6>
                   <p>
-                    Gyansetu is committed to delivering high quality educational
+                    Gyansetu is committed to delivering high-quality educational
                     content and services. Since our platform offers digital
                     learning solutions, we generally do not offer refunds once
                     access has been granted or services have been used.
@@ -72,7 +72,7 @@ const RefundPolicy = () => {
                     Send an email to info@ruhilholdings.com with the subject
                     &quot;Refund Request&quot; and include order details. The
                     request will be reviewed, and users will be notified of
-                    approval or rejection. post approval, refunds will be
+                    approval or rejection. Upon approval, refunds will be
                     initiated after deducting 20% of the payment for processing
                     and administrative charges.
                   </p>
@@ -82,20 +82,20 @@ const RefundPolicy = () => {
                     further details.
                   </p>
 
-                  <h6 className="fw-bold mb-2 mt-5">NonRefundable Services</h6>
+                  <h6 className="fw-bold mb-2 mt-5">Non-Refundable Services</h6>
                   <p>The following services are not eligible for refunds:</p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       Digital courses or content that has already been accessed.
                     </li>
                     <li>Subscription fees after 24 hours of purchase.</li>
-                    <li>Payments for onetime consultations or workshops.</li>
+                    <li>Payments for one-time consultations or workshops.</li>
                   </ul>
                 </div>
 
                 <div id="list-item-4">
                   <h6 className="fw-bold mt-5">Contact Us</h6>
-                  <p>For refund related questions, please contact:</p>
+                  <p>For refund-related questions, please contact:</p>
                   <p>
                     Phone: <a href="tel:9992636653">+91 9992636653</a> <br />
                     Email:{' '}

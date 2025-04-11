@@ -9,7 +9,7 @@ interface Student {
   lname: string;
   email: string;
   mobile: number;
-  gendar: string;
+  gender: string;
   dob: string;
 }
 export const StudentDetails = () => {
@@ -29,7 +29,7 @@ export const StudentDetails = () => {
     { accessorKey: 'lname', header: 'Last Name' },
     { accessorKey: 'email', header: 'Email' },
     { accessorKey: 'mobile', header: 'Email' },
-    { accessorKey: 'gendar', header: 'Gendar' },
+    { accessorKey: 'gender', header: 'Gender' },
     { accessorKey: 'dob', header: 'DOB' },
   ];
 
@@ -40,7 +40,7 @@ export const StudentDetails = () => {
       lname: 'Sharma',
       email: 'john@example.com',
       mobile: 9989658978,
-      gendar: 'male',
+      gender: 'male',
       dob: '12-12-2020',
     },
   ];
