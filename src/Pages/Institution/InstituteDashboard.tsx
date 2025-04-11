@@ -291,10 +291,10 @@ const InstitutionDash = () => {
                   <h5 className="mb-0 fw-semibold fs-6">Total Teachers</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
                     {totleTeacher}
-                    <span className="text-primary d-inline-flex align-items-center gap-1">
+                    {/* <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
-                    </span>
+                    </span> */}
                   </div>
                 </div>
                 <div className="table-responsive">
@@ -339,10 +339,10 @@ const InstitutionDash = () => {
                   <h5 className="mb-0 fw-semibold fs-6">Total Students</h5>
                   <div className="d-flex align-items-center gap-1 text-dark fw-semibold">
                     {totelStudents}
-                    <span className="text-primary d-inline-flex align-items-center gap-1">
+                    {/* <span className="text-primary d-inline-flex align-items-center gap-1">
                       (2.5%)
                       <ArrowUpwardOutlinedIcon />
-                    </span>
+                    </span> */}
                   </div>
                 </div>
                 <div className="table-responsive">

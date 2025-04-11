@@ -484,7 +484,7 @@ const Signup = () => {
                           <TextField
                             data-testid="Password"
                             type={showPassword ? 'text' : 'password'}
-                            placeholder="Password"
+                            placeholder="Enter your password"
                             value={password}
                             onChange={handleChangePassword}
                             error={!!errorPassword}
@@ -532,7 +532,7 @@ const Signup = () => {
                           className="form-check-label"
                           htmlFor="flexCheckDefault"
                         >
-                          By Creating your account you have to agree with our{' '}
+                          By creating your account, you agree to our{' '}
                           <a
                             href="#"
                             onClick={(e) => {
@@ -574,10 +574,10 @@ const Signup = () => {
                       </div>
                     </form>
                     <Dialog open={popupTermandCondi} onClose={handleClose}>
-                      <DialogTitle>{'Terms and Condition'}</DialogTitle>
+                      <DialogTitle>{'Terms and Conditions'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Content of Gyanshetu Terms and Condition...... will
+                          Content of Gyanshetu Terms and Conditions...... will
                           coming soon
                         </DialogContentText>
                       </DialogContent>
@@ -600,7 +600,7 @@ const Signup = () => {
           email={email}
         />
         <footer className="login-footer">
-          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <p className="mb-0">Copyright © 2025. All rights reserved.</p>
           <List
             sx={{
               display: 'inline-flex',
@@ -626,7 +626,7 @@ const Signup = () => {
             </ListItem>
             <ListItem sx={{ width: 'auto', padding: 0 }}>
               <Link to="/ServicesAgreement" color="primary">
-                End User Aggrement
+                End User Agreement
               </Link>
             </ListItem>
           </List>

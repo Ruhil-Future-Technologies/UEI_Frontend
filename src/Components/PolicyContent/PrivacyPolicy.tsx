@@ -57,8 +57,8 @@ const PrivacyPolicy = () => {
                     Gyansetu is committed to safeguarding user privacy. We
                     collect and use personal data responsibly to enhance the
                     learning experience while ensuring transparency and control
-                    over your information. Unless otherwise authorized, Gyansetu
-                    will only collect and use personal information as outlined
+                    over your information. Unless otherwise authorized, We will 
+                    only collect and use personal information as outlined
                     below.
                   </p>
 
@@ -74,11 +74,11 @@ const PrivacyPolicy = () => {
                     </li>
                     <li>
                       When you engage with platform features, such as
-                      syllabusaligned learning, performance tracking, or
+                      syllabus-aligned learning, performance tracking, or
                       interactive content.
                     </li>
                     <li>
-                      When you contact us via Email, Phone, or Online Support.
+                      When you contact us via email, phone, or online support.
                     </li>
                     <li>
                       When you participate in surveys, feedback sessions, or
@@ -89,7 +89,7 @@ const PrivacyPolicy = () => {
                       student details to customize educational services.
                     </li>
                     <li>
-                      Through thirdparty integrations, such as Google Analytics,
+                      Through third-party integrations, such as Google Analytics,
                       for platform improvements.
                     </li>
                   </ul>
@@ -104,19 +104,19 @@ const PrivacyPolicy = () => {
                   </p>
                   <ul>
                     <li>
-                      <strong> Personal Details </strong> : Name, Address,
+                      <strong> Personal Details</strong>: Name, Address,
                       Email, Phone Number, Age, School Details.
                     </li>
                     <li>
-                      <strong> Educational Data </strong> : Subject preferences,
+                      <strong> Educational Data</strong>: Subject preferences,
                       learning progress, test scores, and interaction history.
                     </li>
                     <li>
-                      <strong> Technical Data </strong> : IP Address, Device
+                      <strong> Technical Data</strong>: IP Address, Device
                       Information, Browser Type, Cookies, and Log Data.
                     </li>
                     <li>
-                      <strong> Transactional Data </strong> : Purchase history
+                      <strong> Transactional Data</strong>: Purchase history
                       (for premium features) and billing details where
                       applicable.
                     </li>
@@ -126,7 +126,7 @@ const PrivacyPolicy = () => {
                     Why We Collect Your Information
                   </h6>
                   <p>Gyansetu collects personal data to:</p>
-                  <ul>
+                  <ol>
                     <li>
                       Deliver and improve educational content tailored to
                       individual learning needs.
@@ -144,8 +144,8 @@ const PrivacyPolicy = () => {
                       Send service updates and important notifications (e.g.,
                       syllabus changes, new features).
                     </li>
-                    <li>Improve the platform using analytics and feedback.</li>
-                  </ul>
+                    <li>Continuously improve the platform based on analytics and user feedback..</li>
+                  </ol>
                   <p>
                     Gyansetu does not sell, rent, or share user information with
                     third parties for marketing purposes.
@@ -168,7 +168,7 @@ const PrivacyPolicy = () => {
                       Offer marketing communications (only with user consent).
                     </li>
                   </ul>
-                  <p>Users can opt out of marketing emails at any time.</p>
+                  <p>You can opt out of marketing emails at any time.</p>
                 </div>
 
                 <div id="list-item-4">
@@ -184,7 +184,7 @@ const PrivacyPolicy = () => {
                       interactions.
                     </li>
                     <li>
-                      Cookies help personalize content and enhance user
+                      Cookies help personalize content, and enhance user
                       experience.
                     </li>
                     <li>
@@ -213,7 +213,7 @@ const PrivacyPolicy = () => {
                     </li>
                   </ul>
                   <p>
-                    While we strive for industry standard protection, no online
+                    While we strive for industry-standard-protection, no online
                     platform is 100% secure, and users should take precautions
                     when sharing personal data.
                   </p>
@@ -221,8 +221,8 @@ const PrivacyPolicy = () => {
                   <h6 className="fw-bold mt-5">Future Changes</h6>
                   <p>
                     Gyansetu reserves the right to update this Privacy Policy as
-                    new features or services are introduced. Users will be
-                    notified of any significant changes via email or platform
+                     we introduce new features or services. We’ll notify you of
+                      any significant changes via email or platform
                     notifications.
                   </p>
                   <h6 className="fw-bold mt-5">Contact Us</h6>

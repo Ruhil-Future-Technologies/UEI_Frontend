@@ -66,7 +66,7 @@ const Disclaimer = () => {
                       exam boards, curriculums, or individual learning needs.
                     </li>
                     <li>
-                      The uninterrupted availability of services or platform
+                      The continuous availability of services or platform
                       functionalities.
                     </li>
                   </ul>
@@ -109,13 +109,13 @@ const Disclaimer = () => {
                     respective terms and policies.
                   </p>
 
-                  <h6 className="fw-bold mb-2 mt-5">Service Availability</h6>
+                  <h6 className="fw-bold mb-2 mt-5">Service Availability :-</h6>
                   <p>
                     Every effort is made to keep the platform operational and
                     running smoothly. However, Gyansetu is not responsible for
-                    technical issues that may cause:
+                    technical issues that may result in:
                   </p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>Temporary unavailability of the platform.</li>
                     <li>
                       Service disruptions due to software updates, server

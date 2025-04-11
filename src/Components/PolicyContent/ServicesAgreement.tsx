@@ -50,11 +50,11 @@ const ServicesAgreement = () => {
                     Understanding the Gyansetu Platform
                   </h6>
                   <p>By using Gyansetu, you acknowledge and understand that:</p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
-                      The Platform provides syllabus aligned, personalized
+                      The Platform provides syllabus-aligned, personalized
                       educational content for students. Gyansetu enables
-                      interactive visual learning, teacher guided voice
+                      interactive visual learning, teacher-guided voice
                       integration, and performance tracking for students,
                       teachers, and parents.
                     </li>
@@ -74,7 +74,7 @@ const ServicesAgreement = () => {
                   <p>
                     Access to Gyansetu may be free or paid, depending on the
                     features selected. Subscription payments, where applicable,
-                    grant nontransferable, timelimited access to the Platform.
+                    grant nontrans-ferable, time-limited access to the Platform.
                     All payments are final, and no refunds will be issued once
                     access to digital content is provided.
                   </p>
@@ -119,7 +119,7 @@ const ServicesAgreement = () => {
                       intellectual property rights.
                     </li>
                     <li>
-                      3. Technical issues caused by userside hardware, software,
+                      3. Technical issues caused by user-side hardware, software,
                       or internet connectivity.
                     </li>
                   </ul>
@@ -135,7 +135,7 @@ const ServicesAgreement = () => {
                   <p>
                     Gyansetu shall not be held liable for service disruptions
                     caused by: Natural disasters, cyberattacks, power failures,
-                    or thirdparty service outages. Unforeseen regulatory changes
+                    or third-party service outages. Unforeseen regulatory changes
                     affecting digital education platforms. Technical issues
                     beyond reasonable control. In such cases, efforts will be
                     made to restore services as soon as possible.
