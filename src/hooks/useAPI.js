@@ -69,10 +69,15 @@ const useApi = () => {
       setError(error);
       setLoading(false);
 
-        console.warn('Data not found, returning empty object.');
-        return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
-      
-     // throw error; // Re-throw other errors
+      console.warn('Data not found, returning empty object.');
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
+
+      // throw error; // Re-throw other errors
     }
   };
   const getForRegistration = async (url) => {
@@ -94,11 +99,14 @@ const useApi = () => {
 
       return response?.data;
     } catch (error) {
-      
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
-
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 
@@ -121,8 +129,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
-
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 
@@ -134,6 +146,7 @@ const useApi = () => {
     }
     const headers = {
       Authorization: `${token}`,
+      'Content-Type': 'application/json',
     };
     setLoading(true);
     setError(null);
@@ -148,7 +161,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
   const postRegisterData = async (url, data, token = null) => {
@@ -182,8 +200,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
-
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 
@@ -208,7 +230,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
   const putDataJson = async (url, data, redirectUrl = null) => {
@@ -235,7 +262,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 
@@ -264,7 +296,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
   const deleteData = async (url, data, redirectUrl = null) => {
@@ -292,7 +329,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 
@@ -319,7 +361,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 
@@ -342,7 +389,12 @@ const useApi = () => {
     } catch (error) {
       setError(error);
       setLoading(false);
-      return { data: [], code: error.response?.status, status: false,message:error.response.data.message }; // Prevents UI from breaking
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response.data.message,
+      }; // Prevents UI from breaking
     }
   };
 

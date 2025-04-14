@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ConfettiExplosion from 'react-confetti-explosion';
 import {
@@ -8,7 +8,6 @@ import {
   Radio,
   FormControlLabel,
   RadioGroup,
-  // Card,
   Typography,
   Box,
   Grid,
@@ -22,71 +21,10 @@ import {
 import { AccessTimeOutlined } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import ForumIcon from '@mui/icons-material/Forum';
-import NameContext from '../../Context/NameContext';
+import useApi from '../../../hooks/useAPI';
+import { toast } from 'react-toastify';
+import { QUERY_KEYS_QUIZ } from '../../../utils/const';
 
-interface Question {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: string;
-}
-
-const quizData: Question[] = [
-  {
-    id: 1,
-    question: 'What is 2 + 2?',
-    options: ['3', '4', '5', '6'],
-    correctAnswer: '4',
-  },
-  {
-    id: 2,
-    question: 'What is the capital of France?',
-    options: ['Berlin', 'Madrid', 'Paris', 'Rome'],
-    correctAnswer: 'Paris',
-  },
-  {
-    id: 3,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-  {
-    id: 4,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-  {
-    id: 5,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-  {
-    id: 6,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-  {
-    id: 7,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-  {
-    id: 8,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-  {
-    id: 9,
-    question: 'Which planet is known as the Red Planet?',
-    options: ['Earth', 'Mars', 'Venus', 'Jupiter'],
-    correctAnswer: 'Mars',
-  },
-];
 const getMessage = (score: number) => {
   if (score >= 80) return 'Excellent Work! 🎉';
   if (score >= 50) return 'Good Job! Keep Practicing!';
@@ -95,10 +33,9 @@ const getMessage = (score: number) => {
 
 const QuizPage = () => {
   const navigate = useNavigate();
-  const handleBack = () => {
-    navigate(-1);
-  };
-
+  const { id } = useParams();
+  const [quizData, setQuizData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
@@ -107,41 +44,89 @@ const QuizPage = () => {
     [key: number]: boolean;
   }>({});
   const [showResults, setShowResults] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(300);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
-  const context = useContext(NameContext);
-  const { namecolor }: any = context;
-
-  console.log({ namecolor });
+  const [timerActive, setTimerActive] = useState(true);
+  const { getData, postDataJson } = useApi();
+  const studentId = localStorage.getItem('_id') || {};
+  const GET_QUIZ = QUERY_KEYS_QUIZ.GET_QUIZ;
+  const ADD_SUBMISSION = QUERY_KEYS_QUIZ.ADD_SUBMISSION;
 
   useEffect(() => {
-    if (timeLeft > 0) {
+    const fetchQuizData = async () => {
+      try {
+        setIsLoading(true);
+        getData(`${GET_QUIZ}/${id}`).then((response) => {
+          if (response.status && response.code === 200) {
+            const current_time = new Date();
+            const quiztime = new Date(response.data.due_date_time);
+
+            if (current_time > quiztime) {
+              toast.error('Quiz Timeout', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              navigate('/main/student/quiz');
+              return;
+            } else {
+              setQuizData(response.data);
+              setTimeLeft(response.data.timer * 60);
+            }
+          }
+        });
+      } catch (error) {
+        toast.error('Error fetching quiz data', {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+        console.error('Error fetching quiz data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchQuizData();
+    }
+  }, [id]);
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  useEffect(() => {
+    if (timeLeft > 0 && timerActive) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
+    } else if (timeLeft === 0 && !isLoading && quizData && timerActive) {
       setShowResults(true);
-
       setShowConfetti(false);
+      setIsSubmit(true);
+      submitQuiz();
+      setTimerActive(false);
     }
-  }, [timeLeft]);
+  }, [timeLeft, isLoading, quizData, timerActive]);
 
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!lockedAnswers[quizData[currentQuestionIndex].id]) {
+    if (!quizData) return;
+    if (!lockedAnswers[currentQuestionIndex]) {
       setSelectedAnswers({
         ...selectedAnswers,
-        [quizData[currentQuestionIndex].id]: event.target.value,
+        [currentQuestionIndex]: event.target.value,
       });
     }
   };
 
   const handleNext = () => {
-    if (selectedAnswers[quizData[currentQuestionIndex].id]) {
+    if (!quizData) return;
+    if (selectedAnswers[currentQuestionIndex]) {
       setLockedAnswers({
         ...lockedAnswers,
-        [quizData[currentQuestionIndex].id]: true,
+        [currentQuestionIndex]: true,
       });
-      if (currentQuestionIndex < quizData.length - 1) {
+      if (currentQuestionIndex < quizData.questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
     }
@@ -153,30 +138,139 @@ const QuizPage = () => {
     }
   };
 
-  const isCorrectAnswer = (questionId: number) =>
-    selectedAnswers[questionId] ===
-    quizData.find((q) => q.id === questionId)?.correctAnswer;
+  const isCorrectAnswer = (questionIndex: number) => {
+    if (!quizData) return false;
+    return (
+      selectedAnswers[questionIndex] ===
+      quizData.questions[questionIndex].answer
+    );
+  };
+
+  const formatStudentAnswers = () => {
+    if (!quizData) return {};
+    const formattedAnswers: any = {};
+    quizData.questions.forEach((question: any, index: any) => {
+      if (selectedAnswers[index]) {
+        formattedAnswers[question.id] = selectedAnswers[index];
+      }
+    });
+    return formattedAnswers;
+  };
+
+  const calculateTimeTaken = () => {
+    if (!quizData) return 0;
+    const totalTimeInSeconds = quizData.timer * 60;
+    const timeTakenInSeconds = totalTimeInSeconds - timeLeft;
+    return (timeTakenInSeconds / 60).toFixed(2);
+  };
+
+  const submitQuiz = async () => {
+    try {
+      const correctAnswersCount = Object.keys(selectedAnswers).filter((qIdx) =>
+        isCorrectAnswer(parseInt(qIdx)),
+      ).length;
+      const totalQuestions = quizData.questions.length;
+      const percentageCorrect = (correctAnswersCount / totalQuestions) * 100;
+      const earnedPoints = Math.round(
+        (percentageCorrect / 100) * parseInt(quizData.points),
+      );
+      const payload = {
+        quiz_id: id,
+        student_id: studentId,
+        points: quizData.points.toString(),
+        result_points: earnedPoints.toString(),
+        time_taken: calculateTimeTaken(),
+        student_answers: formatStudentAnswers(),
+      };
+      postDataJson(ADD_SUBMISSION, payload).then((response) => {
+        if (response.data && response.status) {
+          toast.success('Quiz submitted successfully', {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+        } else {
+          toast.error(response.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+            position: 'top-center',
+          });
+          setShowResults(false);
+          navigate('/main/student/quiz');
+        }
+      });
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+      toast.error('Error submitting quiz', {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center',
+      });
+    }
+  };
 
   const handleSubmit = () => {
+    const updatedLockedAnswers = { ...lockedAnswers };
+
+    Object.keys(selectedAnswers).forEach((qIdx) => {
+      const index = parseInt(qIdx);
+      updatedLockedAnswers[index] = true;
+    });
+
+    setLockedAnswers(updatedLockedAnswers);
     setShowResults(true);
     setIsSubmit(true);
+    setTimerActive(false);
+    submitQuiz();
   };
-  const correctCount = Object.keys(selectedAnswers).filter((qId) =>
-    isCorrectAnswer(parseInt(qId)),
-  ).length;
-  const scorePercentage = (correctCount / quizData.length) * 100;
+
+  const preventCopySx: React.CSSProperties = {
+    userSelect: 'none',
+  };
+
+  const calculateScore = () => {
+    if (!quizData) return 0;
+    let totalCorrect = 0;
+    const totalQuestions = quizData.questions.length;
+    Object.keys(selectedAnswers).forEach((qIdx) => {
+      const index = parseInt(qIdx);
+      if (isCorrectAnswer(index)) {
+        totalCorrect++;
+      }
+    });
+    return (totalCorrect / totalQuestions) * 100;
+  };
+
+  const scorePercentage = calculateScore();
+  const correctCount = quizData
+    ? Object.keys(selectedAnswers).filter((qIdx) =>
+        isCorrectAnswer(parseInt(qIdx)),
+      ).length
+    : 0;
 
   useEffect(() => {
     let confettiTimer: any;
-
     if (showResults && scorePercentage > 80) {
       confettiTimer = setTimeout(() => {
         setShowConfetti(true);
       }, 300);
     }
-
     return () => clearTimeout(confettiTimer);
   }, [showResults, scorePercentage]);
+
+  if (isLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: '80vh' }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  const isLastQuestion =
+    quizData && currentQuestionIndex === quizData.questions.length - 1;
 
   return (
     <div className="main-wrapper">
@@ -202,8 +296,7 @@ const QuizPage = () => {
                 </nav>
               </div>
             </div>
-
-            <div className="d-flex justify-content-between flex-wrap  ">
+            <div className="d-flex justify-content-between flex-wrap">
               <div className="">
                 <Typography
                   variant="h4"
@@ -211,16 +304,27 @@ const QuizPage = () => {
                   fontWeight="bold"
                   gutterBottom
                 >
-                  Mathematics Final Exam
+                  {quizData?.title}
                 </Typography>
                 <Typography variant="body1" gutterBottom className="text-m-14">
-                  Complete all questions. You can review your answers before
-                  final submission.
+                  {quizData?.instructions ? (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: quizData.instructions,
+                      }}
+                    />
+                  ) : (
+                    'Complete all questions. You can review your answers before final submission.'
+                  )}
                 </Typography>
-                <small>Duration: 60 minutes • Total Questions: 30 • Points: 100</small>
+                <small>
+                  Duration: {quizData?.timer} minutes • Total Questions:{' '}
+                  {quizData?.questions?.length} • Points: {quizData?.points}
+                </small>
                 <div className="d-flex justify-content-between my-3 align-items-center">
-                  <small className=" fw-medium d-block text-m-14">
-                    Question {currentQuestionIndex + 1} of {quizData.length}
+                  <small className="fw-medium d-block text-m-14">
+                    Question {currentQuestionIndex + 1} of{' '}
+                    {quizData?.questions.length}
                   </small>
                   <Typography
                     variant="body1"
@@ -243,53 +347,54 @@ const QuizPage = () => {
                 {(timeLeft % 60).toString().padStart(2, '0')} Time Remaining
               </Typography>
             </div>
-
-            <Typography variant="body1" className="text-dark fs-5" gutterBottom>
-              {quizData[currentQuestionIndex].question}
+            <Typography
+              variant="body1"
+              className="text-dark fs-5"
+              gutterBottom
+              style={preventCopySx}
+              onCopy={(e: any) => e.preventDefault()}
+            >
+              {quizData?.questions[currentQuestionIndex].question}
             </Typography>
-
             <RadioGroup
               className="optiongrp"
-              value={selectedAnswers[quizData[currentQuestionIndex].id] || ''}
+              value={selectedAnswers[currentQuestionIndex] || ''}
               onChange={handleAnswerChange}
             >
-              {quizData[currentQuestionIndex].options.map((option, index) => {
-                const isLocked =
-                  lockedAnswers[quizData[currentQuestionIndex].id];
-                const correctAnswer =
-                  quizData[currentQuestionIndex].correctAnswer;
-                const selectedAnswer =
-                  selectedAnswers[quizData[currentQuestionIndex].id];
-                const isCorrect = option === correctAnswer;
-                const isSelectedWrong =
-                  isSubmit && option === selectedAnswer && !isCorrect;
-
-                return (
-                  <FormControlLabel
-                    key={index}
-                    value={option}
-                    control={<Radio />}
-                    sx={{
-                      borderRadius: '10px',
-                      marginTop: '5px',
-                      width: '100%',
-                      padding: '2px 10px 2px 5px',
-
-                      border: isSubmit
-                        ? isCorrect
-                          ? '2px solid green'
-                          : isSelectedWrong
-                            ? '2px solid red'
-                            : '2px solid var(--bs-purple)'
-                        : '2px solid var(--bs-purple)',
-                    }}
-                    label={<div>{option}</div>}
-                    disabled={isLocked}
-                  />
-                );
-              })}
+              {quizData?.questions[currentQuestionIndex].options.map(
+                (option: any, index: any) => {
+                  const isLocked = lockedAnswers[currentQuestionIndex];
+                  const correctAnswer =
+                    quizData?.questions[currentQuestionIndex].answer;
+                  const selectedAnswer = selectedAnswers[currentQuestionIndex];
+                  const isCorrect = option === correctAnswer;
+                  const isSelectedWrong =
+                    isSubmit && option === selectedAnswer && !isCorrect;
+                  return (
+                    <FormControlLabel
+                      key={index}
+                      value={option}
+                      control={<Radio />}
+                      sx={{
+                        borderRadius: '10px',
+                        marginTop: '5px',
+                        width: '100%',
+                        padding: '2px 10px 2px 5px',
+                        border: isSubmit
+                          ? isCorrect
+                            ? '2px solid green'
+                            : isSelectedWrong
+                              ? '2px solid red'
+                              : ''
+                          : '',
+                      }}
+                      label={<div>{option}</div>}
+                      disabled={isLocked}
+                    />
+                  );
+                },
+              )}
             </RadioGroup>
-
             <Box
               sx={{
                 display: 'flex',
@@ -309,12 +414,13 @@ const QuizPage = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleNext}
-                disabled={!selectedAnswers[quizData[currentQuestionIndex].id]}
+                disabled={
+                  !selectedAnswers[currentQuestionIndex] || isLastQuestion
+                }
               >
                 Next
               </Button>
             </Box>
-
             <Box>
               <Button
                 variant="contained"
@@ -322,6 +428,7 @@ const QuizPage = () => {
                 sx={{ marginTop: 3 }}
                 onClick={handleSubmit}
                 className="text-center mx-auto d-block"
+                disabled={isSubmit}
               >
                 Submit Quiz
               </Button>
@@ -344,7 +451,6 @@ const QuizPage = () => {
                     <CloseIcon />
                   </IconButton>
                 </DialogTitle>
-
                 <DialogContent>
                   {showConfetti && (
                     <div
@@ -361,7 +467,6 @@ const QuizPage = () => {
                       <ConfettiExplosion />
                     </div>
                   )}
-
                   <Box
                     position="relative"
                     display="flex"
@@ -385,7 +490,6 @@ const QuizPage = () => {
                           top: 0,
                         }}
                       />
-
                       <CircularProgress
                         variant="determinate"
                         value={scorePercentage}
@@ -398,7 +502,6 @@ const QuizPage = () => {
                           top: 0,
                         }}
                       />
-
                       <Box
                         sx={{
                           position: 'absolute',
@@ -412,9 +515,7 @@ const QuizPage = () => {
                         }}
                       >
                         <div className="score-content">
-                          <h1>
-                            {scorePercentage.toFixed(0)}% <span>Score</span>{' '}
-                          </h1>
+                          <h2>{scorePercentage.toFixed(0)}%</h2>
                         </div>
                       </Box>
                     </Box>
@@ -422,11 +523,9 @@ const QuizPage = () => {
                   <p className="text-dark text-center fs-4 mt-4 fw-bold mb-1">
                     {getMessage(scorePercentage)}
                   </p>
-
                   <p className="text-center mb-4">
-                    You&apos;ve completed the Mathematics Quiz
+                    You&apos;ve completed the {quizData?.title}
                   </p>
-
                   <div className="card bg-primary-20 mb-0">
                     <div className="card-body">
                       <ul className="quizsubre">
@@ -435,7 +534,10 @@ const QuizPage = () => {
                           <div className="">
                             <span>Time Taken:</span>
                             <span className="text-dark">
-                              {((300 - timeLeft) / 60).toFixed(2)} mins
+                              {((quizData?.timer * 60 - timeLeft) / 60).toFixed(
+                                2,
+                              )}{' '}
+                              mins
                             </span>
                           </div>
                         </li>
@@ -444,7 +546,8 @@ const QuizPage = () => {
                           <div className="">
                             <span>Questions:</span>
                             <span className="text-dark">
-                              {correctCount}/{quizData.length} Correct
+                              {correctCount}/{quizData?.questions.length}{' '}
+                              Correct
                             </span>
                           </div>
                         </li>
@@ -455,7 +558,7 @@ const QuizPage = () => {
                 <DialogActions sx={{ justifyContent: 'center' }}>
                   <button
                     className="btn btn-primary rounded-pill mb-4 px-4"
-                    onClick={() => setShowResults(false)}
+                    onClick={() => navigate('/main/student/quiz')}
                   >
                     Go To Results
                   </button>
@@ -466,29 +569,28 @@ const QuizPage = () => {
           <div className="right-cards">
             <h6 className="mb-3 fw-medium">Question Navigator</h6>
             <Grid className="rebtns">
-              {quizData.map((q) => (
-                <Grid item key={q.id} className="listit">
+              {quizData?.questions.map((_q: any, index: any) => (
+                <Grid item key={index} className="listit">
                   <Button
                     variant="contained"
                     sx={{
                       backgroundColor:
-                        currentQuestionIndex === q.id - 1
+                        currentQuestionIndex === index
                           ? '#9943EC'
-                          : lockedAnswers[q.id]
-                            ? isCorrectAnswer(q.id)
+                          : lockedAnswers[index]
+                            ? isCorrectAnswer(index)
                               ? '#4CAF50'
                               : '#F44336'
                             : '#9E9E9E',
                       color: 'white',
                     }}
-                    onClick={() => setCurrentQuestionIndex(q.id - 1)}
+                    onClick={() => setCurrentQuestionIndex(index)}
                   >
-                    {q.id}
+                    {index + 1}
                   </Button>
                 </Grid>
               ))}
             </Grid>
-
             <ul className="quiz-hint">
               <li>
                 <span style={{ backgroundColor: '#4CAF50' }}></span> Answered

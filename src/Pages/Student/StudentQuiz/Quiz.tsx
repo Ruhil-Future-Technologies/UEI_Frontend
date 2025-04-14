@@ -187,7 +187,6 @@ const QuizPage = () => {
                   Complete all questions. You can review your answers before
                   final submission.
                 </Typography>
-                
                 <div className="d-flex justify-content-between my-3 align-items-center">
                   <small className=" fw-medium d-block text-m-14">
                     Question {currentQuestionIndex + 1} of {quizData.length}
@@ -293,31 +292,32 @@ const QuizPage = () => {
 
                 <DialogContent>
                   <div className="incirclere">
-                    <h1>{scorePercentage.toFixed(0)}% <span>Score</span>  </h1>
-                   
+                    <h1>{scorePercentage.toFixed(0)}% </h1>
                   </div>
-                  <p className='text-dark text-center fs-4 mt-4 fw-bold mb-1'>Excellent Work!</p>
+                  <p className="text-dark text-center fs-4 mt-4 fw-bold mb-1">
+                    Excellent Work!
+                  </p>
                   <p className="text-center mb-4">
                     You&apos;ve completed the Mathematics Quiz
                   </p>
 
                   <div className="card bg-primary-20 mb-0">
                     <div className="card-body">
-                      <ul className='quizsubre'>
+                      <ul className="quizsubre">
                         <li>
-                          <AccessTimeOutlined color='primary' />
+                          <AccessTimeOutlined color="primary" />
                           <div className="">
                             <span>Time Taken:</span>
-                            <span className='text-dark'>
+                            <span className="text-dark">
                               {((300 - timeLeft) / 60).toFixed(2)} mins
                             </span>
                           </div>
                         </li>
                         <li>
-                          <ForumIcon color='primary'/>
+                          <ForumIcon color="primary" />
                           <div className="">
                             <span>Questions:</span>
-                            <span className='text-dark'>
+                            <span className="text-dark">
                               {correctCount}/{quizData.length} Correct
                             </span>
                           </div>
@@ -328,7 +328,7 @@ const QuizPage = () => {
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: 'center' }}>
                   <button
-                    className='btn btn-primary rounded-pill mb-4 px-4'
+                    className="btn btn-primary rounded-pill mb-4 px-4"
                     onClick={() => setShowResults(false)}
                   >
                     Go To Results
