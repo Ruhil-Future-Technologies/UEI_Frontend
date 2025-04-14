@@ -263,6 +263,70 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
     const value = event.target.value as string;
     setAdminDepartment(value);
   };
+  const picSubmitHandel = async (fileName:any) => {
+    if (!admin?.first_name) setFname_col1(true);
+    if (!admin?.last_name) setLname_col1(true);
+    if (!admin?.father_name) setFathername_col1(true);
+    if (!admin?.mother_name) setMothername_col1(true);
+    const payload = {
+      user_uuid: adminId,
+      department_id: adminDepartment,
+      first_name: admin?.first_name,
+      last_name: admin?.last_name,
+      gender: admin?.gender,
+      dob: admin?.dob || null,
+      father_name: admin?.father_name,
+      mother_name: admin?.mother_name,
+      guardian_name: admin?.guardian_name || '',
+      is_kyc_verified: true,
+      pic_path:fileName ? fileName : selectedFile ? selectedFile : adminFilePath,
+    };
+    const formData = new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value as string);
+      }
+    });
+    try {
+      const response = await putData(
+        'admin/edit/' + adminId,
+        formData,
+      );
+      if (response?.status) {
+        setNamepro({
+          first_name: payload?.first_name,
+          last_name: payload?.last_name,
+          gender: payload?.gender,
+        });
+        getData(
+          `${'upload_file/get_image/'}${
+            fileName? fileName: selectedFile ? selectedFile : adminFilePath
+          }`,
+        )
+          .then((data: any) => {
+            if (data.status) {
+              setProImage(data?.data?.file_url);
+            }
+          })
+          .catch((e) => {
+            console.log('------------- e -------------', e);
+          });
+      } else {
+        toast.error('Request failed', {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
+    } catch {
+      toast.error('Some issue are occuring.', {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center',
+      });
+    }
+
+  }
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
     const formData = new FormData();
@@ -305,6 +369,9 @@ const AdminBasicInfo: React.FC<ChildComponentProps> = () => {
               theme: 'colored',
               position: 'top-center',
             });
+            if (!editFalg) {
+              picSubmitHandel(fileName);
+              }
           } else if (data?.code === 404) {
             toast.error(data?.message, {
               hideProgressBar: true,
