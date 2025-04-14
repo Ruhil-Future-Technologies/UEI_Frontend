@@ -407,7 +407,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
 
       <form>
         <b className="font-weight-bold profiletext mb-1 d-block">
-           Language Known
+        Languages Known
         </b>
         {boxes.map((box, index) => (
           <div className="d-flex gap-3 mb-2 align-items-center" key={index}>
