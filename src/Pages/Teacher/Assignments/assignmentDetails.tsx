@@ -152,7 +152,7 @@ const AssignmentDetails = () => {
                                         <TableCell>{student?.submission_date}</TableCell>
                                         <TableCell>
                                             <Chip
-                                                label={student.is_graded == true ? 'Graded' : student.is_submitted == true ? 'Submitted' : 'Pendding'}
+                                                label={student.is_graded == true ? 'Graded' : student.is_submitted == true ? 'Submitted' : 'Pending'}
                                                 color={student.is_graded == true ? "success" : student.is_submitted == true ? "primary" : 'error'}
                                                 size="small"
                                             />

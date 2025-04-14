@@ -509,7 +509,7 @@ const Login = () => {
           email={emailphone}
         />
         <footer className="login-footer">
-          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <p className="mb-0">Copyright © 2025. All rights reserved.</p>
           <List
             sx={{
               display: 'inline-flex',
@@ -535,7 +535,7 @@ const Login = () => {
             </ListItem>
             <ListItem sx={{ width: 'auto', padding: 0 }}>
               <Link to="ServicesAgreement" color="primary">
-                End User Aggrement
+                End User Agreement
               </Link>
             </ListItem>
           </List>
