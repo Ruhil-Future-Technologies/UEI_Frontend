@@ -2150,7 +2150,11 @@ const AddEditTeacher = () => {
                                     <Select
                                       multiple
                                       name={`classes.${index}.subjects`}
-                                      value={cls.subjects}
+                                      value={
+                                        Array.isArray(cls.subjects)
+                                          ? cls.subjects
+                                          : []
+                                      }
                                       label="Subjects *"
                                       onChange={(
                                         e: SelectChangeEvent<string[]>,
@@ -2169,7 +2173,9 @@ const AddEditTeacher = () => {
                                           !cls.stream)
                                       }
                                       renderValue={(selected) =>
-                                        selected.join(', ')
+                                        Array.isArray(selected)
+                                          ? selected.join(', ')
+                                          : ''
                                       }
                                       sx={{
                                         backgroundColor: inputfield(namecolor),

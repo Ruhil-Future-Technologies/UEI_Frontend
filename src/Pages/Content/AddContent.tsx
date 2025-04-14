@@ -974,6 +974,15 @@ const AddContent = () => {
             setContent(initialState);
             setAllSelectedfiles([]);
             setLoading(false);
+          } else {
+            toast.error('Content Upload Failed', {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
+            resetForm({ values: initialState });
+            setContent(initialState);
+            setAllSelectedfiles([]);
+            setLoading(false);
           }
         })
         .catch((e: any) => {
@@ -1386,7 +1395,6 @@ const AddContent = () => {
       });
   };
 
-
   const handleBack = () => {
     navigate(-1); // navigates to the previous page
   };
@@ -1398,20 +1406,21 @@ const AddContent = () => {
       <div className="main-wrapper">
         <div className="main-content">
           <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div className="breadcrumb-title pe-3">  
+            <div className="breadcrumb-title pe-3">
               <div className="d-flex align-items-center gap-2">
-              <ArrowBackIcon role="button" onClick={handleBack}/>           
-              <a className="text-dark" href="/teacher-dashboard">
-                Dashboard
-              </a>
+                <ArrowBackIcon role="button" onClick={handleBack} />
+                <a className="text-dark" href="/teacher-dashboard">
+                  Dashboard
+                </a>
               </div>
-              
             </div>
             <div className="ps-3">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb mb-0 p-0">
                   <li className="breadcrumb-item active" aria-current="page">
-                    <div className="main_title">{id ? 'Edit' : 'Add'} Content</div>
+                    <div className="main_title">
+                      {id ? 'Edit' : 'Add'} Content
+                    </div>
                   </li>
                 </ol>
               </nav>

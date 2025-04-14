@@ -26,6 +26,7 @@ import useApi from '../../../hooks/useAPI';
 import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
 import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
+import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
 
 const TeacherQuizPage = () => {
   const [quizData, setQuizData] = useState<any[]>([]);
@@ -42,6 +43,8 @@ const TeacherQuizPage = () => {
     id: '',
     title: '',
   });
+  const [dataDelete, setDataDelete] = useState(false);
+  const [dataDeleteId, setDataDeleteId] = useState<any>();
 
   const getCourseOrClassName = (id: string, type: string) => {
     if (type === 'school') {
@@ -166,6 +169,15 @@ const TeacherQuizPage = () => {
   const draftQuizzes = quizData.filter((quiz) => quiz.save_draft).length;
   const totalQuizzes = quizData.length;
 
+  const handlecancel = () => {
+    setDataDelete(false);
+  };
+
+  const handleDeleteFiles = (id: number) => {
+    setDataDeleteId(id);
+    setDataDelete(true);
+  };
+
   const handleDelete = async (id: string) => {
     try {
       deleteData(`/quiz/delete/${id}`).then((res) => {
@@ -175,6 +187,7 @@ const TeacherQuizPage = () => {
           position: 'top-center',
         });
         fetchQuizData();
+        setDataDelete(false);
       });
     } catch (error) {
       console.error('Error deleting quiz:', error);
@@ -419,7 +432,7 @@ const TeacherQuizPage = () => {
                                 color="error"
                                 size="small"
                                 startIcon={<Delete />}
-                                onClick={() => handleDelete(quiz.id)}
+                                onClick={() => handleDeleteFiles(quiz.id)}
                               >
                                 Delete
                               </Button>
@@ -454,6 +467,12 @@ const TeacherQuizPage = () => {
           onClose={() => setModalOpen(false)}
           quizId={selectedQuiz.id}
           quizTitle={selectedQuiz.title}
+        />
+        <DeleteDialog
+          isOpen={dataDelete}
+          onCancel={handlecancel}
+          onDeleteClick={() => handleDelete(dataDeleteId)}
+          title="Quiz"
         />
       </div>
     </div>

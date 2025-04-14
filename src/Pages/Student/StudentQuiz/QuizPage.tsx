@@ -36,7 +36,6 @@ const QuizPage = () => {
   const { id } = useParams();
   const [quizData, setQuizData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
@@ -48,6 +47,7 @@ const QuizPage = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [timerActive, setTimerActive] = useState(true);
   const { getData, postDataJson } = useApi();
   const studentId = localStorage.getItem('_id') || {};
   const GET_QUIZ = QUERY_KEYS_QUIZ.GET_QUIZ;
@@ -59,8 +59,20 @@ const QuizPage = () => {
         setIsLoading(true);
         getData(`${GET_QUIZ}/${id}`).then((response) => {
           if (response.status && response.code === 200) {
-            setQuizData(response.data);
-            setTimeLeft(response.data.timer * 60);
+            const current_time = new Date();
+            const quiztime = new Date(response.data.due_date_time);
+
+            if (current_time > quiztime) {
+              toast.error('Quiz Timeout', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              navigate('/main/student/quiz');
+              return;
+            } else {
+              setQuizData(response.data);
+              setTimeLeft(response.data.timer * 60);
+            }
           }
         });
       } catch (error) {
@@ -85,18 +97,20 @@ const QuizPage = () => {
   };
 
   useEffect(() => {
-    if (timeLeft > 0) {
+    if (timeLeft > 0 && timerActive) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && !isLoading && quizData) {
+    } else if (timeLeft === 0 && !isLoading && quizData && timerActive) {
       setShowResults(true);
       setShowConfetti(false);
+      setIsSubmit(true);
+      submitQuiz();
+      setTimerActive(false);
     }
-  }, [timeLeft, isLoading, quizData]);
+  }, [timeLeft, isLoading, quizData, timerActive]);
 
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!quizData) return;
-
     if (!lockedAnswers[currentQuestionIndex]) {
       setSelectedAnswers({
         ...selectedAnswers,
@@ -107,7 +121,6 @@ const QuizPage = () => {
 
   const handleNext = () => {
     if (!quizData) return;
-
     if (selectedAnswers[currentQuestionIndex]) {
       setLockedAnswers({
         ...lockedAnswers,
@@ -135,14 +148,12 @@ const QuizPage = () => {
 
   const formatStudentAnswers = () => {
     if (!quizData) return {};
-
     const formattedAnswers: any = {};
     quizData.questions.forEach((question: any, index: any) => {
       if (selectedAnswers[index]) {
         formattedAnswers[question.id] = selectedAnswers[index];
       }
     });
-
     return formattedAnswers;
   };
 
@@ -158,13 +169,11 @@ const QuizPage = () => {
       const correctAnswersCount = Object.keys(selectedAnswers).filter((qIdx) =>
         isCorrectAnswer(parseInt(qIdx)),
       ).length;
-
       const totalQuestions = quizData.questions.length;
       const percentageCorrect = (correctAnswersCount / totalQuestions) * 100;
       const earnedPoints = Math.round(
         (percentageCorrect / 100) * parseInt(quizData.points),
       );
-
       const payload = {
         quiz_id: id,
         student_id: studentId,
@@ -173,7 +182,6 @@ const QuizPage = () => {
         time_taken: calculateTimeTaken(),
         student_answers: formatStudentAnswers(),
       };
-
       postDataJson(ADD_SUBMISSION, payload).then((response) => {
         if (response.data && response.status) {
           toast.success('Quiz submitted successfully', {
@@ -187,6 +195,8 @@ const QuizPage = () => {
             theme: 'colored',
             position: 'top-center',
           });
+          setShowResults(false);
+          navigate('/main/student/quiz');
         }
       });
     } catch (error) {
@@ -200,39 +210,34 @@ const QuizPage = () => {
   };
 
   const handleSubmit = () => {
+    const updatedLockedAnswers = { ...lockedAnswers };
+
+    Object.keys(selectedAnswers).forEach((qIdx) => {
+      const index = parseInt(qIdx);
+      updatedLockedAnswers[index] = true;
+    });
+
+    setLockedAnswers(updatedLockedAnswers);
     setShowResults(true);
     setIsSubmit(true);
+    setTimerActive(false);
     submitQuiz();
   };
 
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && !isLoading && quizData) {
-      setShowResults(true);
-      setShowConfetti(false);
-      setIsSubmit(true);
-      submitQuiz();
-    }
-  }, [timeLeft, isLoading, quizData]);
   const preventCopySx: React.CSSProperties = {
     userSelect: 'none',
   };
 
   const calculateScore = () => {
     if (!quizData) return 0;
-
     let totalCorrect = 0;
     const totalQuestions = quizData.questions.length;
-
     Object.keys(selectedAnswers).forEach((qIdx) => {
       const index = parseInt(qIdx);
       if (isCorrectAnswer(index)) {
         totalCorrect++;
       }
     });
-
     return (totalCorrect / totalQuestions) * 100;
   };
 
@@ -263,6 +268,9 @@ const QuizPage = () => {
       </div>
     );
   }
+
+  const isLastQuestion =
+    quizData && currentQuestionIndex === quizData.questions.length - 1;
 
   return (
     <div className="main-wrapper">
@@ -377,8 +385,8 @@ const QuizPage = () => {
                             ? '2px solid green'
                             : isSelectedWrong
                               ? '2px solid red'
-                              : '2px solid var(--bs-purple)'
-                          : '2px solid var(--bs-purple)',
+                              : ''
+                          : '',
                       }}
                       label={<div>{option}</div>}
                       disabled={isLocked}
@@ -406,7 +414,9 @@ const QuizPage = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleNext}
-                disabled={!selectedAnswers[currentQuestionIndex]}
+                disabled={
+                  !selectedAnswers[currentQuestionIndex] || isLastQuestion
+                }
               >
                 Next
               </Button>
@@ -418,6 +428,7 @@ const QuizPage = () => {
                 sx={{ marginTop: 3 }}
                 onClick={handleSubmit}
                 className="text-center mx-auto d-block"
+                disabled={isSubmit}
               >
                 Submit Quiz
               </Button>
@@ -504,7 +515,7 @@ const QuizPage = () => {
                         }}
                       >
                         <div className="score-content">
-                          <h1>{scorePercentage.toFixed(0)}%</h1>
+                          <h2>{scorePercentage.toFixed(0)}%</h2>
                         </div>
                       </Box>
                     </Box>
