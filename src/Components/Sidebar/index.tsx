@@ -206,25 +206,14 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li>
-                          <Link
-                            to="/main/student/assignment"
-                            onClick={removeMobileToggle}
-                          >
-                            <div className="parent-icon">
-                              <AssignmentOutlinedIcon />
-                            </div>
-                            <div className="menu-title">Your Assignments</div>
-                          </Link>
-                        </li>
-                    <li>
                       <Link
-                        to="/main/student/quiz"
+                        to="/main/student/assignment"
                         onClick={removeMobileToggle}
                       >
                         <div className="parent-icon">
-                          <QuestionAnswerOutlinedIcon />
+                          <AssignmentOutlinedIcon />
                         </div>
-                        <div className="menu-title">Quiz</div>
+                        <div className="menu-title">Your Assignments</div>
                       </Link>
                     </li>
                     <li>
@@ -267,7 +256,7 @@ const Sidebar = () => {
                               className="has-arrow"
                               onClick={() => toggleMenu(menu.id)}
                               aria-expanded={openMenu === menu.id}
-                            >                             
+                            >
                               <div className="parent-icon">
                                 <AdminPanelSettingsOutlinedIcon />
                               </div>
@@ -429,31 +418,29 @@ const Sidebar = () => {
         </div>
         {user_type === 'student' && (
           <div className="sidebar-footer">
-           
-              <ul className="metismenu">
-                {Number(profileCompletion) === 100 && (
-                  <li>
-                    <Link
-                      to="/main/student-feedback/add-student-feedback"
-                      onClick={removeMobileToggle}
-                    >
-                      <div className="parent-icon">
-                        <InfoOutlinedIcon />
-                      </div>
-                      <div className="menu-title">Feedback</div>
-                    </Link>
-                  </li>
-                )}
+            <ul className="metismenu">
+              {Number(profileCompletion) === 100 && (
                 <li>
-                  <Link to="/main/faq" onClick={removeMobileToggle}>
+                  <Link
+                    to="/main/student-feedback/add-student-feedback"
+                    onClick={removeMobileToggle}
+                  >
                     <div className="parent-icon">
-                      <LiveHelpOutlinedIcon />
+                      <InfoOutlinedIcon />
                     </div>
-                    <div className="menu-title">FAQs</div>
+                    <div className="menu-title">Feedback</div>
                   </Link>
                 </li>
-              </ul>
-           
+              )}
+              <li>
+                <Link to="/main/faq" onClick={removeMobileToggle}>
+                  <div className="parent-icon">
+                    <LiveHelpOutlinedIcon />
+                  </div>
+                  <div className="menu-title">FAQs</div>
+                </Link>
+              </li>
+            </ul>
           </div>
         )}
       </aside>

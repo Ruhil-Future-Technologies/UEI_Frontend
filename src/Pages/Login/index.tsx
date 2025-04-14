@@ -44,9 +44,14 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     toast.dismiss();
-    const login_id = localStorage.getItem('user_uuid');
-    if (login_id) {
+   // const login_id = localStorage.getItem('user_uuid');
+    const user_type=localStorage.getItem('user_type')
+    if (user_type=='student' ||user_type=='admin') {
       navigate('/main/DashBoard');
+    }else if(user_type=='teacher'){
+      navigate('/teacher-dashboard')
+    }else if(user_type=='institute'){
+      navigate('institute-dashboard')
     }
   }, []);
 
@@ -474,7 +479,7 @@ const Login = () => {
                           <div
                             data-testid="btn-sign"
                             onClick={() => setShowForm(true)}
-                            className="btn btn-secondary w-100 outsecbtn rounded-pill"
+                            className="btn btn-primary w-100 outsecbtn rounded-pill"
                           >
                             Sign in with Email / Phone
                           </div>
@@ -509,7 +514,7 @@ const Login = () => {
           email={emailphone}
         />
         <footer className="login-footer">
-          <p className="mb-0">Copyright © 2025. All right reserved.</p>
+          <p className="mb-0">Copyright © 2025. All rights reserved.</p>
           <List
             sx={{
               display: 'inline-flex',
@@ -535,7 +540,7 @@ const Login = () => {
             </ListItem>
             <ListItem sx={{ width: 'auto', padding: 0 }}>
               <Link to="ServicesAgreement" color="primary">
-                End User Aggrement
+                End User Agreement
               </Link>
             </ListItem>
           </List>

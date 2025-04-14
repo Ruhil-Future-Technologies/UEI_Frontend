@@ -76,7 +76,7 @@ a,
 p {
   font-family: 'Inter', system-ui !important;
 }
-.row{
+.row {
   box-sizing: border-box;
 }
 ul {
@@ -98,8 +98,6 @@ ul {
 .fs-12 {
   font-size: 12px !important;
 }
-
-
 
 .btn-secondary {
   background-color: $secondary !important;
@@ -287,7 +285,6 @@ img {
   font-size: 10px !important;
 }
 @media (max-width: 428px) {
-  
   .text-m-16 {
     font-size: 16px !important;
   }
@@ -341,7 +338,7 @@ img {
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   .swiper-button-prev,
   .swiper-button-next {
     opacity: 1 !important;
@@ -376,7 +373,7 @@ img {
 
     .main-chat-panel {
       width: 100% !important;
-     // padding: 0 !important;
+      // padding: 0 !important;
       border-left: 0 !important;
 
       .mobile-chat-header {
@@ -495,7 +492,7 @@ img {
   .progress-line {
     left: 4% !important;
     transform: translateX(-4%) !important;
-    top: 50%!important;
+    top: 50% !important;
   }
 
   .wizard-content .form-control,
@@ -2209,7 +2206,7 @@ body .desk-card {
         overflow: auto;
 
         @media (max-width: 724px) {
-          max-height: calc(100vh - 220px);
+          max-height: calc(100vh - 210px);
         }
         .welcome-box {
           margin: 0;
@@ -2836,8 +2833,6 @@ a {
   display: none !important;
 }
 
-
-
 .freechatbox {
   position: fixed;
   background-color: rgba(black, 0.3);
@@ -2859,7 +2854,8 @@ a {
     margin-bottom: 1rem;
     margin-right: 1rem;
     .chat-box {
-      padding: 0.5rem !important;
+      padding-top: 0.5rem;
+    
       height: 400px;
       overflow: auto;
       .message-bubble {
@@ -2867,12 +2863,15 @@ a {
         box-shadow:
           rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
           rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
-      
+
         border-radius: 8px !important;
         font-size: 15px;
         &.left {
           background-color: $white !important;
         }
+      }
+      .message-wrapper {
+        padding: 0 0.5rem;
       }
     }
   }
@@ -2910,7 +2909,7 @@ a {
     select {
       border-radius: 12px;
       border: 0;
-      min-height: 42px;
+      min-height: 48px;
     }
   }
 }
@@ -2998,7 +2997,7 @@ a {
     flex-direction: column;
     gap: 0.4rem;
     background-color: $white;
-    &:hover{
+    &:hover {
       background-color: $primary;
       color: $white;
     }
@@ -3007,13 +3006,11 @@ a {
     background-color: $primary;
     border: 1px solid rgba($primary, 0.7) !important;
     color: $white;
-    &:hover{
+    &:hover {
       background-color: $primary;
       color: $white;
     }
   }
-
-
 }
 
 .fileslistitem {
@@ -3132,66 +3129,5 @@ a {
     span {
       display: block;
     }
-  }
-}
-
-
-.carddlex{
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  span{
-    background-color: $primary;
-    border-radius: 8px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    svg{
-      width: 32px;
-      height: 32px;
-      path{
-        fill: white;
-      }
-    }
-  }
-  h6{font-weight: bold; margin-bottom: 0.1rem;}
-  p{
-    margin-bottom: 0;
-    color: #4B5563;
-  }
-
- 
-}
-.totallist{
-  display: flex;
-  align-items: center;
-  gap:0.4rem;
-  margin-top: 2rem;
-  h6{
-    color: #6B7280;
-    font-weight: 400;
-    margin-bottom: 0;
-  }
-  span{
-   
-    display: block;
-
-    svg{
-      path{fill: #6B7280;}
-    }
-
-  }
-  p{
-    margin-bottom: 0;
-   
-  }
-}
-
-.mw-180px{
-  min-width: 180px;
-  @media (max-width:724px) {
-    width: 100%;
   }
 }

@@ -257,7 +257,7 @@ export interface StudentRep0oDTO {
   guardian_name: MaybeNull<string>;
   is_kyc_verified: MaybeNull<boolean>;
   pic_path: MaybeNull<string>;
-  id: number;
+  id: number | string;
   user_uuid: MaybeNull<string>;
 }
 export interface IEntity {
@@ -2314,7 +2314,14 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     enableSorting: false,
     enableColumnActions: false,
     enableResizing: true,
-    size: 150,
+    size: 160,
+    minSize: 130,
+    Cell: ({ cell }: { cell: any }) => (
+      <div style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+        {cell?.getValue() as string}
+      </div>
+    ),
+    
   },
   {
     accessorKey: 'board_name',
@@ -2366,8 +2373,9 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     header: 'File Path',
     enableSorting: false,
     enableColumnActions: false,
-    size: 150,
+    size: 160,
     enableResizing: true,
+    minSize: 130,
   },
   {
     accessorKey: 'university_name',

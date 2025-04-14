@@ -25,9 +25,9 @@ import {
   commonStyle,
   deepEqual,
   fieldIcon,
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
+  //inputfield,
+  //inputfieldhover,
+  //inputfieldtext,
 } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
 import { ChildComponentProps } from '../StudentProfile';
@@ -407,12 +407,12 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
 
       <form>
         <b className="font-weight-bold profiletext mb-1 d-block">
-           Language Known
+        Languages Known
         </b>
         {boxes.map((box, index) => (
           <div className="d-flex gap-3 mb-2 align-items-center" key={index}>
             <FormControl
-            size="small"
+             size="small"
               required
               sx={{
                 
@@ -427,13 +427,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
                 id={`language-select-${box.id}`}
                 name={`language_${box.id}`}
                 value={box.language_id}
-                label="Language *"
-                sx={{
-                  backgroundColor: '#f5f5f5',
-                  '& .MuiSelect-icon': {
-                    color: fieldIcon(namecolor),
-                  },
-                }}
+                label="Language *"                
                 onChange={(e) => handleChange(e, index)}
                 MenuProps={MenuProps}
                 onBlur={() => validateFields(index, 'language')}
@@ -445,21 +439,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
                     <MenuItem
                       key={lang.id}
                       value={lang.id}
-                      disabled
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        fontWeight: 'bold',
-                        '&:hover': {
-                          backgroundColor: inputfieldhover(namecolor),
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: inputfield(namecolor),
-                        },
-                        '&.Mui-selected, &:focus': {
-                          backgroundColor: inputfield(namecolor),
-                        },
-                      }}
+                      disabled                     
                     >
                       {lang.language_name}
                     </MenuItem>
@@ -476,19 +456,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
                     <MenuItem
                       key={lang.id}
                       value={lang.id}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        '&:hover': {
-                          backgroundColor: inputfieldhover(namecolor),
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: inputfield(namecolor),
-                        },
-                        '&.Mui-selected, &:focus': {
-                          backgroundColor: inputfield(namecolor),
-                        },
-                      }}
+                      
                     >
                       {lang.language_name}
                     </MenuItem>
@@ -520,12 +488,7 @@ const StudentLanguage: React.FC<ChildComponentProps> = () => {
                 id={`proficiency-select-${box.id}`}
                 name={`proficiency_${box.id}`}
                 value={box.proficiency}
-                sx={{
-                  backgroundColor: '#f5f5f5',
-                  '& .MuiSelect-icon': {
-                    color: fieldIcon(namecolor),
-                  },
-                }}
+               
                 label="Proficiency *"
                 onChange={(e) => handleChange1(e, index)}
                 MenuProps={MenuProps}
