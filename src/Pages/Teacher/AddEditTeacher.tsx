@@ -40,6 +40,8 @@ import { qualifications } from '../TeacherRgistrationForm';
 import IconButton from '@mui/material/IconButton';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 
 interface ITeacherForm {
   first_name: string;
@@ -149,7 +151,7 @@ const AddEditTeacher = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
-  const genderOptions = ['male', 'female'];
+  const genderOptions = ['Male', 'Female'];
   const [dob, setDob] = useState<any>(null);
   const navigate = useNavigate();
   const [, setStreams] = useState<string[]>([]);
@@ -162,6 +164,8 @@ const AddEditTeacher = () => {
   const pincodePattern = /^\d{6}$/;
   const qualificationPattern = /^[a-zA-Z0-9\s.,()'-]+$/;
   const [error, setError] = React.useState<string | null>(null);
+  const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
+
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find(
       (entity) => entity.id === entityId && entity?.is_active,
@@ -186,17 +190,17 @@ const AddEditTeacher = () => {
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data.course_data;
       setDataCourses(
-        data?.data?.course_data?.filter((subject: any) => subject.is_active),
+        data?.data?.course_data.filter((subject: any) => subject.is_active),
       );
     });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       setCollegeSubjects(
-        data?.data?.subjects_data?.filter((subject: any) => subject.is_active),
+        data.data.subjects_data.filter((subject: any) => subject.is_active),
       );
     });
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       setSchoolSubjects(
-        data?.data?.subjects_data?.filter((subject: any) => subject.is_active),
+        data.data.subjects_data.filter((subject: any) => subject.is_active),
       );
     });
     if (id) {
@@ -877,6 +881,9 @@ const AddEditTeacher = () => {
     }
 
     if (id) {
+      allselectedfiles.forEach((file) => {
+        formData.append('documents', file);
+      });
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
       });
@@ -888,11 +895,13 @@ const AddEditTeacher = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setAllSelectedfiles([]);
           } else {
             toast.error(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setAllSelectedfiles([]);
           }
         })
         .catch((e: any) => {
@@ -905,6 +914,9 @@ const AddEditTeacher = () => {
           });
         });
     } else {
+      allselectedfiles.forEach((file) => {
+        formData.append('documents', file);
+      });
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
         formData.append('is_verified', 'True');
@@ -1361,6 +1373,38 @@ const AddEditTeacher = () => {
   const handleStateBlur = () => {
     setIsStateOpen(false);
   };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (!files) return;
+
+    const filesArray = Array.from(files);
+
+    const duplicateFiles = filesArray.filter((file) =>
+      allselectedfiles.some(
+        (existingFile) =>
+          existingFile.name === file.name &&
+          existingFile.lastModified === file.lastModified,
+      ),
+    );
+
+    if (duplicateFiles.length > 0) {
+      event.target.value = '';
+      return;
+    }
+
+    setAllSelectedfiles((prevFiles) => [...prevFiles, ...filesArray]);
+
+    event.target.value = '';
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setAllSelectedfiles((previous) =>
+      previous.filter((_, ind) => ind !== index),
+    );
+  };
+
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -2413,7 +2457,6 @@ const AddEditTeacher = () => {
                         <Field
                           fullWidth
                           component={TextField}
-                          inputProps={{ maxLength: 6 }}
                           label="Pincode *"
                           name="pincode"
                           value={values?.pincode}
@@ -2424,6 +2467,38 @@ const AddEditTeacher = () => {
                         {touched?.pincode && errors?.pincode && (
                           <p className="error">{String(errors.pincode)}</p>
                         )}
+                      </div>
+                    </div>
+
+                    <div className="row d-flex justify-content-between mt-0 g-4">
+                      <div className="col-12 ">
+                        <UploadBtn
+                          label="Upload Documents"
+                          name="document"
+                          accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
+                          handleFileChange={handleFileChange}
+                        />
+                        <div className="col-8">
+                          {allselectedfiles?.length > 0 && (
+                            <ul className="doclist">
+                              {allselectedfiles?.map((file, index) => (
+                                <li
+                                  key={index}
+                                  className="flex mt-2 items-center justify-between "
+                                >
+                                  {'name' in file
+                                    ? file.name
+                                    : (file as any)?.url}
+
+                                  <DeleteOutlinedIcon
+                                    className="m-2 cursor-pointer"
+                                    onClick={() => handleRemoveFile(index)}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
