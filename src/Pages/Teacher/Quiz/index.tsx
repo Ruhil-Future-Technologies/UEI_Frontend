@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 
@@ -11,6 +12,7 @@ import {
   MenuItem,
   Chip,
   Stack,
+  CircularProgress,
 } from '@mui/material';
 import {
   AccessTime,
@@ -20,18 +22,170 @@ import {
   Assessment,
   QuestionAnswerOutlined,
 } from '@mui/icons-material';
-
-const quizData = Array.from({ length: 6 }).map((_, i) => ({
-  title: `Mathematics Quiz #${i + 1}`,
-  grade: 'Grade 10',
-  subject: 'Algebra',
-  questions: 15,
-  duration: '45 Minutes',
-  date: 'Dec 15, 2023',
-  status: 'Active',
-}));
+import useApi from '../../../hooks/useAPI';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
+import { toast } from 'react-toastify';
+import QuizDetailsModal from './QuizDetails';
 
 const TeacherQuizPage = () => {
+  const [quizData, setQuizData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dataClasses, setDataClasses] = useState<any>([]);
+  const [dataCourses, setDataCourses] = useState<any>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [subjectFilter, setSubjectFilter] = useState('all');
+  const { getData, deleteData } = useApi();
+  const user_uuid = localStorage.getItem('user_uuid') || '';
+  const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState({
+    id: '',
+    title: '',
+  });
+
+  const getCourseOrClassName = (id: string, type: string) => {
+    if (type === 'school') {
+      const currentClass = dataClasses?.classes_data?.find((cls: any) => {
+        return cls.id == Number(id);
+      });
+
+      return currentClass?.class_name;
+    } else if (type === 'college') {
+      const course: any = dataCourses?.course_data?.find((course: any) => {
+        return course.id == Number(id);
+      });
+      return course?.course_name;
+    }
+  };
+
+  useEffect(() => {
+    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
+      setDataClasses(data.data);
+    });
+    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
+      setDataCourses(data.data);
+    });
+  }, []);
+
+  const openQuizDetails = (quizId: any, quizTitle: any) => {
+    setSelectedQuiz({
+      id: quizId,
+      title: quizTitle,
+    });
+    setModalOpen(true);
+  };
+
+  const fetchQuizData = async () => {
+    try {
+      setLoading(true);
+
+      getData(`/quiz/get/teacher/${user_uuid}`).then((response) => {
+        const filtered = response?.data.map((quiz: any) => {
+          if (quiz.course_semester_subjects) {
+            const keys = Object.keys(quiz.course_semester_subjects);
+            const firstKey = keys[0];
+
+            const currentCourseName = getCourseOrClassName(firstKey, 'college');
+
+            const semester = Object.keys(
+              quiz?.course_semester_subjects[firstKey],
+            )[0];
+            const subjects = quiz?.course_semester_subjects[firstKey][semester];
+
+            quiz.course = currentCourseName;
+            quiz.semester = semester;
+            quiz.subjects = subjects;
+          }
+          if (quiz?.class_stream_subjects) {
+            const schoolKey = Object.keys(quiz?.class_stream_subjects);
+            const firstSchoolKey = schoolKey[0];
+
+            const currentClassName = getCourseOrClassName(
+              firstSchoolKey,
+              'school',
+            );
+
+            const stream = Object.keys(
+              quiz?.class_stream_subjects[firstSchoolKey],
+            )[0];
+            const subjects =
+              quiz?.class_stream_subjects[firstSchoolKey][stream];
+
+            quiz.class = currentClassName;
+            quiz.stream = stream;
+            quiz.subjects = subjects;
+          }
+          return quiz;
+        });
+
+        setQuizData(filtered);
+        setLoading(false);
+      });
+    } catch (err) {
+      console.error('Error fetching quiz data:', err);
+      toast.error('Error fetching quiz data', {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center',
+      });
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuizData();
+  }, [dataClasses, dataCourses]);
+
+  const subjects = [
+    ...new Set(quizData.map((quiz) => quiz.class_stream_subjects)),
+  ];
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    const day = date.getDate();
+    const month = date.toLocaleString('en-IN', { month: 'short' });
+
+    return `${hours}.${minutes} ${month} ${day}`;
+  };
+
+  const filteredQuizzes = quizData.filter((quiz) => {
+    const matchesSearch = quiz.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesSubject =
+      subjectFilter === 'all' || quiz.class_stream_subjects === subjectFilter;
+
+    return matchesSearch && matchesSubject;
+  });
+
+  const draftQuizzes = quizData.filter((quiz) => quiz.save_draft).length;
+  const totalQuizzes = quizData.length;
+
+  const handleDelete = async (id: string) => {
+    try {
+      deleteData(`/quiz/delete/${id}`).then((res) => {
+        toast.error(res.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+        fetchQuizData();
+      });
+    } catch (error) {
+      console.error('Error deleting quiz:', error);
+      toast.error('Error deleting quiz', {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center',
+      });
+    }
+  };
+
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -59,7 +213,7 @@ const TeacherQuizPage = () => {
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
                     <p className="mb-1">Total Quizzes</p>
-                    <h3 className="mb-0">32</h3>
+                    <h3 className="mb-0">{totalQuizzes}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
                     <AssignmentIcon className="svgwhite" />
@@ -80,7 +234,7 @@ const TeacherQuizPage = () => {
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
                     <p className="mb-1">Draft Quizzes</p>
-                    <h3 className="mb-0">56</h3>
+                    <h3 className="mb-0">{draftQuizzes}</h3>
                   </div>
                   <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
                     <SaveAsIcon className="svgwhite" />
@@ -97,23 +251,22 @@ const TeacherQuizPage = () => {
           </div>
 
           <div className="col-12">
-            <hr className='my-0' />
+            <hr className="my-0" />
           </div>
           <div className="col-lg-12">
             <div className="d-flex align-items-center justify-content-between">
-              <h4 className='mb-0 fw-bold'>Quizzes List</h4>
+              <h4 className="mb-0 fw-bold">Quiz List</h4>
               <Link
-            to="/teacher-dashboard/create-assignment"
-            className="btn btn-primary"
-          >
-            Create New Quiz
-          </Link>
-              
+                to="/teacher-dashboard/create-assignment"
+                state={{ type: 'quiz' }}
+                className="btn btn-primary"
+              >
+                Create Quiz
+              </Link>
             </div>
-            
           </div>
           <div className="col-lg-12">
-            <Box >
+            <Box>
               {/* Filters */}
               <div className="row g-2 mb-4">
                 <div className="col-md-3">
@@ -122,11 +275,25 @@ const TeacherQuizPage = () => {
                     variant="outlined"
                     placeholder="Search quizzes..."
                     size="small"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <div className="col-md-3">
-                  <TextField fullWidth select label="All Subjects" size="small">
+                  <TextField
+                    fullWidth
+                    select
+                    label="All Subjects"
+                    size="small"
+                    value={subjectFilter}
+                    onChange={(e) => setSubjectFilter(e.target.value)}
+                  >
                     <MenuItem value="all">All Subjects</MenuItem>
+                    {subjects.map((subject, index) => (
+                      <MenuItem key={index} value={subject}>
+                        {subject}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 </div>
                 <div className="col-md-3">
@@ -137,119 +304,157 @@ const TeacherQuizPage = () => {
                 <div className="col-md-3">
                   <TextField fullWidth select label="All Status" size="small">
                     <MenuItem value="all">All Status</MenuItem>
+                    <MenuItem value="active">Active</MenuItem>
+                    <MenuItem value="draft">Draft</MenuItem>
                   </TextField>
                 </div>
               </div>
 
-              {/* Quiz Cards Grid */}
-              <div className="row g-3">
-                {quizData.map((quiz, index) => (
-                  <div className="col-md-4" key={index}>
-                    <div className="card mb-0">
-                      <div className="card-body">
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <Typography fontWeight="bold">
-                            {quiz.title}
-                          </Typography>
-                          <Chip
-                            label={quiz.status}
-                            color="success"
-                            size="small"
-                          />
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          mt={1}
-                        >
-                          {quiz.grade} • {quiz.subject}
-                        </Typography>
+              {loading && (
+                <Box display="flex" justifyContent="center" my={4}>
+                  <CircularProgress />
+                </Box>
+              )}
 
-                        
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="center"
-                          mt={1.5}
-                        >
-                          <QuestionAnswerOutlined fontSize="small" />
-                          <Typography variant="body2">
-                          {quiz.questions} Questions
-                          </Typography>
-                        </Stack>
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="center"
-                          mt={0.5}
-                        >
-                          <AccessTime fontSize="small" />
-                          <Typography variant="body2">
-                            {quiz.duration}
-                          </Typography>
-                        </Stack>
+              {!loading && (
+                <div className="row g-3">
+                  {filteredQuizzes.length > 0 ? (
+                    filteredQuizzes.map((quiz, index) => (
+                      <div className="col-md-4" key={index}>
+                        <div className="card mb-0">
+                          <div className="card-body">
+                            <Box
+                              display="flex"
+                              justifyContent="space-between"
+                              alignItems="center"
+                            >
+                              <Typography fontWeight="bold">
+                                {quiz.title}
+                              </Typography>
+                              <Chip
+                                label={quiz.save_draft ? 'Draft' : 'Active'}
+                                color={quiz.save_draft ? 'warning' : 'success'}
+                                size="small"
+                              />
+                            </Box>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              mt={1}
+                            >
+                              {quiz.course ? quiz.course : quiz.class}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              mt={1}
+                            >
+                              {quiz.semester
+                                ? `Semester ${quiz.semester}`
+                                : `Stream ${quiz.stream}`}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              mt={1}
+                            >
+                              {quiz?.subjects?.map((sub: any) => sub)}
+                            </Typography>
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                              mt={1.5}
+                            >
+                              <QuestionAnswerOutlined fontSize="small" />
+                              <Typography variant="body2">
+                                {quiz.questions?.length || 0} Questions
+                              </Typography>
+                            </Stack>
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                              mt={0.5}
+                            >
+                              <AccessTime fontSize="small" />
+                              <Typography variant="body2">
+                                {quiz.timer || 0} Minutes
+                              </Typography>
+                            </Stack>
 
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="center"
-                          mt={0.5}
-                        >
-                          <CalendarToday fontSize="small" />
-                          <Typography variant="body2">{quiz.date}</Typography>
-                        </Stack>
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                              mt={0.5}
+                            >
+                              <CalendarToday fontSize="small" />
+                              <Typography variant="body2">
+                                Due: {formatDate(quiz.due_date_time)}
+                              </Typography>
+                            </Stack>
 
-                        <Stack direction="row" spacing={1} mt={2.5}>
-                          <Button
-                            className='w-100'
-                            variant="outlined"
-                            color="primary"
-                            size="small"
-                            startIcon={<Edit />}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                          className='w-100'
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            startIcon={<Delete />}
-                          >
-                            Delete
-                          </Button>
-                          <Button
-                          className='w-100'
-                            variant="outlined"
-                            size="small"
-                            startIcon={<Assessment />}
-                          >
-                            Results
-                          </Button>
-                        </Stack>
+                            <Stack direction="row" spacing={1} mt={2.5}>
+                              <Button
+                                className="w-100"
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                startIcon={<Edit />}
+                                onClick={() =>
+                                  navigate(
+                                    `/teacher-dashboard/edit-assignment/${quiz.id}`,
+                                    {
+                                      state: { type: 'quiz', edit: true },
+                                    },
+                                  )
+                                }
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                className="w-100"
+                                variant="outlined"
+                                color="error"
+                                size="small"
+                                startIcon={<Delete />}
+                                onClick={() => handleDelete(quiz.id)}
+                              >
+                                Delete
+                              </Button>
+                              <Button
+                                className="w-100"
+                                variant="outlined"
+                                size="small"
+                                startIcon={<Assessment />}
+                                onClick={() => {
+                                  openQuizDetails(quiz.id, quiz);
+                                }}
+                              >
+                                Results
+                              </Button>
+                            </Stack>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    ))
+                  ) : (
+                    <Box textAlign="center" my={4}>
+                      <Typography>No quizzes found</Typography>
+                    </Box>
+                  )}
+                </div>
+              )}
             </Box>
           </div>
         </div>
-
-       
-
-        <div className="col-lg-12 mt-4 ">
-          <Link
-            to="/teacher-dashboard/quiz-details/1"
-            className="btn btn-primary m-0"
-          >
-            Quiz Details
-          </Link>
-        </div>
+        <QuizDetailsModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          quizId={selectedQuiz.id}
+          quizTitle={selectedQuiz.title}
+        />
       </div>
     </div>
   );

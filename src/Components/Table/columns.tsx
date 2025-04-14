@@ -257,7 +257,7 @@ export interface StudentRep0oDTO {
   guardian_name: MaybeNull<string>;
   is_kyc_verified: MaybeNull<boolean>;
   pic_path: MaybeNull<string>;
-  id: number;
+  id: number | string;
   user_uuid: MaybeNull<string>;
 }
 export interface IEntity {
