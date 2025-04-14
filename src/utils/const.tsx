@@ -10,7 +10,6 @@ export const QUERY_KEYS = {
   FORGOT_PASSWORD: '/auth/forgotpassword',
   CHANGE_PASSWORD: '/auth/changepassword',
   RESET_PASSWORD: '/auth/resetpassword',
-  CHAT: '/chat/chat',
   CHATADD: '/chat/fetch-from-db',
   CHATRAGMODEL: 'https://prodllm.gyansetu.ai/rag-model-hierarchy',
   CHATOLLAMA: 'https://prodllm.gyansetu.ai/ollama-chat',

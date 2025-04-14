@@ -973,7 +973,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     <div>
       <form>
         <b className="font-weight-bold profiletext mb-4 d-block">
-          Subject prefrence
+        Subject Preference
         </b>
         {boxes?.map((box, index) => (
           <div

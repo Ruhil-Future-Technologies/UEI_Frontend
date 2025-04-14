@@ -262,16 +262,19 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         formData.append('file', file);
         value = file.name;
         postFileData(`${'upload_file/upload'}`, formData)
-          .then((data: any) => {
+          .then(async (data: any) => {
             if (data?.status) {
               const fileUrl = data?.data?.url;
             const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
             setSelectedFile(fileName);
-              toast.success(data?.message, {
-                hideProgressBar: true,
-                theme: 'colored',
-                position: 'top-center',
-              });
+            toast.success(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+            if (!editFalg) {
+              picSubmitHandel(fileName);
+              }
             } else if (data?.code === 404) {
               toast.error(data?.message, {
                 hideProgressBar: true,
@@ -410,7 +413,75 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   //     //     toast.success("Basic Info Added Successfully")
   //     // }
   // }
+  const picSubmitHandel = (fileName:any) => {
+    if (!basicInfo?.first_name) setFname_col1(true);
+    if (!basicInfo?.last_name) setLname_col1(true);
+    if (!basicInfo?.father_name) setFathername_col1(true);
+    if (!basicInfo?.mother_name) setMothername_col1(true);
 
+    const formData = new FormData();
+
+    const payload = {
+      user_uuid: userUUID,
+      first_name: basicInfo?.first_name,
+      last_name: basicInfo?.last_name,
+      gender: basicInfo?.gender,
+      dob: basicInfo?.dob || null,
+      father_name: basicInfo?.father_name,
+      mother_name: basicInfo?.mother_name,
+      guardian_name: basicInfo?.guardian_name,
+      pic_path:fileName ? fileName : selectedFile ? selectedFile : basicInfo?.pic_path,
+      aim: basicInfo?.aim,
+    } as any;
+
+    const datecheck: any = dayjs(payload?.dob).format('DD/MM/YYYY');
+    if (datecheck === 'Invalid Date') {
+      setdobset_col(true);
+    } else {
+      setdobset_col(false);
+    }
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+      putData(`${'student/edit/'}${userUUID}`, formData)
+        .then((data: any) => {
+          // console.log("----- res ----", data);
+          if (data.status) {
+            setNamepro({
+              first_name: basicInfo?.first_name,
+              last_name: basicInfo?.last_name,
+              gender: basicInfo?.gender,
+            });
+            if (fileName ? fileName : selectedFile ? selectedFile : basicInfo?.pic_path) {
+              getData(
+                `${'upload_file/get_image/'}${
+                  fileName ? fileName : selectedFile ? selectedFile : basicInfo?.pic_path
+                }`,
+              )
+                .then((data: any) => {
+                  // setprofileImage(imgdata.data)
+                  if (data.status) {
+                    setProImage(data?.data?.file_url);
+                  }
+                })
+                .catch((e) => {
+                  console.log('------------- e -------------', e);
+                });
+            }
+          } else {
+            toast.error(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+          }
+        })
+        .catch((e: any) => {
+          console.log('--------- e --------', e);
+        });
+    
+  }
   const submitHandel = () => {
     // event.preventDefault();
     // const validation = validate()
