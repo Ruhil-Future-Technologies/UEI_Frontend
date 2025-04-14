@@ -44,9 +44,14 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     toast.dismiss();
-    const login_id = localStorage.getItem('user_uuid');
-    if (login_id) {
+   // const login_id = localStorage.getItem('user_uuid');
+    const user_type=localStorage.getItem('user_type')
+    if (user_type=='student' ||user_type=='admin') {
       navigate('/main/DashBoard');
+    }else if(user_type=='teacher'){
+      navigate('/teacher-dashboard')
+    }else if(user_type=='institute'){
+      navigate('institute-dashboard')
     }
   }, []);
 
