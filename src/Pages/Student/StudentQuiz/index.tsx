@@ -51,15 +51,20 @@ const StudentQuiz = () => {
           `${GET_SUBMISSION}/${studentId}`,
         );
 
-        if (quizResponse.status) {
-          processQuizData(quizResponse.data);
+        if (quizResponse?.status) {
+          processQuizData(quizResponse?.data);
         }
 
-        if (submissionsResponse.status) {
-          processSubmissionsData(submissionsResponse.data);
+        if (submissionsResponse?.status) {
+          processSubmissionsData(submissionsResponse?.data);
         }
       } catch (err) {
-        toast.error('Error connecting to the server');
+        console.log({ err });
+
+        toast.error('Error fetching quiz data', {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
         console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
@@ -78,21 +83,33 @@ const StudentQuiz = () => {
       const availableFromDate = new Date(quiz.available_from);
 
       let subjectName = 'General';
-      if (quiz.course_semester_subjects) {
-        const courseKeys = Object.keys(quiz.course_semester_subjects);
+      if (quiz?.course_semester_subjects) {
+        const courseKeys = Object.keys(quiz?.course_semester_subjects);
         if (courseKeys.length > 0) {
           const semesterKeys = Object.keys(
-            quiz.course_semester_subjects[courseKeys[0]],
+            quiz?.course_semester_subjects[courseKeys[0]],
           );
-          if (semesterKeys.length > 0) {
+          if (semesterKeys?.length > 0) {
             subjectName =
-              quiz.course_semester_subjects[courseKeys[0]][
+              quiz?.course_semester_subjects[courseKeys[0]][
                 semesterKeys[0]
               ][0] || 'General';
           }
         }
       }
-
+      if (quiz?.class_stream_subjects) {
+        const classKeys = Object.keys(quiz?.class_stream_subjects);
+        if (classKeys.length > 0) {
+          const streamKeys = Object.keys(
+            quiz?.class_stream_subjects[classKeys[0]],
+          );
+          if (streamKeys?.length > 0) {
+            subjectName =
+              quiz?.class_stream_subjects[classKeys[0]][streamKeys[0]][0] ||
+              'General';
+          }
+        }
+      }
       const processedQuiz = {
         id: quiz.id,
         subject: subjectName,
@@ -133,10 +150,31 @@ const StudentQuiz = () => {
     const formattedResults = data.map((submission) => {
       const dateTaken = new Date(submission.created_at);
 
+      let subject = '';
+      if (submission && submission.course_semester_subjects) {
+        const courseKey = Object.keys(submission?.course_semester_subjects)[0];
+
+        const semesterKey = Object.keys(
+          submission?.course_semester_subjects[courseKey],
+        )[0];
+
+        subject =
+          submission?.course_semester_subjects[courseKey][semesterKey][0];
+      } else if (submission && submission.class_stream_subjects) {
+        const classKey = Object.keys(submission?.class_stream_subjects)[0];
+
+        const streamKey = Object.keys(
+          submission?.class_stream_subjects[classKey],
+        )[0];
+
+        subject = submission?.class_stream_subjects[classKey][streamKey][0];
+      }
+
       return {
         id: submission.id,
         quiz_id: submission.quiz_id,
         quiz: submission.quiz_title,
+        subject: subject,
         date: dateTaken.toLocaleString(),
         score: `${submission.result_points}/${submission.points}`,
         totalQuestions: submission.total_questions,
@@ -375,10 +413,11 @@ const StudentQuiz = () => {
             Recent Results
           </Typography>
           <div className="card rounded-4">
-            <div className="card-body">
+            <div className="">
               <MaterialReactTable
                 columns={[
                   { accessorKey: 'quiz', header: 'Quiz Name', size: 350 },
+                  { accessorKey: 'subject', header: 'Subject', size: 200 },
                   { accessorKey: 'date', header: 'Date Taken', size: 200 },
                   { accessorKey: 'score', header: 'Score' },
                   {

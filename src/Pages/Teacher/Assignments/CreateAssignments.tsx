@@ -63,6 +63,8 @@ import { Autocomplete, Chip } from '@mui/material';
 import ReactQuill from 'react-quill';
 import QuizModal from './QuizModal';
 import axios from 'axios';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
+import FullScreenLoader from '../../Loader/FullScreenLoader';
 
 export interface Assignment {
   id?: string;
@@ -148,6 +150,7 @@ export const CreateAssignments = () => {
   const [quiz_timer, setQuizTimer] = useState('');
   const [quiz_timer_error, setQuizTimer_error] = useState(false);
   const GENERATE_QUIZ = QUERY_KEYS_QUIZ.GENERATE_QUIZ;
+  const [loading, setLoading] = useState(false);
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -1010,6 +1013,7 @@ export const CreateAssignments = () => {
   };
 
   const generateQuiz = async () => {
+    setLoading(true);
     let valid1 = false;
     if (!topic) {
       setTopic_error(true);
@@ -1149,6 +1153,7 @@ export const CreateAssignments = () => {
 
       setQuizData(response);
       setIsModalOpen(true);
+      setLoading(false);
     } catch (error) {
       console.error('Error generating quiz:', error);
       toast.error('Quiz generation failed', {
@@ -1159,7 +1164,12 @@ export const CreateAssignments = () => {
     }
   };
 
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = (save_draft: boolean, payload?: any) => {
+    let data = quizPayload;
+    if (save_draft) {
+      data = payload;
+    }
+
     let valid1 = false;
     if (assignmentData)
       if (assignmentData.instructions == '') {
@@ -1261,7 +1271,7 @@ export const CreateAssignments = () => {
     if (!valid) return;
 
     if (edit) {
-      putDataJson(`/quiz/edit/${id}`, quizPayload).then((response) => {
+      putDataJson(`/quiz/edit/${id}`, data).then((response) => {
         if (response.status) {
           toast.success(response.message, {
             hideProgressBar: true,
@@ -1295,7 +1305,7 @@ export const CreateAssignments = () => {
         }
       });
     } else {
-      postDataJson('/quiz/add', quizPayload).then((response) => {
+      postDataJson('/quiz/add', data).then((response) => {
         if (response.status) {
           toast.success(response.message, {
             hideProgressBar: true,
@@ -1588,10 +1598,12 @@ export const CreateAssignments = () => {
     }
   };
   const handleSaveAsDraft = () => {
-    setQuizPayload((prevState: any) => ({
-      ...prevState,
-      ['save_draft']: true,
-    }));
+    const updatedPayload = {
+      ...quizPayload,
+      save_draft: 'true',
+    };
+
+    setQuizPayload(updatedPayload);
 
     setSaveAsDraft((prev) => !prev);
     setAssignmentData((prev) => ({
@@ -1602,7 +1614,7 @@ export const CreateAssignments = () => {
     if (assignmentType !== 'quiz') {
       submitAssignment();
     } else {
-      handleSubmitQuiz();
+      handleSubmitQuiz(true, updatedPayload);
     }
   };
   const mergeDateAndTime = () => {
@@ -1646,6 +1658,7 @@ export const CreateAssignments = () => {
   return (
     <div className="main-wrapper">
       <div className="main-content">
+        {loading && <FullScreenLoader />}
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
           <div className="breadcrumb-title pe-3">
             {' '}
@@ -2394,17 +2407,31 @@ export const CreateAssignments = () => {
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className="row g-4">
                           <div className="col-lg-4">
-                            <DesktopDatePicker
-                              label="Available From"
-                              value={availableFrom}
-                              minDate={!edit ? dayjs() : undefined}
-                              onChange={handleAvailableFromChange}
-                              slots={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
-                              }}
-                            />
+                            {type !== 'quiz' ? (
+                              <DesktopDatePicker
+                                label="Available From"
+                                value={availableFrom}
+                                minDate={!edit ? dayjs() : undefined}
+                                onChange={handleAvailableFromChange}
+                                slots={{
+                                  textField: (params) => (
+                                    <TextField {...params} />
+                                  ),
+                                }}
+                              />
+                            ) : (
+                              <DateTimePicker
+                                label="Available From"
+                                value={availableFrom}
+                                minDateTime={!edit ? dayjs() : undefined}
+                                onChange={handleAvailableFromChange}
+                                slots={{
+                                  textField: (params) => (
+                                    <TextField {...params} />
+                                  ),
+                                }}
+                              />
+                            )}
                             {availableFrom_error && (
                               <p
                                 className="error-text"
@@ -2581,7 +2608,7 @@ export const CreateAssignments = () => {
                             onClick={
                               assignmentType !== 'quiz'
                                 ? submitAssignment
-                                : handleSubmitQuiz
+                                : () => handleSubmitQuiz(false)
                             }
                           >
                             Publish
