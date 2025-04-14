@@ -205,8 +205,7 @@ export const QUERY_KEYS_ADMIN_BASIC_INFO = {
   ADMIN_ADD_BASIC_INFO: '/admin/add',
   ADMIN_EDIT_BASIC_INFO: '/admin/edit',
   ADMIN_GET_PROFILE: '/admin/getProfile',
-  ADMIN_GET_ALLDATA: '/admin/alldata'
-
+  ADMIN_GET_ALLDATA: '/admin/alldata',
 };
 export const QUERY_KEYS_STUDENT_ADDRESS = {
   GET_ADMIN_STUDENT_ADDRESS: '/student_address/list',
@@ -249,4 +248,13 @@ export const QUERY_KEYS_CONTENT = {
   GET_CONTENT_ACTIVE: '/content/activate',
   GET_CONTENT_DEACTIVE: '/content/deactivate',
   CONTENT_FILE_DELETE: '/content/delete/url',
+};
+
+export const QUERY_KEYS_QUIZ = {
+  GET_QUIZ: '/quiz/get',
+  QUIZ_EDIT: '`/quiz/edit',
+  GET_SUBMISSION: '/quiz_submission/get/submissions',
+  ADD_SUBMISSION: '/quiz_submission/add',
+  GET_QUIZ_STUDENT: '/quiz/student',
+  GENERATE_QUIZ: 'https://prodllm.gyansetu.ai/generate-quiz',
 };
