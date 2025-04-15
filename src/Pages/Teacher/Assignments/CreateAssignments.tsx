@@ -1139,11 +1139,25 @@ export const CreateAssignments = () => {
     if (!valid) return;
 
     const class_or_course = getClassOrCourseName();
+    const rawMarks = questions[0] || {};
+    const wordToNumberMap: Record<string, number> = {
+      one: 1,
+      two: 2,
+      three: 3,
+      four: 4,
+      five: 5,
+    };
+
+    const cleanedMarks = Object.fromEntries(
+      Object.entries(rawMarks)
+        .filter(([, value]) => value !== '')
+        .map(([key, value]) => [wordToNumberMap[key] || key, value]), //
+    );
 
     const payload = {
       class_or_course,
       level,
-      marks: questions[0],
+      marks: cleanedMarks,
       topic,
       num_questions: totalQuestions,
     };
@@ -1151,10 +1165,11 @@ export const CreateAssignments = () => {
     try {
       const response = await axios.post(GENERATE_QUIZ, payload);
 
-      setQuizData(response);
+      setQuizData(response?.data);
       setIsModalOpen(true);
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error generating quiz:', error);
       toast.error('Quiz generation failed', {
         hideProgressBar: true,

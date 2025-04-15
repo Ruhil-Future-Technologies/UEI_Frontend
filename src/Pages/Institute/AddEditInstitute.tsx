@@ -11,6 +11,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import * as Yup from 'yup';
 import {
   InstituteRep0oDTO,
@@ -93,6 +95,7 @@ const AddEditInstitute = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
+  const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
@@ -251,6 +254,37 @@ const AddEditInstitute = () => {
     };
   }, []);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (!files) return;
+
+    const filesArray = Array.from(files);
+
+    const duplicateFiles = filesArray.filter((file) =>
+      allselectedfiles.some(
+        (existingFile) =>
+          existingFile.name === file.name &&
+          existingFile.lastModified === file.lastModified,
+      ),
+    );
+
+    if (duplicateFiles.length > 0) {
+      event.target.value = '';
+      return;
+    }
+
+    setAllSelectedfiles((prevFiles) => [...prevFiles, ...filesArray]);
+
+    event.target.value = '';
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setAllSelectedfiles((previous) =>
+      previous.filter((_, ind) => ind !== index),
+    );
+  };
+
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string,
@@ -329,7 +363,9 @@ const AddEditInstitute = () => {
     instituteData: IInstituteForm,
     { resetForm }: FormikHelpers<IInstituteForm>,
   ) => {
-    const filteredData = { ...instituteData };
+    const formData = new FormData();
+
+    const filteredData: any = { ...instituteData };
     if (filteredData.university_id === '') {
       delete filteredData.university_id;
     }
@@ -340,9 +376,18 @@ const AddEditInstitute = () => {
     );
     if (id) {
       if (isDataUnchanged) {
-        return; // Skip API call if no changes
+        return;
       }
-      putData(`${InstituteEditURL}/${id}`, filteredData)
+      allselectedfiles.forEach((file) => {
+        formData.append('documents', file);
+      });
+      for (const key in filteredData) {
+        formData.set(key, filteredData[key]);
+      }
+
+      formData.forEach((k, v) => console.log({ k, v }));
+
+      putData(`${InstituteEditURL}/${id}`, formData)
         .then((data: { status: boolean; message: string }) => {
           if (data.status) {
             navigator('/main/Institute');
@@ -371,11 +416,21 @@ const AddEditInstitute = () => {
           });
         });
     } else {
-      const newInstituteData = {
+      const newInstituteData: any = {
         ...filteredData,
         is_verified: 'True', // Add this key only in the else block
       };
-      postData(`${InstituteAddURL}`, newInstituteData)
+
+      allselectedfiles.forEach((file) => {
+        formData.append('documents', file);
+      });
+      for (const key in newInstituteData) {
+        formData.set(key, newInstituteData[key]);
+      }
+
+      formData.forEach((k, v) => console.log({ k, v }));
+
+      postData(`${InstituteAddURL}`, formData)
         .then((data: { status: boolean; message: string }) => {
           if (data.status) {
             // navigator('/main/Institute')
@@ -383,6 +438,7 @@ const AddEditInstitute = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setAllSelectedfiles([]);
             resetForm({ values: initialState });
             setInstitute((prevInstitute) => {
               return {
@@ -397,6 +453,17 @@ const AddEditInstitute = () => {
             toast.error(data.message, {
               hideProgressBar: true,
               theme: 'colored',
+            });
+            setAllSelectedfiles([]);
+            resetForm({ values: initialState });
+            setInstitute((prevInstitute) => {
+              return {
+                ...prevInstitute,
+                ['state']: '',
+                ['country']: '',
+                ['university_id']: '',
+                ['entity_id']: '',
+              };
             });
           }
         })
@@ -1107,10 +1174,44 @@ const AddEditInstitute = () => {
                         )}
                       </div>
                     </div>
+
+                    <div className="row d-flex justify-content-between mt-0 g-4">
+                      <div className="col-12 ">
+                        <UploadBtn
+                          label="Upload Documents"
+                          name="document"
+                          accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
+                          handleFileChange={handleFileChange}
+                        />
+                        <div className="col-8">
+                          {allselectedfiles?.length > 0 && (
+                            <ul className="doclist">
+                              {allselectedfiles?.map((file, index) => (
+                                <li
+                                  key={index}
+                                  className="flex mt-2 items-center justify-between "
+                                >
+                                  {'name' in file
+                                    ? file.name
+                                    : (file as any)?.url}
+
+                                  <DeleteOutlinedIcon
+                                    className="m-2 cursor-pointer"
+                                    onClick={() => handleRemoveFile(index)}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <button
                     type="submit"
-                    disabled={!dirty || !isValid}
+                    disabled={
+                      (!dirty || !isValid) && allselectedfiles.length < 1
+                    }
                     className="btn btn-primary mainbutton mt-4"
                   >
                     {id ? 'Update' : 'Save'}

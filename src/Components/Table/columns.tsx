@@ -2373,9 +2373,14 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
     header: 'File Path',
     enableSorting: false,
     enableColumnActions: false,
-    size: 160,
     enableResizing: true,
+    size: 160,
     minSize: 130,
+    Cell: ({ cell }: { cell: any }) => (
+      <div style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
+        {cell?.getValue() as string}
+      </div>
+    ),
   },
   {
     accessorKey: 'university_name',
