@@ -18,8 +18,8 @@ const TeacherSideVar = () => {
     document.body.classList.remove('sidebar-hovered');
   };
   function removeMobileToggle() {
-    if (window.innerWidth <= 1024) {
-      document.querySelector('body')?.classList.remove('toggled');
+    if (window.innerWidth > 1024) {
+      document.querySelector('body')?.classList.add('toggled');
     } else {
       document.querySelector('body')?.classList.remove('toggled');
     }
