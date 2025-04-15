@@ -226,7 +226,9 @@ const Teacher = () => {
           const collegeTeachers = approvedTeachers
             .filter((teacher) => teacher.entity_id == college[0]?.id)
             .map((teacher) => {
-              const keys = Object.keys(teacher.course_semester_subjects);
+              const keys = teacher?.course_semester_subjects
+                ? Object.keys(teacher?.course_semester_subjects)
+                : '';
 
               const firstKey = keys[0];
 

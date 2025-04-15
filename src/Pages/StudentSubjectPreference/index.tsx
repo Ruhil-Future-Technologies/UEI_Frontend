@@ -363,6 +363,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
           } else {
             course_id=response?.data[0]?.course_id;
             semester_id=response?.data[0]?.sem_id;
+            setAcademic(false);
             await getData('college_subject/list')
               .then((data: any) => {
                 if (data.status) {
@@ -973,7 +974,7 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
     <div>
       <form>
         <b className="font-weight-bold profiletext mb-4 d-block">
-          Subject prefrence
+        Subject Preference
         </b>
         {boxes?.map((box, index) => (
           <div
