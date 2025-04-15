@@ -72,9 +72,9 @@ const useApi = () => {
       console.warn('Data not found, returning empty object.');
       return {
         data: [],
-        code: error.response?.status,
+        code: error?.response?.status,
         status: false,
-        message: error.response.data.message,
+        message: error?.response?.data?.message,
       }; // Prevents UI from breaking
 
       // throw error; // Re-throw other errors
