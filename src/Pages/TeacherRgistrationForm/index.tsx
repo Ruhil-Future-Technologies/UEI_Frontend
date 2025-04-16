@@ -1354,7 +1354,7 @@ const TeacherRegistrationPage = () => {
                       <span>Gyansetu</span>
                     </div>
                     <h3 className="text-center fw-bold">Register As Teacher</h3>
-                    <p className="mb-lg-5 mb-4 text-center text-black-50">
+                    <p className="mb-lg-5 mb-4 text-center opacity-50">
                       Empower your teaching journey—get started today!
                     </p>
 
@@ -1496,7 +1496,7 @@ const TeacherRegistrationPage = () => {
 
                       <div className="col-12">
                         <Button
-                          className="btn btn-secondary w-100 mt-4 outsecbtn "
+                          className="btn btn-primary w-100 mt-4 outsecbtn "
                           variant="contained"
                           onClick={handleNext}
                         >
@@ -1529,6 +1529,7 @@ const TeacherRegistrationPage = () => {
                             onClick={handleBack}
                             role="button"
                             fontSize="small"
+                            className='bg-d-dark'
                           />{' '}
                           Address Details
                         </h5>
@@ -1659,7 +1660,7 @@ const TeacherRegistrationPage = () => {
                         <Box>
                           <Button
                             variant="contained"
-                            className="btn btn-secondary w-100 outsecbtn mb-2"
+                            className="btn btn-primary w-100 outsecbtn mb-2"
                             onClick={handleNext}
                           >
                             {activeStep === steps.length - 1
@@ -1686,6 +1687,7 @@ const TeacherRegistrationPage = () => {
                             onClick={handleBack}
                             role="button"
                             fontSize="small"
+                            className='bg-d-dark'
                           />{' '}
                           Documents
                         </h5>
