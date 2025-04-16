@@ -43,14 +43,37 @@ const Login = () => {
   // toast.dismiss()
   const navigate = useNavigate();
   useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_type');
+    localStorage.removeItem('userid');
+    localStorage.removeItem('pd');
+    localStorage.removeItem('userdata');
+    localStorage.removeItem('signupdata');
+    localStorage.removeItem('user_uuid');
+    localStorage.removeItem('menulist');
+    localStorage.removeItem('menulist1');
+    localStorage.removeItem('proFalg');
+    localStorage.removeItem('loglevel');
+    sessionStorage.removeItem('profileData');
+    localStorage.removeItem('chatsaved');
+    localStorage.removeItem('Profile_completion');
+    localStorage.removeItem('Profile completion');
+    localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('register_num');
+    localStorage.removeItem('user_session_data');
+    localStorage.removeItem('user_last_sync');
     toast.dismiss();
-   // const login_id = localStorage.getItem('user_uuid');
-    const user_type=localStorage.getItem('user_type')
-    if (user_type=='student' ||user_type=='admin') {
+    // const login_id = localStorage.getItem('user_uuid');
+    const user_type = localStorage.getItem('user_type')
+    if (user_type == 'student' || user_type == 'admin') {
       navigate('/main/DashBoard');
-    }else if(user_type=='teacher'){
+    } else if (user_type == 'teacher') {
       navigate('/teacher-dashboard')
-    }else if(user_type=='institute'){
+    } else if (user_type == 'institute') {
       navigate('institute-dashboard')
     }
   }, []);
@@ -156,11 +179,21 @@ const Login = () => {
     };
     postDataJson(`/auth/verify-otp`, payload).then((data) => {
       if (data.status) {
-        handleSuccessfulLogin(data);
-        toast.success(data.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
+        console.log(data);
+        if (data?.data?.is_verified && data?.data?.is_approve) {
+          console.log("in side varified ", value)
+          handleSuccessfulLogin(data);
+          toast.success(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        } else {
+          toast.success(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        }
+
         setPopupOtpCard(false);
       } else {
         toast.error(data.message, {
@@ -354,7 +387,7 @@ const Login = () => {
                               error={!!error}
                               helperText={error}
                               fullWidth
-                            
+
                             />
                           </div>
                           <div className="mb-3">
@@ -390,7 +423,7 @@ const Login = () => {
                                     </InputAdornment>
                                   ),
                                 }}
-                               
+
                                 fullWidth
                               />
                             </div>
