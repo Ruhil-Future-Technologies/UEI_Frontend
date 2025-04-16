@@ -142,7 +142,7 @@ const AssignmentDetails = () => {
                                     <TableCell><strong>Submission Time & Date</strong></TableCell>
                                     <TableCell><strong>Status</strong></TableCell>
                                     <TableCell><strong>Grade</strong></TableCell>
-                                    <TableCell><strong>Actions</strong></TableCell>
+                                    <TableCell><strong>View Submission</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -189,14 +189,14 @@ const AssignmentDetails = () => {
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            {student.is_submitted == true ? (
+                                            {student.is_submitted == true || student.is_graded == true ? (
                                                 <IconButton color="primary" onClick={() => gotoPreview(student?.student_uuid)}>
                                                     <VisibilityIcon />
                                                 </IconButton>
                                             ) : (
                                                 <VisibilityIcon color="disabled" />
                                             )}
-                                            {student.is_submitted == true ? " Preview" : " Not Submitted"}
+                                            {student.is_submitted == true || student.is_graded == true ? "Submitted" : " Not Submitted"}
                                         </TableCell>
                                     </TableRow>
                                 ))}
