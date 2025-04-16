@@ -131,7 +131,7 @@ export const CreateAssignments = () => {
     useState<string[]>();
 
   const [saveAsDraft, setSaveAsDraft] = useState(false);
-  // const [listOfStudent, setListOfStudent] = useState<StudentRep0oDTO[]>();
+   const [listOfStudentFiltered, setListOfStudentFiltered] = useState<any[]>();
   const [listOfStudent, setListOfStudent] = useState<any[]>();
 
   const [title_error, setTitle_error] = useState(false);
@@ -668,7 +668,7 @@ export const CreateAssignments = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelectedStudents(listOfStudent || []);
+      setSelectedStudents(listOfStudentFiltered || []);
       setSelectAll(true);
     } else {
       setSelectedStudents([]);
@@ -732,7 +732,8 @@ export const CreateAssignments = () => {
       getData(`/student_teacher/teacher/${teacher_id}/students`)
         .then((response) => {
           if (response.status) {
-            setListOfStudent(response.data);
+            //setListOfStudentFiltered(response.data);
+            setListOfStudent(response.data)
             getAssignmentInfo(response.data);
           }
         })
@@ -752,7 +753,7 @@ export const CreateAssignments = () => {
     }
   };
 
-  const submitAssignment = () => {
+  const submitAssignment = (saveAsDraft?:any) => {
     let valid1 = false;
     if (
       !/^[A-Za-z0-9][A-Za-z0-9 _-]{3,98}[A-Za-z0-9]*$/.test(
@@ -851,6 +852,7 @@ export const CreateAssignments = () => {
     }
     if (valid1) return;
     if (!valid) return;
+  console.log((assignmentData),saveAsDraft)
     const formData = new FormData();
     formData.append('title', assignmentData.title);
     formData.append('type', type);
@@ -860,7 +862,7 @@ export const CreateAssignments = () => {
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
     formData.append('points', assignmentData.points);
-    formData.append('save_draft', String(assignmentData.save_draft));
+    formData.append('save_draft', String(saveAsDraft));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
@@ -1530,6 +1532,18 @@ export const CreateAssignments = () => {
           );
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
         }
+        if(name=='subjects'){
+          const filteredStudents = listOfStudent?.filter((student) => {
+            const matchedSubject = totleSubject.find(
+              (subject) =>
+                subject.subject_name === value &&
+                subject.course_id === boxes[index].course_id &&
+                subject.semester_number === boxes[index].semester_number
+            );
+            return student.subject_id === matchedSubject?.subject_id;
+          });
+          setListOfStudentFiltered(filteredStudents)
+        }
         validateCourseFields(index, name, updatedBox);
         return updatedBox;
       }),
@@ -1598,6 +1612,18 @@ export const CreateAssignments = () => {
             subjects: [],
           };
         }
+        if(name=='subjects'){
+          const filteredStudents = listOfStudent?.filter((student) => {
+            const matchedSubject = totleSubject.find(
+              (subject) =>
+                subject.subject_name === value &&
+                subject.class_id === boxesForSchool[index].class_id &&
+                subject.stream === boxesForSchool[index].stream
+            );
+            return student.subject_id === matchedSubject?.subject_id;
+          });
+          setListOfStudentFiltered(filteredStudents)
+        }
         validateFields(index, name, updatedBox);
         return updatedBox;
       }),
@@ -1620,14 +1646,14 @@ export const CreateAssignments = () => {
 
     setQuizPayload(updatedPayload);
 
-    setSaveAsDraft((prev) => !prev);
+    setSaveAsDraft(true);
     setAssignmentData((prev) => ({
       ...prev,
       ['save_draft']: true,
     }));
 
     if (assignmentType !== 'quiz') {
-      submitAssignment();
+      submitAssignment(true);
     } else {
       handleSubmitQuiz(true, updatedPayload);
     }
@@ -2352,14 +2378,14 @@ export const CreateAssignments = () => {
                         {'(' + selectedStudents?.length + ')'}
                         <Autocomplete
                           multiple
-                          options={listOfStudent || []}
+                          options={listOfStudentFiltered || []}
                           getOptionLabel={(option) => `${option.name}`}
                           value={selectedStudents}
                           onChange={(_, newValue) => {
                             setSelectedStudents(newValue);
                             checkStudent(newValue);
                             setSelectAll(
-                              newValue.length === listOfStudent?.length,
+                              newValue.length === listOfStudentFiltered?.length,
                             );
                           }}
                           renderInput={(params) => (
