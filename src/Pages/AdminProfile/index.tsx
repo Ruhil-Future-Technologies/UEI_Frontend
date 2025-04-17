@@ -14,6 +14,7 @@ import NameContext from '../Context/NameContext';
 
 export default function AdminProfile() {
   const adminId = localStorage.getItem('user_uuid');
+  const checkbasicinfo= localStorage.getItem('_id')
   const [isProComplete, setIsProComplete] = React.useState(0);
   console.log(isProComplete);
   const [isProComplete1, setIsProComplete1] = React.useState(false);
@@ -276,7 +277,7 @@ export default function AdminProfile() {
                         <div className="myform-wizard">
                           <div className="wizard-sidebar">
                             <div className="steps-container">
-                              <div className="progress-background"></div>
+                              <div className="progress-background-admin"></div>
                               <div
                                 ref={progressLineRef}
                                 className="progress-line"
@@ -303,6 +304,7 @@ export default function AdminProfile() {
                                 className={`step ${activeForm === 1 ? 'active' : ''
                                   }`}
                                // onClick={() => setActiveForm(1)}
+                               onClick={checkbasicinfo ? () => setActiveForm(1) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -318,6 +320,7 @@ export default function AdminProfile() {
                                 className={`step ${activeForm === 2 ? 'active' : ''
                                   }`}
                               //  onClick={() => setActiveForm(2)}
+                              onClick={checkbasicinfo ? () => setActiveForm(2) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -333,6 +336,7 @@ export default function AdminProfile() {
                                 className={`step ${activeForm === 3 ? 'active' : ''
                                   }`}
                                // onClick={() => setActiveForm(3)}
+                               onClick={checkbasicinfo ? () => setActiveForm(3) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div
@@ -349,6 +353,7 @@ export default function AdminProfile() {
                                 className={`step ${activeForm === 4 ? 'active' : ''
                                   }`}
                                // onClick={() => setActiveForm(4)}
+                               onClick={checkbasicinfo ? () => setActiveForm(4) : undefined}
                                 style={{ cursor: 'pointer' }}
                               >
                                 <div

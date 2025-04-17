@@ -711,11 +711,15 @@ const Teacher = () => {
                   <Tabs value={activeTab} onChange={handleTabChange}>
                     <Tab
                       label="Total Teachers"
-                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      
                     ></Tab>
                     <Tab
                       label="Pending Teachers"
-                      sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                      
+                    />
+                    <Tab
+                      label="Disapproved Teachers"
+                      
                     />
                     <Tab
                       label="Disapproved Teachers"
@@ -727,11 +731,11 @@ const Teacher = () => {
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
                       <Tab
                         label="College"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                        
                       />
                       <Tab
                         label="School"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                        
                       />
                     </Tabs>
                   )}
@@ -739,11 +743,23 @@ const Teacher = () => {
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
                       <Tab
                         label="College"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                        
                       />
                       <Tab
                         label="School"
-                        sx={{ color: namecolor === 'dark' ? 'white' : 'black' }}
+                        
+                      />
+                    </Tabs>
+                  )}
+                  {activeTab === 2 && (
+                    <Tabs value={activeSubTab} onChange={handleSubTabChange}>
+                      <Tab
+                        label="College"
+                        
+                      />
+                      <Tab
+                        label="School"
+                        
                       />
                     </Tabs>
                   )}
