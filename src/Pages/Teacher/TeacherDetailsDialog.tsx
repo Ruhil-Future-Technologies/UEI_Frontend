@@ -203,9 +203,7 @@ export const TeacherDetailsDialog = ({
       open={open}
       onClose={onClose}
       sx={{
-        '& .MuiBackdrop-root': {
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-        },
+       
         '& .MuiPaper-root': {
           width: {
             xs: '95%',
@@ -214,8 +212,8 @@ export const TeacherDetailsDialog = ({
             lg: '40%',
           },
           maxWidth: '900px',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+         
+         
           margin: {
             xs: '10px',
             sm: 'auto',
