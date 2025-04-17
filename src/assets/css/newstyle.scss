@@ -3131,3 +3131,17 @@ a {
     }
   }
 }
+
+.bg-light-10{
+  background-color: rgba($dark, 0.1)!important;
+}
+
+.accorbrd{
+  box-shadow: none!important;
+  border: 1px solid rgba($primary, 0.15);
+  border-radius: 8px!important;
+  overflow: hidden;
+  &::before{
+    display: none!important;
+  }
+}

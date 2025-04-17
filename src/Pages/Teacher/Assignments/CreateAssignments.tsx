@@ -41,6 +41,9 @@ import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box } from '@mui/system';
 import useApi from '../../../hooks/useAPI';
+
+import AssignmentModal from './AssignmentModal';
+
 import {
   QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
@@ -1670,6 +1673,42 @@ export const CreateAssignments = () => {
     }
   }, [dueDate, availableFrom, dueTime]);
 
+  const [isModalOpen2, setModalOpen2] = useState(false);
+
+  const assignments = [
+    {
+      id: 'a1',
+      title: 'Assignment #1',
+      questions: 20,
+      totalMarks: 100,
+      questionsList: [
+        {
+          question: 'What is the capital of France?',
+          answer: 'Paris',
+          marks: 5,
+        },
+        {
+          question: 'Explain photosynthesis.',
+          answer: 'It is the process where plants make food.',
+          marks: 10,
+        },
+      ],
+    },
+    {
+      id: 'a2',
+      title: 'Assignment #2',
+      questions: 10,
+      totalMarks: 50,
+      questionsList: [],
+    },
+    {
+      id: 'a3',
+      title: 'Assignment #3',
+      questions: 15,
+      totalMarks: 75,
+      questionsList: [],
+    },
+  ];
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1695,6 +1734,22 @@ export const CreateAssignments = () => {
         <Typography variant="subtitle1" className="my-2">
           Assignment Type
         </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setModalOpen2(true)}
+        >
+          Open Assignment Modal
+        </Button>
+        <AssignmentModal
+          open={isModalOpen2}
+          onClose={() => setModalOpen2(false)}
+          assignments={assignments}
+          onProceed={(assignmentId) => {
+            console.log('Proceed with:', assignmentId);
+            setModalOpen2(false); // close after proceed
+          }}
+        />
         <div className="overflow-auto">
           <ToggleButtonGroup
             value={assignmentType}
