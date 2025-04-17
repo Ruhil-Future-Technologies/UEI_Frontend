@@ -165,139 +165,80 @@ const AssignmentDetails = () => {
             {toTitleCase(assignmentData?.title || '')}
           </Typography>
 
-          {/* Table */}
-          <TableContainer component={Paper}>
-            <Table sx={{ position: 'relative' }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <strong>Student</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Submission Time & Date</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Status</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Grade</strong>
-                  </TableCell>
-                  <TableCell>
-                    <strong>Actions</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {students.map((student, index) => (
-                  <TableRow key={index}>
-                    <TableCell sx={{ fontWeight: 'bold' }}>
-                      {student.first_name + ' ' + student.last_name}
-                    </TableCell>
-                    <TableCell>{student?.submission_date}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={
-                          student.is_graded == true
-                            ? 'Graded'
-                            : student.is_submitted == true
-                              ? 'Submitted'
-                              : 'Pending'
-                        }
-                        color={
-                          student.is_graded == true
-                            ? 'success'
-                            : student.is_submitted == true
-                              ? 'primary'
-                              : 'error'
-                        }
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {editId === student.student_id ? (
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <TextField
-                            variant="standard"
-                            value={tempMarks}
-                            autoComplete="off"
-                            onChange={(e) =>
-                              setTempMarks(
-                                assignmentData?.points &&
-                                  assignmentData?.points < e.target.value
-                                  ? ''
-                                  : e.target.value,
-                              )
-                            }
-                            sx={{
-                              width: '25px',
-                              textAlign: 'center',
-                              fontSize: '16px',
-                              fontWeight: 'bold',
-                            }}
-                          />
-                          <Typography
-                            sx={{
-                              fontSize: '16px',
-                              fontWeight: 'bold',
-                              marginLeft: '5px',
-                            }}
-                          >
-                            /{assignmentData?.points}
-                          </Typography>
-                          <IconButton
-                            onClick={() =>
-                              handleSave(student.assignment_submition_id)
-                            }
-                          >
-                            {student?.is_submitted == true && (
-                              <CheckOutlinedIcon color="success" />
-                            )}
-                          </IconButton>
-                        </div>
-                      ) : (
-                        <Typography
-                          onClick={
-                            student.is_submitted == true
-                              ? () => handleEdit(student.student_id)
-                              : undefined
-                          }
-                          sx={{
-                            cursor: student.is_submitted
-                              ? 'pointer'
-                              : 'default',
-                            color: student.is_submitted ? 'inherit' : 'gray',
-                          }}
-                        >
-                          {student.graded_points === 'Not Graded'
-                            ? `NG/ ${assignmentData?.points}`
-                            : `${student.graded_points}/ ${assignmentData?.points}`}
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {student.is_submitted == true ? (
-                        <IconButton
-                          color="primary"
-                          onClick={() => gotoPreview(student?.student_uuid)}
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      ) : (
-                        <VisibilityIcon color="disabled" />
-                      )}
-                      {student.is_submitted == true
-                        ? ' Preview'
-                        : ' Not Submitted'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </div>
-    </div>
-  );
+                    {/* Table */}
+                    <TableContainer component={Paper}>
+                        <Table sx={{ position: 'relative' }}>
+                            <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
+                                <TableRow>
+                                    <TableCell><strong>Student</strong></TableCell>
+                                    <TableCell><strong>Submission Time & Date</strong></TableCell>
+                                    <TableCell><strong>Status</strong></TableCell>
+                                    <TableCell><strong>Grade</strong></TableCell>
+                                    <TableCell><strong>View Submission</strong></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {students.map((student, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell sx={{ fontWeight: "bold" }}>{student.first_name + " " + student.last_name}</TableCell>
+                                        <TableCell>{student?.submission_date}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={student.is_graded == true ? 'Graded' : student.is_submitted == true ? 'Submitted' : 'Pending'}
+                                                color={student.is_graded == true ? "success" : student.is_submitted == true ? "primary" : 'error'}
+                                                size="small"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            {editId === student.student_id ? (
+                                                <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <TextField
+                                                        variant="standard"
+                                                        value={tempMarks}
+                                                        autoComplete="off"
+                                                        onChange={(e) => setTempMarks((assignmentData?.points && assignmentData?.points < e.target.value) ? '' : e.target.value)}
+                                                        sx={{ width: "25px", textAlign: "center", fontSize: "16px", fontWeight: "bold" }}
+                                                    />
+                                                    <Typography sx={{ fontSize: "16px", fontWeight: "bold", marginLeft: "5px" }}>
+                                                        /{assignmentData?.points}
+                                                    </Typography>
+                                                    <IconButton onClick={() => handleSave(student.assignment_submition_id)}>
+                                                        {student?.is_submitted == true &&
+                                                            <CheckOutlinedIcon color="success" />
+                                                        }
+
+                                                    </IconButton>
+                                                </div>
+                                            ) : (
+                                                <Typography
+                                                    onClick={student.is_submitted ==true ? () => handleEdit(student.student_id) : undefined}
+                                                    sx={{ cursor: student.is_submitted ? "pointer" : "default", color: student.is_submitted ? "inherit" : "gray" }}
+                                                >
+                                                    {student.graded_points === 'Not Graded'
+                                                        ? `NG/ ${assignmentData?.points}`
+                                                        : `${student.graded_points}/ ${assignmentData?.points}`}
+                                                </Typography>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            {student.is_submitted == true || student.is_graded == true ? (
+                                                <IconButton color="primary" onClick={() => gotoPreview(student?.student_uuid)}>
+                                                    <VisibilityIcon />
+                                                </IconButton>
+                                            ) : (
+                                                <VisibilityIcon color="disabled" />
+                                            )}
+                                            {student.is_submitted == true || student.is_graded == true ? "Submitted" : " Not Submitted"}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            </div>
+        </div>
+    );
 };
 
 export default AssignmentDetails;
