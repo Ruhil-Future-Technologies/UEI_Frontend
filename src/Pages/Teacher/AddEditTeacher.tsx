@@ -1622,9 +1622,14 @@ const AddEditTeacher = () => {
                           type="number"
                           inputProps={{ min: 0 }}
                           value={values?.experience}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'experience')
-                          }
+                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          //   handleChange(e, 'experience')
+                          // }
+                          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            // Only allow digits
+                            e.target.value = e.target.value.replace(/[^0-9]/g, ''); 
+                            handleChange(e, 'experience'); 
+                          }}
                         />
                         {touched?.experience && errors?.experience && (
                           <p className="error">{String(errors.experience)}</p>
