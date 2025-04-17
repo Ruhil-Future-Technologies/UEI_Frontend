@@ -25,10 +25,14 @@ const TeacherDashboardCharts = () => {
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedSemester, setSelectedSemester] = useState('');
   const [filteredSubjects, setFilteredSubjects] = useState<any>([]);
+  const [teacherDataStatus, setTeacherDataStatus] = useState(false);
+  const [courseDataStatus, setCourseDataStatus] = useState(false);
+  const [dataStatus, setDataStatus] = useState(false);
 
   const [data, setData] = useState<any>({});
 
   const user_uuid = localStorage.getItem('user_uuid');
+  const teacher_id = localStorage.getItem('teacher_id') || '';
   const [teacher, setTeacher] = useState<any>([]);
 
   const uniqueCourses = [
@@ -62,34 +66,49 @@ const TeacherDashboardCharts = () => {
     if (user_uuid) {
       getData(`${TEACHERURL}/${user_uuid}`).then((data) => {
         setTeacher(data?.data);
+        setTeacherDataStatus(true);
       });
     }
+  }, []);
 
-    if (teacher?.entity_type === 'college') {
-      if (selectedCourse && selectedSemester) {
-        const filtered: any = subjectAll.filter(
-          (subject) =>
-            subject.course_id === selectedCourse &&
-            subject.semester_id.toString() === selectedSemester,
-        );
-        setFilteredSubjects(filtered);
-      } else if (selectedCourse) {
-        const filtered: any = subjectAll.filter(
-          (subject) => subject.course_id === selectedCourse,
-        );
+  useEffect(() => {
+    if (teacherDataStatus) {
+      if (teacher?.entity_type === 'college') {
+        if (courseDataStatus) {
+          if (selectedCourse && selectedSemester) {
+            const filtered: any = subjectAll.filter(
+              (subject) =>
+                subject.course_id === selectedCourse &&
+                subject.semester_id.toString() === selectedSemester,
+            );
 
-        setFilteredSubjects(filtered);
+            setFilteredSubjects(filtered);
+          } else if (selectedCourse) {
+            const filtered: any = subjectAll.filter(
+              (subject) => subject.course_id === selectedCourse,
+            );
+
+            setFilteredSubjects(filtered);
+          } else {
+            setFilteredSubjects([]);
+          }
+        }
       } else {
-        setFilteredSubjects([]);
-      }
-    } else {
-      const filtered: any = schoolSubjectAll.filter(
-        (subject: any) => subject.class_id === selectedClass,
-      );
+        const filtered: any = schoolSubjectAll.filter(
+          (subject: any) => subject.class_id === selectedClass,
+        );
 
-      setFilteredSubjects(filtered);
+        setFilteredSubjects(filtered);
+      }
     }
-  }, [selectedCourse, selectedSemester, selectedClass]);
+  }, [
+    teacherDataStatus,
+    teacher,
+    selectedCourse,
+    selectedSemester,
+    selectedClass,
+    courseDataStatus,
+  ]);
 
   useEffect(() => {
     if (selectedCourse && selectedSemester) {
@@ -106,80 +125,30 @@ const TeacherDashboardCharts = () => {
   }, [selectedCourse]);
 
   useEffect(() => {
-    // get  teacher chart data here
-    // getData(`${'for teacher chart'}/${user_uuid}`).then((data) => {
-    //   setData(data?.data);
-    // });
-
-    // setData({
-    //   5: {
-    //     9: {
-    //       average_score: 45,
-    //       pending_assignments: 2,
-    //       completed: 8,
-    //     },
-    //     13: {
-    //       average_score: 50,
-    //       pending_assignments: 4,
-    //       completed: 8,
-    //     },
-    //     14: {
-    //       average_score: 60,
-    //       pending_assignments: 4,
-    //       completed: 6,
-    //     },
-    //     15: {
-    //       average_score: 70,
-    //       pending_assignments: 3,
-    //       completed: 6,
-    //     },
-    //     23: {
-    //       average_score: 80,
-    //       pending_assignments: 3,
-    //       completed: 6,
-    //     },
-    //     24: {
-    //       average_score: 50,
-    //       pending_assignments: 2,
-    //       completed: 8,
-    //     },
-    //     25: {
-    //       average_score: 70,
-    //       pending_assignments: 4,
-    //       completed: 6,
-    //     },
-    //   },
-    //   6: {
-    //     10: {
-    //       average_score: 60,
-    //       pending_assignments: 10,
-    //       completed: 15,
-    //     },
-    //     26: {
-    //       average_score: 50,
-    //       pending_assignments: 5,
-    //       completed: 10,
-    //     },
-    //     27: {
-    //       average_score: 70,
-    //       pending_assignments: 5,
-    //       completed: 10,
-    //     },
-    //   },
-    // });
-
-    setData([]);
-  }, []);
+    if (teacher_id) {
+      getData(`/assignment/stats-for-teacher/${teacher_id}`).then((data) => {
+        setData(data?.data);
+        setDataStatus(true);
+      });
+    }
+  }, [teacher_id]);
 
   useEffect(() => {
-    if (user_uuid) {
+    if (user_uuid && dataStatus) {
       getData(`${TEACHERURL}/${user_uuid}`).then((data) => {
         const teacherData = data?.data;
         setTeacher(data?.data);
 
         getData(`${SUBJECTURL}`).then((data) => {
+          const teacher_course = teacherData?.course_semester_subjects;
+          const teacherCourseIds = teacher_course
+            ? Object.keys(teacher_course).map(Number)
+            : [];
+
           const filteredSub = data?.data?.subjects_data.filter(
-            (sub: any) => sub.institution_id == teacherData.institute_id,
+            (sub: any) =>
+              sub.institution_id === teacherData.institute_id &&
+              teacherCourseIds.includes(sub.course_id),
           );
 
           setSubjectAll(filteredSub);
@@ -220,24 +189,10 @@ const TeacherDashboardCharts = () => {
           );
 
           setSemesterAll(uniqueSemesters);
-          console.log({ uniqueSemesters });
 
           setSelectedSemester(uniqueSemesters[0]?.semester_id.toString());
-          const uniqueClasses: any = Object.values(
-            filteredSub.reduce(
-              (acc: any, item: any) => {
-                if (!acc[item.class_id]) {
-                  acc[item.class_id] = {
-                    class_id: item.class_id,
-                    class_name: item.class_name,
-                  };
-                }
-                return acc;
-              },
-              {} as Record<number, { course_id: number; course_name: string }>,
-            ),
-          );
-          setSelectedClass(uniqueClasses[0]?.class_id);
+
+          setCourseDataStatus(true);
         });
         getData(`${SUBJECT_SCHOOL_URL}`).then((data) => {
           if (teacherData && teacherData?.class_stream_subjects) {
@@ -277,12 +232,14 @@ const TeacherDashboardCharts = () => {
                 {} as Record<number, { class_id: number; class_name: string }>,
               ),
             );
+
             setSelectedClass(uniqueClasses[0]?.class_id);
+            setCourseDataStatus(true);
           }
         });
       });
     }
-  }, []);
+  }, [data, dataStatus]);
 
   const transformedSubjectData = useMemo(() => {
     if (!filteredSubjects.length) return {};
@@ -383,14 +340,14 @@ const TeacherDashboardCharts = () => {
 
     filteredSubjects.forEach((subject: any) => {
       const courseId = subject?.course_id?.toString();
-      const subjectId = subject?.subject_id?.toString();
+      const subject_name = subject?.subject_name;
       const classId = subject?.class_id?.toString();
       let subjectPerformance = [];
 
       if (teacher.entity_type === 'college') {
-        subjectPerformance = data[courseId]?.[subjectId];
+        subjectPerformance = data[courseId]?.[subject_name];
       } else {
-        subjectPerformance = data[classId]?.[subjectId];
+        subjectPerformance = data[classId]?.[subject_name];
       }
 
       if (subjectPerformance) {
@@ -462,49 +419,48 @@ const TeacherDashboardCharts = () => {
     <div className="">
       <div className="subject-performance-container  mt-4">
         {teacher?.entity_type === 'college' && (
-          <div className='row mb-4 gy-3'>
+          <div className="row mb-4 gy-3">
             <div className="col-lg-2">
-            <FormControl variant="outlined"  className='w-100'>
-              <InputLabel id="course-select-label">Course</InputLabel>
-              <Select
-                labelId="course-select-label"
-                id="course-select"
-                value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
-                label="Course"
-              >
-                {uniqueCourses.map((course) => (
-                  <MenuItem key={course.course_id} value={course.course_id}>
-                    {course.course_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              <FormControl variant="outlined" className="w-100">
+                <InputLabel id="course-select-label">Course</InputLabel>
+                <Select
+                  labelId="course-select-label"
+                  id="course-select"
+                  value={selectedCourse}
+                  onChange={(e) => setSelectedCourse(e.target.value)}
+                  label="Course"
+                >
+                  {uniqueCourses.map((course) => (
+                    <MenuItem key={course.course_id} value={course.course_id}>
+                      {course.course_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </div>
-            
+
             <div className="col-lg-2">
-            <FormControl variant="outlined" className='w-100'>
-              <InputLabel id="semester-select-label">Semester</InputLabel>
-              <Select
-                labelId="semester-select-label"
-                id="semester-select"
-                value={selectedSemester}
-                onChange={(e) => setSelectedSemester(e.target.value)}
-                label="Semester"
-                disabled={!selectedCourse}
-              >
-                {filteredSemesters.map((semester) => (
-                  <MenuItem
-                    key={semester.semester_id}
-                    value={semester.semester_id.toString()}
-                  >
-                    Semester {semester.semester_number}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              <FormControl variant="outlined" className="w-100">
+                <InputLabel id="semester-select-label">Semester</InputLabel>
+                <Select
+                  labelId="semester-select-label"
+                  id="semester-select"
+                  value={selectedSemester}
+                  onChange={(e) => setSelectedSemester(e.target.value)}
+                  label="Semester"
+                  disabled={!selectedCourse}
+                >
+                  {filteredSemesters.map((semester) => (
+                    <MenuItem
+                      key={semester.semester_id}
+                      value={semester.semester_id.toString()}
+                    >
+                      Semester {semester.semester_number}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </div>
-            
           </div>
         )}
         {teacher?.entity_type === 'school' && (
@@ -532,8 +488,12 @@ const TeacherDashboardCharts = () => {
         )}
       </div>
       <div className="charts-container mb-4">
-        {renderPerformanceData(transformedSubjectData)}
-        {renderCompletionData(transformedSubjectData)}
+        {filteredSubjects.length > 0 && (
+          <>
+            {renderPerformanceData(transformedSubjectData)}
+            {renderCompletionData(transformedSubjectData)}
+          </>
+        )}
       </div>
     </div>
   );
