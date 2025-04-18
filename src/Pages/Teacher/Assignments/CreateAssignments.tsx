@@ -1134,9 +1134,15 @@ export const CreateAssignments = () => {
       });
     }
 
-    if (valid1) return;
+    if (valid1) {
+      setLoading(false);
+      return;
+    }
 
-    if (!valid) return;
+    if (!valid) {
+      setLoading(false);
+      return;
+    }
 
     const class_or_course = getClassOrCourseName();
     const rawMarks = questions[0] || {};
@@ -1346,6 +1352,7 @@ export const CreateAssignments = () => {
           setQuizPayload([]);
           setQuizData([]);
         } else {
+          setLoading(false);
           toast.error(response.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1882,6 +1889,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="One Mark"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].one}
                             onChange={(e) => {
@@ -1902,6 +1910,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Two Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].two}
                             onChange={(e) => {
@@ -1922,6 +1931,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Three Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].three}
                             onChange={(e) => {
@@ -1942,6 +1952,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Four Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].four}
                             onChange={(e) => {
@@ -1962,6 +1973,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Five Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].five}
                             onChange={(e) => {
@@ -2438,7 +2450,9 @@ export const CreateAssignments = () => {
                               <DateTimePicker
                                 label="Available From"
                                 value={availableFrom}
-                                minDateTime={!edit ? dayjs() : undefined}
+                                minDateTime={
+                                  !edit ? dayjs().add(10, 'minute') : undefined
+                                }
                                 onChange={handleAvailableFromChange}
                                 slots={{
                                   textField: (params) => (
@@ -2462,6 +2476,7 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               className="col-6"
                               label="Due Date"
+                              minDate={!edit ? dayjs() : undefined}
                               value={dueDate}
                               onChange={handleDueDateChange}
                               slots={{
@@ -2517,7 +2532,7 @@ export const CreateAssignments = () => {
                                 type="number"
                                 label="Quiz Duration (minutes)"
                                 value={quiz_timer}
-                                inputProps={{ min: 0 }}
+                                inputProps={{ min: 1 }}
                                 onChange={(e) => setQuizTimer(e.target.value)}
                                 fullWidth
                                 margin="normal"
@@ -2527,7 +2542,7 @@ export const CreateAssignments = () => {
                                   className="error-text"
                                   style={{ color: 'red' }}
                                 >
-                                  Please enter quiz timer.
+                                  Please enter a valid quiz timer.
                                 </p>
                               )}
                             </div>
