@@ -577,11 +577,13 @@ const QuizPage = () => {
                       backgroundColor:
                         currentQuestionIndex === index
                           ? '#9943EC'
-                          : lockedAnswers[index]
+                          : lockedAnswers[index] && isSubmit
                             ? isCorrectAnswer(index)
                               ? '#4CAF50'
                               : '#F44336'
-                            : '#9E9E9E',
+                            : lockedAnswers[index]
+                              ? '#4CAF50'
+                              : '#9E9E9E',
                       color: 'white',
                     }}
                     onClick={() => setCurrentQuestionIndex(index)}
