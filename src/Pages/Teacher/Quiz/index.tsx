@@ -45,6 +45,8 @@ const TeacherQuizPage = () => {
   });
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<any>();
+  const current_time = new Date();
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const getCourseOrClassName = (id: string, type: string) => {
     if (type === 'school') {
@@ -81,20 +83,22 @@ const TeacherQuizPage = () => {
   const fetchQuizData = async () => {
     try {
       setLoading(true);
-
       getData(`/quiz/get/teacher/${user_uuid}`).then((response) => {
         const filtered = response?.data.map((quiz: any) => {
+          const dueDate = new Date(quiz.due_date_time);
+
+          if (dueDate < current_time) {
+            quiz.status = 'past';
+          }
+
           if (quiz.course_semester_subjects) {
             const keys = Object.keys(quiz.course_semester_subjects);
             const firstKey = keys[0];
-
             const currentCourseName = getCourseOrClassName(firstKey, 'college');
-
             const semester = Object.keys(
               quiz?.course_semester_subjects[firstKey],
             )[0];
             const subjects = quiz?.course_semester_subjects[firstKey][semester];
-
             quiz.course = currentCourseName;
             quiz.semester = semester;
             quiz.subjects = subjects;
@@ -102,25 +106,21 @@ const TeacherQuizPage = () => {
           if (quiz?.class_stream_subjects) {
             const schoolKey = Object.keys(quiz?.class_stream_subjects);
             const firstSchoolKey = schoolKey[0];
-
             const currentClassName = getCourseOrClassName(
               firstSchoolKey,
               'school',
             );
-
             const stream = Object.keys(
               quiz?.class_stream_subjects[firstSchoolKey],
             )[0];
             const subjects =
               quiz?.class_stream_subjects[firstSchoolKey][stream];
-
             quiz.class = currentClassName;
             quiz.stream = stream;
             quiz.subjects = subjects;
           }
           return quiz;
         });
-
         setQuizData(filtered);
         setLoading(false);
       });
@@ -156,14 +156,25 @@ const TeacherQuizPage = () => {
     return `${hours}.${minutes} ${month} ${day}`;
   };
 
-  const filteredQuizzes = quizData.filter((quiz) => {
-    const matchesSearch = quiz.title
+  const filteredQuizzes = quizData?.filter((quiz) => {
+    const matchesSearch = quiz?.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesSubject =
       subjectFilter === 'all' || quiz.class_stream_subjects === subjectFilter;
 
-    return matchesSearch && matchesSubject;
+    let matchesStatus = true;
+    if (statusFilter !== 'all') {
+      if (statusFilter === 'past') {
+        matchesStatus = quiz.status === 'past';
+      } else if (statusFilter === 'draft') {
+        matchesStatus = quiz.save_draft === true;
+      } else if (statusFilter === 'active') {
+        matchesStatus = !quiz.save_draft && quiz.status !== 'past';
+      }
+    }
+
+    return matchesSearch && matchesSubject && matchesStatus;
   });
 
   const draftQuizzes = quizData.filter((quiz) => quiz.save_draft).length;
@@ -176,6 +187,22 @@ const TeacherQuizPage = () => {
   const handleDeleteFiles = (id: number) => {
     setDataDeleteId(id);
     setDataDelete(true);
+  };
+
+  const handleEditQuiz = async (id: number) => {
+    const quiz = filteredQuizzes.find((quiz) => quiz.id === id);
+    const response = await getData(`/quiz_submission/details/${id}`);
+
+    if (response.status && !quiz.is_multiple_attempt) {
+      toast.error('You cannot Edit someone already submitted', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    } else {
+      navigate(`/teacher-dashboard/edit-assignment/${id}`, {
+        state: { type: 'quiz', edit: true },
+      });
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -315,10 +342,18 @@ const TeacherQuizPage = () => {
                   </TextField>
                 </div>
                 <div className="col-md-3">
-                  <TextField fullWidth select label="All Status" size="small">
+                  <TextField
+                    fullWidth
+                    select
+                    label="All Status"
+                    size="small"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
                     <MenuItem value="all">All Status</MenuItem>
                     <MenuItem value="active">Active</MenuItem>
                     <MenuItem value="draft">Draft</MenuItem>
+                    <MenuItem value="past">Past</MenuItem>
                   </TextField>
                 </div>
               </div>
@@ -345,8 +380,20 @@ const TeacherQuizPage = () => {
                                 {quiz.title}
                               </Typography>
                               <Chip
-                                label={quiz.save_draft ? 'Draft' : 'Active'}
-                                color={quiz.save_draft ? 'warning' : 'success'}
+                                label={
+                                  quiz.status === 'past'
+                                    ? 'Past'
+                                    : quiz.save_draft
+                                      ? 'Draft'
+                                      : 'Active'
+                                }
+                                color={
+                                  quiz.status === 'past'
+                                    ? 'error'
+                                    : quiz.save_draft
+                                      ? 'warning'
+                                      : 'success'
+                                }
                                 size="small"
                               />
                             </Box>
@@ -415,14 +462,7 @@ const TeacherQuizPage = () => {
                                 color="primary"
                                 size="small"
                                 startIcon={<Edit />}
-                                onClick={() =>
-                                  navigate(
-                                    `/teacher-dashboard/edit-assignment/${quiz.id}`,
-                                    {
-                                      state: { type: 'quiz', edit: true },
-                                    },
-                                  )
-                                }
+                                onClick={() => handleEditQuiz(quiz.id)}
                               >
                                 Edit
                               </Button>
