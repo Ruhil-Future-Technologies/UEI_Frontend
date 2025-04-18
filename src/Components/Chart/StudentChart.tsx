@@ -75,14 +75,20 @@ const StudentDashboardCharts = () => {
   const [studentData, setStudentData] = useState<any>('');
   const student_id = localStorage.getItem('_id');
 
-  const getMonths: any = () => {
-    if (!studentData || !studentData.usage) {
-      return [getCurrentMonth()];
-    }
+  const getMonths = () => {
+    if (!studentData) return [];
 
-    const keys = Object.keys(studentData.usage);
+    const monthSet = new Set<string>();
 
-    return keys.length > 0 ? keys : [getCurrentMonth()];
+    const extractMonths = (data: Record<string, Record<string, any>>) => {
+      Object.values(data).forEach((monthObj) => {
+        Object.keys(monthObj).forEach((month) => monthSet.add(month));
+      });
+    };
+
+    extractMonths(studentData);
+
+    return Array.from(monthSet);
   };
 
   useEffect(() => {

@@ -34,7 +34,7 @@ const InstitutionCharts = () => {
   const [selectedSemester, setSelectedSemester] = useState('');
   const [filteredSubjects, setFilteredSubjects] = useState<any>([]);
 
-  const [activeMonth, setActiveMonth] = useState('');
+  const [activeMonth, setActiveMonth] = useState('Jan');
   const [activeTab, setActiveTab] = useState('weekly');
   const [topUsers, setTopUsers] = useState<any>({
     teachers: [],
@@ -341,11 +341,21 @@ const InstitutionCharts = () => {
   }, [sessionData, assignmentData, activeMonth]);
 
   const getMonths = () => {
-    if (!sessionData || !sessionData.teachers) return [];
+    if (!sessionData || !sessionData.teachers || !sessionData.students)
+      return [];
 
-    const firstTeacher = Object.values(sessionData.teachers)[0];
+    const monthSet = new Set<string>();
 
-    return Object.keys(firstTeacher || {});
+    const extractMonths = (data: Record<string, Record<string, any>>) => {
+      Object.values(data).forEach((monthObj) => {
+        Object.keys(monthObj).forEach((month) => monthSet.add(month));
+      });
+    };
+
+    extractMonths(sessionData.students);
+    extractMonths(sessionData.teachers);
+
+    return Array.from(monthSet);
   };
 
   const transformData = (sourceData: any, userType: any) => {
@@ -580,19 +590,15 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
-          toolbar: {
-            show: false,
-          },
+          toolbar: { show: false },
         },
+        colors: ['#006064'],
         title: {
           text: 'Student Daily Activity (Top 5 + Average)',
           align: 'center',
           style: { fontSize: '18px' },
         },
-        dataLabels: {
-          enabled: false,
-        },
-        colors: ['#008FFB'],
+        dataLabels: { enabled: false },
         xaxis: {
           type: 'category',
           labels: {
@@ -610,6 +616,8 @@ const InstitutionCharts = () => {
         plotOptions: {
           heatmap: {
             colorScale: {
+              min: 0,
+              max: 10,
               ranges: [
                 {
                   from: 0,
@@ -757,13 +765,17 @@ const InstitutionCharts = () => {
         for (let i = 1; i <= 4; i++) {
           const weekKey = `week${i}`;
           if (students[studentId][activeMonth][weekKey]) {
-            if (!categories?.includes(weekKey)) {
+            if (!categories.includes(weekKey)) {
               categories.push(weekKey);
+            }
+
+            if (!allStudentData[studentId]) {
+              allStudentData[studentId] = [];
             }
 
             allStudentData[studentId].push({
               category: weekKey,
-              value: students[studentId][activeMonth][weekKey].total,
+              value: weekData.total,
             });
           }
         }
@@ -987,7 +999,7 @@ const InstitutionCharts = () => {
         dataLabels: {
           enabled: false,
         },
-        colors: ['#008FFB'],
+        colors: ['#006064'],
         xaxis: {
           type: 'category',
           labels: {
@@ -1131,8 +1143,13 @@ const InstitutionCharts = () => {
       );
     }
 
-    const lessActiveData = userData.less_active[activeMonth]?.weeks || [];
-    const moreActiveData = userData.more_active[activeMonth]?.weeks || [];
+    const lessActiveData = (userData.less_active[activeMonth]?.weeks || []).map(
+      (week: number) => Math.floor(week),
+    );
+
+    const moreActiveData = (userData.more_active[activeMonth]?.weeks || []).map(
+      (week: number) => Math.floor(week),
+    );
 
     if (!lessActiveData.length || !moreActiveData.length) {
       return (
