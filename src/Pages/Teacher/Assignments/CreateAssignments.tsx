@@ -1375,7 +1375,11 @@ export const CreateAssignments = () => {
     payload.add_to_report = String(addToStudentRepost);
     payload.notify = String(sendNotification);
 
-    payload.save_draft = String(saveAsDraft);
+    if (id) {
+      payload.save_draft = String(false);
+    } else {
+      payload.save_draft = String(saveAsDraft);
+    }
     payload.timer = String(quiz_timer);
     payload.type = type;
     payload.contact_email = assignmentData.contact_email;
@@ -2476,7 +2480,7 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               className="col-6"
                               label="Due Date"
-                              minDate={!edit ? dayjs() : undefined}
+                              minDate={dayjs()}
                               value={dueDate}
                               onChange={handleDueDateChange}
                               slots={{
