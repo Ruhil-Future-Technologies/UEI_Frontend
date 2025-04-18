@@ -34,7 +34,7 @@ const InstitutionCharts = () => {
   const [selectedSemester, setSelectedSemester] = useState('');
   const [filteredSubjects, setFilteredSubjects] = useState<any>([]);
 
-  const [activeMonth, setActiveMonth] = useState('Jan');
+  const [activeMonth, setActiveMonth] = useState('');
   const [activeTab, setActiveTab] = useState('weekly');
   const [topUsers, setTopUsers] = useState<any>({
     teachers: [],
@@ -764,8 +764,13 @@ const InstitutionCharts = () => {
       if (activeTab === 'weekly') {
         for (let i = 1; i <= 4; i++) {
           const weekKey = `week${i}`;
-          if (students[studentId][activeMonth][weekKey]) {
-            if (!categories.includes(weekKey)) {
+
+          const student = students?.[studentId];
+          const monthData = student?.[activeMonth];
+          const weekData = monthData?.[weekKey];
+
+          if (weekData) {
+            if (!categories?.includes(weekKey)) {
               categories.push(weekKey);
             }
 

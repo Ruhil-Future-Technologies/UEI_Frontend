@@ -789,13 +789,13 @@ const StudentDashboardCharts = () => {
                   (week) => monthData[week]?.days || [],
                 );
 
-                const limitedDays = days.slice(0, weeklyData.length);
+                const limitedDays = days?.slice(0, weeklyData.length);
 
                 const dailyHours = limitedDays.map(
                   (_, index) => weeklyData[index] || 0,
                 );
 
-                const dailyData = dailyHours.slice(1, date.getDate() + 1);
+                const dailyData = dailyHours?.slice(1, date.getDate() + 1);
 
                 return {
                   labels: days,
