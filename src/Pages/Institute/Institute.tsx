@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import '../Institute/Institute.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -70,7 +70,7 @@ const Institute = () => {
   }, [Menulist, lastSegment]);
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
   const DeleteInstituteURL = QUERY_KEYS.INSTITUTE_DELETE;
-  const columns11 = INSITUTION_COLUMNS;
+
   const navigate = useNavigate();
   const { getData, putData, deleteData, loading } = useApi();
   const [dataInstitute, setDataInstitute] = useState<any[]>([]);
@@ -82,7 +82,26 @@ const Institute = () => {
   const [selectedInstitute, setSelectedInstitute] = useState<InstituteDetails>(
     [],
   );
-
+  const callAPI = async () => {
+    getData(`${InstituteURL}`)
+      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
+        if (data.status) {
+          setDataInstitute(data?.data);
+        } else {
+          setDataInstitute([]);
+        }
+      })
+      .catch((e) => {
+        if (e?.response?.code === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+  const columns11 = useMemo(() => INSITUTION_COLUMNS(callAPI), []);
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
   const [open, setOpen] = useState(false);
@@ -115,32 +134,23 @@ const Institute = () => {
     setColumns(updatedColumns);
   }, [dataInstitute, columns11]);
 
-  const callAPI = async () => {
-    getData(`${InstituteURL}`)
-      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
-        if (data.status) {
-          setDataInstitute(data?.data);
-        } else {
-          setDataInstitute([]);
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.code === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-  };
-
   useEffect(() => {
     callAPI();
   }, []);
 
   const handleEditFile = (id: number) => {
-    navigate(`edit-Institute/${id}`);
+    const current_insittute = dataInstitute.find(
+      (insitute) => insitute.user_uuid == id,
+    );
+
+    if (current_insittute.is_active) {
+      navigate(`edit-Institute/${id}`);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handlecancel = () => {
