@@ -166,7 +166,8 @@ const Institute = () => {
   useEffect(() => {
     if (activeTab === 0) {
       const approvedInstitutes = dataInstitute.filter(
-        (insitute) => insitute.is_approve === true,
+        (insitute) =>
+          insitute.is_approve === true && insitute.is_disapprove === false,
       );
       setColumnVisibility({
         is_active: true,
@@ -184,22 +185,44 @@ const Institute = () => {
           ),
         );
       }
-    } else {
-      const approvedInstitutes = dataInstitute.filter(
-        (insitute) => !insitute.is_approve,
+    } else if (activeTab === 1) {
+      const pedingInstitutes = dataInstitute.filter(
+        (insitute) => !insitute.is_approve && !insitute.is_disapprove,
       );
+
       setColumnVisibility({
         is_active: false,
       });
       if (activeSubTab === 0) {
         setFilteredInstitutes(
-          approvedInstitutes.filter(
+          pedingInstitutes.filter(
             (insitute) => insitute.entity_type === 'school',
           ),
         );
       } else {
         setFilteredInstitutes(
-          approvedInstitutes.filter(
+          pedingInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
+        );
+      }
+    } else {
+      const disapprovedInstitutes = dataInstitute.filter(
+        (insitute) => !insitute.is_approve && insitute.is_disapprove,
+      );
+
+      setColumnVisibility({
+        is_active: false,
+      });
+      if (activeSubTab === 0) {
+        setFilteredInstitutes(
+          disapprovedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
+        );
+      } else {
+        setFilteredInstitutes(
+          disapprovedInstitutes.filter(
             (insitute) => insitute.entity_type === 'college',
           ),
         );
@@ -333,6 +356,10 @@ const Institute = () => {
                       label="Pending Institute"
                       className={activeTab === 1 ? '' : 'text-color'}
                     />
+                    <Tab
+                      label="Disapproved Institute"
+                      className={activeTab === 2 ? '' : 'text-color'}
+                    />
                   </Tabs>
                   <Tabs value={activeSubTab} onChange={handleEnityChange}>
                     <Tab
@@ -431,6 +458,42 @@ const Institute = () => {
                                   }
                                 >
                                   <Visibility />
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          ) : row.row.original.is_disapprove ? (
+                            <>
+                              <Tooltip arrow placement="right" title="Approve">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() => {
+                                    handleApproveInstitute(
+                                      row?.row?.original?.user_uuid,
+                                    );
+                                  }}
+                                >
+                                  <CheckIcon />
+                                </IconButton>
+                              </Tooltip>
+
+                              <Tooltip arrow placement="right" title="Delete">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() => {
+                                    handleDeleteFiles(
+                                      row?.row?.original?.user_uuid,
+                                    );
+                                  }}
+                                >
+                                  <TrashIcon />
                                 </IconButton>
                               </Tooltip>
                             </>

@@ -14,6 +14,22 @@
       background-color: transparent !important;
     }
   }
+  .access1-card{
+    background-color: transparent!important;
+    background: none!important;
+  }
+  .without-login .login-footer a, .without-login .login-footer p {
+    font-size: 0.8rem;
+    color: $headingColor;
+}
+  .bg-d-dark{
+    path{
+     fill: $headingColor;
+    }
+  }
+  .Stepperform .MuiStepLabel-iconContainer{
+    background-color: var(--bs-body-bg-2);
+  }
   .chat-box {
     background-image: none !important;
   }
@@ -188,10 +204,14 @@
     border-color: #d5d5d5 !important;
     color: #d5d5d5 !important;
   }
+  .btn-outline-secondary {
+    border-color: #d5d5d5 !important;
+    color: #d5d5d5 !important;
+  }
   .bg-light,
   .chat-header,
   .chat-footer {
-    background-color: #32363b !important;
+    background-color: #181c1f !important;
   }
   .chat-suggestion {
     li {
