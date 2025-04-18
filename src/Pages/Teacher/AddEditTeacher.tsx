@@ -742,9 +742,11 @@ const AddEditTeacher = () => {
         ),
     }),
     experience: Yup.number()
-      .required('Please enter Experience')
-      .min(0, 'Experience cannot be negative')
-      .typeError('Experience must be a number'),
+    .required('Please enter Experience in years')
+    .min(0, 'Experience cannot be negative') // Minimum of 0 years
+    .max(40, 'Experience cannot exceed 40 years') // Maximum of 40 years
+    .integer('Experience must be a whole number') // Ensure it's an integer
+    .typeError('Please enter a valid number for experience'),
     entity_id: Yup.string().required('Please select Entity'),
     university_id: Yup.string().when('entity_id', {
       is: (entity_id: string) => {
@@ -1620,19 +1622,18 @@ const AddEditTeacher = () => {
                           label="Experience (years) *"
                           name="experience"
                           type="number"
-                          inputProps={{ min: 0 }}
                           value={values?.experience}
-                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          //   handleChange(e, 'experience')
-                          // }
                           onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            // Only allow digits
-                            e.target.value = e.target.value.replace(/[^0-9]/g, ''); 
-                            handleChange(e, 'experience'); 
+                            let value = e?.target?.value?.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                            if (value?.length > 2) {
+                              value = value?.substring(0, 2); // Allow only the first two digits
+                            }
+                            e.target.value = value;
+                            handleChange(e, 'experience');
                           }}
                         />
                         {touched?.experience && errors?.experience && (
-                          <p className="error">{String(errors.experience)}</p>
+                          <p className="error">{String(errors?.experience)}</p>
                         )}
                       </div>
                     </div>
