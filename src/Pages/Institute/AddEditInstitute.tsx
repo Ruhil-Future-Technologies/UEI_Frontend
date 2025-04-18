@@ -211,14 +211,12 @@ const AddEditInstitute = () => {
     };
 
     const currentDropdown = dropdownRef.current;
-    console.log('currentDropdown', currentDropdown);
 
     if (currentDropdown) {
       currentDropdown.addEventListener('focus', handleFocus as EventListener);
       currentDropdown.addEventListener('blur', handleBlur as EventListener);
     }
     const currentDropdownstate = dropdownstateRef.current;
-    console.log('currentDropdownstate', currentDropdownstate);
     if (currentDropdownstate) {
       currentDropdownstate.addEventListener(
         'focus',
@@ -385,8 +383,6 @@ const AddEditInstitute = () => {
         formData.set(key, filteredData[key]);
       }
 
-      formData.forEach((k, v) => console.log({ k, v }));
-
       putData(`${InstituteEditURL}/${id}`, formData)
         .then((data: { status: boolean; message: string }) => {
           if (data.status) {
@@ -427,8 +423,6 @@ const AddEditInstitute = () => {
       for (const key in newInstituteData) {
         formData.set(key, newInstituteData[key]);
       }
-
-      formData.forEach((k, v) => console.log({ k, v }));
 
       postData(`${InstituteAddURL}`, formData)
         .then((data: { status: boolean; message: string }) => {
