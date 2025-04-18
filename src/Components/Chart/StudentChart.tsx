@@ -75,14 +75,20 @@ const StudentDashboardCharts = () => {
   const [studentData, setStudentData] = useState<any>('');
   const student_id = localStorage.getItem('_id');
 
-  const getMonths: any = () => {
-    if (!studentData || !studentData.usage) {
-      return [getCurrentMonth()];
-    }
+  const getMonths = () => {
+    if (!studentData) return [];
 
-    const keys = Object.keys(studentData.usage);
+    const monthSet = new Set<string>();
 
-    return keys.length > 0 ? keys : [getCurrentMonth()];
+    const extractMonths = (data: Record<string, Record<string, any>>) => {
+      Object.values(data).forEach((monthObj) => {
+        Object.keys(monthObj).forEach((month) => monthSet.add(month));
+      });
+    };
+
+    extractMonths(studentData);
+
+    return Array.from(monthSet);
   };
 
   useEffect(() => {
@@ -783,13 +789,13 @@ const StudentDashboardCharts = () => {
                   (week) => monthData[week]?.days || [],
                 );
 
-                const limitedDays = days.slice(0, weeklyData.length);
+                const limitedDays = days?.slice(0, weeklyData.length);
 
                 const dailyHours = limitedDays.map(
                   (_, index) => weeklyData[index] || 0,
                 );
 
-                const dailyData = dailyHours.slice(1, date.getDate() + 1);
+                const dailyData = dailyHours?.slice(1, date.getDate() + 1);
 
                 return {
                   labels: days,
