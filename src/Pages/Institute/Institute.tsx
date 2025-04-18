@@ -312,6 +312,9 @@ const Institute = () => {
     delete instituteDetail.university_id;
     delete instituteDetail.institution_login_id;
 
+    instituteDetail.created_by = instituteDetail?.created_by_details?.user_name;
+    delete instituteDetail.created_by_details;
+
     setSelectedInstitute(instituteDetail);
     setOpen(true);
   };

@@ -621,6 +621,9 @@ const Teacher = () => {
     delete teacherDetail?.teacher_login_id;
     delete teacherDetail?.teacher_id;
 
+    teacherDetail.created_by = teacherDetail.created_by_details.user_name;
+    delete teacherDetail?.created_by_details;
+
     setSelectedTeacher(teacherDetail);
     setOpen(true);
   };
