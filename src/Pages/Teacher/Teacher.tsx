@@ -296,7 +296,8 @@ const Teacher = () => {
       }, 0);
     } else if (activeTab === 1) {
       const pendingTeachers = dataTeacher.filter(
-        (teacher) => teacher.is_approve === false,
+        (teacher) =>
+          teacher.is_approve === false && teacher.is_disapprove === false,
       );
 
       const college: any = entity.filter((ent) => ent.entity_type == 'college');
@@ -709,54 +710,27 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab
-                      label="Total Teachers"
-                      
-                    ></Tab>
-                    <Tab
-                      label="Pending Teachers"
-                      
-                    />
-                    <Tab
-                      label="Disapproved Teachers"
-                      
-                    />
+                    <Tab label="Total Teachers"></Tab>
+                    <Tab label="Pending Teachers" />
+                    <Tab label="Disapproved Teachers" />
                   </Tabs>
 
                   {activeTab === 0 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        
-                      />
-                      <Tab
-                        label="School"
-                        
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        
-                      />
-                      <Tab
-                        label="School"
-                        
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   {activeTab === 2 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        
-                      />
-                      <Tab
-                        label="School"
-                        
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   <Box marginTop="10px">
@@ -870,6 +844,20 @@ const Teacher = () => {
                                   }
                                 >
                                   <TrashIcon style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(row?.row?.original?.id)
+                                  }
+                                >
+                                  <Visibility style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                             </>
