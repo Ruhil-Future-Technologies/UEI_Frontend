@@ -145,7 +145,7 @@ const TeacherDashboardCharts = () => {
         getData(`${SUBJECTURL}`).then((data) => {
           const teacher_course = teacherData?.course_semester_subjects;
           const teacherCourseIds = teacher_course
-            ? Object.keys(teacher_course).map(Number)
+            ? Object.keys(teacher_course)?.map(Number)
             : [];
 
           const filteredSub = data?.data?.subjects_data?.filter(
