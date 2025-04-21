@@ -398,6 +398,79 @@ const useApi = () => {
     }
   };
 
+  const postFileWithProgress = async (url, data, options = {}) => {
+    const { onProgress, onSuccess, onError } = options;
+
+    try {
+      if (isTokenExpired()) {
+        handlogout();
+        navigate('/');
+        return;
+      }
+
+      const response = await httpClient.post(url, data, {
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+
+          if (onProgress) onProgress(percentCompleted);
+        },
+      });
+
+      if (onSuccess) onSuccess(response.data);
+      return response.data;
+    } catch (error) {
+      if (onError) onError(error);
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response?.data?.message || 'An error occurred',
+      };
+    }
+  };
+
+  const putFileWithProgress = async (url, data, options = {}) => {
+    const { onProgress, onSuccess, onError } = options;
+
+    try {
+      if (isTokenExpired()) {
+        handlogout();
+        navigate('/');
+        return;
+      }
+
+      const response = await httpClient.put(url, data, {
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          if (onProgress) onProgress(percentCompleted);
+        },
+      });
+
+      if (onSuccess) onSuccess(response.data);
+      return response.data;
+    } catch (error) {
+      if (onError) onError(error);
+      return {
+        data: [],
+        code: error.response?.status,
+        status: false,
+        message: error.response?.data?.message || 'An error occurred',
+      };
+    }
+  };
+
   return {
     getData,
     getForRegistration,
@@ -407,6 +480,8 @@ const useApi = () => {
     putFileData,
     postRegisterData,
     deleteData,
+    postFileWithProgress,
+    putFileWithProgress,
     postDataJson,
     postFileData,
     deleteFileData,

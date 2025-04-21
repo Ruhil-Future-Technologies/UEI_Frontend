@@ -122,7 +122,7 @@ const TeacherDash = () => {
       .then((data) => {
         if (data.data) {
           setCoursesData(data?.data);
-          const filteredCourses = data.data.course_data.filter((course: any) =>
+          const filteredCourses = data?.data?.course_data?.filter((course: any) =>
             courseIds.includes(String(course.id)),
           );
           setCoursesData(filteredCourses);
@@ -140,7 +140,7 @@ const TeacherDash = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          const filteredClasses = data.data.classes_data.filter((classn: any) =>
+          const filteredClasses = data?.data?.classes_data?.filter((classn: any) =>
             classIds.includes(String(classn.id)),
           );
           setDataClass(filteredClasses);
