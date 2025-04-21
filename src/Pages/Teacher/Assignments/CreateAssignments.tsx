@@ -639,8 +639,8 @@ export const CreateAssignments = () => {
   const getClasslist = (classIds: any) => {
     getData(`${ClassURL}`)
       .then((data) => {
-        if (data.data) {
-          const filteredClasses = data.data.classes_data.filter((classn: any) =>
+        if (data.status) {
+          const filteredClasses = data?.data?.classes_data.filter((classn: any) =>
             classIds.includes(classn.id),
           );
           setDataClass(filteredClasses);

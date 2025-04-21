@@ -148,9 +148,11 @@ const AddContent = () => {
 
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data?.course_data;
-      setDataCourses(
-        data?.data?.course_data?.filter((course: any) => course.is_active),
-      );
+      // setDataCourses(
+      //   data?.data?.course_data?.filter((course: any) => course.is_active),
+      // );
+      const courses = data.data?.course_data;
+      setDataCourses(Array.isArray(courses) ? courses.filter((s: any) => s?.is_active) : []);
     });
 
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
