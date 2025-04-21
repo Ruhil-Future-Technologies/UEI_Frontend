@@ -36,11 +36,11 @@ const TeacherDashboardCharts = () => {
   const [teacher, setTeacher] = useState<any>([]);
 
   const uniqueCourses = [
-    ...new Set(subjectAll.map((item) => item.course_id)),
+    ...new Set(subjectAll?.map((item) => item.course_id)),
   ].map((courseId) => {
     return {
       course_id: courseId,
-      course_name: subjectAll.find((item) => item.course_id === courseId)
+      course_name: subjectAll?.find((item) => item.course_id === courseId)
         .course_name,
     };
   });
@@ -57,7 +57,7 @@ const TeacherDashboardCharts = () => {
   });
 
   const filteredSemesters = useMemo(() => {
-    return semesterAll.filter(
+    return semesterAll?.filter(
       (semester) => semester.course_id === selectedCourse,
     );
   }, [selectedCourse]);
@@ -76,7 +76,7 @@ const TeacherDashboardCharts = () => {
       if (teacher?.entity_type === 'college') {
         if (courseDataStatus) {
           if (selectedCourse && selectedSemester) {
-            const filtered: any = subjectAll.filter(
+            const filtered: any = subjectAll?.filter(
               (subject) =>
                 subject.course_id === selectedCourse &&
                 subject.semester_id.toString() === selectedSemester,
@@ -84,7 +84,7 @@ const TeacherDashboardCharts = () => {
 
             setFilteredSubjects(filtered);
           } else if (selectedCourse) {
-            const filtered: any = subjectAll.filter(
+            const filtered: any = subjectAll?.filter(
               (subject) => subject.course_id === selectedCourse,
             );
 
@@ -94,7 +94,7 @@ const TeacherDashboardCharts = () => {
           }
         }
       } else {
-        const filtered: any = schoolSubjectAll.filter(
+        const filtered: any = schoolSubjectAll?.filter(
           (subject: any) => subject.class_id === selectedClass,
         );
 
@@ -136,25 +136,28 @@ const TeacherDashboardCharts = () => {
   useEffect(() => {
     if (user_uuid && dataStatus) {
       getData(`${TEACHERURL}/${user_uuid}`).then((data) => {
-        const teacherData = data?.data;
+        let teacherData :any = ""
+        if(data.status){
+         teacherData = data?.data;
         setTeacher(data?.data);
+        }
 
         getData(`${SUBJECTURL}`).then((data) => {
           const teacher_course = teacherData?.course_semester_subjects;
           const teacherCourseIds = teacher_course
-            ? Object.keys(teacher_course).map(Number)
+            ? Object.keys(teacher_course)?.map(Number)
             : [];
 
-          const filteredSub = data?.data?.subjects_data.filter(
+          const filteredSub = data?.data?.subjects_data?.filter(
             (sub: any) =>
-              sub.institution_id === teacherData.institute_id &&
-              teacherCourseIds.includes(sub.course_id),
+              sub?.institution_id === teacherData?.institute_id &&
+              teacherCourseIds?.includes(sub?.course_id),
           );
 
           setSubjectAll(filteredSub);
 
-          const uniqueCourses: any = Object.values(
-            filteredSub.reduce(
+          const uniqueCourses: any = Object?.values(
+            (filteredSub ?? []).reduce(
               (acc: any, item: any) => {
                 if (!acc[item.course_id]) {
                   acc[item.course_id] = {
@@ -170,7 +173,7 @@ const TeacherDashboardCharts = () => {
 
           setSelectedCourse(uniqueCourses[0]?.course_id);
           const uniqueSemesters: any = Object.values(
-            filteredSub.reduce(
+              (filteredSub ?? []).reduce(
               (acc: any, item: any) => {
                 if (!acc[item.semester_id]) {
                   acc[item.semester_id] = {
@@ -206,9 +209,9 @@ const TeacherDashboardCharts = () => {
               })),
             );
 
-            const filteredSub = data?.data?.subjects_data.filter(
+            const filteredSub = data?.data?.subjects_data?.filter(
               ({ class_id, stream, subject_name }: any) =>
-                filterCriteria.some(
+                filterCriteria?.some(
                   ({ class_id: id, stream: st, subjects }: any) =>
                     id === class_id &&
                     (st === 'general' || st === stream) &&
@@ -219,7 +222,7 @@ const TeacherDashboardCharts = () => {
             setschoolSubjectAll(filteredSub);
 
             const uniqueClasses: any = Object.values(
-              filteredSub.reduce(
+                (filteredSub ?? []).reduce(
                 (acc: any, item: any) => {
                   if (!acc[item.class_id]) {
                     acc[item.class_id] = {
@@ -338,7 +341,7 @@ const TeacherDashboardCharts = () => {
       ],
     };
 
-    filteredSubjects.forEach((subject: any) => {
+    filteredSubjects?.forEach((subject: any) => {
       const courseId = subject?.course_id?.toString();
       const subject_name = subject?.subject_name;
       const classId = subject?.class_id?.toString();
@@ -450,7 +453,7 @@ const TeacherDashboardCharts = () => {
                   label="Semester"
                   disabled={!selectedCourse}
                 >
-                  {filteredSemesters.map((semester) => (
+                  {filteredSemesters?.map((semester) => (
                     <MenuItem
                       key={semester.semester_id}
                       value={semester.semester_id.toString()}
@@ -488,7 +491,7 @@ const TeacherDashboardCharts = () => {
         )}
       </div>
       <div className="charts-container mb-4">
-        {filteredSubjects.length > 0 && (
+        {filteredSubjects?.length > 0 && (
           <>
             {renderPerformanceData(transformedSubjectData)}
             {renderCompletionData(transformedSubjectData)}
