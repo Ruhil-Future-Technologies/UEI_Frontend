@@ -608,8 +608,8 @@ export const CreateAssignments = () => {
       const data = await getData(`/semester/list`);
 
       if (data?.status && data?.data) {
-        setSemesterData(data.data.semesters_data);
-        return data.data.semesters_data; // Return the fetched semesters
+        setSemesterData(data?.data?.semesters_data);
+        return data?.data?.semesters_data; // Return the fetched semesters
       }
 
       return []; // Return an empty array if no data
@@ -621,9 +621,9 @@ export const CreateAssignments = () => {
   const getCourses = () => {
     getData(`${CourseURL}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           //  setCoursesData(data?.data);
-          const filteredCourses = data.data.course_data.filter(
+          const filteredCourses = data?.data?.course_data?.filter(
             (course: any) => course.is_active,
           );
           setFilteredCoursesData(filteredCourses);

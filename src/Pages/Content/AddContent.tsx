@@ -145,15 +145,15 @@ const AddContent = () => {
     });
 
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      all_courses = data.data.course_data;
+      all_courses = data.data?.course_data;
       setDataCourses(
-        data?.data?.course_data.filter((course: any) => course.is_active),
+        data?.data?.course_data?.filter((course: any) => course.is_active),
       );
     });
 
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       setCollegeSubjects(
-        data.data.subjects_data.filter((subject: any) => subject.is_active),
+        data.data.subjects_data?.filter((subject: any) => subject.is_active),
       );
     });
 
@@ -394,16 +394,13 @@ const AddContent = () => {
       setDataCourses(data.data.course_data);
     });
     getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
-      setCollegeSubjects(
-        data.data?.subjects_data.filter((subject: any) => subject.is_active) ||
-          [],
-      );
+      const subjects = data.data?.subjects_data;
+      setCollegeSubjects(Array.isArray(subjects) ? subjects.filter((s: any) => s?.is_active) : []);
     });
+
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
-      setSchoolSubjects(
-        data.data?.subjects_data.filter((subject: any) => subject.is_active) ||
-          [],
-      );
+      const subjects = data.data?.subjects_data;
+      setSchoolSubjects(Array.isArray(subjects) ? subjects.filter((s: any) => s?.is_active) : []);
     });
     setIsInitialDataLoaded(true);
   }, []);
