@@ -40,6 +40,7 @@ export const TeacherDetailsDialog = ({
     'state',
     'country',
     'pincode',
+    'created_by',
     'created_at',
     'updated_at',
     'documents',
@@ -203,7 +204,6 @@ export const TeacherDetailsDialog = ({
       open={open}
       onClose={onClose}
       sx={{
-       
         '& .MuiPaper-root': {
           width: {
             xs: '95%',
@@ -212,8 +212,6 @@ export const TeacherDetailsDialog = ({
             lg: '40%',
           },
           maxWidth: '900px',
-         
-         
           margin: {
             xs: '10px',
             sm: 'auto',
