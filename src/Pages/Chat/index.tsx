@@ -925,7 +925,7 @@ const Chat = () => {
                 //     search
                 //   )}?student_id=${encodeURIComponent(userid)}?class_or_course_selection=${encodeURIComponent(course_id)}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
                   student_id: userid,
                   class_or_course_selection: course_name,
