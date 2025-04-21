@@ -7,7 +7,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const StudentId = localStorage.getItem('_id');
+const StudentId = localStorage.getItem('user_uuid');
 console.log(StudentId);
 
 const steps = [

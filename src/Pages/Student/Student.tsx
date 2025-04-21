@@ -59,8 +59,6 @@ const Student = () => {
     try {
       const response = await getData(StudentURL);
       if (response.data) {
-        console.log(response);
-        console.log(response.data);
         setDataStudent(response.data);
       }
     } catch (e: any) {
@@ -167,7 +165,9 @@ const Student = () => {
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
-                                    handleEditFile(row?.row?.original?.id);
+                                    handleEditFile(
+                                      row?.row?.original?.user_uuid,
+                                    );
                                   }}
                                 >
                                   <EditIcon />
@@ -182,7 +182,9 @@ const Student = () => {
                                   color: tabletools(namecolor),
                                 }}
                                 onClick={() => {
-                                  handleDeleteFiles(row.row.original.id);
+                                  handleDeleteFiles(
+                                    row?.row?.original?.user_uuid,
+                                  );
                                 }}
                               >
                                 <TrashIcon />
@@ -205,7 +207,7 @@ const Student = () => {
         onDeleteClick={() =>
           dataDeleteId !== null && handleDelete(dataDeleteId)
         }
-        title="Delete documents?"
+        title="Student"
       />
     </>
   );

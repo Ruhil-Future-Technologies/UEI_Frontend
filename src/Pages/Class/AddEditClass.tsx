@@ -63,8 +63,9 @@ const AddEditClass = () => {
   const callAPI = async () => {
     if (id) {
       getData(`${ClassGetEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: { class_name: string } }) => {
-          setClassnm(data?.data?.class_name);
+        .then((data) => {
+
+          setClassnm(data?.data?.class_data?.class_name);
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
@@ -99,7 +100,7 @@ const AddEditClass = () => {
     if (id) {
       putData(`${ClassEditURL}/${id}`, formData)
         .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+          if (data.status) {
             navigator('/main/Class');
             toast.success(data.message, {
               hideProgressBar: true,
@@ -124,7 +125,7 @@ const AddEditClass = () => {
     } else {
       postData(`${ClassAddURL}`, formData)
         .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+          if (data.status) {
             // navigator('/main/Entity')
             toast.success(data.message, {
               hideProgressBar: true,
@@ -141,7 +142,7 @@ const AddEditClass = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -225,7 +226,7 @@ const AddEditClass = () => {
                                   },
                                 }}
                               >
-                                {`class_${item}`}
+                                {`class ${item}`}
                               </MenuItem>
                             ))}
                           </Select>

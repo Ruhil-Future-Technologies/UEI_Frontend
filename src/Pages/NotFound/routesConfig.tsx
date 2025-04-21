@@ -26,6 +26,8 @@ import PDFList from '../PDFList/PDFList';
 import AdminFeedback from '../AdminFeedback/AdminFeedback';
 import StudentFeedback from '../AdminFeedback/StudentFeedback';
 import FAQ from '../../Components/FAQ/FAQ';
+import Content from '../Content/Content';
+import Teacher from '../Teacher/Teacher';
 
 export const routes: RouteObject[] = [
   //   { path: "/", element: <Login /> },
@@ -57,4 +59,6 @@ export const routes: RouteObject[] = [
   { path: '/main/student-feedback', element: <StudentFeedback /> },
   { path: '/main/StudentFeedback', element: <StudentFeedback /> },
   { path: '/main/faq', element: <FAQ /> },
+  { path: '/main/Content', element: <Content /> },
+  { path: "/main/Teacher", element: <Teacher /> },
 ];

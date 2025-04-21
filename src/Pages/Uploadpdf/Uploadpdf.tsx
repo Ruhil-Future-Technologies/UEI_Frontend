@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import '../Uploadpdf/Uploadpdf.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -30,6 +30,7 @@ import NameContext from '../Context/NameContext';
 import { State } from 'country-state-city';
 import { commonStyle } from '../../utils/helpers';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 
 interface Classes {
   id: number;
@@ -56,7 +57,7 @@ interface Box {
 interface Institute {
   // id: number;
   institute_id: string;
-  institution_name: string;
+  institute_name: string;
   university_id: any;
   id: string | number;
 }
@@ -82,10 +83,6 @@ interface Option {
   value: string;
   label: string;
 }
-// interface Boxset {
-//   id: number;
-//   Institute_Name_Add: string;
-// }
 interface Subject {
   id: string;
   subject_name: string;
@@ -95,13 +92,9 @@ interface Subject {
 const Uploadpdf = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
-  // const location = useLocation();
   const navigator = useNavigate();
-  // const pathSegments = location.pathname.split("/").filter(Boolean);
   const SubjectURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
-  //const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
-  //const Menulist: any = localStorage.getItem("menulist1");
-  let AdminId: string | null = localStorage.getItem('_id');
+  let AdminId: string | null = localStorage.getItem('user_uuid');
   if (AdminId) {
     AdminId = String(AdminId);
   }
@@ -119,15 +112,7 @@ const Uploadpdf = () => {
     university_id: '',
     sem_id: '',
   };
-  // const Boxsetvalue = {
-  //   id: 0,
-  //   Institute_Name_Add: "",
-  // };
-
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  //const [selectedClass, setSelectedClass] = useState("");
-  //const [selectedSubject, setSelectedSubject] = useState("");
-  //const [dataSubject, setDataSubject] = useState([]);
   const [classes, setClasses] = useState<Classes[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([initials]);
   const [institutesAll, setInstitutesAll] = useState<Institute[]>([]);
@@ -139,7 +124,6 @@ const Uploadpdf = () => {
   const [particularClass, setParticularClass] = useState('');
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   const [university, setUniversity] = useState<University[]>([]);
-  // const [boxes1, setBoxes1] = useState<Boxset[]>([Boxsetvalue]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [subjectsAll, setSubjectsAll] = useState<Subject[]>([]);
   const [uploadTasks, setUploadTasks] = useState<any[]>([]);
@@ -162,7 +146,6 @@ const Uploadpdf = () => {
   useEffect(() => {
     const states = State.getStatesOfCountry('IN');
     const stateOptions = states.map((state) => ({
-      // value: state.isoCode,
       value: state.name,
       label: state.name,
     }));
@@ -188,10 +171,9 @@ const Uploadpdf = () => {
 
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
+        if (response.status) {
           const filteredData: any[] = [];
-          response?.data?.forEach((item: any) => {
+          response?.data?.classes_data.forEach((item: any) => {
             if (item?.is_active) {
               const updatedClassName = item.class_name.split('_').join(' ');
               item.new_class_name =
@@ -202,7 +184,6 @@ const Uploadpdf = () => {
           });
 
           setClasses(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
@@ -214,16 +195,15 @@ const Uploadpdf = () => {
   }, []);
   const listData = async () => {
     return new Promise((resolve) => {
-      getData('/institution/list')
+      getData('/institute/list')
         .then(async (response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = await response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+              (item: any) => item?.is_active,
             );
+
             setInstitutes(filteredData || []);
             setInstitutesAll(filteredData || []);
-            // setInstitutes(response.data);
-            // return filteredData || []
             resolve(true);
           } else {
             resolve(false);
@@ -244,12 +224,11 @@ const Uploadpdf = () => {
     if (boxes[0]?.institute_type?.toLowerCase() === 'school') {
       getData('school_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data.filter(
+              (item: any) => item?.is_active,
             );
             setSubjects(filteredData || []);
-            // setSubjects(response.data);
             setSubjectsAll(filteredData || []);
           }
         })
@@ -263,12 +242,11 @@ const Uploadpdf = () => {
     } else {
       getData('college_subject/list')
         .then((response: any) => {
-          if (response.status === 200) {
-            const filteredData = response?.data?.filter(
-              (item: any) => item?.is_active === 1,
+          if (response.status) {
+            const filteredData = response?.data?.subjects_data.filter(
+              (item: any) => item?.is_active,
             );
             setSubjects(filteredData || []);
-            // setSubjects(response.data);
             setSubjectsAll(filteredData || []);
           }
         })
@@ -286,12 +264,12 @@ const Uploadpdf = () => {
     listData();
     getData('university/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.universities_data.filter(
+            (item: any) => item?.is_active,
           );
+
           setUniversity(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
@@ -303,12 +281,11 @@ const Uploadpdf = () => {
       });
     getData('/semester/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.semesters_data.filter(
+            (item: any) => item?.is_active,
           );
           setSemester(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
@@ -321,13 +298,12 @@ const Uploadpdf = () => {
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          const filteredData = response?.data?.filter(
-            (item: any) => item?.is_active === 1,
+        if (response.status) {
+          const filteredData = response?.data?.course_data.filter(
+            (item: any) => item?.is_active,
           );
           setCourses(filteredData || []);
           setCoursesAll(filteredData || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
@@ -339,9 +315,8 @@ const Uploadpdf = () => {
       });
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
-          // const filteredData = response?.data?.filter((item:any) => item?.is_active === 1);
-          const filteredData = response?.data?.filter(
+        if (response.status) {
+          const filteredData = response?.data?.classes_data.filter(
             (item: any) => item?.is_active === true,
           );
           const getModifyClassMane = (value: string) => {
@@ -355,7 +330,6 @@ const Uploadpdf = () => {
             };
           });
           setClasses(newClassObject || []);
-          // setCourses(response.data);
         }
       })
       .catch((error) => {
@@ -380,56 +354,7 @@ const Uploadpdf = () => {
       if (pdfFiles.length !== filesArray.length) {
         toast.error('Only PDF files are allowed');
       }
-
       setSelectedFiles(pdfFiles);
-      // if (pdfFiles.length > 0) {
-      //     setSelectedPdf(URL.createObjectURL(pdfFiles[0])); // Preview the first PDF
-      // }
-      // let payload={};
-      // if(boxes[0].institute_type==="school"){
-      //    payload={
-      //     board_selection:boxes[0].board?boxes[0].board.toUpperCase():'',
-      //     class_selection:particularClass?particularClass:boxes[0].class_id,
-      //     state_board_selection:boxes[0].state_for_stateboard?boxes[0].state_for_stateboard:'',
-      //     stream_selection:boxes[0].stream?boxes[0].stream:"",
-      //     subject:boxes[0].subject_id?boxes[0].subject_id:'',
-      //     school_college_selection:boxes[0].institute_type?boxes[0].institute_type:'',
-      //     teacher_id:AdminId
-      //    }
-      // }else{
-      //    payload={
-      //     college_selection:boxes[0].institute_id?boxes[0].institute_id:'',
-      //     university_selection:boxes[0].university_id?boxes[0].university_id:"",
-      //     course_selection:boxes[0].course_id?boxes[0].course_id:"",
-      //     sem_id:boxes[0].sem_id ?boxes[0].sem_id:"",
-      //     subject:boxes[0].subject_id?boxes[0].subject_id:"",
-      //     school_college_selection:boxes[0].institute_type?boxes[0].institute_type:"",
-      //     teacher_id:AdminId
-      //   }
-
-      // }
-      //  console.log(payload);
-      //   postFileData("https://dbllm.gyansetu.ai/upload-pdf-hierarchy",payload).then((data: any) => {
-      //   //console.log("atul is doing some thing");
-      //     if (data?.status === 201) {
-      //     toast.success(data?.message, {
-      //       hideProgressBar: true,
-      //       theme: "colored",
-      //     });
-      //     setSelectedFiles([]);
-      //   } else {
-      //     toast.error(data?.message, {
-      //       hideProgressBar: true,
-      //       theme: "colored",
-      //     });
-      //   }
-      // })
-      // .catch((e) => {
-      //   toast.error(e?.message, {
-      //     hideProgressBar: true,
-      //     theme: "colored",
-      //   });
-      // });
     }
   };
 
@@ -438,7 +363,6 @@ const Uploadpdf = () => {
       const response = await getData(
         `https://dbllm.gyansetu.ai/task-result/${task_id}`,
       );
-      console.log(response);
       if (response?.combined_task_id) {
         setUploadTasks((prev) =>
           prev.map((task) =>
@@ -447,7 +371,6 @@ const Uploadpdf = () => {
               : task,
           ),
         );
-        console.log(uploadTasks);
         if (response.overall_status === 'IN-PROGRESS') {
           toast.info('Upload still in progress', {
             hideProgressBar: true,
@@ -467,7 +390,6 @@ const Uploadpdf = () => {
       });
     }
   };
-
   const handleFileUpload = async () => {
     if (selectedFiles.length === 0) {
       toast.error('No files selected');
@@ -521,14 +443,14 @@ const Uploadpdf = () => {
           subject_id,
         } = boxes[0];
         const universityNames = await university
-          ?.filter((item) => item.university_id === university_id)
+          ?.filter((item: any) => item?.id === university_id)
           ?.map((item) => item.university_name);
         const filterInstitute = await institutesAll
           ?.filter(
             (item) =>
               item.university_id === university_id && item?.id === institute_id,
           )
-          ?.map((item) => item.institution_name);
+          ?.map((item) => item.institute_name);
         const filterCourse = await coursesAll
           .filter(
             (item) =>
@@ -559,14 +481,6 @@ const Uploadpdf = () => {
         }
         if (institute_type)
           formData.append('school_college_selection', institute_type);
-        // if (institute_id) formData.append("college_selection", institute_id);
-        // if (university_id) formData.append("university_selection", university_id);
-        // if (course_id) formData.append("course_selection", course_id);
-        // if (sem_id) formData.append("sem_id", sem_id);
-
-        // Convert sem_id to a number if it is a string
-        //  const semIdNumber = Number(sem_id);
-
         const semnumber = totalSemester?.filter(
           (item: any) => item?.semester_id === sem_id,
         );
@@ -592,51 +506,22 @@ const Uploadpdf = () => {
           stream,
           institute_type,
         } = boxes[0];
-        // let filterSubject
-
-        //   if(stream){
-
-        //     filterSubject = await subjectsAll?.filter((item:any)=>
-        //       item?.class_id  === class_id &&  item?.stream === stream && item?.subject_id  === subject_id
-        //      )?.map(item => item.subject_name)
-        //      console.log("strem ==>",stream,filterSubject)
-        //   }else{
-
-        //     filterSubject = await subjectsAll?.filter((item:any)=>
-        //       item?.class_id  === class_id && item?.subject_id  === subject_id
-        // )?.map(item => item.subject_name)
-        // console.log("strem  null==>",filterSubject)
-        //   }
         if (institute_type)
           formData.append('school_college_selection', institute_type);
 
         if (board) formData.append('board_selection', board?.toUpperCase());
         if (class_id)
-          formData.append('class_selection', particularClass || class_id);
+          formData.append('class_selection', particularClass || "");
         if (state_for_stateboard)
           formData.append('state_board_selection', state_for_stateboard);
         if (stream) formData.append('stream_selection', stream);
-
-        // if (filterSubject && filterSubject.length > 0) {
-        //   formData.append("subject", filterSubject.join(','));
-        // }
-
-        // if (subject_id) formData.append("subject", subject_id);
       }
-      // formData.append("class_name", selectedClass);
-      // formData.append('subject_id', selectedSubject);
     }
-    console.log('test log', formData);
-    // if(boxes[0]?.institute_type){
-
-    // }
     await postFileData(
-      // `${"https://uatllm.gyansetu.ai/upload-pdf-class"}`,
       `${'https://dbllm.gyansetu.ai/upload-pdf-hierarchy'}`,
       formData,
     )
       .then((data: any) => {
-        console.log(data);
         if (data?.status_code === 200) {
           toast.success('PDF Upload Queued Successfully', {
             hideProgressBar: true,
@@ -664,30 +549,47 @@ const Uploadpdf = () => {
         });
       });
   };
+  const isDisabled = useMemo(() => {
+    const box = boxes[0];
+    if (
+      !box ||
+      Object.keys(box)?.length === 0 ||
+      box.institute_type?.toLowerCase() === ''
+    )
+      return true;
+    if (box.institute_type?.toLowerCase() === 'college') {
+      const { institute_id, university_id, course_id, sem_id } = box;
+      if (!institute_id || !university_id || !course_id || !sem_id) {
+        return true;
+      }
+    }
+    if (box.institute_type?.toLowerCase() === 'school') {
+      const { board, class_id, state_for_stateboard, stream } = box;
+
+      if (!board || !class_id) return true;
+
+      if (board.toLowerCase() === 'state_board' && !state_for_stateboard) {
+        return true;
+      }
+      if (
+        (particularClass === 'class_11' || particularClass === 'class_12') &&
+        !stream
+      ) {
+        return true;
+      }
+    }
+    if (selectedFiles.length === 0) return true;
+    return false;
+  }, [selectedFiles, boxes, particularClass]);
+
   const usertype: any = localStorage.getItem('user_type');
 
   if (usertype !== 'admin') {
     navigator('/main/*');
   }
-
-  // const handleChange = (event: any) => {
-  //   const { name, value } = event?.target;
-  //   if (name === "class_id") {
-  //     setSelectedClass(value);
-  //   } else if (name === "subject_id") {
-  //     setSelectedSubject(value);
-  //   }
-  // };
-  // Create an array for classes from 1 to 12
-  // const classes = Array.from({ length: 12 }, (_, i) => i + 1);
   const midpoint = Math.ceil(selectedFiles.length / 2);
   const firstBatch = selectedFiles.slice(0, midpoint);
   const secondBatch = selectedFiles.slice(midpoint);
-
-  // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
-  // const handleClose = () => {
-  //     setSelectedPdf(null); // This will close the iframe
-  //   };
   const handleInputChange = (
     index: number,
     field: keyof Box,
@@ -737,11 +639,6 @@ const Uploadpdf = () => {
       newBoxes[index].sem_id = '';
       newBoxes[index].subject_id = '';
       const semesterCount = semester.filter((item) => item.course_id === value);
-
-      // const semesterCount = semester.reduce((acc: any, crr) => {
-      //   if (crr.semester_number === value) acc = crr.semester_number
-      //   return acc
-      // }, 0)
       setTotalSemester(semesterCount);
     }
     if (field === 'sem_id') {
@@ -754,7 +651,6 @@ const Uploadpdf = () => {
       );
       setSubjects(filterData);
     }
-
     if (field === 'class_id') {
       newBoxes[index].subject_id = '';
       const filterData = subjectsAll?.filter(
@@ -771,27 +667,15 @@ const Uploadpdf = () => {
         setSubjects(filterData);
       }
     }
-
     setBoxes(newBoxes);
     if (field === 'class_id') {
       getData(`/class/get/${value}`).then((response: any) => {
-        if (response.status === 200) {
-          setParticularClass(response.data.class_name);
+        if (response.status) {
+          setParticularClass(response?.data?.class_data?.class_name);
         } else setParticularClass('');
       });
     }
   };
-  // const handleInputChange1 = (
-  //   index: number,
-  //   field: keyof Boxset,
-  //   value: any
-  // ) => {
-  //   // setenddateInvalid(value)
-  //   const newBoxes: any = [...boxes1];
-  //   newBoxes[index][field] = value;
-  //   setBoxes1(newBoxes);
-  // };
-
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -934,19 +818,6 @@ const Uploadpdf = () => {
                                         {state.label}
                                       </MenuItem>
                                     ))}
-                                    {/* <MenuItem
-                      key={1}
-                      value={1}
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                        "&:hover": {
-                          backgroundColor: inputfieldhover(namecolor), // Change this to your desired hover background color
-                        },
-                      }}
-                    >
-                      Others
-                    </MenuItem> */}
                                   </Select>
                                 </FormControl>
                               </div>
@@ -975,8 +846,8 @@ const Uploadpdf = () => {
                                 >
                                   {university.map((item) => (
                                     <MenuItem
-                                      key={item?.university_id}
-                                      value={item?.university_id}
+                                      key={item?.id}
+                                      value={item?.id}
                                       sx={commonStyle(namecolor)}
                                     >
                                       {item.university_name}
@@ -1015,7 +886,7 @@ const Uploadpdf = () => {
                                       value={institute.id}
                                       sx={commonStyle(namecolor)}
                                     >
-                                      {institute.institution_name}
+                                      {institute.institute_name}
                                     </MenuItem>
                                   ))}
                                 </Select>
@@ -1077,21 +948,6 @@ const Uploadpdf = () => {
                                   }
                                   label="Semester"
                                 >
-                                  {/* {[...Array(totalSemester[0]?.semester_number)].map((_, index) => (
-                      <MenuItem
-                        key={`${index + 1}`}
-                        value={index + 1}
-                        sx={{
-                          backgroundColor: inputfield(namecolor),
-                          color: inputfieldtext(namecolor),
-                          '&:hover': {
-                            backgroundColor: inputfieldhover(namecolor),
-                          },
-                        }}
-                      >
-                        Semester {index + 1}
-                      </MenuItem>
-                    ))} */}
                                   {totalSemester
                                     ?.sort(
                                       (a: any, b: any) =>
@@ -1180,7 +1036,7 @@ const Uploadpdf = () => {
                                       <MenuItem
                                         key={item.value}
                                         value={item.value}
-                                        sx={commonStyle(namecolor)} // Apply the commonStyle function
+                                        sx={commonStyle(namecolor)}
                                       >
                                         {item.label}
                                       </MenuItem>
@@ -1224,49 +1080,8 @@ const Uploadpdf = () => {
                               </FormControl>
                             </div>
                           )}
-
-                          {/* {box.institute_type === "college" && (
-              <div
-                className={`${box.institute_id == "1" ? "col-lg-3" : "col-lg-3 col-md-6"
-                  } form_field_wrapper`}
-              >
-                <FormControl
-                  required
-                  sx={{
-                    m: 1,
-                    minWidth: 180,
-                    // width: "100%",
-                  }}
-                >
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      views={["year"]}
-                      format="YYYY"
-                      label="Year *"
-                      sx={{
-                        backgroundColor: "#f5f5f5",
-                      }}
-                      value={dayjs(box.year)}
-                      onChange={(date) =>
-                        handleInputChange(index, "year", date)
-                      }
-                    />
-                  </LocalizationProvider>
-                </FormControl>
-              </div>
-            )} */}
                         </div>
                       ))}
-
-                      {/* <div className="mt-3 d-flex align-items-center justify-content-between">
-          <button
-            type="button"
-            className="btn btn-dark px-lg-5 ms-auto d-block rounded-pill next-btn"
-            // onClick={() => saveAcademy(0)}
-          >
-            save
-          </button>
-        </div> */}
                     </form>
                   </div>
                   <div
@@ -1276,66 +1091,12 @@ const Uploadpdf = () => {
                       marginBottom: '20px',
                     }}
                   >
-                    {/* <FormControl sx={{ minWidth: 300 }}>
-                    <InputLabel
-                      id="select-class-label"
-                      sx={{ color: inputfieldtext(namecolor) }}
-                    >
-                      Select class *
-                    </InputLabel>
-                    <Select
-                      labelId="select-class-label"
-                      value={selectedClass}
-                      onChange={handleChange}
-                      label="Select class *"
-                      variant="outlined"
-                      name="class_id"
-                      sx={{
-                        backgroundColor: inputfield(namecolor),
-                        color: inputfieldtext(namecolor),
-                      }}
-                      MenuProps={{
-                        PaperProps: {
-                          style: {
-                            backgroundColor: inputfield(namecolor),
-                            color: inputfieldtext(namecolor),
-                          },
-                        },
-                      }}
-                    >
-                      {classes?.map((classes) => (
-                        <MenuItem
-                          key={classes.class_name}
-                          value={classes.class_name}
-                          sx={{
-                            backgroundColor: inputfield(namecolor),
-                            color: inputfieldtext(namecolor),
-                            "&:hover": {
-                              backgroundColor: inputfieldhover(namecolor), 
-                            },
-                          }}
-                        >
-                          {classes?.new_class_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
-                    <div className="custbutton">
-                      <Button
-                        variant="contained"
-                        component="label"
-                        className="custom-button mainbutton"
-                      >
-                        Upload PDFs
-                        <input
-                          type="file"
-                          accept=".pdf"
-                          hidden
-                          multiple
-                          onChange={handleFileChange}
-                        />
-                      </Button>
-                    </div>
+                    <UploadBtn
+                      label="Upload PDFs"
+                      name="pdfDocuments"
+                      accept=".pdf"
+                      handleFileChange={handleFileChange}
+                    />
                   </div>
                   {uploadTasks.length > 0 && (
                     <TableContainer
@@ -1434,7 +1195,6 @@ const Uploadpdf = () => {
                             <div
                               key={index}
                               className="file-item"
-                              //  onClick={() => setSelectedPdf(URL.createObjectURL(file))}
                             >
                               {file.name}
                             </div>
@@ -1445,7 +1205,6 @@ const Uploadpdf = () => {
                             <div
                               key={index}
                               className="file-item"
-                              // onClick={() => setSelectedPdf(URL.createObjectURL(file))}
                             >
                               {file.name}
                             </div>
@@ -1455,27 +1214,17 @@ const Uploadpdf = () => {
                     </div>
                   )}
                   <Button
-                    className={`${
-                      selectedFiles.length === 0
-                        ? 'disabled-mainbutton'
-                        : 'mainbutton'
-                    }`}
+                    className={
+                      isDisabled ? 'disabled-mainbutton' : 'mainbutton'
+                    }
                     sx={{ marginTop: 5 }}
                     variant="contained"
                     onClick={handleFileUpload}
-                    disabled={selectedFiles.length === 0}
+                    disabled={isDisabled}
                   >
                     Submit
                   </Button>
                 </div>
-                {/* {selectedPdf && (
-                                    <div className='pdfView'>
-                                    <button onClick={handleClose} className='closeButton'>
-                                      &times; 
-                                    </button>
-                                    <iframe src={selectedPdf} width="100%" height="800px" />
-                                  </div>
-                                     )} */}
               </div>
             </div>
           </div>
@@ -1484,5 +1233,4 @@ const Uploadpdf = () => {
     </>
   );
 };
-
 export default Uploadpdf;

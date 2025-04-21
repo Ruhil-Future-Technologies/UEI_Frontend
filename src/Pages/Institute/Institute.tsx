@@ -10,6 +10,10 @@ import {
   Typography,
   Tab,
   Tabs,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from '@mui/material';
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import {
@@ -25,7 +29,30 @@ import { toast } from 'react-toastify';
 import FullScreenLoader from '../Loader/FullScreenLoader';
 import { dataaccess, tabletools } from '../../utils/helpers';
 import NameContext from '../Context/NameContext';
-import { Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Visibility,
+} from '@mui/icons-material';
+
+interface InstituteDetails {
+  institute_name?: string;
+  university_name?: string;
+  email?: string;
+  mobile_no?: string;
+  entity_type?: string;
+  is_active?: 0 | 1;
+  is_approve?: boolean;
+  address?: string;
+  city?: string;
+  district?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  website_url?: string;
+  documents?: string[];
+  [key: string]: any;
+}
 
 const Institute = () => {
   const context = useContext(NameContext);
@@ -50,25 +77,31 @@ const Institute = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
   const [activeTab, setActiveTab] = useState(0);
+  const [activeSubTab, setActiveSubTab] = useState(0);
   const [filteredInstitutes, setFilteredInstitutes] = useState<any[]>([]);
+  const [selectedInstitute, setSelectedInstitute] = useState<InstituteDetails>(
+    [],
+  );
 
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
+  const [open, setOpen] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   // Calculate and update column widths based on content length
   useEffect(() => {
-    const updatedColumns = columns11.map((column) => {
-      if (column.accessorKey === 'email_id') {
-        // Calculate the maximum width needed for 'email_id' column based on data
+    const updatedColumns = columns11?.map((column) => {
+      if (column.accessorKey === 'email') {
+        // Calculate the maximum width needed for 'email' column based on data
         const maxWidth = Math.max(
           ...dataInstitute.map((item) =>
-            item?.email_id ? item?.email_id?.length * 10 : 0,
+            item?.email ? item?.email?.length * 10 : 0,
           ),
         ); // Adjust multiplier as needed
         return { ...column, size: maxWidth };
       }
       if (column.accessorKey === 'website_url') {
-        // Calculate the maximum width needed for 'email_id' column based on data
+        // Calculate the maximum width needed for 'email' column based on data
         const maxWidth = Math.max(
           ...dataInstitute.map((item) =>
             item?.website_url ? item?.website_url?.length * 7 : 0,
@@ -84,14 +117,15 @@ const Institute = () => {
 
   const callAPI = async () => {
     getData(`${InstituteURL}`)
-      .then((data: { data: InstituteRep0oDTO[] }) => {
-        console.log(data.data);
-        if (data.data) {
+      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
+        if (data.status) {
           setDataInstitute(data?.data);
+        } else {
+          setDataInstitute([]);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -122,17 +156,79 @@ const Institute = () => {
     setActiveTab(newValue);
   };
 
+  const handleEnityChange = (
+    _event: React.SyntheticEvent,
+    newValue: number,
+  ) => {
+    setActiveSubTab(newValue);
+  };
+
   useEffect(() => {
     if (activeTab === 0) {
-      setFilteredInstitutes(
-        dataInstitute.filter((insitute) => insitute.is_approve === true),
+      const approvedInstitutes = dataInstitute.filter(
+        (insitute) =>
+          insitute.is_approve === true && insitute.is_disapprove === false,
       );
+      setColumnVisibility({
+        is_active: true,
+      });
+      if (activeSubTab === 0) {
+        setFilteredInstitutes(
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
+        );
+      } else {
+        setFilteredInstitutes(
+          approvedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
+        );
+      }
+    } else if (activeTab === 1) {
+      const pedingInstitutes = dataInstitute.filter(
+        (insitute) => !insitute.is_approve && !insitute.is_disapprove,
+      );
+
+      setColumnVisibility({
+        is_active: false,
+      });
+      if (activeSubTab === 0) {
+        setFilteredInstitutes(
+          pedingInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
+        );
+      } else {
+        setFilteredInstitutes(
+          pedingInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
+        );
+      }
     } else {
-      setFilteredInstitutes(
-        dataInstitute.filter((insitute) => !insitute.is_approve),
+      const disapprovedInstitutes = dataInstitute.filter(
+        (insitute) => !insitute.is_approve && insitute.is_disapprove,
       );
+
+      setColumnVisibility({
+        is_active: false,
+      });
+      if (activeSubTab === 0) {
+        setFilteredInstitutes(
+          disapprovedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'school',
+          ),
+        );
+      } else {
+        setFilteredInstitutes(
+          disapprovedInstitutes.filter(
+            (insitute) => insitute.entity_type === 'college',
+          ),
+        );
+      }
     }
-  }, [activeTab, dataInstitute]);
+  }, [activeTab, activeSubTab, dataInstitute]);
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteInstituteURL}/${id}`)
@@ -157,15 +253,17 @@ const Institute = () => {
 
   const handleApproveInstitute = (id: number) => {
     putData(`${QUERY_KEYS.INSITUTE_APPROVE}/${id}`)
-      .then(() => {
-        toast.success('Institute approved successfully', {
+      .then((data) => {
+        if (data.status) {
+          callAPI();
+        }
+        toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
-        callAPI();
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
@@ -173,19 +271,52 @@ const Institute = () => {
   };
   const handleRejectInstitute = (id: number) => {
     putData(`${QUERY_KEYS.INSITUTE_DISAPPROVE}/${id}`)
-      .then(() => {
-        toast.success('Institute rejected', {
+      .then((data) => {
+        if (data.status) {
+          callAPI();
+        }
+        toast.success(data.message, {
           hideProgressBar: true,
           theme: 'colored',
         });
-        callAPI();
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, { hideProgressBar: true, theme: 'colored' });
       });
+  };
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedInstitute([]);
+  };
+
+  const handleInstituteDetails = (id: number) => {
+    const instituteDetail = filteredInstitutes.find(
+      (institute) => institute.id == id,
+    );
+
+    const createdDateTime = instituteDetail.created_at;
+    const updatedDateTime = instituteDetail.updated_at;
+    const created_time = new Date(createdDateTime);
+    const updated_time = new Date(updatedDateTime);
+
+    instituteDetail.created_at = created_time.toLocaleString();
+    instituteDetail.updated_at = updated_time.toLocaleString();
+
+    delete instituteDetail.is_active;
+    delete instituteDetail.entity_id;
+    delete instituteDetail.icon;
+    delete instituteDetail.id;
+    delete instituteDetail.university_id;
+    delete instituteDetail.institution_login_id;
+
+    instituteDetail.created_by = instituteDetail?.created_by_details?.user_name;
+    delete instituteDetail.created_by_details;
+
+    setSelectedInstitute(instituteDetail);
+    setOpen(true);
   };
 
   return (
@@ -220,13 +351,38 @@ const Institute = () => {
                     )}
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab label="Total Institute" />
-                    <Tab label="Pending Institute" />
+                    <Tab
+                      label="Total Institute"
+                      className={activeTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="Pending Institute"
+                      className={activeTab === 1 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="Disapproved Institute"
+                      className={activeTab === 2 ? '' : 'text-color'}
+                    />
                   </Tabs>
+                  <Tabs value={activeSubTab} onChange={handleEnityChange}>
+                    <Tab
+                      label="School"
+                      className={activeSubTab === 0 ? '' : 'text-color'}
+                    />
+                    <Tab
+                      label="College"
+                      className={activeSubTab === 1 ? '' : 'text-color'}
+                    />
+                  </Tabs>
+
                   <Box marginTop="10px">
                     <MaterialReactTable
                       columns={columns}
                       // data={ dataInstitute }
+                      state={{
+                        columnVisibility,
+                      }}
+                      onColumnVisibilityChange={setColumnVisibility}
                       data={
                         filteredData?.form_data?.is_search
                           ? filteredInstitutes
@@ -265,7 +421,9 @@ const Institute = () => {
                                       color: tabletools(namecolor),
                                     }}
                                     onClick={() => {
-                                      handleEditFile(row?.row?.original?.id);
+                                      handleEditFile(
+                                        row?.row?.original?.user_uuid,
+                                      );
                                     }}
                                   >
                                     <EditIcon />
@@ -281,7 +439,61 @@ const Institute = () => {
                                     color: tabletools(namecolor),
                                   }}
                                   onClick={() => {
-                                    handleDeleteFiles(row?.row?.original?.id);
+                                    handleDeleteFiles(
+                                      row?.row?.original?.user_uuid,
+                                    );
+                                  }}
+                                >
+                                  <TrashIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleInstituteDetails(
+                                      row?.row?.original?.id,
+                                    )
+                                  }
+                                >
+                                  <Visibility />
+                                </IconButton>
+                              </Tooltip>
+                            </>
+                          ) : row.row.original.is_disapprove ? (
+                            <>
+                              <Tooltip arrow placement="right" title="Approve">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() => {
+                                    handleApproveInstitute(
+                                      row?.row?.original?.user_uuid,
+                                    );
+                                  }}
+                                >
+                                  <CheckIcon />
+                                </IconButton>
+                              </Tooltip>
+
+                              <Tooltip arrow placement="right" title="Delete">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() => {
+                                    handleDeleteFiles(
+                                      row?.row?.original?.user_uuid,
+                                    );
                                   }}
                                 >
                                   <TrashIcon />
@@ -299,7 +511,7 @@ const Institute = () => {
                                   }}
                                   onClick={() => {
                                     handleApproveInstitute(
-                                      row?.row?.original?.id,
+                                      row?.row?.original?.user_uuid,
                                     );
                                   }}
                                 >
@@ -316,15 +528,191 @@ const Institute = () => {
                                   }}
                                   onClick={() => {
                                     handleRejectInstitute(
-                                      row?.row?.original?.id,
+                                      row?.row?.original?.user_uuid,
                                     );
                                   }}
                                 >
                                   <CloseIcon />
                                 </IconButton>
                               </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleInstituteDetails(
+                                      row?.row?.original?.id,
+                                    )
+                                  }
+                                >
+                                  <Visibility />
+                                </IconButton>
+                              </Tooltip>
                             </>
                           )}
+
+                          <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            sx={{
+                              '& .MuiBackdrop-root': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                              },
+                              '& .MuiPaper-root': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+                              },
+                            }}
+                          >
+                            <DialogTitle
+                              sx={{
+                                fontWeight: 600,
+                              }}
+                            >
+                              Institute Details
+                            </DialogTitle>
+                            <DialogContent>
+                              <div className="insitute-details">
+                                {[
+                                  'institute_name',
+                                  'university_name',
+                                  'email',
+                                  'mobile_no',
+                                  'entity_type',
+
+                                  'address',
+                                  'city',
+                                  'district',
+                                  'state',
+                                  'country',
+                                  'pincode',
+                                  'website_url',
+
+                                  'created_at',
+                                  'created_by',
+                                  'updated_at',
+                                  'updated_by',
+                                  ...Object.keys(selectedInstitute).filter(
+                                    (key) =>
+                                      ![
+                                        'institute_name',
+                                        'university_name',
+                                        'email',
+                                        'mobile_no',
+                                        'entity_type',
+
+                                        'address',
+                                        'city',
+                                        'district',
+                                        'state',
+                                        'country',
+                                        'pincode',
+                                        'website_url',
+
+                                        'created_at',
+                                        'created_by',
+                                        'updated_at',
+                                        'updated_by',
+                                      ].includes(key),
+                                  ),
+                                ].map((key) => {
+                                  if (key in selectedInstitute) {
+                                    return (
+                                      <p key={key}>
+                                        <strong
+                                          style={{
+                                            fontWeight: 500,
+                                            fontSize: '14px',
+                                          }}
+                                        >
+                                          {key.replace(/_/g, ' ').toUpperCase()}
+                                        </strong>
+                                        :{' '}
+                                        {key === 'website_url' ? (
+                                          selectedInstitute[key] ? (
+                                            <a
+                                              href={
+                                                selectedInstitute[
+                                                  key
+                                                ]?.startsWith('http')
+                                                  ? selectedInstitute[key]
+                                                  : `http://${selectedInstitute[key]}`
+                                              }
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              style={{
+                                                textDecoration: 'underline',
+                                              }}
+                                            >
+                                              {selectedInstitute[key]}
+                                            </a>
+                                          ) : (
+                                            'Not Available'
+                                          )
+                                        ) : key === 'documents' ? (
+                                          Array.isArray(
+                                            selectedInstitute[key],
+                                          ) &&
+                                          (selectedInstitute[key] as string[])
+                                            .length > 0 ? (
+                                            <div style={{ marginLeft: '20px' }}>
+                                              {selectedInstitute[key]?.map(
+                                                (
+                                                  doc: string,
+                                                  index: number,
+                                                ) => (
+                                                  <div
+                                                    key={index}
+                                                    style={{ margin: '5px 0' }}
+                                                  >
+                                                    <a
+                                                      href={doc}
+                                                      target="_blank"
+                                                      rel="noopener noreferrer"
+                                                    >
+                                                      {doc.split('/').pop()}
+                                                    </a>
+                                                    {index <
+                                                    (
+                                                      selectedInstitute[
+                                                        key
+                                                      ] as string[]
+                                                    ).length -
+                                                      1
+                                                      ? ', '
+                                                      : ''}
+                                                  </div>
+                                                ),
+                                              )}
+                                            </div>
+                                          ) : (
+                                            'No documents available'
+                                          )
+                                        ) : Array.isArray(
+                                            selectedInstitute[key],
+                                          ) ? (
+                                          selectedInstitute[key].join(', ')
+                                        ) : selectedInstitute[key] === null ? (
+                                          'Not Available'
+                                        ) : (
+                                          selectedInstitute[key]?.toString()
+                                        )}
+                                      </p>
+                                    );
+                                  }
+                                  return null;
+                                })}
+                              </div>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={handleClose} color="primary">
+                                Close
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                         </Box>
                       )}
                     />
@@ -339,7 +727,7 @@ const Institute = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Institute"
       />
     </>
   );

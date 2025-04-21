@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-
 import '../Hobby/Hobby.scss';
 import useApi from '../../hooks/useAPI';
 import { Box, Typography } from '@mui/material';
@@ -22,26 +22,30 @@ const StudentFeedback = () => {
 
   const callAPI = async () => {
     getData(`${FeedbackURL}`)
-      .then((data: { data: IStudentFeedback[] }) => {
-        if (data?.data) {
-          const sortedData = data?.data?.sort((a, b) => {
-            const dateA = new Date(a?.created_at);
-            const dateB = new Date(b?.created_at);
-            return dateB?.getTime() - dateA?.getTime(); // Reverse the comparison for descending order
-          });
-
+      .then((data) => {
+        if (data?.status) {
+          const sortedData = Array.isArray(data?.data?.feedbacks_array)
+            ? data?.data?.feedbacks_array.sort((a: any, b: any) => {
+              const dateA = new Date(a?.created_at);
+              const dateB = new Date(b?.created_at);
+              return dateB.getTime() - dateA.getTime();
+            })
+            : [];
           // Update your state with the sorted data
           setDataStudent(sortedData || []);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
+        } else if (e?.response?.code === 404) {
+          setDataStudent([]);
+        } else {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
       });
   };
 
@@ -105,12 +109,6 @@ const StudentFeedback = () => {
           </div>
         </div>
       </div>
-      {/* <DeleteDialog
-        isOpen={dataDelete}
-        onCancel={handlecancel}
-        onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
-      /> */}
     </>
   );
 };

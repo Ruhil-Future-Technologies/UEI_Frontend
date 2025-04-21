@@ -26,7 +26,19 @@ const theme: ThemeOptions = {
       contrastText: '#fff',
     },
     secondary: {
-      main: '#dc004e',
+      main: '#EC43B3',
+    },   
+    success: {
+      main: '#22C55E', // Custom success color
+    },
+    error: {
+      main: '#D32F2F', // Custom error color
+    },
+    warning: {
+      main: '#FFA500', // Custom warning color
+    },
+    info: {
+      main: '#0288D1', // Custom info color
     },
   },
 };

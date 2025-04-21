@@ -28,8 +28,7 @@ const AdminFeedbackView = () => {
   // Fetch feedbacks from an API
   useEffect(() => {
     getData(`${'/feedback/'}`).then((data) => {
-      if (data.status === 200) {
-        console.log(data.data);
+      if (data.status) {
         setFeedbacks(data.data);
       }
     });

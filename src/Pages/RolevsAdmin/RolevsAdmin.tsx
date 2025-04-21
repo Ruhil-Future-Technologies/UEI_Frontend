@@ -51,11 +51,11 @@ const RoleVsAdmin = () => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
         if (data?.data) {
-          setDataROleVsAdmin(data?.data || []);
+          setDataROleVsAdmin(data?.data?.rolevsadmines_data || []);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -206,7 +206,7 @@ const RoleVsAdmin = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="RoleVsUser"
       />
     </>
   );

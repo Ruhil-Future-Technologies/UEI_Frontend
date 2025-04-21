@@ -3,10 +3,13 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import { ThemeProviderWrapper } from '../../ThemeProvider';
 import {
   FormControl,
   IconButton,
-  InputLabel,
+  //InputLabel,
+  List,
+  ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -32,26 +35,56 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'react-toastify/dist/ReactToastify.css';
+import OtpCard from '../../Components/Dailog/OtpCard';
+
 // import "../../assets/css/main.min.css";
 
 const Login = () => {
   // toast.dismiss()
   const navigate = useNavigate();
   useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_type');
+    localStorage.removeItem('userid');
+    localStorage.removeItem('pd');
+    localStorage.removeItem('userdata');
+    localStorage.removeItem('signupdata');
+    localStorage.removeItem('user_uuid');
+    localStorage.removeItem('menulist');
+    localStorage.removeItem('menulist1');
+    localStorage.removeItem('proFalg');
+    localStorage.removeItem('loglevel');
+    sessionStorage.removeItem('profileData');
+    localStorage.removeItem('chatsaved');
+    localStorage.removeItem('Profile_completion');
+    localStorage.removeItem('Profile completion');
+    localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('register_num');
+    localStorage.removeItem('user_session_data');
+    localStorage.removeItem('user_last_sync');
     toast.dismiss();
-    const login_id = localStorage.getItem('_id');
-    if (login_id) {
+    // const login_id = localStorage.getItem('user_uuid');
+    const user_type = localStorage.getItem('user_type')
+    if (user_type == 'student' || user_type == 'admin') {
       navigate('/main/DashBoard');
+    } else if (user_type == 'teacher') {
+      navigate('/teacher-dashboard')
+    } else if (user_type == 'institute') {
+      navigate('institute-dashboard')
     }
   }, []);
 
-  const { postData } = useApi();
+  const { postDataJson } = useApi();
 
   const navigator = useNavigate();
   const [password, setPassword] = useState('');
   const [emailphone, setEmailphone] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const userId = 'Email';
+  const [popupOtpCard, setPopupOtpCard] = useState(false);
   const [uservalue, setuserValue] = React.useState<any>('');
   const [value, setValue] = React.useState('student');
   const loginUrl = QUERY_KEYS.POST_LOGIN;
@@ -65,21 +98,21 @@ const Login = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setValue((event.target as HTMLInputElement).value);
   };
-  useEffect(() => {
-    const theme = localStorage?.getItem('theme') || '';
-    if (theme === 'light') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'dark') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'blue-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'semi-dark')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'bordered-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else document?.documentElement?.setAttribute('data-bs-theme', theme);
-    // document.documentElement.setAttribute('data-theme', theme);
-  }, []);
+  // useEffect(() => {
+  //   const theme = localStorage?.getItem('theme') || 'light';
+  //   if (theme === 'light') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'dark') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'blue-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'semi-dark')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'bordered-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   // document.documentElement.setAttribute('data-theme', theme);
+  // }, []);
 
   useEffect(() => {
     if (emailphone && password) {
@@ -96,8 +129,7 @@ const Login = () => {
         setLoading(true);
       }
       const UserSignUp = {
-        userid:
-          userId === 'Email' || userId === 'Phone' ? String(emailphone) : '',
+        email: String(emailphone),
         password: String(password),
         user_type: String(value),
       };
@@ -113,23 +145,16 @@ const Login = () => {
       } else {
         setuserValue('');
       }
-
       try {
-        const data = await postData(loginUrl, UserSignUp);
-        if (data?.status === 200) {
+        const data = await postDataJson(loginUrl, UserSignUp);
+        if (data?.status) {
           setLoading(false);
-          await localStorage.setItem('token', data?.token);
+          localStorage.setItem('token', 'Bearer ' + data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
-        } else if (
-          data?.status === 404 &&
-          data?.message === 'Invalid userid or password'
-        ) {
-          setLoading(false);
-          toast.error('Invalid userid or password', {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
         } else {
+          if (data?.message === 'User is not verified' || data?.message === 'Profile is not verified') {
+            setPopupOtpCard(true);
+          }
           setLoading(false);
           toast.error(data?.message, {
             hideProgressBar: true,
@@ -147,15 +172,47 @@ const Login = () => {
     }
   };
 
-  const handleSuccessfulLogin = (data: any, password: string) => {
-    console.log(data)
-    localStorage.setItem('token', data?.token);
-    localStorage.setItem('user_type', data?.data?.user_type);
-    localStorage.setItem('userid', data?.data?.userid);
-    localStorage.setItem('pd', password);
-    localStorage.setItem('userdata', JSON.stringify(data?.data));
-    localStorage.setItem('_id', data?.data?.id);
+  const handleSubmit = (otp: string) => {
+    const payload = {
+      email: emailphone,
+      otp: otp,
+    };
+    postDataJson(`/auth/verify-otp`, payload).then((data) => {
+      if (data.status) {
+        console.log(data);
+        if (data?.data?.is_verified && data?.data?.is_approve) {
+          console.log("in side varified ", value)
+          handleSuccessfulLogin(data);
+          toast.success(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        } else {
+          toast.success(data.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+        }
+
+        setPopupOtpCard(false);
+      } else {
+        toast.error(data.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+          position: 'top-center',
+        });
+      }
+    });
+  };
+  const handleSuccessfulLogin = (data: any, password?: string) => {
+    localStorage.setItem('token', 'Bearer ' + data?.data?.access_token);
+    localStorage.setItem('user_type', value);
+    localStorage.setItem('user_uuid', data?.data?.user_uuid);
+    localStorage.setItem('pd', password || '');
+
     localStorage.setItem('lastRoute', window.location.pathname);
+    localStorage.setItem('email', data?.data.email);
+    localStorage.setItem('phone', data?.data.phone);
 
     const tokenLifespan = 7100; // token lifespan in seconds (1 hour)
     // Calculate the expiry time
@@ -169,7 +226,7 @@ const Login = () => {
     });
 
     //const userType = data.data.user_type?'institute':data.data.user_type;
-    const userType = data.data.user_type;
+    const userType = value;
     if (userType === 'admin') {
       navigator('/main/Dashboard');
     } else if (userType === 'student') {
@@ -208,7 +265,7 @@ const Login = () => {
   };
 
   return (
-    <>
+    <ThemeProviderWrapper>
       {loading && <FullScreenLoader />}
       <div className="without-login">
         <header className="container-fluid mb-5 py-3 d-none d-lg-block">
@@ -330,28 +387,7 @@ const Login = () => {
                               error={!!error}
                               helperText={error}
                               fullWidth
-                              sx={{
-                                '& input:-webkit-autofill': {
-                                  WebkitBoxShadow:
-                                    '0 0 0 1000px white inset !important', // Set the background color you want
-                                  WebkitTextFillColor: 'black !important', // Set the text color you want
-                                },
-                                '& input:-webkit-autofill:hover': {
-                                  WebkitBoxShadow:
-                                    '0 0 0 1000px white inset !important',
-                                  WebkitTextFillColor: 'black !important',
-                                },
-                                '& input:-webkit-autofill:focus': {
-                                  WebkitBoxShadow:
-                                    '0 0 0 1000px white inset !important',
-                                  WebkitTextFillColor: 'black !important',
-                                },
-                                '& input:-webkit-autofill:active': {
-                                  WebkitBoxShadow:
-                                    '0 0 0 1000px white inset !important',
-                                  WebkitTextFillColor: 'black !important',
-                                },
-                              }}
+
                             />
                           </div>
                           <div className="mb-3">
@@ -387,31 +423,7 @@ const Login = () => {
                                     </InputAdornment>
                                   ),
                                 }}
-                                sx={{
-                                  '& input::-ms-reveal, & input::-ms-clear': {
-                                    display: 'none',
-                                  },
-                                  '& input:-webkit-autofill': {
-                                    WebkitBoxShadow:
-                                      '0 0 0 1000px white inset !important', // Set the background color you want
-                                    WebkitTextFillColor: 'black !important', // Set the text color you want
-                                  },
-                                  '& input:-webkit-autofill:hover': {
-                                    WebkitBoxShadow:
-                                      '0 0 0 1000px white inset !important',
-                                    WebkitTextFillColor: 'black !important',
-                                  },
-                                  '& input:-webkit-autofill:focus': {
-                                    WebkitBoxShadow:
-                                      '0 0 0 1000px white inset !important',
-                                    WebkitTextFillColor: 'black !important',
-                                  },
-                                  '& input:-webkit-autofill:active': {
-                                    WebkitBoxShadow:
-                                      '0 0 0 1000px white inset !important',
-                                    WebkitTextFillColor: 'black !important',
-                                  },
-                                }}
+
                                 fullWidth
                               />
                             </div>
@@ -422,13 +434,14 @@ const Login = () => {
                             )}
                           </div>
                           <div>
+                            <label
+                              htmlFor="passwordInput"
+                              className="form-label"
+                            >
+                              Role
+                            </label>
                             <FormControl fullWidth>
-                              <InputLabel>Role</InputLabel>
-                              <Select
-                                value={value}
-                                onChange={handleChange}
-                                label="Role"
-                              >
+                              <Select value={value} onChange={handleChange}>
                                 <MenuItem value="student">Student</MenuItem>
                                 <MenuItem value="admin">Admin</MenuItem>
                                 <MenuItem value="institute">Institute</MenuItem>
@@ -447,7 +460,7 @@ const Login = () => {
                           <button
                             data-testid="submitBtn"
                             type="submit"
-                            className="btn btn-secondary w-100 mb-3 mh-56 rounded-pill"
+                            className="btn btn-primary w-100 mb-3 mh-56 rounded-pill"
                             onClick={(e) => {
                               e.preventDefault();
                               login(e as any);
@@ -499,7 +512,7 @@ const Login = () => {
                           <div
                             data-testid="btn-sign"
                             onClick={() => setShowForm(true)}
-                            className="btn btn-secondary w-100 outsecbtn rounded-pill"
+                            className="btn btn-primary w-100 outsecbtn rounded-pill"
                           >
                             Sign in with Email / Phone
                           </div>
@@ -527,8 +540,46 @@ const Login = () => {
             </div>
           </div>
         </section>
+        <OtpCard
+          open={popupOtpCard}
+          handleOtpClose={() => setPopupOtpCard(false)}
+          handleOtpSuccess={(e: any) => handleSubmit(e)}
+          email={emailphone}
+        />
+        <footer className="login-footer">
+          <p className="mb-0">Copyright © 2025. All rights reserved.</p>
+          <List
+            sx={{
+              display: 'inline-flex',
+              flexWrap: 'wrap',
+              gap: 2,
+              padding: 0,
+            }}
+          >
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="privacypolicy" color="primary">
+                Privacy Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="refundpolicy" color="primary">
+                Refund Policy
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="Disclaimer" color="primary">
+                Disclaimer
+              </Link>
+            </ListItem>
+            <ListItem sx={{ width: 'auto', padding: 0 }}>
+              <Link to="ServicesAgreement" color="primary">
+                End User Agreement
+              </Link>
+            </ListItem>
+          </List>
+        </footer>
       </div>
-    </>
+    </ThemeProviderWrapper>
   );
 };
 

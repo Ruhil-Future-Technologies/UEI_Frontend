@@ -62,8 +62,20 @@ const Subject = () => {
       .then((data: any) => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
-        if (data.data) {
-          setDataSubject(data?.data);
+        if (data.status) {
+          const subjectData = data?.data?.subjects_data?.map((subject: any) => {
+            const createdDateTime = subject?.created_at;
+            const updatedDateTime = subject?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            subject.created_at = created_time.toLocaleString();
+            subject.updated_at = updated_time.toLocaleString();
+            return subject;
+          });
+          setDataSubject(subjectData);
+        } else {
+          setDataSubject([]);
         }
       })
       .catch((e) => {
@@ -74,8 +86,8 @@ const Subject = () => {
       });
     getData(`${SubjectSchoolURL}`)
       .then((data: any) => {
-        if (data.data) {
-          setDataSubjectSchool(data?.data);
+        if (data.status) {
+          setDataSubjectSchool(data?.data?.subjects_data);
         }
       })
       .catch((e) => {
@@ -89,7 +101,6 @@ const Subject = () => {
     callAPI();
   }, []);
   const handleEditFile = (id: any) => {
-    console.log('test lod id', id);
     navigate(
       tabValue === 0 ? `edit-Subject/${id}` : `edit-Subject-school/${id}`,
     );
@@ -126,7 +137,6 @@ const Subject = () => {
   ) => {
     setTabValue(newValue);
   };
-  console.log('test tabs', tabValue);
   return (
     <>
       {loading && <FullScreenLoader />}
@@ -330,7 +340,7 @@ const Subject = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Subject"
       />
     </>
   );

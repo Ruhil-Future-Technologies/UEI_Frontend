@@ -8,7 +8,7 @@ import {
   // Button,
   FormControl,
   FormControlLabel,
-  FormLabel,
+  //FormLabel,
   //Grid,
   // InputLabel,
   // MenuItem,
@@ -16,10 +16,11 @@ import {
   RadioGroup,
   // Select,
   //TextField,
-  Typography,
+  //Typography,
 } from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import useApi from '../../hooks/useAPI';
+
 import {
   LocalizationProvider,
   //DateTimePicker,
@@ -55,13 +56,13 @@ interface StudentBasicInformation {
 const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const context = useContext(NameContext);
   const { setNamepro, setProImage, namecolor }: any = context;
-  const StudentId = localStorage.getItem('_id');
+  const userUUID = localStorage.getItem('user_uuid');
   const { getData, postData, putData, postFileData } = useApi();
   // const [gender, setGender] = useState("Male");
   // const [name, setName] = useState();
   // const [lastname, setlastName] = useState();
   // const [dob, setDob] = useState<Date | null>();
-  const [selectedFile] = useState();
+  const [selectedFile ,setSelectedFile] = useState();
   const [filePreview, setFilePreview] = useState(null);
   const [editFalg, setEditFlag] = useState<boolean>(false);
   const [proFalg, setProFlag] = useState<boolean>(false);
@@ -79,7 +80,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   const [mothername_col1, setMothername_col1] = useState<boolean>(false);
   const [editBasicInfo, setEditBasicInfo] = useState(false);
   //const [error1, setError1] = useState("");
-  const exactSixYearsAgo = dayjs()?.subtract(6, 'year');
+  const exactSixYearsAgo = dayjs()
+    ?.subtract(6, 'year')
+    .subtract(1, 'day')
+    .endOf('day');
   const minSelectableDate = dayjs('01/01/1900');
   const [error, setError] = React.useState<string | null>(null);
 
@@ -103,21 +107,22 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const getStudentBasicInfo = async () => {
     // getData(`${'student/get/' + StudentId}`, StudentId)
-    getData(`${'student/getbylogin/' + StudentId}`)
+    getData(`${'student/get/' + userUUID}`)
       .then((data: any) => {
-        if (data?.status === 200) {
-          // console.log(data);
+        if (data?.status) {
+           console.log(data);
           // setBasicInfo(data);
-          if (data?.data?.pic_path !== '') {
+          if (data?.data?.pic_path !== null ) {
             getData(`${'upload_file/get_image/' + data?.data?.pic_path}`)
               .then((imgdata: any) => {
-                setFilePreview(imgdata.data);
+                setFilePreview(imgdata?.data?.file_url);
               })
               .catch(() => {});
           }
+          localStorage.setItem('_id',data?.data?.id)
           setBasicInfo(data?.data);
           setInitialState({
-            student_login_id: StudentId,
+            student_login_id: userUUID,
             first_name: data?.data?.first_name,
             last_name: data?.data?.last_name,
             gender: data?.data?.gender,
@@ -131,7 +136,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
           // setSelectedFile(data?.data?.pic_path);
           // console.log(typeof data?.data?.gender);
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setEditFlag(true);
           toast.warning('Please add your information', {
             hideProgressBar: true,
@@ -257,14 +262,20 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
         formData.append('file', file);
         value = file.name;
         postFileData(`${'upload_file/upload'}`, formData)
-          .then((data: any) => {
-            if (data?.status === 200) {
-              toast.success(data?.message, {
-                hideProgressBar: true,
-                theme: 'colored',
-                position: 'top-center',
-              });
-            } else if (data?.status === 404) {
+          .then(async (data: any) => {
+            if (data?.status) {
+              const fileUrl = data?.data?.url;
+            const fileName = fileUrl ? fileUrl?.split('/').pop() : null;
+            setSelectedFile(fileName);
+            toast.success(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+            if (!editFalg) {
+              picSubmitHandel(fileName);
+              }
+            } else if (data?.code === 404) {
               toast.error(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
@@ -304,8 +315,15 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
   const handleDateChange = (newDate: Dayjs | null) => {
     setEditBasicInfo(true);
-    if (newDate && newDate?.isValid() && newDate >= minSelectableDate) {
-      if (newDate && newDate?.isBefore(exactSixYearsAgo, 'day')) {
+    if (
+      newDate &&
+      newDate.isValid() &&
+      newDate.isAfter(minSelectableDate, 'day')
+    ) {
+      if (
+        newDate.isBefore(exactSixYearsAgo, 'day') ||
+        newDate.isSame(exactSixYearsAgo, 'day')
+      ) {
         setBasicInfo((values) => ({ ...values, dob: newDate }));
         setError(null);
         setdobset_col(false);
@@ -395,7 +413,75 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
   //     //     toast.success("Basic Info Added Successfully")
   //     // }
   // }
+  const picSubmitHandel = (fileName:any) => {
+    if (!basicInfo?.first_name) setFname_col1(true);
+    if (!basicInfo?.last_name) setLname_col1(true);
+    if (!basicInfo?.father_name) setFathername_col1(true);
+    if (!basicInfo?.mother_name) setMothername_col1(true);
 
+    const formData = new FormData();
+
+    const payload = {
+      user_uuid: userUUID,
+      first_name: basicInfo?.first_name,
+      last_name: basicInfo?.last_name,
+      gender: basicInfo?.gender,
+      dob: basicInfo?.dob || null,
+      father_name: basicInfo?.father_name,
+      mother_name: basicInfo?.mother_name,
+      guardian_name: basicInfo?.guardian_name,
+      pic_path:fileName ? fileName : selectedFile ? selectedFile : basicInfo?.pic_path,
+      aim: basicInfo?.aim,
+    } as any;
+
+    const datecheck: any = dayjs(payload?.dob).format('DD/MM/YYYY');
+    if (datecheck === 'Invalid Date') {
+      setdobset_col(true);
+    } else {
+      setdobset_col(false);
+    }
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
+    });
+
+      putData(`${'student/edit/'}${userUUID}`, formData)
+        .then((data: any) => {
+          // console.log("----- res ----", data);
+          if (data.status) {
+            setNamepro({
+              first_name: basicInfo?.first_name,
+              last_name: basicInfo?.last_name,
+              gender: basicInfo?.gender,
+            });
+            if (fileName ? fileName : selectedFile ? selectedFile : basicInfo?.pic_path) {
+              getData(
+                `${'upload_file/get_image/'}${
+                  fileName ? fileName : selectedFile ? selectedFile : basicInfo?.pic_path
+                }`,
+              )
+                .then((data: any) => {
+                  // setprofileImage(imgdata.data)
+                  if (data.status) {
+                    setProImage(data?.data?.file_url);
+                  }
+                })
+                .catch((e) => {
+                  console.log('------------- e -------------', e);
+                });
+            }
+          } else {
+            toast.error(data?.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+              position: 'top-center',
+            });
+          }
+        })
+        .catch((e: any) => {
+          console.log('--------- e --------', e);
+        });
+    
+  }
   const submitHandel = () => {
     // event.preventDefault();
     // const validation = validate()
@@ -406,8 +492,10 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     if (!basicInfo?.father_name) setFathername_col1(true);
     if (!basicInfo?.mother_name) setMothername_col1(true);
 
+    const formData = new FormData();
+
     const payload = {
-      student_login_id: StudentId,
+      user_uuid: userUUID,
       first_name: basicInfo?.first_name,
       last_name: basicInfo?.last_name,
       gender: basicInfo?.gender,
@@ -417,7 +505,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
       guardian_name: basicInfo?.guardian_name,
       pic_path: selectedFile ? selectedFile : basicInfo?.pic_path,
       aim: basicInfo?.aim,
-    };
+    } as any;
 
     const datecheck: any = dayjs(payload?.dob).format('DD/MM/YYYY');
     if (datecheck === 'Invalid Date') {
@@ -442,14 +530,19 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
     ) {
       if (editBasicInfo) {
         if (editFalg) {
-          postData(`${'student/add'}`, payload)
+          Object.keys(payload).forEach((key) => {
+            formData.append(key, payload[key]);
+          });
+
+          postData(`${'student/add'}`, formData)
             .then((data: any) => {
-              if (data.status == 200) {
+              if (data.status) {
                 toast.success('Basic information saved successfully', {
                   hideProgressBar: true,
                   theme: 'colored',
                   position: 'top-center',
                 });
+                localStorage.setItem('_id',data?.data?.id);
                 setActiveForm((prev) => prev + 1);
                 setNamepro({
                   first_name: basicInfo?.first_name,
@@ -463,8 +556,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                 )
                   .then((data: any) => {
                     // setprofileImage(imgdata.data)
-                    if (data.status == 200) {
-                      setProImage(data.data);
+                    if (data.status) {
+                      setProImage(data?.data?.file_url);
                     }
                   })
                   .catch((e) => {
@@ -486,11 +579,15 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               });
             });
         } else {
+          Object.keys(payload).forEach((key) => {
+            formData.append(key, payload[key]);
+          });
+
           const editData = async () => {
-            putData(`${'student/edit/'}${StudentId}`, payload)
+            putData(`${'student/edit/'}${userUUID}`, formData)
               .then((data: any) => {
                 // console.log("----- res ----", data);
-                if (data.status == 200) {
+                if (data.status) {
                   toast.success('Basic information updated successfully', {
                     hideProgressBar: true,
                     theme: 'colored',
@@ -511,8 +608,8 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     )
                       .then((data: any) => {
                         // setprofileImage(imgdata.data)
-                        if (data.status == 200) {
-                          setProImage(data.data);
+                        if (data.status) {
+                          setProImage(data?.data?.file_url);
                         }
                       })
                       .catch((e) => {
@@ -556,7 +653,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="first_name"
             name="first_name"
-            value={basicInfo.first_name}
+            value={basicInfo?.first_name}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -596,7 +693,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="last_name"
             name="last_name"
-            value={basicInfo.last_name || ''}
+            value={basicInfo?.last_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -622,14 +719,14 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
 
         <div className="col-md-6 pb-3 form_field_wrapper">
           <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">
+            <label id="demo-row-radio-buttons-group-label" className='col-form-label'>
               Gender *
-            </FormLabel>
+            </label>
             <RadioGroup
               data-testid="gender"
               row
               name="gender"
-              value={basicInfo.gender?.toLowerCase()}
+              value={basicInfo?.gender?.toLowerCase()}
               onChange={handleChange}
             >
               <FormControlLabel
@@ -671,9 +768,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           </div>
         </div>
         <div className="col-md-6 pb-3 form_field_wrapper">
-          <Typography className="profiletext" variant="body1">
+          <label className="profiletext col-form-label">
             Date of Birth <span>*</span>
-          </Typography>
+          </label>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {/* <DatePicker
               // label="Date of Birth"
@@ -687,8 +784,9 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
               maxDate={maxSelectableDate}
             
             /> */}
-            <Box width={300}>
+            <Box className="w-100">
               <DatePicker
+                className='w-100'
                 aria-label="datepicker_label"
                 value={dayjs(basicInfo?.dob)}
                 onChange={handleDateChange}
@@ -705,6 +803,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
                     variant: 'outlined',
                     helperText: error,
                     error: Boolean(error),
+                    size: "small",
                     inputProps: {
                       maxLength: 10,
                       'aria-label': 'datepicker_label',
@@ -747,7 +846,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="father_name"
             name="father_name"
-            value={basicInfo.father_name}
+            value={basicInfo?.father_name}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -787,7 +886,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="mother_name"
             name="mother_name"
-            value={basicInfo.mother_name || ''}
+            value={basicInfo?.mother_name || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -860,7 +959,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
           <input
             data-testid="aim"
             name="aim"
-            value={basicInfo.aim || ''}
+            value={basicInfo?.aim || ''}
             type="text"
             className="form-control"
             onChange={handleChange}
@@ -882,7 +981,7 @@ const StudentBasicInfo: React.FC<ChildComponentProps> = ({ setActiveForm }) => {
             <div className="image-container">
               {!filePreview ? (
                 <>
-                  {basicInfo.gender?.toLowerCase() === 'male' ? (
+                  {basicInfo?.gender?.toLowerCase() === 'male' ? (
                     <div className="image-box">
                       <input type="checkbox" className="image-checkbox" />
                       <img src={maleImage} alt="male" />

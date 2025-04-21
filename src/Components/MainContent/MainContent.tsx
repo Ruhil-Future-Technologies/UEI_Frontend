@@ -28,7 +28,6 @@ import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import OpenInFullOutlinedIcon from '@mui/icons-material/OpenInFullOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -49,7 +48,7 @@ import chatLogo from '../../assets/img/chat-logo.svg';
 import maleImage from '../../assets/img/avatars/male.png';
 import femaleImage from '../../assets/img/avatars/female.png';
 import robotImage from '../../assets/img/robot.png';
-import { fieldIcon, hasSubMenu } from '../../utils/helpers';
+import {  datadashboard, fieldIcon } from '../../utils/helpers';
 import FullScreenLoader from '../../Pages/Loader/FullScreenLoader';
 import NameContext from '../../Pages/Context/NameContext';
 import { ProfileDialog } from '../Dailog/ProfileComplation';
@@ -59,22 +58,21 @@ import Chatbot from '../../Pages/Chatbot';
 import theme from '../../theme';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
+import { ChatTable } from '../../Pages/Chat/Tablechat';
+import StudentDashboardCharts from '../Chart/StudentChart';
+import StatCard from './StatCard';
 
 // import "../react-perfect-scrollbar/dist/css/styles.css";
 
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage, namecolor }: any = context;
+  const { ProPercentage, setProPercentage, namecolor, setActiveForm, proImage, setProImage }: any = context;
+
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('_id');
+  const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
-
-  const getMenuList = () => {
-    const menuList = localStorage.getItem('menulist1');
-    return menuList ? JSON.parse(menuList) : [];
-  };
-  const menudata = getMenuList();
 
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -87,7 +85,7 @@ function MainContent() {
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const [profileDatas, setProfileDatas] = useState<any>({});
-  const [profileImage, setprofileImage] = useState<any>();
+  // const [profileImage, setprofileImage] = useState<any>();
   const [dataCompleted, setDataCompleted] = useState(false);
   const [themeMode, setThemeMode] = useState('');
   const [studentClass, setStudentClass] = useState('');
@@ -116,8 +114,6 @@ function MainContent() {
   const chatRef = useRef<HTMLInputElement>(null);
 
   const usertype: any = localStorage.getItem('user_type');
-  // const userdata = JSON.parse(localStorage?.getItem("userdata") || "/{/}/");
-  const userdata = JSON.parse(localStorage?.getItem('userdata') || '{}');
   const [isExpanded, setIsExpanded] = useState(false);
   const [university_list_data, setUniversity_List_Data] = useState([]);
   const [likedStates, setLikedStates] = useState<{ [key: string]: string }>({});
@@ -160,7 +156,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -195,7 +191,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-            JSON.stringify(selectedchat[index].answer);
+          JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -435,7 +431,7 @@ function MainContent() {
     } else if (usertype === 'teacher') {
       setUserName('teacher');
     } else {
-      setUserName('admin');
+      setUserName('institute');
     }
   }, [usertype]);
 
@@ -463,7 +459,7 @@ function MainContent() {
   //   basicinfo = JSON.parse(profileData);
   // }
 
-  const { postData, getData, loading } = useApi();
+  const { postDataJson, getData, loading } = useApi();
   const [stats, setStats] = useState({
     institutionCount: 0,
     studentCount: 0,
@@ -904,10 +900,15 @@ function MainContent() {
   };
 
   const callAPIStudent = async () => {
-    if (usertype === 'student') {
-      getData(`${profileURL}/${StudentId}`)
+    if (usertype === 'student' && userid !== null) {
+      getData(`${profileURL}/${userid}`)
         .then((data: any) => {
           if (data.data) {
+            if (data?.data?.basic_info?.id) {
+              localStorage.setItem('userdata', JSON.stringify(data.data));
+              localStorage.setItem('_id', data?.data?.basic_info.id);
+              localStorage.setItem('register_num', data?.data?.register_num);
+            }
             setProfileDatas(data?.data);
             //   let basic_info = data.data.basic_info;
             const basic_info = {
@@ -952,16 +953,15 @@ function MainContent() {
 
             let totalPercentage = 0;
             let sectionCount = 0;
-
             if (basic_info && Object.keys(basic_info).length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.basic_info?.pic_path !== null && data?.status) {
                 getData(
-                  `${
-                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata.data);
+                    // setprofileImage(imgdata?.data?.file_url);
+                    setProImage(imgdata?.data?.file_url);
                   })
                   .catch(() => {
                     // Handle error
@@ -1010,14 +1010,18 @@ function MainContent() {
               if (academic_history?.institution_type === 'school') {
                 if (academic_history?.class_id) {
                   getData(`class/get/${academic_history?.class_id}`).then(
-                    (response) =>
+                    (response) => {
                       setStudentClass(
-                        response.data.class_name
+                        response.data.class_data.class_name
+
                           .replace('_', ' ')
                           .charAt(0)
                           .toUpperCase() +
-                          response.data.class_name.replace('_', ' ').slice(1),
-                      ),
+                        response.data.class_data.class_name
+                          .replace('_', ' ')
+                          .slice(1),
+                      );
+                    },
                   );
                 }
                 delete academic_history?.course_id;
@@ -1036,7 +1040,7 @@ function MainContent() {
                 if (academic_history?.course_id) {
                   getData(`course/edit/${academic_history?.course_id}`).then(
                     (response) => {
-                      setStudentCourse(response.data.course_name);
+                      setStudentCourse(response.data.course_data?.course_name);
                     },
                   );
                 }
@@ -1072,7 +1076,6 @@ function MainContent() {
               Object.keys(subject_preference)?.length > 0
             ) {
               if (academic_history?.institution_type === 'school') {
-                // console.log("test subject pref school",subject_preference)
                 delete subject_preference?.course_name;
                 delete subject_preference?.course_id;
                 delete subject_preference?.sem_id;
@@ -1112,6 +1115,9 @@ function MainContent() {
           }
         })
         .catch((e) => {
+          if (e.response.code === 404) {
+            setDataCompleted(true);
+          }
           toast.error(e?.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1127,7 +1133,6 @@ function MainContent() {
     if (usertype === 'student') {
       try {
         const [chatCount] = await Promise.all([
-          // getData(`${chatlisturl}/${userdata?.id}`),
           getData('/chat/api/chat-summary'),
         ]);
         setStudent({
@@ -1143,70 +1148,87 @@ function MainContent() {
 
   const callAPIAdmin = async () => {
     if (usertype === 'admin') {
-      getData(`${profileURLadmin}/${StudentId}`)
+      getData(`${profileURLadmin}/${userid}`)
         .then((data: any) => {
+          if (data.code === 404) {
+            setActiveForm(0)
+            navigate('/main/adminprofile');
+          }
           if (data?.data) {
+            if (data?.data?.admin_data?.basic_info) {
+              sessionStorage.setItem(
+                'userdata',
+                JSON.stringify(data?.data?.admin_data?.basic_info),
+              );
+              localStorage.setItem(
+                '_id',
+                data?.data?.admin_data?.basic_info.id,
+              );
+            }
+
             // setProfileData(data?.data)
             // let basic_info = data?.data?.basic_info
             const basic_info = {
-              dob: data?.data?.basic_info?.dob,
-              father_name: data?.data?.basic_info?.father_name,
-              first_name: data?.data?.basic_info?.first_name,
-              gender: data?.data?.basic_info?.gender,
-              id: data?.data?.basic_info?.id,
+              dob: data?.data?.admin_data?.basic_info?.dob,
+              father_name: data?.data?.admin_data?.basic_info?.father_name,
+              first_name: data?.data?.admin_data?.basic_info?.first_name,
+              gender: data?.data?.admin_data?.basic_info?.gender,
+              id: data?.data?.admin_data?.basic_info?.id,
               last_modified_datetime:
-                data?.data.basic_info?.last_modified_datetime,
-              last_name: data?.data?.basic_info?.last_name,
-              mother_name: data?.data?.basic_info?.mother_name,
+                data?.data?.admin_data?.basic_info?.last_modified_datetime,
+              last_name: data?.data?.admin_data?.basic_info?.last_name,
+              mother_name: data?.data?.admin_data?.basic_info?.mother_name,
               admin_registration_no:
-                data?.data?.basic_info?.admin_registration_no,
-              department_id: data?.data?.basic_info?.department_id,
-              guardian_name: data?.data?.basic_info?.guardian_name,
+                data?.data?.admin_data?.basic_info?.admin_registration_no,
+              department_id: data?.data?.admin_data?.basic_info?.department_id,
+              guardian_name: data?.data?.admin_data?.basic_info?.guardian_name,
             };
             // let address = data?.data?.address
             const address = {
-              address1: data?.data?.address?.address1,
-              country: data?.data?.address?.country,
-              state: data?.data?.address?.state,
-              city: data?.data?.address?.city,
-              district: data?.data?.address?.district,
-              pincode: data?.data?.address?.pincode,
+              address1: data?.data?.admin_data?.address?.address1,
+              country: data?.data?.admin_data?.address?.country,
+              state: data?.data?.admin_data?.address?.state,
+              city: data?.data?.admin_data?.address?.city,
+              district: data?.data?.admin_data?.address?.district,
+              pincode: data?.data?.admin_data?.address?.pincode,
             };
             // let language = data?.data?.language_known
             const language = {
-              language_id: data?.data?.language_known?.language_id,
-              proficiency: data?.data?.language_known?.proficiency,
+              language_id: data?.data?.admin_data?.language_known?.language_id,
+              proficiency: data?.data?.admin_data?.language_known?.proficiency,
             };
-            const description = data?.data?.admin_description;
+            const description = data?.data?.admin_data?.admin_description;
             // let contact = data?.data?.contact
             const contact = {
               // email_id: data?.data?.contact?.email_id,
-              id: data?.data?.contact?.id,
+              id: data?.data?.admin_data?.contact?.id,
               // is_active: data?.data?.contact?.is_active,
-              mobile_isd_call: data?.data?.contact?.mobile_isd_call,
-              mobile_no_call: data?.data?.contact?.mobile_no_call,
+              mobile_isd_call: data?.data?.admin_data?.contact?.mobile_isd_call,
+              mobile_no_call: data?.data?.admin_data?.contact?.mobile_no_call,
               // mobile_no_watsapp: data?.data?.contact?.mobile_no_watsapp,
             };
             // let profession = data?.data?.profession
             const profession = {
-              course_id: data?.data?.profession?.course_id,
-              subject_id: data?.data?.profession?.subject_id,
-              institution_id: data?.data?.profession?.institution_id,
+              course_id: data?.data?.admin_data?.profession?.course_id,
+              subject_id: data?.data?.admin_data?.profession?.subject_id,
+              institution_id:
+                data?.data?.admin_data?.profession?.institution_id,
             };
-            const hobby = data?.data?.hobby;
+            const hobby = data?.data?.admin_data?.hobby;
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.basic_info?.pic_path !== '') {
+              if (data?.data?.admin_data?.basic_info?.pic_path !== null && data?.data?.admin_data?.basic_info?.pic_path !== undefined) {
                 getData(
-                  `${
-                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  `${'upload_file/get_image/' +
+                  data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
-                    setprofileImage(imgdata?.data);
+                    // setprofileImage(imgdata?.data?.file_url);
+                    setProImage(imgdata?.data?.file_url);
                   })
-                  .catch(() => {});
+                  .catch(() => { });
               }
 
               const totalcount = Object.keys(basic_info)?.length;
@@ -1269,23 +1291,14 @@ function MainContent() {
             } else {
               sectionCount++;
             }
-            // console.log("---- ddd eee",sectionCount)
             if (sectionCount > 0) {
               let overallPercentage = totalPercentage / sectionCount;
-              // setoverallProfilePercentage(overallPercentage); // Set the overall percentage
               overallPercentage = Math.round(overallPercentage);
-              // const nandata = 100 - overallPercentage;
-
-              // console.log("overallPercentage sss", nandata,overallPercentage);
               localStorage.setItem(
                 'Profile_completion',
                 JSON.stringify(overallPercentage),
               );
               setProPercentage(overallPercentage);
-              // console.log("---- ddd",overallPercentage)
-              // if(overallPercentage !== 100){
-              //     setDatacomplated(true)
-              // }
             }
           }
         })
@@ -1332,7 +1345,7 @@ function MainContent() {
             collegeRes,
             teacherRes,
           ] = await Promise.allSettled([
-            getData('/institution/list'),
+            getData('/institute/list'),
             getData('/student/list'),
             // getData("/subject/list"),
             getData('/entity/list'),
@@ -1356,23 +1369,23 @@ function MainContent() {
           //     : 0;
           const entityCount =
             entityRes?.status === 'fulfilled'
-              ? entityRes?.value?.data?.length || 0
+              ? entityRes?.value?.data?.entityes_data?.length || 0
               : 0;
           const departmentCount =
             departmentRes?.status === 'fulfilled'
-              ? departmentRes?.value?.data?.length || 0
+              ? departmentRes?.value?.data?.departments_data?.length || 0
               : 0;
           const courseCount =
             courseRes?.status === 'fulfilled'
-              ? courseRes?.value?.data?.length || 0
+              ? courseRes?.value?.data?.course_data?.length || 0
               : 0;
           const schoolsubjectCount =
             schoolRes?.status === 'fulfilled'
-              ? schoolRes?.value?.data?.length || 0
+              ? schoolRes?.value?.data?.subjects_data?.length || 0
               : 0;
           const collegesubjectCount =
             collegeRes?.status === 'fulfilled'
-              ? collegeRes?.value?.data?.length || 0
+              ? collegeRes?.value?.data?.subjects_data?.length || 0
               : 0;
           const teacherCount =
             teacherRes?.status === 'fulfilled'
@@ -1437,7 +1450,7 @@ function MainContent() {
           ]);
           const studentCoursedata =
             studentCoursecount?.status === 'fulfilled'
-              ? studentCoursecount?.value?.data || 0
+              ? studentCoursecount?.value?.data?.result || 0
               : 0;
 
           setStatsCourse(studentCoursedata);
@@ -1543,7 +1556,7 @@ function MainContent() {
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
     setSearch('');
-    getData(`${chatlisturl}/${userdata?.id}`)
+    getData(`${chatlisturl}/${StudentId}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1559,15 +1572,15 @@ function MainContent() {
 
   const handleError = (e: {
     message:
-      | string
-      | number
-      | boolean
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | React.ReactPortal
-      | ((props: ToastContentProps<unknown>) => React.ReactNode)
-      | null
-      | undefined;
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | ((props: ToastContentProps<unknown>) => React.ReactNode)
+    | null
+    | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -1594,7 +1607,7 @@ function MainContent() {
     // let rag_payload = {};
     if (selectedchat?.question !== '') {
       payload = {
-        student_id: StudentId,
+        student_id: userid,
         question: search,
         prompt: prompt,
         // course: studentDetail?.course === null ? "" : studentDetail?.course,
@@ -1614,11 +1627,11 @@ function MainContent() {
       };
       // rag_payload = {
       //   user_query: search,
-      //   student_id: StudentId,
+      //   student_id: userid,
       // };
     } else {
       payload = {
-        student_id: StudentId,
+        student_id: userid,
         question: search,
         prompt: prompt,
         course:
@@ -1629,7 +1642,7 @@ function MainContent() {
       };
       // rag_payload = {
       //   user_query: search,
-      //   student_id: StudentId,
+      //   student_id: userid,
       // };
     }
 
@@ -1642,7 +1655,7 @@ function MainContent() {
       setchatData((prevState: any) => [...prevState, newData]);
       setChatLoader(false);
       setSearch('');
-      getData(`${chatlisturl}/${userdata?.id}`)
+      getData(`${chatlisturl}/${StudentId}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1658,7 +1671,7 @@ function MainContent() {
         });
     };
 
-    postData(`${ChatURL}`, payload)
+    postDataJson(`${ChatURL}`, payload)
       .then((data) => {
         // if (data.status === 200) {
         //   handleResponse(data);
@@ -1668,9 +1681,9 @@ function MainContent() {
           setLoaderMsg('Searching from AI');
 
           if (profileDatas?.academic_history?.institution_type === 'school') {
-            postData(`${ChatRAGURL}`, {
+            postDataJson(`${ChatRAGURL}`, {
               user_query: search,
-              student_id: StudentId,
+              student_id: userid,
               school_college_selection:
                 profileDatas.academic_history.institution_type,
               board_selection:
@@ -1716,6 +1729,7 @@ function MainContent() {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1724,7 +1738,7 @@ function MainContent() {
                     response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -1737,9 +1751,9 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
-                    student_id: StudentId,
+                    student_id: userid,
                     class_or_course_selection: profileDatas?.class.name,
                   })
                     .then((response) => {
@@ -1750,13 +1764,13 @@ function MainContent() {
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -1769,9 +1783,9 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
-                  student_id: StudentId,
+                  student_id: userid,
                   class_or_course_selection: profileDatas?.class.name,
                 })
                   .then((response) => {
@@ -1782,13 +1796,13 @@ function MainContent() {
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   }),
@@ -1806,16 +1820,13 @@ function MainContent() {
             } = profileDatas?.academic_history || {};
             const { subject_name, course_name } =
               profileDatas?.subject_preference || {};
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?user_query=${search}&student_id=${StudentId}&school_college_selection=${institution_type}&board_selection=${board}&state_board_selection=${state_for_stateboard}&stream_selection=${stream}&class_selection=${class_id}& university_selection=${university_id}`
-            // )
             const university: any =
-              university_list_data.filter(
+              university_list_data?.filter(
                 (university: any) => university.university_id == university_id,
               ) || null;
             const queryParams = {
               user_query: search,
-              student_id: StudentId,
+              student_id: userid,
               school_college_selection: institution_type || null,
               board_selection: board || null,
               state_board_selection: state_for_stateboard || null,
@@ -1827,10 +1838,7 @@ function MainContent() {
               year: year || null,
               subject: subject_name || null,
             };
-            // return getData(
-            //   `https://dbllm.gyansetu.ai/rag-model?${queryParams.toString()}`
-            // )
-            return postData(`${ChatRAGURL}`, queryParams)
+            return postDataJson(`${ChatRAGURL}`, queryParams)
               .then((response) => {
                 if (response?.status === 200 || response?.status === 402) {
                   function formatAnswer(answer: any) {
@@ -1862,6 +1870,7 @@ function MainContent() {
                       question: response.question,
                       answer: formatAnswer(response.answer),
                       diagram_code: response.diagram_code,
+                      table_code: response.table_code,
                     },
                   };
                   const ChatStorepayload = {
@@ -1870,7 +1879,7 @@ function MainContent() {
                     response: formatAnswer(response.answer),
                   };
                   if (response?.status !== 402) {
-                    postData(`${ChatStore}`, ChatStorepayload).catch(
+                    postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                       handleError,
                     );
                   }
@@ -1883,9 +1892,9 @@ function MainContent() {
                   //     search
                   //   )}`
                   // )
-                  postData(`${ChatOLLAMAURL}`, {
+                  postDataJson(`${ChatOLLAMAURL}`, {
                     user_query: search,
-                    student_id: StudentId,
+                    student_id: userid,
                     class_or_course_selection: course_name,
                   })
                     .then((response) => {
@@ -1896,13 +1905,13 @@ function MainContent() {
                           chat_question: search,
                           response: response?.answer,
                         };
-                        postData(`${ChatStore}`, ChatStorepayload).catch(
+                        postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                           handleError,
                         );
                       }
                     })
                     .catch(() => {
-                      postData(`${ChatURLAI}`, payload)
+                      postDataJson(`${ChatURLAI}`, payload)
                         .then((response) => handleResponse(response))
                         .catch((error) => handleError(error));
                     });
@@ -1916,9 +1925,9 @@ function MainContent() {
                 //     search
                 //   )}`
                 // )
-                postData(`${ChatOLLAMAURL}`, {
+                postDataJson(`${ChatOLLAMAURL}`, {
                   user_query: search,
-                  student_id: StudentId,
+                  student_id: userid,
                   class_or_course_selection: course_name,
                 })
                   .then((response) => {
@@ -1929,13 +1938,13 @@ function MainContent() {
                         chat_question: search,
                         response: response?.answer,
                       };
-                      postData(`${ChatStore}`, ChatStorepayload).catch(
+                      postDataJson(`${ChatStore}`, ChatStorepayload).catch(
                         handleError,
                       );
                     }
                   })
                   .catch(() => {
-                    postData(`${ChatURLAI}`, payload)
+                    postDataJson(`${ChatURLAI}`, payload)
                       .then((response) => handleResponse(response))
                       .catch((error) => handleError(error));
                   });
@@ -1953,7 +1962,7 @@ function MainContent() {
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status === 200) {
                 // handleResponse(data);
@@ -1975,9 +1984,9 @@ function MainContent() {
           //     search
           //   )}`
           // );
-          return postData(`${ChatOLLAMAURL}`, {
+          return postDataJson(`${ChatOLLAMAURL}`, {
             user_query: search,
-            student_id: StudentId,
+            student_id: userid,
             class_or_course_selection:
               profileDatas?.academic_history?.institution_type === 'school'
                 ? profileDatas?.class.name
@@ -1996,7 +2005,7 @@ function MainContent() {
             response: data?.answer,
           };
 
-          postData(`${ChatStore}`, ChatStorepayload)
+          postDataJson(`${ChatStore}`, ChatStorepayload)
             .then((data) => {
               if (data?.status === 200) {
                 // handleResponse(data);
@@ -2008,7 +2017,7 @@ function MainContent() {
           handleResponsereg(data);
         } else if (data?.status === 404) {
           setLoaderMsg('Fetching data from Chat-GPT API.');
-          return postData(`${ChatURLAI}`, payload);
+          return postDataJson(`${ChatURLAI}`, payload);
         } else if (data) {
           handleError(data);
         }
@@ -2087,32 +2096,6 @@ function MainContent() {
   //   //`${stats1.Student_Profile}% Profile`
   // ];
 
-  // const EntityExists = hasSubMenu(menudata, "Entity");
-  const InstitutionsExists = hasSubMenu(menudata, 'Institute');
-  const StudentsExists = hasSubMenu(menudata, 'Student');
-  const CoursesExists = hasSubMenu(menudata, 'Course');
-  const SubjectsExists = hasSubMenu(menudata, 'Subject');
-  const DepartmentExists = hasSubMenu(menudata, 'Department');
-
-  // const CustomTooltip = ({ active, payload }: any) => {
-  //   if (active && payload && payload.length) {
-  //     const dataPoint = payload[0].payload;
-  //     return (
-  //       <div
-  //         style={{
-  //           backgroundColor: "white",
-  //           padding: "5px",
-  //           border: "1px solid #ccc",
-  //         }}
-  //       >
-  //         <p>{dataPoint.label}</p>
-  //         <p>{`Points: ${dataPoint.value}`}</p>
-  //         <p>{`Rank: ${dataPoint.rank}`}</p>
-  //       </div>
-  //     );
-  //   }
-  //   return null;
-  // };
 
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === 'Enter') {
@@ -2163,7 +2146,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => {};
+    utterance.onerror = () => { };
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2227,16 +2210,9 @@ function MainContent() {
         stream: profileDatas?.subject,
       };
     }
-
-    // getData(
-    //   // `http://13.232.96.204:5000//ollama-chat?user_query=${search}`
-    //   `https://dbllm.gyansetu.ai/ollama-chat?user_query=${encodeURIComponent(
-    //     search
-    //   )}`
-    // )
-    postData(`${ChatOLLAMAURL}`, {
+    postDataJson(`${ChatOLLAMAURL}`, {
       user_query: search,
-      student_id: StudentId,
+      student_id: userid,
       class_or_course_selection:
         profileDatas?.academic_history?.institution_type === 'school'
           ? profileDatas?.class.name
@@ -2250,11 +2226,11 @@ function MainContent() {
             chat_question: search,
             response: response?.answer,
           };
-          postData(`${ChatStore}`, ChatStorepayload).catch(handleError);
+          postDataJson(`${ChatStore}`, ChatStorepayload).catch(handleError);
         }
       })
       .catch(() => {
-        postData(`${ChatURLAI}`, payload)
+        postDataJson(`${ChatURLAI}`, payload)
           .then((response) => handleResponse(response))
           .catch((error) => handleError(error));
       });
@@ -2291,9 +2267,6 @@ function MainContent() {
 
   const saveChat = async () => {
     const chatDataString = localStorage?.getItem('chatData');
-    // const chatflagged = localStorage?.getItem("chatsaved");
-    // console.log("chatData testing save",chatDataString);
-
     let chatData: any;
 
     if (chatDataString) {
@@ -2321,28 +2294,22 @@ function MainContent() {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: userdata.id,
+        student_id: StudentId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: userdata.id,
+        student_id: StudentId,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     }
 
-    await postData(`${chataddconversationurl}`, chat_payload)
+    await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
-        // setChatSaved(false);
-        // toast.success(chatdata?.message, {
-        //   hideProgressBar: true,
-        //   theme: "colored",
-        // });
-        // callAPI();
         fetchStudentData();
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
@@ -2375,286 +2342,76 @@ function MainContent() {
         console.error('Error copying text: ', err);
       });
   };
-
+  const isMenuEmpty = !menuList || menuList.length === 0;
+  
+  const statCardsData = [
+    {
+      icon: <PermContactCalendarIcon />,
+      value: stats.entityCount,
+      label: 'Total Entities',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Entity") ? '/main/Entity' : '#',
+      // to: '#',
+      // showAlways: isMenuEmpty, // special card only in empty menu
+    },
+    {
+      icon: <PermContactCalendarIcon />,
+      value: stats.institutionCount,
+      label: 'Total Institutions',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Institute") ? '/main/Institute' : '#',
+    },
+    {
+      icon: <PersonAddIcon />,
+      value: stats.teacherCount,
+      label: 'Teachers',
+      to: isMenuEmpty ? '#' : '/main/Teacher',
+    },
+    {
+      icon: <PersonAddIcon />,
+      value: stats.studentCount,
+      label: 'Students',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Student") ? '/main/Student' : '#',
+    },
+    {
+      icon: <LibraryBooksIcon />,
+      value: stats.courseCount,
+      label: 'Courses',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Course") ? '/main/Course' : '#',
+      trendIcon: <ExpandLessIcon />,
+      textColor: 'text-danger',
+    },
+    {
+      icon: <AutoStoriesIcon />,
+      value: stats.schoolsubjectCount + stats.collegesubjectCount,
+      label: 'Subjects',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Subject") ? '/main/Subject' : '#',
+      trendIcon: <ExpandLessIcon />,
+      textColor: 'text-danger',
+    },
+    {
+      icon: <CollectionsBookmarkIcon />,
+      value: stats.departmentCount,
+      label: 'Department',
+      to: isMenuEmpty ? '#' : datadashboard(menuList, "Department")? '/main/Department' : '#',
+      trendIcon: <ExpandLessIcon />,
+      textColor: 'text-danger',
+    },
+  ];
+  
   return (
     <>
       {loader && !chatLoader && <FullScreenLoader />}
-      {/* {basicinfo!==null && basicinfo?.basic_info && userName === 'admin' ?  */}
       {userName === 'admin' ? (
         <>
           <div className="main-wrapper">
             <main className="main-content">
               <section className="row">
-                {menuList == null || menuList?.length === 0 ? (
-                  <>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.entityCount}</h4>
-                            <p className="mb-0">Total Entities</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.institutionCount}</h4>
-                            <p className="mb-0">Total Institutions</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.studentCount}</h4>
-                            <p className="mb-0">Total Students</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.courseCount}</h4>
-                            <p className="mb-0">Total Courses</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">
-                              {stats.collegesubjectCount +
-                                stats?.schoolsubjectCount}
-                            </h4>
-                            <p className="mb-0">Total Subjects</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-xl-2 col-md-4 col-sm-6 mb-2">
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <CollectionsBookmarkIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.departmentCount}</h4>
-                            <p className="mb-0">Total Departments</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={InstitutionsExists ? '/main/Institute' : '#'}
-                        className="card"
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PermContactCalendarIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.institutionCount}</h4>
-                            <p className="mb-0">Total Institutions</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
+                <div className="row">
+                  {statCardsData
+                    .map((card, index) => (
+                      <StatCard key={index} {...card} />
+                    ))}
+                </div>
 
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link to={'/main/Teacher'} className="card">
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PersonAddIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.teacherCount}</h4>
-                            <p className="mb-0">Teachers</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={StudentsExists ? '/main/Student' : ''}
-                        className="card"
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <PersonAddIcon />
-                            </div>
-                            <div>
-                              <span className="text-success d-flex align-items-center">
-                                +24% <ExpandMoreIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.studentCount}</h4>
-                            <p className="mb-0">Students</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={CoursesExists ? '/main/Course' : '#'}
-                        className="card "
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <LibraryBooksIcon />
-                            </div>
-                            <div>
-                              <span className="text-danger d-flex align-items-center">
-                                +24% <ExpandLessIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.courseCount}</h4>
-                            <p className="mb-0">Courses</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={SubjectsExists ? '/main/Subject' : '#'}
-                        className="card "
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <AutoStoriesIcon />
-                            </div>
-                            <div>
-                              <span className="text-danger d-flex align-items-center">
-                                +24% <ExpandLessIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            {/* <h4 className="mb-0">{stats.subjectCount}</h4> */}
-                            <h4 className="mb-0">
-                              {stats.schoolsubjectCount +
-                                stats.collegesubjectCount}
-                            </h4>
-                            <p className="mb-0">Subjects</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-6 col-lg-2 d-flex">
-                      <Link
-                        to={DepartmentExists ? '/main/Department' : '#'}
-                        className="card "
-                      >
-                        <div className="card-body">
-                          <div className="mb-3 d-flex align-items-center justify-content-between">
-                            <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary">
-                              <CollectionsBookmarkIcon />
-                            </div>
-                            <div>
-                              <span className="text-danger d-flex align-items-center">
-                                +24% <ExpandLessIcon />
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="mb-0">{stats.departmentCount}</h4>
-                            <p className="mb-0">Department</p>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  </>
-                )}
               </section>
               <section className="row">
                 <div className="col-lg-6">
@@ -2881,118 +2638,11 @@ function MainContent() {
         </>
       ) : userName === 'student' ? (
         <>
-          {/* <main className="main-content">
-            <section className="stats stats12">
-              <Link
-                to={stats1.Student_Profile === 100 ? "/main/Chat" : ""}
-                className="stat-item"
-              >
-                <div>
-                  <p>Starred Chat</p>
-                  <h2>{student.chatHistory}</h2>
-                </div>
-              </Link>
-              <Link
-                to={stats1.Student_Profile === 100 ? "/main/Chat" : ""}
-                className="stat-item stats3"
-              >
-                <div>
-                  <p>Chat</p>
-                  <h2>{student.chatCount}</h2>
-                </div>
-              </Link>
-            </section>
-            <section className="piecharts">
-              <div className="chart">
-                <div style={{ marginBottom: "20px" }}>
-                  <span
-                    style={{
-                      fontSize: "1.2rem",
-                      color: "#7f8c8d",
-                      fontFamily: "sans-serif",
-                    }}
-                  >
-                    Student profile completion
-                  </span>
-                  <br />
-                </div>
 
-                <PieChart
-                  className="pie"
-                  series={[
-                    {
-                      data: pieData1,
-                      highlightScope: { faded: "global", highlighted: "item" },
-                      faded: {
-                        innerRadius: 30,
-                        additionalRadius: -30,
-                        color: "gray",
-                      },
-                      valueFormatter: (v, { dataIndex }) => {
-                        const { value } = pieData1[dataIndex];
-                        return `${value}%`;
-                      },
-                      cx: 110,
-                    },
-                  ]}
-                  slotProps={{
-                    legend: {
-                      hidden: true, // Show the legend
-                    },
-                  }}
-                  // width={450}
-                  height={200}
-                />
-                <span className="chart_content">
-                  <div
-                    style={{
-                      width: "20px",
-                      height: " 20px",
-                      backgroundColor: "#02b2af",
-                      marginRight: "10px",
-                    }}
-                  ></div>
-                  Profile completion {stats1?.Student_Profile} %
-                </span>
-              </div>
-            </section>
-          </main> */}
           <main className="main-wrapper">
             <div className="main-content">
-              {/* <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div className="breadcrumb-title pe-3">Dashboard</div>
-                <div className="ps-3">
-                  <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb mb-0 p-0">
-                      <li className="breadcrumb-item">
-                        <a href="#">
-                          <i className="bx bx-home-alt"></i>
-                        </a>
-                      </li>
-                      <li
-                        // className="breadcrumb-item"
-                        aria-current="page"
-                      >
-                        Report
-                      </li>
-                    </ol>
-                  </nav>
-                </div>
-                <div className="ms-auto">
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary rounded-pill px-lg-4"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#staticBackdrop"
-                    >
-                      Settings
-                    </button>
-                  </div>
-                </div>
-              </div> */}
-
-              <div className="row mt-lg-4 g-4">
+             
+              <div className="row my-lg-4 g-4">
                 <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
                   <div className="card w-100 overflow-hidden rounded-4 shadow-none desk-card">
                     <div className="card-header bg-primary-20 border-bottom-0">
@@ -3001,10 +2651,9 @@ function MainContent() {
                           <div className="d-flex align-items-center gap-lg-3 gap-2 mobile-profile">
                             <img
                               src={
-                                profileImage
-                                  ? profileImage
-                                  : profileDatas?.basic_info?.gender.toLowerCase() ===
-                                      'female'
+                                proImage ? 
+                                proImage  : profileDatas?.basic_info?.gender.toLowerCase() ===
+                                    'female'
                                     ? femaleImage
                                     : maleImage
                               }
@@ -3032,33 +2681,6 @@ function MainContent() {
                                 </IconButton>
                               </div>
 
-                              {/* <div className="d-flex justify-content-between gap-2 flex-wrap  align-items-center">
-                                <i className="fs-12">
-                                  Student Standard{" "}
-                                  <span className="d-lg-block"> Account </span>
-                                </i>
-                                <button className="btn btn-primary fs-12 rounded-pill btn-sm  text-nowrap ps-3">
-                                  Upgrade <KeyboardArrowRightIcon />
-                                </button>
-                              </div> */}
-
-                              {/* <div className="">
-                                <div
-                                  className="progress mb-0"
-                                  style={{ height: "5px" }}
-                                >
-                                  <div
-                                    className="progress-bar bg-grd-success"
-                                    role="progressbar"
-                                    style={{
-                                      width: `${stats1?.Student_Profile}%`,
-                                    }}
-                                    aria-valuenow={25}
-                                    aria-valuemin={0}
-                                    aria-valuemax={100}
-                                  ></div>
-                                </div>
-                              </div> */}
                             </div>
                           </div>
                         </div>
@@ -3105,28 +2727,11 @@ function MainContent() {
                             Profile Completed
                           </h6>
                         </div>
-                        <div style={{ color: `#9943EC` }}>{`${
-                          stats1?.Student_Profile >= 90
+                        <div style={{ color: `#9943EC` }}>{`${stats1?.Student_Profile >= 90
                             ? 100
                             : stats1?.Student_Profile
-                        }%`}</div>
+                          }%`}</div>
                       </div>
-
-                      {/* <div className="d-flex align-items-center gap-3 mb-3">
-                        <div className="flex-grow-1">
-                          <h6 className="mb-0 fw-normal fs-14">Aadhar KYC</h6>
-                        </div>
-                        <div style={{ color: `#9943EC` }}>Pending</div>
-                      </div> */}
-
-                      {/* <div className="d-flex align-items-center gap-3">
-                        <div className="flex-grow-1">
-                          <h6 className="mb-0 fw-normal">
-                            Student Standard Account
-                          </h6>
-                        </div>
-                        <div style={{ color: `#9943EC` }}>Upgrade</div>
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -3163,14 +2768,13 @@ function MainContent() {
                                 ? `${profileDatas?.subject_preference?.subject_name}`
                                 : ''}
                             </p>
-                            {/* <small className="text-success">Completed</small> */}
                           </Link>
                           <div className="">
                             <p className="mb-0 fs-6">
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                    ?.score_in_percentage
+                                  ?.score_in_percentage
                                 : ''}
                             </p>
                           </div>
@@ -3192,45 +2796,6 @@ function MainContent() {
                           </div>
                         </div>
 
-                        {/* <div className="d-flex align-items-center gap-4">
-                          <a
-                            href="#"
-                            className="d-flex gap-0 flex-grow-1 flex-column text-start nav-link"
-                          >
-                            <p className="mb-0">Economics</p>
-                            <small className="text-primary">Inprogress</small>
-                          </a>
-                          <div className="">
-                            <p className="mb-0 fs-6">45%</p>
-                          </div>
-                          <div className="">
-                            <p className="mb-0 data-attributes">
-                              <span data-peity='{ "fill": ["#0d6efd", "rgb(0 0 0 / 10%)"], "innerRadius": 14, "radius": 18 }'>
-                                3/7
-                              </span>
-                            </p>
-                          </div>
-                        </div> */}
-
-                        {/* <div className="d-flex align-items-center gap-4">
-                          <a
-                            href="#"
-                            className="d-flex gap-0 flex-grow-1 flex-column text-start nav-link"
-                          >
-                            <p className="mb-0">History</p>
-                            <small className="text-primary">Inprogress</small>
-                          </a>
-                          <div className="">
-                            <p className="mb-0 fs-6">65%</p>
-                          </div>
-                          <div className="">
-                            <p className="mb-0 data-attributes">
-                              <span data-peity='{ "fill": ["#0d6efd", "rgb(0 0 0 / 10%)"], "innerRadius": 14, "radius": 18 }'>
-                                5/7
-                              </span>
-                            </p>
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -3353,6 +2918,11 @@ function MainContent() {
                                             }}
                                           />
                                         )}
+                                        {chat?.table_code && (
+                                          <ChatTable
+                                            tableCode={chat?.table_code}
+                                          />
+                                        )}
                                       </div>
                                       <ul className="ansfooter">
                                         <ThumbUpAltOutlinedIcon
@@ -3363,7 +2933,7 @@ function MainContent() {
                                             fontSize: '14px',
                                             color:
                                               likedStates[index] === 'liked' ||
-                                              chat.like_dislike === true
+                                                chat.like_dislike === true
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -3374,13 +2944,13 @@ function MainContent() {
                                                 : 'pointer',
                                             transform:
                                               likedStates[index] === 'liked' ||
-                                              chat.like_dislike === true
+                                                chat.like_dislike === true
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                              chat.like_dislike !== true
+                                                chat.like_dislike !== true
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -3394,7 +2964,7 @@ function MainContent() {
                                             color:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                              chat.like_dislike === false
+                                                chat.like_dislike === false
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -3406,13 +2976,13 @@ function MainContent() {
                                             transform:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                              chat.like_dislike === false
+                                                chat.like_dislike === false
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                              chat.like_dislike !== false
+                                                chat.like_dislike !== false
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -3709,23 +3279,14 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
+                <StudentDashboardCharts />
               </div>
             </div>
           </main>
           <ThemeSidebar themeMode={themeMode} setThemeMode={setThemeMode} />
         </>
       ) : (
-        // :
-        // userName === 'teacher' ?
-
-        //    <>
-        //   <main className="main-content">
-
-        //       <Teacher/>
-        //     </main>
-        //    </>
-
-        <></>
+            <></>
       )}
       <ProfileDialog
         isOpen={dataCompleted}

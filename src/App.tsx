@@ -89,6 +89,26 @@ import TeacherListingByInstitution from './Pages/Institution/lists/TeacherList';
 import CourseListingByInstitution from './Pages/Institution/lists/CourseList';
 import Teacher from './Pages/Teacher/Teacher';
 import AddEditTeacher from './Pages/Teacher/AddEditTeacher';
+import InstitutionProfile from './Pages/Institution/InstitutionProfile';
+import TeacherProfile from './Pages/Teacher/TeacherProfile';
+import { StudentDetails } from './Pages/Teacher/StudentDetails';
+import { Assignments } from './Pages/Teacher/Assignments';
+import { CreateAssignments } from './Pages/Teacher/Assignments/CreateAssignments';
+import Content from './Pages/Content/Content';
+import AddContent from './Pages/Content/AddContent';
+import StudentContent from './Pages/Content/StudentContent';
+import ServicesAgreement from './Components/PolicyContent/ServicesAgreement';
+import Disclaimer from './Components/PolicyContent/Disclaimer';
+import RefundPolicy from './Components/PolicyContent/RefundPolicy';
+import PrivacyPolicy from './Components/PolicyContent/PrivacyPolicy';
+import AssignmentDetails from './Pages/Teacher/Assignments/assignmentDetails';
+import StudentAssignments from './Pages/Student/StudentAssignment';
+import PreviewAndSubmit from './Pages/Student/StudentAssignment/previewAndSubmit';
+import AdminList from './Pages/AdminList';
+import PreviewStudentAssignment from './Pages/Teacher/Assignments/previewStudentAssignment';
+import StudentQuiz from './Pages/Student/StudentQuiz';
+import QuizPage from './Pages/Student/StudentQuiz/QuizPage';
+import TeacherQuizPage from './Pages/Teacher/Quiz';
 
 function App() {
   const navigate = useNavigate();
@@ -103,7 +123,7 @@ function App() {
     localStorage.removeItem('pd');
     localStorage.removeItem('userdata');
     localStorage.removeItem('signupdata');
-    localStorage.removeItem('_id');
+    localStorage.removeItem('user_uuid');
     localStorage.removeItem('menulist');
     localStorage.removeItem('menulist1');
     localStorage.removeItem('proFalg');
@@ -113,6 +133,13 @@ function App() {
     localStorage.removeItem('Profile_completion');
     localStorage.removeItem('Profile completion');
     localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    localStorage.removeItem('student_id');
+    localStorage.removeItem('_id');
+    localStorage.removeItem('register_num');
+    localStorage.removeItem('user_session_data');
+    localStorage.removeItem('user_last_sync');
     synth.cancel();
     // logoutpro();
   };
@@ -190,6 +217,12 @@ function App() {
             element={<Protected Component={IntitutionChat} menuName="Chat" />}
           />
           <Route
+            path="/institution-dashboard/profile"
+            element={
+              <Protected Component={InstitutionProfile} menuName="Chat" />
+            }
+          />
+          <Route
             path="/institution-dashboard/feedback"
             element={
               <Protected Component={InstitutionFeedback} menuName="feedback" />
@@ -222,6 +255,20 @@ function App() {
               />
             }
           />
+          <Route path="/institution-dashboard/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
         </Route>
         <Route path="/teacher-dashboard" element={<TeacherMain />}>
           <Route
@@ -235,16 +282,68 @@ function App() {
             element={<Protected Component={TeacherChat} />}
           />
           <Route
+            path="/teacher-dashboard/profile"
+            element={<Protected Component={TeacherProfile} />}
+          />
+          <Route
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
           />
+          <Route
+            path="/teacher-dashboard/student-details"
+            element={<Protected Component={StudentDetails} />}
+          />
+          <Route
+            path="/teacher-dashboard/assignments"
+            element={<Protected Component={Assignments} />}
+          />
+          <Route
+            path="/teacher-dashboard/create-assignment"
+            element={<Protected Component={CreateAssignments} />}
+          />
+          <Route
+            path="/teacher-dashboard/edit-assignment/:id"
+            element={<Protected Component={CreateAssignments} />}
+          />
+          <Route
+            path="/teacher-dashboard/assignment-details/:id"
+            element={<Protected Component={AssignmentDetails} />}
+          />
+          <Route
+            path="/teacher-dashboard/student-assignment-details/:id"
+            element={<Protected Component={PreviewStudentAssignment} />}
+          />
+
+          <Route
+            path="/teacher-dashboard/quizzes"
+            element={<Protected Component={TeacherQuizPage} />}
+          />
+          <Route
+            path="/teacher-dashboard/quiz-details/:id"
+            element={<Protected Component={AssignmentDetails} />}
+          />
+
+          <Route path="/teacher-dashboard/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}
         <Route path="/admin-feedback-view" element={<AdminFeedbackView />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgotpassword" element={<Forgotpassword />} />
-        <Route path="/changepassword" element={<ChangePassword />} />
+        <Route path="/resetpassword" element={<ChangePassword />} />
         <Route path="/chatbot" element={<Chatbot answer={[]} index={0} />} />
         <Route path="/main" element={<Main />}>
           <Route
@@ -254,6 +353,33 @@ function App() {
           <Route
             path="/main/chat"
             element={<Protected Component={Chat} menuName="Chat" />}
+          />
+          <Route
+            path="/main/student/content"
+            element={
+              <Protected Component={StudentContent} menuName="content" />
+            }
+          />
+          <Route
+            path="/main/student/assignment"
+            element={
+              <Protected Component={StudentAssignments} menuName="content" />
+            }
+          />
+          <Route
+            path="/main/student/view-and-submit/:id"
+            element={
+              <Protected Component={PreviewAndSubmit} menuName="content" />
+            }
+          />
+
+          <Route
+            path="/main/student/quiz"
+            element={<Protected Component={StudentQuiz} menuName="content" />}
+          />
+          <Route
+            path="/main/student/quiz/:id"
+            element={<Protected Component={QuizPage} menuName="content" />}
           />
           <Route
             path="/main/chat"
@@ -337,6 +463,14 @@ function App() {
               element={<Protected Component={AddEditClass} menuName="Class" />}
             />
           </Route>
+          <Route path="/main/admin-list">
+            <Route
+              path=""
+              element={
+                <Protected Component={AdminList} menuName="Admin List" />
+              }
+            />
+          </Route>
           <Route path="/main/Student">
             <Route
               path=""
@@ -373,6 +507,22 @@ function App() {
               }
             />
           </Route>
+
+          <Route path="/main/Content">
+            <Route
+              path=""
+              element={<Protected Component={Content} menuName="Content" />}
+            />
+            <Route
+              path="add-content"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+            <Route
+              path="edit-content/:id"
+              element={<Protected Component={AddContent} menuName="Content" />}
+            />
+          </Route>
+
           <Route path="/main/University">
             <Route
               path=""
@@ -677,12 +827,12 @@ function App() {
               element={<Protected Component={PDFList} menuName="pdflist" />}
             />
           </Route>
-          <Route path="/main/teacher-deshboard">
+          {/* <Route path="/main/teacher-deshboard">
             <Route
               path=""
               element={<Protected Component={TeacherDash} menuName="pdflist" />}
             />
-          </Route>
+          </Route> */}
           <Route path="/main/feedback">
             <Route
               path=""
@@ -749,12 +899,20 @@ function App() {
               }
             />
           </Route>
+          <Route path="profile" element={<Profile />} />
+          <Route
+            path="searchdepartment"
+            element={<StudentProfileManagement />}
+          />
+          <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
+          {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Route>
-        <Route path="profile" element={<Profile />} />
-        <Route path="searchdepartment" element={<StudentProfileManagement />} />
-        <Route path="chatbot" element={<Chatbot answer={[]} index={0} />} />
-        {/* <Route path="*" element={<Protected Component={NotFound} />} /> */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="/ServicesAgreement" element={<ServicesAgreement />} />
+
+        <Route path="/RefundPolicy" element={<RefundPolicy />} />
+        <Route path="/Disclaimer" element={<Disclaimer />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       </Routes>
     </div>
   );

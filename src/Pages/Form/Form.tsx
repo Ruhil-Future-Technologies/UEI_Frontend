@@ -39,12 +39,12 @@ const Form = () => {
   const callAPI = async () => {
     getData(`${FormURL}`)
       .then((data: any) => {
-        if (data.data) {
-          setDataForm(data?.data);
+        if (data.status) {
+          setDataForm(data?.data?.formes_data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -69,7 +69,7 @@ const Form = () => {
   const handleDelete = (id: any) => {
     deleteData(`${DeleteFormURL}/${id}`)
       .then((data: any) => {
-        if (data.status === 200) {
+        if (data.status) {
           toast.success('Form deleted successfully', {
             hideProgressBar: true,
             theme: 'colored',
@@ -81,7 +81,7 @@ const Form = () => {
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -199,7 +199,7 @@ const Form = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Form"
       />
     </>
   );

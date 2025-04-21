@@ -42,13 +42,25 @@ const Course = () => {
   }, [Menulist, lastSegment]);
   const callAPI = async () => {
     getData(`${CourseURL}`)
-      .then((data: { data: CourseRep0oDTO[] }) => {
-        if (data.data) {
-          setDataCourse(data?.data);
+      .then((data) => {
+        console.log(data?.data);
+        if (data.status) {
+          const courseData = data?.data?.course_data?.map((course: any) => {
+            const createdDateTime = course?.created_at;
+            const updatedDateTime = course?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            course.created_at = created_time.toLocaleString();
+            course.updated_at = updated_time.toLocaleString();
+            return course;
+          });
+
+          setDataCourse(courseData);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -86,7 +98,7 @@ const Course = () => {
         setDataDelete(false);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -201,7 +213,7 @@ const Course = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Course"
       />
     </>
   );

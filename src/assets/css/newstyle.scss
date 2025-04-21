@@ -17,6 +17,18 @@ $bg-gray: #f5f5f5;
 $form-check-input-bg: rgba($primary, 0.2);
 $form-check-input-border: 1px solid rgba($primary, 0.4);
 $max-items: 100;
+$text-color: #4b5563;
+$enable-dark-mode: true;
+$enable-css-custom-properties: true;
+// Import Bootstrap SCSS (after defining variables)
+@import '~bootstrap/scss/functions'; // Ensure functions are available
+@import '~bootstrap/scss/variables'; // Load default variables
+@import '~bootstrap/scss/mixins'; // Load mixins
+
+// Now import the full Bootstrap library
+//@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap.scss';
+
 // //Required Bootstrap imports
 // @import "bootstrap/variables";
 // @import "bootstrap/variables-dark";
@@ -59,9 +71,20 @@ $max-items: 100;
 @import 'responsive';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
-body {
+body,
+a,
+p {
   font-family: 'Inter', system-ui !important;
 }
+.row {
+  box-sizing: border-box;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .mh-56 {
   min-height: 3.5rem;
 }
@@ -69,28 +92,18 @@ body {
   background-color: $primary !important;
   border-color: $primary !important;
   &:hover {
-    color: white !important;
+    color: $white !important;
   }
 }
 .fs-12 {
   font-size: 12px !important;
 }
-.btn-outline-primary {
-  color: $primary !important;
-  border-color: $primary !important;
-  &:hover {
-    color: white !important;
-    background-color: $primary !important;
-  }
-}
-.text-primary {
-  color: $primary !important;
-}
+
 .btn-secondary {
   background-color: $secondary !important;
   border-color: $secondary !important;
   &:hover {
-    color: white !important;
+    color: $white !important;
   }
 }
 .form-control {
@@ -101,7 +114,7 @@ body {
 }
 .dropdown-item.active,
 .dropdown-item:active {
-  background-color: $primary !important;
+  background-color: rgba($primary, 0.1) !important;
 }
 a {
   text-decoration: none;
@@ -168,7 +181,7 @@ img {
     display: inline-block;
     position: relative;
     z-index: 1;
-    background-color: white;
+    background-color: $white;
     padding: 0 1rem;
     color: $gray2;
     font-weight: 500;
@@ -212,7 +225,7 @@ img {
 }
 
 .access-card {
-  background-color: white;
+  background-color: $white;
   padding: 2rem;
   border-radius: 2rem;
   height: 100%;
@@ -223,7 +236,7 @@ img {
     0px 24px 32px -8px rgba(0, 0, 0, 0.07);
 }
 .access1-card {
-  background-color: white;
+  background-color: $white;
   padding: 2rem;
   border-radius: 2rem;
   height: 100%;
@@ -264,9 +277,6 @@ img {
 }
 
 @media (min-width: 1024px) {
-  .left-side-history {
-    border-right: 1px solid rgba($stroke-100, 0.5) !important;
-  }
   .main-chat-panel {
     border: 0 !important;
   }
@@ -275,6 +285,16 @@ img {
   font-size: 10px !important;
 }
 @media (max-width: 428px) {
+  .text-m-16 {
+    font-size: 16px !important;
+  }
+  .text-m-14 {
+    font-size: 14px !important;
+  }
+  body .bg-m-transparent {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
   .mobile-profile {
     img {
       width: 70px;
@@ -319,19 +339,24 @@ img {
 }
 
 @media (max-width: 1024px) {
+  .swiper-button-prev,
+  .swiper-button-next {
+    opacity: 1 !important;
+  }
+  .search-filter {
+    margin-right: 0 !important;
+  }
   .chat-panel .left-side-history .history-list li ul li {
     opacity: 1 !important;
   }
 
   .chat-panel {
-    min-height: 71vh !important;
-    max-height: 74vh;
     //padding: 1rem;
-    margin-top: 2.5rem;
-
+    height: calc(100vh - 105px) !important;
+    grid-template-columns: 1fr !important;
     .left-side-history {
       position: fixed !important;
-      background: white;
+      background: $white;
       padding: 1rem;
       left: -100%;
       top: 0;
@@ -341,12 +366,14 @@ img {
 
       &.showhistory {
         left: 0;
+        padding: 1rem;
+        background-color: $white;
       }
     }
 
     .main-chat-panel {
       width: 100% !important;
-      padding: 0 !important;
+      // padding: 0 !important;
       border-left: 0 !important;
 
       .mobile-chat-header {
@@ -381,19 +408,13 @@ img {
           display: none;
         }
 
-        .chat-input {
-          position: fixed;
-          bottom: 3rem;
-          left: 1rem;
-          right: 1rem;
-        }
-
         .chat-result {
           .left-chat {
             .chat-card {
               max-width: 100% !important;
               width: 100% !important;
               box-shadow: none !important;
+              border-radius: 8px !important;
             }
 
             .profile-icon {
@@ -404,6 +425,17 @@ img {
           .right-chat {
             .chat-card {
               max-width: 100%;
+              border-radius: 8px !important;
+            }
+          }
+          ul {
+            li {
+              padding: 1rem 0 !important;
+              ul.ansfooter {
+                li {
+                  padding: 0 !important;
+                }
+              }
             }
           }
         }
@@ -460,11 +492,12 @@ img {
   .progress-line {
     left: 4% !important;
     transform: translateX(-4%) !important;
+    top: 50% !important;
   }
 
   .wizard-content .form-control,
   .wizard-content .form-select {
-    background-color: white !important;
+    background-color: $white !important;
   }
 
   .wizard-sidebar {
@@ -482,7 +515,7 @@ img {
   }
 
   .multiselectdrop button {
-    background-color: white !important;
+    background-color: $white !important;
   }
 
   .steps-container {
@@ -537,7 +570,7 @@ img {
   .access-card {
     box-shadow: none;
     padding: 0.4rem;
-    background: url('../img/mobile-effect.jpg'), white;
+    background: url('../img/mobile-effect.jpg'), $white;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: top right;
@@ -546,7 +579,7 @@ img {
   .access1-card {
     box-shadow: none;
     padding: 0.4rem;
-    background: url('../img/mobile-effect.jpg'), white;
+    background: url('../img/mobile-effect.jpg'), $white;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: top right;
@@ -554,7 +587,7 @@ img {
   }
 
   .without-login {
-    background-color: white !important;
+    background-color: $white !important;
   }
 }
 
@@ -619,7 +652,7 @@ img {
   --bs-body-bg: #212529;
   --bs-body-bg-2: #181c1f;
   --bs-body-bg-rgb: 33, 37, 41;
-  --bs-emphasis-color: #fff;
+  --bs-emphasis-color: $white;
   --bs-emphasis-color-rgb: 255, 255, 255;
   --bs-secondary-color: rgba(222, 226, 230, 0.75);
   --bs-secondary-color-rgb: 222, 226, 230;
@@ -819,7 +852,7 @@ body .desk-card {
 .btn-grd,
 .btn-grd:hover,
 .btn-grd:focus {
-  color: #fff !important;
+  color: $white !important;
 }
 
 .btn-grd-primary {
@@ -874,21 +907,22 @@ body .desk-card {
   -webkit-tap-highlight-color: transparent;
   transform: translateY(0);
   --bs-btn-font-weight: 500;
+  box-sizing: border-box;
 }
 
 .btn-danger {
-  --bs-btn-color: #fff;
+  --bs-btn-color: $white;
   --bs-btn-bg: #fc185a;
   --bs-btn-border-color: #fc185a;
-  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-color: $white;
   --bs-btn-hover-bg: #ef0e4e;
   --bs-btn-hover-border-color: #ef0e4e;
   --bs-btn-focus-shadow-rgb: 225, 83, 97;
-  --bs-btn-active-color: #fff;
+  --bs-btn-active-color: $white;
   --bs-btn-active-bg: #ef0e4e;
   --bs-btn-active-border-color: #ef0e4e;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-color: $white;
   --bs-btn-disabled-bg: #fc185a;
   --bs-btn-disabled-border-color: #fc185a;
 }
@@ -905,7 +939,7 @@ body .desk-card {
   --bs-btn-active-bg: rgb(252 24 90 / 20%);
   --bs-btn-active-border-color: rgb(252 24 90 / 0%);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-color: $white;
   --bs-btn-disabled-bg: #fc185a;
   --bs-btn-disabled-border-color: #fc185a;
 }
@@ -913,11 +947,11 @@ body .desk-card {
 .btn-outline-danger {
   --bs-btn-color: #fc185a;
   --bs-btn-border-color: #fc185a;
-  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-color: $white;
   --bs-btn-hover-bg: #fc185a;
   --bs-btn-hover-border-color: #fc185a;
   --bs-btn-focus-shadow-rgb: 220, 53, 69;
-  --bs-btn-active-color: #fff;
+  --bs-btn-active-color: $white;
   --bs-btn-active-bg: #fc185a;
   --bs-btn-active-border-color: #fc185a;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
@@ -928,18 +962,18 @@ body .desk-card {
 }
 
 .btn-success {
-  --bs-btn-color: #fff;
+  --bs-btn-color: $white;
   --bs-btn-bg: #02c27a;
   --bs-btn-border-color: #02c27a;
-  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-color: $white;
   --bs-btn-hover-bg: #04a96c;
   --bs-btn-hover-border-color: #04a96c;
   --bs-btn-focus-shadow-rgb: 60, 153, 110;
-  --bs-btn-active-color: #fff;
+  --bs-btn-active-color: $white;
   --bs-btn-active-bg: #04a96c;
   --bs-btn-active-border-color: #04a96c;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-color: $white;
   --bs-btn-disabled-bg: #02c27a;
   --bs-btn-disabled-border-color: #198754;
 }
@@ -956,7 +990,7 @@ body .desk-card {
   --bs-btn-active-bg: rgb(2 194 122 / 20%);
   --bs-btn-active-border-color: rgb(2 194 122 / 0%);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-color: $white;
   --bs-btn-disabled-bg: #02c27a;
   --bs-btn-disabled-border-color: #198754;
 }
@@ -964,11 +998,11 @@ body .desk-card {
 .btn-outline-success {
   --bs-btn-color: #02c27a;
   --bs-btn-border-color: #02c27a;
-  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-color: $white;
   --bs-btn-hover-bg: #02c27a;
   --bs-btn-hover-border-color: #02c27a;
   --bs-btn-focus-shadow-rgb: 25, 135, 84;
-  --bs-btn-active-color: #fff;
+  --bs-btn-active-color: $white;
   --bs-btn-active-bg: #02c27a;
   --bs-btn-active-border-color: #02c27a;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
@@ -990,7 +1024,7 @@ body .desk-card {
   --bs-btn-active-bg: rgb(13 110 253 / 20%);
   --bs-btn-active-border-color: rgb(13 110 253 / 0%);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-color: $white;
   --bs-btn-disabled-bg: #0d6efd;
   --bs-btn-disabled-border-color: #0d6efd;
 }
@@ -1058,7 +1092,7 @@ body .desk-card {
   --bs-btn-active-bg: rgb(108 117 125 / 20%);
   --bs-btn-active-border-color: rgb(108 117 125 / 0%);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-color: $white;
   --bs-btn-disabled-bg: #6c757d;
   --bs-btn-disabled-border-color: #6c757d;
 }
@@ -1090,13 +1124,13 @@ body .desk-card {
 }
 
 .nav-pills-danger.nav-pills .nav-link.active {
-  color: #fff;
+  color: $white;
 
   background-color: var(--bs-danger);
 }
 
 .nav-pills-success.nav-pills .nav-link.active {
-  color: #fff;
+  color: $white;
 
   background-color: var(--bs-success);
 }
@@ -1726,6 +1760,17 @@ body .desk-card {
     max-height: 335px;
     transform: translateX(-6.5%);
   }
+  .progress-background-admin {
+    position: absolute;
+    top: 0;
+    left: 6.5%;
+    width: 2px;
+    background-color: rgba($primary, 0.2);
+    height: 100%;
+    z-index: 1;
+    max-height: 280px;
+    transform: translateX(-6.5%);
+  }
 
   .progress-line {
     position: absolute;
@@ -1757,8 +1802,8 @@ body .desk-card {
       width: 32px;
       height: 32px;
       border: 2px solid rgba($primary, 0.2);
-      color: #fff;
-      background-color: white;
+      color: $white;
+      background-color: $white;
       border-radius: 50%;
       display: flex;
       justify-content: center;
@@ -1775,7 +1820,7 @@ body .desk-card {
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: white;
+        background-color: $white;
         z-index: -1;
         transition: height 0.3s;
         height: 0;
@@ -1825,7 +1870,7 @@ body .desk-card {
   .form-control,
   .form-select {
     background-color: $bg-gray;
-    border-color: $bg-gray;
+    border-color: #cfcfcf;
   }
 
   padding: 1.3rem;
@@ -1841,7 +1886,7 @@ body .desk-card {
   .progress-bar {
     margin-top: 5px;
     height: 12px;
-    background-color: white;
+    background-color: $white;
     border-radius: 5px;
     overflow: hidden;
     padding: 2px;
@@ -1908,7 +1953,7 @@ body .desk-card {
       font-size: 20px;
       color: black;
       border: 2px solid black;
-      background-color: white;
+      background-color: $white;
       border-radius: 50%;
       align-items: center;
       justify-content: center;
@@ -1980,23 +2025,22 @@ body .desk-card {
 }
 
 .chat-panel {
-  min-height: 85vh;
-  display: flex;
-  align-items: start;
-  justify-content: center;
+  height: calc(100vh - 75px);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+
   max-width: 100%;
   overflow: hidden;
   position: relative;
 
   .left-side-history {
-    width: 320px;
-
-    height: 100%;
-    padding-right: 1rem;
+    padding: 1rem 0 0rem 1rem;
+    background-color: rgba($primary, 0.02);
+    border-right: 1px solid rgba($primary, 0.1);
 
     .search-filter {
       position: relative;
-
+      margin-right: 1rem;
       input {
         background-color: transparent;
         border: 1px solid $primary;
@@ -2028,9 +2072,8 @@ body .desk-card {
       list-style: none;
       padding: 0;
       margin: 0;
-      max-height: 550px;
-      height: 100%;
-      padding-right: 20px;
+      overflow: auto;
+      height: calc(100vh - 186px);
       li {
         padding-left: 48px;
         position: relative;
@@ -2095,7 +2138,7 @@ body .desk-card {
           align-items: center;
           gap: 5px;
           position: absolute;
-          right: 0;
+          right: 0.7rem;
           top: 50%;
           transform: translateY(-50%);
 
@@ -2145,24 +2188,26 @@ body .desk-card {
   }
 
   .main-chat-panel {
-    width: calc(100% - 320px);
-    padding-left: 1rem;
+    padding: 1rem 1rem 0rem;
     height: 100%;
 
     .inner-panel {
-      max-width: 882px;
-      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
 
       .chat-result {
-        background-color: rgba(white, 0.4);
-        max-height: 70vh;
-        min-height: 65vh;
+        height: 100%;
+        max-height: calc(100vh - 220px);
+        margin-bottom: 5px;
         position: relative;
 
-        margin-bottom: 1rem;
-        border-radius: 1rem;
         display: flex;
         overflow: auto;
+
+        @media (max-width: 724px) {
+          max-height: calc(100vh - 210px);
+        }
         .welcome-box {
           margin: 0;
           width: 100%;
@@ -2229,7 +2274,7 @@ body .desk-card {
               padding: 0.8rem;
               width: calc(100% - 44px);
               max-width: 60%;
-              background-color: white;
+              background-color: $white;
               font-size: 14px;
               border-radius: 20px;
               border: 1px solid rgba(10, 5, 15, 0.1);
@@ -2282,15 +2327,16 @@ body .desk-card {
                 background-color: $primary;
 
                 span.anstext {
-                  color: white;
+                  color: $white;
                 }
 
-                color: white;
+                color: $white;
 
                 .chat-card-body {
                   p {
                     &:last-child {
                       margin-bottom: 0;
+                      color: white;
                     }
                   }
                 }
@@ -2308,18 +2354,16 @@ body .desk-card {
 
     .chat-input {
       border-radius: 100px;
-
-      margin-top: 2rem;
+      margin-top: auto;
       position: relative;
 
       input {
-        border-radius: 50px;
         box-shadow: 0px 8px 16px 0px rgba(10, 5, 15, 0.08);
-        font-size: 14px;
-        min-height: 44px;
+        font-size: 15px;
+        min-height: 50px;
 
         &::placeholder {
-          font-size: 14px;
+          font-size: 15px;
         }
       }
 
@@ -2327,13 +2371,10 @@ body .desk-card {
         position: absolute;
         right: 6px;
         top: 6px;
-        bottom: 3px;
-        width: 32px;
-        height: 32px;
-        border-radius: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        bottom: 6px;
+        width: 42px;
+        height: auto;
+        border-radius: 4px;
 
         i {
           width: 24px;
@@ -2379,7 +2420,7 @@ body .desk-card {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          background-color: white;
+          background-color: $white;
           border-radius: 12px;
           box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.08);
           padding: 0.5rem 0.7rem;
@@ -2507,7 +2548,9 @@ a {
   display: flex;
   align-items: center;
   gap: 1rem;
+  justify-content: end;
   margin-bottom: 1rem;
+  flex-direction: row-reverse;
 }
 
 .ps__rail-y {
@@ -2554,7 +2597,7 @@ a {
   justify-content: center;
   flex-direction: column;
   gap: 2rem;
-  background-color: rgba(white, 0.7);
+  background-color: rgba($white, 0.7);
   backdrop-filter: blur(1px);
   .searchtext {
     font-size: 1.5rem;
@@ -2631,12 +2674,13 @@ a {
   justify-content: center;
   flex-direction: column;
   gap: 2rem;
-  background-color: rgba(white, 0.7);
+  background-color: rgba($white, 0.7);
   backdrop-filter: blur(1px);
   .searchtext {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 500;
     color: black;
+    text-align: center;
   }
   .spinner {
     width: 44.8px;
@@ -2699,24 +2743,24 @@ a {
 @-moz-document url-prefix() {
   * {
     scrollbar-width: auto;
-    scrollbar-color: rgba($primary, 0.3) rgba($primary, 0.03);
+    scrollbar-color: rgba($primary, 0.2) rgba($primary, 0.02);
   }
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background-color: rgba($primary, 0.03);
+  border-radius: 2px;
+  background-color: rgba($primary, 0);
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background-color: rgba($primary, 0.03);
+  background-color: rgba($primary, 0);
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 2px;
 
-  background-color: rgba($primary, 0.3);
+  background-color: rgba($primary, 0.15);
 }
 
 .fix-btn-inline {
@@ -2730,7 +2774,7 @@ a {
     top: 3px;
     bottom: 3px;
     background-color: $primary;
-    color: white;
+    color: $white;
     border: 0;
     width: 32px;
     height: 32px;
@@ -2766,7 +2810,7 @@ a {
       right: 0;
       bottom: 0;
       left: 0;
-      background-color: rgba(white, 0.8);
+      background-color: rgba($white, 0.8);
       content: 'Coming Soon!';
       display: flex;
       align-items: center;
@@ -2787,11 +2831,6 @@ a {
   .breadcrumb-item
   + .breadcrumb-item::before {
   display: none !important;
-}
-
-.MuiFormLabel-root {
-  font-size: 14px !important;
-  font-weight: 500 !important;
 }
 
 .freechatbox {
@@ -2815,7 +2854,8 @@ a {
     margin-bottom: 1rem;
     margin-right: 1rem;
     .chat-box {
-      padding: 0.5rem !important;
+      padding-top: 0.5rem;
+    
       height: 400px;
       overflow: auto;
       .message-bubble {
@@ -2823,12 +2863,15 @@ a {
         box-shadow:
           rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
           rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
-        line-height: 1rem;
+
         border-radius: 8px !important;
         font-size: 15px;
         &.left {
-          background-color: white !important;
+          background-color: $white !important;
         }
+      }
+      .message-wrapper {
+        padding: 0 0.5rem;
       }
     }
   }
@@ -2866,7 +2909,7 @@ a {
     select {
       border-radius: 12px;
       border: 0;
-      min-height: 42px;
+      min-height: 48px;
     }
   }
 }
@@ -2875,7 +2918,7 @@ a {
   margin-bottom: 1.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   border: 0 !important;
-  border-radius: 2.5rem !important;
+  border-radius: 1rem !important;
   width: 100%;
   overflow: hidden;
   .card-header {
@@ -2887,10 +2930,204 @@ a {
   }
 }
 
-.scrollbar-container {
+// .scrollbar-container {
+//   display: flex;
+//   flex-direction: column;
+//   .sidebar-nav {
+//     height: 100%;
+//   }
+// }
+
+.swiper-container {
+  position: relative;
+}
+.swiper-button-prev,
+.swiper-button-next {
+  opacity: 0;
+  color: $secondary !important;
+  transition: opacity 0.3s ease;
+  width: 32px !important;
+  height: 32px !important;
+  background-color: $white;
+  border-radius: 5px;
+  border: 1px solid #f7f7f7;
   display: flex;
-  flex-direction: column;
-  .sidebar-nav {
-    height: 100%;
+  align-items: center;
+  justify-content: center;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  &::after {
+    font-size: 1.2rem !important;
+  }
+}
+
+.swiper-container:hover .swiper-button-prev,
+.swiper-container:hover .swiper-button-next {
+  opacity: 1;
+}
+.swiper-button-prev {
+  left: -10px !important;
+}
+.swiper-button-next {
+  right: -10px !important;
+}
+.svgwhite {
+  path {
+    fill: $white;
+  }
+}
+.uploadfile {
+  padding: 4rem 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+}
+.assignbtngrp {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  button {
+    border: 1px solid rgba($primary, 0.2) !important;
+    border-radius: 8px !important;
+    color: #4b5563;
+    min-height: 90px;
+    min-width: 170px;
+    flex-direction: column;
+    gap: 0.4rem;
+    background-color: $white;
+    &:hover {
+      background-color: $primary;
+      color: $white;
+    }
+  }
+  button[aria-pressed='true'] {
+    background-color: $primary;
+    border: 1px solid rgba($primary, 0.7) !important;
+    color: $white;
+    &:hover {
+      background-color: $primary;
+      color: $white;
+    }
+  }
+}
+
+.fileslistitem {
+  background-color: #f9fafb;
+}
+.pinwi-20 {
+  svg {
+    width: 20px;
+    height: 20px;
+    path {
+      fill: #6b7280;
+    }
+  }
+}
+
+.css-19kzrtu {
+  padding: 1.5rem 0 !important;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.quiz-panel {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  background-color: $white;
+  min-height: 100vh;
+  .rebtns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+    grid-gap: 0.5rem;
+    button {
+      min-width: auto;
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+
+  .left-cards {
+    border-right: 1px solid rgba($primary, 0.2);
+    .optiongrp {
+      margin-left: 0.9rem;
+      margin-top: 1rem;
+      .optionscss {
+        border: 1px solid rgba($primary, 0.2);
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        width: 100%;
+      }
+    }
+  }
+  .right-cards {
+    .quiz-hint {
+      margin: 2rem 0;
+      li {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 0.5rem;
+        span {
+          width: 16px;
+          height: 16px;
+          display: block;
+          border-radius: 2px;
+        }
+      }
+      @media (max-width: 428px) {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+  .left-cards,
+  .right-cards {
+    padding: 1.2rem;
+  }
+
+  @media (max-width: 428px) {
+    grid-template-columns: 1fr;
+  }
+}
+.incirclere {
+  aspect-ratio: 1;
+  padding: 1rem;
+  background-color: $primary;
+  color: $white;
+  outline: 10px solid rgba($primary, 0.2);
+  max-width: 120px;
+  margin: 1rem auto;
+  text-align: center;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    color: $white;
+    font-size: 2rem;
+    span {
+      display: block;
+      font-size: 1rem;
+    }
+  }
+}
+
+.quizsubre {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1.5rem;
+  flex-wrap: wrap;
+  li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    span {
+      display: block;
+    }
   }
 }

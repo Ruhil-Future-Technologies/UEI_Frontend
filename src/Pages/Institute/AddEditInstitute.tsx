@@ -11,9 +11,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { Field, Form, Formik, FormikHelpers, FormikProps } from 'formik';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import * as Yup from 'yup';
 import {
-  IEntity,
   InstituteRep0oDTO,
   IUniversity,
   MenuListinter,
@@ -29,8 +30,8 @@ import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import NameContext from '../Context/NameContext';
 
 interface IInstituteForm {
-  institution_name: string;
-  email_id: string;
+  institute_name: string;
+  email: string;
   address: string;
   city: string;
   country: string;
@@ -38,7 +39,7 @@ interface IInstituteForm {
   district: string;
   pincode: string;
   entity_id: string;
-  mobile_no: string;
+  phone: string;
   website_url: string;
   university_id?: string;
 }
@@ -54,15 +55,17 @@ const AddEditInstitute = () => {
   const { getData, postData, putData } = useApi();
   const navigator = useNavigate();
   const { id } = useParams();
-  const charPattern = /^[a-zA-Z\s]*$/;
+  const charPattern = /^[a-zA-Z0-9\s()-]*$/;
   const mobilePattern = /^(?!0{10})[0-9]{10}$/;
   const emailPattern = /\S+@\S+\.\S+/;
   const pincodePattern = /^(?!0{6})[0-9]{6}$/;
+  const websiteRegex =
+    /^(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.~#?&//=]*)$/;
 
   const [dataInstitute, setDataInstitute] = useState<InstituteRep0oDTO[]>([]);
   const initialState = {
-    institution_name: '',
-    email_id: '',
+    institute_name: '',
+    email: '',
     address: '',
     city: '',
     country: '',
@@ -70,7 +73,7 @@ const AddEditInstitute = () => {
     district: '',
     pincode: '',
     entity_id: '',
-    mobile_no: '',
+    phone: '',
     website_url: '',
     university_id: '',
   };
@@ -92,7 +95,7 @@ const AddEditInstitute = () => {
   const dropdownstateRef = useRef<HTMLDivElement>(null);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
-  const [isSchool, setIsSchool] = useState(false);
+  const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = dataEntity?.find((entity) => entity.id === entityId);
@@ -101,13 +104,13 @@ const AddEditInstitute = () => {
 
   const callAPIfilter = async () => {
     getData(`${InstituteURL}`)
-      .then((data: { data: InstituteRep0oDTO[] }) => {
-        if (data.data) {
+      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
+        if (data.status) {
           setDataInstitute(data?.data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           // navigate("/")
         }
       });
@@ -131,15 +134,18 @@ const AddEditInstitute = () => {
 
   const callAPI = async () => {
     getData(`${InstituteEntityURL}`)
-      .then((data: { data: IEntity[] }) => {
-        const filteredData = data?.data.filter(
-          (entity) => entity.is_active === 1,
-        );
-        setDataEntity(filteredData);
+      .then((data) => {
+        if (data.status) {
+          const filteredData = data?.data?.entityes_data.filter(
+            (entity: any) => entity.is_active === true,
+          );
+          setDataEntity(filteredData);
+        }
+
         // setDataEntity(data?.data)
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -148,13 +154,13 @@ const AddEditInstitute = () => {
         });
       });
     getData(`${UniversityURL}`)
-      .then((data: { data: IUniversity[] }) => {
-        if (data.data) {
-          setDataUniversity(data?.data);
+      .then((data) => {
+        if (data.status) {
+          setDataUniversity(data?.data?.universities_data);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigator('/');
         }
         toast.error(e?.message, {
@@ -164,11 +170,13 @@ const AddEditInstitute = () => {
       });
     if (id) {
       getData(`${InstituteEditURL}${id ? `/${id}` : ''}`)
-        .then((data: { data: any }) => {
-          setInstitute(data?.data);
+        .then((data: { status: boolean; data: any }) => {
+          if (data.status) {
+            setInstitute(data?.data);
+          }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
             navigator('/');
           }
           toast.error(e?.message, {
@@ -194,7 +202,6 @@ const AddEditInstitute = () => {
       }
     };
     const handleBlurstate = (e: FocusEvent) => {
-      console.log('Blurstate');
       if (
         dropdownstateRef.current &&
         !dropdownstateRef.current.contains(e.relatedTarget as Node)
@@ -204,14 +211,12 @@ const AddEditInstitute = () => {
     };
 
     const currentDropdown = dropdownRef.current;
-    console.log('currentDropdown', currentDropdown);
 
     if (currentDropdown) {
       currentDropdown.addEventListener('focus', handleFocus as EventListener);
       currentDropdown.addEventListener('blur', handleBlur as EventListener);
     }
     const currentDropdownstate = dropdownstateRef.current;
-    console.log('currentDropdownstate', currentDropdownstate);
     if (currentDropdownstate) {
       currentDropdownstate.addEventListener(
         'focus',
@@ -247,6 +252,37 @@ const AddEditInstitute = () => {
     };
   }, []);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+
+    if (!files) return;
+
+    const filesArray = Array.from(files);
+
+    const duplicateFiles = filesArray.filter((file) =>
+      allselectedfiles.some(
+        (existingFile) =>
+          existingFile.name === file.name &&
+          existingFile.lastModified === file.lastModified,
+      ),
+    );
+
+    if (duplicateFiles.length > 0) {
+      event.target.value = '';
+      return;
+    }
+
+    setAllSelectedfiles((prevFiles) => [...prevFiles, ...filesArray]);
+
+    event.target.value = '';
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setAllSelectedfiles((previous) =>
+      previous.filter((_, ind) => ind !== index),
+    );
+  };
+
   const handleChange = async (
     e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
     fieldName: string,
@@ -255,8 +291,8 @@ const AddEditInstitute = () => {
       const selectedEntity = dataEntity.find(
         (entity) => entity.id === e.target.value,
       );
-      const isSchoolEntity = selectedEntity?.entity_type === 'School';
-      setIsSchool(isSchoolEntity);
+      const isSchoolEntity = selectedEntity?.entity_type === 'school';
+
       if (isSchoolEntity) {
         setInstitute((prev) => ({
           ...prev,
@@ -325,14 +361,31 @@ const AddEditInstitute = () => {
     instituteData: IInstituteForm,
     { resetForm }: FormikHelpers<IInstituteForm>,
   ) => {
-    const filteredData = { ...instituteData };
+    const formData = new FormData();
+
+    const filteredData: any = { ...instituteData };
     if (filteredData.university_id === '') {
       delete filteredData.university_id;
     }
+    const isDataUnchanged = Object.keys(filteredData).every(
+      (key) =>
+        filteredData[key as keyof IInstituteForm] ===
+        institute[key as keyof IInstituteForm],
+    );
     if (id) {
-      putData(`${InstituteEditURL}/${id}`, filteredData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      if (isDataUnchanged) {
+        return;
+      }
+      allselectedfiles.forEach((file) => {
+        formData.append('documents', file);
+      });
+      for (const key in filteredData) {
+        formData.set(key, filteredData[key]);
+      }
+
+      putData(`${InstituteEditURL}/${id}`, formData)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             navigator('/main/Institute');
             toast.success('Institute updated successfully', {
               hideProgressBar: true,
@@ -346,23 +399,40 @@ const AddEditInstitute = () => {
           }
         })
         .catch((e) => {
-          if (e?.response?.status === 401) {
+          if (e?.response?.code === 401) {
+            toast.error(e?.response.data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
             navigator('/');
           }
-          toast.error(e?.message, {
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
         });
     } else {
-      postData(`${InstituteAddURL}`, filteredData)
-        .then((data: { status: number; message: string }) => {
-          if (data.status === 200) {
+      const newInstituteData: any = {
+        ...filteredData,
+        is_verified: 'True', // Add this key only in the else block
+      };
+
+      allselectedfiles.forEach((file) => {
+        formData.append('documents', file);
+      });
+      for (const key in newInstituteData) {
+        formData.set(key, newInstituteData[key]);
+      }
+
+      postData(`${InstituteAddURL}`, formData)
+        .then((data: { status: boolean; message: string }) => {
+          if (data.status) {
             // navigator('/main/Institute')
             toast.success('Institute saved successfully', {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setAllSelectedfiles([]);
             resetForm({ values: initialState });
             setInstitute((prevInstitute) => {
               return {
@@ -378,13 +448,28 @@ const AddEditInstitute = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setAllSelectedfiles([]);
+            resetForm({ values: initialState });
+            setInstitute((prevInstitute) => {
+              return {
+                ...prevInstitute,
+                ['state']: '',
+                ['country']: '',
+                ['university_id']: '',
+                ['entity_id']: '',
+              };
+            });
           }
         })
         .catch((e) => {
           if (e?.response?.status === 401) {
+            toast.error(e?.response.data.message, {
+              hideProgressBar: true,
+              theme: 'colored',
+            });
             navigator('/');
           }
-          toast.error(e?.message, {
+          toast.error(e?.response.data.message, {
             hideProgressBar: true,
             theme: 'colored',
           });
@@ -395,7 +480,7 @@ const AddEditInstitute = () => {
   {
     if (id) {
       instituteSchema = Yup.object().shape({
-        institution_name: Yup.string()
+        institute_name: Yup.string()
           .required('Please enter Institute name')
           .test(
             'not-whitespace',
@@ -411,7 +496,7 @@ const AddEditInstitute = () => {
 
             // Check if the value matches the current institute name
             if (
-              value.toLowerCase() === institute.institution_name.toLowerCase()
+              value.toLowerCase() === institute.institute_name.toLowerCase()
             ) {
               return true;
             }
@@ -419,29 +504,29 @@ const AddEditInstitute = () => {
             // Check for uniqueness against dataInstitute
             const exists = dataInstitute.some(
               (inst) =>
-                inst.institution_name &&
-                inst.institution_name.toLowerCase() === value.toLowerCase(),
+                inst.institute_name &&
+                inst.institute_name.toLowerCase() === value.toLowerCase(),
             );
 
             return !exists;
           }),
 
-        email_id: Yup.string()
+        email: Yup.string()
           .required('Please enter Email id')
           .matches(emailPattern, 'Please enter a valid Email format.')
           .test('unique', 'Email already exists', function (value) {
             if (!value) return true;
 
             // Check if the value matches the current institute name
-            if (value.toLowerCase() === institute?.email_id.toLowerCase()) {
+            if (value.toLowerCase() === institute?.email.toLowerCase()) {
               return true;
             }
 
             // Check for uniqueness against dataInstitute
             const exists = dataInstitute?.some(
               (inst) =>
-                inst?.email_id &&
-                inst?.email_id?.toLowerCase() === value?.toLowerCase(),
+                inst?.email &&
+                inst?.email?.toLowerCase() === value?.toLowerCase(),
             );
 
             return !exists;
@@ -456,7 +541,7 @@ const AddEditInstitute = () => {
           ),
         // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
         city: Yup.string()
-          .required('Please enter City')
+          .required('Please enter City name')
           .test(
             'not-whitespace',
             'Please enter a valid City; whitespace is not allowed.',
@@ -466,7 +551,7 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid City name only characters allowed.',
           ),
-        country: Yup.string().required('Please enter Country'),
+        country: Yup.string().required('Please enter Country name'),
         // .matches(
         //   charPattern,
         //   'Please enter a valid Contry name only characters allowed.',
@@ -477,7 +562,7 @@ const AddEditInstitute = () => {
         //   'Please enter a valid State name only characters allowed.',
         // ),
         district: Yup.string()
-          .required('Please enter District')
+          .required('Please enter District name')
           .test(
             'not-whitespace',
             'Please enter a valid District; whitespace is not allowed.',
@@ -494,14 +579,14 @@ const AddEditInstitute = () => {
         university_id: Yup.string().when('entity_id', {
           is: (entity_id: string) => {
             const selectedEntity = dataEntity.find(
-              (entity) => entity.id === entity_id,
+              (entity) => entity.id === Number(entity_id),
             );
-            return selectedEntity?.entity_type !== 'School';
+            return selectedEntity?.entity_type !== 'school';
           },
-          then: () => Yup.string().required('Please select University'),
-          otherwise: () => Yup.string(),
+          then: (schema) => schema.required('Please select University'),
+          otherwise: (schema) => schema.notRequired(),
         }),
-        mobile_no: Yup.string()
+        phone: Yup.string()
           .required('Please enter Mobile number')
           .matches(
             mobilePattern,
@@ -511,27 +596,34 @@ const AddEditInstitute = () => {
             if (!value) return true;
 
             // Check if the value matches the current institute name
-            if (value?.toLowerCase() === institute?.mobile_no?.toLowerCase()) {
+            if (value?.toLowerCase() === institute?.phone?.toLowerCase()) {
               return true;
             }
 
             // Check for uniqueness against dataInstitute
             const exists = dataInstitute?.some(
               (inst) =>
-                inst?.mobile_no &&
-                inst?.mobile_no?.toLowerCase() === value?.toLowerCase(),
+                inst?.phone &&
+                inst?.phone?.toLowerCase() === value?.toLowerCase(),
             );
 
             return !exists;
           }),
 
-        website_url: Yup.string(),
-        //     .required("Please enter Website")
-        //     .matches(websitePattern, 'Please enter a valid URL format.'),
+        website_url: Yup.string()
+          .nullable()
+          .test(
+            'is-valid-url',
+            'Please enter a valid URL format (e.g., https://example.com).',
+            (value) => {
+              if (!value) return true; // Allow empty values
+              return websiteRegex.test(value); // Validate only if a value is present
+            },
+          ),
       });
     } else {
       instituteSchema = Yup.object().shape({
-        institution_name: Yup.string()
+        institute_name: Yup.string()
           .required('Please enter Institute name')
           .test(
             'not-whitespace',
@@ -546,20 +638,20 @@ const AddEditInstitute = () => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
-                inst.institution_name &&
-                inst.institution_name.toLowerCase() === value.toLowerCase(),
+                inst.institute_name &&
+                inst.institute_name.toLowerCase() === value.toLowerCase(),
             );
             return !exists;
           }),
-        email_id: Yup.string()
+        email: Yup.string()
           .required('Please enter Email id')
           .matches(emailPattern, 'Please enter a valid Email format.')
           .test('unique', 'Email already exists', (value) => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
-                inst?.email_id &&
-                inst?.email_id.toLowerCase() === value?.toLowerCase(),
+                inst?.email &&
+                inst?.email.toLowerCase() === value?.toLowerCase(),
             );
             return !exists;
           }),
@@ -572,7 +664,7 @@ const AddEditInstitute = () => {
           ),
         // .matches(addressPattern, 'Please enter a valid Address only characters allowed.'),
         city: Yup.string()
-          .required('Please enter City')
+          .required('Please enter City name')
           .test(
             'not-whitespace',
             'Please enter a valid City; whitespace is not allowed.',
@@ -582,18 +674,18 @@ const AddEditInstitute = () => {
             charPattern,
             'Please enter a valid City name only characters allowed.',
           ),
-        country: Yup.string().required('Please enter Country'),
+        country: Yup.string().required('Please enter Country name'),
         // .matches(
         //   charPattern,
         //   'Please enter a valid Contry name only characters allowed.',
         // ),
-        state: Yup.string().required('Please enter State'),
+        state: Yup.string().required('Please enter State name'),
         // .matches(
         //   charPattern,
         //   'Please enter a valid State name only characters allowed.',
         // ),
         district: Yup.string()
-          .required('Please enter District')
+          .required('Please enter District name')
           .test(
             'not-whitespace',
             'Please enter a valid District; whitespace is not allowed.',
@@ -610,14 +702,14 @@ const AddEditInstitute = () => {
         university_id: Yup.string().when('entity_id', {
           is: (entity_id: string) => {
             const selectedEntity = dataEntity.find(
-              (entity) => entity.id === entity_id,
+              (entity) => entity.id === Number(entity_id),
             );
-            return selectedEntity?.entity_type !== 'School';
+            return selectedEntity?.entity_type !== 'school';
           },
-          then: () => Yup.string().required('Please select University'),
-          otherwise: () => Yup.string(),
+          then: (schema) => schema.required('Please select University'),
+          otherwise: (schema) => schema.notRequired(),
         }),
-        mobile_no: Yup.string()
+        phone: Yup.string()
           .required('Please enter Mobile number')
           .matches(
             mobilePattern,
@@ -627,14 +719,21 @@ const AddEditInstitute = () => {
             if (!value) return true;
             const exists = dataInstitute.some(
               (inst) =>
-                inst?.mobile_no &&
-                inst?.mobile_no.toLowerCase() === value?.toLowerCase(),
+                inst?.phone &&
+                inst?.phone.toLowerCase() === value?.toLowerCase(),
             );
             return !exists;
           }),
-        website_url: Yup.string(),
-        //     .required("Please enter Website")
-        //     .matches(websitePattern, 'Please enter a valid URL format.'),
+        website_url: Yup.string()
+          .nullable()
+          .test(
+            'is-valid-url',
+            'Please enter a valid URL format (e.g., https://example.com).',
+            (value) => {
+              if (!value) return true; // Allow empty values
+              return websiteRegex.test(value); // Validate only if a value is present
+            },
+          ),
       });
     }
   }
@@ -666,8 +765,8 @@ const AddEditInstitute = () => {
                 handleSubmit(formData, formikHelpers)
               }
               initialValues={{
-                institution_name: institute?.institution_name,
-                email_id: institute?.email_id,
+                institute_name: institute?.institute_name,
+                email: institute?.email,
                 address: institute?.address,
                 city: institute?.city,
                 country: institute?.country,
@@ -675,7 +774,7 @@ const AddEditInstitute = () => {
                 district: institute?.district,
                 pincode: institute?.pincode,
                 entity_id: institute?.entity_id,
-                mobile_no: institute?.mobile_no,
+                phone: institute?.phone,
                 website_url: institute?.website_url,
                 university_id: institute?.university_id,
               }}
@@ -683,7 +782,16 @@ const AddEditInstitute = () => {
               validationSchema={instituteSchema}
               innerRef={formRef}
             >
-              {({ errors, values, touched }) => (
+              {({
+                errors,
+                values,
+                touched,
+                setFieldValue,
+                setFieldTouched,
+
+                isValid,
+                dirty,
+              }) => (
                 <Form>
                   <div className="row gy-4 mt-0">
                     <div className="col-md-4">
@@ -754,7 +862,7 @@ const AddEditInstitute = () => {
                             name="university_id"
                             value={values?.university_id}
                             variant="outlined"
-                            disabled={isSchool}
+                            disabled={isSchoolEntity(values?.entity_id)}
                             style={{
                               backgroundColor: isSchoolEntity(values?.entity_id)
                                 ? '#f0f0f0'
@@ -784,7 +892,7 @@ const AddEditInstitute = () => {
                           >
                             {dataUniversity?.map((item, idx) => (
                               <MenuItem
-                                value={item.university_id}
+                                value={item.id}
                                 key={`${item.university_name}-${idx + 1}`}
                                 sx={{
                                   backgroundColor: inputfield(namecolor),
@@ -816,7 +924,9 @@ const AddEditInstitute = () => {
                       <label
                         className={`floating-label ${isFocused || values?.country || isCountryOpen ? 'focused' : 'focusedempty'}`}
                       >
-                        Country <span>*</span>
+                        <InputLabel>
+                          Country <span>*</span>
+                        </InputLabel>
                       </label>
                       <div
                         className="form_field_wrapper"
@@ -840,7 +950,7 @@ const AddEditInstitute = () => {
                         {/* {contry_col && <p style={{ color: "red" }}>Please enter Country Name.</p>} */}
                         {touched?.country && errors?.country ? (
                           <p style={{ color: 'red' }}>
-                            Please enter Country Name.
+                            Please enter Country name.
                           </p>
                         ) : (
                           <></>
@@ -855,7 +965,9 @@ const AddEditInstitute = () => {
                       <label
                         className={`floating-label ${isFocusedstate || values?.state || isStateOpen ? 'focused' : 'focusedempty'}`}
                       >
-                        State <span>*</span>
+                        <InputLabel>
+                          State <span>*</span>
+                        </InputLabel>
                       </label>
                       <div
                         className="form_field_wrapper"
@@ -891,20 +1003,24 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'institute-name' }}
                           fullWidth
                           component={TextField}
                           type="text"
-                          name="institution_name"
-                          label="Institute name *"
-                          value={values?.institution_name}
+                          name="institute_name"
+                          label={
+                            isSchoolEntity(values?.entity_id)
+                              ? 'School Name *'
+                              : 'Institute name *'
+                          }
+                          value={values?.institute_name}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'institution_name')
+                            handleChange(e, 'institute_name')
                           }
                         />
-                        {touched?.institution_name &&
-                        errors?.institution_name ? (
+                        {touched?.institute_name && errors?.institute_name ? (
                           <p style={{ color: 'red' }}>
-                            {errors?.institution_name}
+                            {errors?.institute_name}
                           </p>
                         ) : (
                           <></>
@@ -914,6 +1030,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'address' }}
                           fullWidth
                           component={TextField}
                           label="Address *"
@@ -933,52 +1050,40 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'email' }}
                           fullWidth
                           component={TextField}
                           type="email"
-                          label="Email *"
-                          name="email_id"
-                          value={values?.email_id}
+                          label="Email Id*"
+                          name="email"
+                          value={values?.email}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'email_id')
+                            handleChange(e, 'email')
                           }
                         />
-                        {touched?.email_id && errors?.email_id ? (
-                          <p style={{ color: 'red' }}>{errors?.email_id}</p>
+                        {touched?.email && errors?.email ? (
+                          <p style={{ color: 'red' }}>{errors?.email}</p>
                         ) : (
                           <></>
                         )}
                       </div>
                     </div>
-                    {/* <div className='col-md-4'>
-                                         <div className="form_field_wrapper">
-                                            <Field
-                                                component={TextField}
-                                                label="Country *"
-                                                name="country"
-                                                value={values?.country}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "country")}
-                                            />
-                                            {touched?.country && errors?.country ?
-                                                <p style={{ color: 'red' }}>{errors?.country}</p> : <></>
-                                            }
-                                        </div> 
-                                    </div> */}
 
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'mobile' }}
                           component={TextField}
                           type="text"
-                          name="mobile_no"
+                          name="phone"
                           label="Mobile Number *"
-                          value={values?.mobile_no}
+                          value={values?.phone}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'mobile_no')
+                            handleChange(e, 'phone')
                           }
                         />
-                        {touched?.mobile_no && errors?.mobile_no ? (
-                          <p style={{ color: 'red' }}>{errors?.mobile_no}</p>
+                        {touched?.phone && errors?.phone ? (
+                          <p style={{ color: 'red' }}>{errors?.phone}</p>
                         ) : (
                           <></>
                         )}
@@ -987,6 +1092,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'city' }}
                           component={TextField}
                           label="City *"
                           name="city"
@@ -1002,23 +1108,10 @@ const AddEditInstitute = () => {
                         )}
                       </div>
                     </div>
-                    {/* <div className='col-md-4'>
-                                        <div className="form_field_wrapper">
-                                            <Field
-                                                component={TextField}
-                                                label="State *"
-                                                name="state"
-                                                value={values?.state}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, "state")}
-                                            />
-                                            {touched?.state && errors?.state ?
-                                                <p style={{ color: 'red' }}>{errors?.state}</p> : <></>
-                                            }
-                                        </div>
-                                    </div> */}
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'district' }}
                           component={TextField}
                           label="District *"
                           name="district"
@@ -1037,6 +1130,7 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'pincode' }}
                           component={TextField}
                           label="Pincode *"
                           name="pincode"
@@ -1055,22 +1149,63 @@ const AddEditInstitute = () => {
                     <div className="col-md-4">
                       <div className="form_field_wrapper">
                         <Field
+                          inputProps={{ className: 'website' }}
                           component={TextField}
                           label="Website"
                           name="website_url"
                           value={values?.website_url}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleChange(e, 'website_url')
-                          }
+                          // onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          //   handleChange(e, 'website_url')
+                          // }
+                          onChange={(e: any) => {
+                            handleChange(e, 'website_url');
+                            setFieldValue('website_url', e?.target?.value);
+                            setFieldTouched('website_url', true, false); // Manually trigger validation
+                          }}
                         />
-                        {/* {touched?.website_url && errors?.website_url ?
-                                                <p style={{ color: 'red' }}>{errors?.website_url}</p> : <></>
-                                            } */}
+                        {errors?.website_url && (
+                          <p style={{ color: 'red' }}>{errors?.website_url}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row d-flex justify-content-between mt-0 g-4">
+                      <div className="col-12 ">
+                        <UploadBtn
+                          label="Upload Documents"
+                          name="document"
+                          accept=".pdf, .jpg, .jpeg, .png, .gif, .mp4"
+                          handleFileChange={handleFileChange}
+                        />
+                        <div className="col-8">
+                          {allselectedfiles?.length > 0 && (
+                            <ul className="doclist">
+                              {allselectedfiles?.map((file, index) => (
+                                <li
+                                  key={index}
+                                  className="flex mt-2 items-center justify-between "
+                                >
+                                  {'name' in file
+                                    ? file.name
+                                    : (file as any)?.url}
+
+                                  <DeleteOutlinedIcon
+                                    className="m-2 cursor-pointer"
+                                    onClick={() => handleRemoveFile(index)}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                   <button
                     type="submit"
+                    disabled={
+                      (!dirty || !isValid) && allselectedfiles.length < 1
+                    }
                     className="btn btn-primary mainbutton mt-4"
                   >
                     {id ? 'Update' : 'Save'}

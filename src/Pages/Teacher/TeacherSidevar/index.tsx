@@ -1,7 +1,9 @@
 import React from 'react';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import LocalLibraryOutlinedIcon from '@mui/icons-material/LocalLibraryOutlined';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // import Header from "../../Components/Header";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -16,8 +18,8 @@ const TeacherSideVar = () => {
     document.body.classList.remove('sidebar-hovered');
   };
   function removeMobileToggle() {
-    if (window.innerWidth <= 1024) {
-      document.querySelector('body')?.classList.remove('toggled');
+    if (window.innerWidth > 1024) {
+      document.querySelector('body')?.classList.add('toggled');
     } else {
       document.querySelector('body')?.classList.remove('toggled');
     }
@@ -47,7 +49,7 @@ const TeacherSideVar = () => {
           {/* <!--navigation--> */}
           <ul className="metismenu" id="sidenav">
             <li>
-              <Link to="/teacher-dashboard">
+              <Link to="/teacher-dashboard" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <HomeOutlinedIcon />
                 </div>
@@ -55,7 +57,7 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/chat">
+              <Link to="/teacher-dashboard/chat" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <ChatOutlinedIcon />
                 </div>
@@ -63,19 +65,38 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
-              <Link to="study.html">
+              <Link to="/teacher-dashboard/Content" onClick={removeMobileToggle}>
                 <div className="parent-icon">
-                  <LocalLibraryOutlinedIcon />
+                  <LibraryBooksOutlinedIcon />
                 </div>
-                <div className="menu-title">Study Materials</div>
+                <div className="menu-title">Content Library</div>
               </Link>
             </li>
             <li>
-              <Link to="/teacher-dashboard/feedback">
+              <Link to="/teacher-dashboard/feedback" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <InfoOutlinedIcon />
                 </div>
                 <div className="menu-title">Feedback</div>
+              </Link>
+            </li>
+            <li>
+              <Link to="/teacher-dashboard/assignments" onClick={removeMobileToggle}>
+                <div className="parent-icon">
+                  <AssignmentOutlinedIcon />
+                </div>
+                <div className="menu-title">Assignments</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/teacher-dashboard/quizzes"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <QuestionAnswerOutlinedIcon />
+                </div>
+                <div className="menu-title">Quiz</div>
               </Link>
             </li>
             {/* <!-- <li>

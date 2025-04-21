@@ -10,7 +10,7 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-
+import { useTheme } from '../../ThemeProvider';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -66,6 +66,7 @@ const Boxsetvalue = {
 const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   setActiveForm,
 }) => {
+  useTheme();
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const { getData, postData, putData, deleteData } = useApi();
@@ -77,7 +78,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [enddateInvalidList, setEnddateInvalidList] = useState<boolean[]>([]);
 
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('user_uuid');
   const addRow = () => {
     const newBox: Box = {
       id: 0,
@@ -95,7 +96,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     if (id !== 0) {
       deleteData(`/student_academic_historydelete/${id}`)
         .then((data: any) => {
-          if (data.status === 200) {
+          if (data.code === 200) {
             toast.success('Academic history deleted successfully', {
               hideProgressBar: true,
               theme: 'colored',
@@ -113,9 +114,9 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
   };
   const listData = async () => {
     return new Promise((resolve) => {
-      getData('/institution/list')
+      getData('/institute/list')
         .then(async (response: any) => {
-          if (response.status === 200) {
+          if (response.status) {
             const filteredData = await response?.data?.filter(
               (item: any) => item?.is_active === 1,
             );
@@ -140,7 +141,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
     getData('/course/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === 1,
           );
@@ -156,7 +157,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       });
     getData('/class/list')
       .then((response: any) => {
-        if (response.status === 200) {
+        if (response.status) {
           const filteredData = response?.data?.filter(
             (item: any) => item?.is_active === true,
           );
@@ -172,7 +173,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
     getData(`${'student_academic_history/edit/' + StudentId}`)
       .then((data: any) => {
-        if (data?.status === 200) {
+        if (data?.status) {
           data?.data?.forEach((item: any) => {
             const newBox = {
               id: item?.id,
@@ -189,7 +190,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
               setBoxes((prevBoxes) => [...prevBoxes, newBox]);
             }
           });
-        } else if (data?.status === 404) {
+        } else if (data?.code === 404) {
           setBoxes([
             {
               id: 0,
@@ -232,6 +233,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     };
     const promises = boxes
       .map((box) => {
+        const formData = new FormData();
         const payload = {
           student_id: StudentId,
           institution_id: String(box.institution_id),
@@ -240,16 +242,23 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
           ending_date: box.ending_date,
           learning_style: box.learning_style,
           class_id: String(box.class_id),
-        };
+        } as any;
+
+        Object.keys(payload).forEach((key) => {
+          formData.append(key, payload[key]);
+        });
 
         if (
           validatePayload(payload) &&
           isDateValid(box.starting_date, box.ending_date)
         ) {
           if (editFlag || box.id === 0) {
-            return postData('/student_academic_history/add', payload);
+            return postData('/student_academic_history/add', formData);
           } else {
-            return putData('/student_academic_history/edit/' + box.id, payload);
+            return putData(
+              '/student_academic_history/edit/' + box.id,
+              formData,
+            );
           }
         } else {
           return Promise.resolve(null); // If payload is invalid, return a resolved promise
@@ -260,7 +269,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     Promise.all(promises)
       .then((responses) => {
         const allSuccessful = responses.every(
-          (response) => response?.status === 200,
+          (response) => response?.code === 200,
         );
 
         if (allSuccessful) {
@@ -295,15 +304,16 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
 
       const promises = boxes1
         .map((box) => {
+          const formData = new FormData();
           const payload = {
             institution_name: box.Institute_Name_Add,
           };
-
+          formData.append('institute_name', payload.institution_name);
           if (validatePayload(payload)) {
             if (editFlag || box.id === 0) {
-              return postData('/institution/add', payload);
+              return postData('/institution/add', formData);
             } else {
-              return postData('/institution/add', payload);
+              return postData('/institution/add', formData);
             }
           } else {
             return Promise.resolve(null);
@@ -314,7 +324,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
       const responses = await Promise.all(promises);
 
       const allSuccessful = responses.every(
-        (response) => response?.status === 200,
+        (response) => response?.code === 200,
       );
 
       if (allSuccessful) {
@@ -381,7 +391,7 @@ const StudentAcademicHistory: React.FC<ChildComponentProps> = ({
     newBoxes[index][field] = value;
     setBoxes1(newBoxes);
   };
-
+  
   return (
     <div className="mt-5">
       <form onSubmit={saveAcademicHistory}>

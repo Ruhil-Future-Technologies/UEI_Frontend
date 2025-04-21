@@ -35,19 +35,35 @@ const University = () => {
 
   const callAPI = async () => {
     getData(`${UniversityURL}`)
-      .then((data: { data: UniversityRep0oDTO[] }) => {
-        if (data.data) {
-          setDataUniversity(data?.data);
+      .then((data) => {
+        if (data.status) {
+          const universityData = data?.data?.universities_data?.map(
+            (universtiy: any) => {
+              const createdDateTime = universtiy?.created_at;
+              const updatedDateTime = universtiy?.updated_at;
+              const created_time = new Date(createdDateTime);
+              const updated_time = new Date(updatedDateTime);
+
+              universtiy.created_at = created_time.toLocaleString();
+              universtiy.updated_at = updated_time.toLocaleString();
+              return universtiy;
+            },
+          );
+
+          setDataUniversity(universityData);
+        } else {
+          setDataUniversity([]);
         }
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
+        } else {
+          toast.error(e?.message, {
+            hideProgressBar: true,
+            theme: 'colored',
+          });
         }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
       });
   };
 
@@ -79,7 +95,7 @@ const University = () => {
         setDataDelete(false);
       })
       .catch((e) => {
-        if (e?.response?.status === 401) {
+        if (e?.response?.code === 401) {
           navigate('/');
         }
         toast.error(e?.message, {
@@ -157,9 +173,7 @@ const University = () => {
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
-                                handleEditFile(
-                                  row?.row?.original?.university_id,
-                                );
+                                handleEditFile(row?.row?.original?.id);
                               }}
                             >
                               <EditIcon />
@@ -175,9 +189,7 @@ const University = () => {
                                 color: tabletools(namecolor),
                               }}
                               onClick={() => {
-                                handleDeleteFiles(
-                                  row?.row?.original?.university_id,
-                                );
+                                handleDeleteFiles(row?.row?.original?.id);
                               }}
                             >
                               <TrashIcon />
@@ -197,7 +209,7 @@ const University = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="University"
       />
     </>
   );

@@ -131,9 +131,12 @@ describe('AddEditEntity Component', () => {
 
     // Verify the API was called with the correct payload
     await waitFor(() => {
-      expect(useApi().postData).toHaveBeenCalledWith(
+      const formData = new FormData();
+      formData.append('entity_type', 'New Entity');
+
+      expect(mockPostData).toHaveBeenCalledWith(
         QUERY_KEYS_ENTITY.ENTITY_ADD,
-        { entity_type: 'New Entity' },
+        expect.any(FormData),
       );
     });
   });

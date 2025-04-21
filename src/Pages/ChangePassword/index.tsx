@@ -28,7 +28,7 @@ const ChangePassword = () => {
   const newpassword = '';
   const [searchParams] = useSearchParams();
   // const [changepassword, setChangePassword] = useState(initialState);
-  const email = searchParams?.get('email');
+  const token = searchParams?.get('token');
   const user_type = searchParams?.get('user_type');
   const [showPassword, setShowPassword] = useState(false);
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -49,9 +49,8 @@ const ChangePassword = () => {
     // e.preventDefault()
     // e.target.reset()
     const UserSignUp = {
-      email: String(email),
+      token: String(token),
       new_password: String(formData.newpassword),
-      conf_password: String(formData.confpassword),
       user_type: String(user_type),
     };
     const emptyKeys: string[] = [];
@@ -68,14 +67,17 @@ const ChangePassword = () => {
       postData(`${changepassUrl}`, UserSignUp)
         /* eslint-disable @typescript-eslint/no-explicit-any */
         .then((data: any) => {
-          if (data?.status === 200) {
-            navigate('/');
+          if (data?.status) {
+            
             toast.success(data?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setTimeout(()=>{
+              navigate('/');
+            },2000);
           } else if (
-            data?.status === 404 &&
+            data?.code === 404 &&
             data?.message === 'Invalid userid or password'
           ) {
             toast.error('Invalid userid or password', {
@@ -122,7 +124,7 @@ const ChangePassword = () => {
   };
   const changePasswordSchema = Yup.object().shape({
     newpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
@@ -145,7 +147,7 @@ const ChangePassword = () => {
       ),
 
     confpassword: Yup.string()
-      .required('Please enter a password')
+      .required('Please enter a Password')
       .min(
         8,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long',
@@ -290,6 +292,27 @@ const ChangePassword = () => {
                                     </InputAdornment>
                                   ),
                                 }}
+                                sx={{
+                                  '& input::-ms-reveal, & input::-ms-clear': {
+                                    display: 'none',
+                                  },
+                                  '& input:-webkit-autofill': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:hover': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:focus': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:active': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                }}
                                 fullWidth
                               />
                               {touched?.newpassword && errors?.newpassword ? (
@@ -335,6 +358,27 @@ const ChangePassword = () => {
                                       </IconButton>
                                     </InputAdornment>
                                   ),
+                                }}
+                                sx={{
+                                  '& input::-ms-reveal, & input::-ms-clear': {
+                                    display: 'none',
+                                  },
+                                  '& input:-webkit-autofill': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:hover': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:focus': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
+                                  '& input:-webkit-autofill:active': {
+                                    WebkitBoxShadow: '0 0 0 1000px white inset !important',
+                                    WebkitTextFillColor: 'black !important',
+                                  },
                                 }}
                                 fullWidth
                               />

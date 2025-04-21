@@ -18,8 +18,12 @@ const Submenu = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const pathSegments = location.pathname.split('/').filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1].toLowerCase();
+  const pathSegments = location?.pathname.split('/').filter(Boolean);
+  // const lastSegment = pathSegments[pathSegments?.length - 1]?.toLowerCase();
+  const lastSegment =
+    pathSegments?.length > 0
+      ? pathSegments[pathSegments.length - 1].toLowerCase()
+      : '';
   const Menulist: any = localStorage.getItem('menulist1');
   const [filteredData, setFilteredData] = useState<MenuListinter | any>([]);
 
@@ -38,7 +42,8 @@ const Submenu = () => {
   const DeleteSubmenuURL = QUERY_KEYS_SUBMENU.SUBMENU_DELETE;
   const columns = SUBMENU_COLUMNS;
   const navigate = useNavigate();
-  const { getData, deleteData, loading } = useApi();
+  // const { getData, deleteData, loading } = useApi();
+  const { getData, deleteData, loading } = useApi() || {};
   const [dataSubmenu, setDataSubmenu] = useState([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState('');
@@ -47,8 +52,8 @@ const Submenu = () => {
       .then((data: any) => {
         // const linesInfo = data || [];
         // dispatch(setLine(linesInfo))
-        if (data.data) {
-          setDataSubmenu(data?.data);
+        if (data.status) {
+          setDataSubmenu(data?.data?.submenus_data);
         }
       })
       .catch((e) => {
@@ -194,7 +199,7 @@ const Submenu = () => {
         isOpen={dataDelete}
         onCancel={handlecancel}
         onDeleteClick={() => handleDelete(dataDeleteId)}
-        title="Delete documents?"
+        title="Submenu"
       />
     </>
   );

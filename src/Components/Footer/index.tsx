@@ -1,6 +1,9 @@
 import React from 'react';
 // import { Link } from 'react-router-dom';
 // import '../Footer/Footer.scss';
+import { Link } from 'react-router-dom';
+
+import { List, ListItem } from '@mui/material';
 
 const Footer = () => {
   return (
@@ -18,9 +21,32 @@ const Footer = () => {
         {/* <div className="credits text-white">Designed & developed by <a href="#" target="_blank" className="text-pink"> Sakshem IT Solution Pvt. Ltd.</a></div> */}
         {/* <p className="mb-0">Designed & developed by <a href="#" target="_blank" className="text-pink text-decoration-none"> Sakshem IT Solution Pvt. Ltd.</a></p> */}
         <p className="mb-0">
-          Copyright © {new Date().getFullYear()}. All right reserved.
+          Copyright © {new Date().getFullYear()}. All rights reserved.
         </p>
-        {/* <p className="mb-0">Copyright © 2024. All right reserved.</p> */}
+        <List
+          sx={{ display: 'inline-flex', flexWrap: 'wrap', columnGap: 2, rowGap: '2px', padding: 0, justifyContent: 'center' }}
+        >
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <Link to="/privacypolicy" color="primary">
+              Privacy Policy
+            </Link>
+          </ListItem>
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <Link to="/refundpolicy" color="primary">
+              Refund Policy
+            </Link>
+          </ListItem>
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <Link to="/Disclaimer" color="primary">
+              Disclaimer
+            </Link>
+          </ListItem>
+          <ListItem sx={{ width: 'auto', padding: 0 }}>
+            <Link to="/ServicesAgreement" color="primary">
+              End User Agreement
+            </Link>
+          </ListItem>
+        </List>
       </footer>
     </>
   );
