@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Box,
   Checkbox,
   FormControl,
   IconButton,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -37,7 +39,6 @@ import {
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
-import FullScreenLoader from '../Loader/FullScreenLoader';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface IContentForm {
@@ -62,7 +63,8 @@ const AddContent = () => {
   const { namecolor }: any = context;
   const { id } = useParams();
   const navigator = useNavigate();
-  const { getData, postData, putData, deleteData } = useApi();
+  const { getData, deleteData, postFileWithProgress, putFileWithProgress } =
+    useApi();
   const navigate = useNavigate();
   const GET_UNIVERSITY = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const GET_ENTITIES = QUERY_KEYS_ENTITY.GET_ENTITY;
@@ -118,7 +120,7 @@ const AddContent = () => {
     description: '',
     author: '',
   };
-
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [content, setContent] = useState<IContentForm>(initialState);
 
   const isSchoolEntity = (entityId: string | string[]): boolean => {
@@ -784,6 +786,8 @@ const AddContent = () => {
     { resetForm }: FormikHelpers<IContentForm>,
   ) => {
     setLoading(true);
+    setUploadProgress(0);
+
     const formData = new FormData();
 
     if (!contentData.url && allselectedfiles.length <= 0 && !id) {
@@ -926,32 +930,51 @@ const AddContent = () => {
 
       formData.set('url', urlStr);
 
-      putData(`${QUERY_KEYS_CONTENT.CONTENT_EDIT}/${id}`, formData)
-        .then((data: any) => {
-          if (data.status) {
-            toast.success('Content updated successfully', {
+      putFileWithProgress(
+        `${QUERY_KEYS_CONTENT.CONTENT_EDIT}/${id}`,
+        formData,
+        {
+          onProgress: (progress: any) => {
+            console.log('Upload progress:', progress);
+            setUploadProgress(progress);
+          },
+          onSuccess: (data: any) => {
+            if (data.status) {
+              toast.success('Content Updated successfully', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              resetForm({ values: initialState });
+              setContent(initialState);
+              setAllSelectedfiles([]);
+              setLoading(false);
+              if (user_type === 'admin') {
+                navigator('/main/Content');
+              } else if (user_type === 'teacher') {
+                navigator('/teacher-dashboard/Content');
+              } else if (user_type === 'institute') {
+                navigator('/institution-dashboard/Content');
+              }
+            } else {
+              toast.error('Content Upload Failed', {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              resetForm({ values: initialState });
+              setContent(initialState);
+              setAllSelectedfiles([]);
+              setLoading(false);
+            }
+          },
+          onError: (error: any) => {
+            setLoading(false);
+            toast.error(error?.response?.data.message || 'An error occurred', {
               hideProgressBar: true,
               theme: 'colored',
             });
-            setLoading(false);
-            if (user_type === 'admin') {
-              navigator('/main/Content');
-            } else if (user_type === 'teacher') {
-              navigator('/teacher-dashboard/Content');
-            } else if (user_type === 'institute') {
-              navigator('/institution-dashboard/Content');
-            }
-          }
-        })
-        .catch((e: any) => {
-          if (e?.response?.code === 401) {
-            navigator('/');
-          }
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-          });
-        });
+          },
+        },
+      );
     } else {
       Object.keys(formattedData).forEach((key) => {
         formData.append(key, formattedData[key]);
@@ -960,8 +983,12 @@ const AddContent = () => {
         formData.append('documents[]', file);
       });
 
-      postData(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData)
-        .then((data: any) => {
+      postFileWithProgress(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData, {
+        onProgress: (progress: any) => {
+          console.log('Upload progress:', progress);
+          setUploadProgress(progress);
+        },
+        onSuccess: (data: any) => {
           if (data.status) {
             toast.success('Content saved successfully', {
               hideProgressBar: true,
@@ -981,13 +1008,15 @@ const AddContent = () => {
             setAllSelectedfiles([]);
             setLoading(false);
           }
-        })
-        .catch((e: any) => {
-          toast.error(e?.response?.data.message, {
+        },
+        onError: (error: any) => {
+          setLoading(false);
+          toast.error(error?.response?.data.message || 'An error occurred', {
             hideProgressBar: true,
             theme: 'colored',
           });
-        });
+        },
+      });
     }
   };
 
@@ -1398,8 +1427,35 @@ const AddContent = () => {
 
   return (
     <>
-      {' '}
-      {loading && <FullScreenLoader />}
+      {loading && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+          }}
+        >
+          <Box sx={{ width: '80vw', mt: 2, mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" align="center">
+              {uploadProgress < 100
+                ? `Uploading: ${uploadProgress}%`
+                : 'Processing...'}
+            </Typography>
+            <LinearProgress
+              variant={uploadProgress === 100 ? 'indeterminate' : 'determinate'}
+              value={uploadProgress}
+              sx={{ mt: 1, height: 10, borderRadius: 5 }}
+            />
+          </Box>
+        </div>
+      )}
       <div className="main-wrapper">
         <div className="main-content">
           <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
