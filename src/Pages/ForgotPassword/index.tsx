@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextField from '@mui/material/TextField';
@@ -26,21 +26,21 @@ const Forgotpassword = () => {
   // const [value, setValue] = React.useState('student');
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const theme = localStorage?.getItem('theme') || '';
-    if (theme === 'light') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'dark') {
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    } else if (theme === 'blue-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'semi-dark')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else if (theme === 'bordered-theme')
-      document?.documentElement?.setAttribute('data-bs-theme', theme);
-    else document?.documentElement?.setAttribute('data-bs-theme', theme);
-    // document.documentElement.setAttribute('data-theme', theme);
-  }, []);
+  // useEffect(() => {
+  //   const theme = localStorage?.getItem('theme') || '';
+  //   if (theme === 'light') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'dark') {
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   } else if (theme === 'blue-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'semi-dark')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else if (theme === 'bordered-theme')
+  //     document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   else document?.documentElement?.setAttribute('data-bs-theme', theme);
+  //   // document.documentElement.setAttribute('data-theme', theme);
+  // }, []);
 
   const validateEmailOrPhone = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -216,7 +216,7 @@ const Forgotpassword = () => {
                       <button
                         type="submit"
                         onClick={(e) => sendLink(e)}
-                        className="btn btn-secondary w-100 mb-4 mh-56 rounded-pill"
+                        className="btn btn-primary w-100 mb-4 mh-56 rounded-pill"
                       >
                         Send Link
                       </button>
