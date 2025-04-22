@@ -11,6 +11,7 @@ export const QUERY_KEYS = {
   CHANGE_PASSWORD: '/auth/changepassword',
   RESET_PASSWORD: '/auth/resetpassword',
   CHATADD: '/chat/fetch-from-db',
+  // CHATRAGMODEL: '/AIchatbot/Bedrock-chat-api',
   CHATRAGMODEL: 'https://prodllm.gyansetu.ai/rag-model-hierarchy',
   CHATOLLAMA: 'https://prodllm.gyansetu.ai/ollama-chat',
   CHATADDAI: '/chat/generate-from-api',
