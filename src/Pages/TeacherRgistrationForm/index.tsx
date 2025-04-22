@@ -368,11 +368,12 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        const filteredData = data?.data?.entityes_data.filter(
-          (entity: any) => entity.is_active === true,
-        );
-        setDataEntity(filteredData);
-        // setDataEntity(data?.data)
+        if (data.status) {
+          const filteredData = data?.data?.entityes_data?.filter(
+            (entity: any) => entity.is_active === true,
+          );
+          setDataEntity(filteredData);
+        }
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -388,10 +389,10 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
+        if (data.status) {
         const fiteredInstitutedata = data?.data?.filter(
           (institute: any) => institute.is_active && institute.is_approve,
         );
-        if (data.status) {
           setDataInstitute(fiteredInstitutedata);
         }
       })
@@ -427,7 +428,7 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           const filerRoleId = data?.data?.rolees_data?.find(
             (role: any) => role.role_name.toLowerCase() === 'teacher',
           ).id;
@@ -532,7 +533,7 @@ const TeacherRegistrationPage = () => {
     const { name, value } = event.target;
     setTeacher({ ...teacher, [name]: value });
     if (name === 'entity_id') {
-      dataEntity.map((item) => {
+      dataEntity?.map((item) => {
         if (String(item.id) == value) {
           setSelectedEntity(item.entity_type);
           getSubjects(item.entity_type);
@@ -541,27 +542,27 @@ const TeacherRegistrationPage = () => {
     }
 
     if (name === 'institution_id') {
-      const filteredDta = dataCourse.filter(
+      const filteredDta = dataCourse?.filter(
         (item) => String(item.institution_id) === value,
       );
       FilteredDataCourse(filteredDta);
     }
 
     if (name === 'entity_id') {
-      const filteredInstitute = dataInstitute.filter(
+      const filteredInstitute = dataInstitute?.filter(
         (item) => item.entity_id === value,
       );
       setFiteredInstitute(filteredInstitute);
     }
 
     if (name === 'school_name') {
-      const selectedSchool = dataInstitute.find(
+      const selectedSchool = dataInstitute?.find(
         (item) => String(item.id) === value,
       )?.institute_name;
       setSelectedSchool(String(selectedSchool));
     }
     if (name === 'university_id') {
-      const filteredInstitute = dataInstitute.filter(
+      const filteredInstitute = dataInstitute?.filter(
         (item) => item.university_id === value,
       );
       setUniversityError(false);
@@ -652,11 +653,13 @@ const TeacherRegistrationPage = () => {
     } else {
       setQualifications_error(false);
     }
-
-    if (name === 'experience' && !/^\d+$/.test(value)) {
-      setTeaching_experience_error(true);
-    } else {
-      setTeaching_experience_error(false);
+    if (name === 'experience') {
+      const num = Number(value);
+      if (!/^\d+$/.test(value) || num < 0 || num > 40) {
+        setTeaching_experience_error(true);
+      } else {
+        setTeaching_experience_error(false);
+      }
     }
 
     if (name === 'entity_id' && value === '') {
@@ -675,16 +678,39 @@ const TeacherRegistrationPage = () => {
       setdobset_col(teacher.dob === dayjs('dd-mm-yyyy'));
     }
   };
-
   const handelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.name === 'gender') {
-      setGenderData(event.target.value);
-    }
     const { name, value } = event.target;
-    setTeacher({ ...teacher, [event.target.name]: event.target.value });
-
-    validation(name, value);
-  };
+  
+    let newValue = value;
+  
+    if (name === 'experience') {
+      // Remove non-digit characters
+      newValue = newValue.replace(/[^0-9]/g, '');
+  
+      // Limit to 2 digits
+      if (newValue.length > 2) {
+        newValue = newValue.substring(0, 2);
+      }
+      // Optional: Clamp between 0 and 40
+      const numericValue = Number(newValue);
+      if (newValue !== '' && (numericValue < 0 || numericValue > 40)) {
+        setTeaching_experience_error(true);
+      } else {
+        setTeaching_experience_error(false);
+      }
+    }
+  
+    // Handle gender or other fields
+    if (name === 'gender') {
+      setGenderData(newValue);
+    }
+  
+    // Update teacher state
+    setTeacher({ ...teacher, [name]: newValue });
+  
+    // Call validation function
+    validation(name, newValue);
+  }
 
   const handleSubmit = () => {
     let valid1 = false;
@@ -722,7 +748,8 @@ const TeacherRegistrationPage = () => {
     } else {
       setQualifications_error(false);
     }
-    if (!/^\d+$/.test(teacher.experience)) {
+    const exp = Number(teacher?.experience);
+    if (!/^\d+$/.test(teacher.experience) || exp < 0 || exp > 40) {
       valid1 = true;
       setTeaching_experience_error(true);
     } else {
@@ -1846,10 +1873,6 @@ const TeacherRegistrationPage = () => {
                     )}
                     <div className="row d-flex justify-content-center">
                       <div className="col-md-6 col-12 mb-3">
-                        {/* <label className="col-form-label">
-                Experience(Yr)<span>*</span>
-              </label> */}
-
                         <TextField
                           placeholder="Teaching Experience"
                           autoComplete="off"
@@ -1859,12 +1882,13 @@ const TeacherRegistrationPage = () => {
                           value={teacher.experience}
                           label="Teaching Experience*"
                           onChange={handelChange}
-                          inputProps={{ min: '0' }}
+                          inputProps={{ min: '0', max: '40' }}
+                          error={teaching_experience_error}
                         />
                         {teaching_experience_error === true && (
                           <p className="error-text " style={{ color: 'red' }}>
                             <small>
-                              Please enter a valid Teaching Experience.
+                            Please enter a valid Teaching Experience (0 - 40 years)
                             </small>
                           </p>
                         )}
