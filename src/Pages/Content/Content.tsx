@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import '../Course/Course.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -38,8 +38,7 @@ const Content = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [filteredContent, setFilteredContent] = useState<any[]>([]);
-  const columns11 = CONTENT_COLUMNS;
-  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
+
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
 
@@ -87,6 +86,8 @@ const Content = () => {
         }
       });
   };
+  const columns11 = useMemo(() => CONTENT_COLUMNS(callAPI), []);
+  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
 
   useEffect(() => {
     callAPI();
