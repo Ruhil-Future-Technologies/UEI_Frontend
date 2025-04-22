@@ -62,8 +62,6 @@ const Content = () => {
   };
 
   const getCourseOrClassName = (ids: any, type: string): string => {
-    console.log({ ids });
-
     if (type === 'school') {
       const classNames = dataClasses?.classes_data
         ?.filter((cls: any) => ids.includes(cls.id.toString()))
@@ -74,15 +72,10 @@ const Content = () => {
     }
 
     if (type === 'college') {
-      console.log({ dataCourses });
-      console.log({ ids });
-
       const courseNames = dataCourses?.course_data
         ?.filter((course: any) => ids.includes(course.id.toString()))
         ?.map((course: any) => course.course_name)
         ?.join(', ');
-
-      console.log({ courseNames });
 
       return courseNames || '-';
     }
@@ -207,14 +200,9 @@ const Content = () => {
                 ? JSON.parse(content.course_semester_subjects)
                 : content?.course_semester_subjects;
 
-            console.log({ content });
-            console.log({ parsed });
             const keys = parsed ? Object.keys(parsed) : [];
-            console.log({ keys });
 
             const sub_name = getSubjectsName(parsed, 'college');
-
-            console.log({ sub_name });
 
             return {
               ...content,
@@ -251,8 +239,6 @@ const Content = () => {
         const schoolContents = dataContent
           .filter((content) => content.entity_id == school[0]?.id)
           .map((content) => {
-            console.log({ content });
-
             let classStreamSubjects = content.class_stream_subjects;
 
             if (typeof classStreamSubjects === 'string') {
@@ -262,8 +248,6 @@ const Content = () => {
             const keys = Object.keys(classStreamSubjects);
 
             const sub_name = getSubjectsName(classStreamSubjects, 'school');
-
-            console.log({ sub_name });
 
             return {
               ...content,
