@@ -506,7 +506,6 @@ export const TEACHER_COLUMNS = (
       const value = cell?.getValue();
       const [showValue, setShowValue] = useState(value);
       const [show, setShow] = useState(value ? true : false);
-      console.log('is_active called');
 
       const active = (id: string, valueSet: any) => {
         putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
@@ -2514,42 +2513,40 @@ export const CONTENT_COLUMNS = (
   {
     accessorKey: 'is_active',
     header: 'Active/DeActive',
-    Cell: ({ cell, row, table }: any) => {
+    Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
       const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
       const value = cell?.getValue();
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(value ? true : false);
 
-      const active = async (id: string, currentValue: any) => {
-        try {
-          const data = await putData(
-            `${currentValue ? MenuDeactive : MenuActive}/${id}`,
-          );
-          if (data.status) {
-            table.options.meta?.updateData(
-              row.index,
-              'is_active',
-              currentValue ? 0 : 1,
-            );
-            toast.success(data?.message, {
+      const active = (id: string, valueSet: any) => {
+        putData(`${valueSet ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status) {
+              setShow((prevState) => !prevState);
+              setShowValue(showValue ? 0 : 1);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              refetch();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            refetch();
-          }
-        } catch (e: any) {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
           });
-        }
       };
 
       return (
         <Switch
-          isChecked={!!value}
-          onChange={() => active(row?.original?.id, value)}
-          label={value ? 'Active' : 'Deactive'}
+          isChecked={show}
+          onChange={() => active(row?.original?.id, showValue)}
+          label={show ? 'Active' : 'Deactive'}
           activeColor="#4CAF50"
           inactiveColor="#f44336"
         />
