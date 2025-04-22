@@ -339,7 +339,9 @@ export interface Admin {
   user_uuid?: string;
 }
 
-export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
+export const INSITUTION_COLUMNS = (
+  refetch: () => void,
+): MRT_ColumnDef<InstituteRep0oDTO>[] => [
   // const columns: any[] = [
   {
     accessorKey: 'institute_name',
@@ -420,8 +422,12 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
             if (data.status) {
               setShow((prevState) => !prevState);
               setShowvalue(Showvalue ? 0 : 1);
-              toast.success(data?.message);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
               // window.location.reload();
+              refetch();
             }
           })
           .catch((e) => {
@@ -461,7 +467,9 @@ export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   //   },
 ];
 
-export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
+export const TEACHER_COLUMNS = (
+  refetch: () => void,
+): MRT_ColumnDef<TeacherRepoDTO>[] => [
   {
     accessorFn: (row) => `${row.first_name} ${row.last_name}`,
     header: 'Full Name',
@@ -511,6 +519,7 @@ export const TEACHER_COLUMNS: MRT_ColumnDef<TeacherRepoDTO>[] = [
                 hideProgressBar: true,
                 theme: 'colored',
               });
+              refetch();
             }
           })
           .catch((e) => {
@@ -2321,7 +2330,6 @@ export const PDF_LIST_FOR_SCHOOL_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
         {cell?.getValue() as string}
       </div>
     ),
-    
   },
   {
     accessorKey: 'board_name',
@@ -2422,7 +2430,9 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   },
 ];
 
-export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
+export const CONTENT_COLUMNS = (
+  refetch: () => void,
+): MRT_ColumnDef<ContentRepoDTO>[] => [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -2717,6 +2727,7 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
               hideProgressBar: true,
               theme: 'colored',
             });
+            refetch();
           }
         } catch (e: any) {
           toast.error(e?.message, {

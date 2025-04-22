@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import './Teacher.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -39,14 +39,12 @@ const Teacher = () => {
 
   const TeacherURL = QUERY_KEYS_TEACHER.GET_TEACHER;
   const DeleteTeacherURL = QUERY_KEYS_TEACHER.TEACHER_DELETE;
-  const columns11 = TEACHER_COLUMNS;
   const navigate = useNavigate();
   const { getData, putData, loading } = useApi();
   const [entity, setEntity] = useState<any[]>([]);
   const [dataTeacher, setDataTeacher] = useState<any[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
   const [activeTab, setActiveTab] = useState(0);
   const [filteredTeachers, setFilteredTeachers] = useState<any[]>([]);
   const [activeSubTab, setActiveSubTab] = useState(0);
@@ -58,6 +56,61 @@ const Teacher = () => {
   const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
 
+  const callAPI = async () => {
+    getData('/entity/list').then((data) => {
+      if (data.status) {
+        setEntity(data.data?.entityes_data);
+      }
+    });
+    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
+      const allInstitutes = data.data;
+      const schoolInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
+      );
+      const collegeInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
+      );
+      setSchoolInstitutes(schoolInstitutes);
+      setCollegeInstitutes(collegeInstitutes);
+    });
+
+    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
+      setDataClasses(data.data);
+    });
+    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
+      setDataCourses(data.data);
+    });
+    getData(`${TeacherURL}`)
+      .then((data: { data: any[] }) => {
+        if (data.data) {
+          const teacherData = data.data.map((teacher: any) => {
+            const createdDateTime = teacher?.created_at;
+            const updatedDateTime = teacher?.updated_at;
+            const created_time = new Date(createdDateTime);
+            const updated_time = new Date(updatedDateTime);
+
+            teacher.created_at = created_time.toLocaleString();
+            teacher.updated_at = updated_time.toLocaleString();
+            return teacher;
+          });
+          setDataTeacher(teacherData);
+        } else {
+          setDataTeacher([]);
+        }
+      })
+      .catch((e) => {
+        if (e?.response?.code === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+
+  const columns11 = useMemo(() => TEACHER_COLUMNS(callAPI), []);
+  const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
   const isSchoolEntity = (entityId: string | string[]): boolean => {
     const selectedEntity = entity?.find((entity) => entity.id === entityId);
     return selectedEntity?.entity_type?.toLowerCase() === 'school';
@@ -118,59 +171,6 @@ const Teacher = () => {
 
     setColumns(updatedColumns);
   }, [dataTeacher, columns11]);
-
-  const callAPI = async () => {
-    getData('/entity/list').then((data) => {
-      if (data.status) {
-        setEntity(data.data?.entityes_data);
-      }
-    });
-    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
-      const allInstitutes = data.data;
-      const schoolInstitutes = allInstitutes?.filter(
-        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
-      );
-      const collegeInstitutes = allInstitutes?.filter(
-        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
-      );
-      setSchoolInstitutes(schoolInstitutes);
-      setCollegeInstitutes(collegeInstitutes);
-    });
-
-    getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      setDataClasses(data.data);
-    });
-    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
-      setDataCourses(data.data);
-    });
-    getData(`${TeacherURL}`)
-      .then((data: { data: any[] }) => {
-        if (data.data) {
-          const teacherData = data.data.map((teacher: any) => {
-            const createdDateTime = teacher?.created_at;
-            const updatedDateTime = teacher?.updated_at;
-            const created_time = new Date(createdDateTime);
-            const updated_time = new Date(updatedDateTime);
-
-            teacher.created_at = created_time.toLocaleString();
-            teacher.updated_at = updated_time.toLocaleString();
-            return teacher;
-          });
-          setDataTeacher(teacherData);
-        } else {
-          setDataTeacher([]);
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.code === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-  };
 
   useEffect(() => {
     callAPI();
@@ -296,7 +296,8 @@ const Teacher = () => {
       }, 0);
     } else if (activeTab === 1) {
       const pendingTeachers = dataTeacher.filter(
-        (teacher) => teacher.is_approve === false,
+        (teacher) =>
+          teacher.is_approve === false && teacher.is_disapprove === false,
       );
 
       const college: any = entity.filter((ent) => ent.entity_type == 'college');
@@ -620,6 +621,9 @@ const Teacher = () => {
     delete teacherDetail?.teacher_login_id;
     delete teacherDetail?.teacher_id;
 
+    teacherDetail.created_by = teacherDetail.created_by_details.user_name;
+    delete teacherDetail?.created_by_details;
+
     setSelectedTeacher(teacherDetail);
     setOpen(true);
   };
@@ -709,54 +713,27 @@ const Teacher = () => {
                     </Button>
                   </div>
                   <Tabs value={activeTab} onChange={handleTabChange}>
-                    <Tab
-                      label="Total Teachers"
-                      
-                    ></Tab>
-                    <Tab
-                      label="Pending Teachers"
-                      
-                    />
-                    <Tab
-                      label="Disapproved Teachers"
-                      
-                    />
+                    <Tab label="Total Teachers"></Tab>
+                    <Tab label="Pending Teachers" />
+                    <Tab label="Disapproved Teachers" />
                   </Tabs>
 
                   {activeTab === 0 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        
-                      />
-                      <Tab
-                        label="School"
-                        
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   {activeTab === 1 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        
-                      />
-                      <Tab
-                        label="School"
-                        
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   {activeTab === 2 && (
                     <Tabs value={activeSubTab} onChange={handleSubTabChange}>
-                      <Tab
-                        label="College"
-                        
-                      />
-                      <Tab
-                        label="School"
-                        
-                      />
+                      <Tab label="College" />
+                      <Tab label="School" />
                     </Tabs>
                   )}
                   <Box marginTop="10px">
@@ -870,6 +847,20 @@ const Teacher = () => {
                                   }
                                 >
                                   <TrashIcon style={{ fill: '#547476' }} />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip arrow placement="right" title="Details">
+                                <IconButton
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    color: tabletools(namecolor),
+                                  }}
+                                  onClick={() =>
+                                    handleTeacherDetails(row?.row?.original?.id)
+                                  }
+                                >
+                                  <Visibility style={{ fill: '#547476' }} />
                                 </IconButton>
                               </Tooltip>
                             </>

@@ -608,8 +608,8 @@ export const CreateAssignments = () => {
       const data = await getData(`/semester/list`);
 
       if (data?.status && data?.data) {
-        setSemesterData(data.data.semesters_data);
-        return data.data.semesters_data; // Return the fetched semesters
+        setSemesterData(data?.data?.semesters_data);
+        return data?.data?.semesters_data; // Return the fetched semesters
       }
 
       return []; // Return an empty array if no data
@@ -621,9 +621,9 @@ export const CreateAssignments = () => {
   const getCourses = () => {
     getData(`${CourseURL}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           //  setCoursesData(data?.data);
-          const filteredCourses = data.data.course_data.filter(
+          const filteredCourses = data?.data?.course_data?.filter(
             (course: any) => course.is_active,
           );
           setFilteredCoursesData(filteredCourses);
@@ -639,8 +639,8 @@ export const CreateAssignments = () => {
   const getClasslist = (classIds: any) => {
     getData(`${ClassURL}`)
       .then((data) => {
-        if (data.data) {
-          const filteredClasses = data.data.classes_data.filter((classn: any) =>
+        if (data.status) {
+          const filteredClasses = data?.data?.classes_data.filter((classn: any) =>
             classIds.includes(classn.id),
           );
           setDataClass(filteredClasses);
@@ -1136,9 +1136,15 @@ export const CreateAssignments = () => {
       });
     }
 
-    if (valid1) return;
+    if (valid1) {
+      setLoading(false);
+      return;
+    }
 
-    if (!valid) return;
+    if (!valid) {
+      setLoading(false);
+      return;
+    }
 
     const class_or_course = getClassOrCourseName();
     const rawMarks = questions[0] || {};
@@ -1348,6 +1354,7 @@ export const CreateAssignments = () => {
           setQuizPayload([]);
           setQuizData([]);
         } else {
+          setLoading(false);
           toast.error(response.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1370,7 +1377,11 @@ export const CreateAssignments = () => {
     payload.add_to_report = String(addToStudentRepost);
     payload.notify = String(sendNotification);
 
-    payload.save_draft = String(saveAsDraft);
+    if (id) {
+      payload.save_draft = String(false);
+    } else {
+      payload.save_draft = String(saveAsDraft);
+    }
     payload.timer = String(quiz_timer);
     payload.type = type;
     payload.contact_email = assignmentData.contact_email;
@@ -1908,6 +1919,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="One Mark"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].one}
                             onChange={(e) => {
@@ -1928,6 +1940,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Two Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].two}
                             onChange={(e) => {
@@ -1948,6 +1961,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Three Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].three}
                             onChange={(e) => {
@@ -1968,6 +1982,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Four Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].four}
                             onChange={(e) => {
@@ -1988,6 +2003,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Five Marks"
                             type="number"
+                            inputProps={{ min: 0 }}
                             disabled={isQuizGenerated}
                             value={questions[0].five}
                             onChange={(e) => {
@@ -2464,7 +2480,9 @@ export const CreateAssignments = () => {
                               <DateTimePicker
                                 label="Available From"
                                 value={availableFrom}
-                                minDateTime={!edit ? dayjs() : undefined}
+                                minDateTime={
+                                  !edit ? dayjs().add(10, 'minute') : undefined
+                                }
                                 onChange={handleAvailableFromChange}
                                 slots={{
                                   textField: (params) => (
@@ -2488,6 +2506,7 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               className="col-6"
                               label="Due Date"
+                              minDate={dayjs()}
                               value={dueDate}
                               onChange={handleDueDateChange}
                               slots={{
@@ -2543,7 +2562,7 @@ export const CreateAssignments = () => {
                                 type="number"
                                 label="Quiz Duration (minutes)"
                                 value={quiz_timer}
-                                inputProps={{ min: 0 }}
+                                inputProps={{ min: 1 }}
                                 onChange={(e) => setQuizTimer(e.target.value)}
                                 fullWidth
                                 margin="normal"
@@ -2553,7 +2572,7 @@ export const CreateAssignments = () => {
                                   className="error-text"
                                   style={{ color: 'red' }}
                                 >
-                                  Please enter quiz timer.
+                                  Please enter a valid quiz timer.
                                 </p>
                               )}
                             </div>
