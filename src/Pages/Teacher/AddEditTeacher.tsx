@@ -190,17 +190,17 @@ const AddEditTeacher = () => {
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data.course_data;
       setDataCourses(
-        data?.data?.course_data.filter((subject: any) => subject.is_active),
+        data?.data?.course_data?.filter((subject: any) => subject.is_active),
       );
     });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       setCollegeSubjects(
-        data.data.subjects_data.filter((subject: any) => subject.is_active),
+        data?.data?.subjects_data?.filter((subject: any) => subject.is_active),
       );
     });
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       setSchoolSubjects(
-        data.data.subjects_data.filter((subject: any) => subject.is_active),
+        data?.data?.subjects_data?.filter((subject: any) => subject.is_active),
       );
     });
     if (id) {
