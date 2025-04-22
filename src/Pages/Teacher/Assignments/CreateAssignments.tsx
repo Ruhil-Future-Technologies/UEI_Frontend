@@ -2499,7 +2499,7 @@ export const CreateAssignments = () => {
                                 value={availableFrom}
                                 minDate={!edit ? dayjs() : undefined}
                                 onChange={handleAvailableFromChange}
-                                slots={{
+                                slotProps={{
                                   textField: (params) => (
                                     <TextField {...params} />
                                   ),
@@ -2538,7 +2538,7 @@ export const CreateAssignments = () => {
                               minDate={dayjs()}
                               value={dueDate}
                               onChange={handleDueDateChange}
-                              slots={{
+                              slotProps={{
                                 textField: (params) => (
                                   <TextField {...params} />
                                 ),
@@ -2570,7 +2570,7 @@ export const CreateAssignments = () => {
                               label="Due Time"
                               value={dueTime} // Ensure it's a Dayjs object
                               onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
-                              slots={{
+                              slotProps={{
                                 textField: (params) => (
                                   <TextField {...params} />
                                 ),
