@@ -152,7 +152,9 @@ const AddContent = () => {
       //   data?.data?.course_data?.filter((course: any) => course.is_active),
       // );
       const courses = data.data?.course_data;
-      setDataCourses(Array.isArray(courses) ? courses.filter((s: any) => s?.is_active) : []);
+      setDataCourses(
+        Array.isArray(courses) ? courses.filter((s: any) => s?.is_active) : [],
+      );
     });
 
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
@@ -399,12 +401,20 @@ const AddContent = () => {
     });
     getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       const subjects = data.data?.subjects_data;
-      setCollegeSubjects(Array.isArray(subjects) ? subjects.filter((s: any) => s?.is_active) : []);
+      setCollegeSubjects(
+        Array.isArray(subjects)
+          ? subjects.filter((s: any) => s?.is_active)
+          : [],
+      );
     });
 
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       const subjects = data.data?.subjects_data;
-      setSchoolSubjects(Array.isArray(subjects) ? subjects.filter((s: any) => s?.is_active) : []);
+      setSchoolSubjects(
+        Array.isArray(subjects)
+          ? subjects.filter((s: any) => s?.is_active)
+          : [],
+      );
     });
     setIsInitialDataLoaded(true);
   }, []);
@@ -937,7 +947,6 @@ const AddContent = () => {
         formData,
         {
           onProgress: (progress: any) => {
-            console.log('Upload progress:', progress);
             setUploadProgress(progress);
           },
           onSuccess: (data: any) => {
@@ -987,7 +996,6 @@ const AddContent = () => {
 
       postFileWithProgress(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData, {
         onProgress: (progress: any) => {
-          console.log('Upload progress:', progress);
           setUploadProgress(progress);
         },
         onSuccess: (data: any) => {

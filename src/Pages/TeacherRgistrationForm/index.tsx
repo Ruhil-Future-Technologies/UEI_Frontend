@@ -368,11 +368,12 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        const filteredData = data?.data?.entityes_data.filter(
-          (entity: any) => entity.is_active === true,
-        );
-        setDataEntity(filteredData);
-        // setDataEntity(data?.data)
+        if (data.status) {
+          const filteredData = data?.data?.entityes_data?.filter(
+            (entity: any) => entity.is_active === true,
+          );
+          setDataEntity(filteredData);
+        }
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -388,10 +389,10 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
+        if (data.status) {
         const fiteredInstitutedata = data?.data?.filter(
           (institute: any) => institute.is_active && institute.is_approve,
         );
-        if (data.status) {
           setDataInstitute(fiteredInstitutedata);
         }
       })
@@ -427,7 +428,7 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           const filerRoleId = data?.data?.rolees_data?.find(
             (role: any) => role.role_name.toLowerCase() === 'teacher',
           ).id;
@@ -532,7 +533,7 @@ const TeacherRegistrationPage = () => {
     const { name, value } = event.target;
     setTeacher({ ...teacher, [name]: value });
     if (name === 'entity_id') {
-      dataEntity.map((item) => {
+      dataEntity?.map((item) => {
         if (String(item.id) == value) {
           setSelectedEntity(item.entity_type);
           getSubjects(item.entity_type);
@@ -541,27 +542,27 @@ const TeacherRegistrationPage = () => {
     }
 
     if (name === 'institution_id') {
-      const filteredDta = dataCourse.filter(
+      const filteredDta = dataCourse?.filter(
         (item) => String(item.institution_id) === value,
       );
       FilteredDataCourse(filteredDta);
     }
 
     if (name === 'entity_id') {
-      const filteredInstitute = dataInstitute.filter(
+      const filteredInstitute = dataInstitute?.filter(
         (item) => item.entity_id === value,
       );
       setFiteredInstitute(filteredInstitute);
     }
 
     if (name === 'school_name') {
-      const selectedSchool = dataInstitute.find(
+      const selectedSchool = dataInstitute?.find(
         (item) => String(item.id) === value,
       )?.institute_name;
       setSelectedSchool(String(selectedSchool));
     }
     if (name === 'university_id') {
-      const filteredInstitute = dataInstitute.filter(
+      const filteredInstitute = dataInstitute?.filter(
         (item) => item.university_id === value,
       );
       setUniversityError(false);
