@@ -766,11 +766,11 @@ const AddEditTeacher = () => {
         ),
     }),
     experience: Yup.number()
-    .required('Please enter Experience in years')
-    .min(0, 'Experience cannot be negative') // Minimum of 0 years
-    .max(40, 'Experience cannot exceed 40 years') // Maximum of 40 years
-    .integer('Experience must be a whole number') // Ensure it's an integer
-    .typeError('Please enter a valid number for experience'),
+      .required('Please enter Experience in years')
+      .min(0, 'Experience cannot be negative') // Minimum of 0 years
+      .max(40, 'Experience cannot exceed 40 years') // Maximum of 40 years
+      .integer('Experience must be a whole number') // Ensure it's an integer
+      .typeError('Please enter a valid number for experience'),
     entity_id: Yup.string().required('Please select Entity'),
     university_id: Yup.string().when('entity_id', {
       is: (entity_id: string) => {
@@ -955,6 +955,7 @@ const AddEditTeacher = () => {
               hideProgressBar: true,
               theme: 'colored',
             });
+            setAllSelectedfiles([]);
             resetForm({ values: initialState });
             setDob(null);
             setTeacher(initialState);
@@ -1648,7 +1649,10 @@ const AddEditTeacher = () => {
                           type="number"
                           value={values?.experience}
                           onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            let value = e?.target?.value?.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                            let value = e?.target?.value?.replace(
+                              /[^0-9]/g,
+                              '',
+                            ); // Remove non-numeric characters
                             if (value?.length > 2) {
                               value = value?.substring(0, 2); // Allow only the first two digits
                             }
