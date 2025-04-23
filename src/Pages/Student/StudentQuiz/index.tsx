@@ -210,8 +210,7 @@ const StudentQuiz = () => {
   };
 
   const retakeQuiz = (quizId: any) => {
-    const quiz = quizData.activeQuizzes.find((quiz: any) => quiz.id === quizId);
-
+    const quiz = quizData.recentResults.find((quiz: any) => quiz.quiz_id == quizId);
     if (quiz) {
       navigate(`/main/student/quiz/${quizId}`);
     } else {

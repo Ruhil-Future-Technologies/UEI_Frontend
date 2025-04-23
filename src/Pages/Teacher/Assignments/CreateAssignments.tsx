@@ -643,8 +643,8 @@ export const CreateAssignments = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.status) {
-          const filteredClasses = data?.data?.classes_data.filter((classn: any) =>
-            classIds.includes(classn.id),
+          const filteredClasses = data?.data?.classes_data.filter(
+            (classn: any) => classIds.includes(classn.id),
           );
           setDataClass(filteredClasses);
         }
@@ -1295,6 +1295,13 @@ export const CreateAssignments = () => {
     if (!valid) return;
 
     if (edit) {
+      if (!data.title || data.questions.length === 0) {
+        toast.error('Please select questions before publishing the quiz', {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      }
+
       putDataJson(`/quiz/edit/${id}`, data).then((response) => {
         if (response.status) {
           toast.success(response.message, {
