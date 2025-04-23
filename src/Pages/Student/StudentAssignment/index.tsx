@@ -8,6 +8,7 @@ import { Assignment } from "../../Teacher/Assignments/CreateAssignments";
 import { toast } from "react-toastify";
 import PreviewIcon from '@mui/icons-material/Preview';
 import './St.scss';
+import { QUERY_KEYS_ASSIGNMENT } from "../../../utils/const";
 
 const StudentAssignments = () => {
 
@@ -110,7 +111,7 @@ const StudentAssignments = () => {
       },
     },
     {
-      accessorKey: 'created_by',
+      accessorKey: 'created_by_name',
       header: 'Teacher',
     },
 
@@ -122,7 +123,7 @@ const StudentAssignments = () => {
   }, [])
   const getListOfAssignments = () => {
     try {
-      getData(`/assignment/list/`).then((response) => {
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then((response) => {
         if (response.data) {
           const filteredAssignment = response?.data.filter((assignment: any) => assignment?.assign_to_students.includes(studemtId) && !assignment?.save_draft)
           setAssignmentData(filteredAssignment)

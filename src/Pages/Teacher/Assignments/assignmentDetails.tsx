@@ -24,6 +24,7 @@ import { toast } from 'react-toastify';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { toTitleCase } from '../../../utils/helpers';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
 
 interface Students {
   first_name: string;
@@ -92,7 +93,7 @@ const AssignmentDetails = () => {
   }, []);
 
   const getAssignmentData = () => {
-    getData(`/assignment/get/${id}`)
+    getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`)
       .then(async (response) => {
         if (response.status) {
           setAssignmentData(response?.data);

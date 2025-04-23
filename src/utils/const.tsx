@@ -261,6 +261,10 @@ export const QUERY_KEYS_QUIZ = {
 
 export const QUERY_KEYS_ASSIGNMENT={
     GET_ASSIGNMENT:'/assignment/get/',
+    GET_ASSIGNMENTS_LIST:'/assignment/list/',
+    DELETE_ASSIGNMENT:'/assignment/delete/',
+    ACTIVATE_ASSIGNMENT:'/assignment/activate/',
+    DEACTIVATE_ASSIGNMENT:'/assignment/deactivate/',
     EDIT_ASSIGNMENT:'/assignment/edit/',
     ADD_ASSIGNMENT:'assignment/add',
     GENERATE_AI_ASSIGNMENT:'https://prodllm.gyansetu.ai/generate-questions',

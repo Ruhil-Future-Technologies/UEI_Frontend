@@ -25,6 +25,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
 const PreviewStudentAssignment = () => {
     const navigate = useNavigate();
     const { getData } = useApi();
@@ -50,7 +51,7 @@ const PreviewStudentAssignment = () => {
 
     const getAssignmentData = () => {
         try {
-            getData(`/assignment/get/${assignment_id}`).then((response) => {
+            getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${assignment_id}`).then((response) => {
                 if (response?.status) {
                     setAssignmentData(response?.data);
                     const dueDate = new Date(response?.data?.due_date_time);

@@ -30,6 +30,7 @@ import { Assignment } from './CreateAssignments';
 import { toast } from 'react-toastify';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
+import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
 
 export const Assignments = () => {
   const { getData, putData } = useApi();
@@ -63,7 +64,7 @@ export const Assignments = () => {
 
   const getListOfAssignments = () => {
     try {
-      getData(`/assignment/list/`).then((response) => {
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then((response) => {
         if (response.data) {
           const filteredassignment = response?.data?.filter(
             (assignmnet: any) => assignmnet.created_by == teacher_uuid,
@@ -107,7 +108,7 @@ export const Assignments = () => {
   };
   const deleteAssignment = () => {
     try {
-      putData(`/assignment/delete/${dataDeleteId}`)
+      putData(`${QUERY_KEYS_ASSIGNMENT.DELETE_ASSIGNMENT}${dataDeleteId}`)
         .then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -256,8 +257,8 @@ export const Assignments = () => {
       header: 'Active/DeActive',
       Cell: ({ cell, row }: any) => {
         const { putData } = useApi();
-        const MenuInstituteActive = '/assignment/activate/';
-        const MenuInstituteDeactive = '/assignment/deactivate/';
+        const AssignmnetActive = QUERY_KEYS_ASSIGNMENT.ACTIVATE_ASSIGNMENT;
+        const AssignmnetDeactive = QUERY_KEYS_ASSIGNMENT.DEACTIVATE_ASSIGNMENT;
         const value = cell?.getValue() ?? false;
         // if (!value) {
         //   return EMPTY_CELL_VALUE;
@@ -265,7 +266,7 @@ export const Assignments = () => {
         const [Showvalue, setShowvalue] = useState(value);
         const active = (id: number, valueset: any) => {
           putData(
-            `${valueset ? MenuInstituteDeactive : MenuInstituteActive}${id}`,
+            `${valueset ? AssignmnetDeactive : AssignmnetActive}${id}`,
           )
             .then((data: any) => {
               if (data.status) {

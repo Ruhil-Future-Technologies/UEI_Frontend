@@ -24,16 +24,16 @@ const TeacherSideVar = () => {
       document.querySelector('body')?.classList.remove('toggled');
     }
   }
-  // function handleClick() {
-  //   const main_content = document.querySelector('body');
-  //   if (main_content) {
-  //     if (main_content.classList.contains('toggled')) {
-  //       main_content.classList.remove('toggled');
-  //     } else {
-  //       main_content.classList.add('toggled');
-  //     }
-  //   }
-  // }
+  function handleClick() {
+    const main_content = document.querySelector('body');
+    if (main_content) {
+      if (main_content.classList.contains('toggled')) {
+        main_content.classList.remove('toggled');
+      } else {
+        main_content.classList.add('toggled');
+      }
+    }
+  }
   return (
     <>
       <aside
@@ -51,7 +51,7 @@ const TeacherSideVar = () => {
           </div>
           <div className="sidebar-close">
             <span className="material-icons-outlined">
-              <CloseOutlinedIcon onClick={removeMobileToggle} />
+              <CloseOutlinedIcon onClick={handleClick} />
             </span>
           </div>
         </div>

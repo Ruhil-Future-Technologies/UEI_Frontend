@@ -30,6 +30,7 @@ import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import "react-quill/dist/quill.snow.css";
+import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
   const { getData, postData } = useApi();
@@ -58,7 +59,7 @@ const PreviewAndSubmit = () => {
 
   const getAssignmentData = () => {
     try {
-      getData(`/assignment/get/${id}`).then((response) => {
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
           const dueDate = new Date(response?.data?.due_date_time);
