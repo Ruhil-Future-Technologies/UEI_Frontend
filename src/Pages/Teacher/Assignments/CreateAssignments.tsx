@@ -332,7 +332,6 @@ export const CreateAssignments = () => {
                     ),
                   })),
                 );
-                console.log(students);
                 const filteredStudents =
                   students?.filter((student) =>
                     output[1].course_id == student.course_id && output[0].semester_number == student.semester_number && output[0].subjects[0] == student.subject_name
@@ -367,7 +366,6 @@ export const CreateAssignments = () => {
                         ),
                   })),
                 );
-                console.log(students);
                 const filteredStudents =
                   students?.filter((student) =>
                     output[0].class_id == student.class_id && output[0].subjects[0] == student.subject_name && output[0].is_Stream? output[0].stream==student.stream:true 
@@ -442,6 +440,11 @@ export const CreateAssignments = () => {
                     ),
                   })),
                 );
+                const filteredStudents =
+                  students?.filter((student) =>
+                    output[1].course_id == student.course_id && output[0].semester_number == student.semester_number && output[0].subjects[0] == student.subject_name
+                  ) || [];
+                setListOfStudentFiltered(filteredStudents)
                 setBoxes(output);
               } else {
                 getSubjects('School');
@@ -471,6 +474,11 @@ export const CreateAssignments = () => {
                         ),
                   })),
                 );
+                const filteredStudents =
+                students?.filter((student) =>
+                  output[0].class_id == student.class_id && output[0].subjects[0] == student.subject_name && output[0].is_Stream? output[0].stream==student.stream:true 
+                ) || [];
+              setListOfStudentFiltered(filteredStudents)
                 setBoxesForSchool(output);
               }
               // setBoxesForSchool(response?.data?.class_stream_subjects);
