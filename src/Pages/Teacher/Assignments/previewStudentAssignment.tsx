@@ -25,7 +25,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
 const PreviewStudentAssignment = () => {
     const navigate = useNavigate();
     const { getData } = useApi();
@@ -77,7 +77,7 @@ const PreviewStudentAssignment = () => {
 
 
     const isAssignmentSubmitedGet = (assignmentId: string) => {
-        getData(`/assignment_submission/get/submissions/${id}`).then((response) => {
+        getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${id}`).then((response) => {
             if (response?.status) {
                 const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
                 console.log(filteredAssignment);

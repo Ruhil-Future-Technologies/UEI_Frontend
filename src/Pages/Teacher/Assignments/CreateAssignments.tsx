@@ -332,9 +332,10 @@ export const CreateAssignments = () => {
                     ),
                   })),
                 );
+                console.log(students);
                 const filteredStudents =
                   students?.filter((student) =>
-                    output[1].course_id == student.course_id && output[0].semester_number == student.sem_id && output[0].subjects[0] == student.course_id
+                    output[1].course_id == student.course_id && output[0].semester_number == student.semester_number && output[0].subjects[0] == student.subject_name
                   ) || [];
                 setListOfStudentFiltered(filteredStudents)
                 setBoxes(output);
@@ -366,9 +367,10 @@ export const CreateAssignments = () => {
                         ),
                   })),
                 );
+                console.log(students);
                 const filteredStudents =
                   students?.filter((student) =>
-                    output[0].class_id == student.class_id && output[0].subjects[0] == student.subject
+                    output[0].class_id == student.class_id && output[0].subjects[0] == student.subject_name && output[0].is_Stream? output[0].stream==student.stream:true 
                   ) || [];
                 setListOfStudentFiltered(filteredStudents)
                 setBoxesForSchool(output);
@@ -1783,7 +1785,11 @@ export const CreateAssignments = () => {
           <ToggleButtonGroup
             value={assignmentType}
             exclusive
-            onChange={(_, newValue) => setAssignmentType(newValue)}
+            onChange={(_, newValue) => {
+              if (newValue !== null) {
+                setAssignmentType(newValue);
+              }
+            }}
             className="assignbtngrp"
           >
             {type !== 'quiz' && (

@@ -257,6 +257,8 @@ export const QUERY_KEYS_QUIZ = {
   ADD_SUBMISSION: '/quiz_submission/add',
   GET_QUIZ_STUDENT: '/quiz/student',
   GENERATE_QUIZ: 'https://prodllm.gyansetu.ai/generate-quiz',
+  GET_QUIZ_BY_TEACHER:'/quiz/get/teacher/',
+  DELETE_QUIZ:'/quiz/delete/'
 };
 
 export const QUERY_KEYS_ASSIGNMENT={
@@ -268,4 +270,12 @@ export const QUERY_KEYS_ASSIGNMENT={
     EDIT_ASSIGNMENT:'/assignment/edit/',
     ADD_ASSIGNMENT:'assignment/add',
     GENERATE_AI_ASSIGNMENT:'https://prodllm.gyansetu.ai/generate-questions',
+}
+
+export const QUERY_KEYS_ASSIGNMENT_SUBMISSION={
+  GET_STUDENTS_BY_ASSIGNMENT:'/assignment_submission/details/',
+  EDIT_ASSIGNMENT_SUBMISSION_FOR_POINTS:'/assignment_submission/edit/',
+  GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID:'/assignment_submission/get/submissions/',
+  ADD_ASSIGNMENT_SUBMISSION:'/assignment_submission/add',
+  //GENERATE_AI_ASSIGNMENT:'https://prodllm.gyansetu.ai/generate-questions',
 }

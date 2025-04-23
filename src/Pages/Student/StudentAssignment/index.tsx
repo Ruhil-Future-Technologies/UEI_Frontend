@@ -2,13 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useApi from "../../../hooks/useAPI";
-import { Box, Checkbox, Chip, Typography } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import { MaterialReactTable, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Assignment } from "../../Teacher/Assignments/CreateAssignments";
 import { toast } from "react-toastify";
 import PreviewIcon from '@mui/icons-material/Preview';
 import './St.scss';
-import { QUERY_KEYS_ASSIGNMENT } from "../../../utils/const";
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from "../../../utils/const";
 
 const StudentAssignments = () => {
 
@@ -38,16 +38,16 @@ const StudentAssignments = () => {
       header: 'Title',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const AsisgnmnetTitle = row?.original?.title;
-        const is_addtoereport=row?.original?.add_to_report
+        const is_addtoereport = row?.original?.add_to_report
         console.log(is_addtoereport);
         return (
           <div className="box">
-            {is_addtoereport==true &&
+            {is_addtoereport == true &&
               <p className="ribbon">
-              <span className="text"> Add to report</span>
-            </p>
+                <span className="text"> Add to report</span>
+              </p>
             }
-            
+
             <div>{AsisgnmnetTitle}</div>
           </div>
 
@@ -139,7 +139,7 @@ const StudentAssignments = () => {
   }
 
   const getAssignmentsSubmited = () => {
-    getData(`/assignment_submission/get/submissions/${student_uuid}`).then((response) => {
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_uuid}`).then((response) => {
       if (response?.status) {
         setAssignmentsSubmited(response?.data);
       }
@@ -153,9 +153,9 @@ const StudentAssignments = () => {
   }
 
   const isAssignmentSubmited = (assignmentId: string) => {
-    console.log(assignmentsSubmited)
+
     const assign = assignmentsSubmited.filter((item) => item?.assignment_id == assignmentId)
-    console.log(assign[0], assign.length, assign[0]?.is_graded)
+
     if (assign.length > 0) {
       return assign[0]?.is_submitted ? (
         <Chip label="Submitted" color="primary" />
@@ -172,7 +172,6 @@ const StudentAssignments = () => {
     if (assign.length > 0 && assign[0].graded_points) {
       return (
         <Box display="flex" alignItems="center">
-          <Checkbox checked color="primary" />
           <Typography variant="body1">{assign[0].graded_points}/{points}</Typography>
         </Box>
       )
@@ -181,8 +180,7 @@ const StudentAssignments = () => {
     } else {
       return (
         <Box display="flex" alignItems="center">
-          <Checkbox color="primary" />
-          <Typography variant="body1">NA/{points}</Typography>
+          <Typography variant="body1">NG/{points}</Typography>
         </Box>
       )
     }

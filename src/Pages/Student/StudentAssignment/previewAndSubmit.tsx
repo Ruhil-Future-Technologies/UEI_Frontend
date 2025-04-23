@@ -30,7 +30,7 @@ import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import "react-quill/dist/quill.snow.css";
-import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
   const { getData, postData } = useApi();
@@ -84,7 +84,7 @@ const PreviewAndSubmit = () => {
 
 
   const isAssignmentSubmitedGet = (assignmentId: string) => {
-    getData(`/assignment_submission/get/submissions/${student_id}`).then((response) => {
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_id}`).then((response) => {
       if (response?.status) {
         const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
         console.log(filteredAssignment);
@@ -165,7 +165,7 @@ const PreviewAndSubmit = () => {
     allselectedfiles.forEach((file) => {
       formData.append('files', file);
     });
-    postData(`/assignment_submission/add`, formData).then((response) => {
+    postData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.ADD_ASSIGNMENT_SUBMISSION}`, formData).then((response) => {
       if (response?.status) {
 
         toast.success(response.message, {
