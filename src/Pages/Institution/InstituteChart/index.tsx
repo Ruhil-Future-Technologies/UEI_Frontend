@@ -484,6 +484,9 @@ const InstitutionCharts = () => {
         type: 'bar',
         height: 350,
         stacked: true,
+        zoom: {
+          enabled: false,
+        },
         toolbar: {
           show: false,
         },
@@ -590,6 +593,9 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
+          zoom: {
+            enabled: false,
+          },
           toolbar: { show: false },
         },
         colors: ['#006064'],
@@ -677,6 +683,9 @@ const InstitutionCharts = () => {
           type: 'area',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -992,6 +1001,9 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1081,6 +1093,9 @@ const InstitutionCharts = () => {
           type: 'bar',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1177,7 +1192,9 @@ const InstitutionCharts = () => {
       chart: {
         type: 'area',
         height: 350,
-
+        zoom: {
+          enabled: false,
+        },
         toolbar: {
           show: false,
         },

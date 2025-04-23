@@ -161,6 +161,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: false,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -236,6 +239,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: true,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -301,6 +307,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: false,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -375,6 +384,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: true,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -470,6 +482,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: false,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -544,6 +559,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: true,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -609,6 +627,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: false,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -683,6 +704,9 @@ const StudentDashboardCharts = () => {
                       type: 'bar',
                       height: 350,
                       stacked: true,
+                      zoom: {
+                        enabled: false,
+                      },
                       toolbar: {
                         show: false,
                       },
@@ -885,6 +909,9 @@ const StudentDashboardCharts = () => {
                     height: 400,
                     type: activeTab === 'daily' ? 'area' : 'line',
                     stacked: false,
+                    zoom: {
+                      enabled: false,
+                    },
                     toolbar: { show: false },
                     dropShadow: {
                       enabled: true,
@@ -1109,6 +1136,9 @@ const StudentDashboardCharts = () => {
                     height: 400,
                     type: 'line',
                     stacked: false,
+                    zoom: {
+                      enabled: false,
+                    },
                     toolbar: { show: false },
                     dropShadow: {
                       enabled: true,
