@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import {
   Dialog,
@@ -55,10 +56,9 @@ const AssignmentModal: React.FC<Props> = ({
     setExpanded(id);
   };
 
-  const handleAccordionChange =
-    (panel: number) => (_: React.SyntheticEvent) => {
-      setExpanded(panel);
-    };
+  const handleAccordionChange = (panel: number) => () => {
+    setExpanded(panel);
+  };
 
   const handleProceed = () => {
     onProceed(assignments[selectedAssignment]);
