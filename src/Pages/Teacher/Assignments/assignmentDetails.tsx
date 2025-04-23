@@ -95,7 +95,7 @@ const AssignmentDetails = () => {
     getData(`/assignment/get/${id}`)
       .then(async (response) => {
         if (response.status) {
-          setAssignmentData(response.data);
+          setAssignmentData(response?.data);
         }
       })
       .catch((error) => {
@@ -178,7 +178,7 @@ const AssignmentDetails = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {students.map((student, index) => (
+                                {students?.map((student, index) => (
                                     <TableRow key={index}>
                                         <TableCell sx={{ fontWeight: "bold" }}>{student.first_name + " " + student.last_name}</TableCell>
                                         <TableCell>{student?.submission_date}</TableCell>

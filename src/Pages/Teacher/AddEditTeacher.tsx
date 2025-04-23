@@ -186,23 +186,47 @@ const AddEditTeacher = () => {
     await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
       all_classes = data?.data.classes_data;
       setDataClasses(data.data?.classes_data);
-    });
+    }).catch((error)=>{
+          toast.error(error.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+          })
+        });
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
       all_courses = data.data.course_data;
       setDataCourses(
         data?.data?.course_data?.filter((subject: any) => subject.is_active),
       );
-    });
+    }).catch((error)=>{
+          toast.error(error.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+          })
+        });
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       setCollegeSubjects(
         data?.data?.subjects_data?.filter((subject: any) => subject.is_active),
       );
-    });
+    }).catch((error)=>{
+          toast.error(error.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+          })
+        });
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       setSchoolSubjects(
         data?.data?.subjects_data?.filter((subject: any) => subject.is_active),
       );
-    });
+    }).catch((error)=>{
+          toast.error(error.message,{
+          hideProgressBar:true,
+          theme:'colored',
+          position:'top-center'
+          })
+        });
     if (id) {
       const teacherData = await getData(`${TeacherURL}`);
 

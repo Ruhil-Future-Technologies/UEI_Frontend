@@ -368,12 +368,14 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        if (data.status) {
+        if(data.status){
           const filteredData = data?.data?.entityes_data?.filter(
             (entity: any) => entity.is_active === true,
           );
           setDataEntity(filteredData);
         }
+        
+        // setDataEntity(data?.data)
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -985,7 +987,7 @@ const TeacherRegistrationPage = () => {
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
-      const duplicateFiles = filesArray.filter((file) =>
+      const duplicateFiles = filesArray?.filter((file) =>
         allselectedfiles.some(
           (existingFile) => existingFile.name === file.name,
         ),
@@ -1049,7 +1051,7 @@ const TeacherRegistrationPage = () => {
         let updatedBox = { ...box, [name]: value };
 
         if (name === 'course_id') {
-          const filteredSemesters = semesterData.filter(
+          const filteredSemesters = semesterData?.filter(
             (item) => item.course_id === value,
           );
           updatedBox = {
@@ -1062,7 +1064,7 @@ const TeacherRegistrationPage = () => {
         }
 
         if (name === 'semester_number') {
-          const filteredSubjects = totleSubject.filter(
+          const filteredSubjects = totleSubject?.filter(
             (item) =>
               item.semester_number === value &&
               item.course_id === boxes[index].course_id,
@@ -1109,7 +1111,7 @@ const TeacherRegistrationPage = () => {
             }; // Reset stream & subjects
           } else {
             // Filter subjects immediately based on the selected class
-            const filteredSubjects = totleSubject.filter(
+            const filteredSubjects = totleSubject?.filter(
               (item) => item.class_id === value,
             );
 
@@ -1125,7 +1127,7 @@ const TeacherRegistrationPage = () => {
         }
 
         if (name === 'stream') {
-          const filteredSubjects = totleSubject.filter(
+          const filteredSubjects = totleSubject?.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
                 value.toString().toLowerCase() &&
@@ -1178,14 +1180,14 @@ const TeacherRegistrationPage = () => {
   };
   const handleRemove = (entity: string, index: number) => {
     if (entity.toLowerCase() === 'school') {
-      setBoxesForSchool(boxesForSchool.filter((_, i) => i !== index));
+      setBoxesForSchool(boxesForSchool?.filter((_, i) => i !== index));
     } else {
-      setBoxes(boxes.filter((_, i) => i !== index));
+      setBoxes(boxes?.filter((_, i) => i !== index));
     }
   };
   const handleRemoveFile = (index: number) => {
     setAllSelectedfiles((previous) =>
-      previous.filter((_, ind) => ind !== index),
+      previous?.filter((_, ind) => ind !== index),
     );
     setErrorMessage('');
   };

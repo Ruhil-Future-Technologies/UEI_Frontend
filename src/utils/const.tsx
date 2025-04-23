@@ -258,3 +258,10 @@ export const QUERY_KEYS_QUIZ = {
   GET_QUIZ_STUDENT: '/quiz/student',
   GENERATE_QUIZ: 'https://prodllm.gyansetu.ai/generate-quiz',
 };
+
+export const QUERY_KEYS_ASSIGNMENT={
+    GET_ASSIGNMENT:'/assignment/get/',
+    EDIT_ASSIGNMENT:'/assignment/edit/',
+    ADD_ASSIGNMENT:'assignment/add',
+    GENERATE_AI_ASSIGNMENT:'https://prodllm.gyansetu.ai/generate-questions',
+}

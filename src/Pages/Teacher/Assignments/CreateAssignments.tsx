@@ -42,6 +42,7 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box } from '@mui/system';
 import useApi from '../../../hooks/useAPI';
 import {
+  QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_QUIZ,
@@ -65,6 +66,8 @@ import QuizModal from './QuizModal';
 import axios from 'axios';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
+import AssignmentModal from './AssignmentModal';
+
 
 export interface Assignment {
   id?: string;
@@ -85,6 +88,13 @@ export interface Assignment {
   notify: boolean;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
+type QuestionItem = {
+
+  key: string;
+
+  value: string;
+
+};
 export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
@@ -125,13 +135,16 @@ export const CreateAssignments = () => {
   const [selectedStudents, setSelectedStudents] = useState<StudentRep0oDTO[]>(
     [],
   );
+  const [questionKey, setQuestionKey] = useState('');
+  const [questionValue, setQuestionValue] = useState('');
+  const [questionMap, setQuestionMap] = useState<QuestionItem[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [teacherStream, setTeacherStream] = useState<string[]>();
   const [tescherSchoolSubjects, setTeacherSchoolSubjects] =
     useState<string[]>();
 
   const [saveAsDraft, setSaveAsDraft] = useState(false);
-   const [listOfStudentFiltered, setListOfStudentFiltered] = useState<any[]>();
+  const [listOfStudentFiltered, setListOfStudentFiltered] = useState<any[]>();
   const [listOfStudent, setListOfStudent] = useState<any[]>();
 
   const [title_error, setTitle_error] = useState(false);
@@ -150,7 +163,10 @@ export const CreateAssignments = () => {
   const [quiz_timer, setQuizTimer] = useState('');
   const [quiz_timer_error, setQuizTimer_error] = useState(false);
   const GENERATE_QUIZ = QUERY_KEYS_QUIZ.GENERATE_QUIZ;
+  const ASSIGNMENT = QUERY_KEYS_ASSIGNMENT;
   const [loading, setLoading] = useState(false);
+  const [isAssignmentModalOpen, setAssignmentModalOpen] = useState(false);
+  const [assignmentJsonQuestions,setAssignmentJsonQuestions]=useState<any>();
 
   const [filteredcoursesData, setFilteredCoursesData] = useState<
     CourseRep0oDTO[]
@@ -205,7 +221,7 @@ export const CreateAssignments = () => {
     notify: false,
     files: [], // File should be null initially
   });
-
+  const [assignmentGenrData, setAssignmentGenrData] = useState<any[]>([]);
   const [quizData, setQuizData] = useState<any>({});
   const [level, setLevel] = useState('');
   const [questions, setQuestions] = useState<any>([
@@ -214,9 +230,11 @@ export const CreateAssignments = () => {
   const [topic, setTopic] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuizGenerated, setIsQuizGenerated] = useState(false);
+  const [isAiAssignmentGenerated, setAiAssignmentGenerated] = useState(false);
   const [quizPayload, setQuizPayload] = useState<any>({});
   const [totalQuestions, setTotalQuestion] = useState<any>('');
-
+  const [totalMarks,setTotalMarks]=useState<any>('');
+  const [configInstructions, setConfigInstructions] = useState('');
   const getTotal = (questions: Record<string, any>[]) => {
     const total = questions.reduce((acc, obj) => {
       for (const value of Object.values(obj)) {
@@ -258,11 +276,11 @@ export const CreateAssignments = () => {
     }
   };
 
-  const getAssignmentInfo = (students: StudentRep0oDTO[]) => {
+  const getAssignmentInfo = (students: any[]) => {
     if (id) {
       try {
         if (type !== 'quiz') {
-          getData(`/assignment/get/${id}`)
+          getData(`${ASSIGNMENT.GET_ASSIGNMENT}${id}`)
             .then(async (response) => {
               if (response.data) {
                 setAssignmentData(response.data);
@@ -297,23 +315,28 @@ export const CreateAssignments = () => {
                 ).flatMap((CourseKey) =>
                   Object.keys(
                     response.data.course_semester_subjects[CourseKey],
-                  ).map((semester_number) => ({
+                  )?.map((semester_number) => ({
                     course_id: CourseKey,
                     semester_number: semester_number,
                     subjects:
                       response.data.course_semester_subjects[CourseKey][
-                        semester_number
+                      semester_number
                       ],
-                    filteredSemesters: allsemesters.filter(
+                    filteredSemesters: allsemesters?.filter(
                       (item) => item.course_id == CourseKey,
                     ),
-                    filteredSubjects: allSubject.filter(
+                    filteredSubjects: allSubject?.filter(
                       (item) =>
                         item.semester_number == semester_number &&
                         item.course_id == CourseKey,
                     ),
                   })),
                 );
+                const filteredStudents =
+                  students?.filter((student) =>
+                    output[1].course_id == student.course_id && output[0].semester_number == student.sem_id && output[0].subjects[0] == student.course_id
+                  ) || [];
+                setListOfStudentFiltered(filteredStudents)
                 setBoxes(output);
               } else {
                 getSubjects('School');
@@ -325,7 +348,7 @@ export const CreateAssignments = () => {
                 ).flatMap((classKey) =>
                   Object.keys(
                     response.data.class_stream_subjects[classKey],
-                  ).map((stream) => ({
+                  )?.map((stream) => ({
                     stream: stream,
                     subjects:
                       response.data.class_stream_subjects[classKey][stream],
@@ -335,14 +358,19 @@ export const CreateAssignments = () => {
                       stream === 'general' ? 'col-6' : 'col-4',
                     filteredSubjects:
                       stream == 'general'
-                        ? allSubject.filter((item) => item.class_id == classKey)
-                        : allSubject.filter(
-                            (item) =>
-                              item.class_id == classKey &&
-                              item.stream == stream,
-                          ),
+                        ? allSubject?.filter((item) => item.class_id == classKey)
+                        : allSubject?.filter(
+                          (item) =>
+                            item.class_id == classKey &&
+                            item.stream == stream,
+                        ),
                   })),
                 );
+                const filteredStudents =
+                  students?.filter((student) =>
+                    output[0].class_id == student.class_id && output[0].subjects[0] == student.subject
+                  ) || [];
+                setListOfStudentFiltered(filteredStudents)
                 setBoxesForSchool(output);
               }
               // setBoxesForSchool(response?.data?.class_stream_subjects);
@@ -372,6 +400,7 @@ export const CreateAssignments = () => {
                 setDueTime(dayjs(response?.data?.due_date_time));
                 setAvailableFrom(dayjs(response?.data?.available_from));
                 setQuizTimer(response?.data?.timer);
+                setAllowMultipleAttempt(response?.data?.is_multiple_attempt);
                 setQuizData((prev: any) => ({
                   ...prev,
                   questions: response?.data?.questions,
@@ -394,17 +423,17 @@ export const CreateAssignments = () => {
                 ).flatMap((CourseKey) =>
                   Object.keys(
                     response.data.course_semester_subjects[CourseKey],
-                  ).map((semester_number) => ({
+                  )?.map((semester_number) => ({
                     course_id: CourseKey,
                     semester_number: semester_number,
                     subjects:
                       response.data.course_semester_subjects[CourseKey][
-                        semester_number
+                      semester_number
                       ],
-                    filteredSemesters: allsemesters.filter(
+                    filteredSemesters: allsemesters?.filter(
                       (item) => item.course_id == CourseKey,
                     ),
-                    filteredSubjects: allSubject.filter(
+                    filteredSubjects: allSubject?.filter(
                       (item) =>
                         item.semester_number == semester_number &&
                         item.course_id == CourseKey,
@@ -422,7 +451,7 @@ export const CreateAssignments = () => {
                 ).flatMap((classKey) =>
                   Object.keys(
                     response.data.class_stream_subjects[classKey],
-                  ).map((stream) => ({
+                  )?.map((stream) => ({
                     stream: stream,
                     subjects:
                       response.data.class_stream_subjects[classKey][stream],
@@ -432,12 +461,12 @@ export const CreateAssignments = () => {
                       stream === 'general' ? 'col-6' : 'col-4',
                     filteredSubjects:
                       stream == 'general'
-                        ? allSubject.filter((item) => item.class_id == classKey)
-                        : allSubject.filter(
-                            (item) =>
-                              item.class_id == classKey &&
-                              item.stream == stream,
-                          ),
+                        ? allSubject?.filter((item) => item.class_id == classKey)
+                        : allSubject?.filter(
+                          (item) =>
+                            item.class_id == classKey &&
+                            item.stream == stream,
+                        ),
                   })),
                 );
                 setBoxesForSchool(output);
@@ -508,38 +537,16 @@ export const CreateAssignments = () => {
             ).flatMap(([semester, subjects]) =>
               Object.values(subjects).flatMap((subjectList) =>
                 Array.isArray(subjectList)
-                  ? subjectList.map((subject) => ({ semester, subject }))
+                  ? subjectList?.map((subject) => ({ semester, subject }))
                   : [],
               ),
             );
-            setTeacherSubjects(semesterSubjects.map(({ subject }) => subject));
+            setTeacherSubjects(semesterSubjects?.map(({ subject }) => subject));
 
             setTeacherCourse((prev) => [...(prev || []), ...courseKeys]);
           } else {
             getSubjects('School');
             setSelectedEntity('School');
-            // const allSubject: SubjectRep0oDTO[] = await getSubjects('School');
-            // const output: BoxesForSchool[] = Object.keys(
-            //   data.data.class_stream_subjects,
-            // ).flatMap((classKey) =>
-            //   Object.keys(data.data.class_stream_subjects[classKey]).map(
-            //     (stream) => ({
-            //       stream: stream,
-            //       subjects: data.data.class_stream_subjects[classKey][stream],
-            //       class_id: classKey,
-            //       is_Stream: stream !== 'general',
-            //       selected_class_name: stream === 'general' ? 'col-6' : 'col-4',
-            //       filteredSubjects:
-            //         stream == 'general'
-            //           ? allSubject.filter((item) => item.class_id === classKey)
-            //           : allSubject.filter(
-            //             (item) =>
-            //               item.class_id === classKey &&
-            //               item.stream === stream,
-            //           ),
-            //     }),
-            //   ),
-            // );
 
             const streeamKeys = Object.values(
               data.data.class_stream_subjects as Record<
@@ -549,7 +556,7 @@ export const CreateAssignments = () => {
             ).flatMap((streamkeys) => Object.keys(streamkeys));
             setTeacherStream(streeamKeys);
 
-            const classIds = Object.keys(data.data.class_stream_subjects).map(
+            const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => parseInt(classKey, 10),
             );
             //setBoxesForSchool(output);
@@ -565,14 +572,14 @@ export const CreateAssignments = () => {
                 [, subjects], // Ignore the first key (e.g., "8")
               ) =>
                 Object.entries(subjects).flatMap(([streamName, subjectArray]) =>
-                  subjectArray.map((subject) => ({
+                  subjectArray?.map((subject) => ({
                     stream: streamName,
                     subject,
                   })),
                 ),
             );
 
-            setTeacherSchoolSubjects(Subjects.map(({ subject }) => subject));
+            setTeacherSchoolSubjects(Subjects?.map(({ subject }) => subject));
           }
         }
       });
@@ -580,36 +587,13 @@ export const CreateAssignments = () => {
       console.log(error);
     }
   };
-  // const getInstitutelist = async (entityId: any) => {
-  //   getData(`${InstituteURL}`)
-  //     .then((data) => {
-  //       const fiteredInstitutedata = data.data.filter(
-  //         (institute: any) =>
-  //           institute.is_active === 1 &&
-  //           institute.is_approve === true &&
-  //           institute.entity_id === entityId,
-  //       );
-  //       if (data.data) {
-  //         setInstitutionsData(fiteredInstitutedata);
-  //         setFiteredInstitute(fiteredInstitutedata);
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       if (e?.response?.status === 401) {
-  //         toast.error(e?.message, {
-  //           hideProgressBar: true,
-  //           theme: 'colored',
-  //         });
-  //       }
-  //     });
-  // };
   const getSemester = async (): Promise<any[]> => {
     try {
       const data = await getData(`/semester/list`);
 
       if (data?.status && data?.data) {
-        setSemesterData(data?.data?.semesters_data);
-        return data?.data?.semesters_data; // Return the fetched semesters
+        setSemesterData(data.data.semesters_data);
+        return data.data.semesters_data; // Return the fetched semesters
       }
 
       return []; // Return an empty array if no data
@@ -621,7 +605,7 @@ export const CreateAssignments = () => {
   const getCourses = () => {
     getData(`${CourseURL}`)
       .then((data) => {
-        if (data.status) {
+        if (data.data) {
           //  setCoursesData(data?.data);
           const filteredCourses = data?.data?.course_data?.filter(
             (course: any) => course.is_active,
@@ -639,8 +623,8 @@ export const CreateAssignments = () => {
   const getClasslist = (classIds: any) => {
     getData(`${ClassURL}`)
       .then((data) => {
-        if (data.status) {
-          const filteredClasses = data?.data?.classes_data.filter((classn: any) =>
+        if (data.data) {
+          const filteredClasses = data?.data?.classes_data?.filter((classn: any) =>
             classIds.includes(classn.id),
           );
           setDataClass(filteredClasses);
@@ -654,17 +638,6 @@ export const CreateAssignments = () => {
       });
   };
 
-  // const getListOfStudnetsForAssignment = () => {
-
-  //   getData(`/assignment_submission/get/students/${teacher_id}`).then((response) => {
-  //     if (response?.status) {
-  //       //console.log(assignmentId)
-  //       console.log(response?.data)
-  //       // const filteredSubmition=response.data
-  //       setSelectedStudents(response?.data)
-  //     }
-  //   })
-  // }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -753,7 +726,7 @@ export const CreateAssignments = () => {
     }
   };
 
-  const submitAssignment = (saveAsDraft?:any) => {
+  const submitAssignment = (saveAsDraft?: any,assignmentDataType?:string,questions?:any) => {
     let valid1 = false;
     if (
       !/^[A-Za-z0-9][A-Za-z0-9 _-]{3,98}[A-Za-z0-9]*$/.test(
@@ -763,26 +736,33 @@ export const CreateAssignments = () => {
       setTitle_error(true);
       valid1 = true;
     }
-    if (!(files.length > 0)) {
+    if (assignmentDataType !='json' && !(files.length > 0)) {
       setFile_error(true);
       valid1 = true;
     } else {
       setFile_error(false);
     }
+   if(assignmentDataType !='json'){
     if (!/^\d+$/.test(assignmentData.points)) {
       setPoint_error(true);
       valid1 = true;
     } else {
       setPoint_error(false);
     }
-
+   }else{
+    if (!/^\d+$/.test(totalMarks)) {
+      setPoint_error(true);
+      valid1 = true;
+    } else {
+      setPoint_error(false);
+    }
+   }
     if (assignmentData.instructions == '') {
       setInstructoins_error(true);
       valid1 = true;
     } else {
       setInstructoins_error(false);
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(assignmentData.contact_email)) {
       setContact_email_error(true);
       valid1 = true;
@@ -852,7 +832,7 @@ export const CreateAssignments = () => {
     }
     if (valid1) return;
     if (!valid) return;
-  console.log((assignmentData),saveAsDraft)
+
     const formData = new FormData();
     formData.append('title', assignmentData.title);
     formData.append('type', type);
@@ -861,12 +841,12 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append('points', assignmentData.points);
+    formData.append('points', assignmentDataType =='json'?totalMarks:assignmentData.points);
     formData.append('save_draft', String(saveAsDraft));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
-    const students = selectedStudents.map((student) => student.id);
+    const students = selectedStudents?.map((student) => student.id);
 
     formData.append('assign_to_students', JSON.stringify(students));
     files.forEach((file) => {
@@ -937,7 +917,8 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        postData('assignment/add', formData).then((response) => {
+        console.log(assignmentJsonQuestions,questions);
+        postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
               hideProgressBar: true,
@@ -971,7 +952,7 @@ export const CreateAssignments = () => {
       }
     } else {
       try {
-        putData(`/assignment/edit/${id}`, formData)
+        putData(`${ASSIGNMENT.EDIT_ASSIGNMENT}${id}`, formData)
           .then((response) => {
             if (response.status) {
               toast.success(response.message, {
@@ -1014,8 +995,8 @@ export const CreateAssignments = () => {
     }
   };
 
-  const generateQuiz = async () => {
-    setLoading(true);
+  const generateQuiz = async (type?: any) => {
+    console.log('sdfs')
     let valid1 = false;
     if (!topic) {
       setTopic_error(true);
@@ -1034,6 +1015,7 @@ export const CreateAssignments = () => {
     }
 
     if (totalQuestions < 1) {
+      console.log(totalQuestions)
       setQuestions_error(true);
 
       valid1 = true;
@@ -1091,13 +1073,16 @@ export const CreateAssignments = () => {
       setErrorSelectStudent(false);
     }
 
-    if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
-      setQuizTimer_error(true);
-
-      valid1 = true;
-    } else {
-      setQuizTimer_error(false);
+    if (type !== 'assignment') {
+      if (!Number(quiz_timer) || Number(quiz_timer) == 0) {
+        setQuizTimer_error(true);
+        console.log("dsfgsd durat")
+        valid1 = true;
+      } else {
+        setQuizTimer_error(false);
+      }
     }
+
 
     let valid = true;
 
@@ -1136,17 +1121,11 @@ export const CreateAssignments = () => {
       });
     }
 
-    if (valid1) {
-      setLoading(false);
-      return;
-    }
+    if (valid1) return;
 
-    if (!valid) {
-      setLoading(false);
-      return;
-    }
+    if (!valid) return;
 
-    const class_or_course = getClassOrCourseName();
+    const class_or_course = getClassOrCourseName().replace('_', " ") + " " + "science";
     const rawMarks = questions[0] || {};
     const wordToNumberMap: Record<string, number> = {
       one: 1,
@@ -1158,24 +1137,46 @@ export const CreateAssignments = () => {
 
     const cleanedMarks = Object.fromEntries(
       Object.entries(rawMarks)
-        .filter(([, value]) => value !== '')
-        .map(([key, value]) => [wordToNumberMap[key] || key, value]), //
+        ?.filter(([, value]) => value !== '')
+        ?.map(([key, value]) => [wordToNumberMap[key] || key, value]), //
+    );
+
+
+    const obj = Object.fromEntries(
+      questionMap?.map(({ key, value }) => [String(value), Number(key)])
     );
 
     const payload = {
       class_or_course,
       level,
-      marks: cleanedMarks,
+      marks: type == 'assignment' ? obj : cleanedMarks,
       topic,
-      num_questions: totalQuestions,
+      ...(type != 'assignment' && {
+        num_questions: totalQuestions
+      }),
+      ...(type == 'assignment' && { instruction: configInstructions, format_of_output: 'json', number_of_questions: totalQuestions })
     };
 
     try {
-      const response = await axios.post(GENERATE_QUIZ, payload);
+      if (type == 'assignment') {
+        setLoading(true);
+        const response = await axios.post(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        setAssignmentGenrData(response?.data);
+        console.log(response.data);
+        setAssignmentModalOpen(true);
+        setLoading(false);
+      } else {
+        setLoading(true);
+        const response = await axios.post(GENERATE_QUIZ, payload);
+        setQuizData(response?.data);
+        setIsModalOpen(true);
+        setLoading(false);
+      }
 
-      setQuizData(response?.data);
-      setIsModalOpen(true);
-      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error('Error generating quiz:', error);
@@ -1191,6 +1192,8 @@ export const CreateAssignments = () => {
     let data = quizPayload;
     if (save_draft) {
       data = payload;
+    }else{
+      data.save_draft=save_draft;
     }
 
     let valid1 = false;
@@ -1354,7 +1357,6 @@ export const CreateAssignments = () => {
           setQuizPayload([]);
           setQuizData([]);
         } else {
-          setLoading(false);
           toast.error(response.message, {
             hideProgressBar: true,
             theme: 'colored',
@@ -1367,7 +1369,7 @@ export const CreateAssignments = () => {
 
   const handleSaveQuiz = (updatedQuizData: any) => {
     const payload: any = { ...updatedQuizData };
-    const students = selectedStudents.map((student) => student.id);
+    const students = selectedStudents?.map((student) => student.id);
 
     payload.is_multiple_attempt = String(allowMultipleAttempt);
     payload.allow_late_submission = String(allowLateSubmission);
@@ -1377,11 +1379,7 @@ export const CreateAssignments = () => {
     payload.add_to_report = String(addToStudentRepost);
     payload.notify = String(sendNotification);
 
-    if (id) {
-      payload.save_draft = String(false);
-    } else {
-      payload.save_draft = String(saveAsDraft);
-    }
+    payload.save_draft = String(saveAsDraft);
     payload.timer = String(quiz_timer);
     payload.type = type;
     payload.contact_email = assignmentData.contact_email;
@@ -1517,13 +1515,13 @@ export const CreateAssignments = () => {
   ) => {
     const { value, name } = event.target;
     setBoxes((prevBoxes) =>
-      prevBoxes.map((box, i) => {
+      prevBoxes?.map((box, i) => {
         if (i !== index) return box;
 
         let updatedBox = { ...box, [name]: value };
 
         if (name === 'course_id') {
-          const filteredSemesters = semesterData.filter(
+          const filteredSemesters = semesterData?.filter(
             (item) => item.course_id === value,
           );
           updatedBox = {
@@ -1536,16 +1534,16 @@ export const CreateAssignments = () => {
         }
 
         if (name === 'semester_number') {
-          const filteredSubjects = totleSubject.filter(
+          const filteredSubjects = totleSubject?.filter(
             (item) =>
               item.semester_number === value &&
               item.course_id === boxes[index].course_id,
           );
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
         }
-        if(name=='subjects'){
+        if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
-            const matchedSubject = totleSubject.find(
+            const matchedSubject = totleSubject?.find(
               (subject) =>
                 subject.subject_name === value &&
                 subject.course_id === boxes[index].course_id &&
@@ -1568,7 +1566,7 @@ export const CreateAssignments = () => {
     const { value, name } = event.target;
 
     setBoxesForSchool((prevBoxes) =>
-      prevBoxes.map((box, i) => {
+      prevBoxes?.map((box, i) => {
         if (i !== index) return box;
 
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
@@ -1594,7 +1592,7 @@ export const CreateAssignments = () => {
             }; // Reset stream & subjects
           } else {
             // Filter subjects immediately based on the selected class
-            const filteredSubjects = totleSubject.filter(
+            const filteredSubjects = totleSubject?.filter(
               (item) => item.class_id === value,
             );
 
@@ -1610,10 +1608,10 @@ export const CreateAssignments = () => {
         }
 
         if (name === 'stream') {
-          const filteredSubjects = totleSubject.filter(
+          const filteredSubjects = totleSubject?.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
-                value.toString().toLowerCase() &&
+              value.toString().toLowerCase() &&
               item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
@@ -1623,9 +1621,9 @@ export const CreateAssignments = () => {
             subjects: [],
           };
         }
-        if(name=='subjects'){
+        if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
-            const matchedSubject = totleSubject.find(
+            const matchedSubject = totleSubject?.find(
               (subject) =>
                 subject.subject_name === value &&
                 subject.class_id === boxesForSchool[index].class_id &&
@@ -1705,8 +1703,50 @@ export const CreateAssignments = () => {
     } else {
       setDueTime_error(false);
     }
-  }, [dueDate, availableFrom, dueTime]);
+    if (level == '' && level) {
+      setLevel_error(true);
+    } else {
+      setLevel_error(false);
+    }
 
+    if (topic == '' && topic) {
+      setTopic_error(true);
+    } else {
+      setTopic_error(false);
+    }
+  }, [dueDate, availableFrom, dueTime, level, topic]);
+  const handleQuestionmap = () => {
+    if (questionKey && questionValue) {
+      setQuestions_error(false);
+      setQuestionMap(prev => [...prev, { key: questionKey, value: questionValue }]);
+      const totalQuestions = questionMap.reduce((sum, item) => {
+        return sum + Number(item.key); // convert key to number and add
+      }, 0);
+      const totalMarks = questionMap.reduce((sum, item) => {
+        const key = Number(item.key);
+        const value = Number(item.value);
+        console.log(`key: ${item.key}, value: ${item.value}, product: ${key * value}`);
+        return sum + (key * value);
+      }, 0);
+      setTotalQuestion(Number(totalQuestions) + Number(questionKey));
+      setTotalMarks(totalMarks+(Number(questionValue)*Number(questionKey)))
+      setQuestionValue('');
+      setQuestionKey('')
+    }
+  }
+  const handleDelete = (key: any, value: any, index: number) => {
+    const filteredQuestion = questionMap?.filter((_: any, ind: number) => ind !== index);
+    setQuestionMap(filteredQuestion);
+    console.log(value);
+    setTotalQuestion(totalQuestions - key)
+    setAiAssignmentGenerated(false)
+    if (questionMap.length == 1) {
+      setQuestions_error(true)
+    } else {
+      setQuestions_error(false)
+    }
+  }
+ console.log(assignmentType,edit);
   return (
     <div className="main-wrapper">
       <div className="main-content">
@@ -1722,7 +1762,7 @@ export const CreateAssignments = () => {
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item active" aria-current="page">
-                  Create Assignments
+                  Create {assignmentType=='quiz'?'Quiz':'Assignments'} 
                 </li>
               </ol>
             </nav>
@@ -1744,8 +1784,8 @@ export const CreateAssignments = () => {
                 <ToggleButton value="written">
                   <AssignmentIcon /> Written
                 </ToggleButton>
-                <ToggleButton value="project">
-                  <AccountTreeIcon /> Project
+                <ToggleButton value="ai generated">
+                  <AccountTreeIcon /> Ai generated
                 </ToggleButton>
                 <ToggleButton value="presentation">
                   <PresentToAllIcon />
@@ -1770,7 +1810,7 @@ export const CreateAssignments = () => {
                     <div className="col-12">
                       <Typography variant="h6" className="mb-4 fw-bold">
                         Create{' '}
-                        {assignmentType !== 'quiz' ? 'Assignment' : 'Quiz'}
+                        {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
                       </Typography>
                       {assignmentType !== 'quiz' && (
                         <TextField
@@ -1808,7 +1848,7 @@ export const CreateAssignments = () => {
                       )}
                     </div>
 
-                    {assignmentType !== 'quiz' && (
+                    {assignmentType == 'written' && (
                       <>
                         {' '}
                         <div className="col-lg-6">
@@ -1849,7 +1889,7 @@ export const CreateAssignments = () => {
                             </Button>
                           </label>
                           <List>
-                            {files.map((file, index) => (
+                            {files?.map((file, index) => (
                               <ListItem
                                 className="fileslistitem"
                                 key={index}
@@ -1879,7 +1919,7 @@ export const CreateAssignments = () => {
                         </div>
                       </>
                     )}
-                    {assignmentType === 'quiz' && !edit ? (
+                    {(assignmentType === 'quiz' && !edit) || assignmentType === 'ai generated' ? (
                       <>
                         <div className="col-md-6 col-12">
                           <FormControl fullWidth className="">
@@ -1909,128 +1949,178 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                        <div className="col-12">
-                          <label className="col-form-label pb-0">
-                            Number of Questions for Each Mark
-                          </label>
-                        </div>
+                        {assignmentType === 'quiz' ?
+                          <>
 
-                        <div className="col-md-2 col-12">
-                          <TextField
-                            label="One Mark"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                            disabled={isQuizGenerated}
-                            value={questions[0].one}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              setQuestions((prevState: any) => {
-                                const updatedQuestions = [...prevState];
-                                updatedQuestions[0] = {
-                                  ...updatedQuestions[0],
-                                  one: value,
-                                };
-                                return updatedQuestions;
-                              });
-                            }}
-                            fullWidth
-                          />
-                        </div>
-                        <div className="col-md-2 col-12">
-                          <TextField
-                            label="Two Marks"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                            disabled={isQuizGenerated}
-                            value={questions[0].two}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              setQuestions((prevState: any) => {
-                                const updatedQuestions = [...prevState];
-                                updatedQuestions[0] = {
-                                  ...updatedQuestions[0],
-                                  two: value,
-                                };
-                                return updatedQuestions;
-                              });
-                            }}
-                            fullWidth
-                          />
-                        </div>
-                        <div className="col-md-2 col-12">
-                          <TextField
-                            label="Three Marks"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                            disabled={isQuizGenerated}
-                            value={questions[0].three}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              setQuestions((prevState: any) => {
-                                const updatedQuestions = [...prevState];
-                                updatedQuestions[0] = {
-                                  ...updatedQuestions[0],
-                                  three: value,
-                                };
-                                return updatedQuestions;
-                              });
-                            }}
-                            fullWidth
-                          />
-                        </div>
-                        <div className="col-md-2 col-12">
-                          <TextField
-                            label="Four Marks"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                            disabled={isQuizGenerated}
-                            value={questions[0].four}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              setQuestions((prevState: any) => {
-                                const updatedQuestions = [...prevState];
-                                updatedQuestions[0] = {
-                                  ...updatedQuestions[0],
-                                  four: value,
-                                };
-                                return updatedQuestions;
-                              });
-                            }}
-                            fullWidth
-                          />
-                        </div>
-                        <div className="col-md-2 col-12">
-                          <TextField
-                            label="Five Marks"
-                            type="number"
-                            inputProps={{ min: 0 }}
-                            disabled={isQuizGenerated}
-                            value={questions[0].five}
-                            onChange={(e) => {
-                              const value = Number(e.target.value);
-                              setQuestions((prevState: any) => {
-                                const updatedQuestions = [...prevState];
-                                updatedQuestions[0] = {
-                                  ...updatedQuestions[0],
-                                  five: value,
-                                };
-                                return updatedQuestions;
-                              });
-                            }}
-                            fullWidth
-                          />
-                        </div>
+                            <div className="col-12">
+                              <label className="col-form-label pb-0">
+                                Number of Questions for Each Mark
+                              </label>
+                            </div>
 
-                        <div className="col-md-2 col-12">
-                          <TextField
-                            label="Total Questions"
-                            type="number"
-                            disabled
-                            value={totalQuestions}
-                            // onChange={(e) => setQuestions(e.target.value)}
-                            fullWidth
-                          />
-                        </div>
+                            <div className="col-md-2 col-12">
+                              <TextField
+                                label="One Mark"
+                                type="number"
+                                disabled={isQuizGenerated}
+                                value={questions[0].one}
+                                onChange={(e) => {
+                                  const value = Number(e.target.value);
+                                  setQuestions((prevState: any) => {
+                                    const updatedQuestions = [...prevState];
+                                    updatedQuestions[0] = {
+                                      ...updatedQuestions[0],
+                                      one: value,
+                                    };
+                                    return updatedQuestions;
+                                  });
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                            <div className="col-md-2 col-12">
+                              <TextField
+                                label="Two Marks"
+                                type="number"
+                                disabled={isQuizGenerated}
+                                value={questions[0].two}
+                                onChange={(e) => {
+                                  const value = Number(e.target.value);
+                                  setQuestions((prevState: any) => {
+                                    const updatedQuestions = [...prevState];
+                                    updatedQuestions[0] = {
+                                      ...updatedQuestions[0],
+                                      two: value,
+                                    };
+                                    return updatedQuestions;
+                                  });
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                            <div className="col-md-2 col-12">
+                              <TextField
+                                label="Three Marks"
+                                type="number"
+                                disabled={isQuizGenerated}
+                                value={questions[0].three}
+                                onChange={(e) => {
+                                  const value = Number(e.target.value);
+                                  setQuestions((prevState: any) => {
+                                    const updatedQuestions = [...prevState];
+                                    updatedQuestions[0] = {
+                                      ...updatedQuestions[0],
+                                      three: value,
+                                    };
+                                    return updatedQuestions;
+                                  });
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                            <div className="col-md-2 col-12">
+                              <TextField
+                                label="Four Marks"
+                                type="number"
+                                disabled={isQuizGenerated}
+                                value={questions[0].four}
+                                onChange={(e) => {
+                                  const value = Number(e.target.value);
+                                  setQuestions((prevState: any) => {
+                                    const updatedQuestions = [...prevState];
+                                    updatedQuestions[0] = {
+                                      ...updatedQuestions[0],
+                                      four: value,
+                                    };
+                                    return updatedQuestions;
+                                  });
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                            <div className="col-md-2 col-12">
+                              <TextField
+                                label="Five Marks"
+                                type="number"
+                                disabled={isQuizGenerated}
+                                value={questions[0].five}
+                                onChange={(e) => {
+                                  const value = Number(e.target.value);
+                                  setQuestions((prevState: any) => {
+                                    const updatedQuestions = [...prevState];
+                                    updatedQuestions[0] = {
+                                      ...updatedQuestions[0],
+                                      five: value,
+                                    };
+                                    return updatedQuestions;
+                                  });
+                                }}
+                                fullWidth
+                              />
+                            </div>
+                            <div className="col-md-2 col-12">
+                              <TextField
+                                label="Total Questions"
+                                type="number"
+                                disabled
+                                value={totalQuestions}
+                                // onChange={(e) => setQuestions(e.target.value)}
+                                fullWidth
+                              />
+                            </div>
+                          </> :
+                          <>
+                            <div className='row mt-4'>
+                              <div className='col-4'>
+                                <TextField
+                                  label="No. of questions"
+                                  type='number'
+                                  name='no_questions'
+                                  value={questionKey}
+                                  onChange={(e) => setQuestionKey(e.target.value)}
+                                  fullWidth />
+                              </div>
+                              <div className='col-4'>
+                                <TextField
+                                  label="Marks per question"
+                                  type='number'
+                                  value={questionValue}
+                                  name='marks_per_questions'
+                                  onChange={(e) => setQuestionValue(e.target.value)}
+                                  fullWidth />
+                              </div>
+                              <button className='col-md-2 col-12 btn btn-primary' onClick={handleQuestionmap}>
+                                Add questions
+                              </button>
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Total Questions"
+                                  type="number"
+                                  disabled
+                                  value={totalQuestions}
+                                  // onChange={(e) => setQuestions(e.target.value)}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="row">
+                                <div className="col-6">
+                                  <ul className="ps-3">
+                                    {questionMap?.map((item, index) => (
+                                      <li key={index} className="fancy-hover list-item">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                          <span>
+                                            {item.key} question(s) of {item.value} mark(s) each
+                                          </span>
+                                          <DeleteIcon className="text-danger delete-icon" onClick={() => handleDelete(item.key, item.value, index)} />
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        }
                         {questions_error && (
                           <p className="error-text " style={{ color: 'red' }}>
                             <small>
@@ -2061,7 +2151,7 @@ export const CreateAssignments = () => {
 
                     <div className="col-12 mt-3 mb-5">
                       <label className="col-form-label">
-                        Instructions<span>*</span>
+                        Instructions for students<span>*</span>
                       </label>
                       <ReactQuill
                         id="text"
@@ -2079,11 +2169,34 @@ export const CreateAssignments = () => {
                         </p>
                       )}
                     </div>
+                    {assignmentType == 'ai generated' && (
+                      <div className="col-12 mt-3 mb-5">
+                        {/* <label className="col-form-label">
+                        Assignment Configuration Instructions<span>*</span>
+                        </label> */}
+                        <TextField
+                          fullWidth
+                          multiline
+                          name='config_instructions'
+                          label="Assignment configuration instructions"
+                          type="text"
+                          value={configInstructions}
+                          onChange={(e) => setConfigInstructions(e.target.value)}
+                          rows={3}
+                        />
+                        {instructions_error && (
+                          <p className="error-text" style={{ color: 'red' }}>
+                            <small>Please enter Instructions.</small>
+                          </p>
+                        )}
+                      </div>
+                    )
+                    }
 
                     <div className="col-12">
                       {selectedEntity.toLowerCase() === 'college' &&
                         boxes.length > 0 &&
-                        boxes.map((box, index) => (
+                        boxes?.map((box, index) => (
                           <div key={index} className="row g-4">
                             {/* Course Selection */}
                             <div className="col-md-4 col-12">
@@ -2105,12 +2218,12 @@ export const CreateAssignments = () => {
                                   value={box.course_id || ''}
                                 >
                                   {filteredcoursesData
-                                    .filter((course) =>
+                                    ?.filter((course) =>
                                       teacherCourse?.includes(
                                         String(course.id),
                                       ),
                                     )
-                                    .map((course) => (
+                                    ?.map((course) => (
                                       <MenuItem
                                         key={course.id}
                                         value={course.id}
@@ -2122,13 +2235,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.course_id_error === true && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please enter a valid Course.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please enter a valid Course.</small>
+                                  </p>
+                                )}
                             </div>
 
                             {/* Semester Selection */}
@@ -2156,7 +2269,7 @@ export const CreateAssignments = () => {
                                         String(item.semester_number),
                                       ),
                                     )
-                                    .map((item) => (
+                                    ?.map((item) => (
                                       <MenuItem
                                         key={item.id}
                                         value={item.semester_number || ''}
@@ -2168,13 +2281,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.semester_number_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Semester.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Semester.</small>
+                                  </p>
+                                )}
                             </div>
 
                             {/* Subjects Selection */}
@@ -2202,7 +2315,7 @@ export const CreateAssignments = () => {
                                         subject.subject_name,
                                       ),
                                     )
-                                    .map((subject: any) => (
+                                    ?.map((subject: any) => (
                                       <MenuItem
                                         key={subject.subject_id}
                                         value={subject.subject_name}
@@ -2214,21 +2327,21 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
                             </div>
                           </div>
                         ))}
                       {selectedEntity.toLowerCase() === 'school' &&
                         boxesForSchool.length > 0 &&
-                        boxesForSchool.map((box, index) => (
+                        boxesForSchool?.map((box, index) => (
                           <div key={index} className="row">
                             {/* Class Selection */}
                             <div className={box.selected_class_name}>
@@ -2249,7 +2362,7 @@ export const CreateAssignments = () => {
                                   value={box.class_id || ''}
                                   input={<OutlinedInput label="Class" />}
                                 >
-                                  {dataClass.map((item) => (
+                                  {dataClass?.map((item) => (
                                     <MenuItem key={item.id} value={item.id}>
                                       {item.class_name}
                                     </MenuItem>
@@ -2258,13 +2371,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.class_id_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Class.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Class.</small>
+                                  </p>
+                                )}
                             </div>
                             {box.is_Stream && (
                               <div className="col-md-4 col-12 mb-3">
@@ -2322,13 +2435,13 @@ export const CreateAssignments = () => {
                                 </FormControl>
                                 {errorForClass_stream_subject[index]
                                   ?.stream_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Stream.</small>
-                                  </p>
-                                )}
+                                    <p
+                                      className="error-text"
+                                      style={{ color: 'red' }}
+                                    >
+                                      <small>Please select a Stream.</small>
+                                    </p>
+                                  )}
                               </div>
                             )}
                             <div className={box.selected_class_name}>
@@ -2355,7 +2468,7 @@ export const CreateAssignments = () => {
                                         subject.subject_name,
                                       ),
                                     )
-                                    .map((subject: any) => (
+                                    ?.map((subject: any) => (
                                       <MenuItem
                                         key={subject.subject_id}
                                         value={subject.subject_name}
@@ -2367,15 +2480,15 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
                             </div>
                           </div>
                         ))}
@@ -2427,7 +2540,7 @@ export const CreateAssignments = () => {
                                 gap: '4px',
                               }}
                             >
-                              {value.map((option, index) => {
+                              {value?.map((option, index) => {
                                 const tagProps = getTagProps({ index });
 
                                 return (
@@ -2470,7 +2583,7 @@ export const CreateAssignments = () => {
                                 value={availableFrom}
                                 minDate={!edit ? dayjs() : undefined}
                                 onChange={handleAvailableFromChange}
-                                slots={{
+                                slotProps={{
                                   textField: (params) => (
                                     <TextField {...params} />
                                   ),
@@ -2480,11 +2593,9 @@ export const CreateAssignments = () => {
                               <DateTimePicker
                                 label="Available From"
                                 value={availableFrom}
-                                minDateTime={
-                                  !edit ? dayjs().add(10, 'minute') : undefined
-                                }
+                                minDateTime={!edit ? dayjs() : undefined}
                                 onChange={handleAvailableFromChange}
-                                slots={{
+                                slotProps={{
                                   textField: (params) => (
                                     <TextField {...params} />
                                   ),
@@ -2506,10 +2617,9 @@ export const CreateAssignments = () => {
                             <DesktopDatePicker
                               className="col-6"
                               label="Due Date"
-                              minDate={dayjs()}
                               value={dueDate}
                               onChange={handleDueDateChange}
-                              slots={{
+                              slotProps={{
                                 textField: (params) => (
                                   <TextField {...params} />
                                 ),
@@ -2541,7 +2651,7 @@ export const CreateAssignments = () => {
                               label="Due Time"
                               value={dueTime} // Ensure it's a Dayjs object
                               onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
-                              slots={{
+                              slotProps={{
                                 textField: (params) => (
                                   <TextField {...params} />
                                 ),
@@ -2562,7 +2672,7 @@ export const CreateAssignments = () => {
                                 type="number"
                                 label="Quiz Duration (minutes)"
                                 value={quiz_timer}
-                                inputProps={{ min: 1 }}
+                                inputProps={{ min: 0 }}
                                 onChange={(e) => setQuizTimer(e.target.value)}
                                 fullWidth
                                 margin="normal"
@@ -2572,7 +2682,7 @@ export const CreateAssignments = () => {
                                   className="error-text"
                                   style={{ color: 'red' }}
                                 >
-                                  Please enter a valid quiz timer.
+                                  Please enter quiz timer.
                                 </p>
                               )}
                             </div>
@@ -2580,7 +2690,7 @@ export const CreateAssignments = () => {
                         </div>
                       </LocalizationProvider>
                     </div>
-                    <div className="col-12">
+                    <div className="col-3">
                       <div className="d-flex flex-column ">
                         <FormControlLabel
                           control={
@@ -2632,10 +2742,9 @@ export const CreateAssignments = () => {
                     </div>
                     <div className="col-lg-12">
                       {assignmentType == 'written' ||
-                      assignmentType == 'project' ||
-                      assignmentType == 'presentation' ||
-                      (assignmentType == 'quiz' && isQuizGenerated) ||
-                      (assignmentType == 'quiz' && edit) ? (
+                        (assignmentType == 'quiz' && isQuizGenerated) ||
+                        (assignmentType == 'quiz' && edit) ||
+                        (assignmentType == 'ai generated' && isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
                           <Button
                             variant="contained"
@@ -2680,9 +2789,9 @@ export const CreateAssignments = () => {
                             variant="contained"
                             color="success"
                             style={{ marginTop: 20 }}
-                            onClick={generateQuiz}
+                            onClick={assignmentType == "ai generated" ? () => generateQuiz("assignment") : generateQuiz}
                           >
-                            Generate Quiz
+                            {assignmentType == "ai generated" ? "Generate Assignment" : 'Generate Quiz'}
                           </Button>
                         </div>
                       )}
@@ -2693,6 +2802,18 @@ export const CreateAssignments = () => {
             </div>
           </div>
         </div>
+        <AssignmentModal
+          open={isAssignmentModalOpen}
+          onClose={() => setAssignmentModalOpen(false)}
+          assignments={[assignmentGenrData]}
+          onProceed={(assignmentData) => {
+            setAssignmentJsonQuestions(assignmentData)
+            setAssignmentModalOpen(false);
+            submitAssignment(false,'json',assignmentData); // close after proceed
+          }}
+          totalQuestions={totalQuestions}
+          totalMarks={totalMarks}
+        />
         <QuizModal
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}

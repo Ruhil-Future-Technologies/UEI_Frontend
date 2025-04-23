@@ -228,7 +228,7 @@ const PreviewStudentAssignment = () => {
                                 textAlign="center"
                                 sx={{ padding: 2, border: "1px dashed #ccc", borderRadius: 2, backgroundColor: "#f9f9f9" }}
                             >
-                                {allselectedfiles.length > 0 ? allselectedfiles.map((file, index) => (
+                                {allselectedfiles.length > 0 ? allselectedfiles?.map((file, index) => (
                                     <ListItem
                                         className="fileslistitem"
                                         key={index}
