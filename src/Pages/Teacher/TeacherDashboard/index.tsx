@@ -157,8 +157,14 @@ const TeacherDash = () => {
     <div className="main-wrapper">
       <div className="main-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <HomeOutlinedIcon
+                sx={{
+                  fontSize: '26px',
+                  marginRight:'2px'
+                }}
+              />
           <div className="breadcrumb-title pe-3">Dashboard</div>
-          <div className="ps-3">
+          {/* <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item">
@@ -174,7 +180,7 @@ const TeacherDash = () => {
                 </li>
               </ol>
             </nav>
-          </div>
+          </div> */}
         </div>
 
         <div className="row  g-4 mb-4">

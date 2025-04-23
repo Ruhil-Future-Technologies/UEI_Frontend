@@ -24,6 +24,7 @@ import { toast } from 'react-toastify';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { toTitleCase } from '../../../utils/helpers';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
 
 interface Students {
   first_name: string;
@@ -59,7 +60,7 @@ const AssignmentDetails = () => {
     ) {
       const formData = new FormData();
       formData.append('graded_points', tempMarks);
-      putData(`/assignment_submission/edit/${Submition_id}`, formData)
+      putData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.EDIT_ASSIGNMENT_SUBMISSION_FOR_POINTS}${Submition_id}`, formData)
         .then((response) => {
           if (response?.status) {
             toast.success(response.message, {
@@ -92,10 +93,10 @@ const AssignmentDetails = () => {
   }, []);
 
   const getAssignmentData = () => {
-    getData(`/assignment/get/${id}`)
+    getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`)
       .then(async (response) => {
         if (response.status) {
-          setAssignmentData(response.data);
+          setAssignmentData(response?.data);
         }
       })
       .catch((error) => {
@@ -108,10 +109,16 @@ const AssignmentDetails = () => {
   };
 
   const getListOfStudnetsForAssignment = () => {
-    getData(`/assignment_submission/details/${id}`).then((response) => {
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
       if (response?.status) {
         setStudents(response?.data);
       }
+    }).catch((error)=>{
+      toast.error(error.message,{
+        hideProgressBar:true,
+        theme:'colored',
+        position:'top-center'
+      })
     });
   };
 
@@ -178,7 +185,7 @@ const AssignmentDetails = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {students.map((student, index) => (
+                                {students?.map((student, index) => (
                                     <TableRow key={index}>
                                         <TableCell sx={{ fontWeight: "bold" }}>{student.first_name + " " + student.last_name}</TableCell>
                                         <TableCell>{student?.submission_date}</TableCell>

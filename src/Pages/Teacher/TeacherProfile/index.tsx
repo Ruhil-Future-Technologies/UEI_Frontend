@@ -195,7 +195,7 @@ const TeacherProfile = () => {
   const getClasslist = () => {
     getData(`${ClassURL}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           setDataClass(data?.data.classes_data);
         }
       })
@@ -233,7 +233,7 @@ const TeacherProfile = () => {
   const getCourses = async (instituteId: any) => {
     getData(`${CourseURL}`)
       .then((data:any) => {
-        if (data.data) {
+        if (data.status) {
           setCoursesData(data?.data?.course_data);
           const filtredCourses = data?.data?.course_data.filter(
             (course:any) => course.institution_id === instituteId,
@@ -251,13 +251,14 @@ const TeacherProfile = () => {
   const getInstitutelist = async (entityId: any) => {
     getData(`${InstituteURL}`)
       .then((data) => {
+        if (data.status) {
         const fiteredInstitutedata = data.data.filter(
           (institute: any) =>
             institute.is_active &&
             institute.is_approve === true &&
             institute.entity_id === entityId,
         );
-        if (data.data) {
+       
           setInstitutionsData(fiteredInstitutedata);
           setFiteredInstitute(fiteredInstitutedata);
         }
@@ -274,10 +275,13 @@ const TeacherProfile = () => {
   const getEntity = () => {
     getData(`${InstituteEntityURL}`)
       .then((data) => {
-        const filteredData = data?.data?.entityes_data?.filter(
-          (entity:any) => entity.is_active,
-        );
-        setDataEntity(filteredData);
+        if(data?.status){
+          const filteredData = data?.data?.entityes_data?.filter(
+            (entity:any) => entity.is_active,
+          );
+          setDataEntity(filteredData);
+        }
+        
       })
       .catch((e) => {
         if (e?.response?.status === 401) {
@@ -291,7 +295,7 @@ const TeacherProfile = () => {
   const getUniversity = () => {
     getData(`${UniversityURL}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           setUniversityData(data?.data?.universities_data);
         }
       })
