@@ -2718,6 +2718,7 @@ export const CreateAssignments = () => {
                               label="Due Date"
                               value={dueDate}
                               onChange={handleDueDateChange}
+                              minDate={!edit ? dayjs() : undefined}
                               slotProps={{
                                 textField: (params) => (
                                   <TextField {...params} />
