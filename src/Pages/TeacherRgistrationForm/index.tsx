@@ -368,10 +368,13 @@ const TeacherRegistrationPage = () => {
   const getEntity = () => {
     getForRegistration(`${InstituteEntityURL}`)
       .then((data) => {
-        const filteredData = data?.data?.entityes_data.filter(
-          (entity: any) => entity.is_active === true,
-        );
-        setDataEntity(filteredData);
+        if(data.status){
+          const filteredData = data?.data?.entityes_data?.filter(
+            (entity: any) => entity.is_active === true,
+          );
+          setDataEntity(filteredData);
+        }
+        
         // setDataEntity(data?.data)
       })
       .catch((e) => {
@@ -388,10 +391,10 @@ const TeacherRegistrationPage = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
+        if (data.status) {
         const fiteredInstitutedata = data?.data?.filter(
           (institute: any) => institute.is_active && institute.is_approve,
         );
-        if (data.status) {
           setDataInstitute(fiteredInstitutedata);
         }
       })
@@ -427,7 +430,7 @@ const TeacherRegistrationPage = () => {
   const getRole = () => {
     getForRegistration(`${Rolelist}`)
       .then((data) => {
-        if (data.data) {
+        if (data.status) {
           const filerRoleId = data?.data?.rolees_data?.find(
             (role: any) => role.role_name.toLowerCase() === 'teacher',
           ).id;
@@ -532,7 +535,7 @@ const TeacherRegistrationPage = () => {
     const { name, value } = event.target;
     setTeacher({ ...teacher, [name]: value });
     if (name === 'entity_id') {
-      dataEntity.map((item) => {
+      dataEntity?.map((item) => {
         if (String(item.id) == value) {
           setSelectedEntity(item.entity_type);
           getSubjects(item.entity_type);
@@ -541,27 +544,27 @@ const TeacherRegistrationPage = () => {
     }
 
     if (name === 'institution_id') {
-      const filteredDta = dataCourse.filter(
+      const filteredDta = dataCourse?.filter(
         (item) => String(item.institution_id) === value,
       );
       FilteredDataCourse(filteredDta);
     }
 
     if (name === 'entity_id') {
-      const filteredInstitute = dataInstitute.filter(
+      const filteredInstitute = dataInstitute?.filter(
         (item) => item.entity_id === value,
       );
       setFiteredInstitute(filteredInstitute);
     }
 
     if (name === 'school_name') {
-      const selectedSchool = dataInstitute.find(
+      const selectedSchool = dataInstitute?.find(
         (item) => String(item.id) === value,
       )?.institute_name;
       setSelectedSchool(String(selectedSchool));
     }
     if (name === 'university_id') {
-      const filteredInstitute = dataInstitute.filter(
+      const filteredInstitute = dataInstitute?.filter(
         (item) => item.university_id === value,
       );
       setUniversityError(false);
@@ -652,11 +655,13 @@ const TeacherRegistrationPage = () => {
     } else {
       setQualifications_error(false);
     }
-
-    if (name === 'experience' && !/^\d+$/.test(value)) {
-      setTeaching_experience_error(true);
-    } else {
-      setTeaching_experience_error(false);
+    if (name === 'experience') {
+      const num = Number(value);
+      if (!/^\d+$/.test(value) || num < 0 || num > 40) {
+        setTeaching_experience_error(true);
+      } else {
+        setTeaching_experience_error(false);
+      }
     }
 
     if (name === 'entity_id' && value === '') {
@@ -675,16 +680,39 @@ const TeacherRegistrationPage = () => {
       setdobset_col(teacher.dob === dayjs('dd-mm-yyyy'));
     }
   };
-
   const handelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.name === 'gender') {
-      setGenderData(event.target.value);
-    }
     const { name, value } = event.target;
-    setTeacher({ ...teacher, [event.target.name]: event.target.value });
-
-    validation(name, value);
-  };
+  
+    let newValue = value;
+  
+    if (name === 'experience') {
+      // Remove non-digit characters
+      newValue = newValue.replace(/[^0-9]/g, '');
+  
+      // Limit to 2 digits
+      if (newValue.length > 2) {
+        newValue = newValue.substring(0, 2);
+      }
+      // Optional: Clamp between 0 and 40
+      const numericValue = Number(newValue);
+      if (newValue !== '' && (numericValue < 0 || numericValue > 40)) {
+        setTeaching_experience_error(true);
+      } else {
+        setTeaching_experience_error(false);
+      }
+    }
+  
+    // Handle gender or other fields
+    if (name === 'gender') {
+      setGenderData(newValue);
+    }
+  
+    // Update teacher state
+    setTeacher({ ...teacher, [name]: newValue });
+  
+    // Call validation function
+    validation(name, newValue);
+  }
 
   const handleSubmit = () => {
     let valid1 = false;
@@ -722,7 +750,8 @@ const TeacherRegistrationPage = () => {
     } else {
       setQualifications_error(false);
     }
-    if (!/^\d+$/.test(teacher.experience)) {
+    const exp = Number(teacher?.experience);
+    if (!/^\d+$/.test(teacher.experience) || exp < 0 || exp > 40) {
       valid1 = true;
       setTeaching_experience_error(true);
     } else {
@@ -958,7 +987,7 @@ const TeacherRegistrationPage = () => {
 
     if (files && event.target.name !== 'icon') {
       const filesArray = Array.from(files);
-      const duplicateFiles = filesArray.filter((file) =>
+      const duplicateFiles = filesArray?.filter((file) =>
         allselectedfiles.some(
           (existingFile) => existingFile.name === file.name,
         ),
@@ -1022,7 +1051,7 @@ const TeacherRegistrationPage = () => {
         let updatedBox = { ...box, [name]: value };
 
         if (name === 'course_id') {
-          const filteredSemesters = semesterData.filter(
+          const filteredSemesters = semesterData?.filter(
             (item) => item.course_id === value,
           );
           updatedBox = {
@@ -1035,7 +1064,7 @@ const TeacherRegistrationPage = () => {
         }
 
         if (name === 'semester_number') {
-          const filteredSubjects = totleSubject.filter(
+          const filteredSubjects = totleSubject?.filter(
             (item) =>
               item.semester_number === value &&
               item.course_id === boxes[index].course_id,
@@ -1082,7 +1111,7 @@ const TeacherRegistrationPage = () => {
             }; // Reset stream & subjects
           } else {
             // Filter subjects immediately based on the selected class
-            const filteredSubjects = totleSubject.filter(
+            const filteredSubjects = totleSubject?.filter(
               (item) => item.class_id === value,
             );
 
@@ -1098,7 +1127,7 @@ const TeacherRegistrationPage = () => {
         }
 
         if (name === 'stream') {
-          const filteredSubjects = totleSubject.filter(
+          const filteredSubjects = totleSubject?.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
                 value.toString().toLowerCase() &&
@@ -1151,14 +1180,14 @@ const TeacherRegistrationPage = () => {
   };
   const handleRemove = (entity: string, index: number) => {
     if (entity.toLowerCase() === 'school') {
-      setBoxesForSchool(boxesForSchool.filter((_, i) => i !== index));
+      setBoxesForSchool(boxesForSchool?.filter((_, i) => i !== index));
     } else {
-      setBoxes(boxes.filter((_, i) => i !== index));
+      setBoxes(boxes?.filter((_, i) => i !== index));
     }
   };
   const handleRemoveFile = (index: number) => {
     setAllSelectedfiles((previous) =>
-      previous.filter((_, ind) => ind !== index),
+      previous?.filter((_, ind) => ind !== index),
     );
     setErrorMessage('');
   };
@@ -1354,7 +1383,7 @@ const TeacherRegistrationPage = () => {
                       <span>Gyansetu</span>
                     </div>
                     <h3 className="text-center fw-bold">Register As Teacher</h3>
-                    <p className="mb-lg-5 mb-4 text-center text-black-50">
+                    <p className="mb-lg-5 mb-4 text-center opacity-50">
                       Empower your teaching journey—get started today!
                     </p>
 
@@ -1399,10 +1428,10 @@ const TeacherRegistrationPage = () => {
                         )}
                       </div>
                       <div className="col-md-6 col-12 ">
-                        <label className="col-form-label">
+                        <label className="col-form-label w-100 pb-0 fs-14">
                           Gender<span>*</span>
                         </label>
-                        <br />
+                        
                         <FormControl>
                           <RadioGroup
                             row
@@ -1425,9 +1454,9 @@ const TeacherRegistrationPage = () => {
                         </FormControl>
                       </div>
                       <div className="col-md-6 col-12 ">
-                        <label className="col-form-label">
+                        {/* <label className="col-form-label">
                           Date Of Birth<span>*</span>
-                        </label>
+                        </label> */}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer
                             components={[
@@ -1439,12 +1468,14 @@ const TeacherRegistrationPage = () => {
                           >
                             <DemoItem>
                               <DatePicker
+                                className='form-control'
                                 name="dob"
                                 value={dayjs(teacher?.dob)}
                                 onChange={handleDate}
                                 format="DD/MM/YYYY"
                                 minDate={minSelectableDate}
                                 maxDate={exactSixYearsAgo}
+                                label=" Date Of Birth *"
                               />
                             </DemoItem>
                           </DemoContainer>
@@ -1496,7 +1527,7 @@ const TeacherRegistrationPage = () => {
 
                       <div className="col-12">
                         <Button
-                          className="btn btn-secondary w-100 mt-4 outsecbtn "
+                          className="btn btn-primary w-100 mt-4 outsecbtn "
                           variant="contained"
                           onClick={handleNext}
                         >
@@ -1529,6 +1560,7 @@ const TeacherRegistrationPage = () => {
                             onClick={handleBack}
                             role="button"
                             fontSize="small"
+                            className='bg-d-dark'
                           />{' '}
                           Address Details
                         </h5>
@@ -1659,7 +1691,7 @@ const TeacherRegistrationPage = () => {
                         <Box>
                           <Button
                             variant="contained"
-                            className="btn btn-secondary w-100 outsecbtn mb-2"
+                            className="btn btn-primary w-100 outsecbtn mb-2"
                             onClick={handleNext}
                           >
                             {activeStep === steps.length - 1
@@ -1686,6 +1718,7 @@ const TeacherRegistrationPage = () => {
                             onClick={handleBack}
                             role="button"
                             fontSize="small"
+                            className='bg-d-dark'
                           />{' '}
                           Documents
                         </h5>
@@ -1707,33 +1740,14 @@ const TeacherRegistrationPage = () => {
                             name="entity_id"
                             value={teacher?.entity_id}
                             variant="outlined"
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                },
-                              },
-                            }}
+
+
                           >
                             {dataEntity.map((item, idx) => (
                               <MenuItem
                                 value={item.id}
                                 key={`${item.entity_type}-${idx + 1}`}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
+
                               >
                                 {item.entity_type}
                               </MenuItem>
@@ -1762,34 +1776,14 @@ const TeacherRegistrationPage = () => {
                               label="University Name*"
                               onChange={handleSelect}
                               value={teacher.university_id}
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+
+
                             >
                               {universityData.map((item) => (
                                 <MenuItem
                                   key={item.id}
                                   value={item.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+
                                 >
                                   {item.university_name}
                                 </MenuItem>
@@ -1818,34 +1812,14 @@ const TeacherRegistrationPage = () => {
                               label="Institute"
                               onChange={handleSelect}
                               value={teacher.institution_id}
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+
+
                             >
                               {filteredInstitute.map((item) => (
                                 <MenuItem
                                   key={item.id}
                                   value={item.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+
                                 >
                                   {item.institute_name}
                                 </MenuItem>
@@ -1877,34 +1851,14 @@ const TeacherRegistrationPage = () => {
                               label="Institute*"
                               onChange={handleSelect}
                               value={teacher.institution_id}
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+
+
                             >
                               {filteredInstitute.map((item) => (
                                 <MenuItem
                                   key={item.id}
                                   value={item.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+
                                 >
                                   {item.institute_name}
                                 </MenuItem>
@@ -1921,10 +1875,6 @@ const TeacherRegistrationPage = () => {
                     )}
                     <div className="row d-flex justify-content-center">
                       <div className="col-md-6 col-12 mb-3">
-                        {/* <label className="col-form-label">
-                Experience(Yr)<span>*</span>
-              </label> */}
-
                         <TextField
                           placeholder="Teaching Experience"
                           autoComplete="off"
@@ -1934,12 +1884,13 @@ const TeacherRegistrationPage = () => {
                           value={teacher.experience}
                           label="Teaching Experience*"
                           onChange={handelChange}
-                          inputProps={{ min: '0' }}
+                          inputProps={{ min: '0', max: '40' }}
+                          error={teaching_experience_error}
                         />
                         {teaching_experience_error === true && (
                           <p className="error-text " style={{ color: 'red' }}>
                             <small>
-                              Please enter a valid Teaching Experience.
+                            Please enter a valid Teaching Experience (0 - 40 years)
                             </small>
                           </p>
                         )}
@@ -1948,11 +1899,12 @@ const TeacherRegistrationPage = () => {
                         {/* <label className="col-form-label">
                 Qualification<span>*</span>
               </label> */}
-                        <FormControl fullWidth>
+                        <FormControl fullWidth className="form-control">
                           <InputLabel id="demo-multiple-name-label">
                             Qualification*
                           </InputLabel>
                           <Select
+                          
                             labelId="demo-multiple-name-label"
                             id="demo1-multiple-name"
                             name="qualification"
@@ -2063,7 +2015,7 @@ const TeacherRegistrationPage = () => {
                             {/* <label className="col-form-label">
                             Subjects Taught<span>*</span>
                           </label> */}
-                            <FormControl fullWidth>
+                            <FormControl fullWidth className="form-control">
                               <InputLabel id={`subject_label_${index}`}>
                                 Subject*
                               </InputLabel>
@@ -2157,7 +2109,7 @@ const TeacherRegistrationPage = () => {
                             {/* <label className="col-form-label">
                             Class<span>*</span>
                           </label> */}
-                            <FormControl fullWidth>
+                            <FormControl fullWidth className="form-control">
                               <InputLabel id={`class_id_${index}`}>
                                 Class*
                               </InputLabel>
@@ -2193,7 +2145,7 @@ const TeacherRegistrationPage = () => {
                               {/* <label className="col-form-label">
                               Stream Name<span>*</span>
                             </label> */}
-                              <FormControl fullWidth>
+                              <FormControl fullWidth className="form-control">
                                 <InputLabel id={`stream_id_${index}`}>
                                   Stream Name*
                                 </InputLabel>
@@ -2254,7 +2206,7 @@ const TeacherRegistrationPage = () => {
                             {/* <label className="col-form-label">
                             Subjects Taught<span>*</span>
                           </label> */}
-                            <FormControl fullWidth>
+                            <FormControl fullWidth className="form-control">
                               <InputLabel id={`subject_label_${index}`}>
                                 Subject*
                               </InputLabel>

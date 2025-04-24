@@ -39,6 +39,7 @@ const StudentQuiz = () => {
   const studentId = localStorage.getItem('_id') || 'student_Id';
   const GET_QUIZ_STUDENT = QUERY_KEYS_QUIZ.GET_QUIZ_STUDENT;
   const GET_SUBMISSION = QUERY_KEYS_QUIZ.GET_SUBMISSION;
+  const current_time = new Date();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +60,6 @@ const StudentQuiz = () => {
           processSubmissionsData(submissionsResponse?.data);
         }
       } catch (err) {
-        console.log({ err });
-
         toast.error('Error fetching quiz data', {
           hideProgressBar: true,
           theme: 'colored',
@@ -147,27 +146,35 @@ const StudentQuiz = () => {
       return;
     }
 
-    const formattedResults = data.map((submission) => {
+    const formattedResults = data.map(async (submission) => {
       const dateTaken = new Date(submission.created_at);
-
       let subject = '';
+
       if (submission && submission.course_semester_subjects) {
         const courseKey = Object.keys(submission?.course_semester_subjects)[0];
-
         const semesterKey = Object.keys(
           submission?.course_semester_subjects[courseKey],
         )[0];
-
         subject =
           submission?.course_semester_subjects[courseKey][semesterKey][0];
       } else if (submission && submission.class_stream_subjects) {
         const classKey = Object.keys(submission?.class_stream_subjects)[0];
-
         const streamKey = Object.keys(
           submission?.class_stream_subjects[classKey],
         )[0];
-
         subject = submission?.class_stream_subjects[classKey][streamKey][0];
+      }
+
+      let isPastDue = false;
+      try {
+        const quizResponse = await getData(`/quiz/get/${submission.quiz_id}`);
+        const quizData = quizResponse?.data;
+        if (quizData?.due_date_time) {
+          const dueDate = new Date(quizData.due_date_time);
+          isPastDue = dueDate < current_time;
+        }
+      } catch (error) {
+        console.error('Error fetching quiz data for submission:', error);
       }
 
       return {
@@ -181,18 +188,21 @@ const StudentQuiz = () => {
         correctAnswers: submission.correct_answers,
         timeTaken: `${submission.time_taken} mins`,
         isMultipleAttempt: submission.is_multiple_attempt,
+        isPastDue: isPastDue,
       };
     });
 
-    setQuizData((prevData: any) => ({
-      ...prevData,
-      recentResults: formattedResults,
-    }));
+    Promise.all(formattedResults).then((resolvedResults) => {
+      setQuizData((prevData: any) => ({
+        ...prevData,
+        recentResults: resolvedResults,
+      }));
 
-    setStats((prevStats) => ({
-      ...prevStats,
-      completed: formattedResults.length,
-    }));
+      setStats((prevStats) => ({
+        ...prevStats,
+        completed: resolvedResults.length,
+      }));
+    });
   };
 
   const startQuiz = (quizId: any) => {
@@ -200,7 +210,15 @@ const StudentQuiz = () => {
   };
 
   const retakeQuiz = (quizId: any) => {
-    navigate(`/main/student/quiz/${quizId}`);
+    const quiz = quizData.recentResults.find((quiz: any) => quiz.quiz_id == quizId);
+    if (quiz) {
+      navigate(`/main/student/quiz/${quizId}`);
+    } else {
+      toast.error('Quiz Due Date Time has been passed.', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   if (loading) {
@@ -439,7 +457,10 @@ const StudentQuiz = () => {
                         variant="contained"
                         size="small"
                         color="primary"
-                        disabled={!row.original.isMultipleAttempt}
+                        disabled={
+                          !row.original.isMultipleAttempt ||
+                          row.original.isPastDue
+                        }
                         onClick={() => retakeQuiz(row.original.quiz_id)}
                       >
                         Reattempt

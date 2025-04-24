@@ -122,7 +122,7 @@ const TeacherDash = () => {
       .then((data) => {
         if (data.data) {
           setCoursesData(data?.data);
-          const filteredCourses = data.data.course_data.filter((course: any) =>
+          const filteredCourses = data?.data?.course_data?.filter((course: any) =>
             courseIds.includes(String(course.id)),
           );
           setCoursesData(filteredCourses);
@@ -140,7 +140,7 @@ const TeacherDash = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          const filteredClasses = data.data.classes_data.filter((classn: any) =>
+          const filteredClasses = data?.data?.classes_data?.filter((classn: any) =>
             classIds.includes(String(classn.id)),
           );
           setDataClass(filteredClasses);
@@ -157,8 +157,14 @@ const TeacherDash = () => {
     <div className="main-wrapper">
       <div className="main-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <HomeOutlinedIcon
+                sx={{
+                  fontSize: '26px',
+                  marginRight:'2px'
+                }}
+              />
           <div className="breadcrumb-title pe-3">Dashboard</div>
-          <div className="ps-3">
+          {/* <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item">
@@ -174,7 +180,7 @@ const TeacherDash = () => {
                 </li>
               </ol>
             </nav>
-          </div>
+          </div> */}
         </div>
 
         <div className="row  g-4 mb-4">

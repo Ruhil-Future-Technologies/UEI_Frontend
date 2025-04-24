@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import gLogo from '../../assets/img/logo-white.svg';
@@ -38,13 +38,13 @@ import {
   List,
   ListItem,
 } from '@mui/material';
-import {
-  fieldIcon,
-  inputfield,
-  inputfieldhover,
-  inputfieldtext,
-} from '../../utils/helpers';
-import NameContext from '../Context/NameContext';
+// import {
+//   fieldIcon,
+//   inputfield,
+//   inputfieldhover,
+//   inputfieldtext,
+// } from '../../utils/helpers';
+//import NameContext from '../Context/NameContext';
 import UploadBtn from '../../Components/UploadBTN/UploadBtn';
 import OtpCard from '../../Components/Dailog/OtpCard';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -73,8 +73,8 @@ interface Institute {
 
 const InstituteRegistrationForm = () => {
   const navigate = useNavigate();
-  const context = useContext(NameContext);
-  const { namecolor }: any = context;
+  // const context = useContext(NameContext);
+  // const { namecolor }: any = context;
 
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
@@ -176,7 +176,7 @@ const InstituteRegistrationForm = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        const fiteredInstitutedata = data.data.filter(
+        const fiteredInstitutedata = data.data?.filter(
           (institute: any) =>
             institute.is_active === 1 && institute.is_approve === true,
         );
@@ -220,7 +220,7 @@ const InstituteRegistrationForm = () => {
     const filesArray = Array.from(files);
   
     // Check for duplicate files (compare name + lastModified for uniqueness)
-    const duplicateFiles = filesArray.filter((file) =>
+    const duplicateFiles = filesArray?.filter((file) =>
       allselectedfiles.some(
         (existingFile) => 
           existingFile.name === file.name && 
@@ -596,7 +596,7 @@ const InstituteRegistrationForm = () => {
   };
   const handleRemoveFile = (index: number) => {
     setAllSelectedfiles((previous) =>
-      previous.filter((_, ind) => ind !== index),
+      previous?.filter((_, ind) => ind !== index),
     );
     setErrorMessage('');
   };
@@ -809,7 +809,7 @@ const InstituteRegistrationForm = () => {
                     <h3 className="text-center fw-bold">
                       Register As Institution
                     </h3>
-                    <p className="mb-lg-5 mb-4 text-center text-black-50">
+                    <p className="mb-lg-5 mb-4 text-center ">
                       Empower your institution—get started today!
                     </p>
                     <div className="row d-flex justify-content-center g-4 mb-4">
@@ -830,33 +830,17 @@ const InstituteRegistrationForm = () => {
                             name="entity_id"
                             value={valueInstitute?.entity_id}
                             variant="outlined"
-                            sx={{
-                              backgroundColor: inputfield(namecolor),
-                              color: inputfieldtext(namecolor),
-                              '& .MuiSelect-icon': {
-                                color: fieldIcon(namecolor),
-                              },
-                            }}
-                            MenuProps={{
-                              PaperProps: {
-                                style: {
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                },
-                              },
-                            }}
+                            
+                            
+                            
+                            
                           >
                             {dataEntity.map((item, idx) => (
                               <MenuItem
                                 value={item.id}
                                 key={`${item.entity_type}-${idx + 1}`}
-                                sx={{
-                                  backgroundColor: inputfield(namecolor),
-                                  color: inputfieldtext(namecolor),
-                                  '&:hover': {
-                                    backgroundColor: inputfieldhover(namecolor),
-                                  },
-                                }}
+                                
+                                
                               >
                                 {item.entity_type}
                               </MenuItem>
@@ -945,34 +929,15 @@ const InstituteRegistrationForm = () => {
                               name="university_id"
                               value={valueInstitute?.university_id}
                               variant="outlined"
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+                            
+                              
                             >
                               {dataUniversity?.map((item, idx) => (
                                 <MenuItem
                                   value={item.id}
                                   key={`${item.university_name}-${idx + 1}`}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                                 
+                                  
                                 >
                                   {item.university_name}
                                 </MenuItem>
@@ -1072,7 +1037,7 @@ const InstituteRegistrationForm = () => {
 
                       <div className="col-12">
                         <Button
-                          className="btn btn-secondary w-100 mt-4 outsecbtn "
+                          className="btn btn-primary w-100 mt-4 outsecbtn "
                           variant="contained"
                           onClick={handleNext}
                         >
@@ -1104,6 +1069,7 @@ const InstituteRegistrationForm = () => {
                             onClick={handleBack}
                             role="button"
                             fontSize="small"
+                            className='bg-d-dark'
                           />
                           Address Details
                         </h5>
@@ -1242,7 +1208,7 @@ const InstituteRegistrationForm = () => {
                         <Box>
                           <Button
                             variant="contained"
-                            className="btn btn-secondary w-100 outsecbtn mb-2"
+                            className="btn btn-primary w-100 outsecbtn mb-2"
                             onClick={handleNext}
                           >
                             {activeStep === steps.length - 1
@@ -1269,6 +1235,7 @@ const InstituteRegistrationForm = () => {
                             onClick={handleBack}
                             role="button"
                             fontSize="small"
+                            className='bg-d-dark'
                           />{' '}
                           Documents & Logo
                         </h5>

@@ -1218,7 +1218,7 @@ function MainContent() {
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.admin_data?.basic_info?.pic_path !== null) {
+              if (data?.data?.admin_data?.basic_info?.pic_path !== null && data?.data?.admin_data?.basic_info?.pic_path !== undefined) {
                 getData(
                   `${'upload_file/get_image/' +
                   data?.data?.admin_data?.basic_info?.pic_path
@@ -2744,8 +2744,7 @@ function MainContent() {
                             Your Preferred Subject
                           </h5>
                           <small className="fs-12">
-                            Learning journey with our comprehensive lesson
-                            exercise courses,{' '}
+                          Start your learning journey in your preferred subject with our complete lesson and practice courses.{' '}
                           </small>
                         </div>
                         <Link

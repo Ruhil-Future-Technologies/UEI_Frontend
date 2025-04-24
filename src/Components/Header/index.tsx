@@ -44,7 +44,7 @@ const Header = () => {
     setNamepro,
     proImage,
     setProImage,
-   // setNamecolor,
+    // setNamecolor,
     setProPercentage,
     setActiveForm,
   }: any = context;
@@ -57,7 +57,7 @@ const Header = () => {
   const [language, setLanguage] = useState<any>('EN');
   const [gender, setGender] = useState<any>('');
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const { getData, postData } = useApi();
+  const { getData, postDataJson } = useApi();
   const [dashboardURL, setDashboardURL] = useState('');
 
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
@@ -87,7 +87,7 @@ const Header = () => {
       };
 
       try {
-        await postData(`${chataddconversationurl}`, chat_payload);
+        await postDataJson(`${chataddconversationurl}`, chat_payload);
 
         localStorage.removeItem('chatData');
         localStorage.removeItem('chatsaved');
@@ -184,7 +184,10 @@ const Header = () => {
               last_name: adminInfo?.last_name,
               gender: adminInfo?.gender,
             });
-            if (response?.data?.admin_data?.basic_info?.pic_path !== null && response?.status) {
+            if (
+              response?.data?.admin_data?.basic_info?.pic_path !== null &&
+              response?.status
+            ) {
               getData(
                 `${
                   'upload_file/get_image/' +
@@ -241,7 +244,6 @@ const Header = () => {
       }
     }
   }, []);
-
 
   const gotoProfile = () => {
     if (user_type === 'admin') {

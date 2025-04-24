@@ -6,6 +6,7 @@ import { ApexOptions } from 'apexcharts';
 import useApi from '../../../hooks/useAPI';
 import {
   QUERY_KEYS,
+  QUERY_KEYS_CLASS,
   QUERY_KEYS_STUDENT,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
@@ -20,6 +21,7 @@ const InstitutionCharts = () => {
   const SUBJECTURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const INSTITUTEURL = QUERY_KEYS.INSTITUTE_EDIT;
   const SUBJECT_SCHOOL_URL = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
+  const GET_CLASS_API = QUERY_KEYS_CLASS;
   const [teacherAll, setTeacherAll] = useState<any[]>([]);
   const [studentAll, setStudentAll] = useState<any[]>([]);
   const [subjectAll, setSubjectAll] = useState<any[]>([]);
@@ -34,7 +36,7 @@ const InstitutionCharts = () => {
   const [selectedSemester, setSelectedSemester] = useState('');
   const [filteredSubjects, setFilteredSubjects] = useState<any>([]);
 
-  const [activeMonth, setActiveMonth] = useState('Jan');
+  const [activeMonth, setActiveMonth] = useState('');
   const [activeTab, setActiveTab] = useState('weekly');
   const [topUsers, setTopUsers] = useState<any>({
     teachers: [],
@@ -76,392 +78,99 @@ const InstitutionCharts = () => {
 
   useEffect(() => {
     const fetchData = async () => {};
-    // let session: any = "await getData(`${'call session api '}`)";
-    // session = {
-    //   teachers: {
-    //     '3c0a895e-7fa0-4926-a37d-02580d634cf7': {
-    //       Jan: {
-    //         total: 187,
-    //         week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
-    //         week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
-    //         week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
-    //         week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
-    //       },
-    //       Feb: {
-    //         total: 165,
-    //         week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
-    //         week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
-    //         week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
-    //         week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
-    //       },
-    //       March: {
-    //         total: 192,
-    //         week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
-    //         week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
-    //         week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
-    //         week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
-    //       },
-    //     },
-    //     '4493d988-f834-484e-adf9-5c53ab486259': {
-    //       Jan: {
-    //         total: 178,
-    //         week1: { days: [2, 5, 8, 1, 7, 3, 6], total: 40 },
-    //         week2: { days: [4, 9, 2, 7, 0, 5, 8], total: 46 },
-    //         week3: { days: [6, 1, 4, 9, 3, 7, 2], total: 39 },
-    //         week4: { days: [0, 8, 5, 2, 6, 4, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 190,
-    //         week1: { days: [7, 3, 6, 0, 9, 2, 5], total: 48 },
-    //         week2: { days: [1, 4, 8, 3, 7, 6, 2], total: 44 },
-    //         week3: { days: [5, 2, 9, 4, 8, 1, 7], total: 47 },
-    //         week4: { days: [3, 6, 0, 5, 2, 9, 4], total: 41 },
-    //       },
-    //       March: {
-    //         total: 175,
-    //         week1: { days: [8, 1, 5, 7, 3, 6, 2], total: 45 },
-    //         week2: { days: [4, 9, 2, 6, 0, 7, 3], total: 42 },
-    //         week3: { days: [1, 7, 4, 8, 2, 5, 9], total: 46 },
-    //         week4: { days: [6, 3, 0, 9, 4, 8, 1], total: 40 },
-    //       },
-    //     },
-    //     '4796978c-526c-47a3-85f0-b699ecb75ea2': {
-    //       Jan: {
-    //         total: 182,
-    //         week1: { days: [3, 6, 1, 8, 4, 7, 2], total: 44 },
-    //         week2: { days: [5, 2, 9, 0, 6, 3, 7], total: 41 },
-    //         week3: { days: [8, 4, 2, 7, 1, 5, 9], total: 47 },
-    //         week4: { days: [0, 7, 3, 6, 2, 8, 4], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 168,
-    //         week1: { days: [9, 1, 5, 3, 7, 2, 6], total: 45 },
-    //         week2: { days: [4, 8, 0, 5, 9, 1, 7], total: 42 },
-    //         week3: { days: [2, 6, 3, 8, 4, 7, 1], total: 46 },
-    //         week4: { days: [7, 0, 4, 9, 2, 5, 8], total: 40 },
-    //       },
-    //       March: {
-    //         total: 195,
-    //         week1: { days: [1, 5, 8, 2, 6, 3, 9], total: 47 },
-    //         week2: { days: [4, 7, 0, 6, 1, 8, 2], total: 43 },
-    //         week3: { days: [3, 9, 4, 7, 2, 5, 8], total: 48 },
-    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 41 },
-    //       },
-    //     },
-    //     'c005054e-e7d7-4f58-a18f-a102698c40c9': {
-    //       Jan: {
-    //         total: 176,
-    //         week1: { days: [2, 7, 4, 9, 1, 6, 3], total: 42 },
-    //         week2: { days: [5, 0, 8, 3, 7, 2, 4], total: 45 },
-    //         week3: { days: [6, 1, 5, 8, 0, 9, 2], total: 47 },
-    //         week4: { days: [3, 7, 2, 6, 4, 8, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 185,
-    //         week1: { days: [9, 3, 6, 2, 7, 4, 8], total: 46 },
-    //         week2: { days: [1, 5, 0, 7, 3, 9, 2], total: 44 },
-    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-    //         week4: { days: [0, 9, 3, 5, 8, 1, 6], total: 41 },
-    //       },
-    //       March: {
-    //         total: 180,
-    //         week1: { days: [7, 2, 5, 9, 4, 8, 1], total: 47 },
-    //         week2: { days: [3, 6, 0, 8, 2, 7, 4], total: 43 },
-    //         week3: { days: [5, 1, 9, 4, 6, 3, 8], total: 45 },
-    //         week4: { days: [2, 7, 4, 0, 9, 5, 6], total: 42 },
-    //       },
-    //     },
-    //     'c80edb24-252d-41e4-b9e6-ca437d0d8f30': {
-    //       Jan: {
-    //         total: 190,
-    //         week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
-    //         week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
-    //         week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
-    //         week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 175,
-    //         week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
-    //         week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
-    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-    //         week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
-    //       },
-    //       March: {
-    //         total: 185,
-    //         week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
-    //         week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
-    //         week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
-    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
-    //       },
-    //     },
-    //     'cf9a761e-1483-4f2b-89e1-ece3438b6598': {
-    //       Jan: {
-    //         total: 190,
-    //         week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
-    //         week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
-    //         week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
-    //         week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 175,
-    //         week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
-    //         week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
-    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-    //         week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
-    //       },
-    //       March: {
-    //         total: 185,
-    //         week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
-    //         week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
-    //         week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
-    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
-    //       },
-    //     },
-    //   },
-    //   students: {
-    //     '6d2defe0-8d3b-4a16-b1e5-539974333bed': {
-    //       Jan: {
-    //         total: 180,
-    //         week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
-    //         week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
-    //         week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
-    //         week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
-    //       },
-    //       Feb: {
-    //         total: 165,
-    //         week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
-    //         week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
-    //         week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
-    //         week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
-    //       },
-    //       March: {
-    //         total: 192,
-    //         week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
-    //         week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
-    //         week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
-    //         week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
-    //       },
-    //     },
-    //     '24e589dd-8b90-4e51-bf75-0ff90ea544dc': {
-    //       Jan: {
-    //         total: 178,
-    //         week1: { days: [2, 5, 8, 1, 7, 3, 6], total: 40 },
-    //         week2: { days: [4, 9, 2, 7, 0, 5, 8], total: 46 },
-    //         week3: { days: [6, 1, 4, 9, 3, 7, 2], total: 39 },
-    //         week4: { days: [0, 8, 5, 2, 6, 4, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 190,
-    //         week1: { days: [7, 3, 6, 0, 9, 2, 5], total: 48 },
-    //         week2: { days: [1, 4, 8, 3, 7, 6, 2], total: 44 },
-    //         week3: { days: [5, 2, 9, 4, 8, 1, 7], total: 47 },
-    //         week4: { days: [3, 6, 0, 5, 2, 9, 4], total: 41 },
-    //       },
-    //       March: {
-    //         total: 175,
-    //         week1: { days: [8, 1, 5, 7, 3, 6, 2], total: 45 },
-    //         week2: { days: [4, 9, 2, 6, 0, 7, 3], total: 42 },
-    //         week3: { days: [1, 7, 4, 8, 2, 5, 9], total: 46 },
-    //         week4: { days: [6, 3, 0, 9, 4, 8, 1], total: 40 },
-    //       },
-    //     },
-    //     'b6416263-ee02-4aef-b4c8-7391aa0452da': {
-    //       Jan: {
-    //         total: 182,
-    //         week1: { days: [3, 6, 1, 8, 4, 7, 2], total: 44 },
-    //         week2: { days: [5, 2, 9, 0, 6, 3, 7], total: 41 },
-    //         week3: { days: [8, 4, 2, 7, 1, 5, 9], total: 47 },
-    //         week4: { days: [0, 7, 3, 6, 2, 8, 4], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 168,
-    //         week1: { days: [9, 1, 5, 3, 7, 2, 6], total: 45 },
-    //         week2: { days: [4, 8, 0, 5, 9, 1, 7], total: 42 },
-    //         week3: { days: [2, 6, 3, 8, 4, 7, 1], total: 46 },
-    //         week4: { days: [7, 0, 4, 9, 2, 5, 8], total: 40 },
-    //       },
-    //       March: {
-    //         total: 195,
-    //         week1: { days: [1, 5, 8, 2, 6, 3, 9], total: 47 },
-    //         week2: { days: [4, 7, 0, 6, 1, 8, 2], total: 43 },
-    //         week3: { days: [3, 9, 4, 7, 2, 5, 8], total: 48 },
-    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 41 },
-    //       },
-    //     },
-    //     'b6cc176a-ec2b-4ca1-a510-0bd7addd4b4e': {
-    //       Jan: {
-    //         total: 176,
-    //         week1: { days: [2, 7, 4, 9, 1, 6, 3], total: 42 },
-    //         week2: { days: [5, 0, 8, 3, 7, 2, 4], total: 45 },
-    //         week3: { days: [6, 1, 5, 8, 0, 9, 2], total: 47 },
-    //         week4: { days: [3, 7, 2, 6, 4, 8, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 185,
-    //         week1: { days: [9, 3, 6, 2, 7, 4, 8], total: 46 },
-    //         week2: { days: [1, 5, 0, 7, 3, 9, 2], total: 44 },
-    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-    //         week4: { days: [0, 9, 3, 5, 8, 1, 6], total: 41 },
-    //       },
-    //       March: {
-    //         total: 180,
-    //         week1: { days: [7, 2, 5, 9, 4, 8, 1], total: 47 },
-    //         week2: { days: [3, 6, 0, 8, 2, 7, 4], total: 43 },
-    //         week3: { days: [5, 1, 9, 4, 6, 3, 8], total: 45 },
-    //         week4: { days: [2, 7, 4, 0, 9, 5, 6], total: 42 },
-    //       },
-    //     },
-    //     '907de304-e1a1-4aab-923c-e599a43739b2': {
-    //       Jan: {
-    //         total: 190,
-    //         week1: { days: [4, 8, 1, 6, 2, 7, 3], total: 45 },
-    //         week2: { days: [5, 0, 9, 3, 7, 4, 8], total: 47 },
-    //         week3: { days: [2, 6, 3, 9, 1, 5, 7], total: 46 },
-    //         week4: { days: [8, 4, 0, 7, 2, 6, 1], total: 43 },
-    //       },
-    //       Feb: {
-    //         total: 175,
-    //         week1: { days: [3, 7, 2, 8, 4, 9, 1], total: 44 },
-    //         week2: { days: [6, 1, 5, 0, 7, 3, 9], total: 42 },
-    //         week3: { days: [4, 8, 1, 6, 2, 5, 7], total: 48 },
-    //         week4: { days: [9, 2, 6, 3, 8, 4, 0], total: 41 },
-    //       },
-    //       March: {
-    //         total: 185,
-    //         week1: { days: [1, 5, 8, 2, 7, 3, 6], total: 47 },
-    //         week2: { days: [4, 9, 0, 7, 2, 6, 1], total: 43 },
-    //         week3: { days: [3, 7, 4, 8, 1, 5, 9], total: 46 },
-    //         week4: { days: [6, 2, 5, 0, 9, 4, 7], total: 42 },
-    //       },
-    //     },
-    //     '5d6503ad-6b57-4a7e-99bb-2931cc405c98': {
-    //       Jan: {
-    //         total: 180,
-    //         week1: { days: [3, 7, 2, 8, 1, 4, 6], total: 42 },
-    //         week2: { days: [5, 0, 9, 2, 7, 3, 1], total: 37 },
-    //         week3: { days: [6, 2, 4, 8, 0, 5, 7], total: 48 },
-    //         week4: { days: [1, 3, 7, 9, 2, 6, 4], total: 39 },
-    //       },
-    //       Feb: {
-    //         total: 165,
-    //         week1: { days: [4, 8, 1, 5, 7, 2, 0], total: 45 },
-    //         week2: { days: [2, 6, 3, 9, 4, 1, 7], total: 41 },
-    //         week3: { days: [7, 1, 5, 8, 3, 6, 2], total: 50 },
-    //         week4: { days: [0, 4, 6, 2, 9, 5, 8], total: 38 },
-    //       },
-    //       March: {
-    //         total: 192,
-    //         week1: { days: [9, 3, 7, 1, 4, 8, 2], total: 47 },
-    //         week2: { days: [5, 2, 6, 0, 7, 3, 9], total: 43 },
-    //         week3: { days: [8, 4, 1, 6, 2, 5, 7], total: 49 },
-    //         week4: { days: [3, 7, 0, 9, 4, 8, 1], total: 44 },
-    //       },
-    //     },
-    //   },
-    // };
+    getData(`/session/stats-for-institute/${institute_id}`).then((response) => {
+      const sessionData = response.data;
 
-    // setSessionData(session);
+      const monthMapping: any = {
+        1: 'January',
+        2: 'February',
+        3: 'March',
+        4: 'April',
+        5: 'May',
+        6: 'June',
+        7: 'July',
+        8: 'August',
+        9: 'September',
+        10: 'October',
+        11: 'November',
+        12: 'December',
+      };
 
-    // let assignment: any = "await getData(`${'call  Assignment api '}`)";
-    // assignment = {
-    //   9: {
-    //     low: 23,
-    //     medium: 30,
-    //     high: 20,
-    //     very_high: 10,
-    //   },
-    //   10: {
-    //     low: 27,
-    //     medium: 20,
-    //     high: 30,
-    //     very_high: 20,
-    //   },
-    //   14: {
-    //     low: 10,
-    //     medium: 50,
-    //     high: 20,
-    //     very_high: 9,
-    //   },
-    //   15: {
-    //     low: 23,
-    //     medium: 30,
-    //     high: 10,
-    //     very_high: 5,
-    //   },
-    //   13: {
-    //     low: 27,
-    //     medium: 30,
-    //     high: 8,
-    //     very_high: 20,
-    //   },
-    //   23: {
-    //     low: 27,
-    //     medium: 30,
-    //     high: 8,
-    //     very_high: 20,
-    //   },
-    //   24: {
-    //     low: 27,
-    //     medium: 30,
-    //     high: 8,
-    //     very_high: 20,
-    //   },
-    //   25: {
-    //     low: 27,
-    //     medium: 30,
-    //     high: 8,
-    //     very_high: 20,
-    //   },
-    //   27: {
-    //     low: 27,
-    //     medium: 30,
-    //     high: 8,
-    //     very_high: 20,
-    //   },
-    //   26: {
-    //     low: 27,
-    //     medium: 30,
-    //     high: 8,
-    //     very_high: 20,
-    //   },
-    // };
-    // setAssignmentData(assignment);
+      const modifiedData: any = {
+        students: {},
+        teachers: {},
+      };
 
-    // let users: any = "await getData(`${'call student  users active  api '}`)";
-    // users = {
-    //   less_active: {
-    //     Jan: {
-    //       weeks: [45, 56, 23, 45, 56],
-    //     },
-    //     Feb: {
-    //       weeks: [45, 56, 23, 45, 56],
-    //     },
-    //     March: {
-    //       weeks: [55, 30, 63, 35, 86],
-    //     },
-    //   },
-    //   more_active: {
-    //     Jan: {
-    //       weeks: [30, 20, 44, 70, 56],
-    //     },
-    //     Feb: {
-    //       weeks: [45, 56, 23, 45, 56],
-    //     },
-    //     March: {
-    //       weeks: [55, 30, 63, 35, 86],
-    //     },
-    //   },
-    // };
-    // setUserData(users);
+      Object.keys(sessionData.students || {}).forEach((studentId) => {
+        modifiedData.students[studentId] = {};
 
-    console.log({
-      setSessionData,
-      setUserData,
-      setAssignmentData,
+        Object.keys(sessionData.students[studentId]).forEach((monthNum) => {
+          const monthName = monthMapping[monthNum] || monthNum;
+          modifiedData.students[studentId][monthName] =
+            sessionData.students[studentId][monthNum];
+        });
+      });
+
+      Object.keys(sessionData.teachers || {}).forEach((teacherId) => {
+        modifiedData.teachers[teacherId] = {};
+
+        Object.keys(sessionData.teachers[teacherId]).forEach((monthNum) => {
+          const monthName = monthMapping[monthNum] || monthNum;
+          modifiedData.teachers[teacherId][monthName] =
+            sessionData.teachers[teacherId][monthNum];
+        });
+      });
+
+      const allMonthNumbers: number[] = [];
+
+      const collectMonths = (data: any) => {
+        Object.values(data || {}).forEach((months: any) => {
+          allMonthNumbers.push(...Object.keys(months).map(Number));
+        });
+      };
+
+      collectMonths(sessionData.students);
+      collectMonths(sessionData.teachers);
+
+      if (allMonthNumbers.length > 0) {
+        const minMonth = Math.min(...allMonthNumbers);
+        setActiveMonth(monthMapping[minMonth]);
+      }
+
+      const session = modifiedData;
+      setSessionData(session);
     });
 
+    getData(`/assignment/stats-for-institute/${institute_id}`).then(
+      (response) => {
+        const assignment = response.data;
+
+        setAssignmentData(assignment);
+      },
+    );
+
+    getData(`/session/institute_student_activity/${institute_id}`).then(
+      (response) => {
+        const users = response.data;
+
+        if (users && users.less_active && users.more_active) {
+          const lessActiveMonth: any = Object.keys(users?.less_active)[0];
+          const moreActiveMonth: any = Object.keys(users?.more_active)[0];
+
+          users.less_active[lessActiveMonth].weeks = users.less_active[
+            lessActiveMonth
+          ].weeks.map((v: any) => Math.round(v));
+          users.more_active[moreActiveMonth].weeks = users.more_active[
+            moreActiveMonth
+          ].weeks.map((v: any) => Math.round(v));
+        }
+
+        setUserData(users);
+      },
+    );
+
     fetchData();
-  }, []);
+  }, [institute_id]);
 
   useEffect(() => {
     if (institute?.entity_type === 'college') {
@@ -563,27 +272,30 @@ const InstitutionCharts = () => {
 
       setSemesterAll(uniqueSemesters);
       setSelectedSemester(uniqueSemesters[0]?.semester_id.toString());
-
-      const uniqueClasses: any = Object.values(
-        filteredSub.reduce(
-          (acc: any, item: any) => {
-            if (!acc[item.class_id]) {
-              acc[item.class_id] = {
-                class_id: item.class_id,
-                class_name: item.class_name,
-              };
-            }
-            return acc;
-          },
-          {} as Record<number, { course_id: number; course_name: string }>,
-        ),
-      );
-      setSelectedClass(uniqueClasses[0]?.class_id);
     });
     getData(`${SUBJECT_SCHOOL_URL}`).then((data) => {
       setschoolSubjectAll(data?.data?.subjects_data);
     });
-  }, [institute_id]);
+    getData(`${GET_CLASS_API.GET_CLASS}`).then((data) => {
+      const classes_data = data?.data?.classes_data;
+
+      const smallestClass = classes_data.reduce(
+        (minClass: any, current: any) => {
+          const currentNum = parseInt(
+            current.class_name.replace('class_', ''),
+            10,
+          );
+          const minNum = parseInt(
+            minClass.class_name.replace('class_', ''),
+            10,
+          );
+          return currentNum < minNum ? current : minClass;
+        },
+      );
+
+      setSelectedClass(smallestClass?.id);
+    });
+  }, [institute_id, user_uuid]);
 
   useEffect(() => {
     if (!sessionData || !assignmentData || !sessionData.teachers) return;
@@ -634,11 +346,21 @@ const InstitutionCharts = () => {
   }, [sessionData, assignmentData, activeMonth]);
 
   const getMonths = () => {
-    if (!sessionData || !sessionData.teachers) return [];
+    if (!sessionData || !sessionData.teachers || !sessionData.students)
+      return [];
 
-    const firstTeacher = Object.values(sessionData.teachers)[0];
+    const monthSet = new Set<string>();
 
-    return Object.keys(firstTeacher || {});
+    const extractMonths = (data: Record<string, Record<string, any>>) => {
+      Object.values(data).forEach((monthObj) => {
+        Object.keys(monthObj).forEach((month) => monthSet.add(month));
+      });
+    };
+
+    extractMonths(sessionData.students);
+    extractMonths(sessionData.teachers);
+
+    return Array.from(monthSet);
   };
 
   const transformData = (sourceData: any, userType: any) => {
@@ -767,6 +489,9 @@ const InstitutionCharts = () => {
         type: 'bar',
         height: 350,
         stacked: true,
+        zoom: {
+          enabled: false,
+        },
         toolbar: {
           show: false,
         },
@@ -793,6 +518,7 @@ const InstitutionCharts = () => {
         align: 'center',
         style: { fontSize: '18px', fontWeight: '600', color: '#333' },
       },
+
       xaxis: {
         categories,
         labels: {
@@ -809,9 +535,16 @@ const InstitutionCharts = () => {
       yaxis: {
         title: {
           text: 'Number of Students',
-          style: { fontSize: '14px', fontWeight: '600', color: '#444' },
+          style: {
+            fontSize: '14px',
+            fontWeight: '600',
+            color: '#444',
+          },
         },
+        tickAmount: 5,
+        forceNiceScale: true,
       },
+
       tooltip: {
         y: {
           formatter: function (val) {
@@ -865,19 +598,18 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
-          toolbar: {
-            show: false,
+          zoom: {
+            enabled: false,
           },
+          toolbar: { show: false },
         },
+        colors: ['#006064'],
         title: {
           text: 'Student Daily Activity (Top 5 + Average)',
           align: 'center',
           style: { fontSize: '18px' },
         },
-        dataLabels: {
-          enabled: false,
-        },
-        colors: ['#008FFB'],
+        dataLabels: { enabled: false },
         xaxis: {
           type: 'category',
           labels: {
@@ -895,6 +627,8 @@ const InstitutionCharts = () => {
         plotOptions: {
           heatmap: {
             colorScale: {
+              min: 0,
+              max: 10,
               ranges: [
                 {
                   from: 0,
@@ -954,6 +688,9 @@ const InstitutionCharts = () => {
           type: 'area',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1041,14 +778,23 @@ const InstitutionCharts = () => {
       if (activeTab === 'weekly') {
         for (let i = 1; i <= 4; i++) {
           const weekKey = `week${i}`;
-          if (students[studentId][activeMonth][weekKey]) {
-            if (!categories.includes(weekKey)) {
+
+          const student = students?.[studentId];
+          const monthData = student?.[activeMonth];
+          const weekData = monthData?.[weekKey];
+
+          if (weekData) {
+            if (!categories?.includes(weekKey)) {
               categories.push(weekKey);
+            }
+
+            if (!allStudentData[studentId]) {
+              allStudentData[studentId] = [];
             }
 
             allStudentData[studentId].push({
               category: weekKey,
-              value: students[studentId][activeMonth][weekKey].total,
+              value: weekData.total,
             });
           }
         }
@@ -1260,6 +1006,9 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1272,7 +1021,7 @@ const InstitutionCharts = () => {
         dataLabels: {
           enabled: false,
         },
-        colors: ['#008FFB'],
+        colors: ['#006064'],
         xaxis: {
           type: 'category',
           labels: {
@@ -1349,6 +1098,9 @@ const InstitutionCharts = () => {
           type: 'bar',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1416,8 +1168,13 @@ const InstitutionCharts = () => {
       );
     }
 
-    const lessActiveData = userData.less_active[activeMonth]?.weeks || [];
-    const moreActiveData = userData.more_active[activeMonth]?.weeks || [];
+    const lessActiveData = (userData.less_active[activeMonth]?.weeks || []).map(
+      (week: number) => Math.floor(week),
+    );
+
+    const moreActiveData = (userData.more_active[activeMonth]?.weeks || []).map(
+      (week: number) => Math.floor(week),
+    );
 
     if (!lessActiveData.length || !moreActiveData.length) {
       return (
@@ -1440,7 +1197,9 @@ const InstitutionCharts = () => {
       chart: {
         type: 'area',
         height: 350,
-
+        zoom: {
+          enabled: false,
+        },
         toolbar: {
           show: false,
         },
@@ -1483,6 +1242,11 @@ const InstitutionCharts = () => {
         title: {
           text: 'Number of Users',
         },
+        labels: {
+          formatter: (val: number) => Math.round(val).toString(),
+        },
+        tickAmount: 6,
+        forceNiceScale: true,
       },
       legend: {
         position: 'top',
@@ -1509,7 +1273,7 @@ const InstitutionCharts = () => {
     const result: any = {};
 
     filteredSubjects.forEach((subject: any) => {
-      const subjectPerformance = subjectData[subject.subject_id];
+      const subjectPerformance = subjectData[subject.subject_name];
 
       if (subjectPerformance) {
         result[subject.subject_name] = {

@@ -179,6 +179,7 @@ const SuperAdmin = () => {
             hideProgressBar: true,
             theme: 'colored',
           });
+          setIsLoading(false)
         }
       })
       .catch((e) => {
