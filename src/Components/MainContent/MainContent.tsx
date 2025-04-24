@@ -2744,8 +2744,7 @@ function MainContent() {
                             Your Preferred Subject
                           </h5>
                           <small className="fs-12">
-                            Learning journey with our comprehensive lesson
-                            exercise courses,{' '}
+                          Start your learning journey in your preferred subject with our complete lesson and practice courses.{' '}
                           </small>
                         </div>
                         <Link

@@ -23,7 +23,7 @@ import {
   QuestionAnswerOutlined,
 } from '@mui/icons-material';
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
+import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE, QUERY_KEYS_QUIZ } from '../../../utils/const';
 import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
 import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
@@ -83,7 +83,7 @@ const TeacherQuizPage = () => {
   const fetchQuizData = async () => {
     try {
       setLoading(true);
-      getData(`/quiz/get/teacher/${user_uuid}`).then((response) => {
+      getData(`${QUERY_KEYS_QUIZ.GET_QUIZ_BY_TEACHER}${user_uuid}`).then((response) => {
         const filtered = response?.data.map((quiz: any) => {
           const dueDate = new Date(quiz.due_date_time);
 
@@ -207,7 +207,7 @@ const TeacherQuizPage = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      deleteData(`/quiz/delete/${id}`).then((res) => {
+      deleteData(`${QUERY_KEYS_QUIZ.DELETE_QUIZ}${id}`).then((res) => {
         toast.error(res.message, {
           hideProgressBar: true,
           theme: 'colored',

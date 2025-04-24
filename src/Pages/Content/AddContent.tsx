@@ -144,6 +144,12 @@ const AddContent = () => {
     await getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
       all_classes = data?.data.classes_data;
       setDataClasses(data.data?.classes_data);
+    }).catch((error)=>{
+      toast.error(error.message,{
+      hideProgressBar:true,
+      theme:'colored',
+      position:'top-center'
+      })
     });
 
     await getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
@@ -153,18 +159,36 @@ const AddContent = () => {
       // );
       const courses = data.data?.course_data;
       setDataCourses(Array.isArray(courses) ? courses.filter((s: any) => s?.is_active) : []);
-    });
+    }).catch((error)=>{
+      toast.error(error.message,{
+      hideProgressBar:true,
+      theme:'colored',
+      position:'top-center'
+      })
+    });;
 
     await getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       setCollegeSubjects(
         data.data.subjects_data?.filter((subject: any) => subject.is_active),
       );
+    }).catch((error)=>{
+      toast.error(error.message,{
+      hideProgressBar:true,
+      theme:'colored',
+      position:'top-center'
+      })
     });
 
     await getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       setSchoolSubjects(
         data.data.subjects_data.filter((subject: any) => subject.is_active),
       );
+    }).catch((error)=>{
+      toast.error(error.message,{
+      hideProgressBar:true,
+      theme:'colored',
+      position:'top-center'
+      })
     });
 
     if (id) {
@@ -399,12 +423,20 @@ const AddContent = () => {
     });
     getData(`${QUERY_KEYS_SUBJECT.GET_SUBJECT}`).then((data) => {
       const subjects = data.data?.subjects_data;
-      setCollegeSubjects(Array.isArray(subjects) ? subjects.filter((s: any) => s?.is_active) : []);
+      setCollegeSubjects(
+        Array.isArray(subjects)
+          ? subjects.filter((s: any) => s?.is_active)
+          : [],
+      );
     });
 
     getData(`${QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT}`).then((data) => {
       const subjects = data.data?.subjects_data;
-      setSchoolSubjects(Array.isArray(subjects) ? subjects.filter((s: any) => s?.is_active) : []);
+      setSchoolSubjects(
+        Array.isArray(subjects)
+          ? subjects.filter((s: any) => s?.is_active)
+          : [],
+      );
     });
     setIsInitialDataLoaded(true);
   }, []);
@@ -937,7 +969,6 @@ const AddContent = () => {
         formData,
         {
           onProgress: (progress: any) => {
-            console.log('Upload progress:', progress);
             setUploadProgress(progress);
           },
           onSuccess: (data: any) => {
@@ -987,7 +1018,6 @@ const AddContent = () => {
 
       postFileWithProgress(`${QUERY_KEYS_CONTENT.CONTENT_ADD}`, formData, {
         onProgress: (progress: any) => {
-          console.log('Upload progress:', progress);
           setUploadProgress(progress);
         },
         onSuccess: (data: any) => {

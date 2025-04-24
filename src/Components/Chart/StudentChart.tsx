@@ -6,6 +6,10 @@ import {
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
 import ReactApexChart from 'react-apexcharts';
+import {
+  createAcademicPerformanceConfig,
+  createCompletionRateConfig,
+} from './ChartConfig';
 
 const StudentDashboardCharts = () => {
   const { getData } = useApi();
@@ -145,284 +149,21 @@ const StudentDashboardCharts = () => {
                   },
                 );
 
-                setAcademicPerformanceData({
-                  series: [
-                    {
-                      name: 'Current Assignment Scores',
-                      data: currentScores,
-                    },
-                    {
-                      name: 'Previous Assignment Scores',
-                      data: previousScores,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: false,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        borderRadius: 2,
-                        endingShape: 'rounded',
-                        borderRadiusApplication: 'end',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Assignment Scores (%)',
-                      },
-                      min: 0,
-                      max: 100,
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#4e73df', '#36b9cc'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Overall Academic Performance',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                    tooltip: {
-                      y: {
-                        formatter: function (val: number) {
-                          return val + '%';
-                        },
-                      },
-                    },
-                  },
-                });
+                setAcademicPerformanceData(
+                  createAcademicPerformanceConfig(
+                    currentScores,
+                    previousScores,
+                    labels,
+                  ),
+                );
 
-                setCompletionRateData({
-                  series: [
-                    {
-                      name: 'Completed Assignments',
-                      data: completedAssignments,
-                    },
-                    {
-                      name: 'Pending Assignments',
-                      data: pendingAssignments,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: true,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        borderRadius: 2,
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Number of Assignments',
-                      },
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#1cc88a', '#D76C82'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Assignment Completion Status',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                  },
-                });
-
-                setAcademicPerformanceData({
-                  series: [
-                    {
-                      name: 'Current Assignment Scores',
-                      data: currentScores,
-                    },
-                    {
-                      name: 'Previous Assignment Scores',
-                      data: previousScores,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: false,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 2,
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Assignment Scores (%)',
-                      },
-                      min: 0,
-                      max: 100,
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#4e73df', '#36b9cc'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Overall Academic Performance',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                    tooltip: {
-                      y: {
-                        formatter: function (val: number) {
-                          return val + '%';
-                        },
-                      },
-                    },
-                  },
-                });
-
-                setCompletionRateData({
-                  series: [
-                    {
-                      name: 'Completed Assignments',
-                      data: completedAssignments,
-                    },
-                    {
-                      name: 'Pending Assignments',
-                      data: pendingAssignments,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: true,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 2,
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Number of Assignments',
-                      },
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#1cc88a', '#D76C82'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Assignment Completion Status',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                  },
-                });
+                setCompletionRateData(
+                  createCompletionRateConfig(
+                    completedAssignments,
+                    pendingAssignments,
+                    labels,
+                  ),
+                );
               } else {
                 const subjectMap: any = {};
 
@@ -454,283 +195,20 @@ const StudentDashboardCharts = () => {
                   },
                 );
 
-                setAcademicPerformanceData({
-                  series: [
-                    {
-                      name: 'Current Assignment Scores',
-                      data: currentScores,
-                    },
-                    {
-                      name: 'Previous Assignment Scores',
-                      data: previousScores,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: false,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 2,
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Assignment Scores (%)',
-                      },
-                      min: 0,
-                      max: 100,
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#4e73df', '#36b9cc'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Overall Academic Performance',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                    tooltip: {
-                      y: {
-                        formatter: function (val: number) {
-                          return val + '%';
-                        },
-                      },
-                    },
-                  },
-                });
-
-                setCompletionRateData({
-                  series: [
-                    {
-                      name: 'Completed Assignments',
-                      data: completedAssignments,
-                    },
-                    {
-                      name: 'Pending Assignments',
-                      data: pendingAssignments,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: true,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 2,
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Number of Assignments',
-                      },
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#1cc88a', '#D76C82'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Assignment Completion Status',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                  },
-                });
-
-                setAcademicPerformanceData({
-                  series: [
-                    {
-                      name: 'Current Assignment Scores',
-                      data: currentScores,
-                    },
-                    {
-                      name: 'Previous Assignment Scores',
-                      data: previousScores,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: false,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        borderRadius: 2,
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Assignment Scores (%)',
-                      },
-                      min: 0,
-                      max: 100,
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#4e73df', '#36b9cc'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Overall Academic Performance',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                    tooltip: {
-                      y: {
-                        formatter: function (val: number) {
-                          return val + '%';
-                        },
-                      },
-                    },
-                  },
-                });
-
-                setCompletionRateData({
-                  series: [
-                    {
-                      name: 'Completed Assignments',
-                      data: completedAssignments,
-                    },
-                    {
-                      name: 'Pending Assignments',
-                      data: pendingAssignments,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      type: 'bar',
-                      height: 350,
-                      stacked: true,
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    plotOptions: {
-                      bar: {
-                        horizontal: false,
-                        borderRadius: 2,
-                        columnWidth: '40%',
-                        endingShape: 'rounded',
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 0.2,
-                      colors: ['transparent'],
-                    },
-                    xaxis: {
-                      categories: labels,
-                      title: {
-                        text: 'Subjects',
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: 'Number of Assignments',
-                      },
-                    },
-                    fill: {
-                      opacity: 1,
-                    },
-                    colors: ['#1cc88a', '#D76C82'],
-                    legend: {
-                      position: 'bottom',
-                    },
-                    title: {
-                      text: 'Assignment Completion Status',
-                      align: 'center',
-                      style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold',
-                      },
-                    },
-                  },
-                });
+                setAcademicPerformanceData(
+                  createAcademicPerformanceConfig(
+                    currentScores,
+                    previousScores,
+                    labels,
+                  ),
+                );
+                setCompletionRateData(
+                  createCompletionRateConfig(
+                    completedAssignments,
+                    pendingAssignments,
+                    labels,
+                  ),
+                );
               }
             },
           );
@@ -885,6 +363,9 @@ const StudentDashboardCharts = () => {
                     height: 400,
                     type: activeTab === 'daily' ? 'area' : 'line',
                     stacked: false,
+                    zoom: {
+                      enabled: false,
+                    },
                     toolbar: { show: false },
                     dropShadow: {
                       enabled: true,
@@ -1109,6 +590,9 @@ const StudentDashboardCharts = () => {
                     height: 400,
                     type: 'line',
                     stacked: false,
+                    zoom: {
+                      enabled: false,
+                    },
                     toolbar: { show: false },
                     dropShadow: {
                       enabled: true,
@@ -1290,27 +774,6 @@ const StudentDashboardCharts = () => {
                     Monthly
                   </label>
                 </div>
-
-                {/* <div className="tabs">
-                  <button
-                    className={`tab ${activeTab === 'daily' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('daily')}
-                  >
-                    Daily
-                  </button>
-                  <button
-                    className={`tab ${activeTab === 'weekly' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('weekly')}
-                  >
-                    Weekly
-                  </button>
-                  <button
-                    className={`tab ${activeTab === 'monthly' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('monthly')}
-                  >
-                    Monthly
-                  </button>
-                </div> */}
               </div>
             </div>
           </div>

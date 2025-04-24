@@ -564,19 +564,7 @@ const Institute = () => {
                             </>
                           )}
 
-                          <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            sx={{
-                              '& .MuiBackdrop-root': {
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                              },
-                              '& .MuiPaper-root': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
-                              },
-                            }}
-                          >
+                          <Dialog open={open} onClose={handleClose}>
                             <DialogTitle
                               sx={{
                                 fontWeight: 600,
