@@ -110,7 +110,7 @@ const Chat = () => {
   //   getVoices();
   // };
   if (profileCompletion !== '100') {
-    navigate('/*');
+    navigate('/main/DashBoard');
   }
   const chatRef = useRef<HTMLInputElement>(null);
   const handlecancel = () => {

@@ -10,6 +10,24 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 
+// Utility function to convert GMT to IST
+const convertToIST = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  // IST is UTC+5:30
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istDate = new Date(date.getTime() + istOffset);
+  return istDate.toLocaleString('en-IN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+};
+
 export const TeacherDetailsDialog = ({
   open,
   selectedTeacher,
@@ -192,6 +210,9 @@ export const TeacherDetailsDialog = ({
         return renderCourses(value);
       case 'documents':
         return renderDocuments(value);
+      case 'created_at':
+      case 'updated_at':
+        return convertToIST(value);
       default:
         return typeof value === 'object'
           ? JSON.stringify(value)
