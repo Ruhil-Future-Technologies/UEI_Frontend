@@ -24,6 +24,12 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
   const { getData } = useApi();
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const storedMode = localStorage.getItem('isDarkMode');
+    setDarkMode(storedMode === 'true');
+  }, []);
 
   useEffect(() => {
     if (open && quizId) {
@@ -132,30 +138,60 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
                 }}
               >
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
                     Total Submissions
                   </Typography>
-                  <Typography variant="h6">{submissions.length}</Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
+                    {submissions.length}
+                  </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
                     Success Rate
                   </Typography>
-                  <Typography variant="h6">{calculateSuccessRate()}</Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
+                    {calculateSuccessRate()}
+                  </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
                     Average Score
                   </Typography>
-                  <Typography variant="h6">
+                  <Typography
+                    variant="h6"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
                     {calculateAverageScore()}
                   </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
                     Average Time
                   </Typography>
-                  <Typography variant="h6">{calculateAverageTime()}</Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ color: darkMode ? 'grey.700' : 'text.secondary' }}
+                  >
+                    {calculateAverageTime()}
+                  </Typography>
                 </Box>
               </Box>
             </Box>
