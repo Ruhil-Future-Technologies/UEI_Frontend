@@ -2428,9 +2428,7 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   },
 ];
 
-export const CONTENT_COLUMNS = (
-  refetch: () => void,
-): MRT_ColumnDef<ContentRepoDTO>[] => [
+export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -2531,7 +2529,8 @@ export const CONTENT_COLUMNS = (
                 hideProgressBar: true,
                 theme: 'colored',
               });
-              refetch();
+              window.location.reload();
+              // refetch();
             }
           })
           .catch((e) => {
