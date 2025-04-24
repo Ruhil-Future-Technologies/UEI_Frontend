@@ -143,7 +143,7 @@ export const CreateAssignments = () => {
   const [tescherSchoolSubjects, setTeacherSchoolSubjects] =
     useState<string[]>();
 
-  const [saveAsDraft, setSaveAsDraft] = useState(false);
+  const [saveAsDrafts, setSaveAsDraft] = useState(false);
   const [listOfStudentFiltered, setListOfStudentFiltered] = useState<any[]>();
   const [listOfStudent, setListOfStudent] = useState<any[]>();
 
@@ -852,7 +852,7 @@ export const CreateAssignments = () => {
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
     formData.append('points', assignmentDataType =='json'?totalMarks:assignmentData.points);
-    formData.append('save_draft', String(saveAsDraft));
+    formData.append('save_draft', saveAsDraft==true?saveAsDraft:String(saveAsDrafts));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
@@ -1396,7 +1396,7 @@ export const CreateAssignments = () => {
     payload.add_to_report = String(addToStudentRepost);
     payload.notify = String(sendNotification);
 
-    payload.save_draft = String(saveAsDraft);
+    payload.save_draft = String(saveAsDrafts);
     payload.timer = String(quiz_timer);
     payload.type = type;
     payload.contact_email = assignmentData.contact_email;
@@ -2780,7 +2780,7 @@ export const CreateAssignments = () => {
 
                           <Button
                             variant="outlined"
-                            color={saveAsDraft ? 'primary' : 'secondary'} // Change color dynamically
+                            color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
                             style={{
                               marginTop: 20,
 
