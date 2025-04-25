@@ -8,7 +8,7 @@ const FullScreenLoader = (props) => {
     if (props.flag === 'chat') {
       return 'Searching';
     }
-    return props.msg || 'Loading...';
+    return props.msg 
   };
 
   return (
@@ -34,7 +34,8 @@ const FullScreenLoader = (props) => {
           <div></div>
         </div>
       )}
-      {props.flag !== 'chat' && props.flag !== 'rag' && <div className="searchtext">{getMessage()}</div>}
+      {/* {props.flag !== 'chat' && props.flag !== 'rag' &&  <div className="searchtext">{props.msg}</div>} */}
+      
     </div>
   );
 };
