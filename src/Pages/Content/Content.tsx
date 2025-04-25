@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../Course/Course.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -155,7 +155,7 @@ const Content = () => {
         }
       });
   };
-  const columns11 = useMemo(() => CONTENT_COLUMNS(callAPI), []);
+  const columns11 = CONTENT_COLUMNS;
   const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
 
   useEffect(() => {
@@ -361,21 +361,6 @@ const Content = () => {
                   )}
                   <Box marginTop="10px">
                     <MaterialReactTable
-                      meta={{
-                        updateData: (
-                          rowIndex: number,
-                          columnId: string,
-                          value: any,
-                        ) => {
-                          setFilteredContent((prev) =>
-                            prev.map((row, index) =>
-                              index === rowIndex
-                                ? { ...row, [columnId]: value }
-                                : row,
-                            ),
-                          );
-                        },
-                      }}
                       columns={columns}
                       state={{
                         columnVisibility,

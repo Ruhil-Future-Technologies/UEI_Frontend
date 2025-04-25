@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
-import { getDateFormat, isNullOrUndefined } from '../../utils/helpers';
+import { convertToISTT, getDateFormat, isNullOrUndefined } from '../../utils/helpers';
 import profile from '../../assets/img/profile_img.svg';
 
 import {
@@ -506,7 +506,6 @@ export const TEACHER_COLUMNS = (
       const value = cell?.getValue();
       const [showValue, setShowValue] = useState(value);
       const [show, setShow] = useState(value ? true : false);
-      console.log('is_active called');
 
       const active = (id: string, valueSet: any) => {
         putData(`${valueSet ? TeacherDeactive : TeacherActive}/${id}`)
@@ -1177,6 +1176,10 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -1187,6 +1190,10 @@ export const MENU_COLUMNS: MRT_ColumnDef<MenuRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
 
   {
@@ -1608,6 +1615,10 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -1618,6 +1629,10 @@ export const FEEDBACK_COLUMNS: MRT_ColumnDef<FeedbackRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
 ];
 export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] =
@@ -1703,6 +1718,10 @@ export const STUDENT_FEEDBACK_COLUMNS: MRT_ColumnDef<StudentFeedbackRep0oDTO>[] 
       accessorKey: 'created_at',
       header: 'Created At',
       size: 150,
+      Cell: ({ cell }: any) => {
+        const value = cell.getValue();
+        return convertToISTT(value);
+      },
     },
   ];
 
@@ -1733,6 +1752,10 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -1743,6 +1766,10 @@ export const SUBMENU_COLUMNS: MRT_ColumnDef<SubMenuRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'is_active',
@@ -1813,6 +1840,10 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -1823,6 +1854,10 @@ export const ROLE_COLUMNS: MRT_ColumnDef<RoleRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'is_active',
@@ -1937,6 +1972,10 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     header: 'Created At',
     size: 150,
     enableResizing: false,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -1949,6 +1988,10 @@ export const FORM_COLUMNS: MRT_ColumnDef<FormRep0oDTO>[] = [
     header: 'Last Updated at',
     size: 150,
     enableResizing: false,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'is_active',
@@ -2079,6 +2122,10 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -2089,6 +2136,10 @@ export const ROLEVSFORM_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'is_active',
@@ -2164,6 +2215,10 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'created_at',
     header: 'Created At',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'updated_by',
@@ -2174,6 +2229,10 @@ export const ROLEVSADMIN_COLUMNS: MRT_ColumnDef<RolevsFormRep0oDTO>[] = [
     accessorKey: 'updated_at',
     header: 'Last Updated at',
     size: 150,
+    Cell: ({ cell }: any) => {
+      const value = cell.getValue();
+      return convertToISTT(value);
+    },
   },
   {
     accessorKey: 'is_active',
@@ -2429,9 +2488,7 @@ export const PDF_LIST_FOR_COLLAGE_COLUMNS: MRT_ColumnDef<IPDFList>[] = [
   },
 ];
 
-export const CONTENT_COLUMNS = (
-  refetch: () => void,
-): MRT_ColumnDef<ContentRepoDTO>[] => [
+export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -2514,42 +2571,41 @@ export const CONTENT_COLUMNS = (
   {
     accessorKey: 'is_active',
     header: 'Active/DeActive',
-    Cell: ({ cell, row, table }: any) => {
+    Cell: ({ cell, row }: any) => {
       const { putData } = useApi();
       const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
       const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
       const value = cell?.getValue();
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(value ? true : false);
 
-      const active = async (id: string, currentValue: any) => {
-        try {
-          const data = await putData(
-            `${currentValue ? MenuDeactive : MenuActive}/${id}`,
-          );
-          if (data.status) {
-            table.options.meta?.updateData(
-              row.index,
-              'is_active',
-              currentValue ? 0 : 1,
-            );
-            toast.success(data?.message, {
+      const active = (id: string, valueSet: any) => {
+        putData(`${valueSet ? MenuDeactive : MenuActive}/${id}`)
+          .then((data: any) => {
+            if (data.status) {
+              setShow((prevState) => !prevState);
+              setShowValue(showValue ? 0 : 1);
+              toast.success(data?.message, {
+                hideProgressBar: true,
+                theme: 'colored',
+              });
+              window.location.reload();
+              // refetch();
+            }
+          })
+          .catch((e) => {
+            toast.error(e?.message, {
               hideProgressBar: true,
               theme: 'colored',
             });
-            refetch();
-          }
-        } catch (e: any) {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
           });
-        }
       };
 
       return (
         <Switch
-          isChecked={!!value}
-          onChange={() => active(row?.original?.id, value)}
-          label={value ? 'Active' : 'Deactive'}
+          isChecked={show}
+          onChange={() => active(row?.original?.id, showValue)}
+          label={show ? 'Active' : 'Deactive'}
           activeColor="#4CAF50"
           inactiveColor="#f44336"
         />

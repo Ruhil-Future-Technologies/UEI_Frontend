@@ -56,7 +56,7 @@ const RefundPolicy = () => {
                   </p>
                   <ul>
                     <li>
-                      If a subscription or paid service is canceled within 24
+                      If a subscription or paid service is cancelled within 24
                       hours of purchase and access has not been granted, a
                       refund may be processed.
                     </li>
