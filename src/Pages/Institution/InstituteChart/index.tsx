@@ -6,6 +6,7 @@ import { ApexOptions } from 'apexcharts';
 import useApi from '../../../hooks/useAPI';
 import {
   QUERY_KEYS,
+  QUERY_KEYS_CLASS,
   QUERY_KEYS_STUDENT,
   QUERY_KEYS_SUBJECT,
   QUERY_KEYS_SUBJECT_SCHOOL,
@@ -20,6 +21,7 @@ const InstitutionCharts = () => {
   const SUBJECTURL = QUERY_KEYS_SUBJECT.GET_SUBJECT;
   const INSTITUTEURL = QUERY_KEYS.INSTITUTE_EDIT;
   const SUBJECT_SCHOOL_URL = QUERY_KEYS_SUBJECT_SCHOOL.GET_SUBJECT;
+  const GET_CLASS_API = QUERY_KEYS_CLASS;
   const [teacherAll, setTeacherAll] = useState<any[]>([]);
   const [studentAll, setStudentAll] = useState<any[]>([]);
   const [subjectAll, setSubjectAll] = useState<any[]>([]);
@@ -270,25 +272,28 @@ const InstitutionCharts = () => {
 
       setSemesterAll(uniqueSemesters);
       setSelectedSemester(uniqueSemesters[0]?.semester_id.toString());
-
-      const uniqueClasses: any = Object.values(
-        filteredSub.reduce(
-          (acc: any, item: any) => {
-            if (!acc[item.class_id]) {
-              acc[item.class_id] = {
-                class_id: item.class_id,
-                class_name: item.class_name,
-              };
-            }
-            return acc;
-          },
-          {} as Record<number, { course_id: number; course_name: string }>,
-        ),
-      );
-      setSelectedClass(uniqueClasses[0]?.class_id);
     });
     getData(`${SUBJECT_SCHOOL_URL}`).then((data) => {
       setschoolSubjectAll(data?.data?.subjects_data);
+    });
+    getData(`${GET_CLASS_API.GET_CLASS}`).then((data) => {
+      const classes_data = data?.data?.classes_data;
+
+      const smallestClass = classes_data.reduce(
+        (minClass: any, current: any) => {
+          const currentNum = parseInt(
+            current.class_name.replace('class_', ''),
+            10,
+          );
+          const minNum = parseInt(
+            minClass.class_name.replace('class_', ''),
+            10,
+          );
+          return currentNum < minNum ? current : minClass;
+        },
+      );
+
+      setSelectedClass(smallestClass?.id);
     });
   }, [institute_id, user_uuid]);
 
@@ -484,6 +489,9 @@ const InstitutionCharts = () => {
         type: 'bar',
         height: 350,
         stacked: true,
+        zoom: {
+          enabled: false,
+        },
         toolbar: {
           show: false,
         },
@@ -590,6 +598,9 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
+          zoom: {
+            enabled: false,
+          },
           toolbar: { show: false },
         },
         colors: ['#006064'],
@@ -677,6 +688,9 @@ const InstitutionCharts = () => {
           type: 'area',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -992,6 +1006,9 @@ const InstitutionCharts = () => {
         chart: {
           type: 'heatmap',
           height: 350,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1081,6 +1098,9 @@ const InstitutionCharts = () => {
           type: 'bar',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -1177,7 +1197,9 @@ const InstitutionCharts = () => {
       chart: {
         type: 'area',
         height: 350,
-
+        zoom: {
+          enabled: false,
+        },
         toolbar: {
           show: false,
         },

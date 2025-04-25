@@ -2855,7 +2855,6 @@ a {
     margin-right: 1rem;
     .chat-box {
       padding-top: 0.5rem;
-    
       height: 400px;
       overflow: auto;
       .message-bubble {
@@ -3130,4 +3129,36 @@ a {
       display: block;
     }
   }
+}
+.fancy-hover {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border-radius: 0.5rem;
+  //cursor: pointer;
+  padding: 10px;
+  margin-top: 10px;
+  //background: #d6d8db;
+  list-style-type: disc;
+}
+
+.fancy-hover:hover {
+  // transform: translateY(-5px) scale(1.02);
+  // box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background-color: #f6ebfe;
+  color: #000; /* optional: change background slightly on hover */
+  list-style-type: disc;
+}
+.delete-icon:hover {
+  cursor: pointer; /* 👈 this shows the hand cursor */
+  transition: transform 0.2s ease;
+}
+
+.quill-dark .ql-editor.ql-blank::before {
+  color: gray;
+  opacity: 0.7;
+}
+
+.quill-light .ql-editor.ql-blank::before {
+  color: #999;
 }

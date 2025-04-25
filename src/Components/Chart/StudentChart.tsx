@@ -6,6 +6,10 @@ import {
   QUERY_KEYS_SUBJECT_SCHOOL,
 } from '../../utils/const';
 import ReactApexChart from 'react-apexcharts';
+import {
+  createAcademicPerformanceConfig,
+  createCompletionRateConfig,
+} from './ChartConfig';
 
 const StudentDashboardCharts = () => {
   const { getData } = useApi();
@@ -73,7 +77,7 @@ const StudentDashboardCharts = () => {
     },
   });
   const [studentData, setStudentData] = useState<any>('');
-  const student_id = localStorage.getItem('_id');
+  const student_id = localStorage.getItem('_id') || '';
 
   const getMonths = () => {
     if (!studentData) return [];
@@ -109,1103 +113,587 @@ const StudentDashboardCharts = () => {
         let performanceData: any = [];
         let study_data: any = [];
 
-        getData(`/assignment/stats-for-student/${student_id}`).then(
-          (response) => {
-            performanceData = response?.data;
+        if (student_id) {
+          getData(`/assignment/stats-for-student/${student_id}`).then(
+            (response) => {
+              performanceData = response?.data;
 
-            if (userdata?.entity_name === 'college') {
-              const subjectMap: any = {};
+              if (userdata?.entity_name === 'college') {
+                const subjectMap: any = {};
 
-              collegeData.data.subjects_data.forEach((subject: any) => {
-                subjectMap[subject.subject_name] = subject.subject_name;
-              });
+                collegeData.data.subjects_data.forEach((subject: any) => {
+                  subjectMap[subject.subject_name] = subject.subject_name;
+                });
 
-              const labels: any = [];
-              const currentScores: any = [];
-              const previousScores: any = [];
-              const completedAssignments: any = [];
-              const pendingAssignments: any = [];
+                const labels: any = [];
+                const currentScores: any = [];
+                const previousScores: any = [];
+                const completedAssignments: any = [];
+                const pendingAssignments: any = [];
 
-              Object.entries(performanceData)?.forEach(
-                ([subject_name, data]: [string, any]) => {
-                  if (subjectMap[subject_name]) {
-                    labels.push(subjectMap[subject_name]);
-                    currentScores.push(data.current);
-                    previousScores.push(data.previous);
-                    completedAssignments.push(data.completed);
-                    pendingAssignments.push(data.pending);
-                  } else {
-                    labels.push(`Subject ${subject_name}`);
-                    currentScores.push(data.current);
-                    previousScores.push(data.previous);
-                    completedAssignments.push(data.completed);
-                    pendingAssignments.push(data.pending);
-                  }
-                },
-              );
-
-              setAcademicPerformanceData({
-                series: [
-                  {
-                    name: 'Current Assignment Scores',
-                    data: currentScores,
+                Object.entries(performanceData)?.forEach(
+                  ([subject_name, data]: [string, any]) => {
+                    if (subjectMap[subject_name]) {
+                      labels.push(subjectMap[subject_name]);
+                      currentScores.push(data.current);
+                      previousScores.push(data.previous);
+                      completedAssignments.push(data.completed);
+                      pendingAssignments.push(data.pending);
+                    } else {
+                      labels.push(`Subject ${subject_name}`);
+                      currentScores.push(data.current);
+                      previousScores.push(data.previous);
+                      completedAssignments.push(data.completed);
+                      pendingAssignments.push(data.pending);
+                    }
                   },
-                  {
-                    name: 'Previous Assignment Scores',
-                    data: previousScores,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: false,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      horizontal: false,
-                      columnWidth: '55%',
-                      borderRadius: 2,
-                      endingShape: 'rounded',
-                      borderRadiusApplication: 'end',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Assignment Scores (%)',
-                    },
-                    min: 0,
-                    max: 100,
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#4e73df', '#36b9cc'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Overall Academic Performance',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                  tooltip: {
-                    y: {
-                      formatter: function (val: number) {
-                        return val + '%';
-                      },
-                    },
-                  },
-                },
-              });
-
-              setCompletionRateData({
-                series: [
-                  {
-                    name: 'Completed Assignments',
-                    data: completedAssignments,
-                  },
-                  {
-                    name: 'Pending Assignments',
-                    data: pendingAssignments,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      horizontal: false,
-                      columnWidth: '55%',
-                      borderRadius: 2,
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Number of Assignments',
-                    },
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#1cc88a', '#D76C82'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Assignment Completion Status',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                },
-              });
-
-              setAcademicPerformanceData({
-                series: [
-                  {
-                    name: 'Current Assignment Scores',
-                    data: currentScores,
-                  },
-                  {
-                    name: 'Previous Assignment Scores',
-                    data: previousScores,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: false,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      borderRadius: 2,
-                      horizontal: false,
-                      columnWidth: '55%',
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Assignment Scores (%)',
-                    },
-                    min: 0,
-                    max: 100,
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#4e73df', '#36b9cc'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Overall Academic Performance',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                  tooltip: {
-                    y: {
-                      formatter: function (val: number) {
-                        return val + '%';
-                      },
-                    },
-                  },
-                },
-              });
-
-              setCompletionRateData({
-                series: [
-                  {
-                    name: 'Completed Assignments',
-                    data: completedAssignments,
-                  },
-                  {
-                    name: 'Pending Assignments',
-                    data: pendingAssignments,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      borderRadius: 2,
-                      horizontal: false,
-                      columnWidth: '55%',
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Number of Assignments',
-                    },
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#1cc88a', '#D76C82'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Assignment Completion Status',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                },
-              });
-            } else {
-              const subjectMap: any = {};
-
-              schoolData.data.subjects_data.forEach((subject: any) => {
-                subjectMap[subject.subject_name] = subject.subject_name;
-              });
-
-              const labels: any = [];
-              const currentScores: any = [];
-              const previousScores: any = [];
-              const completedAssignments: any = [];
-              const pendingAssignments: any = [];
-              if (!performanceData) return;
-              Object.entries(performanceData)?.forEach(
-                ([subject_name, data]: [string, any]) => {
-                  if (subjectMap[subject_name]) {
-                    labels.push(subjectMap[subject_name]);
-                    currentScores.push(data.current);
-                    previousScores.push(data.previous);
-                    completedAssignments.push(data.completed);
-                    pendingAssignments.push(data.pending);
-                  } else {
-                    labels.push(`Subject ${subject_name}`);
-                    currentScores.push(data.current);
-                    previousScores.push(data.previous);
-                    completedAssignments.push(data.completed);
-                    pendingAssignments.push(data.pending);
-                  }
-                },
-              );
-
-              setAcademicPerformanceData({
-                series: [
-                  {
-                    name: 'Current Assignment Scores',
-                    data: currentScores,
-                  },
-                  {
-                    name: 'Previous Assignment Scores',
-                    data: previousScores,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: false,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      borderRadius: 2,
-                      horizontal: false,
-                      columnWidth: '55%',
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Assignment Scores (%)',
-                    },
-                    min: 0,
-                    max: 100,
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#4e73df', '#36b9cc'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Overall Academic Performance',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                  tooltip: {
-                    y: {
-                      formatter: function (val: number) {
-                        return val + '%';
-                      },
-                    },
-                  },
-                },
-              });
-
-              setCompletionRateData({
-                series: [
-                  {
-                    name: 'Completed Assignments',
-                    data: completedAssignments,
-                  },
-                  {
-                    name: 'Pending Assignments',
-                    data: pendingAssignments,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      borderRadius: 2,
-                      horizontal: false,
-                      columnWidth: '55%',
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Number of Assignments',
-                    },
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#1cc88a', '#D76C82'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Assignment Completion Status',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                },
-              });
-
-              setAcademicPerformanceData({
-                series: [
-                  {
-                    name: 'Current Assignment Scores',
-                    data: currentScores,
-                  },
-                  {
-                    name: 'Previous Assignment Scores',
-                    data: previousScores,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: false,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      borderRadius: 2,
-                      horizontal: false,
-                      columnWidth: '55%',
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Assignment Scores (%)',
-                    },
-                    min: 0,
-                    max: 100,
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#4e73df', '#36b9cc'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Overall Academic Performance',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                  tooltip: {
-                    y: {
-                      formatter: function (val: number) {
-                        return val + '%';
-                      },
-                    },
-                  },
-                },
-              });
-
-              setCompletionRateData({
-                series: [
-                  {
-                    name: 'Completed Assignments',
-                    data: completedAssignments,
-                  },
-                  {
-                    name: 'Pending Assignments',
-                    data: pendingAssignments,
-                  },
-                ],
-                options: {
-                  chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                      show: false,
-                    },
-                  },
-                  plotOptions: {
-                    bar: {
-                      horizontal: false,
-                      borderRadius: 2,
-                      columnWidth: '40%',
-                      endingShape: 'rounded',
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    show: true,
-                    width: 0.2,
-                    colors: ['transparent'],
-                  },
-                  xaxis: {
-                    categories: labels,
-                    title: {
-                      text: 'Subjects',
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: 'Number of Assignments',
-                    },
-                  },
-                  fill: {
-                    opacity: 1,
-                  },
-                  colors: ['#1cc88a', '#D76C82'],
-                  legend: {
-                    position: 'bottom',
-                  },
-                  title: {
-                    text: 'Assignment Completion Status',
-                    align: 'center',
-                    style: {
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                    },
-                  },
-                },
-              });
-            }
-          },
-        );
-
-        getData(`/session/student-individual-stats/${student_id}`).then(
-          (response) => {
-            const sessionData = response.data.monthly_data;
-
-            const monthMapping: any = {
-              1: 'January',
-              2: 'February',
-              3: 'March',
-              4: 'April',
-              5: 'May',
-              6: 'June',
-              7: 'July',
-              8: 'August',
-              9: 'September',
-              10: 'October',
-              11: 'November',
-              12: 'December',
-            };
-
-            const modifiedData: any = {};
-
-            if (!sessionData) return;
-
-            Object.keys(sessionData)?.forEach((monthNum) => {
-              const monthName = monthMapping[monthNum] || monthNum;
-              modifiedData[monthName] = sessionData[monthNum];
-            });
-
-            study_data = modifiedData;
-            setStudentData((prevData: any) => ({
-              ...prevData,
-              usage: modifiedData,
-            }));
-
-            setStudentData((prevData: any) => ({
-              ...prevData,
-              usage: study_data,
-            }));
-
-            const prepareTimeData = () => {
-              const monthData: any = study_data[activeMonth];
-
-              if (monthData.length < 0) return;
-              const weeks = Object.keys(monthData).filter((key) =>
-                key.startsWith('week'),
-              );
-
-              if (activeTab === 'daily') {
-                const date = new Date();
-                const days = Array.from({ length: 31 }, (_, i) => `${i + 1}`);
-
-                const weeklyData = weeks.flatMap(
-                  (week) => monthData[week]?.days || [],
                 );
 
-                const limitedDays = days?.slice(0, weeklyData.length);
-
-                const dailyHours = limitedDays.map(
-                  (_, index) => weeklyData[index] || 0,
+                setAcademicPerformanceData(
+                  createAcademicPerformanceConfig(
+                    currentScores,
+                    previousScores,
+                    labels,
+                  ),
                 );
 
-                const dailyData = dailyHours?.slice(1, date.getDate() + 1);
-
-                return {
-                  labels: days,
-                  dailyData,
-                  weeklyTotals: [],
-                  recommended: Array(days.length).fill(2.5),
-                };
-              } else if (activeTab === 'weekly') {
-                const weeklyLabels = weeks.map((week) =>
-                  week.replace('week', 'Week '),
+                setCompletionRateData(
+                  createCompletionRateConfig(
+                    completedAssignments,
+                    pendingAssignments,
+                    labels,
+                  ),
                 );
-                const weeklyTotals = weeks.map((week) => monthData[week].total);
-                const dailyAverages = weeks.map(
-                  (week) => monthData[week].total / 7,
-                );
-
-                return {
-                  labels: weeklyLabels,
-                  dailyData: dailyAverages,
-                  weeklyTotals,
-                  recommended: Array(weeklyLabels.length).fill(2.5 * 7),
-                };
               } else {
-                const months = Object.keys(study_data).map((month) =>
-                  month.replace('month', 'Month '),
-                );
-                const monthlyTotals = Object.values(study_data).map(
-                  (month: any) => month.total,
-                );
-                const dailyAverages = Object.values(study_data).map(
-                  (month: any) => month.total / 30,
+                const subjectMap: any = {};
+
+                schoolData.data.subjects_data.forEach((subject: any) => {
+                  subjectMap[subject.subject_name] = subject.subject_name;
+                });
+
+                const labels: any = [];
+                const currentScores: any = [];
+                const previousScores: any = [];
+                const completedAssignments: any = [];
+                const pendingAssignments: any = [];
+                if (!performanceData) return;
+                Object.entries(performanceData)?.forEach(
+                  ([subject_name, data]: [string, any]) => {
+                    if (subjectMap[subject_name]) {
+                      labels.push(subjectMap[subject_name]);
+                      currentScores.push(data.current);
+                      previousScores.push(data.previous);
+                      completedAssignments.push(data.completed);
+                      pendingAssignments.push(data.pending);
+                    } else {
+                      labels.push(`Subject ${subject_name}`);
+                      currentScores.push(data.current);
+                      previousScores.push(data.previous);
+                      completedAssignments.push(data.completed);
+                      pendingAssignments.push(data.pending);
+                    }
+                  },
                 );
 
-                return {
-                  labels: months,
-                  dailyData: dailyAverages,
-                  weeklyTotals: monthlyTotals,
-                  recommended: Array(months.length).fill(2.5 * 30),
-                };
+                setAcademicPerformanceData(
+                  createAcademicPerformanceConfig(
+                    currentScores,
+                    previousScores,
+                    labels,
+                  ),
+                );
+                setCompletionRateData(
+                  createCompletionRateConfig(
+                    completedAssignments,
+                    pendingAssignments,
+                    labels,
+                  ),
+                );
               }
-            };
+            },
+          );
 
-            const timeData = prepareTimeData();
+          getData(`/session/student-individual-stats/${student_id}`).then(
+            (response) => {
+              const sessionData = response.data.monthly_data;
 
-            setLearningTimeData({
-              series: [
-                {
-                  name: 'Daily Time (Hours)',
-                  type: activeTab === 'daily' ? 'area' : 'line',
-                  data: timeData?.dailyData || [],
-                },
-                ...(activeTab !== 'daily'
-                  ? [
-                      {
-                        name:
-                          activeTab === 'weekly'
-                            ? 'Weekly Total Time (Hours)'
-                            : 'Monthly Total Time (Hours)',
-                        type: 'column',
-                        data: timeData?.weeklyTotals || [],
-                      },
-                      {
-                        name:
-                          activeTab === 'weekly'
-                            ? 'Recommended Weekly Time (Hours)'
-                            : 'Recommended Monthly Time (Hours)',
-                        type: 'line',
-                        data: timeData?.recommended || [],
-                      },
-                    ]
-                  : []),
-                ...(activeTab == 'daily'
-                  ? [
-                      {
-                        name: 'Recommended Daily Time (Hours)',
-                        type: 'line',
-                        data: timeData?.recommended || [],
-                      },
-                    ]
-                  : []),
-              ],
-              options: {
-                chart: {
-                  height: 400,
-                  type: activeTab === 'daily' ? 'area' : 'line',
-                  stacked: false,
-                  toolbar: { show: false },
-                  dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.1,
-                  },
-                },
-                fill: {
-                  type: 'gradient',
-                  gradient: {
-                    shade: 'light',
-                    type: 'vertical',
-                    shadeIntensity: 0.5,
-                    gradientToColors: ['#4e73df'],
-                    inverseColors: true,
-                    opacityFrom: 0.9,
-                    opacityTo: 0.5,
-                    stops: [50, 100],
-                  },
-                },
+              const monthMapping: any = {
+                1: 'January',
+                2: 'February',
+                3: 'March',
+                4: 'April',
+                5: 'May',
+                6: 'June',
+                7: 'July',
+                8: 'August',
+                9: 'September',
+                10: 'October',
+                11: 'November',
+                12: 'December',
+              };
 
-                stroke: {
-                  curve: 'smooth',
+              const modifiedData: any = {};
 
-                  width: activeTab === 'daily' ? [4, 3] : [4, 0, 3],
-                  dashArray: activeTab === 'daily' ? [0, 5] : [0, 0, 5],
-                },
-                plotOptions: {
-                  bar: {
-                    horizontal: false,
-                    borderRadius: 6,
-                    columnWidth: '35%',
-                    borderRadiusApplication: 'end',
-                  },
-                },
-                markers: {
-                  size: activeTab === 'daily' ? [0, 1] : [0, 0, 1],
-                  colors: [
-                    'transparent',
-                    ...(activeTab !== 'daily' ? ['transparent'] : []),
-                    '#1cc88a',
-                  ],
-                  strokeColors: [
-                    'transparent',
-                    ...(activeTab !== 'daily' ? ['transparent'] : []),
-                    '#1cc88a',
-                  ],
-                  strokeWidth: 2,
-                  hover: {
-                    size: 6,
-                  },
-                },
-                colors: [
-                  '#4e73df',
-                  ...(activeTab !== 'daily' ? ['#e74a3b'] : []),
-                  '#1cc88a',
-                ],
-                dataLabels: { enabled: false },
-                xaxis: {
-                  categories: timeData?.labels,
-                  title: {
-                    text: 'Time Period',
-                    style: { fontWeight: 600, color: '#666' },
-                  },
-                },
-                yaxis: [
+              if (!sessionData) return;
+
+              Object.keys(sessionData)?.forEach((monthNum) => {
+                const monthName = monthMapping[monthNum] || monthNum;
+                modifiedData[monthName] = sessionData[monthNum];
+              });
+
+              study_data = modifiedData;
+              setStudentData((prevData: any) => ({
+                ...prevData,
+                usage: modifiedData,
+              }));
+
+              setStudentData((prevData: any) => ({
+                ...prevData,
+                usage: study_data,
+              }));
+
+              const prepareTimeData = () => {
+                const monthData: any = study_data[activeMonth];
+
+                if (monthData.length < 0) return;
+                const weeks = Object.keys(monthData).filter((key) =>
+                  key.startsWith('week'),
+                );
+
+                if (activeTab === 'daily') {
+                  const date = new Date();
+                  const days = Array.from({ length: 31 }, (_, i) => `${i + 1}`);
+
+                  const weeklyData = weeks.flatMap(
+                    (week) => monthData[week]?.days || [],
+                  );
+
+                  const limitedDays = days?.slice(0, weeklyData.length);
+
+                  const dailyHours = limitedDays.map(
+                    (_, index) => weeklyData[index] || 0,
+                  );
+
+                  const dailyData = dailyHours?.slice(1, date.getDate() + 1);
+
+                  return {
+                    labels: days,
+                    dailyData,
+                    weeklyTotals: [],
+                    recommended: Array(days.length).fill(2.5),
+                  };
+                } else if (activeTab === 'weekly') {
+                  const weeklyLabels = weeks.map((week) =>
+                    week.replace('week', 'Week '),
+                  );
+                  const weeklyTotals = weeks.map(
+                    (week) => monthData[week].total,
+                  );
+                  const dailyAverages = weeks.map(
+                    (week) => monthData[week].total / 7,
+                  );
+
+                  return {
+                    labels: weeklyLabels,
+                    dailyData: dailyAverages,
+                    weeklyTotals,
+                    recommended: Array(weeklyLabels.length).fill(2.5 * 7),
+                  };
+                } else {
+                  const months = Object.keys(study_data).map((month) =>
+                    month.replace('month', 'Month '),
+                  );
+                  const monthlyTotals = Object.values(study_data).map(
+                    (month: any) => month.total,
+                  );
+                  const dailyAverages = Object.values(study_data).map(
+                    (month: any) => month.total / 30,
+                  );
+
+                  return {
+                    labels: months,
+                    dailyData: dailyAverages,
+                    weeklyTotals: monthlyTotals,
+                    recommended: Array(months.length).fill(2.5 * 30),
+                  };
+                }
+              };
+
+              const timeData = prepareTimeData();
+
+              setLearningTimeData({
+                series: [
                   {
-                    seriesName: 'Daily Time',
-                    title: {
-                      text: 'Daily Time (Hours)',
-                      style: { fontWeight: 600, color: '#666' },
-                    },
-                    min: 0,
-                    labels: { formatter: (val: any) => val.toFixed(1) },
+                    name: 'Daily Time (Hours)',
+                    type: activeTab === 'daily' ? 'area' : 'line',
+                    data: timeData?.dailyData || [],
                   },
                   ...(activeTab !== 'daily'
                     ? [
                         {
-                          seriesName:
+                          name:
                             activeTab === 'weekly'
-                              ? 'Weekly Total'
-                              : 'Monthly Total',
-                          opposite: true,
-                          title: {
-                            text:
-                              activeTab === 'weekly'
-                                ? 'Weekly Total (Hours)'
-                                : 'Monthly Total (Hours)',
-                            style: { fontWeight: 600, color: '#666' },
-                          },
-                          min: 0,
-                          labels: { formatter: (val: any) => val.toFixed(0) },
+                              ? 'Weekly Total Time (Hours)'
+                              : 'Monthly Total Time (Hours)',
+                          type: 'column',
+                          data: timeData?.weeklyTotals || [],
+                        },
+                        {
+                          name:
+                            activeTab === 'weekly'
+                              ? 'Recommended Weekly Time (Hours)'
+                              : 'Recommended Monthly Time (Hours)',
+                          type: 'line',
+                          data: timeData?.recommended || [],
+                        },
+                      ]
+                    : []),
+                  ...(activeTab == 'daily'
+                    ? [
+                        {
+                          name: 'Recommended Daily Time (Hours)',
+                          type: 'line',
+                          data: timeData?.recommended || [],
                         },
                       ]
                     : []),
                 ],
-                legend: {
-                  position: 'bottom',
-                  horizontalAlign: 'right',
-                  floating: false,
-                  offsetY: 10,
-                },
-                title: {
-                  text: timeData?.dailyData?.length
-                    ? 'Learning Time Analysis'
-                    : 'No Learning Time Data Available',
-                  align: 'center',
-                  style: {
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    color: '#333',
+                options: {
+                  chart: {
+                    height: 400,
+                    type: activeTab === 'daily' ? 'area' : 'line',
+                    stacked: false,
+                    zoom: {
+                      enabled: false,
+                    },
+                    toolbar: { show: false },
+                    dropShadow: {
+                      enabled: true,
+                      color: '#000',
+                      top: 18,
+                      left: 7,
+                      blur: 10,
+                      opacity: 0.1,
+                    },
                   },
-                },
-                tooltip: {
-                  theme: 'light',
-                  shared: true,
-                  intersect: false,
-                  y: {
-                    formatter: (val: any) => `${val.toFixed(1)} hours`,
+                  fill: {
+                    type: 'gradient',
+                    gradient: {
+                      shade: 'light',
+                      type: 'vertical',
+                      shadeIntensity: 0.5,
+                      gradientToColors: ['#4e73df'],
+                      inverseColors: true,
+                      opacityFrom: 0.9,
+                      opacityTo: 0.5,
+                      stops: [50, 100],
+                    },
                   },
-                },
-              },
-            });
-            const prepareStreaksData = () => {
-              const monthData = study_data?.[activeMonth] || {};
 
-              const weeks = Object.keys(monthData).filter((key) =>
-                key.startsWith('week'),
-              );
+                  stroke: {
+                    curve: 'smooth',
 
-              if (activeTab === 'weekly') {
-                const weeklyLabels = weeks.map((week) =>
-                  week.replace('week', 'Week '),
-                );
-                const maxStreaks = weeks.map(
-                  (week) => monthData[week]?.max_streak || 0,
-                );
-                const activeDays = weeks.map(
-                  (week) => monthData[week]?.total_days_active || 0,
-                );
-                const engagement = weeks.map(
-                  (week) => (monthData[week]?.engagement || 0) * 20,
-                );
-
-                return {
-                  labels: weeklyLabels,
-                  maxStreaks,
-                  activeDays,
-                  engagement,
-                };
-              } else if (activeTab === 'monthly') {
-                if (!study_data?.usage) return;
-                const months = Object.keys(study_data?.usage).map((month) =>
-                  month.replace('month', 'Month '),
-                );
-
-                const maxStreaks = Object.values(study_data?.usage).map(
-                  (month: any) =>
-                    Math.max(
-                      ...Object.values(month)
-                        .filter((week: any) => week.max_streak)
-                        .map((week: any) => week.max_streak),
-                    ),
-                );
-
-                const activeDays = Object.values(study_data?.usage).map(
-                  (month: any) =>
-                    Object.values(month)
-                      .filter((week: any) => week.total_days_active)
-                      .reduce(
-                        (sum: number, week: any) =>
-                          sum + week.total_days_active,
-                        0,
-                      ),
-                );
-
-                const engagement = Object.values(study_data).map(
-                  (month: any) =>
-                    Object.values(month)
-                      .filter((week: any) => week.engagement)
-                      .reduce(
-                        (sum: number, week: any, _, arr) =>
-                          sum + week.engagement / arr.length,
-                        0,
-                      ) * 20,
-                );
-
-                return {
-                  labels: months,
-                  maxStreaks,
-                  activeDays,
-                  engagement,
-                };
-              }
-            };
-
-            const streaksData = prepareStreaksData();
-
-            setStudyStreaksData({
-              series: [
-                {
-                  name: 'Engagement Score',
-                  type: 'line',
-                  data: streaksData?.engagement || [],
-                },
-                {
-                  name: 'Max Consecutive Days Active',
-                  type: 'column',
-                  data: streaksData?.maxStreaks || [],
-                },
-                {
-                  name: 'Total Active Days',
-                  type: 'column',
-                  data: streaksData?.activeDays || [],
-                },
-              ],
-              options: {
-                chart: {
-                  height: 400,
-                  type: 'line',
-                  stacked: false,
-                  toolbar: { show: false },
-                  dropShadow: {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.1,
+                    width: activeTab === 'daily' ? [4, 3] : [4, 0, 3],
+                    dashArray: activeTab === 'daily' ? [0, 5] : [0, 0, 5],
                   },
-                },
-                stroke: {
-                  curve: 'smooth',
-                  width: [4, 0, 0],
-                },
-                plotOptions: {
-                  bar: {
-                    horizontal: false,
-                    borderRadius: 6,
-                    columnWidth: '55%',
-                    borderRadiusApplication: 'end',
+                  plotOptions: {
+                    bar: {
+                      horizontal: false,
+                      borderRadius: 6,
+                      columnWidth: '35%',
+                      borderRadiusApplication: 'end',
+                    },
                   },
-                },
-                colors: ['#e74a3b', '#4e73df', '#1cc88a'],
-                dataLabels: {
-                  enabled: false,
-                },
-                xaxis: {
-                  categories: streaksData?.labels,
+                  markers: {
+                    size: activeTab === 'daily' ? [0, 1] : [0, 0, 1],
+                    colors: [
+                      'transparent',
+                      ...(activeTab !== 'daily' ? ['transparent'] : []),
+                      '#1cc88a',
+                    ],
+                    strokeColors: [
+                      'transparent',
+                      ...(activeTab !== 'daily' ? ['transparent'] : []),
+                      '#1cc88a',
+                    ],
+                    strokeWidth: 2,
+                    hover: {
+                      size: 6,
+                    },
+                  },
+                  colors: [
+                    '#4e73df',
+                    ...(activeTab !== 'daily' ? ['#e74a3b'] : []),
+                    '#1cc88a',
+                  ],
+                  dataLabels: { enabled: false },
+                  xaxis: {
+                    categories: timeData?.labels,
+                    title: {
+                      text: 'Time Period',
+                      style: { fontWeight: 600, color: '#666' },
+                    },
+                  },
+                  yaxis: [
+                    {
+                      seriesName: 'Daily Time',
+                      title: {
+                        text: 'Daily Time (Hours)',
+                        style: { fontWeight: 600, color: '#666' },
+                      },
+                      min: 0,
+                      labels: { formatter: (val: any) => val.toFixed(1) },
+                    },
+                    ...(activeTab !== 'daily'
+                      ? [
+                          {
+                            seriesName:
+                              activeTab === 'weekly'
+                                ? 'Weekly Total'
+                                : 'Monthly Total',
+                            opposite: true,
+                            title: {
+                              text:
+                                activeTab === 'weekly'
+                                  ? 'Weekly Total (Hours)'
+                                  : 'Monthly Total (Hours)',
+                              style: { fontWeight: 600, color: '#666' },
+                            },
+                            min: 0,
+                            labels: { formatter: (val: any) => val.toFixed(0) },
+                          },
+                        ]
+                      : []),
+                  ],
+                  legend: {
+                    position: 'bottom',
+                    horizontalAlign: 'right',
+                    floating: false,
+                    offsetY: 10,
+                  },
                   title: {
-                    text: 'Time Period',
+                    text: timeData?.dailyData?.length
+                      ? 'Learning Time Analysis'
+                      : 'No Learning Time Data Available',
+                    align: 'center',
                     style: {
-                      fontWeight: 600,
-                      color: '#666',
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      color: '#333',
+                    },
+                  },
+                  tooltip: {
+                    theme: 'light',
+                    shared: true,
+                    intersect: false,
+                    y: {
+                      formatter: (val: any) => `${val.toFixed(1)} hours`,
                     },
                   },
                 },
-                yaxis: [
+              });
+              const prepareStreaksData = () => {
+                const monthData = study_data?.[activeMonth] || {};
+
+                const weeks = Object.keys(monthData).filter((key) =>
+                  key.startsWith('week'),
+                );
+
+                if (activeTab === 'weekly') {
+                  const weeklyLabels = weeks.map((week) =>
+                    week.replace('week', 'Week '),
+                  );
+                  const maxStreaks = weeks.map(
+                    (week) => monthData[week]?.max_streak || 0,
+                  );
+                  const activeDays = weeks.map(
+                    (week) => monthData[week]?.total_days_active || 0,
+                  );
+                  const engagement = weeks.map(
+                    (week) => (monthData[week]?.engagement || 0) * 20,
+                  );
+
+                  return {
+                    labels: weeklyLabels,
+                    maxStreaks,
+                    activeDays,
+                    engagement,
+                  };
+                } else if (activeTab === 'monthly') {
+                  if (!study_data?.usage) return;
+                  const months = Object.keys(study_data?.usage).map((month) =>
+                    month.replace('month', 'Month '),
+                  );
+
+                  const maxStreaks = Object.values(study_data?.usage).map(
+                    (month: any) =>
+                      Math.max(
+                        ...Object.values(month)
+                          .filter((week: any) => week.max_streak)
+                          .map((week: any) => week.max_streak),
+                      ),
+                  );
+
+                  const activeDays = Object.values(study_data?.usage).map(
+                    (month: any) =>
+                      Object.values(month)
+                        .filter((week: any) => week.total_days_active)
+                        .reduce(
+                          (sum: number, week: any) =>
+                            sum + week.total_days_active,
+                          0,
+                        ),
+                  );
+
+                  const engagement = Object.values(study_data).map(
+                    (month: any) =>
+                      Object.values(month)
+                        .filter((week: any) => week.engagement)
+                        .reduce(
+                          (sum: number, week: any, _, arr) =>
+                            sum + week.engagement / arr.length,
+                          0,
+                        ) * 20,
+                  );
+
+                  return {
+                    labels: months,
+                    maxStreaks,
+                    activeDays,
+                    engagement,
+                  };
+                }
+              };
+
+              const streaksData = prepareStreaksData();
+
+              setStudyStreaksData({
+                series: [
                   {
-                    seriesName: 'Engagement Score',
-                    title: {
-                      text: 'Engagement Score (0-100)',
-                      style: {
-                        fontWeight: 600,
-                        color: '#666',
-                      },
-                    },
-                    min: 0,
-                    max: 100,
+                    name: 'Engagement Score',
+                    type: 'line',
+                    data: streaksData?.engagement || [],
                   },
                   {
-                    seriesName: 'Max Consecutive Days',
-                    opposite: true,
-                    title: {
-                      text:
-                        activeTab === 'monthly'
-                          ? 'Days Active'
-                          : 'Days Active per Week',
-                      style: {
-                        fontWeight: 600,
-                        color: '#666',
-                      },
-                    },
-                    min: 0,
-                    max:
-                      activeTab === 'daily'
-                        ? 7
-                        : activeTab === 'weekly'
-                          ? 7
-                          : 30,
-                    labels: {
-                      formatter: (val: number) => val.toFixed(0),
-                    },
+                    name: 'Max Consecutive Days Active',
+                    type: 'column',
+                    data: streaksData?.maxStreaks || [],
+                  },
+                  {
+                    name: 'Total Active Days',
+                    type: 'column',
+                    data: streaksData?.activeDays || [],
                   },
                 ],
-                legend: {
-                  position: 'bottom',
-                  horizontalAlign: 'right',
-                  floating: false,
-                  offsetY: 10,
-                },
-                title: {
-                  text: streaksData?.engagement?.length
-                    ? 'Study Streaks & Engagement'
-                    : 'No Study Streaks Data Available',
-                  align: 'center',
-                  style: {
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    color: '#333',
+                options: {
+                  chart: {
+                    height: 400,
+                    type: 'line',
+                    stacked: false,
+                    zoom: {
+                      enabled: false,
+                    },
+                    toolbar: { show: false },
+                    dropShadow: {
+                      enabled: true,
+                      color: '#000',
+                      top: 18,
+                      left: 7,
+                      blur: 10,
+                      opacity: 0.1,
+                    },
+                  },
+                  stroke: {
+                    curve: 'smooth',
+                    width: [4, 0, 0],
+                  },
+                  plotOptions: {
+                    bar: {
+                      horizontal: false,
+                      borderRadius: 6,
+                      columnWidth: '55%',
+                      borderRadiusApplication: 'end',
+                    },
+                  },
+                  colors: ['#e74a3b', '#4e73df', '#1cc88a'],
+                  dataLabels: {
+                    enabled: false,
+                  },
+                  xaxis: {
+                    categories: streaksData?.labels,
+                    title: {
+                      text: 'Time Period',
+                      style: {
+                        fontWeight: 600,
+                        color: '#666',
+                      },
+                    },
+                  },
+                  yaxis: [
+                    {
+                      seriesName: 'Engagement Score',
+                      title: {
+                        text: 'Engagement Score (0-100)',
+                        style: {
+                          fontWeight: 600,
+                          color: '#666',
+                        },
+                      },
+                      min: 0,
+                      max: 100,
+                    },
+                    {
+                      seriesName: 'Max Consecutive Days',
+                      opposite: true,
+                      title: {
+                        text:
+                          activeTab === 'monthly'
+                            ? 'Days Active'
+                            : 'Days Active per Week',
+                        style: {
+                          fontWeight: 600,
+                          color: '#666',
+                        },
+                      },
+                      min: 0,
+                      max:
+                        activeTab === 'daily'
+                          ? 7
+                          : activeTab === 'weekly'
+                            ? 7
+                            : 30,
+                      labels: {
+                        formatter: (val: number) => val.toFixed(0),
+                      },
+                    },
+                  ],
+                  legend: {
+                    position: 'bottom',
+                    horizontalAlign: 'right',
+                    floating: false,
+                    offsetY: 10,
+                  },
+                  title: {
+                    text: streaksData?.engagement?.length
+                      ? 'Study Streaks & Engagement'
+                      : 'No Study Streaks Data Available',
+                    align: 'center',
+                    style: {
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      color: '#333',
+                    },
+                  },
+                  tooltip: {
+                    theme: 'light',
+                    shared: true,
+                    intersect: false,
                   },
                 },
-                tooltip: {
-                  theme: 'light',
-                  shared: true,
-                  intersect: false,
-                },
-              },
-            });
-          },
-        );
+              });
+            },
+          );
+        }
       } catch (error) {
         console.error('Error fetching subjects:', error);
       }
@@ -1286,27 +774,6 @@ const StudentDashboardCharts = () => {
                     Monthly
                   </label>
                 </div>
-
-                {/* <div className="tabs">
-                  <button
-                    className={`tab ${activeTab === 'daily' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('daily')}
-                  >
-                    Daily
-                  </button>
-                  <button
-                    className={`tab ${activeTab === 'weekly' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('weekly')}
-                  >
-                    Weekly
-                  </button>
-                  <button
-                    className={`tab ${activeTab === 'monthly' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('monthly')}
-                  >
-                    Monthly
-                  </button>
-                </div> */}
               </div>
             </div>
           </div>
@@ -1359,8 +826,8 @@ const StudentDashboardCharts = () => {
             <div className="card shadow h-100">
               <div className="card-body">
                 <ReactApexChart
-                  options={completionRateData.options}
-                  series={completionRateData.series}
+                  options={completionRateData?.options}
+                  series={completionRateData?.series}
                   type="bar"
                   height={350}
                 />

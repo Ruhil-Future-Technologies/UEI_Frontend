@@ -84,12 +84,32 @@ const ServicesAgreement = () => {
                   </h6>
                   <p>
                     Users must adhere to ethical and legal usage of the
-                    Platform. You agree not to: Copy, distribute, or resell
-                    Gyansetu’s learning materials without permission. Use the
-                    Platform for unauthorized commercial purposes. Share login
-                    credentials or allow unauthorized access to your account.
-                    Engage in activities that disrupt platform operations, such
-                    as hacking or excessive automated requests.
+                    Platform. You agree not to:
+                    <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                      <li>
+                        Copy.
+                      </li>
+                      <li>
+                        distribute.
+                      </li>
+                      <li>
+                        or resell
+                        Gyansetu’s learning materials without permission.
+                      </li>
+                      <li>
+                        Use the Platform for unauthorized commercial purposes.
+                      </li>
+                      <li>
+                        Share login
+                        credentials or allow unauthorized access to your account.
+                      </li>
+                      <li>
+                        Engage in activities that disrupt platform operations, such
+                        as hacking or excessive automated requests.
+                      </li>
+                    </ul>
+
+
                   </p>
                   <h6 className="fw-bold mb-2 mt-5">
                     Ownership &amp; Content Rights
@@ -103,25 +123,15 @@ const ServicesAgreement = () => {
                   </p>
 
                   <h6 className="fw-bold mb-2 mt-5">
-                    Indemnification &amp; Liability User Indemnification
+                     Indemnification
                   </h6>
                   <p>
-                    You agree to indemnify and hold Gyansetu, Ruhil Future
-                    Technologies, and its employees harmless from any claims,
-                    damages, or liabilities arising from:
+                    You agree to indemnify and hold Gyansetu, Ruhil Future Technologies, and its employees harmless from any claims, damages, losses, or liabilities arising from your use of the platform. This includes, but is not limited to:
                   </p>
-                  <ul>
-                    <li>
-                      1. Misuse of the Platform or violation of this Agreement.
-                    </li>
-                    <li>
-                      2. Unauthorized distribution of content or breach of
-                      intellectual property rights.
-                    </li>
-                    <li>
-                      3. Technical issues caused by user-side hardware, software,
-                      or internet connectivity.
-                    </li>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                    <li>Misuse of the Platform or violation of this Agreement.</li>
+                    <li>Unauthorized distribution of content or breach of intellectual property rights.</li>
+                    <li>Technical issues caused by your hardware, software, or internet connectivity.</li>
                   </ul>
                   <h6 className="fw-bold mb-2 mt-5">Limitation of Liability</h6>
                   <p>
@@ -134,11 +144,22 @@ const ServicesAgreement = () => {
                   <h6 className="fw-bold mb-2 mt-5">Force Majeure</h6>
                   <p>
                     Gyansetu shall not be held liable for service disruptions
-                    caused by: Natural disasters, cyberattacks, power failures,
-                    or third-party service outages. Unforeseen regulatory changes
-                    affecting digital education platforms. Technical issues
-                    beyond reasonable control. In such cases, efforts will be
-                    made to restore services as soon as possible.
+                    caused by:
+
+                    <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
+                      <li>Natural disasters,</li>
+                      <li>cyberattacks, power failures,</li>
+                      <li>or third-party service outages,</li>
+                      <li>Unforeseen regulatory changes
+                        affecting digital education platforms,</li>
+                      <li>
+                        Technical issues
+                        beyond reasonable control,
+                      </li>
+                      <li>In such cases, efforts will be
+                        made to restore services as soon as possible</li>
+                    </ul>
+
                   </p>
                   <h6 className="fw-bold mb-2 mt-5">
                     Governing Law &amp; Dispute Resolution

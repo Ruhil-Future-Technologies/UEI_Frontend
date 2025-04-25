@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../Course/Course.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -15,7 +15,12 @@ import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import { CONTENT_COLUMNS } from '../../Components/Table/columns';
 import { EditIcon, TrashIcon } from '../../assets';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { QUERY_KEYS_CLASS, QUERY_KEYS_CONTENT } from '../../utils/const';
+import {
+  QUERY_KEYS,
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_CONTENT,
+  QUERY_KEYS_COURSE,
+} from '../../utils/const';
 import { toast } from 'react-toastify';
 import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
 import FullScreenLoader from '../Loader/FullScreenLoader';
@@ -34,13 +39,65 @@ const Content = () => {
   const [dataContent, setDataContent] = useState<any[]>([]);
   const [dataDelete, setDataDelete] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const [, setDataClasses] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [filteredContent, setFilteredContent] = useState<any[]>([]);
+  const [schoolInstitutes, setSchoolInstitutes] = useState<any[]>([]);
+  const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
+  const [dataClasses, setDataClasses] = useState<any>([]);
+  const [dataCourses, setDataCourses] = useState<any>([]);
 
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
+
+  const getInstituteName = (id: string, type: string) => {
+    return type === 'college'
+      ? collegeInstitutes?.find((inst) => inst.id == id)?.institute_name
+      : schoolInstitutes?.find((inst) => inst.id == id)?.institute_name;
+  };
+
+  const getUniversityName = (id: string) => {
+    return collegeInstitutes?.find((inst) => inst.university_id == id)
+      ?.institute_name;
+  };
+
+  const getCourseOrClassName = (ids: any, type: string): string => {
+    if (type === 'school') {
+      const classNames = dataClasses?.classes_data
+        ?.filter((cls: any) => ids.includes(cls.id.toString()))
+        ?.map((cls: any) => cls.class_name)
+        ?.join(', ');
+
+      return classNames || '-';
+    }
+
+    if (type === 'college') {
+      const courseNames = dataCourses?.course_data
+        ?.filter((course: any) => ids.includes(course.id.toString()))
+        ?.map((course: any) => course.course_name)
+        ?.join(', ');
+
+      return courseNames || '-';
+    }
+
+    return '-';
+  };
+
+  const getSubjectsName = (subject: any, type: string): string => {
+    let subjects: any[] = [];
+
+    if (type == 'school') {
+      subjects = Object.values(subject)
+        .flatMap((category: any) => Object.values(category))
+        .flat();
+    } else if (type == 'college') {
+      subjects = Object.values(subject)
+        .flatMap((category: any) => Object.values(category))
+        .flat();
+    }
+
+    return subjects.length > 0 ? subjects.join(', ') : '-';
+  };
 
   const callAPI = async () => {
     getData('/entity/list').then((data) => {
@@ -48,11 +105,23 @@ const Content = () => {
         setEntity(data.data?.entityes_data);
       }
     });
+    getData(`${QUERY_KEYS.GET_INSTITUTES}`).then((data) => {
+      const allInstitutes = data.data;
+      const schoolInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'school',
+      );
+      const collegeInstitutes = allInstitutes?.filter(
+        (institute: any) => institute.entity_type?.toLowerCase() === 'college',
+      );
+      setSchoolInstitutes(schoolInstitutes);
+      setCollegeInstitutes(collegeInstitutes);
+    });
 
     getData(`${QUERY_KEYS_CLASS.GET_CLASS}`).then((data) => {
-      if (data.status) {
-        setDataClasses(data.data);
-      }
+      setDataClasses(data.data);
+    });
+    getData(`${QUERY_KEYS_COURSE.GET_COURSE}`).then((data) => {
+      setDataCourses(data.data);
     });
     getData(`${ContentURL}`)
       .then((data) => {
@@ -86,7 +155,7 @@ const Content = () => {
         }
       });
   };
-  const columns11 = useMemo(() => CONTENT_COLUMNS(callAPI), []);
+  const columns11 = CONTENT_COLUMNS;
   const [columns, setColumns] = useState<MRT_ColumnDef<any>[]>(columns11);
 
   useEffect(() => {
@@ -106,13 +175,13 @@ const Content = () => {
 
         setTimeout(() => {
           setColumnVisibility({
-            university_id: true,
-            course_id: true,
-            class_id: false,
+            university_name: true,
+            course_name: true,
+            class_name: false,
             class_stream_subjects: false,
           });
           const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institute_id') {
+            if (column.accessorKey === 'institute_name') {
               return {
                 ...column,
                 header: 'College Name',
@@ -125,12 +194,24 @@ const Content = () => {
 
         const collegeContents = dataContent
           .filter((content) => content.entity_id == college[0]?.id)
-          .map((teacher) => {
+          .map((content) => {
+            const parsed =
+              typeof content?.course_semester_subjects === 'string'
+                ? JSON.parse(content.course_semester_subjects)
+                : content?.course_semester_subjects;
+
+            const keys = parsed ? Object.keys(parsed) : [];
+
+            const sub_name = getSubjectsName(parsed, 'college');
+
             return {
-              ...teacher,
-              class_id: null,
+              ...content,
+              institute_name: getInstituteName(content.institute_id, 'college'),
+              university_name: getUniversityName(content.university_id),
+              course_name: getCourseOrClassName(keys, 'college'),
+              class_name: null,
               className: '-',
-              class_name: '-',
+              subjects: sub_name,
             };
           });
 
@@ -141,12 +222,12 @@ const Content = () => {
         const school: any = entity.filter((ent) => ent.entity_type == 'school');
 
         setColumnVisibility({
-          university_id: false,
-          course_id: false,
+          university_name: false,
+          course_name: false,
           course_semester_subjects: false,
         });
         const updatedColumns = columns11.map((column) => {
-          if (column.accessorKey === 'institute_id') {
+          if (column.accessorKey === 'institute_name') {
             return {
               ...column,
               header: 'School Name',
@@ -158,12 +239,24 @@ const Content = () => {
         const schoolContents = dataContent
           .filter((content) => content.entity_id == school[0]?.id)
           .map((content) => {
+            let classStreamSubjects = content.class_stream_subjects;
+
+            if (typeof classStreamSubjects === 'string') {
+              classStreamSubjects = JSON.parse(classStreamSubjects);
+            }
+
+            const keys = Object.keys(classStreamSubjects);
+
+            const sub_name = getSubjectsName(classStreamSubjects, 'school');
+
             return {
               ...content,
+              institute_name: getInstituteName(content.institute_id, 'school'),
+              class_name: getCourseOrClassName(keys, 'school'),
               course_semester_subjects: null,
-              university_id: null,
-              course_name: '-',
-              university_name: '-',
+              university_name: null,
+              course_name: null,
+              subjects: sub_name,
             };
           });
 
@@ -268,21 +361,6 @@ const Content = () => {
                   )}
                   <Box marginTop="10px">
                     <MaterialReactTable
-                      meta={{
-                        updateData: (
-                          rowIndex: number,
-                          columnId: string,
-                          value: any,
-                        ) => {
-                          setFilteredContent((prev) =>
-                            prev.map((row, index) =>
-                              index === rowIndex
-                                ? { ...row, [columnId]: value }
-                                : row,
-                            ),
-                          );
-                        },
-                      }}
                       columns={columns}
                       state={{
                         columnVisibility,

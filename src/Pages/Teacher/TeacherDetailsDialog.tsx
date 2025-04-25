@@ -9,6 +9,7 @@ import {
   Button,
 } from '@mui/material';
 import React, { useState } from 'react';
+import { convertToIST } from '../../utils/helpers';
 
 export const TeacherDetailsDialog = ({
   open,
@@ -192,6 +193,9 @@ export const TeacherDetailsDialog = ({
         return renderCourses(value);
       case 'documents':
         return renderDocuments(value);
+      case 'created_at':
+      case 'updated_at':
+        return convertToIST(value);
       default:
         return typeof value === 'object'
           ? JSON.stringify(value)
