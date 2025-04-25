@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../Institute/Institute.scss';
 import useApi from '../../hooks/useAPI';
 import {
@@ -101,7 +101,7 @@ const Institute = () => {
         });
       });
   };
-  const columns11 = useMemo(() => INSITUTION_COLUMNS(callAPI), []);
+  const columns11 = INSITUTION_COLUMNS;
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
   const [open, setOpen] = useState(false);
@@ -238,7 +238,7 @@ const Institute = () => {
         );
       }
     }
-  }, [activeTab, activeSubTab, dataInstitute]);
+  }, [activeTab, activeSubTab, dataInstitute, columns11]);
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteInstituteURL}/${id}`)
