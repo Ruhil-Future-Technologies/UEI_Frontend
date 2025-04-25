@@ -931,11 +931,8 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append(
-      'points',
-      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
-    );
-    formData.append('save_draft', String(saveAsDraft));
+    formData.append('points', assignmentDataType =='json'?totalMarks:assignmentData.points);
+    formData.append('save_draft', saveAsDraft==true?saveAsDraft:String(saveAsDrafts));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
