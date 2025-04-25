@@ -2307,7 +2307,6 @@ function MainContent() {
         flagged: isChatFlagged,
       };
     }
-console.log("test tsudent it ",StudentId,chat_payload)
     await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         fetchStudentData();
