@@ -14,9 +14,9 @@ import {
 import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useAPI';
-import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-import maleImage from '../../../assets/img/avatars/male.png';
+// import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
+// import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+// import maleImage from '../../../assets/img/avatars/male.png';
 import { IEntity, IUniversity } from '../../../Components/Table/columns';
 import { QUERY_KEYS, QUERY_KEYS_UNIVERSITY } from '../../../utils/const';
 import {
@@ -49,7 +49,7 @@ const InstitutionProfile = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const instituttionLoginId = localStorage.getItem("user_uuid");
-  const { postFileData, getData, putData } = useApi();
+  const { getData } = useApi();
 
   const InstituteEntityURL = QUERY_KEYS.ENTITY_LIST;
   const UniversityURL = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
@@ -62,15 +62,15 @@ const InstitutionProfile = () => {
   const [address_error, setAddress_error] = useState<boolean>(false);
   const [district_error, setDistrict_error] = useState<boolean>(false);
   const [city_error, setCity_error] = useState<boolean>(false);
-  const [state_error, setState_error] = useState<boolean>(false);
-  const [country_error, setCountry_error] = useState<boolean>(false);
+  // const [state_error, setState_error] = useState<boolean>(false);
+  // const [country_error, setCountry_error] = useState<boolean>(false);
   const [selectedEntity, setSelectedEntity] = useState('');
-  const [filePreview, setFilePreview] = useState(null);
-  const [documents, setDocuments] = useState<File[]>([]);
+  //const [filePreview, setFilePreview] = useState(null);
+  //const [documents, setDocuments] = useState<File[]>([]);
   const [documentsDisplay, setdocumentsDisplay] = useState<string[]>([]);
   const [entityData, setEntityData] = useState<IEntity[]>([])
   const [universityData, setUniversityData] = useState<IUniversity[]>([]);
-  const [instituteId, setInstituteId] = useState('');
+ // const [instituteId, setInstituteId] = useState('');
   const [instituteInfo, setInstituteInfo] = useState<Institute>({
     institute_name: '',
     university_id: '',
@@ -131,7 +131,7 @@ const InstitutionProfile = () => {
       await getData(`institute/edit/${instituttionLoginId}`).then((response) => {
         if (response?.status) {
           setInstituteInfo(response?.data);
-          setInstituteId(response.data.id);
+          //setInstituteId(response.data.id);
           if (response?.data.university_id === '' || response?.data.university_id === null) {
             setSelectedEntity("School");
           } else {
@@ -146,65 +146,65 @@ const InstitutionProfile = () => {
       console.log(error);
     }
   };
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = event.target;
-    const formData = new FormData();
+  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { files } = event.target;
+  //   const formData = new FormData();
 
-    if (files && files[0]) {
-      const file: any = files[0];
-      if (file.size > 3 * 1024 * 1024) {
-        return;
-      }
-      if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-        return;
-      }
-      const reader: any = new FileReader();
-      reader.onloadend = () => {
-        setFilePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      formData.append('file', file);
-      postFileData(`${'upload_file/upload'}`, formData)
-        .then((data: any) => {
-          if (data?.status) {
-            toast.success(data?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-              position: 'top-center',
-            });
-          } else if (data?.code) {
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-              position: 'top-center',
-            });
-          } else {
-            toast.error(data?.message, {
-              hideProgressBar: true,
-              theme: 'colored',
-              position: 'top-center',
-            });
-          }
-        })
-        .catch((e: any) => {
-          toast.error(e?.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-        });
-    }
-  };
+  //   if (files && files[0]) {
+  //     const file: any = files[0];
+  //     if (file.size > 3 * 1024 * 1024) {
+  //       return;
+  //     }
+  //     if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+  //       return;
+  //     }
+  //     const reader: any = new FileReader();
+  //     reader.onloadend = () => {
+  //       setFilePreview(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //     formData.append('file', file);
+  //     postFileData(`${'upload_file/upload'}`, formData)
+  //       .then((data: any) => {
+  //         if (data?.status) {
+  //           toast.success(data?.message, {
+  //             hideProgressBar: true,
+  //             theme: 'colored',
+  //             position: 'top-center',
+  //           });
+  //         } else if (data?.code) {
+  //           toast.error(data?.message, {
+  //             hideProgressBar: true,
+  //             theme: 'colored',
+  //             position: 'top-center',
+  //           });
+  //         } else {
+  //           toast.error(data?.message, {
+  //             hideProgressBar: true,
+  //             theme: 'colored',
+  //             position: 'top-center',
+  //           });
+  //         }
+  //       })
+  //       .catch((e: any) => {
+  //         toast.error(e?.message, {
+  //           hideProgressBar: true,
+  //           theme: 'colored',
+  //           position: 'top-center',
+  //         });
+  //       });
+  //   }
+  // };
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
     if (files && event.target.name !== 'icon') {
-      const filesArray = Array.from(files); // Convert FileList to an array
+      //const filesArray = Array.from(files); // Convert FileList to an array
 
-      setDocuments((prevFiles) => [
-        ...prevFiles, // Keep previously selected files
-        ...filesArray, // Add newly selected files
-      ]);
+      // setDocuments((prevFiles) => [
+      //   ...prevFiles, // Keep previously selected files
+      //   ...filesArray, // Add newly selected files
+      // ]);
     } else {
       // setLogo(files);
     }
@@ -279,103 +279,104 @@ const InstitutionProfile = () => {
     window.open(url, '_blank');
   };
 
-  const handleSubmit = () => {
-    if (
-      !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
-        instituteInfo.website_url,
-      )
-    ) {
-      setWebsite_error(true);
-      return;
-    }
+  // const handleSubmit = () => {
+  //   // if (
+  //   //   !/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[a-zA-Z0-9-]*)*(\/)?$/.test(
+  //   //     instituteInfo.website_url,
+  //   //   )
+  //   // ) {
+  //   //   setWebsite_error(true);
+  //   //   return;
+  //   // }
 
-    if (
-      !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(instituteInfo.address)
-    ) {
-      setAddress_error(true);
-      return;
-    }
-    if (
-      !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
-        instituteInfo.institute_name,
-      )
-    ) {
-      setInstitute_name_error(true);
-      return;
-    }
-    if (!/^(?!0{10})[0-9]{10}$/.test(instituteInfo.phone)) {
-      setMobile_no_error(true);
-      return;
-    }
-    if (
-      !instituteInfo.pincode ||
-      !/^(?!0{6})[0-9]{6}$/.test(instituteInfo.pincode)
-    ) {
-      setPincode_error(true);
-      return;
-    }
-    if (
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
-        instituteInfo.district.trim(),
-      )
-    ) {
-      setDistrict_error(true);
-      return;
-    }
-    if (
-      !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
-        instituteInfo.city.trim(),
-      )
-    ) {
-      setCity_error(true);
-      return;
-    }
-    if (instituteInfo.state === '') {
-      setState_error(true);
-      return;
-    }
-    if (instituteInfo.country === '') {
-      setCountry_error(true);
-      return;
-    }
+  //   if (
+  //     !/^(?=.*[a-zA-Z .,'&-])[a-zA-Z0-9 .,'&-]+$/.test(instituteInfo.address)
+  //   ) {
+  //     setAddress_error(true);
+  //     return;
+  //   }
+  //   if (
+  //     !/^(?=.*[a-zA-Z .,&'()-])[a-zA-Z0-9 .,&'()-]+$/.test(
+  //       instituteInfo.institute_name,
+  //     )
+  //   ) {
+  //     setInstitute_name_error(true);
+  //     return;
+  //   }
+  //   if (!/^(?!0{10})[0-9]{10}$/.test(instituteInfo.phone)) {
+  //     setMobile_no_error(true);
+  //     return;
+  //   }
+  //   if (
+  //     !instituteInfo.pincode ||
+  //     !/^(?!0{6})[0-9]{6}$/.test(instituteInfo.pincode)
+  //   ) {
+  //     setPincode_error(true);
+  //     return;
+  //   }
+  //   if (
+  //     !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+  //       instituteInfo.district.trim(),
+  //     )
+  //   ) {
+  //     setDistrict_error(true);
+  //     return;
+  //   }
+  //   if (
+  //     !/^(?!([a-zA-Z])\1{2,})[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(
+  //       instituteInfo.city.trim(),
+  //     )
+  //   ) {
+  //     setCity_error(true);
+  //     return;
+  //   }
+  //   if (instituteInfo.state === '') {
+  //     setState_error(true);
+  //     return;
+  //   }
+  //   if (instituteInfo.country === '') {
+  //     setCountry_error(true);
+  //     return;
+  //   }
 
-    const payload = {
-      institution_name: instituteInfo.institute_name,
-      email_id: instituteInfo.email,
-      address: instituteInfo.address,
-      city: instituteInfo.city,
-      country: instituteInfo.country,
-      state: instituteInfo.state,
-      district: instituteInfo.district,
-      pincode: instituteInfo.pincode,
-      entity_id: instituteInfo.entity_id,
-      mobile_no: instituteInfo.phone,
-      website_url: instituteInfo.website_url,
-      ...(selectedEntity === "College" && { university_id: instituteInfo.university_id }),
-      documents: documents,
-    }
-    try {
-      putData(`/institution/edit/${instituteId}`, payload).then((reaponse) => {
-        if (reaponse.status) {
-          toast.success('Profile updated successfully', {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-          getInstitutionInfo()
-        } else {
-          toast.error('Failed to update profile', {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-        }
-      })
+  //   const payload = {
+  //     institute_name: instituteInfo.institute_name,
+  //     email: instituteInfo.email,
+  //     address: instituteInfo.address,
+  //     city: instituteInfo.city,
+  //     country: instituteInfo.country,
+  //     state: instituteInfo.state,
+  //     district: instituteInfo.district,
+  //     pincode: instituteInfo.pincode,
+  //     entity_id: instituteInfo.entity_id,
+  //     phone: instituteInfo.phone,
+  //     website_url: instituteInfo.website_url,
+  //     ...(selectedEntity === "College" && { university_id: instituteInfo.university_id }),
+  //     documents: documents,
+  //   }
+  //   try {
+     
+  //     putData(`/institute/edit/${instituteId}`, payload).then((reaponse) => {
+  //       if (reaponse.status) {
+  //         toast.success('Profile updated successfully', {
+  //           hideProgressBar: true,
+  //           theme: 'colored',
+  //           position: 'top-center',
+  //         });
+  //         getInstitutionInfo()
+  //       } else {
+  //         toast.error('Failed to update profile', {
+  //           hideProgressBar: true,
+  //           theme: 'colored',
+  //           position: 'top-center',
+  //         });
+  //       }
+  //     })
 
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
   return (
     <>
       <div className="main-wrapper">
@@ -618,11 +619,11 @@ const InstitutionProfile = () => {
                             handleInputChangecountry(e, 'country')
                           }
                         />
-                        {country_error && (
+                        {/* {country_error && (
                           <p className="error-text " style={{ color: 'red' }}>
                             <small>Please select a Country.</small>
                           </p>
-                        )}
+                        )} */}
                       </div>
 
                       <div className="col-md-6 col-12 mb-3">
@@ -640,11 +641,11 @@ const InstitutionProfile = () => {
                             handleInputChangecountry(e, 'state')
                           }
                         />
-                        {state_error && (
+                        {/* {state_error && (
                           <p className="error-text " style={{ color: 'red' }}>
                             <small>Please select a state.</small>
                           </p>
-                        )}
+                        )} */}
                       </div>
                     </div>
                     <div className="row d-flex justify-content-center">
@@ -767,7 +768,7 @@ const InstitutionProfile = () => {
                           )}
                         </List>
                       </div>
-                      <div className="col-lg-12">
+                      {/* <div className="col-lg-12">
                         <div className="d-flex flex-wrap align-items-center gap-1">
                           <div className="image-container">
                             {!filePreview ? (
@@ -811,9 +812,9 @@ const InstitutionProfile = () => {
                             </div>
                           </label>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
-                    <div className="d-flex justify-content-center">
+                    {/* <div className="d-flex justify-content-center">
                       <button
                         type="button"
                         className="btn btn-primary"
@@ -821,7 +822,7 @@ const InstitutionProfile = () => {
                       >
                         Update
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
