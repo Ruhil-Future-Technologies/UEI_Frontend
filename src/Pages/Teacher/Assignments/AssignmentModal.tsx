@@ -43,7 +43,7 @@ const AssignmentModal: React.FC<Props> = ({
   totalMarks,
 }) => {
   const [selectedAssignment, setSelectedAssignment] = useState<number>(0);
-  const [expanded, setExpanded] = useState<number>(0);
+   const [expanded, setExpanded] = useState<number | false>(false);
   console.log(assignments ,'testing not hopping');
   useEffect(() => {
     if (open && assignments.length > 0) {
