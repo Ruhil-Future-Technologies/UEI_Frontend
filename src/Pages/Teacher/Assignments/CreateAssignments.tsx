@@ -1634,6 +1634,9 @@ export const CreateAssignments = () => {
             subjects: [],
             filteredSubjects: [],
           };
+          setSelectedStudents([])
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
 
         if (name === 'semester_number') {
@@ -1643,6 +1646,9 @@ export const CreateAssignments = () => {
               item.course_id === boxes[index].course_id,
           );
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
+          setListOfStudentFiltered([]);
+          setSelectedStudents([]);
+          setSelectAll(false);
         }
         if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
@@ -1708,6 +1714,9 @@ export const CreateAssignments = () => {
               subjects: [],
             };
           }
+          setSelectedStudents([]);
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
 
         if (name === 'stream') {
@@ -1723,6 +1732,9 @@ export const CreateAssignments = () => {
             filteredSubjects,
             subjects: [],
           };
+          setSelectedStudents([])
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
         if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
