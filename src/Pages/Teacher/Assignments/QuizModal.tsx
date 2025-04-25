@@ -113,7 +113,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
       },
       {} as QuizCollection
     );
-    let totalQuestions = updatedQuizData[targetKey]?.questions?.length || 0;
+    const totalQuestions = updatedQuizData[targetKey]?.questions?.length || 0;
     let selectedQuestions = 0;
 
     Object.values(updatedQuizData).forEach(set => {
