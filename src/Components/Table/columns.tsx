@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MRT_ColumnDef } from 'material-react-table';
 import { MaybeNull } from '../../types';
-import { convertToISTT, getDateFormat, isNullOrUndefined } from '../../utils/helpers';
+import {
+  convertToISTT,
+  getDateFormat,
+  isNullOrUndefined,
+} from '../../utils/helpers';
 import profile from '../../assets/img/profile_img.svg';
 
 import {
@@ -41,7 +45,7 @@ import {
   QUERY_KEYS_CONTENT,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const EMPTY_CELL_VALUE = '-';
 
@@ -338,9 +342,7 @@ export interface Admin {
   user_uuid?: string;
 }
 
-export const INSITUTION_COLUMNS = (
-  refetch: () => void,
-): MRT_ColumnDef<InstituteRep0oDTO>[] => [
+export const INSITUTION_COLUMNS: MRT_ColumnDef<InstituteRep0oDTO>[] = [
   // const columns: any[] = [
   {
     accessorKey: 'institute_name',
@@ -404,14 +406,19 @@ export const INSITUTION_COLUMNS = (
       const MenuInstituteActive = QUERY_KEYS.GET_INSTITUTEACTIVE;
       const MenuInstituteDeactive = QUERY_KEYS.GET_INSTITUTEDEACTIVE;
       const value = cell?.getValue();
+
       // if (!value) {
       //   return EMPTY_CELL_VALUE;
       // }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [Showvalue, setShowvalue] = useState(value);
+      const [showValue, setShowValue] = useState(value);
+      const [show, setShow] = useState(!!value);
 
-      const [Show, setShow] = useState(value ? true : false);
+      useEffect(() => {
+        setShowValue(value);
+        setShow(!!value);
+      }, [value]);
 
       const active = (id: number, valueset: any) => {
         putData(
@@ -419,14 +426,15 @@ export const INSITUTION_COLUMNS = (
         )
           .then((data: any) => {
             if (data.status) {
-              setShow((prevState) => !prevState);
-              setShowvalue(Showvalue ? 0 : 1);
+              const newValue = showValue ? 0 : 1;
+              setShowValue(newValue);
+              setShow(!show);
               toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
               });
-              // window.location.reload();
-              refetch();
+              window.location.reload();
+              // refetch();
             }
           })
           .catch((e) => {
@@ -440,11 +448,11 @@ export const INSITUTION_COLUMNS = (
       return row?.original?.is_approve ? (
         <Box>
           <Switch
-            isChecked={Show}
-            label={Show ? 'Active' : 'Deactive'}
+            isChecked={show}
+            label={show ? 'Active' : 'Deactive'}
             // onChange={() => setShow((prevState) => !prevState)}
             onChange={() => {
-              active(row?.original?.user_uuid, Showvalue);
+              active(row?.original?.user_uuid, showValue);
             }}
             // disabled={true}
             activeColor="#4CAF50"
@@ -2576,21 +2584,28 @@ export const CONTENT_COLUMNS: MRT_ColumnDef<ContentRepoDTO>[] = [
       const MenuActive = QUERY_KEYS_CONTENT.GET_CONTENT_ACTIVE;
       const MenuDeactive = QUERY_KEYS_CONTENT.GET_CONTENT_DEACTIVE;
       const value = cell?.getValue();
+
       const [showValue, setShowValue] = useState(value);
-      const [show, setShow] = useState(value ? true : false);
+      const [show, setShow] = useState(!!value);
+
+      useEffect(() => {
+        setShowValue(value);
+        setShow(!!value);
+      }, [value]);
 
       const active = (id: string, valueSet: any) => {
         putData(`${valueSet ? MenuDeactive : MenuActive}/${id}`)
           .then((data: any) => {
             if (data.status) {
-              setShow((prevState) => !prevState);
-              setShowValue(showValue ? 0 : 1);
+              const newValue = showValue ? 0 : 1;
+              setShowValue(newValue);
+              setShow(!show);
               toast.success(data?.message, {
                 hideProgressBar: true,
                 theme: 'colored',
               });
+
               window.location.reload();
-              // refetch();
             }
           })
           .catch((e) => {

@@ -63,7 +63,6 @@ import dayjs, { Dayjs } from 'dayjs';
 import { Autocomplete, Chip } from '@mui/material';
 import ReactQuill from 'react-quill';
 import QuizModal from './QuizModal';
-import axios from 'axios';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
 import AssignmentModal from './AssignmentModal';
@@ -1251,14 +1250,9 @@ export const CreateAssignments = () => {
     try {
       if (type == 'assignment') {
         setLoading(true);
-        const response = await axios.post(
+        const response = await postData(
           ASSIGNMENT.GENERATE_AI_ASSIGNMENT,
           payload,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
         );
         setAssignmentGenrData(response?.data);
 
@@ -1266,7 +1260,7 @@ export const CreateAssignments = () => {
         setLoading(false);
       } else {
         setLoading(true);
-        const response = await axios.post(GENERATE_QUIZ, payload);
+        const response = await postData(GENERATE_QUIZ, payload);
         setQuizData(response?.data);
         setIsModalOpen(true);
         setLoading(false);
@@ -1634,6 +1628,9 @@ export const CreateAssignments = () => {
             subjects: [],
             filteredSubjects: [],
           };
+          setSelectedStudents([])
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
 
         if (name === 'semester_number') {
@@ -1643,6 +1640,9 @@ export const CreateAssignments = () => {
               item.course_id === boxes[index].course_id,
           );
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
+          setListOfStudentFiltered([]);
+          setSelectedStudents([]);
+          setSelectAll(false);
         }
         if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
@@ -1708,6 +1708,9 @@ export const CreateAssignments = () => {
               subjects: [],
             };
           }
+          setSelectedStudents([]);
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
 
         if (name === 'stream') {
@@ -1723,6 +1726,9 @@ export const CreateAssignments = () => {
             filteredSubjects,
             subjects: [],
           };
+          setSelectedStudents([])
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
         if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
