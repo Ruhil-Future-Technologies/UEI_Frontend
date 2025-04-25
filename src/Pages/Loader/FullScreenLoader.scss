@@ -135,59 +135,59 @@
   }
 }
 
-.spinner {
-  width: 70px;
-  height: 70px;
-  position: relative;
-  margin: 0 auto;
-  animation: rotate 2s linear infinite;
-}
+// .spinner {
+//   width: 70px;
+//   height: 70px;
+//   position: relative;
+//   margin: 0 auto;
+//   animation: rotate 2s linear infinite;
+// }
 
-.spinner div {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 4px solid transparent;
-  border-radius: 50%;
-  animation: spin 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-}
+// .spinner div {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   border: 4px solid transparent;
+//   border-radius: 50%;
+//   animation: spin 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+//   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+// }
 
-.spinner div:nth-child(1) {
-  border-top-color: #ff6b6b;
-  animation-delay: 0.1s;
-  filter: drop-shadow(0 0 8px #ff6b6b);
-}
+// .spinner div:nth-child(1) {
+//   border-top-color: #ff6b6b;
+//   animation-delay: 0.1s;
+//   filter: drop-shadow(0 0 8px #ff6b6b);
+// }
 
-.spinner div:nth-child(2) {
-  border-top-color: #4dabf7;
-  animation-delay: 0.2s;
-  filter: drop-shadow(0 0 8px #4dabf7);
-}
+// .spinner div:nth-child(2) {
+//   border-top-color: #4dabf7;
+//   animation-delay: 0.2s;
+//   filter: drop-shadow(0 0 8px #4dabf7);
+// }
 
-.spinner div:nth-child(3) {
-  border-top-color: #51cf66;
-  animation-delay: 0.3s;
-  filter: drop-shadow(0 0 8px #51cf66);
-}
+// .spinner div:nth-child(3) {
+//   border-top-color: #51cf66;
+//   animation-delay: 0.3s;
+//   filter: drop-shadow(0 0 8px #51cf66);
+// }
 
-.spinner div:nth-child(4) {
-  border-top-color: #fcc419;
-  animation-delay: 0.4s;
-  filter: drop-shadow(0 0 8px #fcc419);
-}
+// .spinner div:nth-child(4) {
+//   border-top-color: #fcc419;
+//   animation-delay: 0.4s;
+//   filter: drop-shadow(0 0 8px #fcc419);
+// }
 
-.spinner div:nth-child(5) {
-  border-top-color: #845ef7;
-  animation-delay: 0.5s;
-  filter: drop-shadow(0 0 8px #845ef7);
-}
+// .spinner div:nth-child(5) {
+//   border-top-color: #845ef7;
+//   animation-delay: 0.5s;
+//   filter: drop-shadow(0 0 8px #845ef7);
+// }
 
-.spinner div:nth-child(6) {
-  border-top-color: #ff922b;
-  animation-delay: 0.6s;
-  filter: drop-shadow(0 0 8px #ff922b);
-}
+// .spinner div:nth-child(6) {
+//   border-top-color: #ff922b;
+//   animation-delay: 0.6s;
+//   filter: drop-shadow(0 0 8px #ff922b);
+// }
 
 @keyframes spin {
   0% {
