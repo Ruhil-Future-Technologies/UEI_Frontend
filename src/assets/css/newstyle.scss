@@ -3154,11 +3154,19 @@ a {
   transition: transform 0.2s ease;
 }
 
-.quill-dark .ql-editor.ql-blank::before {
-  color: gray;
-  opacity: 0.7;
+.quill-dark .ql-toolbar {
+  color: #ccc;
+}
+.quill-dark .ql-editor::before {
+  color: #999 !important; /* Or whatever light gray you prefer */
+  opacity: 1 !important; /* Required to override Quill's default 0.6 */
 }
 
-.quill-light .ql-editor.ql-blank::before {
-  color: #999;
+/* Change icon and button text color */
+.quill-dark .ql-toolbar button,
+.quill-dark .ql-toolbar .ql-picker,
+.quill-dark .ql-toolbar .ql-stroke {
+  color: #ccc !important;
+  fill: #ccc !important;
+  stroke: #ccc !important;
 }
