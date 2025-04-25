@@ -136,10 +136,10 @@ const TeacherDashboardCharts = () => {
   useEffect(() => {
     if (user_uuid && dataStatus) {
       getData(`${TEACHERURL}/${user_uuid}`).then((data) => {
-        let teacherData :any = ""
-        if(data.status){
-         teacherData = data?.data;
-        setTeacher(data?.data);
+        let teacherData: any = '';
+        if (data.status) {
+          teacherData = data?.data;
+          setTeacher(data?.data);
         }
 
         getData(`${SUBJECTURL}`).then((data) => {
@@ -173,7 +173,7 @@ const TeacherDashboardCharts = () => {
 
           setSelectedCourse(uniqueCourses[0]?.course_id);
           const uniqueSemesters: any = Object.values(
-              (filteredSub ?? []).reduce(
+            (filteredSub ?? []).reduce(
               (acc: any, item: any) => {
                 if (!acc[item.semester_id]) {
                   acc[item.semester_id] = {
@@ -222,7 +222,7 @@ const TeacherDashboardCharts = () => {
             setschoolSubjectAll(filteredSub);
 
             const uniqueClasses: any = Object.values(
-                (filteredSub ?? []).reduce(
+              (filteredSub ?? []).reduce(
                 (acc: any, item: any) => {
                   if (!acc[item.class_id]) {
                     acc[item.class_id] = {
@@ -254,6 +254,9 @@ const TeacherDashboardCharts = () => {
           type: 'bar',
           height: 350,
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
@@ -298,6 +301,9 @@ const TeacherDashboardCharts = () => {
           type: 'bar',
           height: 350,
           stacked: true,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },

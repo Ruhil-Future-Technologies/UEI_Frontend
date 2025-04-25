@@ -291,5 +291,36 @@ export const getColor = (value: number, max: number) => {
 
   return `rgb(${red}, ${green}, 0)`;
 };
+// Utility function to convert GMT to IST
+export const convertToIST = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  // IST is UTC+5:30
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istDate = new Date(date.getTime() + istOffset);
+  return istDate.toLocaleString('en-IN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+};
+export const convertToISTT = (dateString: string) => {
+  if (!dateString) return '';
 
+  const date = new Date(dateString); // treated as UTC
 
+  return date.toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata', // Force IST here
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+};

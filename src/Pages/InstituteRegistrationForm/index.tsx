@@ -176,7 +176,7 @@ const InstituteRegistrationForm = () => {
   const getInstitutelist = async () => {
     getForRegistration(`${InstituteURL}`)
       .then((data) => {
-        const fiteredInstitutedata = data.data.filter(
+        const fiteredInstitutedata = data.data?.filter(
           (institute: any) =>
             institute.is_active === 1 && institute.is_approve === true,
         );
@@ -220,7 +220,7 @@ const InstituteRegistrationForm = () => {
     const filesArray = Array.from(files);
   
     // Check for duplicate files (compare name + lastModified for uniqueness)
-    const duplicateFiles = filesArray.filter((file) =>
+    const duplicateFiles = filesArray?.filter((file) =>
       allselectedfiles.some(
         (existingFile) => 
           existingFile.name === file.name && 
@@ -596,7 +596,7 @@ const InstituteRegistrationForm = () => {
   };
   const handleRemoveFile = (index: number) => {
     setAllSelectedfiles((previous) =>
-      previous.filter((_, ind) => ind !== index),
+      previous?.filter((_, ind) => ind !== index),
     );
     setErrorMessage('');
   };
