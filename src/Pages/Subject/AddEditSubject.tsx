@@ -88,12 +88,15 @@ const AddEditSubject = () => {
   }
   const callAPI = async () => {
     getData(`${InstituteListURL}`)
-      .then((data: { data: any[] }) => {
-        const filteredData = data?.data.filter(
-          (item) =>
-            item.is_active && item.is_approve && (item.entity_type).toLowerCase() == 'college',
-        );
-        setinstituteList(filteredData);
+    .then((response) => {
+      const data = response?.data; 
+      const filteredData = data?.filter(
+        (item: { is_active: boolean; is_approve: boolean; entity_type?: string }) =>
+          item.is_active &&
+          item.is_approve &&
+          (item.entity_type?.toLowerCase() === 'college')
+      );
+      setinstituteList(filteredData);
       })
       .catch((e) => {
         if (e?.response?.code === 401) {
@@ -350,6 +353,7 @@ const AddEditSubject = () => {
     course_id: Yup.string().required('Please select Course name'),
     institution_id: Yup.string().required('Please select institute name'),
   });
+  console.log("test inst",instituteList)
   return (
     <>
       <div className="main-wrapper">
