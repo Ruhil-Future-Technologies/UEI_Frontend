@@ -256,7 +256,7 @@ export const QUERY_KEYS_QUIZ = {
   GET_SUBMISSION: '/quiz_submission/get/submissions',
   ADD_SUBMISSION: '/quiz_submission/add',
   GET_QUIZ_STUDENT: '/quiz/student',
-  GENERATE_QUIZ: 'https://qaapi.gyansetu.ai/AIchatbot/generate-quiz',
+  GENERATE_QUIZ: '/AIchatbot/generate-quiz',
   GET_QUIZ_BY_TEACHER: '/quiz/get/teacher/',
   DELETE_QUIZ: '/quiz/delete/',
 };
@@ -269,8 +269,7 @@ export const QUERY_KEYS_ASSIGNMENT = {
   DEACTIVATE_ASSIGNMENT: '/assignment/deactivate/',
   EDIT_ASSIGNMENT: '/assignment/edit/',
   ADD_ASSIGNMENT: 'assignment/add',
-  GENERATE_AI_ASSIGNMENT:
-    'https://qaapi.gyansetu.ai/AIchatbot/generate-questions',
+  GENERATE_AI_ASSIGNMENT: '/AIchatbot/generate-questions',
 };
 
 export const QUERY_KEYS_ASSIGNMENT_SUBMISSION = {

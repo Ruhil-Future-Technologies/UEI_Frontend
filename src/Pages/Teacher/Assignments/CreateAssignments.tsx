@@ -63,7 +63,6 @@ import dayjs, { Dayjs } from 'dayjs';
 import { Autocomplete, Chip } from '@mui/material';
 import ReactQuill from 'react-quill';
 import QuizModal from './QuizModal';
-import axios from 'axios';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
 import AssignmentModal from './AssignmentModal';
@@ -1272,26 +1271,21 @@ export const CreateAssignments = () => {
     try {
       if (type == 'assignment') {
         setLoading(true);
-        const response = await axios.post(
-          ASSIGNMENT.GENERATE_AI_ASSIGNMENT,
-          payload,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
+        postDataJson(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload).then(
+          (response) => {
+            setAssignmentGenrData(response);
+
+            setAssignmentModalOpen(true);
+            setLoading(false);
           },
         );
-        setAssignmentGenrData(response?.data);
-
-        setAssignmentModalOpen(true);
-        setLoading(false);
       } else {
         setLoading(true);
-        const response = await axios.post(GENERATE_QUIZ, payload);
-
-        setQuizData(response?.data);
-        setIsModalOpen(true);
-        setLoading(false);
+        postDataJson(GENERATE_QUIZ, payload).then((response) => {
+          setQuizData(response);
+          setIsModalOpen(true);
+          setLoading(false);
+        });
       }
     } catch (error) {
       setLoading(false);
