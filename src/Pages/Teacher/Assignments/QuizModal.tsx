@@ -177,12 +177,15 @@ const QuizModal: React.FC<QuizModalProps> = ({
             }
           }),
         };
+
         return acc;
       },
       {} as QuizCollection,
     );
 
+
     if (checked) {
+
       setAllQuestionsSelected(key_val);
       setFinalKey(key_val);
     } else {
@@ -264,6 +267,7 @@ const QuizModal: React.FC<QuizModalProps> = ({
       );
       return sum + selectedMarks;
     }, 0);
+
   };
 
   return (
@@ -332,8 +336,10 @@ const QuizModal: React.FC<QuizModalProps> = ({
                   />
                   <Typography variant="subtitle1" color="text.secondary">
                     {set?.questions?.filter((q) => q?.selected).length} of{' '}
+
                     {set?.questions?.length} questions selected | Total marks:
                     {getTotalSelectedMarks(Object.keys(currentQuizData)[index])}
+
                   </Typography>
                 </Box>
 
