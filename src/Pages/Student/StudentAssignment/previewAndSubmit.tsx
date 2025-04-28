@@ -11,6 +11,7 @@ import {
   IconButton,
   ListItem,
   ListItemText,
+  TextField,
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -31,6 +32,12 @@ import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import "react-quill/dist/quill.snow.css";
 import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
+
+export interface Question_andwer {
+  question: string,
+  answer: string,
+  marks: number
+}
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
   const { getData, postData } = useApi();
@@ -42,12 +49,29 @@ const PreviewAndSubmit = () => {
   const [remainingDays, setRemaingDays] = useState(0);
   const [document_error, setDocument_error] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
-  const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<string[]>([]); 
+  const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<string[]>([]);
   const [value, setValue] = useState("");
   const quillRef = useRef<ReactQuill | null>(null);
   const [isSubmited, setIssubmited] = useState(false);
   const [statusCheck, setStatusCheck] = useState('Pending');
   const [availableDuration, setAvailableDuration] = useState(0);
+  const [question_answer, setQuestion_answer] = useState<Question_andwer[]>([{
+    question: 'what is java',
+    answer: '',
+    marks: 2
+  },
+  {
+    question: 'what is oops',
+    answer: '',
+    marks: 2
+  },
+  {
+    question: 'what is inheritance',
+    answer: '',
+    marks: 2
+  }
+  ]);
+  const [contentType, setContentType] = useState('file');
 
   const handleBack = () => {
     navigate(-1);
@@ -62,6 +86,25 @@ const PreviewAndSubmit = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
+          // if(response?.data?.questoins && response?.data?.questoins.length>0){
+          setQuestion_answer([{
+            question: 'what is java',
+            answer: '',
+            marks: 2
+          },
+          {
+            question: 'what is oops',
+            answer: '',
+            marks: 2
+          },
+          {
+            question: 'what is inheritance',
+            answer: '',
+            marks: 2
+          }
+          ]);
+          setContentType("questions");
+          // }
           const dueDate = new Date(response?.data?.due_date_time);
           const availableDate = new Date(response?.data?.available_from);
           const durationDiff = dueDate.getTime() - availableDate.getTime()
@@ -175,12 +218,12 @@ const PreviewAndSubmit = () => {
 
         })
         navigate('/main/student/assignment')
-      }else{
+      } else {
         toast.error(response.message, {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center'
-  
+
         })
       }
     }).catch((error) => {
@@ -191,6 +234,14 @@ const PreviewAndSubmit = () => {
 
       })
     })
+  }
+  const handleAnswer=(value:any,index:any)=>{
+
+   setQuestion_answer(prev=>{
+    const updateobj=[...prev];
+    updateobj[index]={...updateobj[index],answer:value}
+    return updateobj;
+   })
   }
   useEffect(() => {
     const editor = quillRef.current?.editor?.root;
@@ -341,62 +392,101 @@ const PreviewAndSubmit = () => {
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="h6" className='mb-3'>Submit Your Work</Typography>
-              <Box
-                sx={{
-                  border: '2px dashed #ccc',
-                  p: 3,
-                  textAlign: 'center',
-                  borderRadius: '8px',
-                }}
-              >
-                <CloudUploadIcon fontSize="large" />
-                <Typography variant="body2" color="text.secondary">
-                  Drag and drop your files here or click to browse
-                </Typography>
-                <UploadBtn
-                  label="Upload Documents"
-                  name="document"
-                  accept=".pdf, .jpg, .jpeg, .png, .gif"
-                  handleFileChange={handleFileChange}
-                />
-              </Box>
 
-              {statusCheck =='Pending' ?
-              allselectedfiles.map((file, index) => (
-                <ListItem
-                  className="fileslistitem"
-                  key={index}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      onClick={() => handleFileRemove(index)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <div className="pinwi-20">
-                    <AttachFileIcon />
-                  </div>
-                  <ListItemText primary={file.name} />
-                </ListItem>
-              )):
-              allselectedfilesToShow.map((file, index) => (
-                <ListItem
-                  className="fileslistitem"
-                  key={index}
-                >
-                  <div className="pinwi-20">
-                    <AttachFileIcon />
-                  </div>
-                  <a href={file}>
-                  <ListItemText primary={file} />
-                  </a>
-                </ListItem>
-              ))
+              {contentType == 'questions' ? (
+                <>
+                  <Box>
+                    {question_answer.map((question_answer, index) => (
+                      <>
+                        <Box display="flex" alignItems="center" gap={1} mb={1}>
+                          <Typography variant="subtitle1">
+                            <strong>Question {index + 1}:</strong> {question_answer.question}
+                          </Typography>
+                          <Chip
+                            label={`${question_answer.marks} ${question_answer.marks === 1 ? 'mark' : 'marks'}`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                          />
+                        </Box>
+                        <TextField
+                        className='mb-4'
+                          id="outlined-multiline-static"
+                          label="Answer"
+                          multiline
+                          value={question_answer.answer}
+                          rows={2}
+                          fullWidth
+                          onChange={(e)=>handleAnswer(e.target.value,index)}
+                        />
+                      </>
+                    ))
+                    }
+                  </Box>
+                </>
+              )
+                :
+                <>
+                  <Box
+                    sx={{
+                      border: '2px dashed #ccc',
+                      p: 3,
+                      textAlign: 'center',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <CloudUploadIcon fontSize="large" />
+                    <Typography variant="body2" color="text.secondary">
+                      Drag and drop your files here or click to browse
+                    </Typography>
+                    <UploadBtn
+                      label="Upload Documents"
+                      name="document"
+                      accept=".pdf, .jpg, .jpeg, .png, .gif"
+                      handleFileChange={handleFileChange}
+                    />
+                  </Box>
+                </>
+              }
+
+
+
+              {statusCheck == 'Pending' ?
+                allselectedfiles.map((file, index) => (
+                  <ListItem
+                    className="fileslistitem"
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        onClick={() => handleFileRemove(index)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                  >
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <ListItemText primary={file.name} />
+                  </ListItem>
+                )) :
+                allselectedfilesToShow.map((file, index) => (
+                  <ListItem
+                    className="fileslistitem"
+                    key={index}
+                  >
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <a href={file}>
+                      <ListItemText primary={file} />
+                    </a>
+                  </ListItem>
+                ))
 
               }
-              
+
               {document_error &&
                 <p className="error-text " style={{ color: 'red' }}>
                   <small> Please add at least one file.</small>
@@ -419,7 +509,7 @@ const PreviewAndSubmit = () => {
           }
 
         </div>
-      </div>
+      </div >
     </>
   );
 };
