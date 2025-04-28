@@ -1270,17 +1270,17 @@ const StudentSubjectPreference: React.FC<PropsItem> = ({
                   label="Teacher"
                 >
                   {/* Show selected teacher first (disabled) */}
-                  {box.teachers
+                  {/* {box.teachers
                     ?.filter((teacher) => teacher.id === box.teacher_id)
                     ?.map((teacher) => (
                       <MenuItem key={teacher.id} value={teacher.id} disabled sx={commonStyle(namecolor)}>
                         {teacher.first_name + " " + teacher.last_name}
                       </MenuItem>
-                    ))}
+                    ))} */}
 
                   {/* Show available teachers excluding already selected ones in other rows */}
-                  {box.teachers
-                    ?.filter((teacher) => !boxes.some((b) => b.teacher_id === teacher.id))
+                  {box?.teachers
+                    // ?.filter((teacher) => !boxes.some((b) => b.teacher_id === teacher.id))
                     ?.map((teacher) => (
                       <MenuItem key={teacher.id} value={teacher.id} sx={commonStyle(namecolor)}>
                         {teacher.first_name + " " + teacher.last_name}
