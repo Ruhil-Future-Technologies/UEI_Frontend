@@ -250,7 +250,54 @@ export const CreateAssignments = () => {
   useEffect(() => {
     const storedMode = localStorage.getItem('isDarkMode');
     setDarkMode(storedMode === 'true');
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'isDarkMode') {
+        setDarkMode(event.newValue === 'true');
+      }
+    };
+
+    const handleCustomDarkModeChange = (event: CustomEvent) => {
+      setDarkMode(event.detail === true);
+    };
+
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = function (key, value) {
+      originalSetItem.apply(this, [key, value]);
+
+      if (key === 'isDarkMode') {
+        setDarkMode(value === 'true');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener(
+      'darkModeChange',
+      handleCustomDarkModeChange as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(
+        'darkModeChange',
+        handleCustomDarkModeChange as EventListener,
+      );
+      localStorage.setItem = originalSetItem;
+    };
   }, []);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const currentSetting = localStorage.getItem('isDarkMode') === 'true';
+      if (currentSetting !== darkMode) {
+        setDarkMode(currentSetting);
+      }
+    };
+
+    const intervalId = setInterval(checkDarkMode, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [darkMode]);
 
   useEffect(() => {
     getTotal(questions);
@@ -591,7 +638,10 @@ export const CreateAssignments = () => {
                 Record<string, any>
               >,
             ).flatMap((streamkeys) => Object.keys(streamkeys));
-            setTeacherStream(streeamKeys);
+
+            const uniqueStreamKeys = [...new Set(streeamKeys)];
+
+            setTeacherStream(uniqueStreamKeys);
 
             const classIds = Object.keys(data.data.class_stream_subjects)?.map(
               (classKey) => parseInt(classKey, 10),
@@ -881,11 +931,8 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append(
-      'points',
-      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
-    );
-    formData.append('save_draft', String(saveAsDraft));
+    formData.append('points', assignmentDataType =='json'?totalMarks:assignmentData.points);
+    formData.append('save_draft', saveAsDraft==true?saveAsDraft:String(saveAsDrafts));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     //const students = selectedStudents.map((student) => String(student.id))
@@ -1587,6 +1634,9 @@ export const CreateAssignments = () => {
             subjects: [],
             filteredSubjects: [],
           };
+          setSelectedStudents([])
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
 
         if (name === 'semester_number') {
@@ -1596,6 +1646,9 @@ export const CreateAssignments = () => {
               item.course_id === boxes[index].course_id,
           );
           updatedBox = { ...updatedBox, filteredSubjects, subjects: [] };
+          setListOfStudentFiltered([]);
+          setSelectedStudents([]);
+          setSelectAll(false);
         }
         if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
@@ -1661,6 +1714,9 @@ export const CreateAssignments = () => {
               subjects: [],
             };
           }
+          setSelectedStudents([]);
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
 
         if (name === 'stream') {
@@ -1676,6 +1732,9 @@ export const CreateAssignments = () => {
             filteredSubjects,
             subjects: [],
           };
+          setSelectedStudents([])
+          setListOfStudentFiltered([]);
+          setSelectAll(false);
         }
         if (name == 'subjects') {
           const filteredStudents = listOfStudent?.filter((student) => {
@@ -2258,7 +2317,7 @@ export const CreateAssignments = () => {
                         value={assignmentData.instructions}
                         onChange={handleQuillChange}
                         theme="snow"
-                        className={darkMode ? 'quill-dark' : 'quill-light'}
+                        className={darkMode ? 'quill-dark' : ''}
                         style={{ height: '120px', borderRadius: '8px' }}
                       />
                       {instructions_error && (
@@ -2694,6 +2753,7 @@ export const CreateAssignments = () => {
                                 value={availableFrom}
                                 minDateTime={!edit ? dayjs() : undefined}
                                 onChange={handleAvailableFromChange}
+                                closeOnSelect={false}
                                 slotProps={{
                                   textField: (params) => (
                                     <TextField {...params} />
@@ -2751,6 +2811,7 @@ export const CreateAssignments = () => {
                               label="Due Time"
                               value={dueTime} // Ensure it's a Dayjs object
                               onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
+                              closeOnSelect={false}
                               slotProps={{
                                 textField: (params) => (
                                   <TextField {...params} />
