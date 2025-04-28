@@ -110,7 +110,7 @@ const Chat = () => {
   //   getVoices();
   // };
   if (profileCompletion !== '100') {
-    navigate('/*');
+    navigate('/main/DashBoard');
   }
   const chatRef = useRef<HTMLInputElement>(null);
   const handlecancel = () => {
@@ -1718,7 +1718,7 @@ const Chat = () => {
                                         className="diagram-container"
                                         style={{
                                           width: '100%',
-                                          height: '400px',
+                                          height: '100%',
                                           overflow: 'hidden',
                                           display: 'flex',
                                           justifyContent: 'center',
@@ -1727,6 +1727,7 @@ const Chat = () => {
                                         key={index}
                                         dangerouslySetInnerHTML={{
                                           __html: chat?.diagram_code,
+                                          // __html: chat?.diagram_code.replace(/height="\d+"/, 'height="700"')
                                         }}
                                       />
                                       <ImageModal

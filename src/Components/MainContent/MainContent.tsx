@@ -70,7 +70,7 @@ function MainContent() {
   const { ProPercentage, setProPercentage, namecolor, setActiveForm, proImage, setProImage }: any = context;
 
   const [userName, setUserName] = useState('');
-  const StudentId = localStorage.getItem('_id');
+  const StudentId = localStorage.getItem('student_id');
   const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
 
@@ -2307,7 +2307,6 @@ function MainContent() {
         flagged: isChatFlagged,
       };
     }
-
     await postDataJson(`${chataddconversationurl}`, chat_payload)
       .then(() => {
         fetchStudentData();
@@ -2744,8 +2743,7 @@ function MainContent() {
                             Your Preferred Subject
                           </h5>
                           <small className="fs-12">
-                            Learning journey with our comprehensive lesson
-                            exercise courses,{' '}
+                          Start your learning journey in your preferred subject with our complete lesson and practice courses.{' '}
                           </small>
                         </div>
                         <Link

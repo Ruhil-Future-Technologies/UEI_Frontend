@@ -25,6 +25,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
 const PreviewStudentAssignment = () => {
     const navigate = useNavigate();
     const { getData } = useApi();
@@ -50,7 +51,7 @@ const PreviewStudentAssignment = () => {
 
     const getAssignmentData = () => {
         try {
-            getData(`/assignment/get/${assignment_id}`).then((response) => {
+            getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${assignment_id}`).then((response) => {
                 if (response?.status) {
                     setAssignmentData(response?.data);
                     const dueDate = new Date(response?.data?.due_date_time);
@@ -76,7 +77,7 @@ const PreviewStudentAssignment = () => {
 
 
     const isAssignmentSubmitedGet = (assignmentId: string) => {
-        getData(`/assignment_submission/get/submissions/${id}`).then((response) => {
+        getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${id}`).then((response) => {
             if (response?.status) {
                 const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
                 console.log(filteredAssignment);
@@ -228,7 +229,7 @@ const PreviewStudentAssignment = () => {
                                 textAlign="center"
                                 sx={{ padding: 2, border: "1px dashed #ccc", borderRadius: 2, backgroundColor: "#f9f9f9" }}
                             >
-                                {allselectedfiles.length > 0 ? allselectedfiles.map((file, index) => (
+                                {allselectedfiles.length > 0 ? allselectedfiles?.map((file, index) => (
                                     <ListItem
                                         className="fileslistitem"
                                         key={index}
