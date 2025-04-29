@@ -1199,11 +1199,6 @@ export const CreateAssignments = () => {
       }
     }
 
-
-    if (assignmentType == 'ai generated') {
-
-    }
-
     let valid = true;
 
     if (selectedEntity.toLowerCase() === 'school') {
