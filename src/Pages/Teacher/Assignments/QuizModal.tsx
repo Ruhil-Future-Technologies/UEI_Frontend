@@ -167,10 +167,14 @@ const QuizModal: React.FC<QuizModalProps> = ({
         acc[key] = {
           ...value,
           questions: value?.questions?.map((question) => {
-            if (key == key_val) {
-              return { ...question, selected: checked }; // Toggle selected ✅
+            if (key === key_val) {
+              return { ...question, selected: checked };
+            } else {
+              return {
+                ...question,
+                selected: checked ? false : question.selected,
+              };
             }
-            return question;
           }),
         };
 
@@ -179,11 +183,13 @@ const QuizModal: React.FC<QuizModalProps> = ({
       {} as QuizCollection,
     );
 
-    if (allQuestionsSelected == key_val) {
-      setAllQuestionsSelected('');
-    } else {
+
+    if (checked) {
+
       setAllQuestionsSelected(key_val);
       setFinalKey(key_val);
+    } else {
+      setAllQuestionsSelected('');
     }
 
     setCurrentQuizData(updatedQuizData);
@@ -227,21 +233,41 @@ const QuizModal: React.FC<QuizModalProps> = ({
     setEditableTitle(event.target.value);
   };
 
-  const getTotalSelectedMarks = () => {
+  const getTotalSelectedMarks = (setKey?: string) => {
     if (!currentQuizData) return 0;
-    const totalMarks = Object.values(currentQuizData || {}).reduce(
-      (sum, set) => {
-        const selectedQuestions = set?.questions?.filter((q) => q.selected);
-        const selectedMarks = selectedQuestions?.reduce(
+
+    if (setKey) {
+      const set = currentQuizData[setKey];
+      const selectedQuestions = set?.questions?.filter((q) => q.selected);
+      return (
+        selectedQuestions?.reduce(
           (qSum, q) => qSum + Number(q.marks || 0),
           0,
-        );
-        return sum + selectedMarks;
-      },
-      0,
-    );
+        ) || 0
+      );
+    }
 
-    return totalMarks;
+    const activeKey = finalKey || allQuestionsSelected;
+    if (activeKey && activeKey !== '') {
+      const set = currentQuizData[activeKey];
+      const selectedQuestions = set?.questions?.filter((q) => q.selected);
+      return (
+        selectedQuestions?.reduce(
+          (qSum, q) => qSum + Number(q.marks || 0),
+          0,
+        ) || 0
+      );
+    }
+
+    return Object.values(currentQuizData).reduce((sum, set) => {
+      const selectedQuestions = set?.questions?.filter((q) => q.selected);
+      const selectedMarks = selectedQuestions?.reduce(
+        (qSum, q) => qSum + Number(q.marks || 0),
+        0,
+      );
+      return sum + selectedMarks;
+    }, 0);
+
   };
 
   return (
@@ -310,8 +336,10 @@ const QuizModal: React.FC<QuizModalProps> = ({
                   />
                   <Typography variant="subtitle1" color="text.secondary">
                     {set?.questions?.filter((q) => q?.selected).length} of{' '}
-                    {set?.questions?.length} questions selected | Total marks:{' '}
-                    {getTotalSelectedMarks()}
+
+                    {set?.questions?.length} questions selected | Total marks:
+                    {getTotalSelectedMarks(Object.keys(currentQuizData)[index])}
+
                   </Typography>
                 </Box>
 

@@ -394,7 +394,7 @@ export const CreateAssignments = () => {
                 const filteredStudents =
                   students?.filter(
                     (student) =>
-                      output[1].course_id == student.course_id &&
+                      output[0].course_id == student.course_id &&
                       output[0].semester_number == student.semester_number &&
                       output[0].subjects[0] == student.subject_name,
                   ) || [];
@@ -2111,6 +2111,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="One Mark"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].one}
                                 onChange={(e) => {
@@ -2131,6 +2132,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Two Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].two}
                                 onChange={(e) => {
@@ -2151,6 +2153,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Three Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].three}
                                 onChange={(e) => {
@@ -2171,6 +2174,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Four Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].four}
                                 onChange={(e) => {
@@ -2191,6 +2195,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Five Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].five}
                                 onChange={(e) => {
@@ -2767,7 +2772,9 @@ export const CreateAssignments = () => {
                               <DateTimePicker
                                 label="Available From"
                                 value={availableFrom}
-                                minDateTime={!edit ? dayjs() : undefined}
+                                minDateTime={
+                                  !edit ? dayjs().add(10, 'minute') : undefined
+                                }
                                 onChange={handleAvailableFromChange}
                                 closeOnSelect={false}
                                 slotProps={{
