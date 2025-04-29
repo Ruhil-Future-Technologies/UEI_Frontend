@@ -50,27 +50,18 @@ const PreviewAndSubmit = () => {
   const [document_error, setDocument_error] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
   const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<string[]>([]);
-  const [value, setValue] = useState("");
+  const [description, setDescription] = useState("");
   const quillRef = useRef<ReactQuill | null>(null);
   const [isSubmited, setIssubmited] = useState(false);
   const [statusCheck, setStatusCheck] = useState('Pending');
   const [availableDuration, setAvailableDuration] = useState(0);
   const [question_answer, setQuestion_answer] = useState<Question_andwer[]>([{
-    question: 'what is java',
+    question: '',
     answer: '',
-    marks: 2
-  },
-  {
-    question: 'what is oops',
-    answer: '',
-    marks: 2
-  },
-  {
-    question: 'what is inheritance',
-    answer: '',
-    marks: 2
+    marks: 0
   }
   ]);
+  const [q_a_error,setQ_a_error]=useState(false);
   const [contentType, setContentType] = useState('file');
 
   const handleBack = () => {
@@ -86,25 +77,12 @@ const PreviewAndSubmit = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
-          // if(response?.data?.questoins && response?.data?.questoins.length>0){
-          setQuestion_answer([{
-            question: 'what is java',
-            answer: '',
-            marks: 2
-          },
-          {
-            question: 'what is oops',
-            answer: '',
-            marks: 2
-          },
-          {
-            question: 'what is inheritance',
-            answer: '',
-            marks: 2
+          console.log(response?.data?.questions.length)
+          if (response?.data?.questions && response?.data?.questions.length > 0) {
+            console.log(response?.data?.questions.length)
+            setQuestion_answer(response?.data?.questions);
+            setContentType("questions");
           }
-          ]);
-          setContentType("questions");
-          // }
           const dueDate = new Date(response?.data?.due_date_time);
           const availableDate = new Date(response?.data?.available_from);
           const durationDiff = dueDate.getTime() - availableDate.getTime()
@@ -132,7 +110,7 @@ const PreviewAndSubmit = () => {
         const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
         console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
-          if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
+          if (filteredAssignment[0]?.description) setDescription(filteredAssignment[0].description);
           if (filteredAssignment[0]?.files) setAllSelectedfilesToShow(filteredAssignment[0].files)
           if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
           if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
@@ -184,33 +162,42 @@ const PreviewAndSubmit = () => {
   const submitAssignment = () => {
 
     let check = true;
-    if (value == '') {
+    // if (description == '') {
 
-      check = true;
-    } else {
+    //   check = true;
+    // } else {
 
-      check = false;
-    }
+    //   check = false;
+    // }
 
-    if (allselectedfiles.length! < 1) {
+    if (contentType=='file' && description == '' && allselectedfiles.length! < 1) {
       setDocument_error(true);
       check = true;
     } else {
       check = false;
       setDocument_error(false);
     }
+
+    if(contentType!='file' && question_answer.find((question) => !question.answer || question.answer === '')){
+      setQ_a_error(true)
+      check = true;
+    }else{
+      setQ_a_error(false);
+      check = false;
+      
+    }
     if (check) return;
     const formData = new FormData();
 
     formData.append('assignment_id', assignmentData?.id as string)
     formData.append('student_id', stud_id as string)
-    formData.append('description', value)
+    formData.append('description', description)
+    formData.append('questions',JSON.stringify(question_answer));
     allselectedfiles.forEach((file) => {
       formData.append('files', file);
     });
     postData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.ADD_ASSIGNMENT_SUBMISSION}`, formData).then((response) => {
       if (response?.status) {
-
         toast.success(response.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -235,13 +222,17 @@ const PreviewAndSubmit = () => {
       })
     })
   }
-  const handleAnswer=(value:any,index:any)=>{
+  const handleAnswer = (value: any, index: any) => {
 
-   setQuestion_answer(prev=>{
-    const updateobj=[...prev];
-    updateobj[index]={...updateobj[index],answer:value}
-    return updateobj;
-   })
+    setQuestion_answer(prev => {
+      const updateobj = [...prev];
+      updateobj[index] = { ...updateobj[index], answer: value }
+      return updateobj;
+    })
+    if(question_answer.find((question) => question.answer || question.answer !== '')){
+      setQ_a_error(false)
+    }
+
   }
   useEffect(() => {
     const editor = quillRef.current?.editor?.root;
@@ -283,6 +274,7 @@ const PreviewAndSubmit = () => {
       }
     };
   }, []);
+  console.log(question_answer);
   return (
     <>
       <div className="main-wrapper">
@@ -410,14 +402,14 @@ const PreviewAndSubmit = () => {
                           />
                         </Box>
                         <TextField
-                        className='mb-4'
+                          className='mb-4'
                           id="outlined-multiline-static"
                           label="Answer"
                           multiline
                           value={question_answer.answer}
                           rows={2}
                           fullWidth
-                          onChange={(e)=>handleAnswer(e.target.value,index)}
+                          onChange={(e) => handleAnswer(e.target.value, index)}
                         />
                       </>
                     ))
@@ -492,8 +484,14 @@ const PreviewAndSubmit = () => {
                   <small> Please add at least one file.</small>
                 </p>
               }
+              {
+                q_a_error &&
+                <p className="error-text " style={{ color: 'red' }}>
+                  <small>All questions are required</small>
+                </p>
+              }
               <div className='mt-2 mb-5'>
-                <ReactQuill id='text' ref={quillRef} value={value} onChange={setValue} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
+                <ReactQuill id='text' ref={quillRef} value={description} onChange={setDescription} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
               </div>
             </CardContent>
           </Card>

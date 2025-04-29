@@ -301,7 +301,7 @@ const StudentAssignments = () => {
           </div>
           <MaterialReactTable
             columns={columns}
-            data={assignmentData}
+            data={[...assignmentData].reverse()} 
             enableColumnOrdering
             enableSorting
             enableFullScreenToggle={false}
