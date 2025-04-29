@@ -122,8 +122,8 @@ const TeacherDash = () => {
       .then((data) => {
         if (data.data) {
           setCoursesData(data?.data);
-          const filteredCourses = data?.data?.course_data?.filter((course: any) =>
-            courseIds.includes(String(course.id)),
+          const filteredCourses = data?.data?.course_data?.filter(
+            (course: any) => courseIds.includes(String(course.id)),
           );
           setCoursesData(filteredCourses);
         }
@@ -140,8 +140,8 @@ const TeacherDash = () => {
     getData(`${ClassURL}`)
       .then((data) => {
         if (data.data) {
-          const filteredClasses = data?.data?.classes_data?.filter((classn: any) =>
-            classIds.includes(String(classn.id)),
+          const filteredClasses = data?.data?.classes_data?.filter(
+            (classn: any) => classIds.includes(String(classn.id)),
           );
           setDataClass(filteredClasses);
         }
@@ -157,12 +157,12 @@ const TeacherDash = () => {
     <div className="main-wrapper">
       <div className="main-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <HomeOutlinedIcon
-                sx={{
-                  fontSize: '26px',
-                  marginRight:'2px'
-                }}
-              />
+          <HomeOutlinedIcon
+            sx={{
+              fontSize: '26px',
+              marginRight: '2px',
+            }}
+          />
           <div className="breadcrumb-title pe-3">Dashboard</div>
           {/* <div className="ps-3">
             <nav aria-label="breadcrumb">
@@ -515,8 +515,8 @@ const TeacherDash = () => {
             </div>
           </div>
 
-          <TeacherGraph />
           <TeacherDashboardCharts />
+          <TeacherGraph />
           <div
             className="col-xxl-8 d-flex align-items-stretch "
             style={{ marginBottom: '64px' }}

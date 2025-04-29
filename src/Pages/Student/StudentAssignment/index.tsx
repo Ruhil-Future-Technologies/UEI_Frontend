@@ -139,82 +139,18 @@ const StudentAssignments = () => {
 
   const getListOfAssignments = () => {
     try {
-      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then((response) => {
-        if (response.status) {
-          const filteredAssignment = response?.data.filter((assignment: any) => assignment?.assign_to_students.includes(studemtId) && !assignment?.save_draft)
-          setAssignmentData(filteredAssignment)
-        }else{
-          setAssignmentData([
-            {
-                "add_to_report": false,
-                "allow_late_submission": false,
-                "assign_to_students": ["6b315e94-97e3-4e74-a717-9ad6aa4788e5","f8ef4dc8-7e36-4a9a-a9a3-5b722192353d","325ff321-8765-4c61-a6ca-c58ff78e0d1b","d302ec8a-e48f-4c5c-91b2-8486304f0327"],
-                "available_from": "Fri, 28 Mar 2025 18:30:00 GMT",
-                "class_stream_subjects": {
-                    "8": {
-                        "science": [
-                            "Hindi"
-                        ]
-                    }
-                },
-                "contact_email": "atul@gmail.com",
-                "course_semester_subjects": null,
-                "created_at": "2025-03-28 03:28:26",
-                "created_by": "863c7f0a-74cc-410c-a9aa-1ab3b2afee12",
-                "created_by_name": "Test Ashish Test",
-                "due_date_time": "Sun, 30 Mar 2025 18:30:00 GMT",
-                "files": [
-                    "https://qauploads.s3.ap-south-1.amazonaws.com/uploads/4c844aa1-368a-4b5f-a6c7-98f35e640c7b_sample_test_2_at.pdf"
-                ],
-                "id": "4c844aa1-368a-4b5f-a6c7-98f35e640c7b",
-                "instructions": "testin",
-                "is_active": true,
-                "is_deleted": false,
-                "notify": false,
-                "points": "5",
-                "questions": [],
-                "save_draft": false,
-                "title": "atul yadav",
-                "type": "written",
-                //"updated_at": "2025-03-28 03:28:26",
-               // "updated_by": "863c7f0a-74cc-410c-a9aa-1ab3b2afee12"
-            },
-            {
-                "add_to_report": true,
-                "allow_late_submission": false,
-                "assign_to_students": ["6b315e94-97e3-4e74-a717-9ad6aa4788e5","f8ef4dc8-7e36-4a9a-a9a3-5b722192353d","325ff321-8765-4c61-a6ca-c58ff78e0d1b","d302ec8a-e48f-4c5c-91b2-8486304f0327"],
-                "available_from": "Wed, 26 Mar 2025 18:30:00 GMT",
-                "class_stream_subjects": {
-                    "8": {
-                        "science": [
-                            "Hindi"
-                        ]
-                    }
-                },
-                "contact_email": "atul@gmai.com",
-                "course_semester_subjects": null,
-                "created_at": "2025-03-28 03:28:26",
-                "created_by": "863c7f0a-74cc-410c-a9aa-1ab3b2afee12",
-                "created_by_name": "Test Ashish Test",
-                "due_date_time": "Sun, 30 Mar 2025 20:30:00 GMT",
-                "files": [
-                    "https://qauploads.s3.ap-south-1.amazonaws.com/uploads/a9e536d8-00f8-43df-a028-0dabe54b9245_sample_test_2.pdf"
-                ],
-                "id": "a9e536d8-00f8-43df-a028-0dabe54b9245",
-                "instructions": "testing",
-                "is_active": true,
-                "is_deleted": false,
-                "notify": true,
-                "points": "10",
-                "questions": [],
-                "save_draft": false,
-                "title": "atul test 2",
-                "type": "written",
-               // "updated_at": "2025-03-28 03:28:26",
-               // "updated_by": "863c7f0a-74cc-410c-a9aa-1ab3b2afee12"
-            }])
-        }
-      })
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENTS_LIST}`).then(
+        (response) => {
+          if (response.data) {
+            const filteredAssignment = response?.data.filter(
+              (assignment: any) =>
+                assignment?.assign_to_students.includes(studemtId) &&
+                !assignment?.save_draft,
+            );
+            setAssignmentData(filteredAssignment);
+          }
+        },
+      );
     } catch (error: any) {
       toast.error(error.message, {
         hideProgressBar: true,

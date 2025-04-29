@@ -390,47 +390,47 @@ export const CreateAssignments = () => {
                       subjects:
                         response.data.course_semester_subjects[CourseKey][
                         semester_number
-                        ],
-                      filteredSemesters: allsemesters?.filter(
-                        (item) => item.course_id == CourseKey,
-                      ),
-                      filteredSubjects: allSubject?.filter(
-                        (item) =>
-                          item.semester_number == semester_number &&
-                          item.course_id == CourseKey,
-                      ),
-                    })),
-                  );
-                  const filteredStudents =
-                    students?.filter(
-                      (student) =>
-                        output[0].course_id == student.course_id &&
-                        output[0].semester_number == student.semester_number &&
-                        output[0].subjects[0] == student.subject_name,
-                    ) || [];
-                  setListOfStudentFiltered(filteredStudents);
-                  setBoxes(output);
-                } else {
-                  getSubjects('School');
-                  setSelectedEntity('School');
-                  const allSubject: SubjectRep0oDTO[] =
-                    await getSubjects('School');
-                  const output: BoxesForSchool[] = Object.keys(
-                    response.data.class_stream_subjects,
-                  ).flatMap((classKey) =>
-                    Object.keys(
-                      response.data.class_stream_subjects[classKey],
-                    )?.map((stream) => ({
-                      stream: stream,
-                      subjects:
-                        response.data.class_stream_subjects[classKey][stream],
-                      class_id: classKey,
-                      is_Stream: stream !== 'general',
-                      selected_class_name:
-                        stream === 'general' ? 'col-6' : 'col-4',
-                      filteredSubjects:
-                        stream == 'general'
-                          ? allSubject?.filter(
+                      ],
+                    filteredSemesters: allsemesters?.filter(
+                      (item) => item.course_id == CourseKey,
+                    ),
+                    filteredSubjects: allSubject?.filter(
+                      (item) =>
+                        item.semester_number == semester_number &&
+                        item.course_id == CourseKey,
+                    ),
+                  })),
+                );
+                const filteredStudents =
+                  students?.filter(
+                    (student) =>
+                      output[0].course_id == student.course_id &&
+                      output[0].semester_number == student.semester_number &&
+                      output[0].subjects[0] == student.subject_name,
+                  ) || [];
+                setListOfStudentFiltered(filteredStudents);
+                setBoxes(output);
+              } else {
+                getSubjects('School');
+                setSelectedEntity('School');
+                const allSubject: SubjectRep0oDTO[] =
+                  await getSubjects('School');
+                const output: BoxesForSchool[] = Object.keys(
+                  response.data.class_stream_subjects,
+                ).flatMap((classKey) =>
+                  Object.keys(
+                    response.data.class_stream_subjects[classKey],
+                  )?.map((stream) => ({
+                    stream: stream,
+                    subjects:
+                      response.data.class_stream_subjects[classKey][stream],
+                    class_id: classKey,
+                    is_Stream: stream !== 'general',
+                    selected_class_name:
+                      stream === 'general' ? 'col-6' : 'col-4',
+                    filteredSubjects:
+                      stream == 'general'
+                        ? allSubject?.filter(
                             (item) => item.class_id == classKey,
                           )
                           : allSubject?.filter(
