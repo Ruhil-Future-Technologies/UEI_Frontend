@@ -105,23 +105,8 @@ const PreviewStudentAssignment = () => {
                     if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
                     if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
                     if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
-                    setQuestion_answer([{
-                        question: 'what is java',
-                        answer: 'Java is a high level, objected Oriented programming lenanguage',
-                        marks: 2
-                    },
-                    {
-                        question: 'what is oops',
-                        answer: 'It is the most popular programming peradignam where every thing done based on class and objects ',
-                        marks: 2
-                    },
-                    {
-                        question: 'what is inheritance',
-                        answer: 'Inheritance is one of the most important parts of OOPs. It means a class can inherit properties and methods from another class using the extends keyword.',
-                        marks: 2
-                    }
-                    ]);
-                    setContentType("questions");
+                    if (filteredAssignment[0]?.questions?.length>0)setQuestion_answer(filteredAssignment[0]?.questions);
+                    if (filteredAssignment[0]?.questions)setContentType("questions");
                 }
             }
         }).catch((error) => {
