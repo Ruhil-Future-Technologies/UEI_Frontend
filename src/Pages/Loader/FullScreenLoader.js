@@ -1,29 +1,41 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-// import {
-//   TailSpin,
-//   BallTriangle,
-//   Circles,
-//   MutatingDots,
-//   ThreeDots,
-//   Oval,
-// } from "react-loader-spinner";
+
 import './FullScreenLoader.scss'; // Import CSS for styling
 
 const FullScreenLoader = (props) => {
+  const getMessage = () => {
+    if (props.flag === 'chat') {
+      return 'Searching';
+    }
+    return props.msg 
+  };
+
   return (
     <div
-      className={`${props.flag === 'chat' ? 'chat-loader-box' : 'loader-box'}`}
+      className={`${props.flag === 'chat' || props.flag === 'rag' ? 'chat-loader-box' : 'loader-box'}`}
     >
-      <div className="spinner">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-      <div className="searchtext">{props.msg}</div>
+      {(props.flag === 'chat' || props.flag === 'rag') ? (
+        <div className="chat-loader">
+          <div className="thinking-dots">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </div>
+          <div className="searchtext">{getMessage()}</div>
+        </div>
+      ) : (
+        <div className="spinner">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      )}
+      {/* {props.flag !== 'chat' && props.flag !== 'rag' &&  <div className="searchtext">{props.msg}</div>} */}
+      
     </div>
   );
 };

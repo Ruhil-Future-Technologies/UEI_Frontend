@@ -67,7 +67,7 @@ const PrivacyPolicy = () => {
                     Gyansetu may collect personal information in the following
                     ways:
                   </p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       When you register on the Gyansetu Platform (website,
                       mobile app, or integrated services).
@@ -102,7 +102,7 @@ const PrivacyPolicy = () => {
                   <p>
                     Gyansetu may collect the following types of information:
                   </p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       <strong> Personal Details</strong>: Name, Address,
                       Email, Phone Number, Age, School Details.
@@ -155,7 +155,7 @@ const PrivacyPolicy = () => {
                 <div id="list-item-3">
                   <h6 className="fw-bold mt-5">Communications</h6>
                   <p>We may use your information to:</p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       Send educational updates, progress reports, or support
                       messages.
@@ -173,7 +173,7 @@ const PrivacyPolicy = () => {
 
                 <div id="list-item-4">
                   <h6 className="fw-bold mt-5">Log Data &amp; Cookies</h6>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       Like many digital platforms, Gyansetu collects Log Data
                       and Cookies for performance monitoring and usability
@@ -198,7 +198,7 @@ const PrivacyPolicy = () => {
                     Storage &amp; Security of Your Personal Information
                   </h6>
                   <p>Gyansetu prioritizes data security and implements:</p>
-                  <ul>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem' }}>
                     <li>
                       Encryption and Secure Storage: User data is encrypted and
                       stored securely.
