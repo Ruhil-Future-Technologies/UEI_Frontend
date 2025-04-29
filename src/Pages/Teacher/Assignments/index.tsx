@@ -405,7 +405,7 @@ export const Assignments = () => {
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
-                    <p className="mb-1">Active Students</p>
+                    <p className="mb-1">Active Assignment</p>
                     <h3 className="mb-0">
                       {assignmentData.length - draftCount}
                     </h3>
@@ -428,7 +428,7 @@ export const Assignments = () => {
             <Box className="rounded-4 overflow-hidden">
               <MaterialReactTable
                 columns={columns}
-                data={assignmentData}
+                data={[...assignmentData].reverse()} 
                 enablePagination
                 enableSorting
                 enableColumnFilters
