@@ -66,7 +66,6 @@ import QuizModal from './QuizModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
 import AssignmentModal from './AssignmentModal';
-import theme from '../../../theme';
 
 export interface Assignment {
   id?: string;
@@ -1883,7 +1882,7 @@ export const CreateAssignments = () => {
     }
   };
   return (
-    <div className="main-wrapper">
+    <div className="main-wrapper pb-5">
       <div className="main-content">
         {loading && <FullScreenLoader />}
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -1941,8 +1940,8 @@ export const CreateAssignments = () => {
         </div>
 
         <div className="card p-lg-3  mt-4 mt-lg-0">
-          <div className="cardbody p-2">
-            <div className="container-fluid">
+          <div className="card-body">
+           
               <div className="row justify-content-center">
                 <div className="col-lg-12">
                   <div className="row g-4">
@@ -1968,7 +1967,7 @@ export const CreateAssignments = () => {
                       )}
                     </div>
 
-                    <div className="col-6">
+                    <div className="col-lg-6">
                       <TextField
                         fullWidth
                         label="Contact Email"
@@ -2032,13 +2031,7 @@ export const CreateAssignments = () => {
                               <ListItem
                                 className="fileslistitem"
                                 key={index}
-                                sx={{
-                                  backgroundColor: darkMode
-                                    ? '#1e1e1e'
-                                    : '#f5f5f5',
-                                  color: darkMode
-                                    ? '#b0b0b0'
-                                    : theme.palette.text.primary,
+                                sx={{                                 
                                   borderRadius: 1,
                                   mb: 1,
                                 }}
@@ -2225,8 +2218,8 @@ export const CreateAssignments = () => {
                           </>
                         ) : (
                           <>
-                            <div className="row mt-4">
-                              <div className="col-4">
+                           
+                              <div className="col-lg-4">
                                 <TextField
                                   label="No. of questions"
                                   type="number"
@@ -2238,7 +2231,7 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-4">
+                              <div className="col-lg-4">
                                 <TextField
                                   label="Marks per question"
                                   type="number"
@@ -2250,13 +2243,7 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
-                              <button
-                                className="col-md-2 col-12 btn btn-primary"
-                                onClick={handleQuestionmap}
-                              >
-                                Add questions
-                              </button>
-                              <div className="col-md-2 col-12">
+                              <div className="col-lg-2">
                                 <TextField
                                   label="Total Questions"
                                   type="number"
@@ -2266,21 +2253,33 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
-                              <div className="row">
-                                <div className="col-6">
-                                  <ul className="ps-3">
+                              <div className="col-lg-2">
+                                <button
+                                  className="h-100 btn btn-primary w-100"
+                                  onClick={handleQuestionmap}
+                                >
+                                  Add questions
+                                </button>
+                              </div>
+                              
+                              
+                            
+
+                           
+                                <div className="col-12">
+                                  <List>
                                     {questionMap?.map((item, index) => (
-                                      <li
+                                      <ListItem
                                         key={index}
-                                        className="fancy-hover list-item"
+                                        className='fileslistitem mb-3'
                                       >
-                                        <div className="d-flex justify-content-between align-items-center">
-                                          <span>
+                                       
+                                          <ListItemText>
                                             {item.key} question(s) of{' '}
                                             {item.value} mark(s) each
-                                          </span>
+                                          </ListItemText>
+                                          <IconButton edge="end" aria-label="delete">
                                           <DeleteIcon
-                                            className="text-danger delete-icon"
                                             onClick={() =>
                                               handleDelete(
                                                 item.key,
@@ -2289,13 +2288,13 @@ export const CreateAssignments = () => {
                                               )
                                             }
                                           />
-                                        </div>
-                                      </li>
+                                          </IconButton>
+                                        
+                                      </ListItem>
                                     ))}
-                                  </ul>
+                                  </List>
                                 </div>
-                              </div>
-                            </div>
+                              
                           </>
                         )}
                         {questions_error && (
@@ -2326,26 +2325,28 @@ export const CreateAssignments = () => {
                       </>
                     ) : null}
 
-                    <div className="col-12 mt-3 mb-5">
+                    <div className="col-12">
                       <label className="col-form-label">
                         Instructions for students<span>*</span>
                       </label>
-                      <ReactQuill
-                        id="text"
-                        readOnly={isQuizGenerated}
-                        placeholder="instructions"
-                        ref={quillRef}
-                        value={assignmentData.instructions}
-                        onChange={handleQuillChange}
-                        theme="snow"
-                        className={darkMode ? 'quill-dark' : ''}
-                        style={{ height: '120px', borderRadius: '8px' }}
-                      />
-                      {instructions_error && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please enter Instructions.</small>
-                        </p>
-                      )}
+                      <div className="mb-5">
+                        <ReactQuill
+                          id="text"
+                          readOnly={isQuizGenerated}
+                          placeholder="instructions"
+                          ref={quillRef}
+                          value={assignmentData.instructions}
+                          onChange={handleQuillChange}
+                          theme="snow"
+                          className={darkMode ? 'quill-dark' : ''}
+                          style={{ height: '120px', borderRadius: '8px' }}
+                        />
+                        {instructions_error && (
+                          <p className="error-text" style={{ color: 'red' }}>
+                            <small>Please enter Instructions.</small>
+                          </p>
+                        )}
+                      </div>
                     </div>
                     {assignmentType == 'ai generated' && (
                       <div className="col-12 mt-3 mb-5">
@@ -2874,7 +2875,7 @@ export const CreateAssignments = () => {
                         </div>
                       </LocalizationProvider>
                     </div>
-                    <div className="col-3">
+                    <div className="col-lg-3">
                       <div className="d-flex flex-column ">
                         <FormControlLabel
                           control={
@@ -2937,7 +2938,7 @@ export const CreateAssignments = () => {
                             onClick={() =>
                               assignmentType === 'quiz' && setIsModalOpen(true)
                             }
-                            style={{ marginTop: 20, marginRight: 10 }}
+                            style={{ marginTop: 20 }}
                           >
                             Preview
                           </Button>
@@ -2947,8 +2948,6 @@ export const CreateAssignments = () => {
                             color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
                             style={{
                               marginTop: 20,
-
-                              marginRight: 10,
                             }}
                             onClick={handleSaveAsDraft}
                           >
@@ -2990,7 +2989,7 @@ export const CreateAssignments = () => {
                   </div>
                 </div>
               </div>
-            </div>
+           
           </div>
         </div>
         <AssignmentModal

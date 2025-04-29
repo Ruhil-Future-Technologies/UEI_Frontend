@@ -3013,7 +3013,12 @@ a {
 }
 
 .fileslistitem {
-  background-color: #f9fafb;
+  background-color: rgba($primary, 0.1);
+  border-radius: 6px;
+  padding-right: .5rem;
+  &:hover{
+    background-color: rgba($primary, 0.2);
+  }
 }
 .pinwi-20 {
   svg {
