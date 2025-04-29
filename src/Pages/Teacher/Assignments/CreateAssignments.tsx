@@ -63,7 +63,6 @@ import dayjs, { Dayjs } from 'dayjs';
 import { Autocomplete, Chip } from '@mui/material';
 import ReactQuill from 'react-quill';
 import QuizModal from './QuizModal';
-import axios from 'axios';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
 import AssignmentModal from './AssignmentModal';
@@ -86,12 +85,21 @@ export interface Assignment {
   save_draft: boolean;
   add_to_report: boolean;
   notify: boolean;
+<<<<<<< HEAD
   created_at?:any;
   created_by?:any
   created_by_name?:any
   is_active?:any
   is_deleted?:any
   questions?:any
+=======
+  created_at?: any;
+  created_by?: any;
+  created_by_name?: any;
+  is_active?: any;
+  is_deleted?: any;
+  questions?: any;
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
   files: File[] | string[]; // Assuming file is optional and a File object
 }
 type QuestionItem = {
@@ -241,6 +249,8 @@ export const CreateAssignments = () => {
   const [totalQuestions, setTotalQuestion] = useState<any>('');
   const [totalMarks, setTotalMarks] = useState<any>('');
   const [configInstructions, setConfigInstructions] = useState('');
+  const [isedit, setisedit] = useState(false);
+
   const getTotal = (questions: Record<string, any>[]) => {
     const total = questions.reduce((acc, obj) => {
       for (const value of Object.values(obj)) {
@@ -393,7 +403,7 @@ export const CreateAssignments = () => {
                 const filteredStudents =
                   students?.filter(
                     (student) =>
-                      output[1].course_id == student.course_id &&
+                      output[0].course_id == student.course_id &&
                       output[0].semester_number == student.semester_number &&
                       output[0].subjects[0] == student.subject_name,
                   ) || [];
@@ -561,6 +571,7 @@ export const CreateAssignments = () => {
                 setListOfStudentFiltered(filteredStudents);
                 setBoxesForSchool(output);
               }
+              setisedit(true);
               // setBoxesForSchool(response?.data?.class_stream_subjects);
             })
             .catch((error) => {
@@ -929,7 +940,11 @@ export const CreateAssignments = () => {
     if (valid1) return;
     if (!valid) return;
 
+<<<<<<< HEAD
     const formData:any = new FormData();
+=======
+    const formData: any = new FormData();
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
     formData.append('title', assignmentData.title);
     formData.append('type', type);
     formData.append('contact_email', assignmentData.contact_email);
@@ -937,11 +952,25 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
+<<<<<<< HEAD
     formData.append('points', assignmentDataType =='json'?totalMarks:assignmentData.points);
     formData.append('save_draft', saveAsDraft==true?String(saveAsDraft):String(saveAsDrafts));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     formData.append('questions',[])
+=======
+    formData.append(
+      'points',
+      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
+    );
+    formData.append(
+      'save_draft',
+      saveAsDraft == true ? String(saveAsDraft) : String(saveAsDrafts),
+    );
+    formData.append('add_to_report', String(addToStudentRepost));
+    formData.append('notify', String(sendNotification));
+    formData.append('questions', []);
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
     //const students = selectedStudents.map((student) => String(student.id))
     const students = selectedStudents?.map((student) => student.id);
 
@@ -1039,7 +1068,10 @@ export const CreateAssignments = () => {
             notify: false,
             files: [], // File should be null initially
           });
+<<<<<<< HEAD
          
+=======
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1179,10 +1211,15 @@ export const CreateAssignments = () => {
       }
     }
 
+<<<<<<< HEAD
 
     if(assignmentType=='ai generated'){
 
     }
+=======
+    // if (assignmentType == 'ai generated') {
+    // }
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
 
     let valid = true;
 
@@ -1260,32 +1297,32 @@ export const CreateAssignments = () => {
         number_of_questions: totalQuestions,
       }),
 
+<<<<<<< HEAD
         questions:[]
      
+=======
+      questions: [],
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
     };
 
     try {
       if (type == 'assignment') {
         setLoading(true);
-        const response = await axios.post(
-          ASSIGNMENT.GENERATE_AI_ASSIGNMENT,
-          payload,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
+        postDataJson(ASSIGNMENT.GENERATE_AI_ASSIGNMENT, payload).then(
+          (response) => {
+            setAssignmentGenrData(response);
+
+            setAssignmentModalOpen(true);
+            setLoading(false);
           },
         );
-        setAssignmentGenrData(response?.data);
-
-        setAssignmentModalOpen(true);
-        setLoading(false);
       } else {
         setLoading(true);
-        const response = await axios.post(GENERATE_QUIZ, payload);
-        setQuizData(response?.data);
-        setIsModalOpen(true);
-        setLoading(false);
+        postDataJson(GENERATE_QUIZ, payload).then((response) => {
+          setQuizData(response);
+          setIsModalOpen(true);
+          setLoading(false);
+        });
       }
     } catch (error) {
       setLoading(false);
@@ -1650,7 +1687,11 @@ export const CreateAssignments = () => {
             subjects: [],
             filteredSubjects: [],
           };
+<<<<<<< HEAD
           setSelectedStudents([])
+=======
+          setSelectedStudents([]);
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
           setListOfStudentFiltered([]);
           setSelectAll(false);
         }
@@ -1748,7 +1789,11 @@ export const CreateAssignments = () => {
             filteredSubjects,
             subjects: [],
           };
+<<<<<<< HEAD
           setSelectedStudents([])
+=======
+          setSelectedStudents([]);
+>>>>>>> 4047656d2d1ecba1625e2cfa7842f124ec3b9632
           setListOfStudentFiltered([]);
           setSelectAll(false);
         }
@@ -2111,6 +2156,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="One Mark"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].one}
                                 onChange={(e) => {
@@ -2131,6 +2177,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Two Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].two}
                                 onChange={(e) => {
@@ -2151,6 +2198,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Three Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].three}
                                 onChange={(e) => {
@@ -2171,6 +2219,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Four Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].four}
                                 onChange={(e) => {
@@ -2191,6 +2240,7 @@ export const CreateAssignments = () => {
                               <TextField
                                 label="Five Marks"
                                 type="number"
+                                inputProps={{ min: 0 }}
                                 disabled={isQuizGenerated}
                                 value={questions[0].five}
                                 onChange={(e) => {
@@ -2767,7 +2817,9 @@ export const CreateAssignments = () => {
                               <DateTimePicker
                                 label="Available From"
                                 value={availableFrom}
-                                minDateTime={!edit ? dayjs() : undefined}
+                                minDateTime={
+                                  !edit ? dayjs().add(10, 'minute') : undefined
+                                }
                                 onChange={handleAvailableFromChange}
                                 closeOnSelect={false}
                                 slotProps={{
@@ -2999,6 +3051,7 @@ export const CreateAssignments = () => {
           totalMarks={totalMarks}
         />
         <QuizModal
+          isEdit={isedit}
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           quizData={quizData}
