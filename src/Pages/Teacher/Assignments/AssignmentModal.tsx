@@ -13,24 +13,29 @@ import {
   Typography,
   Box,
   IconButton,
+  Chip,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
-// interface Assignment {
-//   //id: string;
-//   title: string;
-//   totalMarks: number;
-//   questions: { question: string; answer: string; marks: number }[];
-// }
+export interface GenAssignment {
+  //id: string;
+  //title: string;
+  marks: number;
+  question: string;
+}
 
+type AssignmentCollection = {
+  [key: string]: GenAssignment;
+};
 interface Props {
   open: boolean;
   onClose: () => void;
-  assignments: any[];
-  onProceed: (assignmentId: string) => void;
-  totalQuestions:number;
-  totalMarks:number;
+  assignments: AssignmentCollection | null;
+  onProceed: (assignmentId: GenAssignment) => void;
+  title: string;
+  totalQuestions: number;
+  totalMarks: number;
 
 }
 
@@ -39,21 +44,26 @@ const AssignmentModal: React.FC<Props> = ({
   onClose,
   assignments,
   onProceed,
+  title,
   totalQuestions,
   totalMarks,
 }) => {
-  const [selectedAssignment, setSelectedAssignment] = useState<number>(0);
-   const [expanded, setExpanded] = useState<number | false>(false);
-  console.log(assignments ,'testing not hopping');
+  const [selectedAssignmentKey, setSelectedAssignmentKey] = useState<string>('');
+  const [expanded, setExpanded] = useState<number | false>(false);
+  const [assignmentSets, setAssignmentSets] = useState<AssignmentCollection | null>(null);
+  //const [allQuestionsSelected, setAllQuestionsSelected] = useState('set_a');
   useEffect(() => {
-    if (open && assignments.length > 0) {
+    console.log(assignments);
+    if (open && assignments) {
       setExpanded(0);
+      setAssignmentSets(assignments);
+      setSelectedAssignmentKey(Object.keys(assignments)[0])
     }
   }, [open, assignments]);
 
-  const handleSelect = (id: number) => {
-    setSelectedAssignment(id);
-    setExpanded(id);
+  const handleSelect = (key: string, index: any) => {
+    setSelectedAssignmentKey(key);
+    setExpanded(index);
   };
 
   const handleAccordionChange = (panel: number) => () => {
@@ -61,7 +71,12 @@ const AssignmentModal: React.FC<Props> = ({
   };
 
   const handleProceed = () => {
-    onProceed(assignments[selectedAssignment]);
+    if (assignmentSets) {
+      const data = assignmentSets[selectedAssignmentKey];
+      onProceed(data);
+    }
+
+
   };
 
   return (
@@ -87,7 +102,7 @@ const AssignmentModal: React.FC<Props> = ({
       </DialogTitle>
 
       <DialogContent>
-        {assignments?.map((assignment,index) => (
+        {assignmentSets && Object.values(assignmentSets)?.map((assignment, index) => (
           <Accordion
             key={index}
             expanded={expanded == index}
@@ -97,24 +112,24 @@ const AssignmentModal: React.FC<Props> = ({
             <AccordionSummary
               className="bg-light-10"
               expandIcon={<ExpandMoreIcon />}
-              onClick={() => handleSelect(index)} // Click header selects radio
+              onClick={() => handleSelect(Object.keys(assignmentSets)[index], index)} // Click header selects radio
             >
               <Box display="flex" alignItems="center" width="100%">
                 <Radio
-                  checked={selectedAssignment === index}
+                  checked={selectedAssignmentKey === Object.keys(assignmentSets)[index]}
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent accordion toggle
-                    handleSelect(index);
+                    handleSelect(Object.keys(assignmentSets)[index], index);
                   }}
-                  value={assignment.id}
+                  // value={assignment.id}
                   name="assignment-radio"
                   sx={{ mr: 1 }}
                 />
                 <Box flexGrow={1}>
-                  <Typography fontWeight={500}>{assignment.title}</Typography>
+                  <Typography fontWeight={500}>{title}</Typography>
                   <Typography variant="caption">
                     {totalQuestions}{" "}
-                     Questions
+                    Questions
                   </Typography>
                 </Box>
                 <Typography sx={{ ml: 'auto' }}>
@@ -123,8 +138,8 @@ const AssignmentModal: React.FC<Props> = ({
               </Box>
             </AccordionSummary>
             <AccordionDetails className="p-0">
-              {assignment?.questions?.length > 0 ? (
-                assignment?.questions?.map((q:any, index:any) => (
+              {Object.values(assignment)?.length > 0 ? (
+                Object.values(assignment)?.map((q, index: any) => (
                   <Box key={index}>
                     <div className="d-flex px-4 py-3 border-bottom">
                       <div className="me-auto">
@@ -135,10 +150,12 @@ const AssignmentModal: React.FC<Props> = ({
                           {q.answer}
                         </Typography> */}
                       </div>
-
-                      <Typography variant="caption" color="text.secondary">
-                        {q.marks} marks
-                      </Typography>
+                      <Chip
+                        label={`${q.marks} ${q.marks === 1 ? 'mark' : 'marks'}`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
                     </div>
                   </Box>
                 ))
@@ -160,22 +177,12 @@ const AssignmentModal: React.FC<Props> = ({
           variant="contained"
           color="primary"
           sx={{ borderRadius: '30px', px: 4, py: 1.5 }}
-         // disabled={!selectedAssignment}
+          // disabled={!selectedAssignment}
           onClick={handleProceed}
           fullWidth
         >
           <DoneAllIcon className="me-2" /> Proceed with selected assignment
         </Button>
-        <Typography
-          variant="caption"
-          sx={{ cursor: 'pointer', color: 'text.secondary' }}
-          onClick={() => {
-            console.log('Save as draft clicked');
-            onClose(); // optional: close on draft
-          }}
-        >
-          Save as draft
-        </Typography>
       </DialogActions>
     </Dialog>
   );
