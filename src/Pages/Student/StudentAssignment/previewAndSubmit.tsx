@@ -42,8 +42,8 @@ const PreviewAndSubmit = () => {
   const navigate = useNavigate();
   const { getData, postData } = useApi();
   const { id } = useParams();
-  const student_id = localStorage.getItem('user_uuid')
-  const stud_id = localStorage.getItem('student_id')
+  const student_id = localStorage.getItem('user_uuid');
+  const stud_id = localStorage.getItem('student_id');
   const [assignmentData, setAssignmentData] = useState<Assignment>();
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
@@ -61,7 +61,7 @@ const PreviewAndSubmit = () => {
     marks: 0
   }
   ]);
-  const [q_a_error,setQ_a_error]=useState(false);
+  const [q_a_error, setQ_a_error] = useState(false);
   const [contentType, setContentType] = useState('file');
 
   const handleBack = () => {
@@ -77,9 +77,7 @@ const PreviewAndSubmit = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
-          console.log(response?.data?.questions.length)
           if (response?.data?.questions && response?.data?.questions.length > 0) {
-            console.log(response?.data?.questions.length)
             setQuestion_answer(response?.data?.questions);
             setContentType("questions");
           }
@@ -108,12 +106,13 @@ const PreviewAndSubmit = () => {
     getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_id}`).then((response) => {
       if (response?.status) {
         const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
-        console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
           if (filteredAssignment[0]?.description) setDescription(filteredAssignment[0].description);
           if (filteredAssignment[0]?.files) setAllSelectedfilesToShow(filteredAssignment[0].files)
           if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
           if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
+          if (filteredAssignment[0]?.answers?.length > 0) setQuestion_answer(filteredAssignment[0]?.answers);
+          if (filteredAssignment[0]?.answers?.length > 0) setContentType("questions");
           setIssubmited(true)
         } else {
           setIssubmited(false)
@@ -170,7 +169,7 @@ const PreviewAndSubmit = () => {
     //   check = false;
     // }
 
-    if (contentType=='file' && description == '' && allselectedfiles.length! < 1) {
+    if (contentType == 'file' && description == '' && allselectedfiles.length! < 1) {
       setDocument_error(true);
       check = true;
     } else {
@@ -178,24 +177,30 @@ const PreviewAndSubmit = () => {
       setDocument_error(false);
     }
 
-    if(contentType!='file' && question_answer.find((question) => !question.answer || question.answer === '')){
+    if (contentType != 'file' && question_answer.find((question) => !question.answer || question.answer === '')) {
       setQ_a_error(true)
       check = true;
-    }else{
+    } else {
       setQ_a_error(false);
       check = false;
-      
+
     }
     if (check) return;
-    const formData = new FormData();
+    const formData: any = new FormData();
 
     formData.append('assignment_id', assignmentData?.id as string)
     formData.append('student_id', stud_id as string)
     formData.append('description', description)
-    formData.append('questions',JSON.stringify(question_answer));
+    formData.append('questions', JSON.stringify(question_answer));
     allselectedfiles.forEach((file) => {
       formData.append('files', file);
     });
+    // const paylod = {
+    //   assignment_id: assignmentData?.id,
+    //   student_id: stud_id,
+    //   description: 'test',
+    //   questions: question_answer
+    // }
     postData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.ADD_ASSIGNMENT_SUBMISSION}`, formData).then((response) => {
       if (response?.status) {
         toast.success(response.message, {
@@ -229,7 +234,7 @@ const PreviewAndSubmit = () => {
       updateobj[index] = { ...updateobj[index], answer: value }
       return updateobj;
     })
-    if(question_answer.find((question) => question.answer || question.answer !== '')){
+    if (question_answer.find((question) => question.answer || question.answer !== '')) {
       setQ_a_error(false)
     }
 
@@ -274,7 +279,6 @@ const PreviewAndSubmit = () => {
       }
     };
   }, []);
-  console.log(question_answer);
   return (
     <>
       <div className="main-wrapper">
@@ -360,7 +364,7 @@ const PreviewAndSubmit = () => {
                   {
                     assignmentData?.files?.map((file, index) => (
                       <li key={index} className='d-flex justify-content-between me-5'> {/* Ensure a unique key */}
-                        <Link to={file as string}>{file as string}</Link>
+                        <a target="_blank" rel="noopener noreferrer" href={file as string}>{file as string}</a>
                         <a href={file as string} download target="_blank" rel="noopener noreferrer">
                           <GetAppOutlinedIcon />
                         </a>
@@ -391,7 +395,11 @@ const PreviewAndSubmit = () => {
                     {question_answer.map((question_answer, index) => (
                       <>
                         <Box display="flex" alignItems="center" gap={1} mb={1}>
-                          <Typography variant="subtitle1">
+                          <Typography variant="subtitle1" onCopy={(e) => e.preventDefault()}
+                            onCut={(e) => e.preventDefault()}
+                            onPaste={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()} // disables right-click
+                            style={{ userSelect: 'none' }}>
                             <strong>Question {index + 1}:</strong> {question_answer.question}
                           </Typography>
                           <Chip
@@ -406,10 +414,14 @@ const PreviewAndSubmit = () => {
                           id="outlined-multiline-static"
                           label="Answer"
                           multiline
+                          InputLabelProps={{ shrink: true }}
                           value={question_answer.answer}
                           rows={2}
                           fullWidth
                           onChange={(e) => handleAnswer(e.target.value, index)}
+                          onCopy={(e) => e.preventDefault()}
+                          onCut={(e) => e.preventDefault()}
+                          onPaste={(e) => e.preventDefault()}
                         />
                       </>
                     ))
@@ -471,7 +483,7 @@ const PreviewAndSubmit = () => {
                     <div className="pinwi-20">
                       <AttachFileIcon />
                     </div>
-                    <a href={file}>
+                    <a download target="_blank" rel="noopener noreferrer" href={file}>
                       <ListItemText primary={file} />
                     </a>
                   </ListItem>

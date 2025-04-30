@@ -389,47 +389,47 @@ export const CreateAssignments = () => {
                       subjects:
                         response.data.course_semester_subjects[CourseKey][
                         semester_number
-                      ],
-                    filteredSemesters: allsemesters?.filter(
-                      (item) => item.course_id == CourseKey,
-                    ),
-                    filteredSubjects: allSubject?.filter(
-                      (item) =>
-                        item.semester_number == semester_number &&
-                        item.course_id == CourseKey,
-                    ),
-                  })),
-                );
-                const filteredStudents =
-                  students?.filter(
-                    (student) =>
-                      output[0].course_id == student.course_id &&
-                      output[0].semester_number == student.semester_number &&
-                      output[0].subjects[0] == student.subject_name,
-                  ) || [];
-                setListOfStudentFiltered(filteredStudents);
-                setBoxes(output);
-              } else {
-                getSubjects('School');
-                setSelectedEntity('School');
-                const allSubject: SubjectRep0oDTO[] =
-                  await getSubjects('School');
-                const output: BoxesForSchool[] = Object.keys(
-                  response.data.class_stream_subjects,
-                ).flatMap((classKey) =>
-                  Object.keys(
-                    response.data.class_stream_subjects[classKey],
-                  )?.map((stream) => ({
-                    stream: stream,
-                    subjects:
-                      response.data.class_stream_subjects[classKey][stream],
-                    class_id: classKey,
-                    is_Stream: stream !== 'general',
-                    selected_class_name:
-                      stream === 'general' ? 'col-6' : 'col-4',
-                    filteredSubjects:
-                      stream == 'general'
-                        ? allSubject?.filter(
+                        ],
+                      filteredSemesters: allsemesters?.filter(
+                        (item) => item.course_id == CourseKey,
+                      ),
+                      filteredSubjects: allSubject?.filter(
+                        (item) =>
+                          item.semester_number == semester_number &&
+                          item.course_id == CourseKey,
+                      ),
+                    })),
+                  );
+                  const filteredStudents =
+                    students?.filter(
+                      (student) =>
+                        output[0].course_id == student.course_id &&
+                        output[0].semester_number == student.semester_number &&
+                        output[0].subjects[0] == student.subject_name,
+                    ) || [];
+                  setListOfStudentFiltered(filteredStudents);
+                  setBoxes(output);
+                } else {
+                  getSubjects('School');
+                  setSelectedEntity('School');
+                  const allSubject: SubjectRep0oDTO[] =
+                    await getSubjects('School');
+                  const output: BoxesForSchool[] = Object.keys(
+                    response.data.class_stream_subjects,
+                  ).flatMap((classKey) =>
+                    Object.keys(
+                      response.data.class_stream_subjects[classKey],
+                    )?.map((stream) => ({
+                      stream: stream,
+                      subjects:
+                        response.data.class_stream_subjects[classKey][stream],
+                      class_id: classKey,
+                      is_Stream: stream !== 'general',
+                      selected_class_name:
+                        stream === 'general' ? 'col-6' : 'col-4',
+                      filteredSubjects:
+                        stream == 'general'
+                          ? allSubject?.filter(
                             (item) => item.class_id == classKey,
                           )
                           : allSubject?.filter(
@@ -850,10 +850,8 @@ export const CreateAssignments = () => {
     } else {
       setFile_error(false);
     }
-    console.log(assignmentDataType)
     if (assignmentDataType != 'json') {
       if (!/^\d+$/.test(assignmentData.points)) {
-        console.log(assignmentData.points);
         setPoint_error(true);
         valid1 = true;
       } else {
@@ -880,7 +878,7 @@ export const CreateAssignments = () => {
       setContact_email_error(false);
     }
     if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
-      setAvailableFrom_error(true);    
+      setAvailableFrom_error(true);
       valid1 = true;
     } else {
       setAvailableFrom_error(false);
@@ -897,7 +895,7 @@ export const CreateAssignments = () => {
     } else {
       setDueTime_error(false);
     }
-    if (error != null) {    
+    if (error != null) {
       valid1 = true;
     }
     if (selectedStudents.length < 1) {
@@ -1033,7 +1031,6 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        console.log(assignmentJsonQuestions, questions);
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1878,12 +1875,11 @@ export const CreateAssignments = () => {
       setQuestionKey('');
     }
   };
-  const handleDelete = (key: any, value: any, index: number) => {
+  const handleDelete = (key: any, index: number) => {
     const filteredQuestion = questionMap?.filter(
       (_: any, ind: number) => ind !== index,
     );
     setQuestionMap(filteredQuestion);
-    console.log(value);
     setTotalQuestion(totalQuestions - key);
     setAiAssignmentGenerated(false);
     if (questionMap.length == 1) {
@@ -1952,318 +1948,274 @@ export const CreateAssignments = () => {
 
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="card-body">
-           
-              <div className="row justify-content-center">
-                <div className="col-lg-12">
-                  <div className="row g-4">
-                    <div className="col-12">
-                      <Typography variant="h6" className="mb-4 fw-bold">
-                        Create{' '}
-                        {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
-                      </Typography>
-                      {assignmentType !== 'quiz' && (
-                        <TextField
-                          fullWidth
-                          label="Assignment Title"
-                          variant="outlined"
-                          name="title"
-                          value={assignmentData.title}
-                          onChange={handleChanges}
-                        />
-                      )}
-                      {title_error && assignmentType != 'quiz' && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small> Please enter a valid Title.</small>
-                        </p>
-                      )}
-                    </div>
 
-                    <div className="col-lg-6">
+            <div className="row justify-content-center">
+              <div className="col-lg-12">
+                <div className="row g-4">
+                  <div className="col-12">
+                    <Typography variant="h6" className="mb-4 fw-bold">
+                      Create{' '}
+                      {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
+                    </Typography>
+                    {assignmentType !== 'quiz' && (
                       <TextField
                         fullWidth
-                        label="Contact Email"
+                        label="Assignment Title"
                         variant="outlined"
-                        name="contact_email"
-                        disabled
+                        name="title"
+                        value={assignmentData.title}
                         onChange={handleChanges}
-                        type="email"
-                        value={assignmentData.contact_email}
-                        autoComplete="off"
                       />
-                      {contact_email_email && (
-                        <p className="error-text" style={{ color: 'red' }}>
-                          <small>Please enter a valid Email Id.</small>
-                        </p>
-                      )}
-                    </div>
-
-                    {assignmentType == 'written' && (
-                      <>
-                        {' '}
-                        <div className="col-lg-6">
-                          <TextField
-                            fullWidth
-                            label="Points"
-                            variant="outlined"
-                            name="points"
-                            onChange={handleChanges}
-                            type="number"
-                            inputProps={{ min: '0' }}
-                            value={assignmentData.points}
-                          />
-                          {point_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please enter a valid points.</small>
-                            </p>
-                          )}
-                        </div>
-                        <div className="col-12">
-                          <label className="col-form-label">Attachments</label>
-                          <input
-                            type="file"
-                            accept=".pdf,.doc,.docx"
-                            onChange={handleFileChange}
-                            multiple
-                            name="file"
-                            style={{ display: 'none' }}
-                            id="file-upload"
-                          />
-                          <label htmlFor="file-upload" className="uploadfile">
-                            <Button
-                              variant="contained"
-                              component="span"
-                              startIcon={<CloudUploadIcon />}
-                            >
-                              Browse Files
-                            </Button>
-                          </label>
-                          <List>
-                            {files?.map((file, index) => (
-                              <ListItem
-                                className="fileslistitem"
-                                key={index}
-                                sx={{                                 
-                                  borderRadius: 1,
-                                  mb: 1,
-                                }}
-                                secondaryAction={
-                                  <IconButton
-                                    edge="end"
-                                    onClick={() => handleFileRemove(index)}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                }
-                              >
-                                <div className="pinwi-20">
-                                  <AttachFileIcon />
-                                </div>
-                                <ListItemText
-                                  primary={(file.name as any) || (file as any)}
-                                />
-                              </ListItem>
-                            ))}
-                          </List>
-                          {file_error && (
-                            <p className="error-text " style={{ color: 'red' }}>
-                              <small> Please add at least one file.</small>
-                            </p>
-                          )}
-                        </div>
-                      </>
                     )}
-                    {(assignmentType === 'quiz' && !edit) ||
-                      assignmentType === 'ai generated' ? (
-                      <>
-                        {editType == '' &&
-                          <div className="col-md-6 col-12">
-                            <FormControl fullWidth className="">
-                              <InputLabel id="level-select-label">
-                                Level
-                              </InputLabel>
+                    {title_error && assignmentType != 'quiz' && (
+                      <p className="error-text " style={{ color: 'red' }}>
+                        <small> Please enter a valid Title.</small>
+                      </p>
+                    )}
+                  </div>
 
-                              <Select
-                                label="Level"
-                                labelId="level-select-label"
-                                id="level-select"
-                                value={level}
-                                disabled={isQuizGenerated}
-                                onChange={(e) => setLevel(e.target.value)}
-                              >
-                                <MenuItem value="easy">Easy</MenuItem>
+                  <div className="col-lg-6">
+                    <TextField
+                      fullWidth
+                      label="Contact Email"
+                      variant="outlined"
+                      name="contact_email"
+                      disabled
+                      onChange={handleChanges}
+                      type="email"
+                      value={assignmentData.contact_email}
+                      autoComplete="off"
+                    />
+                    {contact_email_email && (
+                      <p className="error-text" style={{ color: 'red' }}>
+                        <small>Please enter a valid Email Id.</small>
+                      </p>
+                    )}
+                  </div>
 
-                                <MenuItem value="medium">Medium</MenuItem>
+                  {assignmentType == 'written' && (
+                    <>
+                      {' '}
+                      <div className="col-lg-6">
+                        <TextField
+                          fullWidth
+                          label="Points"
+                          variant="outlined"
+                          name="points"
+                          onChange={handleChanges}
+                          type="number"
+                          inputProps={{ min: '0' }}
+                          value={assignmentData.points}
+                        />
+                        {point_error && (
+                          <p className="error-text" style={{ color: 'red' }}>
+                            <small>Please enter a valid points.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-12">
+                        <label className="col-form-label">Attachments</label>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={handleFileChange}
+                          multiple
+                          name="file"
+                          style={{ display: 'none' }}
+                          id="file-upload"
+                        />
+                        <label htmlFor="file-upload" className="uploadfile">
+                          <Button
+                            variant="contained"
+                            component="span"
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            Browse Files
+                          </Button>
+                        </label>
+                        <List>
+                          {files?.map((file, index) => (
+                            <ListItem
+                              className="fileslistitem"
+                              key={index}
+                              sx={{
+                                borderRadius: 1,
+                                mb: 1,
+                              }}
+                              secondaryAction={
+                                <IconButton
+                                  edge="end"
+                                  onClick={() => handleFileRemove(index)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
+                            >
+                              <div className="pinwi-20">
+                                <AttachFileIcon />
+                              </div>
+                              <ListItemText
+                                primary={(file.name as any) || (file as any)}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                        {file_error && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small> Please add at least one file.</small>
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {(assignmentType === 'quiz' && !edit) ||
+                    assignmentType === 'ai generated' ? (
+                    <>
+                      {editType == '' &&
+                        <div className="col-md-6 col-12">
+                          <FormControl fullWidth className="">
+                            <InputLabel id="level-select-label">
+                              Level
+                            </InputLabel>
 
-                                <MenuItem value="hard">Hard</MenuItem>
-                              </Select>
-                            </FormControl>
+                            <Select
+                              label="Level"
+                              labelId="level-select-label"
+                              id="level-select"
+                              value={level}
+                              disabled={isQuizGenerated}
+                              onChange={(e) => setLevel(e.target.value)}
+                            >
+                              <MenuItem value="easy">Easy</MenuItem>
 
-                            {level_error && (
-                              <p className="error-text " style={{ color: 'red' }}>
-                                <small> Please Select a level</small>
-                              </p>
-                            )}
-                          </div>
-                        }
+                              <MenuItem value="medium">Medium</MenuItem>
 
-                        {assignmentType === 'quiz' ? (
-                          <>
-                           <div className="col-12">
-                           <label className="col-form-label mb-2">
-                                Number of Questions for Each Mark
-                              </label>
+                              <MenuItem value="hard">Hard</MenuItem>
+                            </Select>
+                          </FormControl>
+
+                          {level_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please Select a level</small>
+                            </p>
+                          )}
+                        </div>
+                      }
+
+                      {assignmentType === 'quiz' ? (
+                        <>
+                          <div className="col-12">
+                            <label className="col-form-label mb-2">
+                              Number of Questions for Each Mark
+                            </label>
                             <div className="row">
-                            <div className="col-md-2 col-12">
-                              
-                              <TextField
-                                label="One Mark"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].one}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      one: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Two Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].two}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      two: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Three Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].three}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      three: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Four Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].four}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      four: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Five Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].five}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      five: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Total Questions"
-                                type="number"
-                                disabled
-                                value={totalQuestions}
-                                // onChange={(e) => setQuestions(e.target.value)}
-                                fullWidth
-                              />
-                            </div>
+                              <div className="col-md-2 col-12">
 
-                            </div>
-
-                           </div>
-
-                       
-                          </>
-                        ) : (
-                          <>
-                           
-                              <div className="col-lg-4">
                                 <TextField
-                                  label="No. of questions"
+                                  label="One Mark"
                                   type="number"
-                                  name="no_questions"
-                                  value={questionKey}
-                                  onChange={(e) =>
-                                    setQuestionKey(e.target.value)
-                                  }
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].one}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        one: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-md-2 col-12">
                                 <TextField
-                                  label="Marks per question"
+                                  label="Two Marks"
                                   type="number"
-                                  value={questionValue}
-                                  name="marks_per_questions"
-                                  onChange={(e) =>
-                                    setQuestionValue(e.target.value)
-                                  }
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].two}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        two: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-lg-2">
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Three Marks"
+                                  type="number"
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].three}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        three: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Four Marks"
+                                  type="number"
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].four}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        four: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Five Marks"
+                                  type="number"
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].five}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        five: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-md-2 col-12">
                                 <TextField
                                   label="Total Questions"
                                   type="number"
@@ -2273,88 +2225,131 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-lg-2">
-                                <button
-                                  className="h-100 btn btn-primary w-100"
-                                  onClick={handleQuestionmap}
-                                >
-                                  Add questions
-                                </button>
-                              </div>
-                              
-                              
-                            
 
-                           
-                                <div className="col-12">
-                                  <List className='py-0'>
-                                    {questionMap?.map((item, index) => (
-                                      <ListItem
-                                        key={index}
-                                        className='fileslistitem mb-3'
-                                      >
-                                       
-                                          <ListItemText>
-                                            {item.key} question(s) of{' '}
-                                            {item.value} mark(s) each
-                                          </ListItemText>
-                                          <IconButton edge="end" aria-label="delete">
-                                          <DeleteIcon
-                                            onClick={() =>
-                                              handleDelete(
-                                                item.key,
-                                                item.value,
-                                                index,
-                                              )
-                                            }
-                                          />
-                                          </IconButton>
-                                        
-                                      </ListItem>
-                                    ))}
-                                  </List>
-                                </div>
-                              
-                          </>
-                        )}
-                        {questions_error && (
-                          <p className="error-text " style={{ color: 'red' }}>
-                            <small>
-                              {' '}
-                              Please enter a valid Number of Questions
-                            </small>
-                          </p>
-                        )}
+                            </div>
+
+                          </div>
 
 
-                        {editType == '' && (
-                          <div className="col-lg-12">
+                        </>
+                      ) : (
+                        <>
+
+                          <div className="col-lg-4">
                             <TextField
-                              label="Topic"
-                              type="text"
-                              disabled={isQuizGenerated}
-                              value={topic}
-                              onChange={(e) => setTopic(e.target.value)}
+                              label="No. of questions"
+                              type="number"
+                              name="no_questions"
+                              value={questionKey}
+                              onChange={(e) =>
+                                setQuestionKey(e.target.value)
+                              }
                               fullWidth
                             />
-
-                            {topic_error && (
-                              <p className="error-text " style={{ color: 'red' }}>
-                                <small> Please enter a valid Topic</small>
-                              </p>
-                            )}
                           </div>
-                        )
-                        }
+                          <div className="col-lg-4">
+                            <TextField
+                              label="Marks per question"
+                              type="number"
+                              value={questionValue}
+                              name="marks_per_questions"
+                              onChange={(e) =>
+                                setQuestionValue(e.target.value)
+                              }
+                              fullWidth
+                            />
+                          </div>
+                          <div className="col-lg-2">
+                            <TextField
+                              label="Total Questions"
+                              type="number"
+                              disabled
+                              value={totalQuestions}
+                              // onChange={(e) => setQuestions(e.target.value)}
+                              fullWidth
+                            />
+                          </div>
+                          <div className="col-lg-2">
+                            <button
+                              className="h-100 btn btn-primary w-100"
+                              onClick={handleQuestionmap}
+                            >
+                              Add questions
+                            </button>
+                          </div>
 
-                      </>
-                    ) : null}
 
-                    <div className="col-12">
-                      <label className="col-form-label">
-                        Instructions for students<span>*</span>
-                      </label>
-                      <div className="mb-4 mb-lg-0" style={{ minHeight: '162px', borderRadius: '8px' }}>
+
+
+
+                          <div className="col-12">
+                            <List className='py-0'>
+                              {questionMap?.map((item, index) => (
+                                <ListItem
+                                  key={index}
+                                  className='fileslistitem mb-3'
+                                >
+
+                                  <ListItemText>
+                                    {item.key} question(s) of{' '}
+                                    {item.value} mark(s) each
+                                  </ListItemText>
+                                  <IconButton edge="end" aria-label="delete">
+                                    <DeleteIcon
+                                      onClick={() =>
+                                        handleDelete(
+                                          item.key,
+                                          index,
+                                        )
+                                      }
+                                    />
+                                  </IconButton>
+
+                                </ListItem>
+                              ))}
+                            </List>
+                          </div>
+
+                        </>
+                      )}
+                      {questions_error && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>
+                            {' '}
+                            Please enter a valid Number of Questions
+                          </small>
+                        </p>
+                      )}
+
+
+                      {editType == '' && (
+                        <div className="col-lg-12">
+                          <TextField
+                            label="Topic"
+                            type="text"
+                            disabled={isQuizGenerated}
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            fullWidth
+                          />
+
+                          {topic_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please enter a valid Topic</small>
+                            </p>
+                          )}
+                        </div>
+                      )
+                      }
+
+                    </>
+                  ) : null}
+
+                  <div className="col-12">
+                    <label className="col-form-label">
+                      Instructions for students<span>*</span>
+                    </label>
+                    <div className="mb-4 mb-lg-0" style={{ minHeight: '162px', borderRadius: '8px' }}>
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2371,11 +2366,9 @@ export const CreateAssignments = () => {
                           <small>Please enter Instructions.</small>
                         </p>
                       )}
-                      </div>
-                 
                     </div>
                     {assignmentType == 'ai generated' && editType == '' && (
-                      <div className="col-12">
+                      <div className="col-12 mt-3 mb-5">
                         {/* <label className="col-form-label">
                         Assignment Configuration Instructions<span>*</span>
                         </label> */}
@@ -2779,7 +2772,7 @@ export const CreateAssignments = () => {
                         )}
                       </Box>
                     </div>
-                    <div className="col-lg-12">
+                    <div className="col-lg-12 mt-4">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className="row g-4">
                           <div className="col-lg-4">
@@ -2986,7 +2979,7 @@ export const CreateAssignments = () => {
                             style={{ marginTop: 20 }}
                             onClick={
                               assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated'?() => submitAssignment(false, 'json', assignmentJsonQuestions):submitAssignment
+                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : submitAssignment
                                 : () => handleSubmitQuiz(false)
                             }
                           >
@@ -3015,28 +3008,29 @@ export const CreateAssignments = () => {
                   </div>
                 </div>
               </div>
-           
+
+            </div>
           </div>
+          <AssignmentModal
+            open={isAssignmentModalOpen}
+            onClose={() => setAssignmentModalOpen(false)}
+            assignments={assignmentGenrData}
+            onProceed={(assignmentData: GenAssignment) => {
+              setAssignmentJsonQuestions(assignmentData);
+              setAssignmentModalOpen(false);
+            }}
+            title={assignmentData?.title}
+            totalQuestions={totalQuestions}
+            totalMarks={totalMarks}
+          />
+          <QuizModal
+            isEdit={isedit}
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            quizData={quizData}
+            onSave={handleSaveQuiz}
+          />
         </div>
-        <AssignmentModal
-          open={isAssignmentModalOpen}
-          onClose={() => setAssignmentModalOpen(false)}
-          assignments={assignmentGenrData}
-          onProceed={(assignmentData: GenAssignment) => {
-            setAssignmentJsonQuestions(assignmentData);
-            setAssignmentModalOpen(false);
-          }}
-          title={assignmentData?.title}
-          totalQuestions={totalQuestions}
-          totalMarks={totalMarks}
-        />
-        <QuizModal
-          isEdit={isedit}
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          quizData={quizData}
-          onSave={handleSaveQuiz}
-        />
       </div>
     </div>
   );
