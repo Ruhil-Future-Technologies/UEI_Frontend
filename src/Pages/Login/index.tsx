@@ -68,13 +68,15 @@ const Login = () => {
     localStorage.removeItem('user_last_sync');
     toast.dismiss();
     // const login_id = localStorage.getItem('user_uuid');
-    const user_type = localStorage.getItem('user_type')
+    const user_type = localStorage.getItem('user_type');
     if (user_type == 'student' || user_type == 'admin') {
       navigate('/main/DashBoard');
     } else if (user_type == 'teacher') {
-      navigate('/teacher-dashboard')
+      navigate('/teacher-dashboard');
     } else if (user_type == 'institute') {
-      navigate('institute-dashboard')
+      navigate('institute-dashboard');
+    } else if (user_type == 'parent') {
+      navigate('parent-dashboard');
     }
   }, []);
 
@@ -152,7 +154,10 @@ const Login = () => {
           localStorage.setItem('token', 'Bearer ' + data?.token);
           handleSuccessfulLogin(data, UserSignUp?.password);
         } else {
-          if (data?.message === 'User is not verified' || data?.message === 'Profile is not verified') {
+          if (
+            data?.message === 'User is not verified' ||
+            data?.message === 'Profile is not verified'
+          ) {
             setPopupOtpCard(true);
           }
           setLoading(false);
@@ -181,7 +186,7 @@ const Login = () => {
       if (data.status) {
         console.log(data);
         if (data?.data?.is_verified && data?.data?.is_approve) {
-          console.log("in side varified ", value)
+          console.log('in side varified ', value);
           handleSuccessfulLogin(data);
           toast.success(data.message, {
             hideProgressBar: true,
@@ -235,6 +240,8 @@ const Login = () => {
       navigator('/teacher-dashboard');
     } else if (userType === 'institute') {
       navigate('/institution-dashboard');
+    } else if (userType == 'parent') {
+      navigate('/parent-dashboard');
     }
     // navigator(userType === "admin" ? "/profile-chat" : "/profile-chat");
     //navigator(userType === 'admin' ? '/main/Dashboard' : '/main/Dashboard');
@@ -387,7 +394,6 @@ const Login = () => {
                               error={!!error}
                               helperText={error}
                               fullWidth
-
                             />
                           </div>
                           <div className="mb-3">
@@ -423,7 +429,6 @@ const Login = () => {
                                     </InputAdornment>
                                   ),
                                 }}
-
                                 fullWidth
                               />
                             </div>
@@ -446,6 +451,7 @@ const Login = () => {
                                 <MenuItem value="admin">Admin</MenuItem>
                                 <MenuItem value="institute">Institute</MenuItem>
                                 <MenuItem value="teacher">Teacher</MenuItem>
+                                <MenuItem value="parent">Parent</MenuItem>
                               </Select>
                             </FormControl>
                           </div>
