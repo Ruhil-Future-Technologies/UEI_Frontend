@@ -48,7 +48,7 @@ import chatLogo from '../../assets/img/chat-logo.svg';
 import maleImage from '../../assets/img/avatars/male.png';
 import femaleImage from '../../assets/img/avatars/female.png';
 import robotImage from '../../assets/img/robot.png';
-import {  datadashboard, fieldIcon } from '../../utils/helpers';
+import { datadashboard, fieldIcon } from '../../utils/helpers';
 import FullScreenLoader from '../../Pages/Loader/FullScreenLoader';
 import NameContext from '../../Pages/Context/NameContext';
 import { ProfileDialog } from '../Dailog/ProfileComplation';
@@ -67,7 +67,14 @@ import StatCard from './StatCard';
 function MainContent() {
   const context = useContext(NameContext);
   const navigate = useNavigate();
-  const { ProPercentage, setProPercentage, namecolor, setActiveForm, proImage, setProImage }: any = context;
+  const {
+    ProPercentage,
+    setProPercentage,
+    namecolor,
+    setActiveForm,
+    proImage,
+    setProImage,
+  }: any = context;
 
   const [userName, setUserName] = useState('');
   const StudentId = localStorage.getItem('student_id');
@@ -156,7 +163,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-          JSON.stringify(selectedchat[index].answer);
+            JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -191,7 +198,7 @@ function MainContent() {
         const isMatch =
           item.question === selectedchat[index].question &&
           JSON.stringify(item.answer) ===
-          JSON.stringify(selectedchat[index].answer);
+            JSON.stringify(selectedchat[index].answer);
 
         if (isMatch) {
           return {
@@ -956,7 +963,8 @@ function MainContent() {
             if (basic_info && Object.keys(basic_info).length > 0) {
               if (data?.data?.basic_info?.pic_path !== null && data?.status) {
                 getData(
-                  `${'upload_file/get_image/' + data?.data?.basic_info?.pic_path
+                  `${
+                    'upload_file/get_image/' + data?.data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
@@ -1017,9 +1025,9 @@ function MainContent() {
                           .replace('_', ' ')
                           .charAt(0)
                           .toUpperCase() +
-                        response.data.class_data.class_name
-                          .replace('_', ' ')
-                          .slice(1),
+                          response.data.class_data.class_name
+                            .replace('_', ' ')
+                            .slice(1),
                       );
                     },
                   );
@@ -1151,7 +1159,7 @@ function MainContent() {
       getData(`${profileURLadmin}/${userid}`)
         .then((data: any) => {
           if (data.code === 404) {
-            setActiveForm(0)
+            setActiveForm(0);
             navigate('/main/adminprofile');
           }
           if (data?.data) {
@@ -1218,17 +1226,21 @@ function MainContent() {
             let totalPercentage = 0;
             let sectionCount = 0;
             if (basic_info && Object.keys(basic_info)?.length > 0) {
-              if (data?.data?.admin_data?.basic_info?.pic_path !== null && data?.data?.admin_data?.basic_info?.pic_path !== undefined) {
+              if (
+                data?.data?.admin_data?.basic_info?.pic_path !== null &&
+                data?.data?.admin_data?.basic_info?.pic_path !== undefined
+              ) {
                 getData(
-                  `${'upload_file/get_image/' +
-                  data?.data?.admin_data?.basic_info?.pic_path
+                  `${
+                    'upload_file/get_image/' +
+                    data?.data?.admin_data?.basic_info?.pic_path
                   }`,
                 )
                   .then((imgdata: any) => {
                     // setprofileImage(imgdata?.data?.file_url);
                     setProImage(imgdata?.data?.file_url);
                   })
-                  .catch(() => { });
+                  .catch(() => {});
               }
 
               const totalcount = Object.keys(basic_info)?.length;
@@ -1572,15 +1584,15 @@ function MainContent() {
 
   const handleError = (e: {
     message:
-    | string
-    | number
-    | boolean
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | Iterable<React.ReactNode>
-    | React.ReactPortal
-    | ((props: ToastContentProps<unknown>) => React.ReactNode)
-    | null
-    | undefined;
+      | string
+      | number
+      | boolean
+      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+      | Iterable<React.ReactNode>
+      | React.ReactPortal
+      | ((props: ToastContentProps<unknown>) => React.ReactNode)
+      | null
+      | undefined;
   }) => {
     setChatLoader(false);
     toast.error(e?.message, {
@@ -2096,7 +2108,6 @@ function MainContent() {
   //   //`${stats1.Student_Profile}% Profile`
   // ];
 
-
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === 'Enter') {
       searchData();
@@ -2146,7 +2157,7 @@ function MainContent() {
     //   cleanedText += '.';
     // }
     const utterance = new SpeechSynthesisUtterance(cleanedText);
-    utterance.onerror = () => { };
+    utterance.onerror = () => {};
     // Event listener for when the speech ends
     utterance.onend = () => {
       const updatedChat = [...selectedchat];
@@ -2342,13 +2353,17 @@ function MainContent() {
       });
   };
   const isMenuEmpty = !menuList || menuList.length === 0;
-  
+
   const statCardsData = [
     {
       icon: <PermContactCalendarIcon />,
       value: stats.entityCount,
       label: 'Total Entities',
-      to: isMenuEmpty ? '#' : datadashboard(menuList, "Entity") ? '/main/Entity' : '#',
+      to: isMenuEmpty
+        ? '#'
+        : datadashboard(menuList, 'Entity')
+          ? '/main/Entity'
+          : '#',
       // to: '#',
       // showAlways: isMenuEmpty, // special card only in empty menu
     },
@@ -2356,7 +2371,11 @@ function MainContent() {
       icon: <PermContactCalendarIcon />,
       value: stats.institutionCount,
       label: 'Total Institutions',
-      to: isMenuEmpty ? '#' : datadashboard(menuList, "Institute") ? '/main/Institute' : '#',
+      to: isMenuEmpty
+        ? '#'
+        : datadashboard(menuList, 'Institute')
+          ? '/main/Institute'
+          : '#',
     },
     {
       icon: <PersonAddIcon />,
@@ -2368,13 +2387,21 @@ function MainContent() {
       icon: <PersonAddIcon />,
       value: stats.studentCount,
       label: 'Students',
-      to: isMenuEmpty ? '#' : datadashboard(menuList, "Student") ? '/main/Student' : '#',
+      to: isMenuEmpty
+        ? '#'
+        : datadashboard(menuList, 'Student')
+          ? '/main/Student'
+          : '#',
     },
     {
       icon: <LibraryBooksIcon />,
       value: stats.courseCount,
       label: 'Courses',
-      to: isMenuEmpty ? '#' : datadashboard(menuList, "Course") ? '/main/Course' : '#',
+      to: isMenuEmpty
+        ? '#'
+        : datadashboard(menuList, 'Course')
+          ? '/main/Course'
+          : '#',
       trendIcon: <ExpandLessIcon />,
       textColor: 'text-danger',
     },
@@ -2382,7 +2409,11 @@ function MainContent() {
       icon: <AutoStoriesIcon />,
       value: stats.schoolsubjectCount + stats.collegesubjectCount,
       label: 'Subjects',
-      to: isMenuEmpty ? '#' : datadashboard(menuList, "Subject") ? '/main/Subject' : '#',
+      to: isMenuEmpty
+        ? '#'
+        : datadashboard(menuList, 'Subject')
+          ? '/main/Subject'
+          : '#',
       trendIcon: <ExpandLessIcon />,
       textColor: 'text-danger',
     },
@@ -2390,12 +2421,16 @@ function MainContent() {
       icon: <CollectionsBookmarkIcon />,
       value: stats.departmentCount,
       label: 'Department',
-      to: isMenuEmpty ? '#' : datadashboard(menuList, "Department")? '/main/Department' : '#',
+      to: isMenuEmpty
+        ? '#'
+        : datadashboard(menuList, 'Department')
+          ? '/main/Department'
+          : '#',
       trendIcon: <ExpandLessIcon />,
       textColor: 'text-danger',
     },
   ];
-  
+
   return (
     <>
       {loader && !chatLoader && <FullScreenLoader />}
@@ -2405,12 +2440,10 @@ function MainContent() {
             <main className="main-content">
               <section className="row">
                 <div className="row">
-                  {statCardsData
-                    .map((card, index) => (
-                      <StatCard key={index} {...card} />
-                    ))}
+                  {statCardsData.map((card, index) => (
+                    <StatCard key={index} {...card} />
+                  ))}
                 </div>
-
               </section>
               <section className="row">
                 <div className="col-lg-6">
@@ -2637,10 +2670,8 @@ function MainContent() {
         </>
       ) : userName === 'student' ? (
         <>
-
           <main className="main-wrapper">
             <div className="main-content">
-             
               <div className="row my-lg-4 g-4">
                 <div className="col-xxl-3 col-xl-6 d-flex align-items-stretch">
                   <div className="card w-100 overflow-hidden rounded-4 shadow-none desk-card">
@@ -2650,9 +2681,10 @@ function MainContent() {
                           <div className="d-flex align-items-center gap-lg-3 gap-2 mobile-profile">
                             <img
                               src={
-                                proImage ? 
-                                proImage  : profileDatas?.basic_info?.gender.toLowerCase() ===
-                                    'female'
+                                proImage
+                                  ? proImage
+                                  : profileDatas?.basic_info?.gender.toLowerCase() ===
+                                      'female'
                                     ? femaleImage
                                     : maleImage
                               }
@@ -2679,7 +2711,6 @@ function MainContent() {
                                   />
                                 </IconButton>
                               </div>
-
                             </div>
                           </div>
                         </div>
@@ -2726,10 +2757,11 @@ function MainContent() {
                             Profile Completed
                           </h6>
                         </div>
-                        <div style={{ color: `#9943EC` }}>{`${stats1?.Student_Profile >= 90
+                        <div style={{ color: `#9943EC` }}>{`${
+                          stats1?.Student_Profile >= 90
                             ? 100
                             : stats1?.Student_Profile
-                          }%`}</div>
+                        }%`}</div>
                       </div>
                     </div>
                   </div>
@@ -2743,7 +2775,9 @@ function MainContent() {
                             Your Preferred Subject
                           </h5>
                           <small className="fs-12">
-                          Start your learning journey in your preferred subject with our complete lesson and practice courses.{' '}
+                            Start your learning journey in your preferred
+                            subject with our complete lesson and practice
+                            courses.{' '}
                           </small>
                         </div>
                         <Link
@@ -2772,7 +2806,7 @@ function MainContent() {
                               {profileDatas?.subject_preference
                                 ?.score_in_percentage
                                 ? profileDatas?.subject_preference
-                                  ?.score_in_percentage
+                                    ?.score_in_percentage
                                 : ''}
                             </p>
                           </div>
@@ -2793,7 +2827,6 @@ function MainContent() {
                             </p>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -2931,7 +2964,7 @@ function MainContent() {
                                             fontSize: '14px',
                                             color:
                                               likedStates[index] === 'liked' ||
-                                                chat.like_dislike === true
+                                              chat.like_dislike === true
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -2942,13 +2975,13 @@ function MainContent() {
                                                 : 'pointer',
                                             transform:
                                               likedStates[index] === 'liked' ||
-                                                chat.like_dislike === true
+                                              chat.like_dislike === true
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                                chat.like_dislike !== true
+                                              chat.like_dislike !== true
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -2962,7 +2995,7 @@ function MainContent() {
                                             color:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                                chat.like_dislike === false
+                                              chat.like_dislike === false
                                                 ? theme.palette.primary.main
                                                 : chat.like_dislike !== null
                                                   ? '#ccc'
@@ -2974,13 +3007,13 @@ function MainContent() {
                                             transform:
                                               likedStates[index] ===
                                                 'disliked' ||
-                                                chat.like_dislike === false
+                                              chat.like_dislike === false
                                                 ? 'scale(1.3)'
                                                 : 'scale(1)',
                                             transition: 'color 0.3s ease',
                                             opacity:
                                               chat.like_dislike !== null &&
-                                                chat.like_dislike !== false
+                                              chat.like_dislike !== false
                                                 ? 0.5
                                                 : 1,
                                           }}
@@ -3065,7 +3098,7 @@ function MainContent() {
                     {/* <div className="overlay chat-toggle-btn-mobile"></div> */}
                   </div>
                 </div>
-
+                <StudentDashboardCharts />
                 <div className="col-xl-6 d-flex align-items-stretch">
                   <div className="row  g-4">
                     <div className="col-lg-12 ">
@@ -3277,14 +3310,13 @@ function MainContent() {
                     </div>
                   </div>
                 </div>
-                <StudentDashboardCharts />
               </div>
             </div>
           </main>
           <ThemeSidebar themeMode={themeMode} setThemeMode={setThemeMode} />
         </>
       ) : (
-            <></>
+        <></>
       )}
       <ProfileDialog
         isOpen={dataCompleted}
