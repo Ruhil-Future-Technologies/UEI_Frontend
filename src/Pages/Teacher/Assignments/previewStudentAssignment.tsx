@@ -105,8 +105,8 @@ const PreviewStudentAssignment = () => {
                     if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
                     if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
                     if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
-                    if (filteredAssignment[0]?.questions?.length>0)setQuestion_answer(filteredAssignment[0]?.questions);
-                    if (filteredAssignment[0]?.questions)setContentType("questions");
+                    if (filteredAssignment[0]?.answers?.length>0)setQuestion_answer(filteredAssignment[0]?.answers);
+                    if (filteredAssignment[0]?.answers?.length>0)setContentType("questions");
                 }
             }
         }).catch((error) => {
@@ -126,7 +126,7 @@ const PreviewStudentAssignment = () => {
     // }
 
 
-
+console.log(contentType);
     return (
         <>
             <div className="main-wrapper">
@@ -217,20 +217,11 @@ const PreviewStudentAssignment = () => {
                                 <ul>
                                     {
                                         assignmentData?.files?.map((file, index) => (
-                                            <li key={index}> {/* Ensure a unique key */}
-                                                <Link to={file as string}>{file as string}</Link>
+                                            <li  key={index}>
+                                                <a target="_blank" href={file as string}>{file as string}</a>
                                             </li>
                                         ))
                                     }
-                                    {/* <li>
-                    <a href="#">Project Requirements Document.pdf</a>
-                  </li>
-                  <li>
-                    <a href="#">API Documentation.pdf</a>
-                  </li>
-                  <li>
-                    <a href="#">Design Guidelines.pdf</a>
-                  </li> */}
                                 </ul>
                             </Box>
                         </CardContent>
@@ -293,7 +284,7 @@ const PreviewStudentAssignment = () => {
                                                 <div className="pinwi-20">
                                                     <AttachFileIcon />
                                                 </div>
-                                                <a href={file}>
+                                                <a target="_blank" href={file}>
                                                     <ListItemText primary={file} />
                                                 </a>
 
