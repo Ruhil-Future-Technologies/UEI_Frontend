@@ -3175,3 +3175,62 @@ a {
   fill: #ccc !important;
   stroke: #ccc !important;
 }
+
+
+.parentdash{
+ 
+  .parentprofile{
+    background-color: $primary;
+    padding: 2rem;
+    color: $white;
+
+    p{
+      margin-bottom: 0;
+    }
+  }
+
+  .studentstabdata{
+   position: relative;
+
+    .studenttabs{
+      background-color: #f5ebff;
+      padding: 0.8rem;    
+      margin: 0 2rem;
+      border-radius: 50px;
+      width: fit-content;
+      &::before{
+        background-color: $primary;
+        content: "";
+        height: 32px;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: -1;
+        top: 0;
+      }
+      ul{
+        display: inline-flex;
+        gap: 0.7rem;
+        li{   
+       
+          position:  relative;
+          button{
+            border-radius: 50px;
+            background-color: rgba($primary, 0.08);
+            &.active{
+              background-color: $primary;
+            }
+          }   
+        }
+
+        
+      }
+      
+    }
+
+    .tab-content{
+      padding: 1rem 2rem;
+    }
+  }
+}
