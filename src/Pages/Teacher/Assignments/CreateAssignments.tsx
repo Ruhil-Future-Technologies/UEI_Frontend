@@ -2108,13 +2108,13 @@ export const CreateAssignments = () => {
 
                         {assignmentType === 'quiz' ? (
                           <>
-                            <div className="col-12">
-                              <label className="col-form-label pb-0">
+                           <div className="col-12">
+                           <label className="col-form-label mb-2">
                                 Number of Questions for Each Mark
                               </label>
-                            </div>
-
+                            <div className="row">
                             <div className="col-md-2 col-12">
+                              
                               <TextField
                                 label="One Mark"
                                 type="number"
@@ -2229,6 +2229,12 @@ export const CreateAssignments = () => {
                                 fullWidth
                               />
                             </div>
+
+                            </div>
+
+                           </div>
+
+                       
                           </>
                         ) : (
                           <>
@@ -2281,7 +2287,7 @@ export const CreateAssignments = () => {
 
                            
                                 <div className="col-12">
-                                  <List>
+                                  <List className='py-0'>
                                     {questionMap?.map((item, index) => (
                                       <ListItem
                                         key={index}
@@ -2348,6 +2354,7 @@ export const CreateAssignments = () => {
                       <label className="col-form-label">
                         Instructions for students<span>*</span>
                       </label>
+                      <div className="mb-4 mb-lg-0" style={{ minHeight: '162px', borderRadius: '8px' }}>
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2364,9 +2371,11 @@ export const CreateAssignments = () => {
                           <small>Please enter Instructions.</small>
                         </p>
                       )}
+                      </div>
+                 
                     </div>
                     {assignmentType == 'ai generated' && editType == '' && (
-                      <div className="col-12 mt-3 mb-5">
+                      <div className="col-12">
                         {/* <label className="col-form-label">
                         Assignment Configuration Instructions<span>*</span>
                         </label> */}

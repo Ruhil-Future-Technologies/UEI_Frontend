@@ -335,7 +335,7 @@ export const Assignments = () => {
             </Link>
           </div>
 
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -356,7 +356,7 @@ export const Assignments = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -378,7 +378,7 @@ export const Assignments = () => {
             </div>
           </div>
 
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -400,7 +400,7 @@ export const Assignments = () => {
             </div>
           </div>
 
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
