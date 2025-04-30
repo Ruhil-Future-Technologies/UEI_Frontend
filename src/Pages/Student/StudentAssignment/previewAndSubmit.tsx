@@ -77,9 +77,7 @@ const PreviewAndSubmit = () => {
       getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
-          console.log(response?.data?.questions.length)
           if (response?.data?.questions && response?.data?.questions.length > 0) {
-            console.log(response?.data?.questions.length)
             setQuestion_answer(response?.data?.questions);
             setContentType("questions");
           }
@@ -108,7 +106,6 @@ const PreviewAndSubmit = () => {
     getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_id}`).then((response) => {
       if (response?.status) {
         const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
-        console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
           if (filteredAssignment[0]?.description) setDescription(filteredAssignment[0].description);
           if (filteredAssignment[0]?.files) setAllSelectedfilesToShow(filteredAssignment[0].files)

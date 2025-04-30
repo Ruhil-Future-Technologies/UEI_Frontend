@@ -55,7 +55,6 @@ const StudentAssignments = () => {
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const AsisgnmnetTitle = row?.original?.title;
         const is_addtoereport = row?.original?.add_to_report;
-        console.log(is_addtoereport);
         return (
           <div className="box">
             {is_addtoereport == true && (
@@ -207,7 +206,6 @@ const StudentAssignments = () => {
     const assign = assignmentsSubmited.filter(
       (item) => item?.assignment_id == assignmentId,
     );
-    console.log(assign);
     if (assign.length > 0 && assign[0].graded_points) {
       return (
         <Box display="flex" alignItems="center">

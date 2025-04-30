@@ -55,12 +55,10 @@ const AssignmentDetails = () => {
   const [submitedCount, setSubmitedCount] = useState(0);
   const [notSubmitedCount, setNotSubmitedCount] = useState(0);
   const handleEdit = (id: any) => {
-    console.log("edit edit edit ")
     setEditId(id);
   };
 
   const handleSave = (Submition_id: any) => {
-    console.log("save save save save",Submition_id);
     if (
       assignmentData?.points &&
       tempMarks <= assignmentData?.points &&
@@ -153,7 +151,6 @@ const AssignmentDetails = () => {
   const handleBack = () => {
     nevigate(-1); // navigates to the previous page
   };
-  console.log(students);
   return (
     <div className="main-wrapper">
       <div className="main-content">

@@ -850,10 +850,8 @@ export const CreateAssignments = () => {
     } else {
       setFile_error(false);
     }
-    console.log(assignmentDataType)
     if (assignmentDataType != 'json') {
       if (!/^\d+$/.test(assignmentData.points)) {
-        console.log(assignmentData.points);
         setPoint_error(true);
         valid1 = true;
       } else {
@@ -1033,7 +1031,6 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        console.log(assignmentJsonQuestions, questions);
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1878,12 +1875,11 @@ export const CreateAssignments = () => {
       setQuestionKey('');
     }
   };
-  const handleDelete = (key: any, value: any, index: number) => {
+  const handleDelete = (key: any, index: number) => {
     const filteredQuestion = questionMap?.filter(
       (_: any, ind: number) => ind !== index,
     );
     setQuestionMap(filteredQuestion);
-    console.log(value);
     setTotalQuestion(totalQuestions - key);
     setAiAssignmentGenerated(false);
     if (questionMap.length == 1) {
@@ -2303,7 +2299,6 @@ export const CreateAssignments = () => {
                                       onClick={() =>
                                         handleDelete(
                                           item.key,
-                                          item.value,
                                           index,
                                         )
                                       }

@@ -99,7 +99,7 @@ const PreviewStudentAssignment = () => {
         getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${id}`).then((response) => {
             if (response?.status) {
                 const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
-                console.log(filteredAssignment);
+
                 if (filteredAssignment.length > 0) {
                     if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
                     if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
@@ -126,7 +126,6 @@ const PreviewStudentAssignment = () => {
     // }
 
 
-console.log(contentType);
     return (
         <>
             <div className="main-wrapper">
