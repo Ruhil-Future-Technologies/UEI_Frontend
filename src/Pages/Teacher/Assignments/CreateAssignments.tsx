@@ -65,7 +65,7 @@ import ReactQuill from 'react-quill';
 import QuizModal from './QuizModal';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker/DateTimePicker';
 import FullScreenLoader from '../../Loader/FullScreenLoader';
-import AssignmentModal from './AssignmentModal';
+import AssignmentModal, { GenAssignment } from './AssignmentModal';
 
 export interface Assignment {
   id?: string;
