@@ -217,7 +217,7 @@ const PreviewStudentAssignment = () => {
                                     {
                                         assignmentData?.files?.map((file, index) => (
                                             <li  key={index}>
-                                                <a target="_blank" href={file as string}>{file as string}</a>
+                                                <a target="_blank" rel="noopener noreferrer" href={file as string}>{file as string}</a>
                                             </li>
                                         ))
                                     }
@@ -283,7 +283,7 @@ const PreviewStudentAssignment = () => {
                                                 <div className="pinwi-20">
                                                     <AttachFileIcon />
                                                 </div>
-                                                <a target="_blank" href={file}>
+                                                <a target="_blank" rel="noopener noreferrer" href={file}>
                                                     <ListItemText primary={file} />
                                                 </a>
 

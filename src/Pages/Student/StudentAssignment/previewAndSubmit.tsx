@@ -364,7 +364,7 @@ const PreviewAndSubmit = () => {
                   {
                     assignmentData?.files?.map((file, index) => (
                       <li key={index} className='d-flex justify-content-between me-5'> {/* Ensure a unique key */}
-                        <a target="_blank" href={file as string}>{file as string}</a>
+                        <a target="_blank" rel="noopener noreferrer" href={file as string}>{file as string}</a>
                         <a href={file as string} download target="_blank" rel="noopener noreferrer">
                           <GetAppOutlinedIcon />
                         </a>
@@ -483,7 +483,7 @@ const PreviewAndSubmit = () => {
                     <div className="pinwi-20">
                       <AttachFileIcon />
                     </div>
-                    <a download target="_blank" href={file}>
+                    <a download target="_blank" rel="noopener noreferrer" href={file}>
                       <ListItemText primary={file} />
                     </a>
                   </ListItem>
