@@ -142,8 +142,7 @@ const Institute = () => {
     const current_insittute = dataInstitute.find(
       (insitute) => insitute.user_uuid == id,
     );
-
-    if (current_insittute.is_active) {
+    if (current_insittute.is_active ? current_insittute.is_active : current_insittute.is_approve ) {
       navigate(`edit-Institute/${id}`);
     } else {
       toast.error('You cannot edit or delete Deactivated Content', {
