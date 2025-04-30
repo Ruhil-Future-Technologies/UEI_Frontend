@@ -9,6 +9,7 @@ import {
     Chip,
     ListItem,
     ListItemText,
+    TextField,
 } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ScoreboardOutlinedIcon from '@mui/icons-material/ScoreboardOutlined';
@@ -26,13 +27,14 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
+import { Question_andwer } from '../../Student/StudentAssignment/previewAndSubmit';
 const PreviewStudentAssignment = () => {
     const navigate = useNavigate();
     const { getData } = useApi();
     const { id } = useParams();
     const assignment_id = localStorage.getItem('assignment_id')
     const [assignmentData, setAssignmentData] = useState<Assignment>(
-        
+
     );
     //const [todayDate, setTodayDate] = useState<Date>();
     const [remainingDays, setRemaingDays] = useState(0);
@@ -41,6 +43,23 @@ const PreviewStudentAssignment = () => {
     const quillRef = useRef<ReactQuill | null>(null);
     const [statusCheck, setStatusCheck] = useState('Pending');
     const [availableDuration, setAvailableDuration] = useState(0);
+    const [contentType, setContentType] = useState('file');
+    const [question_answer, setQuestion_answer] = useState<Question_andwer[]>([{
+        question: 'what is java',
+        answer: '',
+        marks: 2
+    },
+    {
+        question: 'what is oops',
+        answer: '',
+        marks: 2
+    },
+    {
+        question: 'what is inheritance',
+        answer:'',
+        marks: 2
+    }
+    ]);
     const handleBack = () => {
         navigate(-1);
     };
@@ -80,12 +99,14 @@ const PreviewStudentAssignment = () => {
         getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${id}`).then((response) => {
             if (response?.status) {
                 const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
-                console.log(filteredAssignment);
+
                 if (filteredAssignment.length > 0) {
                     if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
                     if (filteredAssignment[0]?.files) setAllSelectedfiles(filteredAssignment[0].files)
                     if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
                     if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
+                    if (filteredAssignment[0]?.answers?.length>0)setQuestion_answer(filteredAssignment[0]?.answers);
+                    if (filteredAssignment[0]?.answers?.length>0)setContentType("questions");
                 }
             }
         }).catch((error) => {
@@ -103,7 +124,6 @@ const PreviewStudentAssignment = () => {
     //     const { value } = event.target
     //     setProvidedPoints(Number(value))
     // }
-
 
 
     return (
@@ -165,7 +185,7 @@ const PreviewStudentAssignment = () => {
                                 <span
                                     className="ms-2 me-3"
                                     style={{
-                                        color: getColor(remainingDays,availableDuration),
+                                        color: getColor(remainingDays, availableDuration),
                                     }}
                                 >
                                     Due: {assignmentData?.due_date_time}
@@ -196,20 +216,11 @@ const PreviewStudentAssignment = () => {
                                 <ul>
                                     {
                                         assignmentData?.files?.map((file, index) => (
-                                            <li key={index}> {/* Ensure a unique key */}
-                                                <Link to={file as string}>{file as string}</Link>
+                                            <li  key={index}>
+                                                <a target="_blank" rel="noopener noreferrer" href={file as string}>{file as string}</a>
                                             </li>
                                         ))
                                     }
-                                    {/* <li>
-                    <a href="#">Project Requirements Document.pdf</a>
-                  </li>
-                  <li>
-                    <a href="#">API Documentation.pdf</a>
-                  </li>
-                  <li>
-                    <a href="#">Design Guidelines.pdf</a>
-                  </li> */}
                                 </ul>
                             </Box>
                         </CardContent>
@@ -218,39 +229,76 @@ const PreviewStudentAssignment = () => {
                     <Card sx={{ mt: 3 }}>
                         <CardContent>
                             <Typography variant="h6" className='mb-3'>Submited Work</Typography>
-                            <Typography sx={{ marginLeft: 1, fontSize: "0.875rem", color: "gray" }}>
-                                Uploaded files
-                            </Typography>
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                justifyContent="center"
-                                textAlign="center"
-                                sx={{ padding: 2, border: "1px dashed #ccc", borderRadius: 2, backgroundColor: "#f9f9f9" }}
-                            >
-                                {allselectedfiles.length > 0 ? allselectedfiles?.map((file, index) => (
-                                    <ListItem
-                                        className="fileslistitem"
-                                        key={index}
-                                    >
-                                        <div className="pinwi-20">
-                                            <AttachFileIcon />
-                                        </div>
-                                        <a href={file}>
-                                        <ListItemText primary={file} />
-                                        </a>
-                                        
-                                    </ListItem>
 
-                                )) : (
-                                    <>
-                                        <InsertDriveFileIcon sx={{ fontSize: 50, color: "#999" }} />
-                                        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#666" }}>
-                                            No Files Uploded
-                                        </Typography></>
-                                )}
-                            </Box>
+                            {contentType == 'questions' ? (
+                                <>
+                                    <Box>
+                                        {question_answer.map((question_answer, index) => (
+                                            <>
+                                                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                                                    <Typography variant="subtitle1">
+                                                        <strong>Question {index + 1}:</strong> {question_answer.question}
+                                                    </Typography>
+                                                    <Chip
+                                                        label={`${question_answer.marks} ${question_answer.marks === 1 ? 'mark' : 'marks'}`}
+                                                        size="small"
+                                                        color="primary"
+                                                        variant="outlined"
+                                                    />
+                                                </Box>
+                                                <TextField
+                                                    className='mb-4'
+                                                    id="outlined-multiline-static"
+                                                    label="Answer"
+                                                    multiline
+                                                    value={question_answer.answer}
+                                                    rows={2}
+                                                    fullWidth
+                                                    disabled
+                                                />
+                                            </>
+                                        ))
+                                        }
+                                    </Box>
+                                </>
+                            )
+                                :
+                                <>
+                                    <Typography sx={{ marginLeft: 1, fontSize: "0.875rem", color: "gray" }}>
+                                        Uploaded files
+                                    </Typography>
+                                    <Box
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        textAlign="center"
+                                        sx={{ padding: 2, border: "1px dashed #ccc", borderRadius: 2, backgroundColor: "#f9f9f9" }}
+                                    >
+                                        {allselectedfiles.length > 0 ? allselectedfiles?.map((file, index) => (
+                                            <ListItem
+                                                className="fileslistitem"
+                                                key={index}
+                                            >
+                                                <div className="pinwi-20">
+                                                    <AttachFileIcon />
+                                                </div>
+                                                <a target="_blank" rel="noopener noreferrer" href={file}>
+                                                    <ListItemText primary={file} />
+                                                </a>
+
+                                            </ListItem>
+
+                                        )) : (
+                                            <>
+                                                <InsertDriveFileIcon sx={{ fontSize: 50, color: "#999" }} />
+                                                <Typography variant="h6" sx={{ fontWeight: "bold", color: "#666" }}>
+                                                    No Files Uploded
+                                                </Typography></>
+                                        )}
+                                    </Box>
+                                </>
+                            }
                             <div className='mt-2 mb-5'>
                                 <ReactQuill ref={quillRef} value={value} onChange={setValue} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
                             </div>

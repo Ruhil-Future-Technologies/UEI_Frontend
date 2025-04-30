@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useApi from '../../../hooks/useAPI';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 import {
   MaterialReactTable,
   MRT_ColumnDef,
@@ -16,12 +16,19 @@ import {
   QUERY_KEYS_ASSIGNMENT,
   QUERY_KEYS_ASSIGNMENT_SUBMISSION,
 } from '../../../utils/const';
+import { AccessTime, ListAlt } from '@mui/icons-material';
+import { toTitleCase } from '../../../utils/helpers';
 
 const StudentAssignments = () => {
   const { getData } = useApi();
+  const navigate=useNavigate();
   const studemtId = localStorage.getItem('student_id');
   const student_uuid = localStorage.getItem('user_uuid');
   const [assignmentData, setAssignmentData] = useState<Assignment[]>([]);
+
+  const [activeAssignmentData, setActiveAssignmentData] = useState<Assignment[]>([]);
+  const [upcomingAssignmentData, setUpcomingAssignmentData] = useState<Assignment[]>([]);
+
   const [assignmentsSubmited, setAssignmentsSubmited] = useState<any[]>([]);
   const columns: MRT_ColumnDef<Assignment>[] = [
     {
@@ -48,7 +55,6 @@ const StudentAssignments = () => {
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const AsisgnmnetTitle = row?.original?.title;
         const is_addtoereport = row?.original?.add_to_report;
-        console.log(is_addtoereport);
         return (
           <div className="box">
             {is_addtoereport == true && (
@@ -145,9 +151,12 @@ const StudentAssignments = () => {
             const filteredAssignment = response?.data.filter(
               (assignment: any) =>
                 assignment?.assign_to_students.includes(studemtId) &&
-                !assignment?.save_draft,
+                !assignment?.save_draft && assignment?.is_active,
             );
             setAssignmentData(filteredAssignment);
+            const datetime = new Date();
+            setActiveAssignmentData(filteredAssignment.filter((assignment: any) => new Date(assignment.due_date_time) > datetime))
+            setUpcomingAssignmentData(filteredAssignment.filter((assignment: any) => new Date(assignment.available_from) > datetime))
           }
         },
       );
@@ -197,7 +206,6 @@ const StudentAssignments = () => {
     const assign = assignmentsSubmited.filter(
       (item) => item?.assignment_id == assignmentId,
     );
-    console.log(assign);
     if (assign.length > 0 && assign[0].graded_points) {
       return (
         <Box display="flex" alignItems="center">
@@ -214,6 +222,20 @@ const StudentAssignments = () => {
       );
     }
   };
+
+  const getSubjectName = (data: any) => {
+    const classKey = Object.keys(data)[0];
+
+    const subjectKey = Object.keys(data[classKey])[0];
+
+    const values = data[classKey][subjectKey];
+
+    return values;
+  }
+
+  const openAssignment=(id:any)=>{
+    navigate(`/main/student/view-and-submit/${id}`)
+  }
   return (
     <>
       <div className="main-wrapper">
@@ -235,9 +257,148 @@ const StudentAssignments = () => {
               </nav>
             </div>
           </div>
+
+          <Box>
+            <Typography variant="h6" sx={{ mt: 4 }} className="mb-2 fw-semibold">
+              Active Assignemnt
+            </Typography>
+            {activeAssignmentData.length > 0 ? (
+              <Grid container spacing={2}>
+                {activeAssignmentData.map((assignment: any, index) => (
+                  <Grid item xs={12} sm={4} key={index}>
+                    <div className="rounded-4 card">
+                      <div className="card-body">
+                        <Box display="flex" alignItems="center" gap={1}>
+                          {/* <Avatar>{quiz.icon}</Avatar> */}
+                          <Typography variant="subtitle1" className="fw-semibold">
+                            {getSubjectName(assignment?.class_stream_subjects ? assignment?.class_stream_subjects : assignment?.course_semester_subjects)}
+                          </Typography>
+                        </Box>
+                        <h6 className="mt-4 fw-semibold fs-5 text-dark">
+                          {
+                            toTitleCase(assignment.title)
+                          }
+                        </h6>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          sx={{ mt: 1 }}
+                        >
+                          <div className="small">
+                            <AccessTime fontSize="small" />
+                            {/* {quiz.time} */}
+                          </div>
+                          <div className="small">
+                            <Chip
+                              label={`${assignment.points} ${assignment.points === 1 ? 'mark' : 'marks'}`}
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
+
+                          </div>
+                        </Box>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="block"
+                          sx={{ mt: 1 }}
+                        >
+                          Due:
+                          {assignment.due_date_time}
+                        </Typography>
+                        <Button
+                          variant="contained"
+                          className="rounded-3"
+                          fullWidth
+                          sx={{ mt: 2 }}
+                        onClick={() => openAssignment(assignment.id)}
+                        >
+                          Solve Assignment
+                        </Button>
+                      </div>
+                    </div>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 2, mb: 4 }}
+              >
+                No active quizzes available at the moment.
+              </Typography>
+            )}
+
+            <Typography variant="h6" sx={{ mt: 4 }} className="mb-2 fw-semibold">
+              Upcoming Quizzes
+            </Typography>
+            {upcomingAssignmentData.length > 0 ? (
+              <Grid container spacing={2}>
+                {upcomingAssignmentData.map((assignment: any, index) => (
+                  <Grid item xs={12} sm={4} key={index}>
+                    <div className="rounded-4 card">
+                      <div className="card-body">
+                        <Box display="flex" alignItems="center" gap={1}>
+                          {/* <Avatar>{quiz.icon}</Avatar> */}
+                          <Typography variant="subtitle1" className="fw-semibold">
+                            {/* {quiz.subject} */}
+                          </Typography>
+                        </Box>
+                        <h6 className="mt-4 fw-semibold fs-5 text-dark">
+                          {assignment.title}
+                        </h6>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          sx={{ mt: 1 }}
+                        >
+                          <div className="small">
+                            {/* <AccessTime fontSize="small" /> {quiz.time} */}
+                          </div>
+                          <div className="small">
+                            <ListAlt fontSize="small" />
+                            {/* {quiz.questions}{' '} */}
+                            Questions
+                          </div>
+                        </Box>
+                        <Typography
+                          variant="caption"
+                          color="text.secondary"
+                          display="block"
+                          sx={{ mt: 1 }}
+                        >
+                          Available from:
+                          {/* {quiz.availableFrom.toLocaleString()} */}
+                        </Typography>
+                        <Button
+                          variant="outlined"
+                          className="rounded-3"
+                          fullWidth
+                          sx={{ mt: 2 }}
+                          disabled
+                        >
+                          Not Yet Available
+                        </Button>
+                      </div>
+                    </div>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 2, mb: 4 }}
+              >
+                No upcoming quizzes scheduled.
+              </Typography>
+            )}
+          </Box>
           <MaterialReactTable
             columns={columns}
-            data={assignmentData}
+            data={[...assignmentData].reverse()}
             enableColumnOrdering
             enableSorting
             enableFullScreenToggle={false}

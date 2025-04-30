@@ -162,7 +162,20 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'admin' && mName?.toLowerCase() === 'servicesagreement') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'privacypolicy') ||
       (usertype === 'admin' && mName?.toLowerCase() === 'refundpolicy') ||
-      (usertype === 'admin' && mName?.toLowerCase() === 'disclaimer');
+      (usertype === 'admin' && mName?.toLowerCase() === 'disclaimer') ||
+      // TODO remove student type and add parent user type here
+      (usertype === 'student'
+        ? mName.toLowerCase() === 'parent-dashboard'
+        : '') ||
+      (usertype === 'student' && uName.toLowerCase() === 'parent-dashboard'
+        ? mName.toLowerCase() === 'chat'
+        : '') ||
+      (usertype === 'student' && uName.toLowerCase() === 'parent-dashboard'
+        ? mName.toLowerCase() === 'feedback'
+        : '') ||
+      (usertype === 'student' && uName.toLowerCase() === 'parent-dashboard'
+        ? mName.toLowerCase() === 'profile'
+        : '');
 
     return MnameExist;
   };

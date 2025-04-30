@@ -359,7 +359,7 @@ const Institute = () => {
                       </Button>
                     )}
                   </div>
-                  <Tabs value={activeTab} onChange={handleTabChange}>
+                  <Tabs value={activeTab} onChange={handleTabChange}  variant="scrollable">
                     <Tab
                       label="Total Institute"
                       className={activeTab === 0 ? '' : 'text-color'}

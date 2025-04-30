@@ -231,7 +231,6 @@ export const Assignments = () => {
       header: 'Status',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const is_draft = row?.original?.save_draft;
-        console.log(is_draft)
         return (
           <>
             {is_draft ? (
@@ -335,7 +334,7 @@ export const Assignments = () => {
             </Link>
           </div>
 
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -356,7 +355,7 @@ export const Assignments = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -378,7 +377,7 @@ export const Assignments = () => {
             </div>
           </div>
 
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -400,12 +399,12 @@ export const Assignments = () => {
             </div>
           </div>
 
-          <div className="col-lg-3">
+          <div className="col-lg-4 col-xl-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
                   <div>
-                    <p className="mb-1">Active Students</p>
+                    <p className="mb-1">Active Assignment</p>
                     <h3 className="mb-0">
                       {assignmentData.length - draftCount}
                     </h3>
@@ -428,7 +427,7 @@ export const Assignments = () => {
             <Box className="rounded-4 overflow-hidden">
               <MaterialReactTable
                 columns={columns}
-                data={assignmentData}
+                data={[...assignmentData].reverse()} 
                 enablePagination
                 enableSorting
                 enableColumnFilters
