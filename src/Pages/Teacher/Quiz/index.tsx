@@ -207,7 +207,7 @@ const TeacherQuizPage = () => {
     const now = new Date();
 
     if (due_date_time <= now) {
-      toast.error('You cannot Edit Past Quiz', {
+      toast.error('You cannot Edit Closed Quiz', {
         hideProgressBar: true,
         theme: 'colored',
       });
@@ -317,7 +317,7 @@ const TeacherQuizPage = () => {
             <div className="d-flex align-items-center justify-content-between">
               <h4 className="mb-0 fw-bold">Quiz List</h4>
               <Link
-                to="/teacher-dashboard/create-assignment"
+                to="/teacher-dashboard/create-quiz"
                 state={{ type: 'quiz' }}
                 className="btn btn-primary"
               >

@@ -87,7 +87,7 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' && uName.toLowerCase() === 'chat'
         ? mName.toLowerCase() === 'recentchat'
         : '') ||
-        (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'chat'
         : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
@@ -109,6 +109,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'create-assignment'
+        : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'create-quiz'
         : '') ||
       (usertype === 'teacher' &&
         uName.toLowerCase() === 'edit-assignment' &&
