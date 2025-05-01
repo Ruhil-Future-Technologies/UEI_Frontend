@@ -77,9 +77,10 @@ function MainContent() {
   }: any = context;
 
   const [userName, setUserName] = useState('');
-  const StudentId = localStorage.getItem('student_id');
   const userid = localStorage.getItem('user_uuid');
   const menuList = localStorage.getItem('menulist1');
+  const user_type = localStorage.getItem('user_type');
+  const Id = user_type === 'teacher' ? localStorage.getItem('teacher_id'):localStorage.getItem('student_id');
 
   const profileURL = QUERY_KEYS_STUDENT.STUDENT_GET_PROFILE;
   const profileURLadmin = QUERY_KEYS_ADMIN_BASIC_INFO.ADMIN_GET_PROFILE;
@@ -87,7 +88,7 @@ function MainContent() {
   const ChatStore = QUERY_KEYS.CHAT_STORE;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
-  const chatlisturl = QUERY_KEYS.CHAT_LIST;
+  const chatlisturl = user_type === 'teacher' ? QUERY_KEYS.CHAT_LIST_T : QUERY_KEYS.CHAT_LIST;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
   const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
   const university_list = QUERY_KEYS_UNIVERSITY.GET_UNIVERSITY;
@@ -1568,7 +1569,7 @@ function MainContent() {
     setchatData((prevState: any) => [...prevState, newData]);
     setChatLoader(false);
     setSearch('');
-    getData(`${chatlisturl}/${StudentId}`)
+    getData(`${chatlisturl}/${Id}`)
       .then((data: any) => {
         setchatlistData(data?.data);
         // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1667,7 +1668,7 @@ function MainContent() {
       setchatData((prevState: any) => [...prevState, newData]);
       setChatLoader(false);
       setSearch('');
-      getData(`${chatlisturl}/${StudentId}`)
+      getData(`${chatlisturl}/${Id}`)
         .then((data: any) => {
           setchatlistData(data?.data);
           // setchathistory(data?.data?.filter((chat: any) => !chat?.flagged));
@@ -1745,7 +1746,7 @@ function MainContent() {
                     },
                   };
                   const ChatStorepayload = {
-                    student_id: StudentId,
+                    [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
@@ -1772,7 +1773,7 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          student_id: StudentId,
+                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1804,7 +1805,7 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        student_id: StudentId,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -1886,7 +1887,7 @@ function MainContent() {
                     },
                   };
                   const ChatStorepayload = {
-                    student_id: StudentId,
+                    [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
                     chat_question: response.question,
                     response: formatAnswer(response.answer),
                   };
@@ -1913,7 +1914,7 @@ function MainContent() {
                       if (response?.status === 200) {
                         handleResponse(response);
                         const ChatStorepayload = {
-                          student_id: StudentId,
+                          [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
                           chat_question: search,
                           response: response?.answer,
                         };
@@ -1946,7 +1947,7 @@ function MainContent() {
                     if (response?.status === 200) {
                       handleResponse(response);
                       const ChatStorepayload = {
-                        student_id: StudentId,
+                        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
                         chat_question: search,
                         response: response?.answer,
                       };
@@ -1969,7 +1970,7 @@ function MainContent() {
       .then((data: any) => {
         if (data?.status === 200) {
           const ChatStorepayload = {
-            student_id: StudentId,
+            [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
             chat_question: search,
             response: data?.answer,
           };
@@ -2012,7 +2013,7 @@ function MainContent() {
         if (data?.status === 200) {
           // handleResponse(data);
           const ChatStorepayload = {
-            student_id: StudentId,
+            [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
             chat_question: search,
             response: data?.answer,
           };
@@ -2233,7 +2234,7 @@ function MainContent() {
         if (response?.status === 200) {
           handleResponse(response);
           const ChatStorepayload = {
-            student_id: StudentId,
+            [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
             chat_question: search,
             response: response?.answer,
           };
@@ -2305,14 +2306,14 @@ function MainContent() {
     ) {
       // chatData?.shift();
       chat_payload = {
-        student_id: StudentId,
+        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,
       };
     } else {
       chat_payload = {
-        student_id: StudentId,
+        [user_type === 'teacher' ? 'teacher_id' : 'student_id']: Id,
         chat_title: chatData?.[0]?.question,
         chat_conversation: JSON.stringify(chatData),
         flagged: isChatFlagged,

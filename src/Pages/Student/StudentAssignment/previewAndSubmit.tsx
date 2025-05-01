@@ -293,6 +293,13 @@ const PreviewAndSubmit = () => {
                 </Link></div>
 
             </div>
+            <div className="breadcrumb-title pe-3 ms-2">
+            <div className="d-flex gap-1 align-items-center" role='button'>
+              <Link to={'/main/student/assignment'} className="text-dark">
+                Assignments List
+              </Link></div>
+
+          </div>
             <div className="ps-3">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb mb-0 p-0">
