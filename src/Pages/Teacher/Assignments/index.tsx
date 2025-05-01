@@ -231,7 +231,6 @@ export const Assignments = () => {
       header: 'Status',
       Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
         const is_draft = row?.original?.save_draft;
-        console.log(is_draft)
         return (
           <>
             {is_draft ? (

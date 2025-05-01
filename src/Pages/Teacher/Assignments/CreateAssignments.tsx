@@ -389,47 +389,47 @@ export const CreateAssignments = () => {
                       subjects:
                         response.data.course_semester_subjects[CourseKey][
                         semester_number
-                      ],
-                    filteredSemesters: allsemesters?.filter(
-                      (item) => item.course_id == CourseKey,
-                    ),
-                    filteredSubjects: allSubject?.filter(
-                      (item) =>
-                        item.semester_number == semester_number &&
-                        item.course_id == CourseKey,
-                    ),
-                  })),
-                );
-                const filteredStudents =
-                  students?.filter(
-                    (student) =>
-                      output[0].course_id == student.course_id &&
-                      output[0].semester_number == student.semester_number &&
-                      output[0].subjects[0] == student.subject_name,
-                  ) || [];
-                setListOfStudentFiltered(filteredStudents);
-                setBoxes(output);
-              } else {
-                getSubjects('School');
-                setSelectedEntity('School');
-                const allSubject: SubjectRep0oDTO[] =
-                  await getSubjects('School');
-                const output: BoxesForSchool[] = Object.keys(
-                  response.data.class_stream_subjects,
-                ).flatMap((classKey) =>
-                  Object.keys(
-                    response.data.class_stream_subjects[classKey],
-                  )?.map((stream) => ({
-                    stream: stream,
-                    subjects:
-                      response.data.class_stream_subjects[classKey][stream],
-                    class_id: classKey,
-                    is_Stream: stream !== 'general',
-                    selected_class_name:
-                      stream === 'general' ? 'col-6' : 'col-4',
-                    filteredSubjects:
-                      stream == 'general'
-                        ? allSubject?.filter(
+                        ],
+                      filteredSemesters: allsemesters?.filter(
+                        (item) => item.course_id == CourseKey,
+                      ),
+                      filteredSubjects: allSubject?.filter(
+                        (item) =>
+                          item.semester_number == semester_number &&
+                          item.course_id == CourseKey,
+                      ),
+                    })),
+                  );
+                  const filteredStudents =
+                    students?.filter(
+                      (student) =>
+                        output[0].course_id == student.course_id &&
+                        output[0].semester_number == student.semester_number &&
+                        output[0].subjects[0] == student.subject_name,
+                    ) || [];
+                  setListOfStudentFiltered(filteredStudents);
+                  setBoxes(output);
+                } else {
+                  getSubjects('School');
+                  setSelectedEntity('School');
+                  const allSubject: SubjectRep0oDTO[] =
+                    await getSubjects('School');
+                  const output: BoxesForSchool[] = Object.keys(
+                    response.data.class_stream_subjects,
+                  ).flatMap((classKey) =>
+                    Object.keys(
+                      response.data.class_stream_subjects[classKey],
+                    )?.map((stream) => ({
+                      stream: stream,
+                      subjects:
+                        response.data.class_stream_subjects[classKey][stream],
+                      class_id: classKey,
+                      is_Stream: stream !== 'general',
+                      selected_class_name:
+                        stream === 'general' ? 'col-6' : 'col-4',
+                      filteredSubjects:
+                        stream == 'general'
+                          ? allSubject?.filter(
                             (item) => item.class_id == classKey,
                           )
                           : allSubject?.filter(
@@ -850,10 +850,8 @@ export const CreateAssignments = () => {
     } else {
       setFile_error(false);
     }
-    console.log(assignmentDataType)
     if (assignmentDataType != 'json') {
       if (!/^\d+$/.test(assignmentData.points)) {
-        console.log(assignmentData.points);
         setPoint_error(true);
         valid1 = true;
       } else {
@@ -880,7 +878,7 @@ export const CreateAssignments = () => {
       setContact_email_error(false);
     }
     if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
-      setAvailableFrom_error(true);    
+      setAvailableFrom_error(true);
       valid1 = true;
     } else {
       setAvailableFrom_error(false);
@@ -897,7 +895,7 @@ export const CreateAssignments = () => {
     } else {
       setDueTime_error(false);
     }
-    if (error != null) {    
+    if (error != null) {
       valid1 = true;
     }
     if (selectedStudents.length < 1) {
@@ -1033,7 +1031,6 @@ export const CreateAssignments = () => {
 
     if (!id) {
       try {
-        console.log(assignmentJsonQuestions, questions);
         postData(ASSIGNMENT.ADD_ASSIGNMENT, formData).then((response) => {
           if (response.status) {
             toast.success(response.message, {
@@ -1878,12 +1875,11 @@ export const CreateAssignments = () => {
       setQuestionKey('');
     }
   };
-  const handleDelete = (key: any, value: any, index: number) => {
+  const handleDelete = (key: any, index: number) => {
     const filteredQuestion = questionMap?.filter(
       (_: any, ind: number) => ind !== index,
     );
     setQuestionMap(filteredQuestion);
-    console.log(value);
     setTotalQuestion(totalQuestions - key);
     setAiAssignmentGenerated(false);
     if (questionMap.length == 1) {
@@ -2082,29 +2078,29 @@ export const CreateAssignments = () => {
                                 Level
                               </InputLabel>
 
-                              <Select
-                                label="Level"
-                                labelId="level-select-label"
-                                id="level-select"
-                                value={level}
-                                disabled={isQuizGenerated}
-                                onChange={(e) => setLevel(e.target.value)}
-                              >
-                                <MenuItem value="easy">Easy</MenuItem>
+                            <Select
+                              label="Level"
+                              labelId="level-select-label"
+                              id="level-select"
+                              value={level}
+                              disabled={isQuizGenerated}
+                              onChange={(e) => setLevel(e.target.value)}
+                            >
+                              <MenuItem value="easy">Easy</MenuItem>
 
-                                <MenuItem value="medium">Medium</MenuItem>
+                              <MenuItem value="medium">Medium</MenuItem>
 
-                                <MenuItem value="hard">Hard</MenuItem>
-                              </Select>
-                            </FormControl>
+                              <MenuItem value="hard">Hard</MenuItem>
+                            </Select>
+                          </FormControl>
 
-                            {level_error && (
-                              <p className="error-text " style={{ color: 'red' }}>
-                                <small> Please Select a level</small>
-                              </p>
-                            )}
-                          </div>
-                        }
+                          {level_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please Select a level</small>
+                            </p>
+                          )}
+                        </div>
+                      }
 
                         {assignmentType === 'quiz' ? (
                           <>
@@ -2327,28 +2323,28 @@ export const CreateAssignments = () => {
                         )}
 
 
-                        {editType == '' && (
-                          <div className="col-lg-12">
-                            <TextField
-                              label="Topic"
-                              type="text"
-                              disabled={isQuizGenerated}
-                              value={topic}
-                              onChange={(e) => setTopic(e.target.value)}
-                              fullWidth
-                            />
+                      {editType == '' && (
+                        <div className="col-lg-12">
+                          <TextField
+                            label="Topic"
+                            type="text"
+                            disabled={isQuizGenerated}
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            fullWidth
+                          />
 
-                            {topic_error && (
-                              <p className="error-text " style={{ color: 'red' }}>
-                                <small> Please enter a valid Topic</small>
-                              </p>
-                            )}
-                          </div>
-                        )
-                        }
+                          {topic_error && (
+                            <p className="error-text " style={{ color: 'red' }}>
+                              <small> Please enter a valid Topic</small>
+                            </p>
+                          )}
+                        </div>
+                      )
+                      }
 
-                      </>
-                    ) : null}
+                    </>
+                  ) : null}
 
                     <div className="col-12">
                       <label className="col-form-label">
@@ -2779,7 +2775,7 @@ export const CreateAssignments = () => {
                         )}
                       </Box>
                     </div>
-                    <div className="col-lg-12">
+                    <div className="col-lg-12 mt-4">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className="row g-4">
                           <div className="col-lg-4">
@@ -2986,7 +2982,7 @@ export const CreateAssignments = () => {
                             style={{ marginTop: 20 }}
                             onClick={
                               assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated'?() => submitAssignment(false, 'json', assignmentJsonQuestions):submitAssignment
+                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : submitAssignment
                                 : () => handleSubmitQuiz(false)
                             }
                           >
