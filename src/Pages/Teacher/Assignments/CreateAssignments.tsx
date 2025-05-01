@@ -155,6 +155,7 @@ export const CreateAssignments = () => {
   const [file_error, setFile_error] = useState(false);
   const [point_error, setPoint_error] = useState(false);
   const [instructions_error, setInstructoins_error] = useState(false);
+  const [configInstructions_error, setConfigInstructoins_error] = useState(false);
   const [contact_email_email, setContact_email_error] = useState(false);
   const [availableFrom_error, setAvailableFrom_error] = useState(false);
   const [due_date_error, setDue_date_error] = useState(false);
@@ -950,14 +951,8 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append(
-      'points',
-      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
-    );
-    formData.append(
-      'save_draft',
-      saveAsDraft == true ? String(saveAsDraft) : String(saveAsDrafts),
-    );
+    formData.append('points', assignmentDataType == 'json' ? totalMarks : assignmentData.points);
+    formData.append('save_draft', saveAsDraft == true ? String(saveAsDraft) : String(saveAsDraft));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     if (questions) {
@@ -1141,7 +1136,7 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
     if (assignmentData)
-      if (assignmentData.instructions == '') {
+      if (assignmentData.instructions == '<p><br></p>') {
         setInstructoins_error(true);
 
         valid1 = true;
@@ -1189,6 +1184,15 @@ export const CreateAssignments = () => {
       valid1 = true;
     } else {
       setErrorSelectStudent(false);
+    }
+
+    if(type == 'assignment'){
+      if(configInstructions==''){
+        setConfigInstructoins_error(true);
+        valid1 = true;
+      }else{
+        setConfigInstructoins_error(false);
+      }
     }
 
     if (type !== 'assignment') {
@@ -1320,10 +1324,10 @@ export const CreateAssignments = () => {
     }
 
     let valid1 = false;
+    console.log(assignmentData.instructions)
     if (assignmentData)
-      if (assignmentData.instructions == '') {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions=='<p></p>') {
         setInstructoins_error(true);
-
         valid1 = true;
       } else {
         setInstructoins_error(false);
@@ -1686,6 +1690,7 @@ export const CreateAssignments = () => {
           setSelectAll(false);
         }
         if (name == 'subjects') {
+          setSelectedStudents([]);
           const filteredStudents = listOfStudent?.filter((student) => {
             const matchedSubject = totleSubject?.find(
               (subject) =>
@@ -1772,6 +1777,7 @@ export const CreateAssignments = () => {
           setSelectAll(false);
         }
         if (name == 'subjects') {
+          setSelectedStudents([])
           const filteredStudents = listOfStudent?.filter((student) => {
             const matchedSubject = totleSubject?.find(
               (subject) =>
@@ -1900,6 +1906,7 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
   };
+  console.log(assignmentData);
   return (
     <div className="main-wrapper pb-5">
       <div className="main-content">
@@ -1929,9 +1936,12 @@ export const CreateAssignments = () => {
             value={assignmentType}
             exclusive
             onChange={(_, newValue) => {
-              if (newValue !== null) {
-                setAssignmentType(newValue);
+              if(!id){
+                if (newValue !== null) {
+                  setAssignmentType(newValue);
+                }
               }
+             
             }}
             className="assignbtngrp"
           >
@@ -2359,7 +2369,7 @@ export const CreateAssignments = () => {
                     <label className="col-form-label">
                       Instructions for students<span>*</span>
                     </label>
-                    <div className="mb-4 mb-lg-0" style={{ minHeight: '162px', borderRadius: '8px' }}>
+                    <div className="mb-4" style={{ minHeight: '162px', borderRadius: '8px' }}>
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2392,9 +2402,9 @@ export const CreateAssignments = () => {
                           onChange={(e) => setConfigInstructions(e.target.value)}
                           rows={3}
                         />
-                        {instructions_error && (
+                        {configInstructions_error && (
                           <p className="error-text" style={{ color: 'red' }}>
-                            <small>Please enter Instructions.</small>
+                            <small>Please enter configuration Instructions.</small>
                           </p>
                         )}
                       </div>
@@ -2986,7 +2996,7 @@ export const CreateAssignments = () => {
                             style={{ marginTop: 20 }}
                             onClick={
                               assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : submitAssignment
+                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) :()=> submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >
