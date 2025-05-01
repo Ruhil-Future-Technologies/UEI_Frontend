@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useApi from '../../../hooks/useAPI';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
@@ -28,7 +28,7 @@ const StudentAssignments = () => {
 
   const [activeAssignmentData, setActiveAssignmentData] = useState<Assignment[]>([]);
   const [upcomingAssignmentData, setUpcomingAssignmentData] = useState<Assignment[]>([]);
-  const [gradedAssignmentData, setGradedAssignmentData] = useState<Assignment[]>([]);
+  //const [gradedAssignmentData, setGradedAssignmentData] = useState(0);
 
   const [assignmentsSubmited, setAssignmentsSubmited] = useState<any[]>([]);
   const columns: MRT_ColumnDef<Assignment>[] = [
@@ -139,28 +139,6 @@ const StudentAssignments = () => {
       header: 'Teacher',
     },
   ];
-  const quizStats = [
-    {
-      icon: <AssignmentIcon color='success' />,
-      title: 'Total Assignments',
-      value: assignmentData.length,
-    },
-    {
-      icon: <CheckCircle color="success" />,
-      title: 'Active Assignments',
-      value: activeAssignmentData.length,
-    },
-    {
-      icon: <Event color="warning" />,
-      title: 'Upcoming Assignments',
-      value: upcomingAssignmentData.length,
-    },
-    {
-      icon: <ListAlt color="info" />,
-      title: 'Completed Assignments',
-      value: gradedAssignmentData.length,
-    },
-  ];
   useEffect(() => {
     getListOfAssignments();
     getAssignmentsSubmited();
@@ -180,7 +158,6 @@ const StudentAssignments = () => {
             const datetime = new Date();
             setActiveAssignmentData(filteredAssignment.filter((assignment: any) => new Date(assignment.due_date_time) > datetime))
             setUpcomingAssignmentData(filteredAssignment.filter((assignment: any) => new Date(assignment.available_from) > datetime))
-            setGradedAssignmentData((filteredAssignment.filter((assignment: any) => isAssignmentSubmited(assignment?.id).label == 'Graded')))
           }
         },
       );
@@ -260,6 +237,33 @@ const StudentAssignments = () => {
   const openAssignment = (id: any) => {
     navigate(`/main/student/view-and-submit/${id}`)
   }
+  const gradedCount = useMemo(() => {
+    return assignmentData.filter((assignment: any) => 
+      isAssignmentSubmited(assignment?.id).label === 'Graded'
+    ).length;
+  }, [assignmentData]);
+  const AssignmentsCounts = [
+    {
+      icon: <AssignmentIcon color='success' />,
+      title: 'Total Assignments',
+      value: assignmentData.length,
+    },
+    {
+      icon: <CheckCircle color="success" />,
+      title: 'Active Assignments',
+      value: activeAssignmentData.length,
+    },
+    {
+      icon: <Event color="warning" />,
+      title: 'Upcoming Assignments',
+      value: upcomingAssignmentData.length,
+    },
+    {
+      icon: <ListAlt color="info" />,
+      title: 'Completed Assignments',
+      value: gradedCount,
+    },
+  ];
   return (
     <>
       <div className="main-wrapper">
@@ -284,7 +288,7 @@ const StudentAssignments = () => {
 
           <Box>
             <Grid container spacing={2}>
-              {quizStats.map((stat, index) => (
+              {AssignmentsCounts.map((stat, index) => (
                 <Grid item xs={12} sm={3} key={index}>
                   <div className="rounded-4 card">
                     <div className="card-body d-flex gap-3">
@@ -312,8 +316,12 @@ const StudentAssignments = () => {
               Active Assignment
             </Typography>
             {activeAssignmentData.length > 0 ? (
-              <Grid container spacing={2} gridRow={2}>
-                {activeAssignmentData.map((assignment: any, index) => (
+              <Grid
+                container
+                spacing={2}
+                className='active-assignment-flow'
+              >
+                {activeAssignmentData.reverse().map((assignment: any, index) => (
                   <Grid item xs={12} sm={4} key={index}>
                     <div className="rounded-4 card">
                       <div className="card-body">

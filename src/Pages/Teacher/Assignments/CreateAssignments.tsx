@@ -794,7 +794,7 @@ export const CreateAssignments = () => {
     } else {
       setPoint_error(false);
     }
-    if (name == 'instructions' && value == '') {
+    if (name == 'instructions' && value == '<p><br></p>') {
       setInstructoins_error(true);
     } else {
       setInstructoins_error(false);
@@ -1136,9 +1136,8 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
     if (assignmentData)
-      if (assignmentData.instructions == '<p><br></p>') {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions=='') {
         setInstructoins_error(true);
-
         valid1 = true;
       } else {
         setInstructoins_error(false);
@@ -1324,7 +1323,6 @@ export const CreateAssignments = () => {
     }
 
     let valid1 = false;
-    console.log(assignmentData.instructions)
     if (assignmentData)
       if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions=='<p></p>') {
         setInstructoins_error(true);
@@ -1870,7 +1868,12 @@ export const CreateAssignments = () => {
     } else {
       setTopic_error(false);
     }
-  }, [dueDate, availableFrom, dueTime, level, topic]);
+    if(configInstructions=='' && assignmentType == 'ai generated'){
+      setConfigInstructoins_error(true)
+    }else{
+      setConfigInstructoins_error(false)
+    }
+  }, [dueDate, availableFrom, dueTime, level, topic,configInstructions]);
   const handleQuestionmap = () => {
     if (questionKey && questionValue) {
       setQuestions_error(false);
