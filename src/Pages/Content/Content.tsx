@@ -20,6 +20,7 @@ import {
   QUERY_KEYS_CLASS,
   QUERY_KEYS_CONTENT,
   QUERY_KEYS_COURSE,
+  QUERY_KEYS_TEACHER,
 } from '../../utils/const';
 import { toast } from 'react-toastify';
 import { DeleteDialog } from '../../Components/Dailog/DeleteDialog';
@@ -46,6 +47,8 @@ const Content = () => {
   const [collegeInstitutes, setCollegeInstitutes] = useState<any[]>([]);
   const [dataClasses, setDataClasses] = useState<any>([]);
   const [dataCourses, setDataCourses] = useState<any>([]);
+  const [teacherDetail, setTeacherDetail] = useState<any>([]);
+  const [instituteDetails, setInstituteDetail] = useState<any>([]);
 
   const user_type = localStorage.getItem('user_type');
   const user_uuid = localStorage.getItem('user_uuid');
@@ -100,6 +103,17 @@ const Content = () => {
   };
 
   const callAPI = async () => {
+    if (user_type === 'teacher') {
+      getData(`${QUERY_KEYS_TEACHER.GET_TECHER_BY_UUID}/${user_uuid}`).then(
+        (response) => {
+          setTeacherDetail(response?.data);
+        },
+      );
+    } else if (user_type === 'institute') {
+      getData(`${QUERY_KEYS.INSTITUTE_EDIT}/${user_uuid}`).then((response) => {
+        setInstituteDetail(response?.data);
+      });
+    }
     getData('/entity/list').then((data) => {
       if (data.status) {
         setEntity(data.data?.entityes_data);
@@ -167,105 +181,125 @@ const Content = () => {
   };
 
   useEffect(() => {
-    if (user_type === 'admin') {
-      if (activeTab === 0) {
-        const college: any = entity.filter(
-          (ent) => ent.entity_type == 'college',
-        );
+    const configureForSchool = () => {
+      const school = entity.filter((ent) => ent.entity_type === 'school')[0];
 
-        setTimeout(() => {
-          setColumnVisibility({
-            university_name: true,
-            course_name: true,
-            class_name: false,
-            class_stream_subjects: false,
-          });
-          const updatedColumns = columns11.map((column) => {
-            if (column.accessorKey === 'institute_name') {
-              return {
-                ...column,
-                header: 'College Name',
-              };
-            }
-            return column;
-          });
-          setColumns(updatedColumns);
-        }, 0);
+      setColumnVisibility({
+        university_name: false,
+        course_name: false,
+        course_semester_subjects: false,
+      });
 
-        const collegeContents = dataContent
-          .filter((content) => content.entity_id == college[0]?.id)
-          .map((content) => {
-            const parsed =
-              typeof content?.course_semester_subjects === 'string'
-                ? JSON.parse(content.course_semester_subjects)
-                : content?.course_semester_subjects;
+      const updatedColumns = columns11.map((column) => {
+        return column.accessorKey === 'institute_name'
+          ? { ...column, header: 'School Name' }
+          : column;
+      });
+      setColumns(updatedColumns);
 
-            const keys = parsed ? Object.keys(parsed) : [];
+      return processSchoolContents(school?.id);
+    };
 
-            const sub_name = getSubjectsName(parsed, 'college');
+    const configureForCollege = () => {
+      const college = entity.filter((ent) => ent.entity_type === 'college')[0];
 
-            return {
-              ...content,
-              institute_name: getInstituteName(content.institute_id, 'college'),
-              university_name: getUniversityName(content.university_id),
-              course_name: getCourseOrClassName(keys, 'college'),
-              class_name: null,
-              className: '-',
-              subjects: sub_name,
-            };
-          });
-
-        setFilteredContent(
-          collegeContents.filter((content) => content.created_by === user_uuid),
-        );
-      } else if (activeTab === 1) {
-        const school: any = entity.filter((ent) => ent.entity_type == 'school');
-
+      setTimeout(() => {
         setColumnVisibility({
-          university_name: false,
-          course_name: false,
-          course_semester_subjects: false,
+          university_name: true,
+          course_name: true,
+          class_name: false,
+          class_stream_subjects: false,
         });
+
         const updatedColumns = columns11.map((column) => {
-          if (column.accessorKey === 'institute_name') {
-            return {
-              ...column,
-              header: 'School Name',
-            };
-          }
-          return column;
+          return column.accessorKey === 'institute_name'
+            ? { ...column, header: 'College Name' }
+            : column;
         });
         setColumns(updatedColumns);
-        const schoolContents = dataContent
-          .filter((content) => content.entity_id == school[0]?.id)
-          .map((content) => {
-            let classStreamSubjects = content.class_stream_subjects;
+      }, 0);
 
-            if (typeof classStreamSubjects === 'string') {
-              classStreamSubjects = JSON.parse(classStreamSubjects);
-            }
+      return processCollegeContents(college?.id);
+    };
 
-            const keys = Object.keys(classStreamSubjects);
+    const processSchoolContents = (entityId: any) => {
+      return dataContent
+        .filter((content) => content.entity_id == entityId)
+        .map((content) => {
+          let classStreamSubjects = content.class_stream_subjects;
+          if (typeof classStreamSubjects === 'string') {
+            classStreamSubjects = JSON.parse(classStreamSubjects);
+          }
+          const keys = Object.keys(classStreamSubjects);
+          const sub_name = getSubjectsName(classStreamSubjects, 'school');
 
-            const sub_name = getSubjectsName(classStreamSubjects, 'school');
+          return {
+            ...content,
+            institute_name: getInstituteName(content.institute_id, 'school'),
+            class_name: getCourseOrClassName(keys, 'school'),
+            course_semester_subjects: null,
+            university_name: null,
+            course_name: null,
+            subjects: sub_name,
+          };
+        });
+    };
 
-            return {
-              ...content,
-              institute_name: getInstituteName(content.institute_id, 'school'),
-              class_name: getCourseOrClassName(keys, 'school'),
-              course_semester_subjects: null,
-              university_name: null,
-              course_name: null,
-              subjects: sub_name,
-            };
-          });
+    const processCollegeContents = (entityId: any) => {
+      return dataContent
+        .filter((content) => content.entity_id == entityId)
+        .map((content) => {
+          const parsed =
+            typeof content?.course_semester_subjects === 'string'
+              ? JSON.parse(content.course_semester_subjects)
+              : content?.course_semester_subjects;
+          const keys = parsed ? Object.keys(parsed) : [];
+          const sub_name = getSubjectsName(parsed, 'college');
 
-        setFilteredContent(schoolContents);
+          return {
+            ...content,
+            institute_name: getInstituteName(content.institute_id, 'college'),
+            university_name: getUniversityName(content.university_id),
+            course_name: getCourseOrClassName(keys, 'college'),
+            class_name: null,
+            className: '-',
+            subjects: sub_name,
+          };
+        });
+    };
+
+    let filteredResults;
+
+    if (user_type === 'admin') {
+      filteredResults =
+        activeTab === 0 ? configureForCollege() : configureForSchool();
+    } else {
+      const entityType =
+        user_type === 'institute'
+          ? instituteDetails?.entity_type
+          : teacherDetail?.entity_type;
+
+      filteredResults =
+        entityType === 'school' ? configureForSchool() : configureForCollege();
+
+      if (user_type === 'institute' || user_type === 'teacher') {
+        filteredResults = filteredResults.filter(
+          (content) => content.created_by === user_uuid,
+        );
       }
-    } else if (user_type === 'institute' || user_type === 'teacher') {
-      setFilteredContent(dataContent);
     }
-  }, [activeTab, dataContent, entity, columns11]);
+
+    setFilteredContent(filteredResults);
+  }, [
+    activeTab,
+    dataContent,
+    entity,
+    columns11,
+    instituteDetails,
+    teacherDetail,
+    user_type,
+    user_uuid,
+  ]);
 
   const handleEditFile = (id: number) => {
     const current_content = dataContent.find((content) => content.id == id);
