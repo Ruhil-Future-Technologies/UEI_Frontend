@@ -208,6 +208,12 @@
     border-color: #d5d5d5 !important;
     color: #d5d5d5 !important;
   }
+  .fileslistitem {
+    background-color: #32363b!important;
+     &:hover{
+    background-color: #495057!important;
+  }
+  }
   .bg-light,
   .chat-header,
   .chat-footer {
