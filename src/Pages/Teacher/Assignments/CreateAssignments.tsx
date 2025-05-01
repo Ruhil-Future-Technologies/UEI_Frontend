@@ -866,7 +866,7 @@ export const CreateAssignments = () => {
         setPoint_error(false);
       }
     }
-    if (assignmentData.instructions == '') {
+    if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
       setInstructoins_error(true);
       valid1 = true;
     } else {
@@ -1136,7 +1136,7 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
     if (assignmentData)
-      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions=='') {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '') {
         setInstructoins_error(true);
         valid1 = true;
       } else {
@@ -1185,11 +1185,11 @@ export const CreateAssignments = () => {
       setErrorSelectStudent(false);
     }
 
-    if(type == 'assignment'){
-      if(configInstructions==''){
+    if (type == 'assignment') {
+      if (configInstructions == '') {
         setConfigInstructoins_error(true);
         valid1 = true;
-      }else{
+      } else {
         setConfigInstructoins_error(false);
       }
     }
@@ -1324,7 +1324,7 @@ export const CreateAssignments = () => {
 
     let valid1 = false;
     if (assignmentData)
-      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions=='<p></p>') {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
         setInstructoins_error(true);
         valid1 = true;
       } else {
@@ -1816,7 +1816,12 @@ export const CreateAssignments = () => {
     }));
 
     if (assignmentType !== 'quiz') {
-      submitAssignment(true);
+      if (assignmentType == 'ai generated') {
+        submitAssignment(true, "json");
+      } else {
+        submitAssignment(true);
+      }
+
     } else {
       handleSubmitQuiz(true, updatedPayload);
     }
@@ -1868,12 +1873,12 @@ export const CreateAssignments = () => {
     } else {
       setTopic_error(false);
     }
-    if(configInstructions=='' && assignmentType == 'ai generated'){
+    if (configInstructions == '' && assignmentType == 'ai generated') {
       setConfigInstructoins_error(true)
-    }else{
+    } else {
       setConfigInstructoins_error(false)
     }
-  }, [dueDate, availableFrom, dueTime, level, topic,configInstructions]);
+  }, [dueDate, availableFrom, dueTime, level, topic, configInstructions]);
   const handleQuestionmap = () => {
     if (questionKey && questionValue) {
       setQuestions_error(false);
@@ -1921,6 +1926,18 @@ export const CreateAssignments = () => {
               Dashboard
             </Link>
           </div>
+          {
+            assignmentType != 'quiz' && (
+              <div className="breadcrumb-title pe-3 ms-2">
+                <div className="d-flex gap-1 align-items-center" role='button'>
+                  <Link to={'/teacher-dashboard/assignments'} className="text-dark">
+                    Assignments List
+                  </Link>
+                </div>
+
+              </div>
+            )
+          }
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
@@ -1939,12 +1956,12 @@ export const CreateAssignments = () => {
             value={assignmentType}
             exclusive
             onChange={(_, newValue) => {
-              if(!id){
+              if (!id) {
                 if (newValue !== null) {
                   setAssignmentType(newValue);
                 }
               }
-             
+
             }}
             className="assignbtngrp"
           >
@@ -2969,18 +2986,23 @@ export const CreateAssignments = () => {
                         (assignmentType == 'ai generated' &&
                           isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() =>
-                              assignmentType === 'quiz'
-                                ? setIsModalOpen(true)
-                                : setAssignmentModalOpen(true)
-                            }
-                            style={{ marginTop: 20 }}
-                          >
-                            Preview
-                          </Button>
+                          {
+                            assignmentType != 'written' && (
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() =>
+                                  assignmentType === 'quiz'
+                                    ? setIsModalOpen(true)
+                                    : setAssignmentModalOpen(true)
+                                }
+                                style={{ marginTop: 20 }}
+                              >
+                                Preview
+                              </Button>
+                            )
+                          }
+
 
                           <Button
                             variant="outlined"
@@ -2999,7 +3021,7 @@ export const CreateAssignments = () => {
                             style={{ marginTop: 20 }}
                             onClick={
                               assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) :()=> submitAssignment(false)
+                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : () => submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >
