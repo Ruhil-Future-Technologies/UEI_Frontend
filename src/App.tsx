@@ -332,6 +332,10 @@ function App() {
             element={<Protected Component={TeacherChat} />}
           />
           <Route
+            path="/teacher-dashboard/chat/:Id"
+            element={<Protected Component={TeacherChat} />}
+          />
+          <Route
             path="/teacher-dashboard/profile"
             element={<Protected Component={TeacherProfile} />}
           />
