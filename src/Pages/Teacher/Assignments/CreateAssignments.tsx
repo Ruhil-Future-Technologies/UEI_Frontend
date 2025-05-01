@@ -1156,11 +1156,14 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
+    const now = dayjs();
 
-    if (availableFrom == null) {
+    const tenMinutesFromNow = now.add(10, 'minute');
+
+    if (availableFrom == null || availableFrom.isBefore(tenMinutesFromNow)) {
       setAvailableFrom_error(true);
-
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -1582,13 +1585,27 @@ export const CreateAssignments = () => {
       setError(null);
       return;
     }
+
+    const now = dayjs();
     const today = dayjs().startOf('day');
-    if (newDate.isBefore(today)) {
-      setError('Please select today or a future date.');
-    } else if (dueDate && newDate.isAfter(dueDate)) {
-      setError('Available From should be less than Due Date');
+    const tenMinutesFromNow = now.add(10, 'minute');
+
+    if (assignmentType != 'quiz') {
+      if (newDate.isBefore(today)) {
+        setError('Please select today or a future date.');
+      } else if (dueDate && newDate.isAfter(dueDate)) {
+        setError('Available From should be less than Due Date');
+      } else {
+        setError(null);
+      }
     } else {
-      setError(null);
+      if (type == 'quiz' && newDate.isBefore(tenMinutesFromNow)) {
+        setError('Please select a time at least 10 minutes in the future.');
+      } else if (dueDate && newDate.isAfter(dueDate)) {
+        setError('Available From should be less than Due Date');
+      } else {
+        setError(null);
+      }
     }
   };
 
@@ -1651,6 +1668,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
+    setSelectedStudents([]);
     const { value, name } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes?.map((box, i) => {
@@ -1707,6 +1725,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
+    setSelectedStudents([]);
     const { value, name } = event.target;
 
     setBoxesForSchool((prevBoxes) =>
