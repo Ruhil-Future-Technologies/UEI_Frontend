@@ -1875,7 +1875,7 @@ export const CreateAssignments = () => {
       setQuestionKey('');
     }
   };
-  const handleDelete = (key: any, index: number) => {
+  const handleDelete = (key: any, _value: any, index: number) => {
     const filteredQuestion = questionMap?.filter(
       (_: any, ind: number) => ind !== index,
     );
@@ -1889,6 +1889,7 @@ export const CreateAssignments = () => {
     }
   };
   return (
+   
     <div className="main-wrapper pb-5">
       <div className="main-content">
         {loading && <FullScreenLoader />}
