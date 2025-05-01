@@ -112,6 +112,11 @@ import TeacherQuizPage from './Pages/Teacher/Quiz';
 import { QUERY_KEYS } from './utils/const';
 import { toast } from 'react-toastify';
 import useApi from './hooks/useAPI';
+import ParentDashboard from './Pages/Parent/ParentDashboard';
+import ParentMain from './Pages/Parent';
+import ParentFeedback from './Pages/Parent/ParentFeedback';
+import ParentChat from './Pages/Parent/ParentChat';
+import ParentProfile from './Pages/Parent/ParentProfile';
 
 function App() {
   const navigate = useNavigate();
@@ -382,6 +387,27 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+        </Route>
+
+        <Route path="/parent-dashboard" element={<ParentMain />}>
+          <Route
+            path=""
+            element={
+              <Protected Component={ParentDashboard} menuName="parentdash" />
+            }
+          />
+          <Route
+            path="/parent-dashboard/chat"
+            element={<Protected Component={ParentChat} />}
+          />
+          <Route
+            path="/parent-dashboard/profile"
+            element={<Protected Component={ParentProfile} />}
+          />
+          <Route
+            path="/parent-dashboard/feedback"
+            element={<Protected Component={ParentFeedback} />}
+          />
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}

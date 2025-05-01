@@ -247,9 +247,9 @@ const TeacherQuizPage = () => {
   };
 
   return (
-    <div className="main-wrapper">
+    <div className="main-wrapper pb-5 pb-lg-4">
       <div className="main-content">
-        <div className="page-breadcrumb d-none d-sm-flex align-items-center ">
+        <div className="page-breadcrumb d-flex align-items-center ">
           <div className="breadcrumb-title pe-3">
             <Link to={'/main/dashboard'} className="text-dark">
               Dashboard
@@ -266,8 +266,8 @@ const TeacherQuizPage = () => {
           </div>
         </div>
 
-        <div className="row gy-4 mt-4">
-          <div className="col-lg-3">
+        <div className="row gy-4 mt-1">
+          <div className="col-md-6 col-lg-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -288,7 +288,7 @@ const TeacherQuizPage = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-3">
+          <div className="col-md-6 col-lg-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -388,8 +388,8 @@ const TeacherQuizPage = () => {
                 <div className="row g-3">
                   {filteredQuizzes.length > 0 ? (
                     filteredQuizzes.map((quiz, index) => (
-                      <div className="col-md-4" key={index}>
-                        <div className="card mb-0">
+                      <div className="col-md-6 col-lg-3 col-xl-4" key={index}>
+                        <div className="card mb-0 h-100">
                           <div className="card-body">
                             <Box
                               display="flex"
