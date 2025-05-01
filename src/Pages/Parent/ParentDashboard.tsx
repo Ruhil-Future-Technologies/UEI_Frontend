@@ -13,12 +13,23 @@ import {
   FormControl,
   Card,
   Typography,
-  Box
+  Box,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
+
+import StudentProfile from '../../assets/img/avatar3.jpg';
+import {
+  Assignment,
+  QuestionMark,
+  Quiz,
+  RemoveRedEyeOutlined,
+  VisibilitySharp,
+} from '@mui/icons-material';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 const ParentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -48,17 +59,17 @@ const ParentDashboard = () => {
   };
 
   return (
-    <div className="main-wrapper">
+    <div className="main-wrapper pb-4">
       <div className="main-content p-0">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <div>
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               onClick={() => setOpen(true)}
             >
               Open Parent Verification Form
-            </Button>
+            </Button> */}
 
             <Dialog
               open={open}
@@ -68,12 +79,12 @@ const ParentDashboard = () => {
             >
               <DialogTitle>Parent Verification</DialogTitle>
               <DialogContent dividers>
-                <Grid container spacing={2} >
+                <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <TextField
                       label="First Name"
                       fullWidth
-                      size='small'
+                      size="small"
                       value={formData.fname}
                       onChange={(e) => handleChange('fname', e.target.value)}
                     />
@@ -82,7 +93,7 @@ const ParentDashboard = () => {
                     <TextField
                       label="Last Name"
                       fullWidth
-                       size='small'
+                      size="small"
                       value={formData.lname}
                       onChange={(e) => handleChange('lname', e.target.value)}
                     />
@@ -91,7 +102,7 @@ const ParentDashboard = () => {
                     <TextField
                       label="Email"
                       fullWidth
-                       size='small'
+                      size="small"
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleChange('email', e.target.value)}
@@ -101,13 +112,13 @@ const ParentDashboard = () => {
                     <TextField
                       label="Phone Number"
                       fullWidth
-                       size='small'
+                      size="small"
                       value={formData.phone}
                       onChange={(e) => handleChange('phone', e.target.value)}
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <FormControl fullWidth  size='small'>
+                    <FormControl fullWidth size="small">
                       <InputLabel>Gender</InputLabel>
                       <Select
                         label="Gender"
@@ -127,7 +138,9 @@ const ParentDashboard = () => {
                       onChange={(newValue: Dayjs | null) =>
                         handleChange('dob', newValue ?? dayjs())
                       }
-                      slotProps={{ textField: { fullWidth: true, size: "small" } }}
+                      slotProps={{
+                        textField: { fullWidth: true, size: 'small' },
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -244,21 +257,28 @@ const ParentDashboard = () => {
                 id="pills-rahul"
                 role="tabpanel"
               >
-                <div className="row">
+                <div className="row g-4">
                   <div className="col-lg-3">
-                    <div className="card w-100 overflow-hidden rounded-4 shadow-none desk-card">
-                      <div className="card-header bg-primary-20 border-bottom-0">
+                    <div className="card cardwithshadow bg-primary-subtle">
+                      <div className="card-header">
                         <div className="row">
                           <div className="col-12">
                             <div className="d-flex align-items-center gap-lg-3 gap-2 mobile-profile">
+                              <img
+                                src={StudentProfile}
+                                className="rounded-circle img-fluid bg-grd-info p-1"
+                                width="80"
+                                height="80"
+                                alt="user"
+                              />
                               <div className="w-100">
                                 <div className="d-flex justify-content-between align-items-start mb-2 mb-lg-0">
                                   <div className="">
-                                    <h4 className="fw-semibold mb-0 fs-18 mb-0">
-                                      rahul
+                                    <h4 className="fw-semibold mb-1 fs-18 mb-0">
+                                      Rahul Sharma
                                     </h4>
-                                    <small className="mb-lg-3 mb-1 d-block ">
-                                      EEE
+                                    <small className="mb-0 d-block ">
+                                      Grade 10-A | Student ID: 2024-0123
                                     </small>
                                   </div>
                                 </div>
@@ -266,6 +286,214 @@ const ParentDashboard = () => {
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div className="card-body position-relative">
+                        <div className="d-flex align-items-center justify-content-between gap-2 mb-3">
+                          <div>
+                            <h6 className="mb-0 fw-normal fs-14">Status</h6>
+                          </div>
+
+                          <div className="form-check form-switch mb-0 ">
+                            <input
+                              className="form-check-input fs-5 m-0"
+                              type="checkbox"
+                              id="status"
+                              checked={true}
+                              readOnly
+                            />
+                          </div>
+                        </div>
+
+                        <div className="d-flex align-items-center gap-3 mb-3">
+                          <div className="flex-grow-1">
+                            <h6 className="mb-0 fw-normal fs-14">
+                              Chat History
+                            </h6>
+                          </div>
+                          <div>10</div>
+                        </div>
+
+                        <div className="d-flex align-items-center gap-3">
+                          <div className="flex-grow-1">
+                            <h6 className="mb-0 fw-normal fs-14">Saved Chat</h6>
+                          </div>
+                          <div>8</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-3">
+                    <div className="row g-4">
+                      <div className="col-12">
+                        <div className="card cardwithshadow">
+                          <div className="card-body">
+                            <div className="card-content">
+                              <span className="with-circle blue-circle">
+                                <Assignment />
+                              </span>
+                              <div className="">
+                                <h1>85 %</h1>
+                                <p>Assignments Completed</p>
+                              </div>
+                              <div className="fixed-icon">
+                                <Tooltip title="View All">
+                                  <IconButton size="small">
+                                    <QuestionMark fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="col-12">
+                        <div className="card cardwithshadow">
+                          <div className="card-body">
+                            <div className="card-content">
+                              <span className="with-circle orange-circle">
+                                <Quiz />
+                              </span>
+                              <div className="">
+                                <h1>85 %</h1>
+                                <p>Quizess Completed</p>
+                              </div>
+                              <div className="fixed-icon">
+                                <Tooltip title="View All">
+                                  <IconButton size="small">
+                                    <VisibilitySharp fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-3">
+                    <div className="card cardwithshadow">
+                      <div className="card-body">
+                        <h6 className="fw-bold">Reports</h6>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-3">
+                    <div className="card cardwithshadow bg-warning">
+                      <div className="card-body">
+                        <h6 className="fw-bold">Notifications</h6>
+
+                        <ul className="with-arrow">
+                          <li>
+                            Class 8th Results will be declared on{' '}
+                            <span className="text-danger">25-Dec-2025</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-6">
+                    <div className="card cardwithshadow">
+                      <div className="card-body">
+                        <h6 className="fw-bold">Subject Teachers</h6>
+                        <table className="table table-borderless">
+                          <thead>
+                            <tr>
+                              <th>Subject</th>
+                              <th>Teacher Name</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Math</td>
+                              <td>Surendar Sharma</td>
+                              <td>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<RemoveRedEyeOutlined />}
+                                >
+                                  View Details
+                                </Button>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>Math</td>
+                              <td>Surendar Sharma</td>
+                              <td>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<RemoveRedEyeOutlined />}
+                                >
+                                  View Details
+                                </Button>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>Math</td>
+                              <td>Surendar Sharma</td>
+                              <td>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<RemoveRedEyeOutlined />}
+                                >
+                                  View Details
+                                </Button>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>Math</td>
+                              <td>Surendar Sharma</td>
+                              <td>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<RemoveRedEyeOutlined />}
+                                >
+                                  View Details
+                                </Button>
+                              </td>
+                            </tr>
+
+
+                            <tr>
+                              <td>Math</td>
+                              <td>Surendar Sharma</td>
+                              <td>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<RemoveRedEyeOutlined />}
+                                >
+                                  View Details
+                                </Button>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>Math</td>
+                              <td>Surendar Sharma</td>
+                              <td>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<RemoveRedEyeOutlined />}
+                                >
+                                  View Details
+                                </Button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
