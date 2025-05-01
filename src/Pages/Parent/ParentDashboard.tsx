@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Chart from 'react-apexcharts';
 
 const ParentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -42,6 +43,59 @@ const ParentDashboard = () => {
     dob: dayjs(),
     photo: null as File | null,
   });
+
+  const barChartOptions = {
+    chart: {
+      id: 'chart5',
+      height: 295,
+      width: '100%',
+      toolbar: {
+        show: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 5,
+        horizontal: false,
+        columnWidth: '50%',
+      },
+    },
+    xaxis: {
+      categories: ['Math', 'Science', 'English', 'Hindi', 'Art', 'GK', 'Msc'],
+    },
+    grid: {
+      show: false,
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['#9943EC'], // Green border for the bars
+    },
+    colors: ['#9943EC'],
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        type: 'vertical',
+        shadeIntensity: 0.5,
+        gradientToColors: ['#9943EC'],
+        inverseColors: true,
+        // opacityFrom: 0.85,
+        // opacityTo: 0.85,
+        stops: [50, 80],
+      },
+    },
+  };
+
+  const barChartSeries = [
+    {
+      name: 'Data',
+      data: [10, 69, 35, 100, 30, 25, 30], // The values based on the chart
+    },
+  ];
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -59,7 +113,7 @@ const ParentDashboard = () => {
   };
 
   return (
-    <div className="main-wrapper pb-4">
+    <div className="main-wrapper pb-5 pb-lg-4">
       <div className="main-content p-0">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <div>
@@ -398,7 +452,25 @@ const ParentDashboard = () => {
                   <div className="col-lg-6">
                     <div className="card cardwithshadow">
                       <div className="card-body">
-                        <h6 className="fw-bold">Subject Teachers</h6>
+                        <h6>Student Performance</h6>
+
+                        <div className="mt-4">
+                          <Chart
+                            options={barChartOptions}
+                            series={barChartSeries}
+                            type="bar"
+                            height={'280px'}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-lg-6">
+                    <div className="card cardwithshadow">
+                      <div className="card-body">
+                        <h6 className='mb-4'>Subject Teachers</h6>
+                        <div className="table-resposnive">
                         <table className="table table-borderless">
                           <thead>
                             <tr>
@@ -464,7 +536,6 @@ const ParentDashboard = () => {
                               </td>
                             </tr>
 
-
                             <tr>
                               <td>Math</td>
                               <td>Surendar Sharma</td>
@@ -479,21 +550,10 @@ const ParentDashboard = () => {
                               </td>
                             </tr>
 
-                            <tr>
-                              <td>Math</td>
-                              <td>Surendar Sharma</td>
-                              <td>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<RemoveRedEyeOutlined />}
-                                >
-                                  View Details
-                                </Button>
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
+                        </div>
+                        
                       </div>
                     </div>
                   </div>

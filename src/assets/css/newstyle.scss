@@ -3187,6 +3187,11 @@ a {
     p{
       margin-bottom: 0;
     }
+
+    @media (max-width:724px) {
+      padding: 1rem;
+      
+    }
   }
 
   .studentstabdata{
@@ -3226,11 +3231,18 @@ a {
 
         
       }
+
+      @media (max-width:724px) {
+        margin: 0 1rem;
+      }
       
     }
 
     .tab-content{
       padding: 1rem 2rem;
+      @media (max-width:724px) {
+        padding:  1rem;
+      }
     }
   }
 }
