@@ -85,11 +85,11 @@ export interface Assignment {
   add_to_report: boolean;
   notify: boolean;
   created_at?: any;
-  created_by?: any
-  created_by_name?: any
-  is_active?: any
-  is_deleted?: any
-  questions?: any
+  created_by?: any;
+  created_by_name?: any;
+  is_active?: any;
+  is_deleted?: any;
+  questions?: any;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
 type QuestionItem = {
@@ -346,10 +346,10 @@ export const CreateAssignments = () => {
                   setFiles(response?.data?.files);
                 }
                 if (response?.data?.questions.length > 0) {
-                  setTotalQuestion(response?.data?.questions.length)
+                  setTotalQuestion(response?.data?.questions.length);
                   setAssignmentType('ai generated');
-                  setEditType("ai generated edit")
-                  setAiAssignmentGenerated(true)
+                  setEditType('ai generated edit');
+                  setAiAssignmentGenerated(true);
                   const wrapped = { questions: response?.data?.questions };
                   setAssignmentGenrData(wrapped);
                   setTotalMarks(response?.data?.points);
@@ -388,7 +388,7 @@ export const CreateAssignments = () => {
                       semester_number: semester_number,
                       subjects:
                         response.data.course_semester_subjects[CourseKey][
-                        semester_number
+                          semester_number
                         ],
                       filteredSemesters: allsemesters?.filter(
                         (item) => item.course_id == CourseKey,
@@ -430,20 +430,20 @@ export const CreateAssignments = () => {
                       filteredSubjects:
                         stream == 'general'
                           ? allSubject?.filter(
-                            (item) => item.class_id == classKey,
-                          )
+                              (item) => item.class_id == classKey,
+                            )
                           : allSubject?.filter(
-                            (item) =>
-                              item.class_id == classKey &&
-                              item.stream == stream,
-                          ),
+                              (item) =>
+                                item.class_id == classKey &&
+                                item.stream == stream,
+                            ),
                     })),
                   );
                   const filteredStudents =
                     students?.filter((student) =>
                       output[0].class_id == student.class_id &&
-                        output[0].subjects[0] == student.subject_name &&
-                        output[0].is_Stream
+                      output[0].subjects[0] == student.subject_name &&
+                      output[0].is_Stream
                         ? output[0].stream == student.stream
                         : true,
                     ) || [];
@@ -506,7 +506,7 @@ export const CreateAssignments = () => {
                     semester_number: semester_number,
                     subjects:
                       response.data.course_semester_subjects[CourseKey][
-                      semester_number
+                        semester_number
                       ],
                     filteredSemesters: allsemesters?.filter(
                       (item) => item.course_id == CourseKey,
@@ -524,7 +524,7 @@ export const CreateAssignments = () => {
                     (student) =>
                       Number(output[0].course_id) == student.course_id &&
                       Number(output[0].semester_number) ==
-                      student.semester_number &&
+                        student.semester_number &&
                       output[0].subjects[0] == student.subject_name,
                   ) || [];
 
@@ -551,21 +551,21 @@ export const CreateAssignments = () => {
                     filteredSubjects:
                       stream == 'general'
                         ? allSubject?.filter(
-                          (item) => item.class_id == classKey,
-                        )
+                            (item) => item.class_id == classKey,
+                          )
                         : allSubject?.filter(
-                          (item) =>
-                            item.class_id == classKey &&
-                            item.stream == stream,
-                        ),
+                            (item) =>
+                              item.class_id == classKey &&
+                              item.stream == stream,
+                          ),
                   })),
                 );
 
                 const filteredStudents =
                   students?.filter((student) =>
                     Number(output[0].class_id) == student.class_id &&
-                      output[0].subjects[0] == student.subject_name &&
-                      output[0].is_Stream
+                    output[0].subjects[0] == student.subject_name &&
+                    output[0].is_Stream
                       ? output[0].stream == student.stream
                       : true,
                   ) || [];
@@ -880,6 +880,7 @@ export const CreateAssignments = () => {
     if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -949,14 +950,20 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append('points', assignmentDataType == 'json' ? totalMarks : assignmentData.points);
-    formData.append('save_draft', saveAsDraft == true ? String(saveAsDraft) : String(saveAsDrafts));
+    formData.append(
+      'points',
+      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
+    );
+    formData.append(
+      'save_draft',
+      saveAsDraft == true ? String(saveAsDraft) : String(saveAsDrafts),
+    );
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     if (questions) {
-      formData.append('questions', JSON.stringify(questions))
+      formData.append('questions', JSON.stringify(questions));
     } else {
-      formData.append('questions', [])
+      formData.append('questions', []);
     }
 
     //const students = selectedStudents.map((student) => String(student.id))
@@ -1055,7 +1062,6 @@ export const CreateAssignments = () => {
             notify: false,
             files: [], // File should be null initially
           });
-
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1271,8 +1277,7 @@ export const CreateAssignments = () => {
         number_of_questions: totalQuestions,
       }),
 
-      questions: []
-
+      questions: [],
     };
 
     try {
@@ -1573,7 +1578,14 @@ export const CreateAssignments = () => {
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
     setAvailableFrom(newDate);
-    if (dueDate && newDate && newDate.isAfter(dueDate)) {
+    if (!newDate) {
+      setError(null);
+      return;
+    }
+    const today = dayjs().startOf('day');
+    if (newDate.isBefore(today)) {
+      setError('Please select today or a future date.');
+    } else if (dueDate && newDate.isAfter(dueDate)) {
       setError('Available From should be less than Due Date');
     } else {
       setError(null);
@@ -1657,7 +1669,7 @@ export const CreateAssignments = () => {
             subjects: [],
             filteredSubjects: [],
           };
-          setSelectedStudents([])
+          setSelectedStudents([]);
           setListOfStudentFiltered([]);
           setSelectAll(false);
         }
@@ -1746,7 +1758,7 @@ export const CreateAssignments = () => {
           const filteredSubjects = totleSubject?.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
-              value.toString().toLowerCase() &&
+                value.toString().toLowerCase() &&
               item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
@@ -1755,7 +1767,7 @@ export const CreateAssignments = () => {
             filteredSubjects,
             subjects: [],
           };
-          setSelectedStudents([])
+          setSelectedStudents([]);
           setListOfStudentFiltered([]);
           setSelectAll(false);
         }
@@ -1910,7 +1922,6 @@ export const CreateAssignments = () => {
             </nav>
           </div>
         </div>
-
         <Typography variant="subtitle1" className="my-2">
           Assignment Type
         </Typography>
@@ -1946,34 +1957,31 @@ export const CreateAssignments = () => {
             )}
           </ToggleButtonGroup>
         </div>
-
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="card-body">
-           
-              <div className="row justify-content-center">
-                <div className="col-lg-12">
-                  <div className="row g-4">
-                    <div className="col-12">
-                      <Typography variant="h6" className="mb-4 fw-bold">
-                        Create{' '}
-                        {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
-                      </Typography>
-                      {assignmentType !== 'quiz' && (
-                        <TextField
-                          fullWidth
-                          label="Assignment Title"
-                          variant="outlined"
-                          name="title"
-                          value={assignmentData.title}
-                          onChange={handleChanges}
-                        />
-                      )}
-                      {title_error && assignmentType != 'quiz' && (
-                        <p className="error-text " style={{ color: 'red' }}>
-                          <small> Please enter a valid Title.</small>
-                        </p>
-                      )}
-                    </div>
+            <div className="row justify-content-center">
+              <div className="col-lg-12">
+                <div className="row g-4">
+                  <div className="col-12">
+                    <Typography variant="h6" className="mb-4 fw-bold">
+                      Create {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
+                    </Typography>
+                    {assignmentType !== 'quiz' && (
+                      <TextField
+                        fullWidth
+                        label="Assignment Title"
+                        variant="outlined"
+                        name="title"
+                        value={assignmentData.title}
+                        onChange={handleChanges}
+                      />
+                    )}
+                    {title_error && assignmentType != 'quiz' && (
+                      <p className="error-text " style={{ color: 'red' }}>
+                        <small> Please enter a valid Title.</small>
+                      </p>
+                    )}
+                  </div>
 
                     <div className="col-lg-6">
                       <TextField
@@ -1994,90 +2002,90 @@ export const CreateAssignments = () => {
                       )}
                     </div>
 
-                    {assignmentType == 'written' && (
-                      <>
-                        {' '}
-                        <div className="col-lg-6">
-                          <TextField
-                            fullWidth
-                            label="Points"
-                            variant="outlined"
-                            name="points"
-                            onChange={handleChanges}
-                            type="number"
-                            inputProps={{ min: '0' }}
-                            value={assignmentData.points}
-                          />
-                          {point_error && (
-                            <p className="error-text" style={{ color: 'red' }}>
-                              <small>Please enter a valid points.</small>
-                            </p>
-                          )}
-                        </div>
-                        <div className="col-12">
-                          <label className="col-form-label">Attachments</label>
-                          <input
-                            type="file"
-                            accept=".pdf,.doc,.docx"
-                            onChange={handleFileChange}
-                            multiple
-                            name="file"
-                            style={{ display: 'none' }}
-                            id="file-upload"
-                          />
-                          <label htmlFor="file-upload" className="uploadfile">
-                            <Button
-                              variant="contained"
-                              component="span"
-                              startIcon={<CloudUploadIcon />}
+                  {assignmentType == 'written' && (
+                    <>
+                      {' '}
+                      <div className="col-lg-6">
+                        <TextField
+                          fullWidth
+                          label="Points"
+                          variant="outlined"
+                          name="points"
+                          onChange={handleChanges}
+                          type="number"
+                          inputProps={{ min: '0' }}
+                          value={assignmentData.points}
+                        />
+                        {point_error && (
+                          <p className="error-text" style={{ color: 'red' }}>
+                            <small>Please enter a valid points.</small>
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-12">
+                        <label className="col-form-label">Attachments</label>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={handleFileChange}
+                          multiple
+                          name="file"
+                          style={{ display: 'none' }}
+                          id="file-upload"
+                        />
+                        <label htmlFor="file-upload" className="uploadfile">
+                          <Button
+                            variant="contained"
+                            component="span"
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            Browse Files
+                          </Button>
+                        </label>
+                        <List>
+                          {files?.map((file, index) => (
+                            <ListItem
+                              className="fileslistitem"
+                              key={index}
+                              sx={{
+                                borderRadius: 1,
+                                mb: 1,
+                              }}
+                              secondaryAction={
+                                <IconButton
+                                  edge="end"
+                                  onClick={() => handleFileRemove(index)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
                             >
-                              Browse Files
-                            </Button>
-                          </label>
-                          <List>
-                            {files?.map((file, index) => (
-                              <ListItem
-                                className="fileslistitem"
-                                key={index}
-                                sx={{                                 
-                                  borderRadius: 1,
-                                  mb: 1,
-                                }}
-                                secondaryAction={
-                                  <IconButton
-                                    edge="end"
-                                    onClick={() => handleFileRemove(index)}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                }
-                              >
-                                <div className="pinwi-20">
-                                  <AttachFileIcon />
-                                </div>
-                                <ListItemText
-                                  primary={(file.name as any) || (file as any)}
-                                />
-                              </ListItem>
-                            ))}
-                          </List>
-                          {file_error && (
-                            <p className="error-text " style={{ color: 'red' }}>
-                              <small> Please add at least one file.</small>
-                            </p>
-                          )}
-                        </div>
-                      </>
-                    )}
-                    {(assignmentType === 'quiz' && !edit) ||
-                      assignmentType === 'ai generated' ? (
-                      <>
-                        {editType == '' &&
-                          <div className="col-md-6 col-12">
-                            <FormControl fullWidth className="">
-                              <InputLabel id="level-select-label">
-                                Level
-                              </InputLabel>
+                              <div className="pinwi-20">
+                                <AttachFileIcon />
+                              </div>
+                              <ListItemText
+                                primary={(file.name as any) || (file as any)}
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                        {file_error && (
+                          <p className="error-text " style={{ color: 'red' }}>
+                            <small> Please add at least one file.</small>
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {(assignmentType === 'quiz' && !edit) ||
+                  assignmentType === 'ai generated' ? (
+                    <>
+                      {editType == '' && (
+                        <div className="col-md-6 col-12">
+                          <FormControl fullWidth className="">
+                            <InputLabel id="level-select-label">
+                              Level
+                            </InputLabel>
 
                             <Select
                               label="Level"
@@ -2101,7 +2109,7 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                      }
+                      )}
 
                         {assignmentType === 'quiz' ? (
                           <>
@@ -2110,157 +2118,112 @@ export const CreateAssignments = () => {
                                 Number of Questions for Each Mark
                               </label>
                             <div className="row">
-                            <div className="col-md-2 col-12">
-                              
-                              <TextField
-                                label="One Mark"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].one}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      one: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Two Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].two}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      two: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Three Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].three}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      three: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Four Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].four}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      four: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Five Marks"
-                                type="number"
-                                inputProps={{ min: 0 }}
-                                disabled={isQuizGenerated}
-                                value={questions[0].five}
-                                onChange={(e) => {
-                                  const value = Number(e.target.value);
-                                  setQuestions((prevState: any) => {
-                                    const updatedQuestions = [...prevState];
-                                    updatedQuestions[0] = {
-                                      ...updatedQuestions[0],
-                                      five: value,
-                                    };
-                                    return updatedQuestions;
-                                  });
-                                }}
-                                fullWidth
-                              />
-                            </div>
-                            <div className="col-md-2 col-12">
-                              <TextField
-                                label="Total Questions"
-                                type="number"
-                                disabled
-                                value={totalQuestions}
-                                // onChange={(e) => setQuestions(e.target.value)}
-                                fullWidth
-                              />
-                            </div>
-
-                            </div>
-
-                           </div>
-
-                       
-                          </>
-                        ) : (
-                          <>
-                           
-                              <div className="col-lg-4">
+                              <div className="col-md-2 col-12">
                                 <TextField
-                                  label="No. of questions"
+                                  label="One Mark"
                                   type="number"
-                                  name="no_questions"
-                                  value={questionKey}
-                                  onChange={(e) =>
-                                    setQuestionKey(e.target.value)
-                                  }
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].one}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        one: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-md-2 col-12">
                                 <TextField
-                                  label="Marks per question"
+                                  label="Two Marks"
                                   type="number"
-                                  value={questionValue}
-                                  name="marks_per_questions"
-                                  onChange={(e) =>
-                                    setQuestionValue(e.target.value)
-                                  }
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].two}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        two: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-lg-2">
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Three Marks"
+                                  type="number"
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].three}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        three: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Four Marks"
+                                  type="number"
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].four}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        four: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-md-2 col-12">
+                                <TextField
+                                  label="Five Marks"
+                                  type="number"
+                                  inputProps={{ min: 0 }}
+                                  disabled={isQuizGenerated}
+                                  value={questions[0].five}
+                                  onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setQuestions((prevState: any) => {
+                                      const updatedQuestions = [...prevState];
+                                      updatedQuestions[0] = {
+                                        ...updatedQuestions[0],
+                                        five: value,
+                                      };
+                                      return updatedQuestions;
+                                    });
+                                  }}
+                                  fullWidth
+                                />
+                              </div>
+                              <div className="col-md-2 col-12">
                                 <TextField
                                   label="Total Questions"
                                   type="number"
@@ -2270,59 +2233,86 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
-                              <div className="col-lg-2">
-                                <button
-                                  className="h-100 btn btn-primary w-100"
-                                  onClick={handleQuestionmap}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="col-lg-4">
+                            <TextField
+                              label="No. of questions"
+                              type="number"
+                              name="no_questions"
+                              value={questionKey}
+                              onChange={(e) => setQuestionKey(e.target.value)}
+                              fullWidth
+                            />
+                          </div>
+                          <div className="col-lg-4">
+                            <TextField
+                              label="Marks per question"
+                              type="number"
+                              value={questionValue}
+                              name="marks_per_questions"
+                              onChange={(e) => setQuestionValue(e.target.value)}
+                              fullWidth
+                            />
+                          </div>
+                          <div className="col-lg-2">
+                            <TextField
+                              label="Total Questions"
+                              type="number"
+                              disabled
+                              value={totalQuestions}
+                              // onChange={(e) => setQuestions(e.target.value)}
+                              fullWidth
+                            />
+                          </div>
+                          <div className="col-lg-2">
+                            <button
+                              className="h-100 btn btn-primary w-100"
+                              onClick={handleQuestionmap}
+                            >
+                              Add questions
+                            </button>
+                          </div>
+
+                          <div className="col-12">
+                            <List className="py-0">
+                              {questionMap?.map((item, index) => (
+                                <ListItem
+                                  key={index}
+                                  className="fileslistitem mb-3"
                                 >
-                                  Add questions
-                                </button>
-                              </div>
-                              
-                              
-                            
-
-                           
-                                <div className="col-12">
-                                  <List className='py-0'>
-                                    {questionMap?.map((item, index) => (
-                                      <ListItem
-                                        key={index}
-                                        className='fileslistitem mb-3'
-                                      >
-                                       
-                                          <ListItemText>
-                                            {item.key} question(s) of{' '}
-                                            {item.value} mark(s) each
-                                          </ListItemText>
-                                          <IconButton edge="end" aria-label="delete">
-                                          <DeleteIcon
-                                            onClick={() =>
-                                              handleDelete(
-                                                item.key,
-                                                item.value,
-                                                index,
-                                              )
-                                            }
-                                          />
-                                          </IconButton>
-                                        
-                                      </ListItem>
-                                    ))}
-                                  </List>
-                                </div>
-                              
-                          </>
-                        )}
-                        {questions_error && (
-                          <p className="error-text " style={{ color: 'red' }}>
-                            <small>
-                              {' '}
-                              Please enter a valid Number of Questions
-                            </small>
-                          </p>
-                        )}
-
+                                  <ListItemText>
+                                    {item.key} question(s) of {item.value}{' '}
+                                    mark(s) each
+                                  </ListItemText>
+                                  <IconButton edge="end" aria-label="delete">
+                                    <DeleteIcon
+                                      onClick={() =>
+                                        handleDelete(
+                                          item.key,
+                                          item.value,
+                                          index,
+                                        )
+                                      }
+                                    />
+                                  </IconButton>
+                                </ListItem>
+                              ))}
+                            </List>
+                          </div>
+                        </>
+                      )}
+                      {questions_error && (
+                        <p className="error-text " style={{ color: 'red' }}>
+                          <small>
+                            {' '}
+                            Please enter a valid Number of Questions
+                          </small>
+                        </p>
+                      )}
 
                       {editType == '' && (
                         <div className="col-lg-12">
@@ -2341,17 +2331,18 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                      )
-                      }
-
+                      )}
                     </>
                   ) : null}
 
-                    <div className="col-12">
-                      <label className="col-form-label">
-                        Instructions for students<span>*</span>
-                      </label>
-                      <div className="mb-4 mb-lg-0" style={{ minHeight: '162px', borderRadius: '8px' }}>
+                  <div className="col-12">
+                    <label className="col-form-label">
+                      Instructions for students<span>*</span>
+                    </label>
+                    <div
+                      className="mb-4 mb-lg-0"
+                      style={{ minHeight: '162px', borderRadius: '8px' }}
+                    >
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2368,419 +2359,410 @@ export const CreateAssignments = () => {
                           <small>Please enter Instructions.</small>
                         </p>
                       )}
-                      </div>
-                 
                     </div>
-                    {assignmentType == 'ai generated' && editType == '' && (
-                      <div className="col-12">
-                        {/* <label className="col-form-label">
+                  </div>
+                  {assignmentType == 'ai generated' && editType == '' && (
+                    <div className="col-12 mt-3 mb-5">
+                      {/* <label className="col-form-label">
                         Assignment Configuration Instructions<span>*</span>
                         </label> */}
-                        <TextField
-                          fullWidth
-                          multiline
-                          name="config_instructions"
-                          label="Assignment configuration instructions"
-                          type="text"
-                          value={configInstructions}
-                          onChange={(e) =>
-                            setConfigInstructions(e.target.value)
-                          }
-                          rows={3}
-                        />
-                        {instructions_error && (
-                          <p className="error-text" style={{ color: 'red' }}>
-                            <small>Please enter Instructions.</small>
-                          </p>
-                        )}
-                      </div>
-                    )}
+                      <TextField
+                        fullWidth
+                        multiline
+                        name="config_instructions"
+                        label="Assignment configuration instructions"
+                        type="text"
+                        value={configInstructions}
+                        onChange={(e) => setConfigInstructions(e.target.value)}
+                        rows={3}
+                      />
+                      {instructions_error && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please enter Instructions.</small>
+                        </p>
+                      )}
+                    </div>
+                  )}
 
-                    <div className="col-12">
-                      {selectedEntity.toLowerCase() === 'college' &&
-                        boxes.length > 0 &&
-                        boxes?.map((box, index) => (
-                          <div key={index} className="row g-4">
-                            {/* Course Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
+                  <div className="col-12">
+                    {selectedEntity.toLowerCase() === 'college' &&
+                      boxes.length > 0 &&
+                      boxes?.map((box, index) => (
+                        <div key={index} className="row g-4">
+                          {/* Course Selection */}
+                          <div className="col-md-4 col-12">
+                            {/* <label className="col-form-label">
                                 Course<span>*</span>
                               </label> */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`course_id_${index}`}>
-                                  Course
-                                </InputLabel>
-                                <Select
-                                  labelId={`course_id_${index}`}
-                                  id={`demo3-multiple-name-${index}`}
-                                  name="course_id"
-                                  label="Course"
-                                  onChange={(event: any) =>
-                                    handelSubjectBoxChange(event, index)
-                                  }
-                                  value={box.course_id || ''}
-                                >
-                                  {filteredcoursesData
-                                    ?.filter((course) =>
-                                      teacherCourse?.includes(
-                                        String(course.id),
-                                      ),
-                                    )
-                                    ?.map((course) => (
-                                      <MenuItem
-                                        key={course.id}
-                                        value={course.id}
-                                      >
-                                        {course.course_name}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForCourse_semester_subject[index]
-                                ?.course_id_error === true && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please enter a valid Course.</small>
-                                  </p>
-                                )}
-                            </div>
+                            <FormControl fullWidth>
+                              <InputLabel id={`course_id_${index}`}>
+                                Course
+                              </InputLabel>
+                              <Select
+                                labelId={`course_id_${index}`}
+                                id={`demo3-multiple-name-${index}`}
+                                name="course_id"
+                                label="Course"
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.course_id || ''}
+                              >
+                                {filteredcoursesData
+                                  ?.filter((course) =>
+                                    teacherCourse?.includes(String(course.id)),
+                                  )
+                                  ?.map((course) => (
+                                    <MenuItem key={course.id} value={course.id}>
+                                      {course.course_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.course_id_error === true && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please enter a valid Course.</small>
+                              </p>
+                            )}
+                          </div>
 
-                            {/* Semester Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
+                          {/* Semester Selection */}
+                          <div className="col-md-4 col-12">
+                            {/* <label className="col-form-label">
                                 Semester <span>*</span>
                               </label> */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`semester_id_${index}`}>
-                                  Semester
-                                </InputLabel>
-                                <Select
-                                  labelId={`semester_id_${index}`}
-                                  id={`semester_select_${index}`}
-                                  name="semester_number"
-                                  label="Semester"
-                                  onChange={(event: any) =>
-                                    handelSubjectBoxChange(event, index)
-                                  }
-                                  value={box.semester_number || ''}
-                                >
-                                  {box.filteredSemesters
-                                    ?.filter((item) =>
-                                      teacherSemester?.includes(
-                                        String(item.semester_number),
-                                      ),
-                                    )
-                                    ?.map((item) => (
-                                      <MenuItem
-                                        key={item.id}
-                                        value={item.semester_number || ''}
-                                      >
-                                        {item.semester_number}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForCourse_semester_subject[index]
-                                ?.semester_number_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Semester.</small>
-                                  </p>
-                                )}
-                            </div>
+                            <FormControl fullWidth>
+                              <InputLabel id={`semester_id_${index}`}>
+                                Semester
+                              </InputLabel>
+                              <Select
+                                labelId={`semester_id_${index}`}
+                                id={`semester_select_${index}`}
+                                name="semester_number"
+                                label="Semester"
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                                value={box.semester_number || ''}
+                              >
+                                {box.filteredSemesters
+                                  ?.filter((item) =>
+                                    teacherSemester?.includes(
+                                      String(item.semester_number),
+                                    ),
+                                  )
+                                  ?.map((item) => (
+                                    <MenuItem
+                                      key={item.id}
+                                      value={item.semester_number || ''}
+                                    >
+                                      {item.semester_number}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.semester_number_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Semester.</small>
+                              </p>
+                            )}
+                          </div>
 
-                            {/* Subjects Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
+                          {/* Subjects Selection */}
+                          <div className="col-md-4 col-12">
+                            {/* <label className="col-form-label">
                                 Subjects <span>*</span>
                               </label> */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`subject_label_${index}`}>
-                                  Subject
-                                </InputLabel>
-                                <Select
-                                  labelId={`subject_label_${index}`}
-                                  id={`subject_select_${index}`}
-                                  name="subjects"
-                                  label="subjects"
-                                  value={box.subjects || []}
-                                  onChange={(event: any) =>
-                                    handelSubjectBoxChange(event, index)
-                                  }
-                                >
-                                  {box.filteredSubjects
-                                    ?.filter((subject) =>
-                                      tescherSubjects?.includes(
-                                        subject.subject_name,
-                                      ),
-                                    )
-                                    ?.map((subject: any) => (
-                                      <MenuItem
-                                        key={subject.subject_id}
-                                        value={subject.subject_name}
-                                      >
-                                        {subject.subject_name}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForCourse_semester_subject[index]
-                                ?.subjects_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select at least one subject.
-                                    </small>
-                                  </p>
-                                )}
-                            </div>
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                name="subjects"
+                                label="subjects"
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSubjectBoxChange(event, index)
+                                }
+                              >
+                                {box.filteredSubjects
+                                  ?.filter((subject) =>
+                                    tescherSubjects?.includes(
+                                      subject.subject_name,
+                                    ),
+                                  )
+                                  ?.map((subject: any) => (
+                                    <MenuItem
+                                      key={subject.subject_id}
+                                      value={subject.subject_name}
+                                    >
+                                      {subject.subject_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForCourse_semester_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
                           </div>
-                        ))}
-                      {selectedEntity.toLowerCase() === 'school' &&
-                        boxesForSchool.length > 0 &&
-                        boxesForSchool?.map((box, index) => (
-                          <div key={index} className="row">
-                            {/* Class Selection */}
-                            <div className={box.selected_class_name}>
-                              {/* <label className="col-form-label">
+                        </div>
+                      ))}
+                    {selectedEntity.toLowerCase() === 'school' &&
+                      boxesForSchool.length > 0 &&
+                      boxesForSchool?.map((box, index) => (
+                        <div key={index} className="row">
+                          {/* Class Selection */}
+                          <div className={box.selected_class_name}>
+                            {/* <label className="col-form-label">
                                 Class<span>*</span>
                               </label> */}
+                            <FormControl fullWidth>
+                              <InputLabel id={`class_id_${index}`}>
+                                Class
+                              </InputLabel>
+                              <Select
+                                labelId={`class_id_${index}`}
+                                id={`class_select_${index}`}
+                                name="class_id"
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
+                                }
+                                value={box.class_id || ''}
+                                input={<OutlinedInput label="Class" />}
+                              >
+                                {dataClass?.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.class_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.class_id_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>Please select a Class.</small>
+                              </p>
+                            )}
+                          </div>
+                          {box.is_Stream && (
+                            <div className="col-md-4 col-12 mb-3">
+                              {/* <label className="col-form-label">
+                                  Stream Name<span>*</span>
+                                </label> */}
                               <FormControl fullWidth>
-                                <InputLabel id={`class_id_${index}`}>
-                                  Class
+                                <InputLabel id={`stream_id_${index}`}>
+                                  Stream Name
                                 </InputLabel>
                                 <Select
-                                  labelId={`class_id_${index}`}
-                                  id={`class_select_${index}`}
-                                  name="class_id"
+                                  labelId={`stream_id_${index}`}
+                                  id={`stream_select_${index}`}
+                                  name="stream"
+                                  label="Stream Name"
                                   onChange={(event: any) =>
                                     handelSchoolBoxChange(event, index)
                                   }
-                                  value={box.class_id || ''}
-                                  input={<OutlinedInput label="Class" />}
+                                  value={box.stream || ''}
+                                  sx={{
+                                    backgroundColor: inputfield(namecolor),
+                                    color: inputfieldtext(namecolor),
+                                    '& .MuiSelect-icon': {
+                                      color: fieldIcon(namecolor),
+                                    },
+                                  }}
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: {
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                      },
+                                    },
+                                  }}
                                 >
-                                  {dataClass?.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.class_name}
+                                  {teacherStream?.map((item) => (
+                                    <MenuItem
+                                      key={item}
+                                      value={item}
+                                      sx={{
+                                        backgroundColor: inputfield(namecolor),
+                                        color: inputfieldtext(namecolor),
+                                        '&:hover': {
+                                          backgroundColor:
+                                            inputfieldhover(namecolor),
+                                        },
+                                      }}
+                                    >
+                                      {item}
                                     </MenuItem>
                                   ))}
                                 </Select>
                               </FormControl>
                               {errorForClass_stream_subject[index]
-                                ?.class_id_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Class.</small>
-                                  </p>
-                                )}
+                                ?.stream_error && (
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>Please select a Stream.</small>
+                                </p>
+                              )}
                             </div>
-                            {box.is_Stream && (
-                              <div className="col-md-4 col-12 mb-3">
-                                {/* <label className="col-form-label">
-                                  Stream Name<span>*</span>
-                                </label> */}
-                                <FormControl fullWidth>
-                                  <InputLabel id={`stream_id_${index}`}>
-                                    Stream Name
-                                  </InputLabel>
-                                  <Select
-                                    labelId={`stream_id_${index}`}
-                                    id={`stream_select_${index}`}
-                                    name="stream"
-                                    label="Stream Name"
-                                    onChange={(event: any) =>
-                                      handelSchoolBoxChange(event, index)
-                                    }
-                                    value={box.stream || ''}
-                                    sx={{
-                                      backgroundColor: inputfield(namecolor),
-                                      color: inputfieldtext(namecolor),
-                                      '& .MuiSelect-icon': {
-                                        color: fieldIcon(namecolor),
-                                      },
-                                    }}
-                                    MenuProps={{
-                                      PaperProps: {
-                                        style: {
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                        },
-                                      },
-                                    }}
-                                  >
-                                    {teacherStream?.map((item) => (
-                                      <MenuItem
-                                        key={item}
-                                        value={item}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '&:hover': {
-                                            backgroundColor:
-                                              inputfieldhover(namecolor),
-                                          },
-                                        }}
-                                      >
-                                        {item}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
-                                </FormControl>
-                                {errorForClass_stream_subject[index]
-                                  ?.stream_error && (
-                                    <p
-                                      className="error-text"
-                                      style={{ color: 'red' }}
-                                    >
-                                      <small>Please select a Stream.</small>
-                                    </p>
-                                  )}
-                              </div>
-                            )}
-                            <div className={box.selected_class_name}>
-                              {/* <label className="col-form-label">
+                          )}
+                          <div className={box.selected_class_name}>
+                            {/* <label className="col-form-label">
                                 Subjects <span>*</span>
                               </label> */}
-                              <FormControl fullWidth>
-                                <InputLabel id={`subject_label_${index}`}>
-                                  Subject
-                                </InputLabel>
-                                <Select
-                                  labelId={`subject_label_${index}`}
-                                  id={`subject_select_${index}`}
-                                  name="subjects"
-                                  label="subjects"
-                                  value={box.subjects || []}
-                                  onChange={(event: any) =>
-                                    handelSchoolBoxChange(event, index)
-                                  }
-                                >
-                                  {box.filteredSubjects
-                                    ?.filter((subject) =>
-                                      tescherSchoolSubjects?.includes(
-                                        subject.subject_name,
-                                      ),
-                                    )
-                                    ?.map((subject: any) => (
-                                      <MenuItem
-                                        key={subject.subject_id}
-                                        value={subject.subject_name}
-                                      >
-                                        {subject.subject_name}
-                                      </MenuItem>
-                                    ))}
-                                </Select>
-                              </FormControl>
-                              {errorForClass_stream_subject[index]
-                                ?.subjects_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>
-                                      Please select at least one subject.
-                                    </small>
-                                  </p>
-                                )}
-                            </div>
+                            <FormControl fullWidth>
+                              <InputLabel id={`subject_label_${index}`}>
+                                Subject
+                              </InputLabel>
+                              <Select
+                                labelId={`subject_label_${index}`}
+                                id={`subject_select_${index}`}
+                                name="subjects"
+                                label="subjects"
+                                value={box.subjects || []}
+                                onChange={(event: any) =>
+                                  handelSchoolBoxChange(event, index)
+                                }
+                              >
+                                {box.filteredSubjects
+                                  ?.filter((subject) =>
+                                    tescherSchoolSubjects?.includes(
+                                      subject.subject_name,
+                                    ),
+                                  )
+                                  ?.map((subject: any) => (
+                                    <MenuItem
+                                      key={subject.subject_id}
+                                      value={subject.subject_name}
+                                    >
+                                      {subject.subject_name}
+                                    </MenuItem>
+                                  ))}
+                              </Select>
+                            </FormControl>
+                            {errorForClass_stream_subject[index]
+                              ?.subjects_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                <small>
+                                  Please select at least one subject.
+                                </small>
+                              </p>
+                            )}
                           </div>
-                        ))}
-                    </div>
-                    <div className="col-12">
-                      <Box>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selectAll}
-                              onChange={handleChange}
-                            />
-                          }
-                          label="Select All"
-                        />
-                        {'(' + selectedStudents?.length + ')'}
-                        <Autocomplete
-                          multiple
-                          options={listOfStudentFiltered || []}
-                          getOptionLabel={(option) => `${option.name}`}
-                          value={selectedStudents}
-                          onChange={(_, newValue) => {
-                            setSelectedStudents(newValue);
-                            checkStudent(newValue);
-                            setSelectAll(
-                              newValue.length === listOfStudentFiltered?.length,
-                            );
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select Students"
-                              placeholder="search students"
-                            />
-                          )}
-                          renderOption={(props, option, { selected }) => (
-                            <li {...props} key={option.id || option.first_name}>
-                              <Checkbox checked={selected} />
-                              {option.name}
-                            </li>
-                          )}
-                          renderTags={(value, getTagProps) => (
-                            <Box
-                              sx={{
-                                maxHeight: '75px',
-                                overflowY: 'auto',
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                gap: '4px',
-                              }}
-                            >
-                              {value?.map((option, index) => {
-                                const tagProps = getTagProps({ index });
-
-                                return (
-                                  <React.Fragment
-                                    key={option.id || `${option.name}-${index}`}
-                                  >
-                                    <Chip
-                                      {...tagProps} // Spread other props WITHOUT key
-                                      label={`${option.name}`}
-                                    />
-                                  </React.Fragment>
-                                );
-                              })}
-                            </Box>
-                          )}
-                          sx={{
-                            '& .MuiAutocomplete-inputRoot': {
-                              flexWrap: 'wrap',
-                            },
-                            '& .MuiAutocomplete-tagList': {
+                        </div>
+                      ))}
+                  </div>
+                  <div className="col-12">
+                    <Box>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selectAll}
+                            onChange={handleChange}
+                          />
+                        }
+                        label="Select All"
+                      />
+                      {'(' + selectedStudents?.length + ')'}
+                      <Autocomplete
+                        multiple
+                        options={listOfStudentFiltered || []}
+                        getOptionLabel={(option) => `${option.name}`}
+                        value={selectedStudents}
+                        onChange={(_, newValue) => {
+                          setSelectedStudents(newValue);
+                          checkStudent(newValue);
+                          setSelectAll(
+                            newValue.length === listOfStudentFiltered?.length,
+                          );
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Students"
+                            placeholder="search students"
+                          />
+                        )}
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props} key={option.id || option.first_name}>
+                            <Checkbox checked={selected} />
+                            {option.name}
+                          </li>
+                        )}
+                        renderTags={(value, getTagProps) => (
+                          <Box
+                            sx={{
                               maxHeight: '75px',
                               overflowY: 'auto',
-                            },
-                          }}
-                        />
-                        {errorselectStudent && (
-                          <p className="error-text" style={{ color: 'red' }}>
-                            <small>Please select at least one student</small>
-                          </p>
+                              display: 'flex',
+                              flexWrap: 'wrap',
+                              gap: '4px',
+                            }}
+                          >
+                            {value?.map((option, index) => {
+                              const tagProps = getTagProps({ index });
+
+                              return (
+                                <React.Fragment
+                                  key={option.id || `${option.name}-${index}`}
+                                >
+                                  <Chip
+                                    {...tagProps} // Spread other props WITHOUT key
+                                    label={`${option.name}`}
+                                  />
+                                </React.Fragment>
+                              );
+                            })}
+                          </Box>
                         )}
-                      </Box>
-                    </div>
-                    <div className="col-lg-12 mt-4">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <div className="row g-4">
-                          <div className="col-lg-4">
-                            {type !== 'quiz' ? (
+                        sx={{
+                          '& .MuiAutocomplete-inputRoot': {
+                            flexWrap: 'wrap',
+                          },
+                          '& .MuiAutocomplete-tagList': {
+                            maxHeight: '75px',
+                            overflowY: 'auto',
+                          },
+                        }}
+                      />
+                      {errorselectStudent && (
+                        <p className="error-text" style={{ color: 'red' }}>
+                          <small>Please select at least one student</small>
+                        </p>
+                      )}
+                    </Box>
+                  </div>
+                  <div className="col-lg-12 mt-4">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <div className="row g-4">
+                        <div className="col-lg-4">
+                          {type !== 'quiz' ? (
+                            <>
                               <DesktopDatePicker
                                 label="Available From"
                                 value={availableFrom}
@@ -2792,7 +2774,19 @@ export const CreateAssignments = () => {
                                   ),
                                 }}
                               />
-                            ) : (
+                              {availableFrom_error && error == null && (
+                                <p
+                                  className="error-text"
+                                  style={{ color: 'red' }}
+                                >
+                                  <small>
+                                    Please select today or a future date.
+                                  </small>{' '}
+                                </p>
+                              )}
+                            </>
+                          ) : (
+                            <>
                               <DateTimePicker
                                 label="Available From"
                                 value={availableFrom}
@@ -2807,233 +2801,233 @@ export const CreateAssignments = () => {
                                   ),
                                 }}
                               />
-                            )}
-                            {availableFrom_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select today or a future date.
-                                </small>{' '}
-                              </p>
-                            )}
-                          </div>
-                          <div className="col-lg-4">
-                            <DesktopDatePicker
-                              className="col-6"
-                              label="Due Date"
-                              value={dueDate}
-                              onChange={handleDueDateChange}
-                              minDate={!edit ? dayjs() : undefined}
-                              slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
-                              }}
-                            />
-                            {due_date_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a due date.</small>
-                              </p>
-                            )}
-                          </div>
-                          {error != null && (
-                            <span>
-                              <small
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                {error}
-                              </small>
-                            </span>
-                          )}
-
-                          <div className="col-lg-4">
-                            <TimePicker
-                              className="col-6"
-                              label="Due Time"
-                              value={dueTime} // Ensure it's a Dayjs object
-                              onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
-                              closeOnSelect={false}
-                              slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
-                              }}
-                            />
-                            {dueTime_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>Please select a due time.</small>
-                              </p>
-                            )}
-                          </div>
-                          {type === 'quiz' && (
-                            <div className="col-lg-4">
-                              <TextField
-                                type="number"
-                                label="Quiz Duration (minutes)"
-                                value={quiz_timer}
-                                inputProps={{ min: 0 }}
-                                onChange={(e) => setQuizTimer(e.target.value)}
-                                fullWidth
-                                margin="normal"
-                              />
-                              {quiz_timer_error && (
+                              {availableFrom_error && (
                                 <p
                                   className="error-text"
                                   style={{ color: 'red' }}
                                 >
-                                  Please enter quiz timer.
+                                  <small>
+                                    Please select today or a future date.
+                                  </small>{' '}
                                 </p>
                               )}
-                            </div>
+                            </>
                           )}
                         </div>
-                      </LocalizationProvider>
-                    </div>
-                    <div className="col-lg-3">
-                      <div className="d-flex flex-column ">
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={allowLateSubmission}
-                              onChange={(e) =>
-                                setAllowLateSubmission(e.target.checked)
-                              }
-                            />
-                          }
-                          label="Allow late submissions"
-                        />
-                        {assignmentType === 'quiz' && (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={allowMultipleAttempt}
-                                onChange={(e) =>
-                                  setAllowMultipleAttempt(e.target.checked)
-                                }
-                              />
-                            }
-                            label="Allow multiple attempt"
-                          />
-                        )}
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={sendNotification}
-                              onChange={(e) =>
-                                setSendNotification(e.target.checked)
-                              }
-                            />
-                          }
-                          label="Send notification to students"
-                        />
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={addToStudentRepost}
-                              onChange={(e) =>
-                                setAddToStudentRepost(e.target.checked)
-                              }
-                            />
-                          }
-                          label="Add to Student Grade Report"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-12">
-                      {assignmentType == 'written' ||
-                        (assignmentType == 'quiz' && isQuizGenerated) ||
-                        (assignmentType == 'quiz' && edit) ||
-                        (assignmentType == 'ai generated' &&
-                          isAiAssignmentGenerated) ? (
-                        <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() =>
-                              assignmentType === 'quiz' ? setIsModalOpen(true) : setAssignmentModalOpen(true)
-                            }
-                            style={{ marginTop: 20 }}
-                          >
-                            Preview
-                          </Button>
-
-                          <Button
-                            variant="outlined"
-                            color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
-                            style={{
-                              marginTop: 20,
+                        <div className="col-lg-4">
+                          <DesktopDatePicker
+                            className="col-6"
+                            label="Due Date"
+                            value={dueDate}
+                            onChange={handleDueDateChange}
+                            minDate={!edit ? dayjs() : undefined}
+                            slotProps={{
+                              textField: (params) => <TextField {...params} />,
                             }}
-                            onClick={handleSaveAsDraft}
-                          >
-                            Save as Draft
-                          </Button>
+                          />
+                          {due_date_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a due date.</small>
+                            </p>
+                          )}
+                        </div>
+                        {error != null && (
+                          <span>
+                            <small
+                              className="error-text"
+                              style={{ color: 'red' }}
+                            >
+                              {error}
+                            </small>
+                          </span>
+                        )}
 
-                          <Button
-                            variant="contained"
-                            color="success"
-                            style={{ marginTop: 20 }}
-                            onClick={
-                              assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : submitAssignment
-                                : () => handleSubmitQuiz(false)
-                            }
-                          >
-                            Publish
-                          </Button>
+                        <div className="col-lg-4">
+                          <TimePicker
+                            className="col-6"
+                            label="Due Time"
+                            value={dueTime} // Ensure it's a Dayjs object
+                            onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
+                            closeOnSelect={false}
+                            slotProps={{
+                              textField: (params) => <TextField {...params} />,
+                            }}
+                          />
+                          {dueTime_error && (
+                            <p className="error-text" style={{ color: 'red' }}>
+                              <small>Please select a due time.</small>
+                            </p>
+                          )}
                         </div>
-                      ) : (
-                        <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
-                            variant="contained"
-                            color="success"
-                            style={{ marginTop: 20 }}
-                            onClick={
-                              assignmentType == 'ai generated'
-                                ? () => generateQuiz('assignment')
-                                : generateQuiz
+                        {type === 'quiz' && (
+                          <div className="col-lg-4">
+                            <TextField
+                              type="number"
+                              label="Quiz Duration (minutes)"
+                              value={quiz_timer}
+                              inputProps={{ min: 0 }}
+                              onChange={(e) => setQuizTimer(e.target.value)}
+                              fullWidth
+                              margin="normal"
+                            />
+                            {quiz_timer_error && (
+                              <p
+                                className="error-text"
+                                style={{ color: 'red' }}
+                              >
+                                Please enter quiz timer.
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </LocalizationProvider>
+                  </div>
+                  <div className="col-lg-3">
+                    <div className="d-flex flex-column ">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={allowLateSubmission}
+                            onChange={(e) =>
+                              setAllowLateSubmission(e.target.checked)
                             }
-                          >
-                            {assignmentType == 'ai generated'
-                              ? 'Generate Assignment'
-                              : 'Generate Quiz'}
-                          </Button>
-                        </div>
+                          />
+                        }
+                        label="Allow late submissions"
+                      />
+                      {assignmentType === 'quiz' && (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={allowMultipleAttempt}
+                              onChange={(e) =>
+                                setAllowMultipleAttempt(e.target.checked)
+                              }
+                            />
+                          }
+                          label="Allow multiple attempt"
+                        />
                       )}
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={sendNotification}
+                            onChange={(e) =>
+                              setSendNotification(e.target.checked)
+                            }
+                          />
+                        }
+                        label="Send notification to students"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={addToStudentRepost}
+                            onChange={(e) =>
+                              setAddToStudentRepost(e.target.checked)
+                            }
+                          />
+                        }
+                        label="Add to Student Grade Report"
+                      />
                     </div>
+                  </div>
+                  <div className="col-lg-12">
+                    {assignmentType == 'written' ||
+                    (assignmentType == 'quiz' && isQuizGenerated) ||
+                    (assignmentType == 'quiz' && edit) ||
+                    (assignmentType == 'ai generated' &&
+                      isAiAssignmentGenerated) ? (
+                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() =>
+                            assignmentType === 'quiz'
+                              ? setIsModalOpen(true)
+                              : setAssignmentModalOpen(true)
+                          }
+                          style={{ marginTop: 20 }}
+                        >
+                          Preview
+                        </Button>
+
+                        <Button
+                          variant="outlined"
+                          color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
+                          style={{
+                            marginTop: 20,
+                          }}
+                          onClick={handleSaveAsDraft}
+                        >
+                          Save as Draft
+                        </Button>
+
+                        <Button
+                          variant="contained"
+                          color="success"
+                          style={{ marginTop: 20 }}
+                          onClick={
+                            assignmentType !== 'quiz'
+                              ? assignmentType == 'ai generated'
+                                ? () =>
+                                    submitAssignment(
+                                      false,
+                                      'json',
+                                      assignmentJsonQuestions,
+                                    )
+                                : submitAssignment
+                              : () => handleSubmitQuiz(false)
+                          }
+                        >
+                          Publish
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="d-flex align-items-center gap-2 justify-content-end">
+                        <Button
+                          variant="contained"
+                          color="success"
+                          style={{ marginTop: 20 }}
+                          onClick={
+                            assignmentType == 'ai generated'
+                              ? () => generateQuiz('assignment')
+                              : generateQuiz
+                          }
+                        >
+                          {assignmentType == 'ai generated'
+                            ? 'Generate Assignment'
+                            : 'Generate Quiz'}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-           
+            </div>
           </div>
-        </div>
-        <AssignmentModal
-          open={isAssignmentModalOpen}
-          onClose={() => setAssignmentModalOpen(false)}
-          assignments={assignmentGenrData}
-          onProceed={(assignmentData: GenAssignment) => {
-            setAssignmentJsonQuestions(assignmentData);
-            setAssignmentModalOpen(false);
-          }}
-          title={assignmentData?.title}
-          totalQuestions={totalQuestions}
-          totalMarks={totalMarks}
-        />
-        <QuizModal
-          isEdit={isedit}
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          quizData={quizData}
-          onSave={handleSaveQuiz}
-        />
+
+          <AssignmentModal
+            open={isAssignmentModalOpen}
+            onClose={() => setAssignmentModalOpen(false)}
+            assignments={assignmentGenrData}
+            onProceed={(assignmentData: GenAssignment) => {
+              setAssignmentJsonQuestions(assignmentData);
+              setAssignmentModalOpen(false);
+            }}
+            title={assignmentData?.title}
+            totalQuestions={totalQuestions}
+            totalMarks={totalMarks}
+          />
+          <QuizModal
+            isEdit={isedit}
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            quizData={quizData}
+            onSave={handleSaveQuiz}
+          />
+        </div>{' '}
       </div>
     </div>
   );
