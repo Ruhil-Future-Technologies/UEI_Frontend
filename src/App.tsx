@@ -332,10 +332,6 @@ function App() {
             element={<Protected Component={TeacherChat} />}
           />
           <Route
-            path="/teacher-dashboard/chat/:Id"
-            element={<Protected Component={TeacherChat} />}
-          />
-          <Route
             path="/teacher-dashboard/profile"
             element={<Protected Component={TeacherProfile} />}
           />
@@ -356,6 +352,10 @@ function App() {
             element={<Protected Component={CreateAssignments} />}
           />
           <Route
+            path="/teacher-dashboard/create-quiz"
+            element={<Protected Component={CreateAssignments} />}
+          />{' '}
+          <Route
             path="/teacher-dashboard/edit-assignment/:id"
             element={<Protected Component={CreateAssignments} />}
           />
@@ -367,7 +367,6 @@ function App() {
             path="/teacher-dashboard/student-assignment-details/:id"
             element={<Protected Component={PreviewStudentAssignment} />}
           />
-
           <Route
             path="/teacher-dashboard/quizzes"
             element={<Protected Component={TeacherQuizPage} />}
@@ -376,7 +375,6 @@ function App() {
             path="/teacher-dashboard/quiz-details/:id"
             element={<Protected Component={AssignmentDetails} />}
           />
-
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
