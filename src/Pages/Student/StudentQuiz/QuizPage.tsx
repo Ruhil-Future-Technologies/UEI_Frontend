@@ -72,6 +72,14 @@ const QuizPage = () => {
             } else {
               setQuizData(response.data);
               setTimeLeft(response.data.timer * 60);
+              toast.success(
+                'You won’t be able to reattempt once submitted. As reattempt not allowed for this quiz.',
+                {
+                  hideProgressBar: true,
+                  theme: 'colored',
+                  position: 'top-center',
+                },
+              );
             }
           }
         });

@@ -20,6 +20,7 @@ import { MaterialReactTable } from 'material-react-table';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useAPI';
 import { QUERY_KEYS_QUIZ } from '../../../utils/const';
+import { formatDateToIST } from '../../../utils/helpers';
 
 const StudentQuiz = () => {
   const { getData } = useApi();
@@ -147,7 +148,6 @@ const StudentQuiz = () => {
     }
 
     const formattedResults = data.map(async (submission) => {
-      const dateTaken = new Date(submission.created_at);
       let subject = '';
 
       if (submission && submission.course_semester_subjects) {
@@ -182,7 +182,7 @@ const StudentQuiz = () => {
         quiz_id: submission.quiz_id,
         quiz: submission.quiz_title,
         subject: subject,
-        date: dateTaken.toLocaleString(),
+        date: formatDateToIST(submission.created_at),
         score: `${submission.result_points}/${submission.points}`,
         totalQuestions: submission.total_questions,
         correctAnswers: submission.correct_answers,
@@ -210,7 +210,9 @@ const StudentQuiz = () => {
   };
 
   const retakeQuiz = (quizId: any) => {
-    const quiz = quizData.recentResults.find((quiz: any) => quiz.quiz_id == quizId);
+    const quiz = quizData.recentResults.find(
+      (quiz: any) => quiz.quiz_id == quizId,
+    );
     if (quiz) {
       navigate(`/main/student/quiz/${quizId}`);
     } else {
