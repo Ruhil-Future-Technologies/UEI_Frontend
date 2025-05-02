@@ -1062,7 +1062,6 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-          }
           setAssignmentData({
             title: '',
             type: 'written',
@@ -1078,6 +1077,7 @@ export const CreateAssignments = () => {
             notify: false,
             files: [], // File should be null initially
           });
+        }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1171,9 +1171,8 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    const now = dayjs();
 
-    if (availableFrom == null || availableFrom.isBefore(now)) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
@@ -2374,11 +2373,6 @@ export const CreateAssignments = () => {
                               Add questions
                             </button>
                           </div>
-
-
-
-
-
                           <div className="col-12">
                             <List className='py-0'>
                               {questionMap?.map((item, index) => (

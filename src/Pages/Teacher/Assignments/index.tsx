@@ -175,6 +175,11 @@ export const Assignments = () => {
     {
       accessorKey: 'due_date_time',
       header: 'Due Time & Date',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDate = new Date(row?.original?.created_at);
+        const istString = gmtDate.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+        return  istString ;
+      }
     },
     {
       accessorKey: 'contact_email',
@@ -246,6 +251,11 @@ export const Assignments = () => {
     {
       accessorKey: 'created_at',
       header: 'Created at',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDate = new Date(row?.original?.created_at);
+        const istString = gmtDate.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+        return  istString ;
+      }
     },
     {
       accessorKey: 'updated_at',
@@ -427,7 +437,7 @@ export const Assignments = () => {
             <Box className="rounded-4 overflow-hidden">
               <MaterialReactTable
                 columns={columns}
-                data={[...assignmentData].reverse()} 
+                data={[...assignmentData].reverse()}
                 enablePagination
                 enableSorting
                 enableColumnFilters
