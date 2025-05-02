@@ -219,7 +219,7 @@ const TeacherQuizPage = () => {
       });
       return;
     } else {
-      navigate(`/teacher-dashboard/edit-assignment/${id}`, {
+      navigate(`/teacher-dashboard/edit-quiz/${id}`, {
         state: { type: 'quiz', edit: true },
       });
     }
