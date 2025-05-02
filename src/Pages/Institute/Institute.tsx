@@ -70,7 +70,7 @@ const Institute = () => {
   }, [Menulist, lastSegment]);
   const InstituteURL = QUERY_KEYS.GET_INSTITUTES;
   const DeleteInstituteURL = QUERY_KEYS.INSTITUTE_DELETE;
-  const columns11 = INSITUTION_COLUMNS;
+
   const navigate = useNavigate();
   const { getData, putData, deleteData, loading } = useApi();
   const [dataInstitute, setDataInstitute] = useState<any[]>([]);
@@ -82,7 +82,26 @@ const Institute = () => {
   const [selectedInstitute, setSelectedInstitute] = useState<InstituteDetails>(
     [],
   );
-
+  const callAPI = async () => {
+    getData(`${InstituteURL}`)
+      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
+        if (data.status) {
+          setDataInstitute(data?.data);
+        } else {
+          setDataInstitute([]);
+        }
+      })
+      .catch((e) => {
+        if (e?.response?.code === 401) {
+          navigate('/');
+        }
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      });
+  };
+  const columns11 = INSITUTION_COLUMNS;
   const [columns, setColumns] =
     useState<MRT_ColumnDef<InstituteRep0oDTO>[]>(columns11);
   const [open, setOpen] = useState(false);
@@ -115,32 +134,22 @@ const Institute = () => {
     setColumns(updatedColumns);
   }, [dataInstitute, columns11]);
 
-  const callAPI = async () => {
-    getData(`${InstituteURL}`)
-      .then((data: { status: boolean; data: InstituteRep0oDTO[] }) => {
-        if (data.status) {
-          setDataInstitute(data?.data);
-        } else {
-          setDataInstitute([]);
-        }
-      })
-      .catch((e) => {
-        if (e?.response?.code === 401) {
-          navigate('/');
-        }
-        toast.error(e?.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-        });
-      });
-  };
-
   useEffect(() => {
     callAPI();
   }, []);
 
   const handleEditFile = (id: number) => {
-    navigate(`edit-Institute/${id}`);
+    const current_insittute = dataInstitute.find(
+      (insitute) => insitute.user_uuid == id,
+    );
+    if (current_insittute.is_active ? current_insittute.is_active : current_insittute.is_approve ) {
+      navigate(`edit-Institute/${id}`);
+    } else {
+      toast.error('You cannot edit or delete Deactivated Content', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+    }
   };
 
   const handlecancel = () => {
@@ -228,7 +237,7 @@ const Institute = () => {
         );
       }
     }
-  }, [activeTab, activeSubTab, dataInstitute]);
+  }, [activeTab, activeSubTab, dataInstitute, columns11]);
 
   const handleDelete = (id: number | undefined) => {
     deleteData(`${DeleteInstituteURL}/${id}`)
@@ -312,6 +321,9 @@ const Institute = () => {
     delete instituteDetail.university_id;
     delete instituteDetail.institution_login_id;
 
+    instituteDetail.created_by = instituteDetail?.created_by_details?.user_name;
+    delete instituteDetail.created_by_details;
+
     setSelectedInstitute(instituteDetail);
     setOpen(true);
   };
@@ -347,7 +359,7 @@ const Institute = () => {
                       </Button>
                     )}
                   </div>
-                  <Tabs value={activeTab} onChange={handleTabChange}>
+                  <Tabs value={activeTab} onChange={handleTabChange}  variant="scrollable">
                     <Tab
                       label="Total Institute"
                       className={activeTab === 0 ? '' : 'text-color'}
@@ -551,19 +563,7 @@ const Institute = () => {
                             </>
                           )}
 
-                          <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            sx={{
-                              '& .MuiBackdrop-root': {
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                              },
-                              '& .MuiPaper-root': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
-                              },
-                            }}
-                          >
+                          <Dialog open={open} onClose={handleClose}>
                             <DialogTitle
                               sx={{
                                 fontWeight: 600,

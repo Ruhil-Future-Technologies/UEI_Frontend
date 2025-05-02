@@ -109,13 +109,63 @@ import PreviewStudentAssignment from './Pages/Teacher/Assignments/previewStudent
 import StudentQuiz from './Pages/Student/StudentQuiz';
 import QuizPage from './Pages/Student/StudentQuiz/QuizPage';
 import TeacherQuizPage from './Pages/Teacher/Quiz';
+import { QUERY_KEYS } from './utils/const';
+import { toast } from 'react-toastify';
+import useApi from './hooks/useAPI';
+import ParentDashboard from './Pages/Parent/ParentDashboard';
+import ParentMain from './Pages/Parent';
+import ParentFeedback from './Pages/Parent/ParentFeedback';
+import ParentChat from './Pages/Parent/ParentChat';
+import ParentProfile from './Pages/Parent/ParentProfile';
 
 function App() {
   const navigate = useNavigate();
   const context = useContext(NameContext);
   const { setProPercentage }: any = context;
   const synth: SpeechSynthesis = window?.speechSynthesis;
-  const handlogout = () => {
+  const StuId = localStorage.getItem('_id');
+  const chataddconversationurl = QUERY_KEYS.CHAT_HISTORYCON;
+  const { postDataJson } = useApi();
+
+  const saveChat = async () => {
+    const chatDataString = localStorage?.getItem('chatData');
+
+    let chatData: any;
+    if (chatDataString) {
+      chatData = JSON.parse(chatDataString);
+    } else {
+      chatData = null;
+    }
+
+    const isChatFlagged =
+      chatData?.[0]?.flagged ?? localStorage?.getItem('chatsaved') === 'true';
+
+    let chat_payload;
+
+    if (Array.isArray(chatData)) {
+      chat_payload = {
+        student_id: StuId,
+        chat_title: chatData?.[0]?.question,
+        chat_conversation: JSON.stringify(chatData),
+        flagged: isChatFlagged,
+      };
+
+      try {
+        await postDataJson(`${chataddconversationurl}`, chat_payload);
+
+        localStorage.removeItem('chatData');
+        localStorage.removeItem('chatsaved');
+      } catch (e: any) {
+        toast.error(e?.message, {
+          hideProgressBar: true,
+          theme: 'colored',
+        });
+      }
+    }
+  };
+
+  const handlogout = async () => {
+    await saveChat();
     setProPercentage(0);
     localStorage.removeItem('token');
     localStorage.removeItem('user_type');
@@ -229,6 +279,10 @@ function App() {
             }
           />
           <Route
+            path="/institution-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
+          />
+          <Route
             path="/institution-dashboard/student-list"
             element={
               <Protected
@@ -282,12 +336,20 @@ function App() {
             element={<Protected Component={TeacherChat} />}
           />
           <Route
+            path="/teacher-dashboard/chat/:Id"
+            element={<Protected Component={TeacherChat} />}
+          />
+          <Route
             path="/teacher-dashboard/profile"
             element={<Protected Component={TeacherProfile} />}
           />
           <Route
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
+          />
+          <Route
+            path="/teacher-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
           />
           <Route
             path="/teacher-dashboard/student-details"
@@ -302,6 +364,10 @@ function App() {
             element={<Protected Component={CreateAssignments} />}
           />
           <Route
+            path="/teacher-dashboard/create-quiz"
+            element={<Protected Component={CreateAssignments} />}
+          />{' '}
+          <Route
             path="/teacher-dashboard/edit-assignment/:id"
             element={<Protected Component={CreateAssignments} />}
           />
@@ -313,7 +379,6 @@ function App() {
             path="/teacher-dashboard/student-assignment-details/:id"
             element={<Protected Component={PreviewStudentAssignment} />}
           />
-
           <Route
             path="/teacher-dashboard/quizzes"
             element={<Protected Component={TeacherQuizPage} />}
@@ -322,7 +387,10 @@ function App() {
             path="/teacher-dashboard/quiz-details/:id"
             element={<Protected Component={AssignmentDetails} />}
           />
-
+          <Route
+            path="/teacher-dashboard/edit-quiz/:id"
+            element={<Protected Component={CreateAssignments} />}
+          />
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
@@ -337,6 +405,27 @@ function App() {
               element={<Protected Component={AddContent} menuName="Content" />}
             />
           </Route>
+        </Route>
+
+        <Route path="/parent-dashboard" element={<ParentMain />}>
+          <Route
+            path=""
+            element={
+              <Protected Component={ParentDashboard} menuName="parentdash" />
+            }
+          />
+          <Route
+            path="/parent-dashboard/chat"
+            element={<Protected Component={ParentChat} />}
+          />
+          <Route
+            path="/parent-dashboard/profile"
+            element={<Protected Component={ParentProfile} />}
+          />
+          <Route
+            path="/parent-dashboard/feedback"
+            element={<Protected Component={ParentFeedback} />}
+          />
         </Route>
 
         {/* <Route path="/admin-feedback-chat" element={<AdminFeedback />} /> */}

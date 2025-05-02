@@ -2855,7 +2855,6 @@ a {
     margin-right: 1rem;
     .chat-box {
       padding-top: 0.5rem;
-    
       height: 400px;
       overflow: auto;
       .message-bubble {
@@ -3014,7 +3013,12 @@ a {
 }
 
 .fileslistitem {
-  background-color: #f9fafb;
+  background-color: rgba($primary, 0.1);
+  border-radius: 6px;
+  padding-right: .5rem;
+  &:hover{
+    background-color: rgba($primary, 0.2);
+  }
 }
 .pinwi-20 {
   svg {
@@ -3130,4 +3134,54 @@ a {
       display: block;
     }
   }
+}
+.fancy-hover {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border-radius: 0.5rem;
+  //cursor: pointer;
+  padding: 10px;
+  margin-top: 10px;
+  //background: #d6d8db;
+  list-style-type: disc;
+}
+
+.fancy-hover:hover {
+  // transform: translateY(-5px) scale(1.02);
+  // box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background-color: #f6ebfe;
+  color: #000; /* optional: change background slightly on hover */
+  list-style-type: disc;
+}
+.delete-icon:hover {
+  cursor: pointer; /* 👈 this shows the hand cursor */
+  transition: transform 0.2s ease;
+}
+
+.quill-dark .ql-toolbar {
+  color: #ccc;
+}
+.quill-dark .ql-editor::before {
+  color: #999 !important; /* Or whatever light gray you prefer */
+  opacity: 1 !important; /* Required to override Quill's default 0.6 */
+}
+
+/* Change icon and button text color */
+.quill-dark .ql-toolbar button,
+.quill-dark .ql-toolbar .ql-picker,
+.quill-dark .ql-toolbar .ql-stroke {
+  color: #ccc !important;
+  fill: #ccc !important;
+  stroke: #ccc !important;
+}
+
+.scrollable-table-container {
+  max-height: 300px; /* Adjust as needed to show 5 rows */
+  overflow-y: auto;
+}
+
+.active-assignment-flow{
+  max-height: 500px;
+  overflow-y: auto;
 }

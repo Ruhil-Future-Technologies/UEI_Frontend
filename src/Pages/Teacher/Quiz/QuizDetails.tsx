@@ -19,11 +19,98 @@ import {
 import { Close } from '@mui/icons-material';
 import useApi from '../../../hooks/useAPI';
 import { toast } from 'react-toastify';
+import './QuizDetails.scss';
+
+const formatDateToIST = (dateString: any) => {
+  if (!dateString) return 'N/A';
+
+  try {
+    const [datePart, timePart] = dateString.split(' ');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute, second] = timePart.split(':');
+
+    const date = new Date(year, month - 1, day, hour, minute, second);
+
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+
+    const istDate = new Date(date.getTime() + (5 * 60 + 30) * 60 * 1000);
+
+    const options: any = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    };
+
+    return istDate.toLocaleString('en-US', options);
+  } catch (error) {
+    console.error('Error formatting date to IST:', error);
+    return 'Error';
+  }
+};
 
 const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
   const { getData } = useApi();
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const storedMode = localStorage.getItem('isDarkMode');
+    setDarkMode(storedMode === 'true');
+
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'isDarkMode') {
+        setDarkMode(event.newValue === 'true');
+      }
+    };
+
+    const handleCustomDarkModeChange = (event: CustomEvent) => {
+      setDarkMode(event.detail === true);
+    };
+
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = function (key, value) {
+      originalSetItem.apply(this, [key, value]);
+
+      if (key === 'isDarkMode') {
+        setDarkMode(value === 'true');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener(
+      'darkModeChange',
+      handleCustomDarkModeChange as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(
+        'darkModeChange',
+        handleCustomDarkModeChange as EventListener,
+      );
+      localStorage.setItem = originalSetItem;
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const currentSetting = localStorage.getItem('isDarkMode') === 'true';
+      if (currentSetting !== darkMode) {
+        setDarkMode(currentSetting);
+      }
+    };
+
+    const intervalId = setInterval(checkDarkMode, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [darkMode]);
 
   useEffect(() => {
     if (open && quizId) {
@@ -34,9 +121,7 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
   const fetchQuizDetails = async () => {
     try {
       setLoading(true);
-
       const response = await getData(`/quiz_submission/details/${quizId}`);
-
       if (response.status) {
         setSubmissions(response.data || []);
       } else {
@@ -56,36 +141,30 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
 
   const calculateSuccessRate = () => {
     if (!submissions || submissions.length === 0) return '0%';
-
     const successfulSubmissions: any = submissions.filter(
       (submission) =>
         parseFloat(submission.result_points) >=
         parseFloat(submission.points) / 2,
     ).length;
-
     const rate = (successfulSubmissions / submissions.length) * 100;
     return `${rate.toFixed(1)}%`;
   };
 
   const calculateAverageScore = () => {
     if (!submissions || submissions.length === 0) return '0';
-
     const totalPoints: any = submissions.reduce(
       (acc, submission) => acc + parseFloat(submission.result_points || 0),
       0,
     );
-
     return (totalPoints / submissions.length).toFixed(1);
   };
 
   const calculateAverageTime = () => {
     if (!submissions || submissions.length === 0) return '0 mins';
-
     const totalTime: any = submissions.reduce(
       (acc, submission) => acc + parseFloat(submission.time_taken || 0),
       0,
     );
-
     return `${(totalTime / submissions.length).toFixed(2)} mins`;
   };
 
@@ -98,7 +177,7 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
       aria-labelledby="quiz-details-dialog-title"
     >
       <DialogTitle id="quiz-details-dialog-title">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box className="quiz-details-dialog__header">
           <Typography variant="h6">
             {quizTitle ? `Quiz Results: ${quizTitle.title}` : 'Quiz Results'}
           </Typography>
@@ -109,63 +188,110 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
       </DialogTitle>
       <DialogContent dividers>
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <Box className="quiz-details-dialog__content--loading">
             <CircularProgress />
           </Box>
         ) : submissions.length === 0 ? (
-          <Typography align="center" sx={{ py: 4 }}>
+          <Typography className="quiz-details-dialog__content--empty">
             No submissions found for this quiz.
           </Typography>
         ) : (
           <>
-            <Box sx={{ mb: 4 }}>
+            <Box className="quiz-details-dialog__summary">
               <Typography variant="h6" gutterBottom>
                 Summary
               </Typography>
               <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  backgroundColor: '#f5f5f5',
-                  p: 2,
-                  borderRadius: 1,
-                }}
+                className={`quiz-details-dialog__summary-container${
+                  darkMode
+                    ? ' quiz-details-dialog__summary-container--dark'
+                    : ''
+                }`}
               >
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                <Box className="quiz-details-dialog__summary-box">
+                  <Typography
+                    variant="body2"
+                    className={`quiz-details-dialog__summary-label${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
                     Total Submissions
                   </Typography>
-                  <Typography variant="h6">{submissions.length}</Typography>
+                  <Typography
+                    variant="h6"
+                    className={`quiz-details-dialog__summary-value${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
+                    {submissions.length}
+                  </Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                <Box className="quiz-details-dialog__summary-box">
+                  <Typography
+                    variant="body2"
+                    className={`quiz-details-dialog__summary-label${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
                     Success Rate
                   </Typography>
-                  <Typography variant="h6">{calculateSuccessRate()}</Typography>
+                  <Typography
+                    variant="h6"
+                    className={`quiz-details-dialog__summary-value${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
+                    {calculateSuccessRate()}
+                  </Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                <Box className="quiz-details-dialog__summary-box">
+                  <Typography
+                    variant="body2"
+                    className={`quiz-details-dialog__summary-label${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
                     Average Score
                   </Typography>
-                  <Typography variant="h6">
+                  <Typography
+                    variant="h6"
+                    className={`quiz-details-dialog__summary-value${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
                     {calculateAverageScore()}
                   </Typography>
                 </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                <Box className="quiz-details-dialog__summary-box">
+                  <Typography
+                    variant="body2"
+                    className={`quiz-details-dialog__summary-label${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
                     Average Time
                   </Typography>
-                  <Typography variant="h6">{calculateAverageTime()}</Typography>
+                  <Typography
+                    variant="h6"
+                    className={`quiz-details-dialog__summary-value${
+                      darkMode ? '--dark' : ''
+                    }`}
+                  >
+                    {calculateAverageTime()}
+                  </Typography>
                 </Box>
               </Box>
             </Box>
-
             <Typography variant="h6" gutterBottom>
               Student Submissions
             </Typography>
             <TableContainer component={Paper} variant="outlined">
               <Table>
-                <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+                <TableHead
+                  className={`quiz-details-dialog__table-header${
+                    darkMode ? ' quiz-details-dialog__table-header--dark' : ''
+                  }`}
+                >
                   <TableRow>
                     <TableCell>Student Name</TableCell>
                     <TableCell>Submission Date</TableCell>
@@ -179,7 +305,7 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
                     const firstName = submission.first_name || '';
                     const lastName = submission.last_name || '';
                     const submissionDate = submission.submission_date
-                      ? new Date(submission.submission_date).toLocaleString()
+                      ? formatDateToIST(submission.submission_date)
                       : 'N/A';
                     const timeTaken = submission.time_taken
                       ? `${submission.time_taken} mins`
@@ -190,7 +316,6 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
                     const totalPoints = parseFloat(submission.points || 0);
                     const scoreText = `${resultPoints}/${totalPoints}`;
                     const isPassed = resultPoints >= totalPoints / 2;
-
                     return (
                       <TableRow key={index} hover>
                         <TableCell>
@@ -202,8 +327,11 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
                         <TableCell>{scoreText}</TableCell>
                         <TableCell>
                           <Typography
-                            color={isPassed ? 'success.main' : 'error.main'}
-                            sx={{ fontWeight: 'medium' }}
+                            className={`quiz-details-dialog__table-status ${
+                              isPassed
+                                ? 'quiz-details-dialog__table-status--passed'
+                                : 'quiz-details-dialog__table-status--failed'
+                            }`}
                           >
                             {isPassed ? 'Passed' : 'Failed'}
                           </Typography>

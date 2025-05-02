@@ -23,7 +23,11 @@ import {
   QuestionAnswerOutlined,
 } from '@mui/icons-material';
 import useApi from '../../../hooks/useAPI';
-import { QUERY_KEYS_CLASS, QUERY_KEYS_COURSE } from '../../../utils/const';
+import {
+  QUERY_KEYS_CLASS,
+  QUERY_KEYS_COURSE,
+  QUERY_KEYS_QUIZ,
+} from '../../../utils/const';
 import { toast } from 'react-toastify';
 import QuizDetailsModal from './QuizDetails';
 import { DeleteDialog } from '../../../Components/Dailog/DeleteDialog';
@@ -83,47 +87,53 @@ const TeacherQuizPage = () => {
   const fetchQuizData = async () => {
     try {
       setLoading(true);
-      getData(`/quiz/get/teacher/${user_uuid}`).then((response) => {
-        const filtered = response?.data.map((quiz: any) => {
-          const dueDate = new Date(quiz.due_date_time);
+      getData(`${QUERY_KEYS_QUIZ.GET_QUIZ_BY_TEACHER}${user_uuid}`).then(
+        (response) => {
+          const filtered = response?.data.map((quiz: any) => {
+            const dueDate = new Date(quiz.due_date_time);
 
-          if (dueDate < current_time) {
-            quiz.status = 'past';
-          }
+            if (dueDate < current_time) {
+              quiz.status = 'past';
+            }
 
-          if (quiz.course_semester_subjects) {
-            const keys = Object.keys(quiz.course_semester_subjects);
-            const firstKey = keys[0];
-            const currentCourseName = getCourseOrClassName(firstKey, 'college');
-            const semester = Object.keys(
-              quiz?.course_semester_subjects[firstKey],
-            )[0];
-            const subjects = quiz?.course_semester_subjects[firstKey][semester];
-            quiz.course = currentCourseName;
-            quiz.semester = semester;
-            quiz.subjects = subjects;
-          }
-          if (quiz?.class_stream_subjects) {
-            const schoolKey = Object.keys(quiz?.class_stream_subjects);
-            const firstSchoolKey = schoolKey[0];
-            const currentClassName = getCourseOrClassName(
-              firstSchoolKey,
-              'school',
-            );
-            const stream = Object.keys(
-              quiz?.class_stream_subjects[firstSchoolKey],
-            )[0];
-            const subjects =
-              quiz?.class_stream_subjects[firstSchoolKey][stream];
-            quiz.class = currentClassName;
-            quiz.stream = stream;
-            quiz.subjects = subjects;
-          }
-          return quiz;
-        });
-        setQuizData(filtered);
-        setLoading(false);
-      });
+            if (quiz.course_semester_subjects) {
+              const keys = Object.keys(quiz.course_semester_subjects);
+              const firstKey = keys[0];
+              const currentCourseName = getCourseOrClassName(
+                firstKey,
+                'college',
+              );
+              const semester = Object.keys(
+                quiz?.course_semester_subjects[firstKey],
+              )[0];
+              const subjects =
+                quiz?.course_semester_subjects[firstKey][semester];
+              quiz.course = currentCourseName;
+              quiz.semester = semester;
+              quiz.subjects = subjects;
+            }
+            if (quiz?.class_stream_subjects) {
+              const schoolKey = Object.keys(quiz?.class_stream_subjects);
+              const firstSchoolKey = schoolKey[0];
+              const currentClassName = getCourseOrClassName(
+                firstSchoolKey,
+                'school',
+              );
+              const stream = Object.keys(
+                quiz?.class_stream_subjects[firstSchoolKey],
+              )[0];
+              const subjects =
+                quiz?.class_stream_subjects[firstSchoolKey][stream];
+              quiz.class = currentClassName;
+              quiz.stream = stream;
+              quiz.subjects = subjects;
+            }
+            return quiz;
+          });
+          setQuizData(filtered);
+          setLoading(false);
+        },
+      );
     } catch (err) {
       console.error('Error fetching quiz data:', err);
       toast.error('Error fetching quiz data', {
@@ -193,13 +203,23 @@ const TeacherQuizPage = () => {
     const quiz = filteredQuizzes.find((quiz) => quiz.id === id);
     const response = await getData(`/quiz_submission/details/${id}`);
 
-    if (response.status && !quiz.is_multiple_attempt) {
+    const due_date_time = new Date(quiz?.due_date_time);
+    const now = new Date();
+
+    if (due_date_time <= now) {
+      toast.error('You cannot Edit Closed Quiz', {
+        hideProgressBar: true,
+        theme: 'colored',
+      });
+      return;
+    } else if (response.status && !quiz.is_multiple_attempt) {
       toast.error('You cannot Edit someone already submitted', {
         hideProgressBar: true,
         theme: 'colored',
       });
+      return;
     } else {
-      navigate(`/teacher-dashboard/edit-assignment/${id}`, {
+      navigate(`/teacher-dashboard/edit-quiz/${id}`, {
         state: { type: 'quiz', edit: true },
       });
     }
@@ -207,7 +227,7 @@ const TeacherQuizPage = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      deleteData(`/quiz/delete/${id}`).then((res) => {
+      deleteData(`${QUERY_KEYS_QUIZ.DELETE_QUIZ}${id}`).then((res) => {
         toast.error(res.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -227,9 +247,9 @@ const TeacherQuizPage = () => {
   };
 
   return (
-    <div className="main-wrapper">
+    <div className="main-wrapper pb-5 pb-lg-4">
       <div className="main-content">
-        <div className="page-breadcrumb d-none d-sm-flex align-items-center ">
+        <div className="page-breadcrumb d-flex align-items-center ">
           <div className="breadcrumb-title pe-3">
             <Link to={'/main/dashboard'} className="text-dark">
               Dashboard
@@ -246,8 +266,8 @@ const TeacherQuizPage = () => {
           </div>
         </div>
 
-        <div className="row gy-4 mt-4">
-          <div className="col-lg-3">
+        <div className="row gy-4 mt-1">
+          <div className="col-md-6 col-lg-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -268,7 +288,7 @@ const TeacherQuizPage = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-3">
+          <div className="col-md-6 col-lg-3">
             <div className="card rounded-4 w-100 mb-0">
               <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mb-3">
@@ -297,7 +317,7 @@ const TeacherQuizPage = () => {
             <div className="d-flex align-items-center justify-content-between">
               <h4 className="mb-0 fw-bold">Quiz List</h4>
               <Link
-                to="/teacher-dashboard/create-assignment"
+                to="/teacher-dashboard/create-quiz"
                 state={{ type: 'quiz' }}
                 className="btn btn-primary"
               >
@@ -368,8 +388,8 @@ const TeacherQuizPage = () => {
                 <div className="row g-3">
                   {filteredQuizzes.length > 0 ? (
                     filteredQuizzes.map((quiz, index) => (
-                      <div className="col-md-4" key={index}>
-                        <div className="card mb-0">
+                      <div className="col-md-6 col-lg-3 col-xl-4" key={index}>
+                        <div className="card mb-0 h-100">
                           <div className="card-body">
                             <Box
                               display="flex"

@@ -11,6 +11,7 @@ import {
   IconButton,
   ListItem,
   ListItemText,
+  TextField,
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -30,23 +31,38 @@ import TimerOffIcon from '@mui/icons-material/TimerOff';
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import GetAppOutlinedIcon from '@mui/icons-material/GetAppOutlined';
 import "react-quill/dist/quill.snow.css";
+import { QUERY_KEYS_ASSIGNMENT, QUERY_KEYS_ASSIGNMENT_SUBMISSION } from '../../../utils/const';
+
+export interface Question_andwer {
+  question: string,
+  answer: string,
+  marks: number
+}
 const PreviewAndSubmit = () => {
   const navigate = useNavigate();
   const { getData, postData } = useApi();
   const { id } = useParams();
-  const student_id = localStorage.getItem('user_uuid')
-  const stud_id = localStorage.getItem('student_id')
+  const student_id = localStorage.getItem('user_uuid');
+  const stud_id = localStorage.getItem('student_id');
   const [assignmentData, setAssignmentData] = useState<Assignment>();
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
   const [document_error, setDocument_error] = useState(false);
   const [allselectedfiles, setAllSelectedfiles] = useState<File[]>([]);
-  const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<string[]>([]); 
-  const [value, setValue] = useState("");
+  const [allselectedfilesToShow, setAllSelectedfilesToShow] = useState<string[]>([]);
+  const [description, setDescription] = useState("");
   const quillRef = useRef<ReactQuill | null>(null);
   const [isSubmited, setIssubmited] = useState(false);
   const [statusCheck, setStatusCheck] = useState('Pending');
   const [availableDuration, setAvailableDuration] = useState(0);
+  const [question_answer, setQuestion_answer] = useState<Question_andwer[]>([{
+    question: '',
+    answer: '',
+    marks: 0
+  }
+  ]);
+  const [q_a_error, setQ_a_error] = useState(false);
+  const [contentType, setContentType] = useState('file');
 
   const handleBack = () => {
     navigate(-1);
@@ -58,9 +74,13 @@ const PreviewAndSubmit = () => {
 
   const getAssignmentData = () => {
     try {
-      getData(`/assignment/get/${id}`).then((response) => {
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then((response) => {
         if (response?.status) {
           setAssignmentData(response?.data);
+          if (response?.data?.questions && response?.data?.questions.length > 0) {
+            setQuestion_answer(response?.data?.questions);
+            setContentType("questions");
+          }
           const dueDate = new Date(response?.data?.due_date_time);
           const availableDate = new Date(response?.data?.available_from);
           const durationDiff = dueDate.getTime() - availableDate.getTime()
@@ -83,15 +103,16 @@ const PreviewAndSubmit = () => {
 
 
   const isAssignmentSubmitedGet = (assignmentId: string) => {
-    getData(`/assignment_submission/get/submissions/${student_id}`).then((response) => {
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_id}`).then((response) => {
       if (response?.status) {
         const filteredAssignment = response?.data?.filter((assignment: any) => assignment?.assignment_id == assignmentId)
-        console.log(filteredAssignment);
         if (filteredAssignment.length > 0) {
-          if (filteredAssignment[0]?.description) setValue(filteredAssignment[0].description);
+          if (filteredAssignment[0]?.description) setDescription(filteredAssignment[0].description);
           if (filteredAssignment[0]?.files) setAllSelectedfilesToShow(filteredAssignment[0].files)
           if (filteredAssignment[0]?.is_graded) setStatusCheck('Graded');
           if (filteredAssignment[0]?.is_submitted && !filteredAssignment[0]?.is_graded) setStatusCheck('Submitted');
+          if (filteredAssignment[0]?.answers?.length > 0) setQuestion_answer(filteredAssignment[0]?.answers);
+          if (filteredAssignment[0]?.answers?.length > 0) setContentType("questions");
           setIssubmited(true)
         } else {
           setIssubmited(false)
@@ -140,33 +161,48 @@ const PreviewAndSubmit = () => {
   const submitAssignment = () => {
 
     let check = true;
-    if (value == '') {
+    // if (description == '') {
 
-      check = true;
-    } else {
+    //   check = true;
+    // } else {
 
-      check = false;
-    }
+    //   check = false;
+    // }
 
-    if (allselectedfiles.length! < 1) {
+    if (contentType == 'file' && description == '' && allselectedfiles.length! < 1) {
       setDocument_error(true);
       check = true;
     } else {
       check = false;
       setDocument_error(false);
     }
+
+    if (contentType != 'file' && question_answer.find((question) => !question.answer || question.answer === '')) {
+      setQ_a_error(true)
+      check = true;
+    } else {
+      setQ_a_error(false);
+      check = false;
+
+    }
     if (check) return;
-    const formData = new FormData();
+    const formData: any = new FormData();
 
     formData.append('assignment_id', assignmentData?.id as string)
     formData.append('student_id', stud_id as string)
-    formData.append('description', value)
+    formData.append('description', description)
+    formData.append('questions', JSON.stringify(question_answer));
     allselectedfiles.forEach((file) => {
       formData.append('files', file);
     });
-    postData(`/assignment_submission/add`, formData).then((response) => {
+    // const paylod = {
+    //   assignment_id: assignmentData?.id,
+    //   student_id: stud_id,
+    //   description: 'test',
+    //   questions: question_answer
+    // }
+    postData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.ADD_ASSIGNMENT_SUBMISSION}`, formData).then((response) => {
       if (response?.status) {
-
         toast.success(response.message, {
           hideProgressBar: true,
           theme: 'colored',
@@ -174,12 +210,12 @@ const PreviewAndSubmit = () => {
 
         })
         navigate('/main/student/assignment')
-      }else{
+      } else {
         toast.error(response.message, {
           hideProgressBar: true,
           theme: 'colored',
           position: 'top-center'
-  
+
         })
       }
     }).catch((error) => {
@@ -190,6 +226,18 @@ const PreviewAndSubmit = () => {
 
       })
     })
+  }
+  const handleAnswer = (value: any, index: any) => {
+
+    setQuestion_answer(prev => {
+      const updateobj = [...prev];
+      updateobj[index] = { ...updateobj[index], answer: value }
+      return updateobj;
+    })
+    if (question_answer.find((question) => question.answer || question.answer !== '')) {
+      setQ_a_error(false)
+    }
+
   }
   useEffect(() => {
     const editor = quillRef.current?.editor?.root;
@@ -245,6 +293,13 @@ const PreviewAndSubmit = () => {
                 </Link></div>
 
             </div>
+            <div className="breadcrumb-title pe-3 ms-2">
+            <div className="d-flex gap-1 align-items-center" role='button'>
+              <Link to={'/main/student/assignment'} className="text-dark">
+                Assignments List
+              </Link></div>
+
+          </div>
             <div className="ps-3">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb mb-0 p-0">
@@ -316,7 +371,7 @@ const PreviewAndSubmit = () => {
                   {
                     assignmentData?.files?.map((file, index) => (
                       <li key={index} className='d-flex justify-content-between me-5'> {/* Ensure a unique key */}
-                        <Link to={file as string}>{file as string}</Link>
+                        <a target="_blank" rel="noopener noreferrer" href={file as string}>{file as string}</a>
                         <a href={file as string} download target="_blank" rel="noopener noreferrer">
                           <GetAppOutlinedIcon />
                         </a>
@@ -340,69 +395,122 @@ const PreviewAndSubmit = () => {
           <Card sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="h6" className='mb-3'>Submit Your Work</Typography>
-              <Box
-                sx={{
-                  border: '2px dashed #ccc',
-                  p: 3,
-                  textAlign: 'center',
-                  borderRadius: '8px',
-                }}
-              >
-                <CloudUploadIcon fontSize="large" />
-                <Typography variant="body2" color="text.secondary">
-                  Drag and drop your files here or click to browse
-                </Typography>
-                <UploadBtn
-                  label="Upload Documents"
-                  name="document"
-                  accept=".pdf, .jpg, .jpeg, .png, .gif"
-                  handleFileChange={handleFileChange}
-                />
-              </Box>
 
-              {statusCheck =='Pending' ?
-              allselectedfiles.map((file, index) => (
-                <ListItem
-                  className="fileslistitem"
-                  key={index}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      onClick={() => handleFileRemove(index)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <div className="pinwi-20">
-                    <AttachFileIcon />
-                  </div>
-                  <ListItemText primary={file.name} />
-                </ListItem>
-              )):
-              allselectedfilesToShow.map((file, index) => (
-                <ListItem
-                  className="fileslistitem"
-                  key={index}
-                >
-                  <div className="pinwi-20">
-                    <AttachFileIcon />
-                  </div>
-                  <a href={file}>
-                  <ListItemText primary={file} />
-                  </a>
-                </ListItem>
-              ))
+              {contentType == 'questions' ? (
+                <>
+                  <Box>
+                    {question_answer.map((question_answer, index) => (
+                      <>
+                        <Box display="flex" alignItems="center" gap={1} mb={1}>
+                          <Typography variant="subtitle1" onCopy={(e) => e.preventDefault()}
+                            onCut={(e) => e.preventDefault()}
+                            onPaste={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()} // disables right-click
+                            style={{ userSelect: 'none' }}>
+                            <strong>Question {index + 1}:</strong> {question_answer.question}
+                          </Typography>
+                          <Chip
+                            label={`${question_answer.marks} ${question_answer.marks === 1 ? 'mark' : 'marks'}`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                          />
+                        </Box>
+                        <TextField
+                          className='mb-4'
+                          id="outlined-multiline-static"
+                          label="Answer"
+                          multiline
+                          InputLabelProps={{ shrink: true }}
+                          value={question_answer.answer}
+                          rows={2}
+                          fullWidth
+                          onChange={(e) => handleAnswer(e.target.value, index)}
+                          onCopy={(e) => e.preventDefault()}
+                          onCut={(e) => e.preventDefault()}
+                          onPaste={(e) => e.preventDefault()}
+                        />
+                      </>
+                    ))
+                    }
+                  </Box>
+                </>
+              )
+                :
+                <>
+                  <Box
+                    sx={{
+                      border: '2px dashed #ccc',
+                      p: 3,
+                      textAlign: 'center',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <CloudUploadIcon fontSize="large" />
+                    <Typography variant="body2" color="text.secondary">
+                      Drag and drop your files here or click to browse
+                    </Typography>
+                    <UploadBtn
+                      label="Upload Documents"
+                      name="document"
+                      accept=".pdf, .jpg, .jpeg, .png, .gif"
+                      handleFileChange={handleFileChange}
+                    />
+                  </Box>
+                </>
+              }
+
+
+
+              {statusCheck == 'Pending' ?
+                allselectedfiles.map((file, index) => (
+                  <ListItem
+                    className="fileslistitem"
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        onClick={() => handleFileRemove(index)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                  >
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <ListItemText primary={file.name} />
+                  </ListItem>
+                )) :
+                allselectedfilesToShow.map((file, index) => (
+                  <ListItem
+                    className="fileslistitem"
+                    key={index}
+                  >
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <a download target="_blank" rel="noopener noreferrer" href={file}>
+                      <ListItemText primary={file} />
+                    </a>
+                  </ListItem>
+                ))
 
               }
-              
+
               {document_error &&
                 <p className="error-text " style={{ color: 'red' }}>
                   <small> Please add at least one file.</small>
                 </p>
               }
+              {
+                q_a_error &&
+                <p className="error-text " style={{ color: 'red' }}>
+                  <small>All questions are required</small>
+                </p>
+              }
               <div className='mt-2 mb-5'>
-                <ReactQuill id='text' ref={quillRef} value={value} onChange={setValue} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
+                <ReactQuill id='text' ref={quillRef} value={description} onChange={setDescription} theme="snow" style={{ height: "120px", borderRadius: "8px" }} />
               </div>
             </CardContent>
           </Card>
@@ -418,7 +526,7 @@ const PreviewAndSubmit = () => {
           }
 
         </div>
-      </div>
+      </div >
     </>
   );
 };

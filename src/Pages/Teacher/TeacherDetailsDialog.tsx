@@ -9,6 +9,7 @@ import {
   Button,
 } from '@mui/material';
 import React, { useState } from 'react';
+import { convertToIST } from '../../utils/helpers';
 
 export const TeacherDetailsDialog = ({
   open,
@@ -40,6 +41,7 @@ export const TeacherDetailsDialog = ({
     'state',
     'country',
     'pincode',
+    'created_by',
     'created_at',
     'updated_at',
     'documents',
@@ -191,6 +193,9 @@ export const TeacherDetailsDialog = ({
         return renderCourses(value);
       case 'documents':
         return renderDocuments(value);
+      case 'created_at':
+      case 'updated_at':
+        return convertToIST(value);
       default:
         return typeof value === 'object'
           ? JSON.stringify(value)
@@ -203,7 +208,6 @@ export const TeacherDetailsDialog = ({
       open={open}
       onClose={onClose}
       sx={{
-       
         '& .MuiPaper-root': {
           width: {
             xs: '95%',
@@ -212,8 +216,6 @@ export const TeacherDetailsDialog = ({
             lg: '40%',
           },
           maxWidth: '900px',
-         
-         
           margin: {
             xs: '10px',
             sm: 'auto',
