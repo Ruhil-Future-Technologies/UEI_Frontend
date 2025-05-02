@@ -87,6 +87,7 @@ export interface Assignment {
   notify: boolean;
   created_at?: any;
   created_by?: any;
+  updated_at?:any;
   created_by_name?: any;
   is_active?: any;
   is_deleted?: any;
