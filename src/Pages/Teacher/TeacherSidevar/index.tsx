@@ -68,6 +68,17 @@ const TeacherSideVar = () => {
               </Link>
             </li>
             <li>
+              <Link
+                to="/teacher-dashboard/chat/recentChat"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <ChatOutlinedIcon />
+                </div>
+                <div className="menu-title">Chat with AI</div>
+              </Link>
+            </li>
+            <li>
               <Link to="/teacher-dashboard/chat" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <ChatOutlinedIcon />
