@@ -1180,9 +1180,7 @@ export const CreateAssignments = () => {
     }
     const now = dayjs();
 
-    const tenMinutesFromNow = now.add(10, 'minute');
-
-    if (availableFrom == null || availableFrom.isBefore(tenMinutesFromNow)) {
+    if (availableFrom == null || availableFrom.isBefore(now)) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
@@ -1372,11 +1370,12 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
+    const now = dayjs();
 
-    if (availableFrom == null) {
+    if (availableFrom == null || availableFrom.isBefore(now)) {
       setAvailableFrom_error(true);
-
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -1618,27 +1617,18 @@ export const CreateAssignments = () => {
       setError(null);
       return;
     }
-
     const now = dayjs();
+    if (newDate && newDate.isBefore(now)) {
+      return;
+    }
     const today = dayjs().startOf('day');
-    const tenMinutesFromNow = now.add(10, 'minute');
 
-    if (assignmentType != 'quiz') {
-      if (newDate.isBefore(today)) {
-        setError('Please select today or a future date.');
-      } else if (dueDate && newDate.isAfter(dueDate)) {
-        setError('Available From should be less than Due Date');
-      } else {
-        setError(null);
-      }
+    if (newDate.isBefore(today)) {
+      setError('Please select today or a future date.');
+    } else if (dueDate && newDate.isAfter(dueDate)) {
+      setError('Available From should be less than Due Date');
     } else {
-      if (type == 'quiz' && newDate.isBefore(tenMinutesFromNow)) {
-        setError('Please select a time at least 10 minutes in the future.');
-      } else if (dueDate && newDate.isAfter(dueDate)) {
-        setError('Available From should be less than Due Date');
-      } else {
-        setError(null);
-      }
+      setError(null);
     }
   };
 
@@ -2875,12 +2865,11 @@ export const CreateAssignments = () => {
                                   label="Available From"
                                   value={availableFrom}
                                   minDateTime={
-                                    !edit
-                                      ? dayjs().add(10, 'minute')
-                                      : undefined
+                                    !edit ? dayjs().add(1, 'minute') : undefined
                                   }
                                   onChange={handleAvailableFromChange}
                                   closeOnSelect={false}
+                                  timeSteps={{ minutes: 1 }}
                                   slotProps={{
                                     textField: (params) => (
                                       <TextField {...params} />

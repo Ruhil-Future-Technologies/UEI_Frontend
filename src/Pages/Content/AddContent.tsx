@@ -366,23 +366,17 @@ const AddContent = () => {
         (data) => {
           const filteredCourses = data?.data?.course_semester_subjects;
 
-          const validClassIds = new Set(
-            Object.keys(data?.data?.class_stream_subjects).map((id) =>
-              Number(id),
-            ),
-          );
+          if (data?.data?.entity_type === 'school') {
+            const validClassIds = new Set(
+              Object.keys(data?.data?.class_stream_subjects).map((id) =>
+                Number(id),
+              ),
+            );
 
-          console.log({ dataClasses });
-
-          console.log({
-            teacherclass: dataClasses.filter((cls) =>
-              validClassIds.has(cls.id),
-            ),
-          });
-
-          setTeacherClasses(
-            dataClasses.filter((cls) => validClassIds.has(cls.id)),
-          );
+            setTeacherClasses(
+              dataClasses.filter((cls) => validClassIds.has(cls.id)),
+            );
+          }
           setTeacherCourses((prevCourses) => ({
             ...prevCourses,
             ...filteredCourses,
