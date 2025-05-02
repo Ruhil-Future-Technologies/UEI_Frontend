@@ -37,12 +37,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuizIcon from '@mui/icons-material/Quiz';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import PresentToAllIcon from '@mui/icons-material/PresentToAll';
+//import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box } from '@mui/system';
 import useApi from '../../../hooks/useAPI';
 import {
   QUERY_KEYS_ASSIGNMENT,
+  QUERY_KEYS_ASSIGNMENT_SUBMISSION,
   QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_QUIZ,
@@ -257,6 +258,7 @@ export const CreateAssignments = () => {
   const [configInstructions, setConfigInstructions] = useState('');
   const [isedit, setisedit] = useState(false);
   const [editType, setEditType] = useState('');
+  const [submittedCount, setSubmitedCount] = useState(0);
   const getTotal = (questions: Record<string, any>[]) => {
     const total = questions.reduce((acc, obj) => {
       for (const value of Object.values(obj)) {
@@ -331,6 +333,10 @@ export const CreateAssignments = () => {
       await getSemester();
       await getCourses();
       await getTeacherProfileInfo();
+      if (id) {
+        isSubmittedByAnyStudent()
+      }
+      ;
     };
     fetchData();
     //getListOfStudnetsForAssignment();
@@ -809,7 +815,6 @@ export const CreateAssignments = () => {
     } else {
       setPoint_error(false);
     }
-    if (name == 'instructions' && value == '<p><br></p>') {
     if (name == 'instructions' && value == '<p><br></p>') {
       setInstructoins_error(true);
     } else {
@@ -1947,7 +1952,6 @@ export const CreateAssignments = () => {
     }
   };
   const handleDelete = (key: any, index: number) => {
-  const handleDelete = (key: any, index: number) => {
     const filteredQuestion = questionMap?.filter(
       (_: any, ind: number) => ind !== index,
     );
@@ -1961,7 +1965,20 @@ export const CreateAssignments = () => {
     }
   };
   console.log(assignmentData);
-  console.log(assignmentData);
+  const isSubmittedByAnyStudent = () => {
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
+      if (response?.status) {
+        const submitedCount = response?.data?.filter((element: any) => element.is_graded === true || element.is_submitted === true).length;
+        setSubmitedCount(submitedCount);
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+      })
+    });
+  }
   return (
     <div className="main-wrapper pb-5">
       <div className="main-content">
@@ -2020,10 +2037,10 @@ export const CreateAssignments = () => {
                 <ToggleButton value="ai generated">
                   <AccountTreeIcon /> Ai generated
                 </ToggleButton>
-                <ToggleButton value="presentation">
+                {/* <ToggleButton value="presentation">
                   <PresentToAllIcon />
                   Presentation
-                </ToggleButton>
+                </ToggleButton> */}
               </>
             )}
             {type == 'quiz' && (
@@ -2108,6 +2125,7 @@ export const CreateAssignments = () => {
                           onChange={handleFileChange}
                           multiple
                           name="file"
+                          disabled={submittedCount > 0}
                           style={{ display: 'none' }}
                           id="file-upload"
                         />
@@ -2130,12 +2148,14 @@ export const CreateAssignments = () => {
                                 mb: 1,
                               }}
                               secondaryAction={
-                                <IconButton
-                                  edge="end"
-                                  onClick={() => handleFileRemove(index)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
+                                submittedCount <= 0 ? (
+                                  <IconButton
+                                    edge="end"
+                                    onClick={() => handleFileRemove(index)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                ) : null
                               }
                             >
                               <div className="pinwi-20">
@@ -2486,15 +2506,6 @@ export const CreateAssignments = () => {
                         boxes.length > 0 &&
                         boxes?.map((box, index) => (
                           <div key={index} className="row g-4">
-                            {/* Course Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
-                    <div className="col-12">
-                      {selectedEntity.toLowerCase() === 'college' &&
-                        boxes.length > 0 &&
-                        boxes?.map((box, index) => (
-                          <div key={index} className="row g-4">
-                            {/* Course Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
                                 Course<span>*</span>
@@ -2539,10 +2550,7 @@ export const CreateAssignments = () => {
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
                             {/* Semester Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
-                                Semester <span>*</span>
-                              </label> */}
+
                               <FormControl fullWidth>
                                 <InputLabel id={`semester_id_${index}`}>
                                   Semester
@@ -2588,10 +2596,6 @@ export const CreateAssignments = () => {
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
                             {/* Subjects Selection */}
-                            <div className="col-md-4 col-12">
-                              {/* <label className="col-form-label">
-                                Subjects <span>*</span>
-                              </label> */}
                               <FormControl fullWidth>
                                 <InputLabel id={`subject_label_${index}`}>
                                   Subject
@@ -3051,34 +3055,19 @@ export const CreateAssignments = () => {
                         (assignmentType == 'ai generated' &&
                           isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                          {
-                            assignmentType != 'written' && (
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() =>
-                                  assignmentType === 'quiz'
-                                    ? setIsModalOpen(true)
-                                    : setAssignmentModalOpen(true)
-                                }
-                                style={{ marginTop: 20 }}
-                              >
-                                Preview
-                              </Button>
-                            )
-                          }
-
-
                           <Button
-                            variant="outlined"
-                            color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
-                            style={{
-                              marginTop: 20,
-                            }}
-                            onClick={handleSaveAsDraft}
+                            variant="contained"
+                            color="primary"
+                            onClick={() =>
+                              assignmentType === 'quiz'
+                                ? setIsModalOpen(true)
+                                : setAssignmentModalOpen(true)
+                            }
+                            style={{ marginTop: 20 }}
                           >
-                            Save as Draft
+                            Preview
                           </Button>
+
                           <Button
                             variant="outlined"
                             color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
@@ -3096,7 +3085,14 @@ export const CreateAssignments = () => {
                             style={{ marginTop: 20 }}
                             onClick={
                               assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : () => submitAssignment(false)
+                                ? assignmentType == 'ai generated'
+                                  ? () =>
+                                    submitAssignment(
+                                      false,
+                                      'json',
+                                      assignmentJsonQuestions,
+                                    )
+                                  : submitAssignment
                                 : () => handleSubmitQuiz(false)
                             }
                           >
@@ -3125,29 +3121,28 @@ export const CreateAssignments = () => {
                   </div>
                 </div>
               </div>
-
             </div>
+
+            <AssignmentModal
+              open={isAssignmentModalOpen}
+              onClose={() => setAssignmentModalOpen(false)}
+              assignments={assignmentGenrData}
+              onProceed={(assignmentData: GenAssignment) => {
+                setAssignmentJsonQuestions(assignmentData);
+                setAssignmentModalOpen(false);
+              }}
+              title={assignmentData?.title}
+              totalQuestions={totalQuestions}
+              totalMarks={totalMarks}
+            />
+            <QuizModal
+              isEdit={isedit}
+              open={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              quizData={quizData}
+              onSave={handleSaveQuiz}
+            />
           </div>
-          <AssignmentModal
-            open={isAssignmentModalOpen}
-            onClose={() => setAssignmentModalOpen(false)}
-            assignments={assignmentGenrData}
-            onProceed={(assignmentData: GenAssignment) => {
-              setAssignmentJsonQuestions(assignmentData);
-              setAssignmentModalOpen(false);
-            }}
-            title={assignmentData?.title}
-            totalQuestions={totalQuestions}
-            totalMarks={totalMarks}
-          />
-          <QuizModal
-            isEdit={isedit}
-            open={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            quizData={quizData}
-            onSave={handleSaveQuiz}
-          />
-        </div>
         </div>
       </div>
     </div>
