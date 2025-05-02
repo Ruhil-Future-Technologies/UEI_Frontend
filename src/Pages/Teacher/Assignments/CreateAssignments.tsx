@@ -1062,7 +1062,6 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-          }
           setAssignmentData({
             title: '',
             type: 'written',
@@ -1078,6 +1077,7 @@ export const CreateAssignments = () => {
             notify: false,
             files: [], // File should be null initially
           });
+        }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -2374,11 +2374,6 @@ export const CreateAssignments = () => {
                               Add questions
                             </button>
                           </div>
-
-
-
-
-
                           <div className="col-12">
                             <List className='py-0'>
                               {questionMap?.map((item, index) => (
