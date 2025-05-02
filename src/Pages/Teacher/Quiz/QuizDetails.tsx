@@ -20,39 +20,7 @@ import { Close } from '@mui/icons-material';
 import useApi from '../../../hooks/useAPI';
 import { toast } from 'react-toastify';
 import './QuizDetails.scss';
-
-const formatDateToIST = (dateString: any) => {
-  if (!dateString) return 'N/A';
-
-  try {
-    const [datePart, timePart] = dateString.split(' ');
-    const [year, month, day] = datePart.split('-');
-    const [hour, minute, second] = timePart.split(':');
-
-    const date = new Date(year, month - 1, day, hour, minute, second);
-
-    if (isNaN(date.getTime())) {
-      return 'Invalid Date';
-    }
-
-    const istDate = new Date(date.getTime() + (5 * 60 + 30) * 60 * 1000);
-
-    const options: any = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    };
-
-    return istDate.toLocaleString('en-US', options);
-  } catch (error) {
-    console.error('Error formatting date to IST:', error);
-    return 'Error';
-  }
-};
+import { formatDateToIST } from '../../../utils/helpers';
 
 const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
   const { getData } = useApi();
