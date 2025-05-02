@@ -1171,9 +1171,8 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    const now = dayjs();
 
-    if (availableFrom == null || availableFrom.isBefore(now)) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
