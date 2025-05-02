@@ -27,6 +27,16 @@ const useTextToSpeech = () => {
             }
         }
     };
+    const stopSpeechs = () => {
+        for (const key in audioInstances) {
+            const instance = audioInstances[key];
+            if (instance) {
+              instance.pause();
+              instance.remove();
+              delete audioInstances[key];
+            }
+          }
+    };
 
     const MAX_CHARS = 300; // Adjust based on what your API handles comfortably
     const splitTextIntoChunks = (text: string, maxLength: number): string[] => {
@@ -87,7 +97,7 @@ const useTextToSpeech = () => {
         playChunk();
     }
 
-    return { textToSpeech, stopSpeech };
+    return { textToSpeech, stopSpeech,stopSpeechs};
 };
 
 export default useTextToSpeech;

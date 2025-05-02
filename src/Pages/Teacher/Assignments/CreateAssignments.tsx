@@ -101,7 +101,22 @@ export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const { type, edit } = location.state || {};
+
+  const pathSegments = location.pathname.split('/');
+  const lastSegment = pathSegments[pathSegments.length - 1];
+  const secondLastSegment = pathSegments[pathSegments.length - 2];
+
+  const isEditRoute =
+    secondLastSegment?.startsWith('edit-') &&
+    /^[a-f0-9-]{36}$/.test(lastSegment);
+
+  const typeSegment = isEditRoute ? secondLastSegment : lastSegment;
+
+  const urlType = typeSegment.replace(/^(create-|edit-)/, '');
+  const isEditFromUrl = isEditRoute || typeSegment.startsWith('edit-');
+
+  const type = location.state?.type || urlType || 'defaultType';
+  const edit = location.state?.edit ?? isEditFromUrl;
 
   const { id } = useParams();
 
@@ -795,6 +810,7 @@ export const CreateAssignments = () => {
       setPoint_error(false);
     }
     if (name == 'instructions' && value == '<p><br></p>') {
+    if (name == 'instructions' && value == '<p><br></p>') {
       setInstructoins_error(true);
     } else {
       setInstructoins_error(false);
@@ -1150,11 +1166,14 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
+    const now = dayjs();
 
-    if (availableFrom == null) {
+    const tenMinutesFromNow = now.add(10, 'minute');
+
+    if (availableFrom == null || availableFrom.isBefore(tenMinutesFromNow)) {
       setAvailableFrom_error(true);
-
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -1183,6 +1202,15 @@ export const CreateAssignments = () => {
       valid1 = true;
     } else {
       setErrorSelectStudent(false);
+    }
+
+    if (type == 'assignment') {
+      if (configInstructions == '') {
+        setConfigInstructoins_error(true);
+        valid1 = true;
+      } else {
+        setConfigInstructoins_error(false);
+      }
     }
 
     if (type == 'assignment') {
@@ -1584,13 +1612,27 @@ export const CreateAssignments = () => {
       setError(null);
       return;
     }
+
+    const now = dayjs();
     const today = dayjs().startOf('day');
-    if (newDate.isBefore(today)) {
-      setError('Please select today or a future date.');
-    } else if (dueDate && newDate.isAfter(dueDate)) {
-      setError('Available From should be less than Due Date');
+    const tenMinutesFromNow = now.add(10, 'minute');
+
+    if (assignmentType != 'quiz') {
+      if (newDate.isBefore(today)) {
+        setError('Please select today or a future date.');
+      } else if (dueDate && newDate.isAfter(dueDate)) {
+        setError('Available From should be less than Due Date');
+      } else {
+        setError(null);
+      }
     } else {
-      setError(null);
+      if (type == 'quiz' && newDate.isBefore(tenMinutesFromNow)) {
+        setError('Please select a time at least 10 minutes in the future.');
+      } else if (dueDate && newDate.isAfter(dueDate)) {
+        setError('Available From should be less than Due Date');
+      } else {
+        setError(null);
+      }
     }
   };
 
@@ -1653,6 +1695,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
+    setSelectedStudents([]);
     const { value, name } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes?.map((box, i) => {
@@ -1689,6 +1732,7 @@ export const CreateAssignments = () => {
         }
         if (name == 'subjects') {
           setSelectedStudents([]);
+          setSelectedStudents([]);
           const filteredStudents = listOfStudent?.filter((student) => {
             const matchedSubject = totleSubject?.find(
               (subject) =>
@@ -1710,6 +1754,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
+    setSelectedStudents([]);
     const { value, name } = event.target;
 
     setBoxesForSchool((prevBoxes) =>
@@ -1902,6 +1947,7 @@ export const CreateAssignments = () => {
     }
   };
   const handleDelete = (key: any, index: number) => {
+  const handleDelete = (key: any, index: number) => {
     const filteredQuestion = questionMap?.filter(
       (_: any, ind: number) => ind !== index,
     );
@@ -1914,6 +1960,7 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
   };
+  console.log(assignmentData);
   console.log(assignmentData);
   return (
     <div className="main-wrapper pb-5">
@@ -2410,6 +2457,10 @@ export const CreateAssignments = () => {
                     {assignmentType == 'ai generated' && editType == '' && (
                       <div className="col-12 mt-3 mb-5">
                         {/* <label className="col-form-label">
+                    </div>
+                    {assignmentType == 'ai generated' && editType == '' && (
+                      <div className="col-12 mt-3 mb-5">
+                        {/* <label className="col-form-label">
                         Assignment Configuration Instructions<span>*</span>
                         </label> */}
                         <TextField
@@ -2430,6 +2481,14 @@ export const CreateAssignments = () => {
                       </div>
                     )}
 
+                    <div className="col-12">
+                      {selectedEntity.toLowerCase() === 'college' &&
+                        boxes.length > 0 &&
+                        boxes?.map((box, index) => (
+                          <div key={index} className="row g-4">
+                            {/* Course Selection */}
+                            <div className="col-md-4 col-12">
+                              {/* <label className="col-form-label">
                     <div className="col-12">
                       {selectedEntity.toLowerCase() === 'college' &&
                         boxes.length > 0 &&
@@ -2479,6 +2538,9 @@ export const CreateAssignments = () => {
                             {/* Semester Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
+                            {/* Semester Selection */}
+                            <div className="col-md-4 col-12">
+                              {/* <label className="col-form-label">
                                 Semester <span>*</span>
                               </label> */}
                               <FormControl fullWidth>
@@ -2522,6 +2584,9 @@ export const CreateAssignments = () => {
                                 )}
                             </div>
 
+                            {/* Subjects Selection */}
+                            <div className="col-md-4 col-12">
+                              {/* <label className="col-form-label">
                             {/* Subjects Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
@@ -3014,6 +3079,16 @@ export const CreateAssignments = () => {
                           >
                             Save as Draft
                           </Button>
+                          <Button
+                            variant="outlined"
+                            color={saveAsDrafts ? 'primary' : 'secondary'} // Change color dynamically
+                            style={{
+                              marginTop: 20,
+                            }}
+                            onClick={handleSaveAsDraft}
+                          >
+                            Save as Draft
+                          </Button>
 
                           <Button
                             variant="contained"
@@ -3072,6 +3147,7 @@ export const CreateAssignments = () => {
             quizData={quizData}
             onSave={handleSaveQuiz}
           />
+        </div>
         </div>
       </div>
     </div>

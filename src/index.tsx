@@ -16,6 +16,7 @@ import { NameProvider } from './Pages/Context/NameContext';
 
 //import { ThemeProvider } from '@mui/material/styles';
 import { ThemeProviderWrapper } from './ThemeProvider';
+import StopSpeechOnRouteChange from '../src/Pages/Chat/StopSpeechOnRouteChange';
 //import CssBaseline from '@mui/material/CssBaseline'; // Optional: Normalize styles
 //import theme from './theme'; // Path to your theme.ts
 
@@ -53,6 +54,7 @@ root.render(
             style={{ width: 'auto' }}
           />
         )}
+        <StopSpeechOnRouteChange />
         <App />
       </BrowserRouter>
     </NameProvider>

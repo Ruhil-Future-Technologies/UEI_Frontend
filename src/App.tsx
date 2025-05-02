@@ -279,6 +279,10 @@ function App() {
             }
           />
           <Route
+            path="/institution-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
+          />
+          <Route
             path="/institution-dashboard/student-list"
             element={
               <Protected
@@ -332,12 +336,20 @@ function App() {
             element={<Protected Component={TeacherChat} />}
           />
           <Route
+            path="/teacher-dashboard/chat/:Id"
+            element={<Protected Component={TeacherChat} />}
+          />
+          <Route
             path="/teacher-dashboard/profile"
             element={<Protected Component={TeacherProfile} />}
           />
           <Route
             path="/teacher-dashboard/feedback"
             element={<Protected Component={TeacherFeedback} />}
+          />
+          <Route
+            path="/teacher-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
           />
           <Route
             path="/teacher-dashboard/student-details"
@@ -352,6 +364,10 @@ function App() {
             element={<Protected Component={CreateAssignments} />}
           />
           <Route
+            path="/teacher-dashboard/create-quiz"
+            element={<Protected Component={CreateAssignments} />}
+          />{' '}
+          <Route
             path="/teacher-dashboard/edit-assignment/:id"
             element={<Protected Component={CreateAssignments} />}
           />
@@ -363,7 +379,6 @@ function App() {
             path="/teacher-dashboard/student-assignment-details/:id"
             element={<Protected Component={PreviewStudentAssignment} />}
           />
-
           <Route
             path="/teacher-dashboard/quizzes"
             element={<Protected Component={TeacherQuizPage} />}
@@ -372,7 +387,10 @@ function App() {
             path="/teacher-dashboard/quiz-details/:id"
             element={<Protected Component={AssignmentDetails} />}
           />
-
+          <Route
+            path="/teacher-dashboard/edit-quiz/:id"
+            element={<Protected Component={CreateAssignments} />}
+          />
           <Route path="/teacher-dashboard/Content">
             <Route
               path=""
