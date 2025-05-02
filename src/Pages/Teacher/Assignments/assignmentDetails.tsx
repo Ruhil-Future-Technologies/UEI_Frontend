@@ -64,7 +64,7 @@ const AssignmentDetails = () => {
       tempMarks <= assignmentData?.points &&
       tempMarks != ''
     ) {
-      const formData:any = new FormData();
+      const formData: any = new FormData();
       formData.append('graded_points', tempMarks);
       // const payload=[{
       //   question_id:"be0c2ed6-b2c7-47a8-9aa2-61a4df690766",
@@ -163,11 +163,18 @@ const AssignmentDetails = () => {
               </Link>
             </div>
           </div>
+          <div className="breadcrumb-title pe-3 ms-2">
+            <div className="d-flex gap-1 align-items-center" role='button'>
+              <Link to={'/teacher-dashboard/assignments'} className="text-dark">
+                Assignments List
+              </Link></div>
+
+          </div>
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item active" aria-current="page">
-                    Student Submissions
+                  Student Submissions
                 </li>
               </ol>
             </nav>
@@ -252,7 +259,7 @@ const AssignmentDetails = () => {
           </div>
           {/* Table */}
           <TableContainer component={Paper}>
-            <Table sx={{ position: 'relative'}}>
+            <Table sx={{ position: 'relative' }}>
               <TableHead >
                 <TableRow>
                   <TableCell><strong>Student</strong></TableCell>

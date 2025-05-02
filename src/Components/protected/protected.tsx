@@ -49,6 +49,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'teacher' &&
         uName.toLowerCase() === 'edit-assignment' &&
         parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
+      (usertype === 'teacher' &&
+        uName.toLowerCase() === 'edit-quiz' &&
+        parts[parts.length - 3]?.toLowerCase() === 'teacher-dashboard') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'uploadpdf' : '') ||
       (usertype === 'admin' ? mName.toLowerCase() === 'pdflist' : '') ||
       (usertype === 'student' ? mName.toLowerCase() === 'recentchat' : '') ||
@@ -92,6 +95,9 @@ const Protected = (props: { Component: any; menuName?: string }) => {
         : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'feedback'
+        : '') ||
+      (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
+        ? mName.toLowerCase() === 'faq'
         : '') ||
       (usertype === 'teacher' && uName.toLowerCase() === 'teacher-dashboard'
         ? mName.toLowerCase() === 'profile'
@@ -155,6 +161,10 @@ const Protected = (props: { Component: any; menuName?: string }) => {
       (usertype === 'institute' &&
       uName.toLowerCase() === 'institution-dashboard'
         ? mName.toLowerCase() === 'feedback'
+        : '') ||
+      (usertype === 'institute' &&
+      uName.toLowerCase() === 'institution-dashboard'
+        ? mName.toLowerCase() === 'faq'
         : '') ||
       (usertype === 'institute' &&
       uName.toLowerCase() === 'institution-dashboard'

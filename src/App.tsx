@@ -279,6 +279,10 @@ function App() {
             }
           />
           <Route
+            path="/institution-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
+          />
+          <Route
             path="/institution-dashboard/student-list"
             element={
               <Protected
@@ -344,6 +348,10 @@ function App() {
             element={<Protected Component={TeacherFeedback} />}
           />
           <Route
+            path="/teacher-dashboard/faq"
+            element={<Protected Component={FAQ} menuName="faq" />}
+          />
+          <Route
             path="/teacher-dashboard/student-details"
             element={<Protected Component={StudentDetails} />}
           />
@@ -378,6 +386,10 @@ function App() {
           <Route
             path="/teacher-dashboard/quiz-details/:id"
             element={<Protected Component={AssignmentDetails} />}
+          />
+          <Route
+            path="/teacher-dashboard/edit-quiz/:id"
+            element={<Protected Component={CreateAssignments} />}
           />
           <Route path="/teacher-dashboard/Content">
             <Route

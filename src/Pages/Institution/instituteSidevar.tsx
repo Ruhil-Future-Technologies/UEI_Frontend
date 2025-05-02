@@ -7,6 +7,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Link } from 'react-router-dom';
 import logowhite from '../../assets/img/logo-white.svg';
+import LiveHelpOutlinedIcon from '@mui/icons-material/LiveHelpOutlined';
 const InstituteSidevar = () => {
   const handleMouseEnter = () => {
     document.body.classList.add('sidebar-hovered');
@@ -80,14 +81,7 @@ const InstituteSidevar = () => {
               <div className="menu-title">Content Library</div>
             </Link>
           </li>
-          <li>
-            <Link to="/institution-dashboard/feedback">
-              <div className="parent-icon">
-                <InfoOutlinedIcon />
-              </div>
-              <div className="menu-title">Feedback</div>
-            </Link>
-          </li>
+
           {/* <!-- <li>
                     <a href="javascript:;" className="has-arrow">
                         <div className="parent-icon"><i className="material-icons-outlined">home</i>
@@ -105,6 +99,31 @@ const InstituteSidevar = () => {
           {/* <!-- <li className="menu-label">UI Elements</li> --> */}
         </ul>
         {/* <!--end navigation--> */}
+
+        <div className="sidebar-footer">
+          {' '}
+          <ul className="metismenu">
+            <li>
+              <Link to="/institution-dashboard/feedback">
+                <div className="parent-icon">
+                  <InfoOutlinedIcon />
+                </div>
+                <div className="menu-title">Feedback</div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/institution-dashboard/faq"
+                onClick={removeMobileToggle}
+              >
+                <div className="parent-icon">
+                  <LiveHelpOutlinedIcon />
+                </div>
+                <div className="menu-title">FAQs</div>
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </aside>
   );

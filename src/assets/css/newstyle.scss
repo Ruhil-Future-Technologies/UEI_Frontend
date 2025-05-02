@@ -3175,3 +3175,13 @@ a {
   fill: #ccc !important;
   stroke: #ccc !important;
 }
+
+.scrollable-table-container {
+  max-height: 300px; /* Adjust as needed to show 5 rows */
+  overflow-y: auto;
+}
+
+.active-assignment-flow{
+  max-height: 500px;
+  overflow-y: auto;
+}
