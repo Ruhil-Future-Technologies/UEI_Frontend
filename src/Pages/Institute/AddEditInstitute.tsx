@@ -364,7 +364,7 @@ const AddEditInstitute = () => {
     const formData = new FormData();
 
     const filteredData: any = { ...instituteData };
-    if (filteredData.university_id === '') {
+    if (filteredData.university_id === '' || filteredData.university_id === null) {
       delete filteredData.university_id;
     }
     const isDataUnchanged = Object.keys(filteredData).every(
