@@ -64,7 +64,7 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to={'/institution-dashboard/chat'}>
+            <Link to={'/institution-dashboard/chat'} onClick={removeMobileToggle}>
               <div className="parent-icon">
                 {' '}
                 <ChatOutlinedIcon />
@@ -73,7 +73,7 @@ const InstituteSidevar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/institution-dashboard/Content">
+            <Link to="/institution-dashboard/Content" onClick={removeMobileToggle}>
               <div className="parent-icon">
                 {' '}
                 <LibraryBooksOutlinedIcon />
@@ -104,7 +104,7 @@ const InstituteSidevar = () => {
           {' '}
           <ul className="metismenu">
             <li>
-              <Link to="/institution-dashboard/feedback">
+              <Link to="/institution-dashboard/feedback" onClick={removeMobileToggle}>
                 <div className="parent-icon">
                   <InfoOutlinedIcon />
                 </div>

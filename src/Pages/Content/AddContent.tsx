@@ -1555,13 +1555,7 @@ const AddContent = () => {
                                 user_type === 'institute' ||
                                 user_type === 'teacher'
                               }
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
+                           
                               style={{
                                 backgroundColor:
                                   user_type === 'institute' ||
@@ -1579,14 +1573,7 @@ const AddContent = () => {
                                     ? '1px solid #d0d0d0'
                                     : undefined,
                               }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+                              
                               onChange={(e: SelectChangeEvent<string>) =>
                                 handleChange(e, 'entity_id')
                               }
@@ -1595,14 +1582,7 @@ const AddContent = () => {
                                 <MenuItem
                                   key={entity.id}
                                   value={entity.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                               
                                 >
                                   {entity.entity_type}
                                 </MenuItem>
@@ -1652,34 +1632,14 @@ const AddContent = () => {
                                 user_type === 'institute' ||
                                 user_type === 'teacher'
                               }
-                              sx={{
-                                backgroundColor: inputfield(namecolor),
-                                color: inputfieldtext(namecolor),
-                                '& .MuiSelect-icon': {
-                                  color: fieldIcon(namecolor),
-                                },
-                              }}
-                              MenuProps={{
-                                PaperProps: {
-                                  style: {
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                  },
-                                },
-                              }}
+                           
+                          
                             >
                               {dataUniversity?.map((university: any) => (
                                 <MenuItem
                                   key={university.id}
                                   value={university.id}
-                                  sx={{
-                                    backgroundColor: inputfield(namecolor),
-                                    color: inputfieldtext(namecolor),
-                                    '&:hover': {
-                                      backgroundColor:
-                                        inputfieldhover(namecolor),
-                                    },
-                                  }}
+                                  
                                 >
                                   {university.university_name}
                                 </MenuItem>
@@ -1765,37 +1725,14 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!values?.institute_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        
+                                       
                                       >
                                         {filteredCourses?.map((course: any) => (
                                           <MenuItem
                                             key={course.id}
                                             value={course.id}
-                                            sx={{
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                              '&:hover': {
-                                                backgroundColor:
-                                                  inputfieldhover(namecolor),
-                                              },
-                                            }}
+                                            
                                           >
                                             {course.course_name}
                                           </MenuItem>
@@ -1822,39 +1759,15 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!course.course_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                        
+                                     
                                       >
                                         {courseSemesters[index]?.map(
                                           (semesterOption: string) => (
                                             <MenuItem
                                               key={semesterOption}
                                               value={semesterOption}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
+                                              
                                             >
                                               {semesterOption}
                                             </MenuItem>
@@ -1886,39 +1799,14 @@ const AddContent = () => {
                                         renderValue={(selected) =>
                                           selected.join(', ')
                                         }
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
-                                        MenuProps={{
-                                          PaperProps: {
-                                            style: {
-                                              backgroundColor:
-                                                inputfield(namecolor),
-                                              color: inputfieldtext(namecolor),
-                                            },
-                                          },
-                                        }}
+                                     
                                       >
                                         {courseSubjects[index]?.map(
                                           (subject: any) => (
                                             <MenuItem
                                               key={subject.subject_id}
                                               value={subject.subject_name}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
+                                           
                                             >
                                               <Checkbox
                                                 checked={course.subjects.includes(
@@ -2022,14 +1910,7 @@ const AddContent = () => {
                                           )
                                         }
                                         disabled={!values?.institute_id}
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
+                                        
                                         MenuProps={{
                                           PaperProps: {
                                             style: {
@@ -2194,14 +2075,7 @@ const AddContent = () => {
                                         renderValue={(selected) =>
                                           selected.join(', ')
                                         }
-                                        sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
-                                          color: inputfieldtext(namecolor),
-                                          '& .MuiSelect-icon': {
-                                            color: fieldIcon(namecolor),
-                                          },
-                                        }}
+                                        
                                         MenuProps={{
                                           PaperProps: {
                                             style: {
@@ -2217,16 +2091,7 @@ const AddContent = () => {
                                             <MenuItem
                                               key={subject.subject_id}
                                               value={subject.subject_name}
-                                              sx={{
-                                                backgroundColor:
-                                                  inputfield(namecolor),
-                                                color:
-                                                  inputfieldtext(namecolor),
-                                                '&:hover': {
-                                                  backgroundColor:
-                                                    inputfieldhover(namecolor),
-                                                },
-                                              }}
+                                              
                                             >
                                               <Checkbox
                                                 checked={cls.subjects.includes(

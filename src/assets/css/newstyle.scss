@@ -3344,3 +3344,12 @@ a {
     }
   }
 }
+
+
+.editorheight{
+  min-height: 167px;
+
+  @media (max-width:724px) {
+    min-height: 190px;
+  }
+}
