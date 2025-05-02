@@ -72,7 +72,7 @@ const TeacherSideVar = () => {
                 <div className="parent-icon">
                   <ChatOutlinedIcon />
                 </div>
-                <div className="menu-title">Chat with AI</div>
+                <div className="menu-title">Chat History</div>
               </Link>
             </li>
             <li>
