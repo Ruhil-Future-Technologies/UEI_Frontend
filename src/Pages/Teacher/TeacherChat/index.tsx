@@ -69,7 +69,7 @@ const TeacherChat = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const ChatURL = QUERY_KEYS.CHATADD;
+  // const ChatURL = QUERY_KEYS.CHATADD;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
@@ -407,17 +407,42 @@ const TeacherChat = () => {
     }
   }, [Id, chatlist]);
 
-  const speak = (text: string, index: number) => {
-    stopSpeech(index);
-    const textArray = Array.isArray(text) ? text : [text]; 
-    // Update `speak` state for all chats
-    const updatedChats = selectedchat.map((chat: any, i: number) => ({
-        ...chat,
-        speak: i === index, // Only the current index is true
-    }));
+//   const speak = (text: string, index: number) => {
+//     stopSpeech(index);
+//     const textArray = Array.isArray(text) ? text : [text]; 
+//     // Update `speak` state for all chats
+//     const updatedChats = selectedchat.map((chat: any, i: number) => ({
+//         ...chat,
+//         speak: i === index, // Only the current index is true
+//     }));
 
-    setSelectedChat(updatedChats);
-    textToSpeech(textArray.join(" "), index);
+//     setSelectedChat(updatedChats);
+//     textToSpeech(textArray.join(" "), index);
+// };
+const speak = async (text: string, index: number) => {
+  stopSpeech(index);
+  const textArray = Array.isArray(text) ? text : [text];
+
+  // Set the `speak` state to true for the current chat
+  const updatedChats = selectedchat.map((chat: any, i: number) => ({
+      ...chat,
+      speak: i === index, // Only the current index is true
+  }));
+
+  setSelectedChat(updatedChats);
+
+  // Call textToSpeech and wait for it to finish
+  const speechComplete = await textToSpeech(textArray.join(" "), index);
+
+  // Once the speech completes, set `speak` to false
+  if (speechComplete) {
+      const updatedChatsAfterSpeech = selectedchat.map((chat: any, i: number) => ({
+          ...chat,
+          speak: i === index ? false : chat.speak, // Set the current index's speak to false
+      }));
+
+      setSelectedChat(updatedChatsAfterSpeech);
+  }
 };
   const stop = async (index: number) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -547,11 +572,10 @@ const TeacherChat = () => {
           });
         });
     };
-
-    postDataJson(`${ChatURL}`, payload)
+    Promise.resolve({ status: true }) // Skipping ChatURL and faking a success
       .then((data) => {
-        if (data.status || data.code === 404) {
-          setLoaderMsg('Searching result from Rag model');
+        if (data.status) {
+
           if (teacherDetail.entity_type === 'school') {
             postDataJson(`${ChatRAGURL}`, {
               user_query: search,
@@ -784,7 +808,7 @@ const TeacherChat = () => {
               });
           }
         } else {
-          handleError(data);
+          handleError({ message: 'An error occurred', ...data });
         }
       })
       .then((data: any) => {
@@ -823,7 +847,6 @@ const TeacherChat = () => {
       })
       .then((data) => {
         if (data?.status) {
-          // handleResponse(data);
           const ChatStorepayload = {
             teacher_id: teacherid,
             chat_question: search,
@@ -1641,8 +1664,8 @@ const TeacherChat = () => {
                                         </>
                                       )}
                                     </li>
-                                  
-
+                                    
+                          
                                   <li
                                     onClick={() =>
                                       regenerateChat(chat?.question)
