@@ -87,6 +87,7 @@ export interface Assignment {
   notify: boolean;
   created_at?: any;
   created_by?: any;
+  updated_at?:any;
   created_by_name?: any;
   is_active?: any;
   is_deleted?: any;
@@ -1062,7 +1063,6 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-          }
           setAssignmentData({
             title: '',
             type: 'written',
@@ -1078,6 +1078,7 @@ export const CreateAssignments = () => {
             notify: false,
             files: [], // File should be null initially
           });
+        }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1171,9 +1172,8 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
-    const now = dayjs();
 
-    if (availableFrom == null || availableFrom.isBefore(now)) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
       setError(null);
@@ -1913,7 +1913,7 @@ export const CreateAssignments = () => {
     } else {
       setTopic_error(false);
     }
-    if (configInstructions == '' && assignmentType == 'ai generated') {
+    if (configInstructions && configInstructions == '' && assignmentType == 'ai generated') {
       setConfigInstructoins_error(true)
     } else {
       setConfigInstructoins_error(false)
@@ -1969,6 +1969,7 @@ export const CreateAssignments = () => {
       })
     });
   }
+  console.log(assignmentType)
   return (
     <div className="main-wrapper pb-5">
       <div className="main-content">
@@ -2374,11 +2375,6 @@ export const CreateAssignments = () => {
                               Add questions
                             </button>
                           </div>
-
-
-
-
-
                           <div className="col-12">
                             <List className='py-0'>
                               {questionMap?.map((item, index) => (
@@ -3046,7 +3042,9 @@ export const CreateAssignments = () => {
                         (assignmentType == 'ai generated' &&
                           isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
+                          {
+                           assignmentType != 'written' &&(
+                            <Button
                             variant="contained"
                             color="primary"
                             onClick={() =>
@@ -3058,6 +3056,9 @@ export const CreateAssignments = () => {
                           >
                             Preview
                           </Button>
+                           )
+                          }
+                        
 
                           <Button
                             variant="outlined"
@@ -3083,7 +3084,7 @@ export const CreateAssignments = () => {
                                       'json',
                                       assignmentJsonQuestions,
                                     )
-                                  : submitAssignment
+                                  :()=> submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >
