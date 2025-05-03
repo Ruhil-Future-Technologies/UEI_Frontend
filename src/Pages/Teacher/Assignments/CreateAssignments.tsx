@@ -87,6 +87,7 @@ export interface Assignment {
   notify: boolean;
   created_at?: any;
   created_by?: any;
+  updated_at?:any;
   created_by_name?: any;
   is_active?: any;
   is_deleted?: any;
@@ -171,8 +172,7 @@ export const CreateAssignments = () => {
   const [file_error, setFile_error] = useState(false);
   const [point_error, setPoint_error] = useState(false);
   const [instructions_error, setInstructoins_error] = useState(false);
-  const [configInstructions_error, setConfigInstructoins_error] =
-    useState(false);
+  const [configInstructions_error, setConfigInstructoins_error] = useState(false);
   const [contact_email_email, setContact_email_error] = useState(false);
   const [availableFrom_error, setAvailableFrom_error] = useState(false);
   const [due_date_error, setDue_date_error] = useState(false);
@@ -335,8 +335,9 @@ export const CreateAssignments = () => {
       await getCourses();
       await getTeacherProfileInfo();
       if (id) {
-        isSubmittedByAnyStudent();
+        isSubmittedByAnyStudent()
       }
+      ;
     };
     fetchData();
     //getListOfStudnetsForAssignment();
@@ -410,7 +411,7 @@ export const CreateAssignments = () => {
                       semester_number: semester_number,
                       subjects:
                         response.data.course_semester_subjects[CourseKey][
-                          semester_number
+                        semester_number
                         ],
                       filteredSemesters: allsemesters?.filter(
                         (item) => item.course_id == CourseKey,
@@ -452,20 +453,20 @@ export const CreateAssignments = () => {
                       filteredSubjects:
                         stream == 'general'
                           ? allSubject?.filter(
-                              (item) => item.class_id == classKey,
-                            )
+                            (item) => item.class_id == classKey,
+                          )
                           : allSubject?.filter(
-                              (item) =>
-                                item.class_id == classKey &&
-                                item.stream == stream,
-                            ),
+                            (item) =>
+                              item.class_id == classKey &&
+                              item.stream == stream,
+                          ),
                     })),
                   );
                   const filteredStudents =
                     students?.filter((student) =>
                       output[0].class_id == student.class_id &&
-                      output[0].subjects[0] == student.subject_name &&
-                      output[0].is_Stream
+                        output[0].subjects[0] == student.subject_name &&
+                        output[0].is_Stream
                         ? output[0].stream == student.stream
                         : true,
                     ) || [];
@@ -528,7 +529,7 @@ export const CreateAssignments = () => {
                     semester_number: semester_number,
                     subjects:
                       response.data.course_semester_subjects[CourseKey][
-                        semester_number
+                      semester_number
                       ],
                     filteredSemesters: allsemesters?.filter(
                       (item) => item.course_id == CourseKey,
@@ -546,7 +547,7 @@ export const CreateAssignments = () => {
                     (student) =>
                       Number(output[0].course_id) == student.course_id &&
                       Number(output[0].semester_number) ==
-                        student.semester_number &&
+                      student.semester_number &&
                       output[0].subjects[0] == student.subject_name,
                   ) || [];
 
@@ -573,21 +574,21 @@ export const CreateAssignments = () => {
                     filteredSubjects:
                       stream == 'general'
                         ? allSubject?.filter(
-                            (item) => item.class_id == classKey,
-                          )
+                          (item) => item.class_id == classKey,
+                        )
                         : allSubject?.filter(
-                            (item) =>
-                              item.class_id == classKey &&
-                              item.stream == stream,
-                          ),
+                          (item) =>
+                            item.class_id == classKey &&
+                            item.stream == stream,
+                        ),
                   })),
                 );
 
                 const filteredStudents =
                   students?.filter((student) =>
                     Number(output[0].class_id) == student.class_id &&
-                    output[0].subjects[0] == student.subject_name &&
-                    output[0].is_Stream
+                      output[0].subjects[0] == student.subject_name &&
+                      output[0].is_Stream
                       ? output[0].stream == student.stream
                       : true,
                   ) || [];
@@ -887,10 +888,7 @@ export const CreateAssignments = () => {
         setPoint_error(false);
       }
     }
-    if (
-      assignmentData.instructions == '<p><br></p>' ||
-      assignmentData.instructions == '<p></p>'
-    ) {
+    if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
       setInstructoins_error(true);
       valid1 = true;
     } else {
@@ -975,14 +973,8 @@ export const CreateAssignments = () => {
     formData.append('due_date_time', String(mergeDateAndTime()));
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
-    formData.append(
-      'points',
-      assignmentDataType == 'json' ? totalMarks : assignmentData.points,
-    );
-    formData.append(
-      'save_draft',
-      saveAsDraft == true ? String(saveAsDraft) : String(saveAsDraft),
-    );
+    formData.append('points', assignmentDataType == 'json' ? totalMarks : assignmentData.points);
+    formData.append('save_draft', saveAsDraft == true ? String(saveAsDraft) : String(saveAsDraft));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     if (questions) {
@@ -1071,22 +1063,22 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-            setAssignmentData({
-              title: '',
-              type: 'written',
-              contact_email: '',
-              allow_late_submission: false,
-              due_date_time: '', // Or new Date().toISOString() if using Date type
-              available_from: '', // Or new Date().toISOString() if using Date type
-              assign_to_students: [],
-              instructions: '',
-              points: '',
-              save_draft: false,
-              add_to_report: false,
-              notify: false,
-              files: [], // File should be null initially
-            });
-          }
+          setAssignmentData({
+            title: '',
+            type: 'written',
+            contact_email: '',
+            allow_late_submission: false,
+            due_date_time: '', // Or new Date().toISOString() if using Date type
+            available_from: '', // Or new Date().toISOString() if using Date type
+            assign_to_students: [],
+            instructions: '',
+            points: '',
+            save_draft: false,
+            add_to_report: false,
+            notify: false,
+            files: [], // File should be null initially
+          });
+        }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1166,10 +1158,7 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
     if (assignmentData)
-      if (
-        assignmentData.instructions == '<p><br></p>' ||
-        assignmentData.instructions == ''
-      ) {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '') {
         setInstructoins_error(true);
         valid1 = true;
       } else {
@@ -1366,10 +1355,7 @@ export const CreateAssignments = () => {
 
     let valid1 = false;
     if (assignmentData)
-      if (
-        assignmentData.instructions == '<p><br></p>' ||
-        assignmentData.instructions == '<p></p>'
-      ) {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
         setInstructoins_error(true);
         valid1 = true;
       } else {
@@ -1815,7 +1801,7 @@ export const CreateAssignments = () => {
           const filteredSubjects = totleSubject?.filter(
             (item) =>
               String(item.stream).toLowerCase() ==
-                value.toString().toLowerCase() &&
+              value.toString().toLowerCase() &&
               item.class_id === boxesForSchool[index].class_id,
           );
           updatedBox = {
@@ -1829,7 +1815,7 @@ export const CreateAssignments = () => {
           setSelectAll(false);
         }
         if (name == 'subjects') {
-          setSelectedStudents([]);
+          setSelectedStudents([])
           const filteredStudents = listOfStudent?.filter((student) => {
             const matchedSubject = totleSubject?.find(
               (subject) =>
@@ -1871,10 +1857,11 @@ export const CreateAssignments = () => {
 
     if (assignmentType !== 'quiz') {
       if (assignmentType == 'ai generated') {
-        submitAssignment(true, 'json');
+        submitAssignment(true, "json");
       } else {
         submitAssignment(true);
       }
+
     } else {
       handleSubmitQuiz(true, updatedPayload);
     }
@@ -1926,10 +1913,10 @@ export const CreateAssignments = () => {
     } else {
       setTopic_error(false);
     }
-    if (configInstructions == '' && assignmentType == 'ai generated') {
-      setConfigInstructoins_error(true);
+    if (configInstructions && configInstructions == '' && assignmentType == 'ai generated') {
+      setConfigInstructoins_error(true)
     } else {
-      setConfigInstructoins_error(false);
+      setConfigInstructoins_error(false)
     }
   }, [dueDate, availableFrom, dueTime, level, topic, configInstructions]);
   const handleQuestionmap = () => {
@@ -1969,26 +1956,20 @@ export const CreateAssignments = () => {
   };
   console.log(assignmentData);
   const isSubmittedByAnyStudent = () => {
-    getData(
-      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`,
-    )
-      .then((response) => {
-        if (response?.status) {
-          const submitedCount = response?.data?.filter(
-            (element: any) =>
-              element.is_graded === true || element.is_submitted === true,
-          ).length;
-          setSubmitedCount(submitedCount);
-        }
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
+      if (response?.status) {
+        const submitedCount = response?.data?.filter((element: any) => element.is_graded === true || element.is_submitted === true).length;
+        setSubmitedCount(submitedCount);
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
       })
-      .catch((error) => {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
-      });
-  };
+    });
+  }
+  console.log(assignmentType)
   return (
     <div className="main-wrapper pb-5">
       <div className="main-content">
@@ -2000,18 +1981,18 @@ export const CreateAssignments = () => {
               Dashboard
             </Link>
           </div>
-          {assignmentType != 'quiz' && (
-            <div className="breadcrumb-title pe-3 ms-2">
-              <div className="d-flex gap-1 align-items-center" role="button">
-                <Link
-                  to={'/teacher-dashboard/assignments'}
-                  className="text-dark"
-                >
-                  Assignments List
-                </Link>
+          {
+            assignmentType != 'quiz' && (
+              <div className="breadcrumb-title pe-3 ms-2">
+                <div className="d-flex gap-1 align-items-center" role='button'>
+                  <Link to={'/teacher-dashboard/assignments'} className="text-dark">
+                    Assignments List
+                  </Link>
+                </div>
+
               </div>
-            </div>
-          )}
+            )
+          }
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
@@ -2035,6 +2016,7 @@ export const CreateAssignments = () => {
                   setAssignmentType(newValue);
                 }
               }
+
             }}
             className="assignbtngrp"
           >
@@ -2061,12 +2043,14 @@ export const CreateAssignments = () => {
         </div>
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="card-body">
+
             <div className="row justify-content-center">
               <div className="col-lg-12">
                 <div className="row g-4">
                   <div className="col-12">
                     <Typography variant="h6" className="mb-4 fw-bold">
-                      Create {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
+                      Create{' '}
+                      {assignmentType == 'quiz' ? 'Quiz' : 'Assignment'}
                     </Typography>
                     {assignmentType !== 'quiz' && (
                       <TextField
@@ -2183,9 +2167,9 @@ export const CreateAssignments = () => {
                     </>
                   )}
                   {(assignmentType === 'quiz' && !edit) ||
-                  assignmentType === 'ai generated' ? (
+                    assignmentType === 'ai generated' ? (
                     <>
-                      {editType == '' && (
+                      {editType == '' &&
                         <div className="col-md-6 col-12">
                           <FormControl fullWidth className="">
                             <InputLabel id="level-select-label">
@@ -2214,7 +2198,7 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                      )}
+                      }
 
                       {assignmentType === 'quiz' ? (
                         <>
@@ -2224,6 +2208,7 @@ export const CreateAssignments = () => {
                             </label>
                             <div className="row">
                               <div className="col-md-2 col-12">
+
                                 <TextField
                                   label="One Mark"
                                   type="number"
@@ -2338,18 +2323,25 @@ export const CreateAssignments = () => {
                                   fullWidth
                                 />
                               </div>
+
                             </div>
+
                           </div>
+
+
                         </>
                       ) : (
                         <>
+
                           <div className="col-lg-4">
                             <TextField
                               label="No. of questions"
                               type="number"
                               name="no_questions"
                               value={questionKey}
-                              onChange={(e) => setQuestionKey(e.target.value)}
+                              onChange={(e) =>
+                                setQuestionKey(e.target.value)
+                              }
                               fullWidth
                             />
                           </div>
@@ -2359,7 +2351,9 @@ export const CreateAssignments = () => {
                               type="number"
                               value={questionValue}
                               name="marks_per_questions"
-                              onChange={(e) => setQuestionValue(e.target.value)}
+                              onChange={(e) =>
+                                setQuestionValue(e.target.value)
+                              }
                               fullWidth
                             />
                           </div>
@@ -2382,27 +2376,33 @@ export const CreateAssignments = () => {
                             </button>
                           </div>
                           <div className="col-12">
-                            <List className="py-0">
+                            <List className='py-0'>
                               {questionMap?.map((item, index) => (
                                 <ListItem
                                   key={index}
-                                  className="fileslistitem mb-3"
+                                  className='fileslistitem mb-3'
                                 >
+
                                   <ListItemText>
-                                    {item.key} question(s) of {item.value}{' '}
-                                    mark(s) each
+                                    {item.key} question(s) of{' '}
+                                    {item.value} mark(s) each
                                   </ListItemText>
                                   <IconButton edge="end" aria-label="delete">
                                     <DeleteIcon
                                       onClick={() =>
-                                        handleDelete(item.key, index)
+                                        handleDelete(
+                                          item.key,
+                                          index,
+                                        )
                                       }
                                     />
                                   </IconButton>
+
                                 </ListItem>
                               ))}
                             </List>
                           </div>
+
                         </>
                       )}
                       {questions_error && (
@@ -2413,6 +2413,7 @@ export const CreateAssignments = () => {
                           </small>
                         </p>
                       )}
+
 
                       {editType == '' && (
                         <div className="col-lg-12">
@@ -2431,7 +2432,9 @@ export const CreateAssignments = () => {
                             </p>
                           )}
                         </div>
-                      )}
+                      )
+                      }
+
                     </>
                   ) : null}
 
@@ -2439,10 +2442,7 @@ export const CreateAssignments = () => {
                     <label className="col-form-label">
                       Instructions for students<span>*</span>
                     </label>
-                    <div
-                      className="mb-4"
-                      style={{ minHeight: '162px', borderRadius: '8px' }}
-                    >
+                    <div className="mb-4" style={{ minHeight: '162px', borderRadius: '8px' }}>
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2476,16 +2476,12 @@ export const CreateAssignments = () => {
                           label="Assignment configuration instructions"
                           type="text"
                           value={configInstructions}
-                          onChange={(e) =>
-                            setConfigInstructions(e.target.value)
-                          }
+                          onChange={(e) => setConfigInstructions(e.target.value)}
                           rows={3}
                         />
                         {configInstructions_error && (
                           <p className="error-text" style={{ color: 'red' }}>
-                            <small>
-                              Please enter configuration Instructions.
-                            </small>
+                            <small>Please enter configuration Instructions.</small>
                           </p>
                         )}
                       </div>
@@ -2516,15 +2512,10 @@ export const CreateAssignments = () => {
                                 >
                                   {filteredcoursesData
                                     ?.filter((course) =>
-                                      teacherCourse?.includes(
-                                        String(course.id),
-                                      ),
+                                      teacherCourse?.includes(String(course.id)),
                                     )
                                     ?.map((course) => (
-                                      <MenuItem
-                                        key={course.id}
-                                        value={course.id}
-                                      >
+                                      <MenuItem key={course.id} value={course.id}>
                                         {course.course_name}
                                       </MenuItem>
                                     ))}
@@ -2532,13 +2523,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.course_id_error === true && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please enter a valid Course.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please enter a valid Course.</small>
+                                  </p>
+                                )}
                             </div>
 
                             {/* Semester Selection */}
@@ -2578,13 +2569,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.semester_number_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Semester.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Semester.</small>
+                                  </p>
+                                )}
                             </div>
 
                             {/* Subjects Selection */}
@@ -2623,15 +2614,15 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForCourse_semester_subject[index]
                                 ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
                             </div>
                           </div>
                         ))}
@@ -2667,13 +2658,13 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.class_id_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>Please select a Class.</small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>Please select a Class.</small>
+                                  </p>
+                                )}
                             </div>
                             {box.is_Stream && (
                               <div className="col-md-4 col-12 mb-3">
@@ -2703,8 +2694,7 @@ export const CreateAssignments = () => {
                                     MenuProps={{
                                       PaperProps: {
                                         style: {
-                                          backgroundColor:
-                                            inputfield(namecolor),
+                                          backgroundColor: inputfield(namecolor),
                                           color: inputfieldtext(namecolor),
                                         },
                                       },
@@ -2715,8 +2705,7 @@ export const CreateAssignments = () => {
                                         key={item}
                                         value={item}
                                         sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
+                                          backgroundColor: inputfield(namecolor),
                                           color: inputfieldtext(namecolor),
                                           '&:hover': {
                                             backgroundColor:
@@ -2731,13 +2720,13 @@ export const CreateAssignments = () => {
                                 </FormControl>
                                 {errorForClass_stream_subject[index]
                                   ?.stream_error && (
-                                  <p
-                                    className="error-text"
-                                    style={{ color: 'red' }}
-                                  >
-                                    <small>Please select a Stream.</small>
-                                  </p>
-                                )}
+                                    <p
+                                      className="error-text"
+                                      style={{ color: 'red' }}
+                                    >
+                                      <small>Please select a Stream.</small>
+                                    </p>
+                                  )}
                               </div>
                             )}
                             <div className={box.selected_class_name}>
@@ -2776,15 +2765,15 @@ export const CreateAssignments = () => {
                               </FormControl>
                               {errorForClass_stream_subject[index]
                                 ?.subjects_error && (
-                                <p
-                                  className="error-text"
-                                  style={{ color: 'red' }}
-                                >
-                                  <small>
-                                    Please select at least one subject.
-                                  </small>
-                                </p>
-                              )}
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select at least one subject.
+                                    </small>
+                                  </p>
+                                )}
                             </div>
                           </div>
                         ))}
@@ -2935,16 +2924,11 @@ export const CreateAssignments = () => {
                               onChange={handleDueDateChange}
                               minDate={!edit ? dayjs() : undefined}
                               slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
+                                textField: (params) => <TextField {...params} />,
                               }}
                             />
                             {due_date_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text" style={{ color: 'red' }}>
                                 <small>Please select a due date.</small>
                               </p>
                             )}
@@ -2968,16 +2952,11 @@ export const CreateAssignments = () => {
                               onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
                               closeOnSelect={false}
                               slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
+                                textField: (params) => <TextField {...params} />,
                               }}
                             />
                             {dueTime_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text" style={{ color: 'red' }}>
                                 <small>Please select a due time.</small>
                               </p>
                             )}
@@ -3058,12 +3037,14 @@ export const CreateAssignments = () => {
                     </div>
                     <div className="col-lg-12">
                       {assignmentType == 'written' ||
-                      (assignmentType == 'quiz' && isQuizGenerated) ||
-                      (assignmentType == 'quiz' && edit) ||
-                      (assignmentType == 'ai generated' &&
-                        isAiAssignmentGenerated) ? (
+                        (assignmentType == 'quiz' && isQuizGenerated) ||
+                        (assignmentType == 'quiz' && edit) ||
+                        (assignmentType == 'ai generated' &&
+                          isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
+                          {
+                           assignmentType != 'written' &&(
+                            <Button
                             variant="contained"
                             color="primary"
                             onClick={() =>
@@ -3075,6 +3056,9 @@ export const CreateAssignments = () => {
                           >
                             Preview
                           </Button>
+                           )
+                          }
+                        
 
                           <Button
                             variant="outlined"
@@ -3095,12 +3079,12 @@ export const CreateAssignments = () => {
                               assignmentType !== 'quiz'
                                 ? assignmentType == 'ai generated'
                                   ? () =>
-                                      submitAssignment(
-                                        false,
-                                        'json',
-                                        assignmentJsonQuestions,
-                                      )
-                                  : () => submitAssignment(false)
+                                    submitAssignment(
+                                      false,
+                                      'json',
+                                      assignmentJsonQuestions,
+                                    )
+                                  :()=> submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >

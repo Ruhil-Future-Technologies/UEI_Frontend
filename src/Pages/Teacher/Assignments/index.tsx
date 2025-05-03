@@ -260,6 +260,11 @@ export const Assignments = () => {
     {
       accessorKey: 'updated_at',
       header: 'updated at',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDate = new Date(row?.original?.updated_at);
+        const istString = gmtDate.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+        return  istString ;
+      }
     },
     {
       accessorKey: 'is_active',
