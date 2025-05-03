@@ -255,7 +255,7 @@ const StudentDashboardCharts = () => {
               const prepareTimeData = () => {
                 const monthData: any = study_data[activeMonth];
 
-                if (monthData.length < 0) return;
+                if (!monthData || monthData.length < 0) return;
                 const weeks = Object.keys(monthData).filter((key) =>
                   key.startsWith('week'),
                 );
