@@ -17,7 +17,7 @@ import {
   QUERY_KEYS_ASSIGNMENT_SUBMISSION,
 } from '../../../utils/const';
 import { AccessTime, CheckCircle, Event, ListAlt } from '@mui/icons-material';
-import { toTitleCase } from '../../../utils/helpers';
+import { convertToISTT, toTitleCase } from '../../../utils/helpers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 const StudentAssignments = () => {
   const { getData } = useApi();
@@ -72,6 +72,10 @@ const StudentAssignments = () => {
     {
       accessorKey: 'due_date_time',
       header: 'Due Time & Date',
+      Cell:({row}:{row:MRT_Row<Assignment>})=>{
+        const gmtDate = row?.original?.created_at;
+        return  convertToISTT(gmtDate) ;
+      }
     },
     {
       accessorKey: 'type',
@@ -365,7 +369,7 @@ const StudentAssignments = () => {
                           sx={{ mt: 1 }}
                         >
                           Due:
-                          {assignment.due_date_time}
+                          {convertToISTT(assignment?.due_date_time as string)}
                         </Typography>
                         <Button
                           variant="contained"
