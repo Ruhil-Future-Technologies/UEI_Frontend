@@ -3078,7 +3078,7 @@ export const CreateAssignments = () => {
                                       'json',
                                       assignmentJsonQuestions,
                                     )
-                                  : submitAssignment
+                                  : () => submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >
