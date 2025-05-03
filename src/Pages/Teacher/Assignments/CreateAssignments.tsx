@@ -87,7 +87,7 @@ export interface Assignment {
   notify: boolean;
   created_at?: any;
   created_by?: any;
-  updated_at?:any;
+  updated_at?: any;
   created_by_name?: any;
   is_active?: any;
   is_deleted?: any;
@@ -154,6 +154,9 @@ export const CreateAssignments = () => {
   const [teacherSemester, setTeacherSemester] = useState<string[]>();
   const [tescherSubjects, setTeacherSubjects] = useState<string[]>();
   const [selectedStudents, setSelectedStudents] = useState<StudentRep0oDTO[]>(
+    [],
+  );
+  const [selectedStudentsForUpdate, setSelectedStudentsForUpdate] = useState<StudentRep0oDTO[]>(
     [],
   );
   const [questionKey, setQuestionKey] = useState('');
@@ -395,7 +398,7 @@ export const CreateAssignments = () => {
                   ) || [];
 
                 setSelectedStudents(selectedStudents);
-
+                setSelectedStudentsForUpdate(selectedStudents);
                 if (response.data.class_stream_subjects == null) {
                   const allSubject: SubjectRep0oDTO[] =
                     await getSubjects('college');
@@ -1063,22 +1066,22 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-          setAssignmentData({
-            title: '',
-            type: 'written',
-            contact_email: '',
-            allow_late_submission: false,
-            due_date_time: '', // Or new Date().toISOString() if using Date type
-            available_from: '', // Or new Date().toISOString() if using Date type
-            assign_to_students: [],
-            instructions: '',
-            points: '',
-            save_draft: false,
-            add_to_report: false,
-            notify: false,
-            files: [], // File should be null initially
-          });
-        }
+            setAssignmentData({
+              title: '',
+              type: 'written',
+              contact_email: '',
+              allow_late_submission: false,
+              due_date_time: '', // Or new Date().toISOString() if using Date type
+              available_from: '', // Or new Date().toISOString() if using Date type
+              assign_to_students: [],
+              instructions: '',
+              points: '',
+              save_draft: false,
+              add_to_report: false,
+              notify: false,
+              files: [], // File should be null initially
+            });
+          }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1749,7 +1752,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
-    setSelectedStudents([]);
+    //setSelectedStudents([]);
     const { value, name } = event.target;
 
     setBoxesForSchool((prevBoxes) =>
@@ -1759,73 +1762,79 @@ export const CreateAssignments = () => {
         let updatedBox = { ...box, [name]: value }; // Always update the changed value
 
         if (name === 'class_id') {
-          const selectedClass = dataClass.find(
-            (item) => String(item.id) == value,
-          )?.class_name;
-          // setSelectedClassName(
-          //   selectedClass === 'class_11' || selectedClass === 'class_12'
-          //     ? 'col-4'
-          //     : 'col-6',
-          // );
+          if (boxesForSchool[index].class_id != value) {
+            const selectedClass = dataClass.find(
+              (item) => String(item.id) == value,
+            )?.class_name;
+            // setSelectedClassName(
+            //   selectedClass === 'class_11' || selectedClass === 'class_12'
+            //     ? 'col-4'
+            //     : 'col-6',
+            // );
 
-          if (selectedClass === 'class_11' || selectedClass === 'class_12') {
-            updatedBox = {
-              ...updatedBox,
-              stream: '',
-              is_Stream: true,
-              selected_class_name: 'col-4',
-              subjects: [],
-              filteredSubjects: [],
-            }; // Reset stream & subjects
-          } else {
-            // Filter subjects immediately based on the selected class
+            if (selectedClass === 'class_11' || selectedClass === 'class_12') {
+              updatedBox = {
+                ...updatedBox,
+                stream: '',
+                is_Stream: true,
+                selected_class_name: 'col-4',
+                subjects: [],
+                filteredSubjects: [],
+              }; // Reset stream & subjects
+            } else {
+              // Filter subjects immediately based on the selected class
+              const filteredSubjects = totleSubject?.filter(
+                (item) => item.class_id === value,
+              );
+
+              updatedBox = {
+                ...updatedBox,
+                is_Stream: false,
+                stream: '',
+                selected_class_name: 'col-6',
+                filteredSubjects,
+                subjects: [],
+              };
+            }
+            setSelectedStudents([]);
+            setListOfStudentFiltered([]);
+            setSelectAll(false);
+          }
+        }
+        if (name == 'stream') {
+          if (boxesForSchool[index].stream != value) {
             const filteredSubjects = totleSubject?.filter(
-              (item) => item.class_id === value,
+              (item) =>
+                String(item.stream).toLowerCase() ==
+                value.toString().toLowerCase() &&
+                item.class_id == boxesForSchool[index].class_id,
             );
-
             updatedBox = {
               ...updatedBox,
-              is_Stream: false,
-              stream: '',
-              selected_class_name: 'col-6',
+              stream: value.toString(),
               filteredSubjects,
               subjects: [],
             };
+            setSelectedStudents([]);
+            setListOfStudentFiltered([]);
+            setSelectAll(false);
           }
-          setSelectedStudents([]);
-          setListOfStudentFiltered([]);
-          setSelectAll(false);
-        }
-
-        if (name === 'stream') {
-          const filteredSubjects = totleSubject?.filter(
-            (item) =>
-              String(item.stream).toLowerCase() ==
-              value.toString().toLowerCase() &&
-              item.class_id === boxesForSchool[index].class_id,
-          );
-          updatedBox = {
-            ...updatedBox,
-            stream: value.toString(),
-            filteredSubjects,
-            subjects: [],
-          };
-          setSelectedStudents([]);
-          setListOfStudentFiltered([]);
-          setSelectAll(false);
         }
         if (name == 'subjects') {
-          setSelectedStudents([])
-          const filteredStudents = listOfStudent?.filter((student) => {
-            const matchedSubject = totleSubject?.find(
-              (subject) =>
-                subject.subject_name === value &&
-                subject.class_id === boxesForSchool[index].class_id &&
-                subject.stream === boxesForSchool[index].stream,
-            );
-            return student.subject_id === matchedSubject?.subject_id;
-          });
-          setListOfStudentFiltered(filteredStudents);
+          if (boxesForSchool[index].subjects[0] != value) {
+            setSelectedStudents([]);
+            const filteredStudents = listOfStudent?.filter((student) => {
+              const matchedSubject = totleSubject?.find(
+                (subject) =>
+                  subject.subject_name == value &&
+                  subject.class_id == boxesForSchool[index].class_id &&
+                  subject.stream == boxesForSchool[index].stream,
+              );
+              return student.subject_id == matchedSubject?.subject_id;
+            });
+            console.log(filteredStudents)
+            setListOfStudentFiltered(filteredStudents);
+          }
         }
         validateFields(index, name, updatedBox);
         return updatedBox;
@@ -2098,6 +2107,7 @@ export const CreateAssignments = () => {
                           variant="outlined"
                           name="points"
                           onChange={handleChanges}
+                          disabled={submittedCount > 0}
                           type="number"
                           inputProps={{ min: '0' }}
                           value={assignmentData.points}
@@ -2332,8 +2342,10 @@ export const CreateAssignments = () => {
                         </>
                       ) : (
                         <>
-
-                          <div className="col-lg-4">
+                          {
+                            submittedCount <= 0 && (
+                              <>
+                              <div className="col-lg-4">
                             <TextField
                               label="No. of questions"
                               type="number"
@@ -2357,6 +2369,9 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
+                              </>
+                            )}
+
                           <div className="col-lg-2">
                             <TextField
                               label="Total Questions"
@@ -2367,14 +2382,18 @@ export const CreateAssignments = () => {
                               fullWidth
                             />
                           </div>
-                          <div className="col-lg-2">
-                            <button
-                              className="h-100 btn btn-primary w-100"
-                              onClick={handleQuestionmap}
-                            >
-                              Add questions
-                            </button>
-                          </div>
+                          {
+                            submittedCount <= 0 && (
+                              <div className="col-lg-2">
+                                <button
+                                  className="h-100 btn btn-primary w-100"
+                                  onClick={handleQuestionmap}
+                                >
+                                  Add questions
+                                </button>
+                              </div>
+                            )
+                          }
                           <div className="col-12">
                             <List className='py-0'>
                               {questionMap?.map((item, index) => (
@@ -2420,7 +2439,7 @@ export const CreateAssignments = () => {
                           <TextField
                             label="Topic"
                             type="text"
-                            disabled={isQuizGenerated}
+                            disabled={isQuizGenerated || submittedCount > 0}
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
                             fullWidth
@@ -2505,6 +2524,7 @@ export const CreateAssignments = () => {
                                   id={`demo3-multiple-name-${index}`}
                                   name="course_id"
                                   label="Course"
+                                  disabled={submittedCount > 0}
                                   onChange={(event: any) =>
                                     handelSubjectBoxChange(event, index)
                                   }
@@ -2546,6 +2566,7 @@ export const CreateAssignments = () => {
                                   id={`semester_select_${index}`}
                                   name="semester_number"
                                   label="Semester"
+                                  disabled={submittedCount > 0}
                                   onChange={(event: any) =>
                                     handelSubjectBoxChange(event, index)
                                   }
@@ -2591,6 +2612,7 @@ export const CreateAssignments = () => {
                                   id={`subject_select_${index}`}
                                   name="subjects"
                                   label="subjects"
+                                  disabled={submittedCount > 0}
                                   value={box.subjects || []}
                                   onChange={(event: any) =>
                                     handelSubjectBoxChange(event, index)
@@ -2643,6 +2665,7 @@ export const CreateAssignments = () => {
                                   labelId={`class_id_${index}`}
                                   id={`class_select_${index}`}
                                   name="class_id"
+                                  disabled={submittedCount > 0}
                                   onChange={(event: any) =>
                                     handelSchoolBoxChange(event, index)
                                   }
@@ -2680,6 +2703,7 @@ export const CreateAssignments = () => {
                                     id={`stream_select_${index}`}
                                     name="stream"
                                     label="Stream Name"
+                                    disabled={submittedCount > 0}
                                     onChange={(event: any) =>
                                       handelSchoolBoxChange(event, index)
                                     }
@@ -2742,6 +2766,7 @@ export const CreateAssignments = () => {
                                   id={`subject_select_${index}`}
                                   name="subjects"
                                   label="subjects"
+                                  disabled={submittedCount > 0}
                                   value={box.subjects || []}
                                   onChange={(event: any) =>
                                     handelSchoolBoxChange(event, index)
@@ -2796,6 +2821,16 @@ export const CreateAssignments = () => {
                           getOptionLabel={(option) => `${option.name}`}
                           value={selectedStudents}
                           onChange={(_, newValue) => {
+                            if (submittedCount > 0) {
+                              const removedProtectedStudents = selectedStudentsForUpdate.filter(
+                                (student) => !newValue.some((s) => s.id === student.id)
+                              );
+
+                              if (removedProtectedStudents.length > 0) {
+                                // Block removal of protected students
+                                return;
+                              }
+                            }
                             setSelectedStudents(newValue);
                             checkStudent(newValue);
                             setSelectAll(
@@ -3043,22 +3078,22 @@ export const CreateAssignments = () => {
                           isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
                           {
-                           assignmentType != 'written' &&(
-                            <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() =>
-                              assignmentType === 'quiz'
-                                ? setIsModalOpen(true)
-                                : setAssignmentModalOpen(true)
-                            }
-                            style={{ marginTop: 20 }}
-                          >
-                            Preview
-                          </Button>
-                           )
+                            assignmentType != 'written' && (
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() =>
+                                  assignmentType === 'quiz'
+                                    ? setIsModalOpen(true)
+                                    : setAssignmentModalOpen(true)
+                                }
+                                style={{ marginTop: 20 }}
+                              >
+                                Preview
+                              </Button>
+                            )
                           }
-                        
+
 
                           <Button
                             variant="outlined"
@@ -3084,7 +3119,7 @@ export const CreateAssignments = () => {
                                       'json',
                                       assignmentJsonQuestions,
                                     )
-                                  :()=> submitAssignment(false)
+                                  : () => submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >

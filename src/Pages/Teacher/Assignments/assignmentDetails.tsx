@@ -231,7 +231,7 @@ const AssignmentDetails = () => {
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <div>
-                      <p className="mb-1">Submited Students</p>
+                      <p className="mb-1">Submitted Students</p>
                       <h3 className="mb-0">{submitedCount}</h3>
                     </div>
                     <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
@@ -246,7 +246,7 @@ const AssignmentDetails = () => {
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <div>
-                      <p className="mb-1">Not Submited Students</p>
+                      <p className="mb-1">Not Submitted Students</p>
                       <h3 className="mb-0">{notSubmitedCount}</h3>
                     </div>
                     <div className="wh-42 d-flex align-items-center justify-content-center rounded-circle bg-grd-danger">
