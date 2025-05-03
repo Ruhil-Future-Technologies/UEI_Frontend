@@ -1066,22 +1066,22 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-            setAssignmentData({
-              title: '',
-              type: 'written',
-              contact_email: '',
-              allow_late_submission: false,
-              due_date_time: '', // Or new Date().toISOString() if using Date type
-              available_from: '', // Or new Date().toISOString() if using Date type
-              assign_to_students: [],
-              instructions: '',
-              points: '',
-              save_draft: false,
-              add_to_report: false,
-              notify: false,
-              files: [], // File should be null initially
-            });
-          }
+          setAssignmentData({
+            title: '',
+            type: 'written',
+            contact_email: '',
+            allow_late_submission: false,
+            due_date_time: '', // Or new Date().toISOString() if using Date type
+            available_from: '', // Or new Date().toISOString() if using Date type
+            assign_to_students: [],
+            instructions: '',
+            points: '',
+            save_draft: false,
+            add_to_report: false,
+            notify: false,
+            files: [], // File should be null initially
+          });
+        }
         });
       } catch (error: any) {
         toast.error(error.message, {
