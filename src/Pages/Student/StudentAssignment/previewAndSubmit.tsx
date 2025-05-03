@@ -238,7 +238,7 @@ const PreviewAndSubmit = () => {
   };
 
   const submitAssignment = () => {
-    let check = true;
+    let check = false;
     // if (description == '') {
 
     //   check = true;
@@ -249,13 +249,11 @@ const PreviewAndSubmit = () => {
 
     if (
       contentType == 'file' &&
-      description == '' &&
       allselectedfiles.length! < 1
     ) {
       setDocument_error(true);
       check = true;
     } else {
-      check = false;
       setDocument_error(false);
     }
 
@@ -269,7 +267,6 @@ const PreviewAndSubmit = () => {
       check = true;
     } else {
       setQ_a_error(false);
-      check = false;
     }
     if (check) return;
     const formData: any = new FormData();
