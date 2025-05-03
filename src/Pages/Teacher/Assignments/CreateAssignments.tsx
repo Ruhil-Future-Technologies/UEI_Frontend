@@ -37,12 +37,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuizIcon from '@mui/icons-material/Quiz';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import PresentToAllIcon from '@mui/icons-material/PresentToAll';
+//import PresentToAllIcon from '@mui/icons-material/PresentToAll';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Box } from '@mui/system';
 import useApi from '../../../hooks/useAPI';
 import {
   QUERY_KEYS_ASSIGNMENT,
+  QUERY_KEYS_ASSIGNMENT_SUBMISSION,
   QUERY_KEYS_CLASS,
   QUERY_KEYS_COURSE,
   QUERY_KEYS_QUIZ,
@@ -85,11 +86,12 @@ export interface Assignment {
   add_to_report: boolean;
   notify: boolean;
   created_at?: any;
-  created_by?: any
-  created_by_name?: any
-  is_active?: any
-  is_deleted?: any
-  questions?: any
+  created_by?: any;
+  updated_at?:any;
+  created_by_name?: any;
+  is_active?: any;
+  is_deleted?: any;
+  questions?: any;
   files: File[] | string[]; // Assuming file is optional and a File object
 }
 type QuestionItem = {
@@ -101,7 +103,22 @@ export const CreateAssignments = () => {
   const context = useContext(NameContext);
   const { namecolor }: any = context;
   const location = useLocation();
-  const { type, edit } = location.state || {};
+
+  const pathSegments = location.pathname.split('/');
+  const lastSegment = pathSegments[pathSegments.length - 1];
+  const secondLastSegment = pathSegments[pathSegments.length - 2];
+
+  const isEditRoute =
+    secondLastSegment?.startsWith('edit-') &&
+    /^[a-f0-9-]{36}$/.test(lastSegment);
+
+  const typeSegment = isEditRoute ? secondLastSegment : lastSegment;
+
+  const urlType = typeSegment.replace(/^(create-|edit-)/, '');
+  const isEditFromUrl = isEditRoute || typeSegment.startsWith('edit-');
+
+  const type = location.state?.type || urlType || 'defaultType';
+  const edit = location.state?.edit ?? isEditFromUrl;
 
   const { id } = useParams();
 
@@ -155,6 +172,7 @@ export const CreateAssignments = () => {
   const [file_error, setFile_error] = useState(false);
   const [point_error, setPoint_error] = useState(false);
   const [instructions_error, setInstructoins_error] = useState(false);
+  const [configInstructions_error, setConfigInstructoins_error] = useState(false);
   const [contact_email_email, setContact_email_error] = useState(false);
   const [availableFrom_error, setAvailableFrom_error] = useState(false);
   const [due_date_error, setDue_date_error] = useState(false);
@@ -241,6 +259,7 @@ export const CreateAssignments = () => {
   const [configInstructions, setConfigInstructions] = useState('');
   const [isedit, setisedit] = useState(false);
   const [editType, setEditType] = useState('');
+  const [submittedCount, setSubmitedCount] = useState(0);
   const getTotal = (questions: Record<string, any>[]) => {
     const total = questions.reduce((acc, obj) => {
       for (const value of Object.values(obj)) {
@@ -315,6 +334,10 @@ export const CreateAssignments = () => {
       await getSemester();
       await getCourses();
       await getTeacherProfileInfo();
+      if (id) {
+        isSubmittedByAnyStudent()
+      }
+      ;
     };
     fetchData();
     //getListOfStudnetsForAssignment();
@@ -346,10 +369,10 @@ export const CreateAssignments = () => {
                   setFiles(response?.data?.files);
                 }
                 if (response?.data?.questions.length > 0) {
-                  setTotalQuestion(response?.data?.questions.length)
+                  setTotalQuestion(response?.data?.questions.length);
                   setAssignmentType('ai generated');
-                  setEditType("ai generated edit")
-                  setAiAssignmentGenerated(true)
+                  setEditType('ai generated edit');
+                  setAiAssignmentGenerated(true);
                   const wrapped = { questions: response?.data?.questions };
                   setAssignmentGenrData(wrapped);
                   setTotalMarks(response?.data?.points);
@@ -793,7 +816,7 @@ export const CreateAssignments = () => {
     } else {
       setPoint_error(false);
     }
-    if (name == 'instructions' && value == '') {
+    if (name == 'instructions' && value == '<p><br></p>') {
       setInstructoins_error(true);
     } else {
       setInstructoins_error(false);
@@ -865,7 +888,7 @@ export const CreateAssignments = () => {
         setPoint_error(false);
       }
     }
-    if (assignmentData.instructions == '') {
+    if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
       setInstructoins_error(true);
       valid1 = true;
     } else {
@@ -880,6 +903,7 @@ export const CreateAssignments = () => {
     if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -950,13 +974,13 @@ export const CreateAssignments = () => {
     formData.append('available_from', String(availableFrom));
     formData.append('instructions', assignmentData.instructions);
     formData.append('points', assignmentDataType == 'json' ? totalMarks : assignmentData.points);
-    formData.append('save_draft', saveAsDraft == true ? String(saveAsDraft) : String(saveAsDrafts));
+    formData.append('save_draft', saveAsDraft == true ? String(saveAsDraft) : String(saveAsDraft));
     formData.append('add_to_report', String(addToStudentRepost));
     formData.append('notify', String(sendNotification));
     if (questions) {
-      formData.append('questions', JSON.stringify(questions))
+      formData.append('questions', JSON.stringify(questions));
     } else {
-      formData.append('questions', [])
+      formData.append('questions', []);
     }
 
     //const students = selectedStudents.map((student) => String(student.id))
@@ -1039,7 +1063,6 @@ export const CreateAssignments = () => {
               position: 'top-center',
             });
             navigate('/teacher-dashboard/assignments');
-          }
           setAssignmentData({
             title: '',
             type: 'written',
@@ -1055,7 +1078,7 @@ export const CreateAssignments = () => {
             notify: false,
             files: [], // File should be null initially
           });
-
+        }
         });
       } catch (error: any) {
         toast.error(error.message, {
@@ -1135,9 +1158,8 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
     if (assignmentData)
-      if (assignmentData.instructions == '') {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '') {
         setInstructoins_error(true);
-
         valid1 = true;
       } else {
         setInstructoins_error(false);
@@ -1151,10 +1173,10 @@ export const CreateAssignments = () => {
       setContact_email_error(false);
     }
 
-    if (availableFrom == null) {
+    if (availableFrom == null || availableFrom.isBefore(dayjs(), 'day')) {
       setAvailableFrom_error(true);
-
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -1183,6 +1205,24 @@ export const CreateAssignments = () => {
       valid1 = true;
     } else {
       setErrorSelectStudent(false);
+    }
+
+    if (type == 'assignment') {
+      if (configInstructions == '') {
+        setConfigInstructoins_error(true);
+        valid1 = true;
+      } else {
+        setConfigInstructoins_error(false);
+      }
+    }
+
+    if (type == 'assignment') {
+      if (configInstructions == '') {
+        setConfigInstructoins_error(true);
+        valid1 = true;
+      } else {
+        setConfigInstructoins_error(false);
+      }
     }
 
     if (type !== 'assignment') {
@@ -1271,8 +1311,7 @@ export const CreateAssignments = () => {
         number_of_questions: totalQuestions,
       }),
 
-      questions: []
-
+      questions: [],
     };
 
     try {
@@ -1316,9 +1355,8 @@ export const CreateAssignments = () => {
 
     let valid1 = false;
     if (assignmentData)
-      if (assignmentData.instructions == '') {
+      if (assignmentData.instructions == '<p><br></p>' || assignmentData.instructions == '<p></p>') {
         setInstructoins_error(true);
-
         valid1 = true;
       } else {
         setInstructoins_error(false);
@@ -1331,11 +1369,12 @@ export const CreateAssignments = () => {
     } else {
       setContact_email_error(false);
     }
+    const now = dayjs();
 
-    if (availableFrom == null) {
+    if (availableFrom == null || availableFrom.isBefore(now)) {
       setAvailableFrom_error(true);
-
       valid1 = true;
+      setError(null);
     } else {
       setAvailableFrom_error(false);
     }
@@ -1573,7 +1612,19 @@ export const CreateAssignments = () => {
 
   const handleAvailableFromChange = (newDate: Dayjs | null) => {
     setAvailableFrom(newDate);
-    if (dueDate && newDate && newDate.isAfter(dueDate)) {
+    if (!newDate) {
+      setError(null);
+      return;
+    }
+    const now = dayjs();
+    if (newDate && newDate.isBefore(now)) {
+      return;
+    }
+    const today = dayjs().startOf('day');
+
+    if (newDate.isBefore(today)) {
+      setError('Please select today or a future date.');
+    } else if (dueDate && newDate.isAfter(dueDate)) {
       setError('Available From should be less than Due Date');
     } else {
       setError(null);
@@ -1639,6 +1690,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
+    setSelectedStudents([]);
     const { value, name } = event.target;
     setBoxes((prevBoxes) =>
       prevBoxes?.map((box, i) => {
@@ -1657,7 +1709,7 @@ export const CreateAssignments = () => {
             subjects: [],
             filteredSubjects: [],
           };
-          setSelectedStudents([])
+          setSelectedStudents([]);
           setListOfStudentFiltered([]);
           setSelectAll(false);
         }
@@ -1674,6 +1726,8 @@ export const CreateAssignments = () => {
           setSelectAll(false);
         }
         if (name == 'subjects') {
+          setSelectedStudents([]);
+          setSelectedStudents([]);
           const filteredStudents = listOfStudent?.filter((student) => {
             const matchedSubject = totleSubject?.find(
               (subject) =>
@@ -1695,6 +1749,7 @@ export const CreateAssignments = () => {
     event: SelectChangeEvent<string[]>,
     index: number,
   ) => {
+    setSelectedStudents([]);
     const { value, name } = event.target;
 
     setBoxesForSchool((prevBoxes) =>
@@ -1755,11 +1810,12 @@ export const CreateAssignments = () => {
             filteredSubjects,
             subjects: [],
           };
-          setSelectedStudents([])
+          setSelectedStudents([]);
           setListOfStudentFiltered([]);
           setSelectAll(false);
         }
         if (name == 'subjects') {
+          setSelectedStudents([])
           const filteredStudents = listOfStudent?.filter((student) => {
             const matchedSubject = totleSubject?.find(
               (subject) =>
@@ -1800,7 +1856,12 @@ export const CreateAssignments = () => {
     }));
 
     if (assignmentType !== 'quiz') {
-      submitAssignment(true);
+      if (assignmentType == 'ai generated') {
+        submitAssignment(true, "json");
+      } else {
+        submitAssignment(true);
+      }
+
     } else {
       handleSubmitQuiz(true, updatedPayload);
     }
@@ -1852,7 +1913,12 @@ export const CreateAssignments = () => {
     } else {
       setTopic_error(false);
     }
-  }, [dueDate, availableFrom, dueTime, level, topic]);
+    if (configInstructions && configInstructions == '' && assignmentType == 'ai generated') {
+      setConfigInstructoins_error(true)
+    } else {
+      setConfigInstructoins_error(false)
+    }
+  }, [dueDate, availableFrom, dueTime, level, topic, configInstructions]);
   const handleQuestionmap = () => {
     if (questionKey && questionValue) {
       setQuestions_error(false);
@@ -1888,6 +1954,22 @@ export const CreateAssignments = () => {
       setQuestions_error(false);
     }
   };
+  console.log(assignmentData);
+  const isSubmittedByAnyStudent = () => {
+    getData(`${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_STUDENTS_BY_ASSIGNMENT}${id}`).then((response) => {
+      if (response?.status) {
+        const submitedCount = response?.data?.filter((element: any) => element.is_graded === true || element.is_submitted === true).length;
+        setSubmitedCount(submitedCount);
+      }
+    }).catch((error) => {
+      toast.error(error.message, {
+        hideProgressBar: true,
+        theme: 'colored',
+        position: 'top-center'
+      })
+    });
+  }
+  console.log(assignmentType)
   return (
     <div className="main-wrapper pb-5">
       <div className="main-content">
@@ -1899,6 +1981,18 @@ export const CreateAssignments = () => {
               Dashboard
             </Link>
           </div>
+          {
+            assignmentType != 'quiz' && (
+              <div className="breadcrumb-title pe-3 ms-2">
+                <div className="d-flex gap-1 align-items-center" role='button'>
+                  <Link to={'/teacher-dashboard/assignments'} className="text-dark">
+                    Assignments List
+                  </Link>
+                </div>
+
+              </div>
+            )
+          }
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
@@ -1909,7 +2003,6 @@ export const CreateAssignments = () => {
             </nav>
           </div>
         </div>
-
         <Typography variant="subtitle1" className="my-2">
           Assignment Type
         </Typography>
@@ -1918,9 +2011,12 @@ export const CreateAssignments = () => {
             value={assignmentType}
             exclusive
             onChange={(_, newValue) => {
-              if (newValue !== null) {
-                setAssignmentType(newValue);
+              if (!id) {
+                if (newValue !== null) {
+                  setAssignmentType(newValue);
+                }
               }
+
             }}
             className="assignbtngrp"
           >
@@ -1932,10 +2028,10 @@ export const CreateAssignments = () => {
                 <ToggleButton value="ai generated">
                   <AccountTreeIcon /> Ai generated
                 </ToggleButton>
-                <ToggleButton value="presentation">
+                {/* <ToggleButton value="presentation">
                   <PresentToAllIcon />
                   Presentation
-                </ToggleButton>
+                </ToggleButton> */}
               </>
             )}
             {type == 'quiz' && (
@@ -1945,7 +2041,6 @@ export const CreateAssignments = () => {
             )}
           </ToggleButtonGroup>
         </div>
-
         <div className="card p-lg-3  mt-4 mt-lg-0">
           <div className="card-body">
 
@@ -2021,6 +2116,7 @@ export const CreateAssignments = () => {
                           onChange={handleFileChange}
                           multiple
                           name="file"
+                          disabled={submittedCount > 0}
                           style={{ display: 'none' }}
                           id="file-upload"
                         />
@@ -2043,12 +2139,14 @@ export const CreateAssignments = () => {
                                 mb: 1,
                               }}
                               secondaryAction={
-                                <IconButton
-                                  edge="end"
-                                  onClick={() => handleFileRemove(index)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
+                                submittedCount <= 0 ? (
+                                  <IconButton
+                                    edge="end"
+                                    onClick={() => handleFileRemove(index)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                ) : null
                               }
                             >
                               <div className="pinwi-20">
@@ -2277,11 +2375,6 @@ export const CreateAssignments = () => {
                               Add questions
                             </button>
                           </div>
-
-
-
-
-
                           <div className="col-12">
                             <List className='py-0'>
                               {questionMap?.map((item, index) => (
@@ -2349,7 +2442,7 @@ export const CreateAssignments = () => {
                     <label className="col-form-label">
                       Instructions for students<span>*</span>
                     </label>
-                    <div className="mb-4 mb-lg-0" style={{ minHeight: '162px', borderRadius: '8px' }}>
+                    <div className="mb-4" style={{ minHeight: '162px', borderRadius: '8px' }}>
                       <ReactQuill
                         id="text"
                         readOnly={isQuizGenerated}
@@ -2370,6 +2463,10 @@ export const CreateAssignments = () => {
                     {assignmentType == 'ai generated' && editType == '' && (
                       <div className="col-12 mt-3 mb-5">
                         {/* <label className="col-form-label">
+                    </div>
+                    {assignmentType == 'ai generated' && editType == '' && (
+                      <div className="col-12 mt-3 mb-5">
+                        {/* <label className="col-form-label">
                         Assignment Configuration Instructions<span>*</span>
                         </label> */}
                         <TextField
@@ -2379,14 +2476,12 @@ export const CreateAssignments = () => {
                           label="Assignment configuration instructions"
                           type="text"
                           value={configInstructions}
-                          onChange={(e) =>
-                            setConfigInstructions(e.target.value)
-                          }
+                          onChange={(e) => setConfigInstructions(e.target.value)}
                           rows={3}
                         />
-                        {instructions_error && (
+                        {configInstructions_error && (
                           <p className="error-text" style={{ color: 'red' }}>
-                            <small>Please enter Instructions.</small>
+                            <small>Please enter configuration Instructions.</small>
                           </p>
                         )}
                       </div>
@@ -2397,7 +2492,6 @@ export const CreateAssignments = () => {
                         boxes.length > 0 &&
                         boxes?.map((box, index) => (
                           <div key={index} className="row g-4">
-                            {/* Course Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
                                 Course<span>*</span>
@@ -2418,15 +2512,10 @@ export const CreateAssignments = () => {
                                 >
                                   {filteredcoursesData
                                     ?.filter((course) =>
-                                      teacherCourse?.includes(
-                                        String(course.id),
-                                      ),
+                                      teacherCourse?.includes(String(course.id)),
                                     )
                                     ?.map((course) => (
-                                      <MenuItem
-                                        key={course.id}
-                                        value={course.id}
-                                      >
+                                      <MenuItem key={course.id} value={course.id}>
                                         {course.course_name}
                                       </MenuItem>
                                     ))}
@@ -2446,8 +2535,8 @@ export const CreateAssignments = () => {
                             {/* Semester Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
-                                Semester <span>*</span>
-                              </label> */}
+                            {/* Semester Selection */}
+
                               <FormControl fullWidth>
                                 <InputLabel id={`semester_id_${index}`}>
                                   Semester
@@ -2492,8 +2581,7 @@ export const CreateAssignments = () => {
                             {/* Subjects Selection */}
                             <div className="col-md-4 col-12">
                               {/* <label className="col-form-label">
-                                Subjects <span>*</span>
-                              </label> */}
+                            {/* Subjects Selection */}
                               <FormControl fullWidth>
                                 <InputLabel id={`subject_label_${index}`}>
                                   Subject
@@ -2606,8 +2694,7 @@ export const CreateAssignments = () => {
                                     MenuProps={{
                                       PaperProps: {
                                         style: {
-                                          backgroundColor:
-                                            inputfield(namecolor),
+                                          backgroundColor: inputfield(namecolor),
                                           color: inputfieldtext(namecolor),
                                         },
                                       },
@@ -2618,8 +2705,7 @@ export const CreateAssignments = () => {
                                         key={item}
                                         value={item}
                                         sx={{
-                                          backgroundColor:
-                                            inputfield(namecolor),
+                                          backgroundColor: inputfield(namecolor),
                                           color: inputfieldtext(namecolor),
                                           '&:hover': {
                                             backgroundColor:
@@ -2777,42 +2863,57 @@ export const CreateAssignments = () => {
                         <div className="row g-4">
                           <div className="col-lg-4">
                             {type !== 'quiz' ? (
-                              <DesktopDatePicker
-                                label="Available From"
-                                value={availableFrom}
-                                minDate={!edit ? dayjs() : undefined}
-                                onChange={handleAvailableFromChange}
-                                slotProps={{
-                                  textField: (params) => (
-                                    <TextField {...params} />
-                                  ),
-                                }}
-                              />
+                              <>
+                                <DesktopDatePicker
+                                  label="Available From"
+                                  value={availableFrom}
+                                  minDate={!edit ? dayjs() : undefined}
+                                  onChange={handleAvailableFromChange}
+                                  slotProps={{
+                                    textField: (params) => (
+                                      <TextField {...params} />
+                                    ),
+                                  }}
+                                />
+                                {availableFrom_error && error == null && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select today or a future date.
+                                    </small>{' '}
+                                  </p>
+                                )}
+                              </>
                             ) : (
-                              <DateTimePicker
-                                label="Available From"
-                                value={availableFrom}
-                                minDateTime={
-                                  !edit ? dayjs().add(10, 'minute') : undefined
-                                }
-                                onChange={handleAvailableFromChange}
-                                closeOnSelect={false}
-                                slotProps={{
-                                  textField: (params) => (
-                                    <TextField {...params} />
-                                  ),
-                                }}
-                              />
-                            )}
-                            {availableFrom_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
-                                <small>
-                                  Please select today or a future date.
-                                </small>{' '}
-                              </p>
+                              <>
+                                <DateTimePicker
+                                  label="Available From"
+                                  value={availableFrom}
+                                  minDateTime={
+                                    !edit ? dayjs().add(1, 'minute') : undefined
+                                  }
+                                  onChange={handleAvailableFromChange}
+                                  closeOnSelect={false}
+                                  timeSteps={{ minutes: 1 }}
+                                  slotProps={{
+                                    textField: (params) => (
+                                      <TextField {...params} />
+                                    ),
+                                  }}
+                                />
+                                {availableFrom_error && (
+                                  <p
+                                    className="error-text"
+                                    style={{ color: 'red' }}
+                                  >
+                                    <small>
+                                      Please select today or a future date.
+                                    </small>{' '}
+                                  </p>
+                                )}
+                              </>
                             )}
                           </div>
                           <div className="col-lg-4">
@@ -2823,16 +2924,11 @@ export const CreateAssignments = () => {
                               onChange={handleDueDateChange}
                               minDate={!edit ? dayjs() : undefined}
                               slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
+                                textField: (params) => <TextField {...params} />,
                               }}
                             />
                             {due_date_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text" style={{ color: 'red' }}>
                                 <small>Please select a due date.</small>
                               </p>
                             )}
@@ -2856,16 +2952,11 @@ export const CreateAssignments = () => {
                               onChange={(newValue) => setDueTime(newValue)} // Directly set Dayjs object
                               closeOnSelect={false}
                               slotProps={{
-                                textField: (params) => (
-                                  <TextField {...params} />
-                                ),
+                                textField: (params) => <TextField {...params} />,
                               }}
                             />
                             {dueTime_error && (
-                              <p
-                                className="error-text"
-                                style={{ color: 'red' }}
-                              >
+                              <p className="error-text" style={{ color: 'red' }}>
                                 <small>Please select a due time.</small>
                               </p>
                             )}
@@ -2951,16 +3042,23 @@ export const CreateAssignments = () => {
                         (assignmentType == 'ai generated' &&
                           isAiAssignmentGenerated) ? (
                         <div className="d-flex align-items-center gap-2 justify-content-end">
-                          <Button
+                          {
+                           assignmentType != 'written' &&(
+                            <Button
                             variant="contained"
                             color="primary"
                             onClick={() =>
-                              assignmentType === 'quiz' ? setIsModalOpen(true) : setAssignmentModalOpen(true)
+                              assignmentType === 'quiz'
+                                ? setIsModalOpen(true)
+                                : setAssignmentModalOpen(true)
                             }
                             style={{ marginTop: 20 }}
                           >
                             Preview
                           </Button>
+                           )
+                          }
+                        
 
                           <Button
                             variant="outlined"
@@ -2979,7 +3077,14 @@ export const CreateAssignments = () => {
                             style={{ marginTop: 20 }}
                             onClick={
                               assignmentType !== 'quiz'
-                                ? assignmentType == 'ai generated' ? () => submitAssignment(false, 'json', assignmentJsonQuestions) : submitAssignment
+                                ? assignmentType == 'ai generated'
+                                  ? () =>
+                                    submitAssignment(
+                                      false,
+                                      'json',
+                                      assignmentJsonQuestions,
+                                    )
+                                  :()=> submitAssignment(false)
                                 : () => handleSubmitQuiz(false)
                             }
                           >
@@ -3008,28 +3113,28 @@ export const CreateAssignments = () => {
                   </div>
                 </div>
               </div>
-
             </div>
+
+            <AssignmentModal
+              open={isAssignmentModalOpen}
+              onClose={() => setAssignmentModalOpen(false)}
+              assignments={assignmentGenrData}
+              onProceed={(assignmentData: GenAssignment) => {
+                setAssignmentJsonQuestions(assignmentData);
+                setAssignmentModalOpen(false);
+              }}
+              title={assignmentData?.title}
+              totalQuestions={totalQuestions}
+              totalMarks={totalMarks}
+            />
+            <QuizModal
+              isEdit={isedit}
+              open={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              quizData={quizData}
+              onSave={handleSaveQuiz}
+            />
           </div>
-          <AssignmentModal
-            open={isAssignmentModalOpen}
-            onClose={() => setAssignmentModalOpen(false)}
-            assignments={assignmentGenrData}
-            onProceed={(assignmentData: GenAssignment) => {
-              setAssignmentJsonQuestions(assignmentData);
-              setAssignmentModalOpen(false);
-            }}
-            title={assignmentData?.title}
-            totalQuestions={totalQuestions}
-            totalMarks={totalMarks}
-          />
-          <QuizModal
-            isEdit={isedit}
-            open={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            quizData={quizData}
-            onSave={handleSaveQuiz}
-          />
         </div>
       </div>
     </div>

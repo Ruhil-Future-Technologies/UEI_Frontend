@@ -20,6 +20,7 @@ import { Close } from '@mui/icons-material';
 import useApi from '../../../hooks/useAPI';
 import { toast } from 'react-toastify';
 import './QuizDetails.scss';
+import { formatDateToIST } from '../../../utils/helpers';
 
 const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
   const { getData } = useApi();
@@ -272,7 +273,7 @@ const QuizDetailsModal = ({ open, onClose, quizId, quizTitle }: any) => {
                     const firstName = submission.first_name || '';
                     const lastName = submission.last_name || '';
                     const submissionDate = submission.submission_date
-                      ? new Date(submission.submission_date).toLocaleString()
+                      ? formatDateToIST(submission.submission_date)
                       : 'N/A';
                     const timeTaken = submission.time_taken
                       ? `${submission.time_taken} mins`
