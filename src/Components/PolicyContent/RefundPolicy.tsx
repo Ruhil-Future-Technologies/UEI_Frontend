@@ -76,7 +76,7 @@ const RefundPolicy = () => {
                     </li>
                     <li>
                       <b>Review and Notification: </b>
-                      We'll review your request and notify you of approval or rejection.
+                      We&apos;ll review your request and notify you of approval or rejection.
                     </li>
                     <li>
                       <b>Refund Initiation: </b>
