@@ -434,7 +434,7 @@ const InstitutionDash = () => {
             <div className="swiper studentslider">
               <Swiper
                 spaceBetween={10}
-                slidesPerView={3}
+                //slidesPerView={3}
                 loop={true}
                 breakpoints={{
                   768: { slidesPerView: 2 },
@@ -473,8 +473,13 @@ const InstitutionDash = () => {
               </Swiper>
             </div>
           </div>
-          <InstitutionCharts />
+          <div className="col-lg-12">
+            <InstitutionCharts />
+          </div>
+          
           <InstituteGraphRepo />
+         
+          
 
           <div className="col-xxl-8 d-flex align-items-stretch">
             <div className="chat-wrapper desk-chat-wrapper rounded-4 mt-lg-5">
