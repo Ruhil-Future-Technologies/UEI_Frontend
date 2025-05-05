@@ -31,6 +31,7 @@ import { toast } from 'react-toastify';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import { QUERY_KEYS_ASSIGNMENT } from '../../../utils/const';
+import { convertToISTT } from '../../../utils/helpers';
 
 export const Assignments = () => {
   const { getData, putData } = useApi();
@@ -175,6 +176,11 @@ export const Assignments = () => {
     {
       accessorKey: 'due_date_time',
       header: 'Due Time & Date',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDateStr = row?.original?.due_date_time;
+       return convertToISTT(gmtDateStr);
+      }
+      
     },
     {
       accessorKey: 'contact_email',
@@ -246,10 +252,18 @@ export const Assignments = () => {
     {
       accessorKey: 'created_at',
       header: 'Created at',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDate = row?.original?.created_at;
+        return  convertToISTT(gmtDate) ;
+      }
     },
     {
       accessorKey: 'updated_at',
       header: 'updated at',
+      Cell: ({ row }: { row: MRT_Row<Assignment> }) => {
+        const gmtDate = row?.original?.updated_at;
+        return  convertToISTT(gmtDate) ;
+      }
     },
     {
       accessorKey: 'is_active',
@@ -427,7 +441,7 @@ export const Assignments = () => {
             <Box className="rounded-4 overflow-hidden">
               <MaterialReactTable
                 columns={columns}
-                data={[...assignmentData].reverse()} 
+                data={[...assignmentData].reverse()}
                 enablePagination
                 enableSorting
                 enableColumnFilters

@@ -5,7 +5,6 @@ import {
   Typography,
   Card,
   CardContent,
-  Button,
   Box,
   Chip,
   IconButton,
@@ -19,7 +18,7 @@ import ScoreboardOutlinedIcon from '@mui/icons-material/ScoreboardOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from '../../Teacher/Assignments/CreateAssignments';
-import { getColor, toTitleCase } from '../../../utils/helpers';
+import { convertToISTT, getColor, toTitleCase } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
 import UploadBtn from '../../../Components/UploadBTN/UploadBtn';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -41,12 +40,12 @@ export interface Question_andwer {
   answer: string;
   marks: number;
 }
-const PreviewAndSubmit = () => {
+const PreviewStudentAssignment = () => {
   const navigate = useNavigate();
-  const { getData, postData } = useApi();
+  const { getData } = useApi();
   const { id } = useParams();
-  const student_id = localStorage.getItem('user_uuid');
-  const stud_id = localStorage.getItem('student_id');
+  const student_id = localStorage.getItem('assignment_id');
+  //const stud_id = localStorage.getItem('student_id');
   const [assignmentData, setAssignmentData] = useState<Assignment>();
   //const [todayDate, setTodayDate] = useState<Date>();
   const [remainingDays, setRemaingDays] = useState(0);
@@ -57,7 +56,6 @@ const PreviewAndSubmit = () => {
   >([]);
   const [description, setDescription] = useState('');
   const quillRef = useRef<ReactQuill | null>(null);
-  const [isSubmited, setIssubmited] = useState(false);
   const [statusCheck, setStatusCheck] = useState('Pending');
   const [availableDuration, setAvailableDuration] = useState(0);
   const [question_answer, setQuestion_answer] = useState<Question_andwer[]>([
@@ -132,7 +130,7 @@ const PreviewAndSubmit = () => {
 
   const getAssignmentData = () => {
     try {
-      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${id}`).then(
+      getData(`${QUERY_KEYS_ASSIGNMENT.GET_ASSIGNMENT}${student_id}`).then(
         (response) => {
           if (response?.status) {
             setAssignmentData(response?.data);
@@ -172,7 +170,7 @@ const PreviewAndSubmit = () => {
 
   const isAssignmentSubmitedGet = (assignmentId: string) => {
     getData(
-      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${student_id}`,
+      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.GET_ASSIGNMENT_SUBMISSION_BY_STUDENT_ID}${id}`,
     )
       .then((response) => {
         if (response?.status) {
@@ -194,9 +192,7 @@ const PreviewAndSubmit = () => {
               setQuestion_answer(filteredAssignment[0]?.answers);
             if (filteredAssignment[0]?.answers?.length > 0)
               setContentType('questions');
-            setIssubmited(true);
-          } else {
-            setIssubmited(false);
+            // setIssubmited(true);
           }
         }
       })
@@ -237,84 +233,6 @@ const PreviewAndSubmit = () => {
     }
   };
 
-  const submitAssignment = () => {
-    let check = true;
-    // if (description == '') {
-
-    //   check = true;
-    // } else {
-
-    //   check = false;
-    // }
-
-    if (
-      contentType == 'file' &&
-      description == '' &&
-      allselectedfiles.length! < 1
-    ) {
-      setDocument_error(true);
-      check = true;
-    } else {
-      check = false;
-      setDocument_error(false);
-    }
-
-    if (
-      contentType != 'file' &&
-      question_answer.find(
-        (question) => !question.answer || question.answer === '',
-      )
-    ) {
-      setQ_a_error(true);
-      check = true;
-    } else {
-      setQ_a_error(false);
-      check = false;
-    }
-    if (check) return;
-    const formData: any = new FormData();
-
-    formData.append('assignment_id', assignmentData?.id as string);
-    formData.append('student_id', stud_id as string);
-    formData.append('description', description);
-    formData.append('questions', JSON.stringify(question_answer));
-    allselectedfiles.forEach((file) => {
-      formData.append('files', file);
-    });
-    // const paylod = {
-    //   assignment_id: assignmentData?.id,
-    //   student_id: stud_id,
-    //   description: 'test',
-    //   questions: question_answer
-    // }
-    postData(
-      `${QUERY_KEYS_ASSIGNMENT_SUBMISSION.ADD_ASSIGNMENT_SUBMISSION}`,
-      formData,
-    )
-      .then((response) => {
-        if (response?.status) {
-          toast.success(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-          navigate('/main/student/assignment');
-        } else {
-          toast.error(response.message, {
-            hideProgressBar: true,
-            theme: 'colored',
-            position: 'top-center',
-          });
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          hideProgressBar: true,
-          theme: 'colored',
-          position: 'top-center',
-        });
-      });
-  };
   const handleAnswer = (value: any, index: any) => {
     setQuestion_answer((prev) => {
       const updateobj = [...prev];
@@ -383,6 +301,13 @@ const PreviewAndSubmit = () => {
                 </Link>
               </div>
             </div>
+            <div className="breadcrumb-title pe-3 ms-2">
+              <div className="d-flex gap-1 align-items-center" role='button'>
+                <Link to={'/teacher-dashboard/assignments'} className="text-dark">
+                  Assignments List
+                </Link>
+              </div>
+            </div>
             <div className="ps-3">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb mb-0 p-0">
@@ -443,7 +368,7 @@ const PreviewAndSubmit = () => {
                     color: getColor(remainingDays, availableDuration),
                   }}
                 >
-                  Due: {assignmentData?.due_date_time}
+                  Due: {convertToISTT(assignmentData?.due_date_time as string)}
                 </span>
                 {remainingDays != 0 || assignmentData?.allow_late_submission ? (
                   <Chip
@@ -560,6 +485,7 @@ const PreviewAndSubmit = () => {
                           value={question_answer.answer}
                           rows={2}
                           fullWidth
+                          disabled
                           onChange={(e) => handleAnswer(e.target.value, index)}
                           onCopy={(e) => e.preventDefault()}
                           onCut={(e) => e.preventDefault()}
@@ -595,39 +521,39 @@ const PreviewAndSubmit = () => {
 
               {statusCheck == 'Pending'
                 ? allselectedfiles.map((file, index) => (
-                    <ListItem
-                      className="fileslistitem"
-                      key={index}
-                      secondaryAction={
-                        <IconButton
-                          edge="end"
-                          onClick={() => handleFileRemove(index)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      }
-                    >
-                      <div className="pinwi-20">
-                        <AttachFileIcon />
-                      </div>
-                      <ListItemText primary={file.name} />
-                    </ListItem>
-                  ))
-                : allselectedfilesToShow.map((file, index) => (
-                    <ListItem className="fileslistitem" key={index}>
-                      <div className="pinwi-20">
-                        <AttachFileIcon />
-                      </div>
-                      <a
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={file}
+                  <ListItem
+                    className="fileslistitem"
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        onClick={() => handleFileRemove(index)}
                       >
-                        <ListItemText primary={file} />
-                      </a>
-                    </ListItem>
-                  ))}
+                        <DeleteIcon />
+                      </IconButton>
+                    }
+                  >
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <ListItemText primary={file.name} />
+                  </ListItem>
+                ))
+                : allselectedfilesToShow.map((file, index) => (
+                  <ListItem className="fileslistitem" key={index}>
+                    <div className="pinwi-20">
+                      <AttachFileIcon />
+                    </div>
+                    <a
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={file}
+                    >
+                      <ListItemText primary={file} />
+                    </a>
+                  </ListItem>
+                ))}
 
               {document_error && (
                 <p className="error-text " style={{ color: 'red' }}>
@@ -652,32 +578,10 @@ const PreviewAndSubmit = () => {
               </div>
             </CardContent>
           </Card>
-          {!isSubmited &&
-            (remainingDays == 0
-              ? assignmentData?.allow_late_submission
-              : true) && (
-              <Box
-                sx={{
-                  my: 3,
-                  display: 'flex',
-                  gap: 2,
-                  justifyContent: 'center',
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={submitAssignment}
-                >
-                  Submit Assignment
-                </Button>
-                <Button variant="outlined">Save as Draft</Button>
-              </Box>
-            )}
         </div>
       </div>
     </>
   );
 };
 
-export default PreviewAndSubmit;
+export default PreviewStudentAssignment;

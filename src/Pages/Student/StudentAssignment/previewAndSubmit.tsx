@@ -19,7 +19,7 @@ import ScoreboardOutlinedIcon from '@mui/icons-material/ScoreboardOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useApi from '../../../hooks/useAPI';
 import { Assignment } from '../../Teacher/Assignments/CreateAssignments';
-import { getColor, toTitleCase } from '../../../utils/helpers';
+import { convertToISTT, getColor, toTitleCase } from '../../../utils/helpers';
 import { toast } from 'react-toastify';
 import UploadBtn from '../../../Components/UploadBTN/UploadBtn';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -238,7 +238,7 @@ const PreviewAndSubmit = () => {
   };
 
   const submitAssignment = () => {
-    let check = true;
+    let check = false;
     // if (description == '') {
 
     //   check = true;
@@ -249,13 +249,11 @@ const PreviewAndSubmit = () => {
 
     if (
       contentType == 'file' &&
-      description == '' &&
       allselectedfiles.length! < 1
     ) {
       setDocument_error(true);
       check = true;
     } else {
-      check = false;
       setDocument_error(false);
     }
 
@@ -269,7 +267,6 @@ const PreviewAndSubmit = () => {
       check = true;
     } else {
       setQ_a_error(false);
-      check = false;
     }
     if (check) return;
     const formData: any = new FormData();
@@ -450,7 +447,7 @@ const PreviewAndSubmit = () => {
                     color: getColor(remainingDays, availableDuration),
                   }}
                 >
-                  Due: {assignmentData?.due_date_time}
+                  Due: {convertToISTT(assignmentData?.due_date_time as string)}
                 </span>
                 {remainingDays != 0 || assignmentData?.allow_late_submission ? (
                   <Chip
