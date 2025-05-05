@@ -72,7 +72,7 @@ const Chat = () => {
   const [dataDelete, setDataDelete] = useState(false);
   const [dataflagged, setDataflagged] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState<number>();
-  const ChatURL = QUERY_KEYS.CHATADD;
+  // const ChatURL = QUERY_KEYS.CHATADD;
   const ChatRAGURL = QUERY_KEYS.CHATRAGMODEL;
   const ChatOLLAMAURL = QUERY_KEYS.CHATOLLAMA;
   const ChatURLAI = QUERY_KEYS.CHATADDAI;
@@ -617,9 +617,12 @@ const speak = async (text: string, index: number) => {
         });
     };
 
-    postDataJson(`${ChatURL}`, payload)
+    // postDataJson(`${ChatURL}`, payload)
+    //   .then((data) => {
+    //     if (data.status || data.code === 404) {
+      Promise.resolve({ status: true }) // Skipping ChatURL and faking a success
       .then((data) => {
-        if (data.status || data.code === 404) {
+        if (data.status) {
           setLoaderMsg('Searching result from Rag model');
           if (studentDetail?.academic_history?.institution_type === 'school') {
             postDataJson(`${ChatRAGURL}`, {
@@ -869,7 +872,7 @@ const speak = async (text: string, index: number) => {
               });
           }
         } else {
-          handleError(data);
+          handleError(data as any);
         }
       })
       .then((data: any) => {
