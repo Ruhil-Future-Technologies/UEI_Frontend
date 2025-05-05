@@ -2837,6 +2837,7 @@ export const CreateAssignments = () => {
                         />
                         {'(' + selectedStudents?.length + ')'}
                         <Autocomplete
+                          disableCloseOnSelect
                           multiple
                           options={listOfStudentFiltered || []}
                           getOptionLabel={(option) => `${option.name}`}
