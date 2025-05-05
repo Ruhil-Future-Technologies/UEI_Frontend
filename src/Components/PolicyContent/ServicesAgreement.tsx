@@ -74,7 +74,7 @@ const ServicesAgreement = () => {
                   <p>
                     Access to Gyansetu may be free or paid, depending on the
                     features selected. Subscription payments, where applicable,
-                    grant nontrans-ferable, time-limited access to the Platform.
+                    grant non-transferable, time-limited access to the Platform.
                     All payments are final, and no refunds will be issued once
                     access to digital content is provided.
                   </p>
